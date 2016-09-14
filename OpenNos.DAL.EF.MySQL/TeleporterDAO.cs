@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,20 +50,36 @@ namespace OpenNos.DAL.EF.MySQL
 
         public TeleporterDTO Insert(TeleporterDTO teleporter)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Teleporter entity = _mapper.Map<Teleporter>(teleporter);
-                context.Teleporter.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<TeleporterDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Teleporter entity = _mapper.Map<Teleporter>(teleporter);
+                    context.Teleporter.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<TeleporterDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         public TeleporterDTO LoadById(short teleporterId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<TeleporterDTO>(context.Teleporter.FirstOrDefault(i => i.TeleporterId.Equals(teleporterId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<TeleporterDTO>(context.Teleporter.FirstOrDefault(i => i.TeleporterId.Equals(teleporterId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

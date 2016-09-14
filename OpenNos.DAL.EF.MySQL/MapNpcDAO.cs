@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,35 +50,58 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<MapNpcDTO> npcs)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (MapNpcDTO Item in npcs)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    MapNpc entity = _mapper.Map<MapNpc>(Item);
-                    context.MapNpc.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (MapNpcDTO Item in npcs)
+                    {
+                        MapNpc entity = _mapper.Map<MapNpc>(Item);
+                        context.MapNpc.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public MapNpcDTO Insert(MapNpcDTO npc)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                MapNpc entity = _mapper.Map<MapNpc>(npc);
-                context.MapNpc.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<MapNpcDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    MapNpc entity = _mapper.Map<MapNpc>(npc);
+                    context.MapNpc.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<MapNpcDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         public MapNpcDTO LoadById(int id)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<MapNpcDTO>(context.MapNpc.FirstOrDefault(i => i.MapNpcId.Equals(id)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<MapNpcDTO>(context.MapNpc.FirstOrDefault(i => i.MapNpcId.Equals(id)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

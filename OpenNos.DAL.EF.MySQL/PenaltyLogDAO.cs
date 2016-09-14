@@ -75,20 +75,36 @@ namespace OpenNos.DAL.EF.MySQL
 
         public bool IdAlreadySet(long id)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return context.PenaltyLog.Any(gl => gl.PenaltyLogId == id);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return context.PenaltyLog.Any(gl => gl.PenaltyLogId == id);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return false;
             }
         }
 
         public PenaltyLogDTO Insert(PenaltyLogDTO penaltylog)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                PenaltyLog entity = _mapper.Map<PenaltyLog>(penaltylog);
-                context.PenaltyLog.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<PenaltyLogDTO>(penaltylog);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    PenaltyLog entity = _mapper.Map<PenaltyLog>(penaltylog);
+                    context.PenaltyLog.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<PenaltyLogDTO>(penaltylog);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
@@ -105,23 +121,38 @@ namespace OpenNos.DAL.EF.MySQL
 
         public PenaltyLogDTO LoadById(int penaltylogId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<PenaltyLogDTO>(context.PenaltyLog.FirstOrDefault(s => s.PenaltyLogId.Equals(penaltylogId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<PenaltyLogDTO>(context.PenaltyLog.FirstOrDefault(s => s.PenaltyLogId.Equals(penaltylogId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         public void Update(PenaltyLogDTO penaltylog)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                PenaltyLog result = context.PenaltyLog.FirstOrDefault(c => c.AccountId == penaltylog.AccountId && c.PenaltyLogId == penaltylog.PenaltyLogId);
-                if (result != null)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    penaltylog.PenaltyLogId = result.PenaltyLogId;
-                    _mapper.Map(penaltylog, result);
-                    context.SaveChanges();
+                    PenaltyLog result = context.PenaltyLog.FirstOrDefault(c => c.AccountId == penaltylog.AccountId && c.PenaltyLogId == penaltylog.PenaltyLogId);
+                    if (result != null)
+                    {
+                        penaltylog.PenaltyLogId = result.PenaltyLogId;
+                        _mapper.Map(penaltylog, result);
+                        context.SaveChanges();
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 

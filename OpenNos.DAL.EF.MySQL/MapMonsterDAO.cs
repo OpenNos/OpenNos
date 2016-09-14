@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,35 +50,58 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<MapMonsterDTO> monsters)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (MapMonsterDTO monster in monsters)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    MapMonster entity = _mapper.Map<MapMonster>(monster);
-                    context.MapMonster.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (MapMonsterDTO monster in monsters)
+                    {
+                        MapMonster entity = _mapper.Map<MapMonster>(monster);
+                        context.MapMonster.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public MapMonsterDTO Insert(MapMonsterDTO mapMonster)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                MapMonster entity = _mapper.Map<MapMonster>(mapMonster);
-                context.MapMonster.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<MapMonsterDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    MapMonster entity = _mapper.Map<MapMonster>(mapMonster);
+                    context.MapMonster.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<MapMonsterDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         public MapMonsterDTO LoadById(int monsterId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(monsterId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(monsterId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

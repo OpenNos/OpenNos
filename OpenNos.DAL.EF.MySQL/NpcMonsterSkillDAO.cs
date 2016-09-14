@@ -17,6 +17,8 @@ using AutoMapper;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using OpenNos.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,27 +51,42 @@ namespace OpenNos.DAL.EF.MySQL
 
         public NpcMonsterSkillDTO Insert(ref NpcMonsterSkillDTO npcMonsterskill)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                NpcMonsterSkill entity = _mapper.Map<NpcMonsterSkill>(npcMonsterskill);
-                context.NpcMonsterSkill.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<NpcMonsterSkillDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    NpcMonsterSkill entity = _mapper.Map<NpcMonsterSkill>(npcMonsterskill);
+                    context.NpcMonsterSkill.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<NpcMonsterSkillDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         public void Insert(List<NpcMonsterSkillDTO> skills)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (NpcMonsterSkillDTO Skill in skills)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    NpcMonsterSkill entity = _mapper.Map<NpcMonsterSkill>(Skill);
-                    context.NpcMonsterSkill.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (NpcMonsterSkillDTO Skill in skills)
+                    {
+                        NpcMonsterSkill entity = _mapper.Map<NpcMonsterSkill>(Skill);
+                        context.NpcMonsterSkill.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 

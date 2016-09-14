@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,16 +50,23 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<MapTypeMapDTO> maptypemaps)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (MapTypeMapDTO MapTypeMap in maptypemaps)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    MapTypeMap entity = _mapper.Map<MapTypeMap>(MapTypeMap);
-                    context.MapTypeMap.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (MapTypeMapDTO MapTypeMap in maptypemaps)
+                    {
+                        MapTypeMap entity = _mapper.Map<MapTypeMap>(MapTypeMap);
+                        context.MapTypeMap.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
@@ -97,11 +105,18 @@ namespace OpenNos.DAL.EF.MySQL
 
         public MapTypeMapDTO LoadByMapAndMapType(short mapId, short maptypeId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<MapTypeMapDTO>(context.MapTypeMap.FirstOrDefault(i => i.MapId.Equals(mapId) && i.MapTypeId.Equals(maptypeId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<MapTypeMapDTO>(context.MapTypeMap.FirstOrDefault(i => i.MapId.Equals(mapId) && i.MapTypeId.Equals(maptypeId)));
+                }
             }
-
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
         }
 
         #endregion

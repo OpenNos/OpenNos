@@ -593,7 +593,6 @@ namespace OpenNos.Handler
                 {
                     Logger.Log.ErrorFormat($"Client {Session.ClientId} forced Disconnection, login has not been registered or Account is already logged in.");
                     Session.Disconnect();
-                    Session.Destroy();
                     return;
                 }
             }
@@ -1329,7 +1328,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.Destroy();
+                Session.Disconnect();
             }
         }
 

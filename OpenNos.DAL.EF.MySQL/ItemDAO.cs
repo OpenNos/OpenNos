@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,27 +50,42 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<ItemDTO> items)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ItemDTO Item in items)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    Item entity = _mapper.Map<Item>(Item);
-                    context.Item.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (ItemDTO Item in items)
+                    {
+                        Item entity = _mapper.Map<Item>(Item);
+                        context.Item.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public ItemDTO Insert(ItemDTO item)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Item entity = _mapper.Map<Item>(item);
-                context.Item.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<ItemDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Item entity = _mapper.Map<Item>(item);
+                    context.Item.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<ItemDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
@@ -86,9 +102,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         public ItemDTO LoadById(short ItemVnum)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<ItemDTO>(context.Item.FirstOrDefault(i => i.VNum.Equals(ItemVnum)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<ItemDTO>(context.Item.FirstOrDefault(i => i.VNum.Equals(ItemVnum)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

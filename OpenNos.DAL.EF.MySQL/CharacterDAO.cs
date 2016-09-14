@@ -191,27 +191,51 @@ namespace OpenNos.DAL.EF.MySQL
 
         public CharacterDTO LoadById(long characterId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         public CharacterDTO LoadByName(string name)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                byte state = (byte)CharacterState.Active;
-                return _mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    byte state = (byte)CharacterState.Active;
+                    return _mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
+                }
             }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+            return null;
         }
 
         public CharacterDTO LoadBySlot(long accountId, byte slot)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                byte state = (byte)CharacterState.Active;
-                return _mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot) && c.State.Equals(state)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    byte state = (byte)CharacterState.Active;
+                    return _mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot) && c.State.Equals(state)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

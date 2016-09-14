@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
@@ -39,9 +40,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         public IEnumerable<Guid> LoadKeysByCharacterId(long characterId)
         {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            try
             {
-                return context.QuicklistEntry.Where(i => i.CharacterId == characterId).Select(qle => qle.Id).ToList();
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
+                {
+                    return context.QuicklistEntry.Where(i => i.CharacterId == characterId).Select(qle => qle.Id).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

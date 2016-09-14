@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -50,20 +50,36 @@ namespace OpenNos.DAL.EF.MySQL
 
         public bool IdAlreadySet(long id)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return context.GeneralLog.Any(gl => gl.LogId == id);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return context.GeneralLog.Any(gl => gl.LogId == id);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return false;
             }
         }
 
         public GeneralLogDTO Insert(GeneralLogDTO generallog)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                GeneralLog entity = _mapper.Map<GeneralLog>(generallog);
-                context.GeneralLog.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<GeneralLogDTO>(generallog);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    GeneralLog entity = _mapper.Map<GeneralLog>(generallog);
+                    context.GeneralLog.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<GeneralLogDTO>(generallog);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
@@ -91,32 +107,46 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void SetCharIdNull(long? characterId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                foreach (GeneralLog log in context.GeneralLog.Where(c => c.CharacterId == characterId))
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    log.CharacterId = null;
+                    foreach (GeneralLog log in context.GeneralLog.Where(c => c.CharacterId == characterId))
+                    {
+                        log.CharacterId = null;
+                    }
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                GeneralLog log = new GeneralLog()
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    AccountId = accountId,
-                    IpAddress = ipAddress,
-                    Timestamp = DateTime.Now,
-                    LogType = logType,
-                    LogData = logData,
-                    CharacterId = characterId
-                };
+                    GeneralLog log = new GeneralLog()
+                    {
+                        AccountId = accountId,
+                        IpAddress = ipAddress,
+                        Timestamp = DateTime.Now,
+                        LogType = logType,
+                        LogData = logData,
+                        CharacterId = characterId
+                    };
 
-                context.GeneralLog.Add(log);
-                context.SaveChanges();
+                    context.GeneralLog.Add(log);
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 

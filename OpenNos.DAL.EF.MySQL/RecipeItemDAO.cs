@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,12 +50,20 @@ namespace OpenNos.DAL.EF.MySQL
 
         public RecipeItemDTO Insert(RecipeItemDTO recipeItem)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                RecipeItem entity = _mapper.Map<RecipeItem>(recipeItem);
-                context.RecipeItem.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<RecipeItemDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    RecipeItem entity = _mapper.Map<RecipeItem>(recipeItem);
+                    context.RecipeItem.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<RecipeItemDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
@@ -71,9 +80,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         public RecipeItemDTO LoadById(int recipeItemId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<RecipeItemDTO>(context.RecipeItem.FirstOrDefault(s => s.RecipeItemId.Equals(recipeItemId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<RecipeItemDTO>(context.RecipeItem.FirstOrDefault(s => s.RecipeItemId.Equals(recipeItemId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

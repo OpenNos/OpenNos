@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,20 +50,36 @@ namespace OpenNos.DAL.EF.MySQL
 
         public RecipeDTO Insert(RecipeDTO recipe)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Recipe entity = _mapper.Map<Recipe>(recipe);
-                context.Recipe.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<RecipeDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Recipe entity = _mapper.Map<Recipe>(recipe);
+                    context.Recipe.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<RecipeDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         public RecipeDTO LoadById(short recipeId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<RecipeDTO>(context.Recipe.FirstOrDefault(s => s.RecipeId.Equals(recipeId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<RecipeDTO>(context.Recipe.FirstOrDefault(s => s.RecipeId.Equals(recipeId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
@@ -79,15 +96,22 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Update(RecipeDTO recipe)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Recipe result = context.Recipe.FirstOrDefault(c => c.MapNpcId == recipe.MapNpcId && c.ItemVNum == recipe.ItemVNum);
-                if (result != null)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    recipe.RecipeId = result.RecipeId;
-                    _mapper.Map(recipe, result);
-                    context.SaveChanges();
+                    Recipe result = context.Recipe.FirstOrDefault(c => c.MapNpcId == recipe.MapNpcId && c.ItemVNum == recipe.ItemVNum);
+                    if (result != null)
+                    {
+                        recipe.RecipeId = result.RecipeId;
+                        _mapper.Map(recipe, result);
+                        context.SaveChanges();
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 

@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,27 +50,42 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<SkillDTO> skills)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (SkillDTO Skill in skills)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    Skill entity = _mapper.Map<Skill>(Skill);
-                    context.Skill.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (SkillDTO Skill in skills)
+                    {
+                        Skill entity = _mapper.Map<Skill>(Skill);
+                        context.Skill.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public SkillDTO Insert(SkillDTO skill)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Skill entity = _mapper.Map<Skill>(skill);
-                context.Skill.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<SkillDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Skill entity = _mapper.Map<Skill>(skill);
+                    context.Skill.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<SkillDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
@@ -86,9 +102,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         public SkillDTO LoadById(short skillId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<SkillDTO>(context.Skill.FirstOrDefault(s => s.SkillVNum.Equals(skillId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<SkillDTO>(context.Skill.FirstOrDefault(s => s.SkillVNum.Equals(skillId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

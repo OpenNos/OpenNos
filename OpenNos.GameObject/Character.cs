@@ -1700,15 +1700,16 @@ namespace OpenNos.GameObject
                 if (QuicklistEntries != null)
                 {
                     IEnumerable<Guid> currentlySavedQuicklistEntries = DAOFactory.QuicklistEntryDAO.LoadKeysByCharacterId(CharacterId).ToList();
-
-                    foreach (Guid quicklistEntryToDelete in currentlySavedQuicklistEntries.Except(QuicklistEntries.Select(s => s.Id)))
+                    if (currentlySavedQuicklistEntries != null)
                     {
-                        DAOFactory.QuicklistEntryDAO.Delete(quicklistEntryToDelete);
-                    }
-
-                    foreach (QuicklistEntryDTO quicklistEntry in QuicklistEntries)
-                    {
-                        DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
+                        foreach (Guid quicklistEntryToDelete in currentlySavedQuicklistEntries.Except(QuicklistEntries.Select(s => s.Id)))
+                        {
+                            DAOFactory.QuicklistEntryDAO.Delete(quicklistEntryToDelete);
+                        }
+                        foreach (QuicklistEntryDTO quicklistEntry in QuicklistEntries)
+                        {
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
+                        }
                     }
                 }
 

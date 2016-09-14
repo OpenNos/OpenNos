@@ -13,6 +13,7 @@
  */
 
 using AutoMapper;
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -30,16 +31,23 @@ namespace OpenNos.DAL.EF.MySQL
 
         public DeleteResult Delete(long characterId, short skillVNum)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                CharacterSkill invItem = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == characterId && i.SkillVNum == skillVNum);
-                if (invItem != null)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    context.CharacterSkill.Remove(invItem);
-                    context.SaveChanges();
+                    CharacterSkill invItem = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == characterId && i.SkillVNum == skillVNum);
+                    if (invItem != null)
+                    {
+                        context.CharacterSkill.Remove(invItem);
+                        context.SaveChanges();
+                    }
+                    return DeleteResult.Deleted;
                 }
-
-                return DeleteResult.Deleted;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return DeleteResult.Error;
             }
         }
 
@@ -56,9 +64,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         public IEnumerable<Guid> LoadKeysByCharacterId(long characterId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return context.CharacterSkill.Where(i => i.CharacterId == characterId).Select(c => c.Id).ToList();
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return context.CharacterSkill.Where(i => i.CharacterId == characterId).Select(c => c.Id).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
