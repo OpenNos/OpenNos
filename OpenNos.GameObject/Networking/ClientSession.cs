@@ -102,10 +102,6 @@ namespace OpenNos.GameObject
             {
                 return _client.ClientId;
             }
-            set
-            {
-                _client.ClientId = value;
-            }
         }
 
         public Account Account
