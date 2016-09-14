@@ -43,8 +43,8 @@ namespace OpenNos.GameObject
         {
             for (session.Character.MaxSnack = 0; session.Character.MaxSnack < 5 && session.Character.IsSitting; session.Character.MaxSnack++)
             {
-                session.Character.Mp += session.Character.SnackHp;
-                session.Character.Hp += session.Character.SnackMp;
+                session.Character.Hp += session.Character.SnackHp;
+                session.Character.Mp += session.Character.SnackMp;
                 if ((session.Character.SnackHp > 0 && session.Character.SnackHp > 0) && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
                     session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
                 if (session.CommunicationState == CommunicationStates.Connected)
