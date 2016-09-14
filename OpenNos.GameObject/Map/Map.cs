@@ -119,6 +119,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        public static int GetDistance(Character character1, Character character2)
+        {
+          return  GetDistance(new MapCell() { MapId = character1.MapId, X = character1.MapX, Y = character1.MapY }, new MapCell() { MapId = character2.MapId, X = character2.MapX, Y = character2.MapY });
+        }
+
         #endregion
 
         #region Properties

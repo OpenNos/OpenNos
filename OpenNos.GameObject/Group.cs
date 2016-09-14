@@ -36,15 +36,14 @@ namespace OpenNos.GameObject
         public long GroupId { get; set; }
         public byte SharingMode { get; set; }
         private int order;
-        public long OrderedCharacterId
+        public long OrderedCharacterId(Character Character)
         {
-            get
-            {
-                order++;
-                if (order > Characters.Count - 1)
-                    order = 0;
-                return Characters.ElementAt(order).Character.CharacterId;
-            }
+            order++;
+            IEnumerable<ClientSession> lst = Characters.Where(s => Map.GetDistance(s.Character, Character) < 50);
+            if (order > lst.Count() - 1)
+                order = 0;
+            return lst.ElementAt(order).Character.CharacterId;
+
         }
         #endregion
 
