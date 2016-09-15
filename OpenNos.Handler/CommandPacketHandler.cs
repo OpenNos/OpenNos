@@ -316,6 +316,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 12));
@@ -327,7 +328,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$GodMode", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 12));
-            //Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE CHARACTERNAME VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 12));
