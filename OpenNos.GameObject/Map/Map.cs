@@ -119,11 +119,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static int GetDistance(Character character1, Character character2)
-        {
-          return  GetDistance(new MapCell() { MapId = character1.MapId, X = character1.MapX, Y = character1.MapY }, new MapCell() { MapId = character2.MapId, X = character2.MapX, Y = character2.MapY });
-        }
-
         #endregion
 
         #region Properties
@@ -150,7 +145,9 @@ namespace OpenNos.GameObject
         }
 
         public int Music { get; set; }
+
         public string Name { get; set; }
+
         public EventHandler NotifyClients { get; set; }
 
         public List<MapNpc> Npcs
@@ -170,6 +167,7 @@ namespace OpenNos.GameObject
         }
 
         public bool ShopAllowed { get; set; }
+
         public Dictionary<long, MapShop> UserShops { get; set; }
 
         public int XLength { get; set; }
@@ -179,6 +177,11 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public static int GetDistance(Character character1, Character character2)
+        {
+            return GetDistance(new MapCell() { MapId = character1.MapId, X = character1.MapX, Y = character1.MapY }, new MapCell() { MapId = character2.MapId, X = character2.MapX, Y = character2.MapY });
+        }
 
         public static int GetDistance(MapCell p, MapCell q)
         {
@@ -274,7 +277,6 @@ namespace OpenNos.GameObject
             {
                 ItemInstance = newInstance,
                 Owner = Owner
-
             };
 
             //rarify
@@ -423,6 +425,34 @@ namespace OpenNos.GameObject
             return false;
         }
 
+        internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
+        {
+            List<Character> characters = new List<Character>();
+            IEnumerable<ClientSession> cl = Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
+            for (int i = cl.Count() - 1; i >= 0; i--)
+            {
+                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)
+                    characters.Add(cl.ElementAt(i).Character);
+            }
+            return characters;
+        }
+
+        internal async void MapTaskManager()
+        {
+            Task npcLifeTask = new Task(() => NpcLifeManager());
+            npcLifeTask.Start();
+            Task monsterLifeTask = new Task(() => MonsterLifeManager());
+            monsterLifeTask.Start();
+            Task characterLifeTask = new Task(() => CharacterLifeManager());
+            characterLifeTask.Start();
+
+            RemoveMapItem();
+
+            await npcLifeTask;
+            await monsterLifeTask;
+            await characterLifeTask;
+        }
+
         internal List<MapCell> StraightPath(MapCell mapCell1, MapCell mapCell2)
         {
             List<MapCell> Path = new List<MapCell>();
@@ -467,46 +497,6 @@ namespace OpenNos.GameObject
                 Path.Remove(Path.Last());
             Path.RemoveAt(0);
             return Path;
-        }
-
-        internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
-        {
-            List<Character> characters = new List<Character>();
-            IEnumerable<ClientSession> cl = Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
-            for (int i = cl.Count() - 1; i >= 0; i--)
-            {
-                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)
-                    characters.Add(cl.ElementAt(i).Character);
-            }
-            return characters;
-        }
-
-        internal async void MapTaskManager()
-        {
-            Task npcLifeTask = new Task(() => NpcLifeManager());
-            npcLifeTask.Start();
-            Task monsterLifeTask = new Task(() => MonsterLifeManager());
-            monsterLifeTask.Start();
-            Task characterLifeTask = new Task(() => CharacterLifeManager());
-            characterLifeTask.Start();
-
-            RemoveMapItem();
-
-            await npcLifeTask;
-            await monsterLifeTask;
-            await characterLifeTask;
-        }
-
-        private void RemoveMapItem()
-        {
-            for (int i = DroppedList.Count() - 1; i >= 0; i--)
-            {
-                if (DroppedList.ElementAt(i).Value.CreateDate.AddMinutes(3) < DateTime.Now)
-                {
-                    Broadcast(DroppedList.ElementAt(i).Value.GenerateOut(DroppedList.ElementAt(i).Key));
-                    DroppedList.Remove(DroppedList.ElementAt(i).Key);
-                }
-            }
         }
 
         private void CharacterLifeManager()
@@ -578,6 +568,18 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
+            }
+        }
+
+        private void RemoveMapItem()
+        {
+            //take the data from list to remove it without having enumeration problems (ToList)
+            IEnumerable<KeyValuePair<long, MapItem>> dropsToRemove = DroppedList.Where(dl => dl.Value.CreateDate.AddMinutes(3) < DateTime.Now).ToList();
+
+            foreach (KeyValuePair<long, MapItem> drop in dropsToRemove)
+            {
+                Broadcast(drop.Value.GenerateOut(drop.Key));
+                DroppedList.Remove(drop.Key);
             }
         }
 
