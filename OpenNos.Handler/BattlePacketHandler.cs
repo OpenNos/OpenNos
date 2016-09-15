@@ -653,7 +653,7 @@ namespace OpenNos.Handler
                 Random rnd = new Random();
                 int i = 1;
                 List<DropDTO> droplist = monsterinfo.Drops.Where(s => Session.CurrentMap.MapTypes.FirstOrDefault(m => m.MapTypeId == s.MapTypeId) != null || (s.MapTypeId == null)).ToList();
-                if (monsterToAttack.Monster.BasicSkill != 0)
+                if (monsterToAttack.Monster.MonsterType != MonsterType.Special)
                 {
                     int RateDrop = ServerManager.DropRate;
                     int x = 0;

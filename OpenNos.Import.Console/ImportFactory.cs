@@ -653,6 +653,10 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
                         unknownData = Convert.ToInt64(currentLine[2]);
+                        if (unknownData == (long)-2147481593)
+                        {
+                            npc.MonsterType = MonsterType.Special;
+                        }
                         if (unknownData == (long)-2147483616 || unknownData == (long)-2147483647 || unknownData == (long)-2147483646)
                         {
                             if (npc.Race == (byte)8 && npc.RaceType == (byte)0)
@@ -666,10 +670,7 @@ namespace OpenNos.Import.Console
                         }
                         if (npc.NpcMonsterVNum >= 588 && npc.NpcMonsterVNum <= 607)
                         {
-                            for (int i = 588; i <= 608; i++)
-                            {
-                                npc.MonsterType = MonsterType.Elite;
-                            }
+                            npc.MonsterType = MonsterType.Elite;
                         }
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "SETTING")
