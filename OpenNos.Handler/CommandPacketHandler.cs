@@ -1156,6 +1156,7 @@ namespace OpenNos.Handler
                 if (id != null)
                 {
                     ServerManager.Instance.MapOut((long)id);
+                    ServerManager.Instance.SetProperty((long)id, nameof(Character.IsSitting), false);
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.MapId), Session.Character.MapId);
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.MapX), (short)((Session.Character.MapX) + (short)1));
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.MapY), (short)((Session.Character.MapY) + (short)1));
