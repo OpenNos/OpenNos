@@ -935,10 +935,10 @@ Veux-tu le porter ?</value>
     <value>La compétence n'existe pas !</value>
   </data>
   <data name="DROPPED_ITEM" xml:space="preserve">
-    <value>Tu as reçu un objet : {0} x {1}</value>
+    <value>(Groupe) [{0}], priorité : Tous les membres du groupe.</value>
   </data>
   <data name="ITEM_BOUND_TO" xml:space="preserve">
-    <value>{1} a obtenu :  {0} x {2}</value>
+    <value>(Groupe) [{0}], priorité : {1}</value>
   </data>
   <data name="NOT_YOUR_ITEM" xml:space="preserve">
     <value>Cet objet ne t'appartient pas.</value>
