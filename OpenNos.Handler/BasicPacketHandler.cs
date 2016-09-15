@@ -307,7 +307,7 @@ namespace OpenNos.Handler
             }
             if (characterInformationPacket[2] == "2")
             {
-                foreach (MapNpc npc in ServerManager.GetMap(Session.Character.MapId).Npcs)
+                foreach (MapNpc npc in Session.CurrentMap.Npcs)
                 {
                     if (npc.MapNpcId == Convert.ToInt32(characterInformationPacket[3]))
                     {
@@ -320,7 +320,7 @@ namespace OpenNos.Handler
             }
             if (characterInformationPacket[2] == "3")
             {
-                foreach (MapMonster monster in ServerManager.GetMap(Session.Character.MapId).Monsters)
+                foreach (MapMonster monster in Session.CurrentMap.Monsters)
                 {
                     if (monster.MapMonsterId == Convert.ToInt32(characterInformationPacket[3]))
                     {
@@ -446,7 +446,7 @@ namespace OpenNos.Handler
                 case "400":
                     if (packetsplit.Length > 3)
                     {
-                        MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
+                        MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
                         Random rnd = new Random();
                         int RateDrop = ServerManager.DropRate;
@@ -482,7 +482,7 @@ namespace OpenNos.Handler
                 case "710":
                     if (packetsplit.Length > 5)
                     {
-                        //MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5])));
+                        //MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5])));
                         //NpcMonster mapObject = ServerManager.GetNpc(npc.NpcVNum);
                         //teleport free
                     }
@@ -830,7 +830,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
             }
-            foreach (Portal portal in ServerManager.GetMap(Session.Character.MapId).Portals)
+            foreach (Portal portal in Session.CurrentMap.Portals)
             {
                 if (Session.Character.MapY >= portal.SourceY - 1 && Session.Character.MapY <= portal.SourceY + 1
                     && Session.Character.MapX >= portal.SourceX - 1 && Session.Character.MapX <= portal.SourceX + 1)

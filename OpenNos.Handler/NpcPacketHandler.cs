@@ -684,7 +684,7 @@ namespace OpenNos.Handler
                 }
                 else// Npc Shop , ignore if has drop
                 {
-                    MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
+                    MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
                     NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
 
                     if (mapobject.Drops.Any(s => s.MonsterVNum != null) && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5)) // mining mapobjects

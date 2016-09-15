@@ -97,7 +97,6 @@ namespace OpenNos.GameObject
         public int HitCritical { get; set; }
         public int HitCriticalRate { get; set; }
         public int HitRate { get; set; }
-        public DateTime LastEffect { get; set; }
 
         public bool InExchangeOrTrade
         {
@@ -116,6 +115,8 @@ namespace OpenNos.GameObject
         public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
         public bool IsVehicled { get; set; }
         public DateTime LastDefence { get; set; }
+        public DateTime LastEffect { get; set; }
+        public DateTime LastHealth { get; set; }
         public DateTime LastLogin { get; set; }
         public DateTime LastMapObject { get; set; }
         public DateTime LastMove { get; set; }
@@ -163,7 +164,6 @@ namespace OpenNos.GameObject
 
         public bool UseSp { get; set; }
         public int WaterResistance { get; set; }
-        public DateTime LastHealth { get; set; }
 
         #endregion
 
@@ -395,26 +395,6 @@ namespace OpenNos.GameObject
             return $"eff 1 {CharacterId} {effectid}";
         }
 
-        public void RemoveVehicle()
-        {
-            SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
-            IsVehicled = false;
-            LoadSpeed();
-            if (Session.Character.UseSp)
-            {
-                if (sp != null)
-                {
-                    Morph = sp.Item.Morph;
-                    MorphUpgrade = sp.Upgrade;
-                    MorphUpgrade2 = sp.Design;
-                }
-            }
-            else
-            {
-                Morph = 0;
-            }
-        }
-
         public string GenerateEInfo(WearableInstance item)
         {
             Item iteminfo = item.Item;
@@ -610,7 +590,6 @@ namespace OpenNos.GameObject
         {
             return $"get 1 {CharacterId} {id} 0";
         }
-
 
         public string GenerateGold()
         {
@@ -1444,6 +1423,24 @@ namespace OpenNos.GameObject
             return 27;
         }
 
+        public void GiftAdd(short itemVNum, int amount)
+        {
+            ItemInstance newItem = InventoryList.CreateItemInstance(itemVNum);
+            if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
+                ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+            newItem.Amount = amount;
+            Inventory newInv = InventoryList.AddToInventory(newItem);
+            if (newInv != null)
+            {
+                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
+                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
+            }
+            else
+            {
+                //parcel add
+            }
+        }
+
         public int HealthHPLoad()
         {
             if (IsSitting)
@@ -1534,23 +1531,7 @@ namespace OpenNos.GameObject
                 }
             }
         }
-        public void GiftAdd(short itemVNum, int amount)
-        {
-            ItemInstance newItem = InventoryList.CreateItemInstance(itemVNum);
-            if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
-                ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
-            newItem.Amount = amount;
-            Inventory newInv = InventoryList.AddToInventory(newItem);
-            if (newInv != null)
-            {
-                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
-                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
-            }
-            else
-            {
-                //parcel add
-            }
-        }
+
         public void LearnSPSkill()
         {
             SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Equipment);
@@ -1664,6 +1645,26 @@ namespace OpenNos.GameObject
             ServerManager.Instance.Broadcast(Session, GenerateEff(3005), ReceiverType.All);
         }
 
+        public void RemoveVehicle()
+        {
+            SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
+            IsVehicled = false;
+            LoadSpeed();
+            if (Session.Character.UseSp)
+            {
+                if (sp != null)
+                {
+                    Morph = sp.Item.Morph;
+                    MorphUpgrade = sp.Upgrade;
+                    MorphUpgrade2 = sp.Design;
+                }
+            }
+            else
+            {
+                Morph = 0;
+            }
+        }
+
         public void Rest()
         {
             if (LastSkill.AddSeconds(4) > DateTime.Now || LastDefence.AddSeconds(4) > DateTime.Now)
@@ -1773,110 +1774,115 @@ namespace OpenNos.GameObject
 
         public bool WeaponLoaded(CharacterSkill ski)
         {
-            switch (Class)
+            if (ski != null)
             {
-                default:
-                    return false;
+                switch (Class)
+                {
+                    default:
+                        return false;
 
-                case 0:
-                    if (ski.Skill.Type == 1)
-                    {
-                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Equipment);
-                        if (inv != null)
+                    case 0:
+                        if (ski.Skill.Type == 1)
                         {
-                            if (inv.Ammo > 0)
+                            WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Equipment);
+                            if (inv != null)
                             {
-                                inv.Ammo--;
-                                return true;
+                                if (inv.Ammo > 0)
+                                {
+                                    inv.Ammo--;
+                                    return true;
+                                }
+                                else
+                                {
+                                    if (InventoryList.CountItem(2081) < 1)
+                                    {
+                                        Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ADVENTURER"), 10));
+                                        return false;
+                                    }
+
+                                    InventoryList.RemoveItemAmount(2081, 1);
+                                    inv.Ammo = 100;
+                                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ADVENTURER"), 10));
+                                    return true;
+                                }
                             }
                             else
                             {
-                                if (InventoryList.CountItem(2081) < 1)
-                                {
-                                    Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ADVENTURER"), 10));
-                                    return false;
-                                }
-
-                                InventoryList.RemoveItemAmount(2081, 1);
-                                inv.Ammo = 100;
-                                Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ADVENTURER"), 10));
-                                return true;
+                                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
+                                return false;
                             }
                         }
-                        else
+                        else return true;
+                    case 1:
+                        if (ski.Skill.Type == 1)
                         {
-                            Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
-                            return false;
-                        }
-                    }
-                    else return true;
-                case 1:
-                    if (ski.Skill.Type == 1)
-                    {
-                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Equipment);
-                        if (inv != null)
-                        {
-                            if (inv.Ammo > 0)
+                            WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Equipment);
+                            if (inv != null)
                             {
-                                inv.Ammo--;
-                                return true;
+                                if (inv.Ammo > 0)
+                                {
+                                    inv.Ammo--;
+                                    return true;
+                                }
+                                else
+                                {
+                                    if (InventoryList.CountItem(2082) < 1)
+                                    {
+                                        Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_SWORDSMAN"), 10));
+                                        return false;
+                                    }
+
+                                    InventoryList.RemoveItemAmount(2082, 1);
+                                    inv.Ammo = 100;
+                                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_SWORDSMAN"), 10));
+                                    return true;
+                                }
                             }
                             else
                             {
-                                if (InventoryList.CountItem(2082) < 1)
-                                {
-                                    Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_SWORDSMAN"), 10));
-                                    return false;
-                                }
-
-                                InventoryList.RemoveItemAmount(2082, 1);
-                                inv.Ammo = 100;
-                                Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_SWORDSMAN"), 10));
-                                return true;
+                                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
+                                return false;
                             }
                         }
-                        else
+                        else return true;
+                    case 2:
+                        if (ski.Skill.Type == 1)
                         {
-                            Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
-                            return false;
-                        }
-                    }
-                    else return true;
-                case 2:
-                    if (ski.Skill.Type == 1)
-                    {
-                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Equipment);
-                        if (inv != null)
-                        {
-                            if (inv.Ammo > 0)
+                            WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Equipment);
+                            if (inv != null)
                             {
-                                inv.Ammo--;
-                                return true;
+                                if (inv.Ammo > 0)
+                                {
+                                    inv.Ammo--;
+                                    return true;
+                                }
+                                else
+                                {
+                                    if (InventoryList.CountItem(2083) < 1)
+                                    {
+                                        Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ARCHER"), 10));
+                                        return false;
+                                    }
+
+                                    InventoryList.RemoveItemAmount(2083, 1);
+                                    inv.Ammo = 100;
+                                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ARCHER"), 10));
+                                    return true;
+                                }
                             }
                             else
                             {
-                                if (InventoryList.CountItem(2083) < 1)
-                                {
-                                    Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ARCHER"), 10));
-                                    return false;
-                                }
-
-                                InventoryList.RemoveItemAmount(2083, 1);
-                                inv.Ammo = 100;
-                                Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ARCHER"), 10));
-                                return true;
+                                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
+                                return false;
                             }
                         }
-                        else
-                        {
-                            Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
-                            return false;
-                        }
-                    }
-                    else return true;
-                case 3:
-                    return true;
+                        else return true;
+                    case 3:
+                        return true;
+                }
             }
+
+            return false;
         }
 
         public double XPLoad()

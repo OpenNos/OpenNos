@@ -139,7 +139,6 @@ namespace OpenNos.Handler
 
                 if (ski != null && Session.Character.Mp >= ski.Skill.MpCost)
                 {
-
                     if (ski.Skill.TargetType == 1 && ski.Skill.HitType == 1)
                     {
                         Session.Character.LastSkill = DateTime.Now;
@@ -163,32 +162,32 @@ namespace OpenNos.Handler
                         Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} 0 0 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {ski.Skill.SkillType - 1}");
                         if (ski.Skill.TargetRange != 0)
                         {
-                            foreach (MapMonster mon in ServerManager.GetMap(Session.Character.MapId).GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange))
+                            foreach (MapMonster mon in Session.CurrentMap.GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange))
                             {
-                                mmon = ServerManager.GetMap(Session.Character.MapId).Monsters.FirstOrDefault(s => s.MapMonsterId == mon.MapMonsterId);
+                                mmon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == mon.MapMonsterId);
                                 damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
                                 Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
-
                             }
                         }
                     }
                     else if (ski.Skill.TargetType == 0)//if monster target
                     {
-                        MapMonster mmon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == targetId);
-                        if (mmon != null && mmon.Alive)
+                        MapMonster monsterToAttack = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == targetId);
+                        if (monsterToAttack != null && monsterToAttack.Alive)
                         {
-                            NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
-                            if (ski != null && monsterinfo != null && ski.Skill != null && (ski.LastUse.AddMilliseconds((ski.Skill.Cooldown) * 100) < DateTime.Now))
+                            NpcMonster monsterToAttackInfo = ServerManager.GetNpc(monsterToAttack.MonsterVNum);
+                            if (ski != null && monsterToAttackInfo != null && ski.Skill != null && (ski.LastUse.AddMilliseconds((ski.Skill.Cooldown) * 100) < DateTime.Now))
                             {
                                 if (Session.Character.Mp >= ski.Skill.MpCost)
                                 {
-                                    short dX = (short)(Session.Character.MapX - mmon.MapX);
-                                    short dY = (short)(Session.Character.MapY - mmon.MapY);
+                                    short distanceX = (short)(Session.Character.MapX - monsterToAttack.MapX);
+                                    short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
 
-                                    if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = mmon.MapX, Y = mmon.MapY }) <= ski.Skill.Range + (DateTime.Now - mmon.LastMove).TotalSeconds * 2 * monsterinfo.Speed || ski.Skill.TargetRange != 0)
+                                    if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY },
+                                                        new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + (DateTime.Now - monsterToAttack.LastMove).TotalSeconds * 2 * monsterToAttackInfo.Speed || ski.Skill.TargetRange != 0)
                                     {
                                         Session.Character.LastSkill = DateTime.Now;
-                                        damage = GenerateDamage(mmon.MapMonsterId, ski.Skill, ref hitmode);
+                                        damage = GenerateDamage(monsterToAttack.MapMonsterId, ski.Skill, ref hitmode);
                                         ski.LastUse = DateTime.Now;
                                         notcancel = true;
                                         if (!Session.Character.HasGodMode)
@@ -197,9 +196,9 @@ namespace OpenNos.Handler
                                             Session.SendPackets(Session.Character.GenerateQuicklist());
                                         Session.SendPacket(Session.Character.GenerateStat());
 
-                                        CharacterSkill skillinfo = Session.Character.Skills.OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
+                                        CharacterSkill characterSkillInfo = Session.Character.Skills.OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
-                                        Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {ski.Skill.CastAnimation} {(skillinfo != null ? skillinfo.Skill.CastEffect : ski.Skill.CastEffect)} {ski.Skill.SkillVNum}");
+                                        Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.CastAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.CastEffect : ski.Skill.CastEffect)} {ski.Skill.SkillVNum}");
                                         Session.Character.Skills.Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
                                         //Generate scp
                                         ski.LastUse = DateTime.Now;
@@ -213,23 +212,24 @@ namespace OpenNos.Handler
                                             Thread.Sleep(ski.Skill.CastTime * 100);
                                         }
 
-                                        Combo comb = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
-                                        if (comb != null)
+                                        Combo skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
+                                        if (skillCombo != null)
                                         {
                                             if (ski.Skill.Combos.OrderByDescending(s => s.Hit).ElementAt(0).Hit == ski.Hit)
                                                 ski.Hit = 0;
-                                            Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {comb.Animation} {comb.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {ski.Skill.SkillType - 1}");
+                                            Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {skillCombo.Animation} {skillCombo.Effect} {Session.Character.MapX} {Session.Character.MapY} {(monsterToAttack.Alive ? 1 : 0)} {(int)(((float)monsterToAttack.CurrentHp / (float)monsterToAttackInfo.MaxHP) * 100)} {damage} {hitmode} {ski.Skill.SkillType - 1}");
                                         }
                                         else
                                         {
-                                            Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {ski.Skill.SkillType - 1}");
+                                            Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} {(monsterToAttack.Alive ? 1 : 0)} {(int)(((float)monsterToAttack.CurrentHp / (float)monsterToAttackInfo.MaxHP) * 100)} {damage} {hitmode} {ski.Skill.SkillType - 1}");
                                         }
                                         if (ski.Skill.TargetRange != 0)
                                         {
-                                            foreach (MapMonster mon in ServerManager.GetMap(Session.Character.MapId).GetListMonsterInRange(mmon.MapX, mmon.MapY, ski.Skill.TargetRange))
+                                            IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
+                                            foreach (MapMonster mon in monstersInAOERange)
                                             {
                                                 damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
-                                                Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
+                                                Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
                                             }
                                         }
                                     }
@@ -242,7 +242,6 @@ namespace OpenNos.Handler
                         await Task.Delay((ski.Skill.Cooldown) * 100);
                         Session.SendPacket($"sr {castingId}");
                     }));
-
                 }
                 else
                 {
@@ -377,15 +376,15 @@ namespace OpenNos.Handler
         {
             #region Definitions
 
-            MapMonster mmon = ServerManager.GetMap(Session.Character.MapId).Monsters.FirstOrDefault(s => s.MapMonsterId == monsterid);
-            short dX = (short)(Session.Character.MapX - mmon.MapX);
-            short dY = (short)(Session.Character.MapY - mmon.MapY);
-            NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
+            MapMonster monsterToAttack = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == monsterid);
+            short distanceX = (short)(Session.Character.MapX - monsterToAttack.MapX);
+            short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
+            NpcMonster monsterinfo = ServerManager.GetNpc(monsterToAttack.MonsterVNum);
             Random random = new Random();
 
             int generated = random.Next(0, 100);
             int miss_chance = 20;
-            int MonsterDefense = 0;
+            int monsterDefence = 0;
 
             byte MainUpgrade = 0;
             int MainCritChance = 4;
@@ -411,6 +410,7 @@ namespace OpenNos.Handler
             #endregion
 
             #region Sp
+
             SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
 
             #endregion
@@ -446,7 +446,7 @@ namespace OpenNos.Handler
             switch (skill.Type)
             {
                 case 0:
-                    MonsterDefense = monsterinfo.CloseDefence;
+                    monsterDefence = monsterinfo.CloseDefence;
                     if (Session.Character.Class == 2)
                     {
                         MainCritHit = SecCritHit;
@@ -459,7 +459,7 @@ namespace OpenNos.Handler
                     break;
 
                 case 1:
-                    MonsterDefense = monsterinfo.DistanceDefence;
+                    monsterDefence = monsterinfo.DistanceDefence;
                     if (Session.Character.Class == 1 || Session.Character.Class == 0)
                     {
                         MainCritHit = SecCritHit;
@@ -472,7 +472,7 @@ namespace OpenNos.Handler
                     break;
 
                 case 2:
-                    MonsterDefense = monsterinfo.MagicDefence;
+                    monsterDefence = monsterinfo.MagicDefence;
                     break;
             }
 
@@ -481,7 +481,7 @@ namespace OpenNos.Handler
             float[] Bonus = new float[10] { 0.1f, 0.15f, 0.22f, 0.32f, 0.43f, 0.54f, 0.65f, 0.90f, 1.20f, 2f };
             // TODO: Add skill uprade effect on damage
             int AEq = Convert.ToInt32(random.Next(MainMinDmg, MainMaxDmg) * (1 + (MainUpgrade > monsterinfo.DefenceUpgrade ? Bonus[MainUpgrade - monsterinfo.DefenceUpgrade - 1] : 0)));
-            int DEq = Convert.ToInt32(MonsterDefense * (1 + (MainUpgrade < monsterinfo.DefenceUpgrade ? Bonus[monsterinfo.DefenceUpgrade - MainUpgrade - 1] : 0)));
+            int DEq = Convert.ToInt32(monsterDefence * (1 + (MainUpgrade < monsterinfo.DefenceUpgrade ? Bonus[monsterinfo.DefenceUpgrade - MainUpgrade - 1] : 0)));
             int ABase = Convert.ToInt32(random.Next(ServersData.MinHit(Session.Character.Class, Session.Character.Level), ServersData.MaxHit(Session.Character.Class, Session.Character.Level)));
             int Aeff = 0;            // Attack of equip given by effects like weapons, jewelry, masks, hats, res, etc .. (eg. X mask: +13 attack // Crossbow
             int Bsp6 = 0;            // Attack power increased (IMPORTANT) This already Added when SP Point has been set
@@ -579,7 +579,7 @@ namespace OpenNos.Handler
             int Ef = Convert.ToInt32((Et * Eele) * (1 - (Dres - Ares) / 100));
             //Logger.Debug(String.Format("Ef = (Et {0} * Eele{1}) * (1 - (Dres{2} - Ares{3})) = {4}", Et, Eele, Dres, Ares, Ef));
 
-            int MoralDifference = Session.Character.Level + /*Session.Character.Morale */ -monsterinfo.Level; //Morale Atk pg - Morale def pg
+            int moralDefence = Session.Character.Level + /*Session.Character.Morale */ -monsterinfo.Level; //Morale Atk pg - Morale def pg
             //short Damage = 0;
 
             if (Session.Character.Class != 3)
@@ -606,16 +606,16 @@ namespace OpenNos.Handler
             int Ahair = 0;        // Attack% given by hair (eg. + 5% Santa Hat)
             int Apet = 0;         // Attack% given by the pet (eg. + 10% Fibi)
 
-            float RangedDistance = 1;
+            float rangedDistance = 1;
             if (Session.Character.Class == 2)
             {
-                RangedDistance = 0.75f;
-                for (int i = 1; i < Map.GetDistance(new MapCell { X = Session.Character.MapX, MapId = Session.Character.MapId, Y = Session.Character.MapY }, new MapCell { MapId = mmon.MapId, X = mmon.MapX, Y = mmon.MapY }); i++)
-                    RangedDistance += 0.0232f;
+                rangedDistance = 0.75f;
+                for (int i = 1; i < Map.GetDistance(new MapCell { X = Session.Character.MapX, MapId = Session.Character.MapId, Y = Session.Character.MapY }, new MapCell { MapId = monsterToAttack.MapId, X = monsterToAttack.MapX, Y = monsterToAttack.MapY }); i++)
+                    rangedDistance += 0.0232f;
             }
-            if (Session.Character.Class != 2) RangedDistance = 1;
+            if (Session.Character.Class != 2) rangedDistance = 1;
 
-            int FinalDamage = Convert.ToInt32((Damage + Ef + MoralDifference + Dmob) * (1 - Bsp3) * (1 + (AttackPotion + Ahair + Apet)) * RangedDistance);
+            int finalDamage = Convert.ToInt32((Damage + Ef + moralDefence + Dmob) * (1 - Bsp3) * (1 + (AttackPotion + Ahair + Apet)) * rangedDistance);
             //Logger.Debug(String.Format("FinalDamage = (Damage {0} + Ef {1}  + MoralDifference{2} + Dmob{3})  (1 - Bsp3{4})  (1 + (AttackPotion{5} + Ahair{6} + Apet{7})) * RangedDistance{8} = {9}", Damage, Ef, MoralDifference, Dmob, Bsp3, AttackPotion, Ahair, Apet, RangedDistance, FinalDamage));
 
             if (Session.Character.Class != 3 && !Session.Character.HasGodMode)
@@ -623,32 +623,31 @@ namespace OpenNos.Handler
                 if (generated > 100 - miss_chance)
                 {
                     hitmode = 1;
-                    FinalDamage = 0;
+                    finalDamage = 0;
                 }
             }
 
-            int intdamage = Session.Character.HasGodMode ? 67107840 : FinalDamage;
-            if (mmon.DamageList.ContainsKey(Session.Character.CharacterId))
+            int intdamage = Session.Character.HasGodMode ? 67107840 : finalDamage;
+            if (monsterToAttack.DamageList.ContainsKey(Session.Character.CharacterId))
             {
-                mmon.DamageList[Session.Character.CharacterId] += intdamage;
+                monsterToAttack.DamageList[Session.Character.CharacterId] += intdamage;
             }
             else
             {
-                mmon.DamageList.Add(Session.Character.CharacterId, intdamage);
+                monsterToAttack.DamageList.Add(Session.Character.CharacterId, intdamage);
             }
-            if (mmon.CurrentHp <= intdamage)
+            if (monsterToAttack.CurrentHp <= intdamage)
             {
-                mmon.Alive = false;
-                mmon.CurrentHp = 0;
-                mmon.CurrentMp = 0;
-                mmon.Death = DateTime.Now;
+                monsterToAttack.Alive = false;
+                monsterToAttack.CurrentHp = 0;
+                monsterToAttack.CurrentMp = 0;
+                monsterToAttack.Death = DateTime.Now;
                 //owner set
-                long? Owner = mmon.DamageList.Any() ? mmon.DamageList.First().Key : (long?)null;
+                long? Owner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?)null;
                 Group gr = null;
                 if (Owner != null)
                 {
                     gr = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)Owner));
-
                 }
                 //end owner set
                 Random rnd = new Random();
@@ -667,7 +666,7 @@ namespace OpenNos.Handler
                         if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
                         {
                             x++;
-                            if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterinfo.MonsterType == MonsterType.Elite)
+                            if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterinfo.MonsterType == MonsterType.Elite)
                             {
                                 Session.Character.GiftAdd(drop.ItemVNum, drop.Amount);
                             }
@@ -683,9 +682,8 @@ namespace OpenNos.Handler
                                     else
                                         gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop.ItemVNum).Name, drop.Amount), 10)));
                                 }
-                                Session.CurrentMap.DropItemByMonster(Owner, drop, mmon.MapX, mmon.MapY);
+                                Session.CurrentMap.DropItemByMonster(Owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
                             }
-                               
                         }
                     }
                 }
@@ -702,7 +700,7 @@ namespace OpenNos.Handler
                         ItemVNum = 1046
                     };
 
-                    if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterinfo.MonsterType == MonsterType.Elite)
+                    if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterinfo.MonsterType == MonsterType.Elite)
                     {
                         Session.Character.Gold += drop2.Amount;
                         if (Session.Character.Gold > 1000000000)
@@ -715,7 +713,6 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-
                         if (gr != null)
                         {
                             if (gr.SharingMode == (byte)GroupSharingType.ByOrder)
@@ -726,7 +723,7 @@ namespace OpenNos.Handler
                             else
                                 gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop2.ItemVNum).Name, drop2.Amount), 10)));
                         }
-                        Session.CurrentMap.DropItemByMonster(Owner, drop2, mmon.MapX, mmon.MapY);
+                        Session.CurrentMap.DropItemByMonster(Owner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
                     }
                 }
                 if (Session.Character.Hp > 0)
@@ -743,7 +740,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                mmon.CurrentHp -= intdamage;
+                monsterToAttack.CurrentHp -= intdamage;
             }
             ushort damage = 0;
 
@@ -753,8 +750,8 @@ namespace OpenNos.Handler
             }
 
             damage = Convert.ToUInt16(intdamage);
-            if (mmon.IsMoving)
-                mmon.Target = Session.Character.CharacterId;
+            if (monsterToAttack.IsMoving)
+                monsterToAttack.Target = Session.Character.CharacterId;
             return damage;
         }
 
@@ -786,7 +783,8 @@ namespace OpenNos.Handler
 
                         Session.CurrentMap?.Broadcast($"bs 1 {Session.Character.CharacterId} {x} {y} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} 0 0 1 1 0 0 0");
 
-                        foreach (MapMonster mon in ServerManager.GetMap(Session.Character.MapId).GetListMonsterInRange(x, y, ski.Skill.TargetRange))
+                        IEnumerable<MapMonster> monstersInRange = Session.CurrentMap.GetListMonsterInRange(x, y, ski.Skill.TargetRange).ToList();
+                        foreach (MapMonster mon in monstersInRange)
                         {
                             damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
                             Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {x} {y} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");

@@ -574,13 +574,17 @@ namespace OpenNos.GameObject
         private void RemoveMapItem()
         {
             //take the data from list to remove it without having enumeration problems (ToList)
-            IEnumerable<KeyValuePair<long, MapItem>> dropsToRemove = DroppedList.Where(dl => dl.Value.CreateDate.AddMinutes(3) < DateTime.Now).ToList();
-
-            foreach (KeyValuePair<long, MapItem> drop in dropsToRemove)
+            try
             {
-                Broadcast(drop.Value.GenerateOut(drop.Key));
-                DroppedList.Remove(drop.Key);
+                IEnumerable<KeyValuePair<long, MapItem>> dropsToRemove = DroppedList.Where(dl => dl.Value.CreateDate.AddMinutes(3) < DateTime.Now).ToList();
+
+                foreach (KeyValuePair<long, MapItem> drop in dropsToRemove)
+                {
+                    Broadcast(drop.Value.GenerateOut(drop.Key));
+                    DroppedList.Remove(drop.Key);
+                }
             }
+            catch (Exception e) { }
         }
 
         #endregion

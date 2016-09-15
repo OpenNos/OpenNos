@@ -72,7 +72,7 @@ namespace OpenNos.Handler
                     DAOFactory.MapMonsterDAO.Insert(monst);
                     monster = new MapMonster(map, vnum) { MapY = monst.MapY, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, IsMoving = isMoving == 1 ? true : false };
                     ServerManager.Monsters.Add(monster);
-                    ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monster);
+                    Session.CurrentMap.Monsters.Add(monster);
                     Session.CurrentMap?.Broadcast(monster.GenerateIn3());
                 }
             }
@@ -483,7 +483,7 @@ namespace OpenNos.Handler
                 if (packetsplit.Length > 5)
                     sbyte.TryParse(packetsplit[5], out portaltype);
                 Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty, Type = portaltype };
-                ServerManager.GetMap(Session.Character.MapId).Portals.Add(portal);
+                Session.CurrentMap.Portals.Add(portal);
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateGp(portal));
             }
             else
@@ -1068,7 +1068,7 @@ namespace OpenNos.Handler
                 NpcMonster npcmonster = ServerManager.GetNpc(vnum);
                 if (npcmonster == null)
                     return;
-                Map map = ServerManager.GetMap(Session.Character.MapId);
+                Map map = Session.CurrentMap;
                 for (int i = 0; i < qty; i++)
                 {
                     short mapx = (short)rnd.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
@@ -1079,7 +1079,7 @@ namespace OpenNos.Handler
                         mapy = (short)rnd.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
                     }
                     MapMonster monst = new MapMonster(map, vnum) { Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.GenerateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
-                    ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
+                    Session.CurrentMap.Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
                     Session.CurrentMap?.Broadcast(monst.GenerateIn3());
                 }
