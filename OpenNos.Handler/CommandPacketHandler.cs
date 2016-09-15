@@ -696,7 +696,7 @@ namespace OpenNos.Handler
                 case 6:
                     if (verify)
                     {
-                        if (arg[0] != 0)
+                        if (arg[0] < 30 && arg[0] > 0)
                         {
                             Session.Character.UseSp = true;
                             Session.Character.Morph = arg[0];
@@ -705,8 +705,16 @@ namespace OpenNos.Handler
                             Session.Character.ArenaWinner = arg[3];
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                         }
+                        else if (arg[0] > 30)
+                        {
+                            Session.Character.IsVehicled = true;
+                            Session.Character.Morph = arg[0];
+                            Session.Character.ArenaWinner = arg[3];
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                        }
                         else
                         {
+                            Session.Character.IsVehicled = false;
                             Session.Character.UseSp = false;
                             Session.Character.ArenaWinner = 0;
                             Session.SendPacket(Session.Character.GenerateCond());
