@@ -902,12 +902,18 @@
     <value>Nauczyłeś się już tej umiejętności!</value>
   </data>
   <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
-    <value />
+    <value>Taka umiejętność nie istneje!</value>
   </data>
   <data name="SUM_FAILED" xml:space="preserve">
     <value>Sumowanie zakończone niepowodzeniem.</value>
   </data>
   <data name="SUM_SUCCESS" xml:space="preserve">
     <value>Sumowanie powiodło się!</value>
+  </data>
+  <data name="DROPPED_ITEM" xml:space="preserve">
+    <value>Zdobyłeś {0} x {1}</value>
+  </data>
+  <data name="ITEM_BOUND_TO" xml:space="preserve">
+    <value>Gracz {1} zdobył {0} x {2}</value>
   </data>
 </root>

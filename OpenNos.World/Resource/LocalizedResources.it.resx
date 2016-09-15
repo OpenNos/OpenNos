@@ -930,7 +930,7 @@
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
     <value>Il  livello della fata({0}) è stato cambiato!</value>
   </data>
-  <data name="ITEM_BOUNDED_TO" xml:space="preserve">
+  <data name="ITEM_BOUND_TO" xml:space="preserve">
     <value>{1} ha ottenuto: {0} x {2}</value>
   </data>
   <data name="DROPPED_ITEM" xml:space="preserve">
