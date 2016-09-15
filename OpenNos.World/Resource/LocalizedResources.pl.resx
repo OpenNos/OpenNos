@@ -263,10 +263,10 @@
     <value>Wyłaczono ignorowanie zaproszenia do przyjaciół.</value>
   </data>
   <data name="GET_PROTECTION_POWER_1" xml:space="preserve">
-    <value>Zostales obdarzony moca aniola.</value>
+    <value>Zostałeś obdarzony ochroną aniola.</value>
   </data>
   <data name="GET_PROTECTION_POWER_2" xml:space="preserve">
-    <value>Jestes pod wplywem mocy demona.</value>
+    <value>Jesteś pod wpływem mocy demona.</value>
   </data>
   <data name="GOLD_SET" xml:space="preserve">
     <value>Ilość złota została zmieniona!</value>
@@ -281,7 +281,7 @@
     <value>Zaproszenie do grupy odrzucone.</value>
   </data>
   <data name="GROUP_FULL" xml:space="preserve">
-    <value>Grupa jest pełna.</value>
+    <value>Grupa jest pełna!</value>
   </data>
   <data name="GROUP_LEFT" xml:space="preserve">
     <value>Opuściłeś grupę.</value>
@@ -345,7 +345,7 @@
     <value>Nie możesz wymienić się tym przedmiotem!</value>
   </data>
   <data name="ITEM_TIMEOUT" xml:space="preserve">
-    <value>Ważność przedmiotu wygasła</value>
+    <value>Ważność przedmiotu wygasła!</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Poziom profesji został zmieniony!</value>
@@ -408,25 +408,25 @@
     <value>Możesz zmienić klase tylko raz!</value>
   </data>
   <data name="NOT_ENOUGH_CP" xml:space="preserve">
-    <value>Niewystarcząjaca ilości punktów CP</value>
+    <value>Niewystarcząjaca ilości punktów CP!</value>
   </data>
   <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
-    <value>Niewystarcząjaca ilośc złota</value>
+    <value>Niewystarcząjaca ilośc złota!</value>
   </data>
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
-    <value>Niewystarcząjaca ilośc miejsc</value>
+    <value>Niewystarcząjaca ilośc miejsc!</value>
   </data>
   <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
-    <value>Niewystarcząjaca ilośc reputacji</value>
+    <value>Niewystarcząjaca ilość reputacji!</value>
   </data>
   <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
-    <value>Nie jestem głodna</value>
+    <value>Nie jestem głodna!</value>
   </data>
   <data name="NOT_HUNGRY_MALE" xml:space="preserve">
-    <value>Nie jestem głodny</value>
+    <value>Nie jestem głodny!</value>
   </data>
   <data name="NOT_MASTER" xml:space="preserve">
-    <value>Nie jestes liderem grupy</value>
+    <value>Nie jesteś liderem grupy.</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>No EntryPoint found</value>
@@ -520,7 +520,7 @@
     <value>{0} Załadowanych przepisów!</value>
   </data>
   <data name="YOU_REFUSED" xml:space="preserve">
-    <value>Odrzuciłeś wymianę</value>
+    <value>Odrzuciłeś wymianę,</value>
   </data>
   <data name="REMOVE_SP" xml:space="preserve">
     <value>Jeśli chcesz nauczyć się umiejetnosci, zdejmij karte specialisty.</value>
@@ -529,13 +529,13 @@
     <value>Reputacja obniżona</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
-    <value>Reputacja zmieniona</value>
+    <value>Reputacja zmieniona!</value>
   </data>
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
     <value>Sprzedano: {0} &lt;{1} : sztuk &gt;</value>
   </data>
   <data name="SEX_CHANGED" xml:space="preserve">
-    <value>Płeć zmieniona</value>
+    <value>Płeć zmieniona!</value>
   </data>
   <data name="SHARING" xml:space="preserve">
     <value>Dzielenie ze wszystkimi</value>
@@ -553,7 +553,7 @@
     <value>Nie mozesz ustawić sklepu tak blisko portalu!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
-    <value>Sklep został otwarty</value>
+    <value>Sklep został otwarty!</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Server zostanie wyłaczony za {0} Minut.</value>
@@ -583,7 +583,7 @@
     <value>Server świata uruchomiony poprawnie!</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
-    <value>Transformacja potrzebuje 30 sekund na odswiezenie</value>
+    <value>Transformacja potrzebuje {0} sekund na ponowne załadowanie!</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
     <value>Jeśli zniszczysz ten przedmiot, nie będzie już można go odzyskać. Czy na pewno chcesz to zrobic?</value>
@@ -595,7 +595,7 @@
     <value>Wiadomość jest za duża ({0} bytes). maksymalna długość to: {1} bytes.</value>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>Ilosc sesji</value>
+    <value>Ilość sesji</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>Uzytkownik zablokowal opcje wymiany.</value>
@@ -634,7 +634,7 @@
     <value>Wiosenna Melodia</value>
   </data>
   <data name="USER_WHISPER_BLOCKED" xml:space="preserve">
-    <value>Uzytkownik zablokowal prywatne wiadomości</value>
+    <value>Uzytkownik zablokowal prywatne wiadomości!</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">
     <value>Szept zablokowany</value>
@@ -643,7 +643,7 @@
     <value>Szept widoczny</value>
   </data>
   <data name="WRONG_VALUE" xml:space="preserve">
-    <value>Zła wartość</value>
+    <value>Zła wartość!</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Poprosileś o wymianę z graczem: {0}</value>
@@ -655,13 +655,13 @@
     <value>{0} rozłączył się.</value>
   </data>
   <data name="NOT_ENOUGH_POWER_SEED" xml:space="preserve">
-    <value>Niewystarcząjaca ilośc ziaren mocy</value>
+    <value>Niewystarcząjaca ilość ziaren mocy!</value>
   </data>
   <data name="NOT_ENOUGH_SEED_SAY" xml:space="preserve">
-    <value>Nie mam wystarczającej ilości ziaren mocy</value>
+    <value>Nie mam wystarczającej ilości ziaren mocy!</value>
   </data>
   <data name="SEED_USED" xml:space="preserve">
-    <value>Użyto ziarna mocy</value>
+    <value>Użyto ziaren mocy!</value>
   </data>
   <data name="ASK_REVIVE" xml:space="preserve">
     <value>Czy chcesz się wskrzesić? będzie cię to kosztować 10 ziaren mocy.</value>
@@ -697,7 +697,7 @@
     <value>Użytkownik przeprowadza aktualnie wymianę.</value>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
-    <value>Odzyskałeś troche swojej godności</value>
+    <value>Odzyskałeś troche swojej godności!</value>
   </data>
   <data name="DROP_RATE_CHANGED" xml:space="preserve">
     <value>Drop rate itemków zmieniony!</value>
@@ -713,10 +713,10 @@
     <value>Nie możesz teraz atakować.</value>
   </data>
   <data name="LVL_REQUIRED" xml:space="preserve">
-    <value>{0} Poziom SP potrzebny do ulepszenia</value>
+    <value>Potrzebujesz osiągnąć {0} poziom specjalisty, aby ulepszyć!</value>
   </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
-    <value>Ulepszanie karty specjalisty nie powiodło się</value>
+    <value>Ulepszanie karty specjalisty nie powiodło się.</value>
   </data>
   <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
     <value>Ulepszanie karty specjalisty nie powiodło się, ale karta została ocalona.</value>
@@ -737,7 +737,7 @@
     <value>Exp rate</value>
   </data>
   <data name="SP_LEVELUP" xml:space="preserve">
-    <value>Twój specjalista zdobył kolejny poziom</value>
+    <value>Twój specjalista zdobył kolejny poziom!</value>
   </data>
   <data name="FAIRY_LEVELUP" xml:space="preserve">
     <value>Twoja wróżka {0} zdobyła kolejny poziom!</value>
@@ -758,7 +758,7 @@
     <value>Poziom twojej wróżki {0} został zmieniony.</value>
   </data>
   <data name="SCROLL_PROTECT_USED" xml:space="preserve">
-    <value>Zwój ochronił twój przedmiot</value>
+    <value>Zwój ochronił twój przedmiot!</value>
   </data>
   <data name="AMMO_LOADED_ADVENTURER" xml:space="preserve">
     <value>Amunicja do procy załadowana.</value>
@@ -800,13 +800,13 @@
     <value>Błąd usuwania postaci z Id: {0} , {1}</value>
   </data>
   <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
-    <value>Nie możesz nosić zniszczonego sp</value>
+    <value>Nie możesz nosić zniszczonego sp.</value>
   </data>
   <data name="CANT_UPGRADE_DESTROYED_SP" xml:space="preserve">
-    <value>Nie możesz ulepszyć sp z martwą duszą</value>
+    <value>Nie możesz ulepszyć karty specjalisty z martwą duszą!</value>
   </data>
   <data name="UPGRADESP_DESTROYED" xml:space="preserve">
-    <value>Dusza specjalisty została zniszczona</value>
+    <value>Dusza specjalisty została zniszczona.</value>
   </data>
   <data name="GROUP_JOIN" xml:space="preserve">
     <value>Dołączyłeś do grupy użytkownika {0}</value>
@@ -824,7 +824,7 @@
     <value>Ubierz afro!</value>
   </data>
   <data name="SERVER_WORKING_TIME" xml:space="preserve">
-    <value>Czas działania servera</value>
+    <value>Czas działania serwera</value>
   </data>
   <data name="LEVELUP" xml:space="preserve">
     <value>Osiągnąłeś następny poziom!</value>
@@ -836,7 +836,7 @@
     <value>Baza danych jest nie aktualna. prosze przeprowadzić aktualizację.</value>
   </data>
   <data name="ALREADY_MORPHED" xml:space="preserve">
-    <value>Nosisz juz pojazd</value>
+    <value>Nosisz już pojazd!</value>
   </data>
   <data name="ASK_WINGS_CHANGE" xml:space="preserve">
     <value>Czy chesz zmienić skrzydła na swojej karcie specjalisty?</value>
@@ -887,7 +887,7 @@
     <value>Muszisz się transformować aby zresetować swoje punkty specjalisty.</value>
   </data>
   <data name="REMOVE_VEHICLE" xml:space="preserve">
-    <value>Zanim przejdziesz transformację powinieneś najpierw zdjąć swój pojazd</value>
+    <value>Zanim przejdziesz transformację powinieneś najpierw zdjąć swój pojazd.</value>
   </data>
   <data name="SAVING_ALL" xml:space="preserve">
     <value>W trakcie zapisu</value>
@@ -915,5 +915,8 @@
   </data>
   <data name="ITEM_BOUND_TO" xml:space="preserve">
     <value>Gracz {1} zdobył {0} x {2}</value>
+  </data>
+  <data name="ITEM_NOT_FOUND" xml:space="preserve">
+    <value>Nie znaleziono takiego przedmiotu!</value>
   </data>
 </root>

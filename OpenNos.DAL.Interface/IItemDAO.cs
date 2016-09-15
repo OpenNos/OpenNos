@@ -29,6 +29,8 @@ namespace OpenNos.DAL.Interface
 
         ItemDTO LoadById(short Vnum);
 
+        IEnumerable<ItemDTO> FindByName(string name);
+
         #endregion
     }
 }

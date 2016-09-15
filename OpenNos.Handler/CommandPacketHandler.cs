@@ -18,6 +18,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -366,6 +367,30 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
+        }
+
+        [Packet("$SearchItem")]
+        public void SearchItem(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length == 3)
+            {
+                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(packetsplit[2]).OrderBy(s => s.VNum).ToList();
+                if (itemlist.Any())
+                {
+                    foreach (ItemDTO item in itemlist)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay($"Item: {item.Name} VNum {item.VNum}", 12));
+                    }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_NOT_FOUND"), 11));
+                }
+            }
+            else
+                Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 10));
         }
 
         [Packet("$CreateItem")]
