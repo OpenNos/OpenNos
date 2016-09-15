@@ -16,6 +16,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace OpenNos.GameObject
             LoadZone();
             IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId);
             _portals = new List<Portal>();
-            DroppedList = new Dictionary<long, MapItem>();
+            DroppedList = new ConcurrentDictionary<long, MapItem>();
 
             MapTypes = new List<MapType>();
             foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId))
@@ -125,7 +126,7 @@ namespace OpenNos.GameObject
 
         public byte[] Data { get; set; }
 
-        public IDictionary<long, MapItem> DroppedList { get; set; }
+        public ConcurrentDictionary<long, MapItem> DroppedList { get; set; }
 
         public int IsDancing { get; set; }
 
@@ -283,7 +284,7 @@ namespace OpenNos.GameObject
             if (droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
                 droppedItem.Rarify(null);
 
-            ServerManager.GetMap(MapId).DroppedList.Add(droppedItem.ItemInstance.TransportId, droppedItem);
+            ServerManager.GetMap(MapId).DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
 
             Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");//TODO UseTransportId
         }
@@ -581,7 +582,8 @@ namespace OpenNos.GameObject
                 foreach (KeyValuePair<long, MapItem> drop in dropsToRemove)
                 {
                     Broadcast(drop.Value.GenerateOut(drop.Key));
-                    DroppedList.Remove(drop.Key);
+                    MapItem mapItem;
+                    DroppedList.TryRemove(drop.Key, out mapItem);
                 }
             }
             catch (Exception e) { }

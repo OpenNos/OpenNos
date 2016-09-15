@@ -38,7 +38,7 @@ namespace OpenNos.Handler
         {
             _session = session;
         }
-
+        
         #endregion
 
         #region Properties
@@ -620,11 +620,11 @@ namespace OpenNos.Handler
 
             if (Session.Character.Class != 3 && !Session.Character.HasGodMode)
             {
-                if (generated > 100 - miss_chance)
-                {
-                    hitmode = 1;
-                    finalDamage = 0;
-                }
+                //if (generated > 100 - miss_chance)
+                //{
+                //    hitmode = 1;
+                //    finalDamage = 0;
+                //}
             }
 
             int intdamage = Session.Character.HasGodMode ? 67107840 : finalDamage;

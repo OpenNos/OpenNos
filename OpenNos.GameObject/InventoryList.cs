@@ -360,7 +360,7 @@ namespace OpenNos.GameObject
                     droppedItem.ItemInstance.TransportId = 0; //reset transportId
                 }
 
-                Owner.Session.CurrentMap.DroppedList.Add(droppedItem.ItemInstance.TransportId, droppedItem);
+                Owner.Session.CurrentMap.DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
                 inv.ItemInstance.Amount -= amount;
             }
             return droppedItem;

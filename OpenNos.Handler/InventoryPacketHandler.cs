@@ -459,7 +459,8 @@ namespace OpenNos.Handler
                     {
                         if (mapitem.ItemInstance.Item.ItemType == (byte)ItemType.Map)
                         {
-                            Session.CurrentMap.DroppedList.Remove(transportId);
+                            MapItem mapItem;
+                            Session.CurrentMap.DroppedList.TryRemove(transportId, out mapItem);
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
                         }
                         else
@@ -467,7 +468,8 @@ namespace OpenNos.Handler
                             Inventory newInv = Session.Character.InventoryList.AddToInventory(mapitem.ItemInstance);
                             if (newInv != null)
                             {
-                                Session.CurrentMap.DroppedList.Remove(transportId);
+                                MapItem mapItem;
+                                Session.CurrentMap.DroppedList.TryRemove(transportId, out mapItem);
                                 Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
                                 Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, mapitem.ItemInstance.Rare, mapitem.ItemInstance.Design, mapitem.ItemInstance.Upgrade, 0));
                                 Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {amount}", 12));
@@ -491,7 +493,8 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                         }
                         Session.SendPacket(Session.Character.GenerateGold());
-                        Session.CurrentMap.DroppedList.Remove(transportId);
+                        MapItem mapItem;
+                        Session.CurrentMap.DroppedList.TryRemove(transportId, out mapItem);
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
                     }
                 }
