@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -586,7 +587,10 @@ namespace OpenNos.GameObject
                     DroppedList.TryRemove(drop.Key, out mapItem);
                 }
             }
-            catch (Exception e) { }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         #endregion

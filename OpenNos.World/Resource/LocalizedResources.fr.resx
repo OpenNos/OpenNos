@@ -355,10 +355,10 @@
     <value>Ton niveau de combat a été modifié.</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
-    <value>Votre niveau de métier n'est pas assez élevé.</value>
+    <value>Ton niveau de métier n'est pas assez élevé.</value>
   </data>
   <data name="LOW_LVL" xml:space="preserve">
-    <value>Votre niveau de combat n'est pas assez élevé.</value>
+    <value>Ton niveau de combat n'est pas assez élevé.</value>
   </data>
   <data name="LOW_REP" xml:space="preserve">
     <value>Ton personnage ne remplit pas les conditions d'utilisation de cet objet.</value>
@@ -643,7 +643,7 @@
     <value>La connexion au serveur a été perdue.</value>
   </data>
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
-    <value>Votre niveau héroïque a bien été changé !</value>
+    <value>Ton niveau héroïque a bien été changé !</value>
   </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>Dignité réduite : -{0}</value>
@@ -751,7 +751,7 @@
     <value>Taux d'expérience des fées </value>
   </data>
   <data name="FAIRYMAX" xml:space="preserve">
-    <value>Votre fée a atteint le niveau maximum !</value>
+    <value>Ta fée a atteint le niveau maximum !</value>
   </data>
   <data name="FAIRYSTATS" xml:space="preserve">
     <value>Fée Exp : {0}/{1}</value>
@@ -935,12 +935,15 @@ Veux-tu le porter ?</value>
     <value>La compétence n'existe pas !</value>
   </data>
   <data name="DROPPED_ITEM" xml:space="preserve">
-    <value>Tu as reçu un objet : {0} x {1}</value>
+    <value>(Groupe) [{0}], priorité : Tous les membres du groupe.</value>
   </data>
-  <data name="ITEM_BOUNDED_TO" xml:space="preserve">
-    <value>{1} a obtenu :  {0} x {2}</value>
+  <data name="ITEM_BOUND_TO" xml:space="preserve">
+    <value>(Groupe) [{0}], priorité : {1}</value>
   </data>
   <data name="NOT_YOUR_ITEM" xml:space="preserve">
     <value>Cet objet ne t'appartient pas.</value>
+  </data>
+  <data name="ITEM_NOT_FOUND" xml:space="preserve">
+    <value>L'objet que vous recherchez est introuvable.</value>
   </data>
 </root>

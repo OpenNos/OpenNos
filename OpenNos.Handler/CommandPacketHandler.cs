@@ -18,6 +18,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -315,6 +316,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 12));
@@ -326,7 +328,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$GodMode", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 12));
-            //Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE CHARACTERNAME VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 12));
@@ -366,6 +367,30 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
+        }
+
+        [Packet("$SearchItem")]
+        public void SearchItem(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length == 3)
+            {
+                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(packetsplit[2]).OrderBy(s => s.VNum).ToList();
+                if (itemlist.Any())
+                {
+                    foreach (ItemDTO item in itemlist)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay($"Item : {item.Name} VNum {item.VNum}", 12));
+                    }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_NOT_FOUND"), 11));
+                }
+            }
+            else
+                Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 10));
         }
 
         [Packet("$CreateItem")]
@@ -671,7 +696,7 @@ namespace OpenNos.Handler
                 case 6:
                     if (verify)
                     {
-                        if (arg[0] != 0)
+                        if (arg[0] < 30 && arg[0] > 0)
                         {
                             Session.Character.UseSp = true;
                             Session.Character.Morph = arg[0];
@@ -680,8 +705,16 @@ namespace OpenNos.Handler
                             Session.Character.ArenaWinner = arg[3];
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                         }
+                        else if (arg[0] > 30)
+                        {
+                            Session.Character.IsVehicled = true;
+                            Session.Character.Morph = arg[0];
+                            Session.Character.ArenaWinner = arg[3];
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                        }
                         else
                         {
+                            Session.Character.IsVehicled = false;
                             Session.Character.UseSp = false;
                             Session.Character.ArenaWinner = 0;
                             Session.SendPacket(Session.Character.GenerateCond());
@@ -1156,6 +1189,7 @@ namespace OpenNos.Handler
                 if (id != null)
                 {
                     ServerManager.Instance.MapOut((long)id);
+                    ServerManager.Instance.SetProperty((long)id, nameof(Character.IsSitting), false);
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.MapId), Session.Character.MapId);
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.MapX), (short)((Session.Character.MapX) + (short)1));
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.MapY), (short)((Session.Character.MapY) + (short)1));

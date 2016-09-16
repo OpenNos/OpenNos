@@ -934,7 +934,10 @@
   <data name="DROPPED_ITEM" xml:space="preserve">
     <value>dropped {0} x {1}</value>
   </data>
-  <data name="ITEM_BOUNDED_TO" xml:space="preserve">
+  <data name="ITEM_BOUND_TO" xml:space="preserve">
     <value>{1} dropped {0} x {2}</value>
+  </data>
+  <data name="ITEM_NOT_FOUND" xml:space="preserve">
+    <value>Item not found!</value>
   </data>
 </root>

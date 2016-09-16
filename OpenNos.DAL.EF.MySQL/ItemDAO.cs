@@ -93,9 +93,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Item Item in context.Item)
+                foreach (Item item in context.Item)
                 {
-                    yield return _mapper.Map<ItemDTO>(Item);
+                    yield return _mapper.Map<ItemDTO>(item);
                 }
             }
         }
@@ -116,6 +116,18 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        #endregion
+        public IEnumerable<ItemDTO> FindByName(string name)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Item item in context.Item.Where(s => s.Name.Contains(name)))
+                {
+                    yield return _mapper.Map<ItemDTO>(item);
+                }
+            }
+        }
     }
+
+    #endregion
+
 }

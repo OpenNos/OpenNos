@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Migration : DbMigration
+    public partial class Rhea : DbMigration
     {
         public override void Up()
         {
@@ -201,7 +201,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         MagicDefence = c.Short(nullable: false),
                         MaxHP = c.Int(nullable: false),
                         MaxMP = c.Int(nullable: false),
-                        MonsterType = c.Int(nullable: false),
+                        MonsterType = c.Byte(nullable: false),
                         Name = c.String(maxLength: 255, storeType: "nvarchar"),
                         NoAggresiveIcon = c.Boolean(nullable: false),
                         Race = c.Byte(nullable: false),
