@@ -1304,7 +1304,7 @@ namespace OpenNos.Handler
         [Packet("walk")]
         public void Walk(string packet)
         {
-            WalkPacket walkPacket = PacketFactory.Deserialize<WalkPacket>(packet);
+            WalkPacket walkPacket = PacketFactory.Serialize<WalkPacket>(packet);
 
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;

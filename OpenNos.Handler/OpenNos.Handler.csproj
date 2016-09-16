@@ -58,6 +58,7 @@
     <Compile Include="NpcPacketHandler.cs" />
     <Compile Include="BattlePacketHandler.cs" />
     <Compile Include="Packets\ClientPackets\WalkPacket.cs" />
+    <Compile Include="Packets\ServerPackets\EquipPacket.cs" />
     <Compile Include="UselessPacketHandler.cs" />
     <Compile Include="InventoryPacketHandler.cs" />
     <Compile Include="CommandPacketHandler.cs" />
@@ -101,9 +102,7 @@
       <Name>OpenNos.WCF</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Packets\ServerPackets\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
