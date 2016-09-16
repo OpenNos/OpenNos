@@ -36,6 +36,8 @@ namespace OpenNos.Core
         public static TPacket Serialize<TPacket>(string packetContent)
                     where TPacket : PacketBase
         {
+            packetContent = packetContent + " "; //hotfix
+
             var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Equals(typeof(TPacket)));
             TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); //reflection is bad, improve?
 
