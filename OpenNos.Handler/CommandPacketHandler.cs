@@ -316,6 +316,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 12));
@@ -327,7 +328,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$GodMode", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 12));
-            //Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE CHARACTERNAME VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 12));
@@ -696,7 +696,7 @@ namespace OpenNos.Handler
                 case 6:
                     if (verify)
                     {
-                        if (arg[0] != 0)
+                        if (arg[0] < 30 && arg[0] > 0)
                         {
                             Session.Character.UseSp = true;
                             Session.Character.Morph = arg[0];
@@ -705,8 +705,16 @@ namespace OpenNos.Handler
                             Session.Character.ArenaWinner = arg[3];
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                         }
+                        else if (arg[0] > 30)
+                        {
+                            Session.Character.IsVehicled = true;
+                            Session.Character.Morph = arg[0];
+                            Session.Character.ArenaWinner = arg[3];
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                        }
                         else
                         {
+                            Session.Character.IsVehicled = false;
                             Session.Character.UseSp = false;
                             Session.Character.ArenaWinner = 0;
                             Session.SendPacket(Session.Character.GenerateCond());
