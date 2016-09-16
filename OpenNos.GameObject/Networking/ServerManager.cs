@@ -617,6 +617,8 @@ namespace OpenNos.GameObject
         {
             foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
             {
+                session.SendPacket(session.Character.GenerateAt());
+                session.SendPacket(session.Character.GenerateCMap());
                 session.SendPacket(session.Character.GenerateMapOut());
                 session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }

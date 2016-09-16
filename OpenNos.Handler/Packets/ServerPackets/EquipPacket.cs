@@ -13,7 +13,7 @@ namespace OpenNos.Handler
         public byte WeaponUpgrade { get; set; }
 
         [Index(1)]
-        public byte ArmourUpgrade { get; set; }
+        public byte ArmorUpgrade { get; set; }
 
         [Index(2)]
         public List<EquipSubPacket> EquipEntries { get; set; }

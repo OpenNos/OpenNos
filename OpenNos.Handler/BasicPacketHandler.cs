@@ -851,9 +851,8 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                     }
-                    Session.SendPacket(Session.Character.GenerateCMap());
-
                     ServerManager.Instance.MapOut(Session.Character.CharacterId);
+
                     Session.Character.MapId = portal.DestinationMapId;
                     Session.Character.MapX = portal.DestinationX;
                     Session.Character.MapY = portal.DestinationY;
