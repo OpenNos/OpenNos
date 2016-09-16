@@ -829,7 +829,7 @@
     <value>La tassa d'oro è stata modificata!</value>
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
-    <value>Il database può non essere aggiornato. Considera di aggiornarlo!</value>
+    <value>Il database non sembra aggiornato. Per favore considera di aggiornare il tuo database.</value>
   </data>
   <data name="LVL_REQUIRED" xml:space="preserve">
     <value>Lo specialista deve essere almeno di livello {0} per essere migliorato!</value>
@@ -935,5 +935,8 @@
   </data>
   <data name="DROPPED_ITEM" xml:space="preserve">
     <value>Tu hai ricevuto un oggetto: {0} x {1} </value>
+  </data>
+  <data name="ITEM_NOT_FOUND" xml:space="preserve">
+    <value>Oggetto non trovato!</value>
   </data>
 </root>

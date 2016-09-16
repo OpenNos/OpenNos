@@ -172,7 +172,7 @@
     <value>Connessione al server persa..</value>
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
-    <value>Il database non può aggiornarsi. Per favore considera di aggiornare il tuo database.</value>
+    <value>Il database non sembra aggiornato. Per favore considera di aggiornare il tuo database.</value>
   </data>
   <data name="CONNECTION_CLOSED" xml:space="preserve">
     <value>Connessione chiusa</value>
