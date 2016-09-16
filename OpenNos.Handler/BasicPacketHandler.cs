@@ -270,7 +270,7 @@ namespace OpenNos.Handler
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
             if (deleteCharacterPacket.Length <= 3)
                 return;
-            if (account != null && account.Password == EncryptionBase.sha512(deleteCharacterPacket[3]))
+            if (account != null && account.Password.ToLower() == EncryptionBase.sha512(deleteCharacterPacket[3]))
             {
                 DAOFactory.GeneralLogDAO.SetCharIdNull(Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(deleteCharacterPacket[2])).CharacterId));
                 DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
@@ -537,13 +537,13 @@ namespace OpenNos.Handler
 
                     if (accountDTO != null)
                     {
-                        if (accountDTO.Password.Equals(EncryptionBase.sha512(loginPacketParts[6])))
+                        if (accountDTO.Password.ToLower().Equals(EncryptionBase.sha512(loginPacketParts[6])))
                         {
                             var account = new Account()
                             {
                                 AccountId = accountDTO.AccountId,
                                 Name = accountDTO.Name,
-                                Password = accountDTO.Password,
+                                Password = accountDTO.Password.ToLower(),
                                 Authority = accountDTO.Authority,
                                 LastCompliment = accountDTO.LastCompliment,
                             };
