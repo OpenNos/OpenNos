@@ -93,7 +93,7 @@ namespace OpenNos.GameObject
         internal void MonsterLife()
         {
             //Respawn
-            if (!Alive)
+            if (!Alive && Respawn)
             {
                 double timeDeath = (DateTime.Now - Death).TotalSeconds;
                 if (timeDeath >= Monster.RespawnTime / 10)
