@@ -940,4 +940,7 @@
   <data name="ITEM_NOT_FOUND" xml:space="preserve">
     <value>Item not found!</value>
   </data>
+  <data name="MONSTER_NOT_FOUND" xml:space="preserve">
+    <value>Impossible to find this monster.</value>
+  </data>
 </root>

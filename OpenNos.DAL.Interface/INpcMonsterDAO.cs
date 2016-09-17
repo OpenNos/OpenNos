@@ -28,6 +28,7 @@ namespace OpenNos.DAL.Interface
         IEnumerable<NpcMonsterDTO> LoadAll();
 
         NpcMonsterDTO LoadByVnum(short MapId);
+        IEnumerable<NpcMonsterDTO> FindByName(string name);
 
         #endregion
     }

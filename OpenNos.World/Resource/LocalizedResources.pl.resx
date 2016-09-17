@@ -919,4 +919,7 @@
   <data name="ITEM_NOT_FOUND" xml:space="preserve">
     <value>Nie znaleziono takiego przedmiotu!</value>
   </data>
+  <data name="MONSTER_NOT_FOUND" xml:space="preserve">
+    <value />
+  </data>
 </root>
