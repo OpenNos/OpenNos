@@ -2,17 +2,18 @@
 
 namespace OpenNos.Handler
 {
+    [Header("walk")]
     public class WalkPacket : PacketBase
     {
         #region Properties
 
-        [Index(0)]
+        [PacketIndex(0)]
         public short XCoordinate { get; set; }
 
-        [Index(1)]
+        [PacketIndex(1)]
         public short YCoordinate { get; set; }
 
-        [Index(3)]
+        [PacketIndex(3)]
         public short Speed { get; set; }
 
         #endregion

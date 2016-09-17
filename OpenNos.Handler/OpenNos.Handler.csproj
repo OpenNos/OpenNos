@@ -58,6 +58,7 @@
     <Compile Include="NpcPacketHandler.cs" />
     <Compile Include="BattlePacketHandler.cs" />
     <Compile Include="Packets\ClientPackets\WalkPacket.cs" />
+    <Compile Include="Packets\ServerPackets\InPacket.cs" />
     <Compile Include="Packets\ServerPackets\EquipPacket.cs" />
     <Compile Include="UselessPacketHandler.cs" />
     <Compile Include="InventoryPacketHandler.cs" />

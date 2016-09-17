@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="BCardType.cs" />
     <Compile Include="CharacterState.cs" />
+    <Compile Include="InType.cs" />
     <Compile Include="MapTypeEnum.cs" />
     <Compile Include="GroupSharingType.cs" />
     <Compile Include="JewelOptionType.cs" />
