@@ -270,7 +270,7 @@ namespace OpenNos.Handler
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
             if (deleteCharacterPacket.Length <= 3)
                 return;
-            if (account != null && account.Password == EncryptionBase.sha512(deleteCharacterPacket[3]))
+            if (account != null && account.Password.ToLower() == EncryptionBase.sha512(deleteCharacterPacket[3]))
             {
                 DAOFactory.GeneralLogDAO.SetCharIdNull(Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(deleteCharacterPacket[2])).CharacterId));
                 DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
@@ -537,13 +537,13 @@ namespace OpenNos.Handler
 
                     if (accountDTO != null)
                     {
-                        if (accountDTO.Password.Equals(EncryptionBase.sha512(loginPacketParts[6])))
+                        if (accountDTO.Password.ToLower().Equals(EncryptionBase.sha512(loginPacketParts[6])))
                         {
                             var account = new Account()
                             {
                                 AccountId = accountDTO.AccountId,
                                 Name = accountDTO.Name,
-                                Password = accountDTO.Password,
+                                Password = accountDTO.Password.ToLower(),
                                 Authority = accountDTO.Authority,
                                 LastCompliment = accountDTO.LastCompliment,
                             };
@@ -851,9 +851,8 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                     }
-                    Session.SendPacket(Session.Character.GenerateCMap());
-
                     ServerManager.Instance.MapOut(Session.Character.CharacterId);
+
                     Session.Character.MapId = portal.DestinationMapId;
                     Session.Character.MapX = portal.DestinationX;
                     Session.Character.MapY = portal.DestinationY;
@@ -1304,7 +1303,7 @@ namespace OpenNos.Handler
         [Packet("walk")]
         public void Walk(string packet)
         {
-            WalkPacket walkPacket = PacketFactory.Deserialize<WalkPacket>(packet);
+            WalkPacket walkPacket = PacketFactory.Serialize<WalkPacket>(packet);
 
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;

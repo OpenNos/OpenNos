@@ -406,7 +406,7 @@ namespace OpenNos.Handler
                 {
                     foreach (ItemDTO item in itemlist)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay($"Item : {item.Name} VNum {item.VNum}", 12));
+                        Session.SendPacket(Session.Character.GenerateSay($"Item: {item.Name} VNum: {item.VNum}", 12));
                     }
                 }
                 else

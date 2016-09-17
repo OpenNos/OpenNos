@@ -436,15 +436,16 @@ namespace OpenNos.GameObject
                 session.SendPacket(session.Character.GenerateLev());
                 session.SendPacket(session.Character.GenerateStat());
                 session.SendPacket(session.Character.GenerateAt());
-                session.SendPacket(session.Character.GenerateCond());
                 session.SendPacket(session.Character.GenerateCMap());
                 session.SendPacket(session.Character.GenerateStatChar());
+                session.SendPacket(session.Character.GenerateCond());
                 session.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
                 session.SendPacket("rsfp 0 -1");
-                //cond 2 // partner only send when partner present
-                session.SendPacket("pinit 0"); // clean party list
-                session.SendPacket(session.Character.GeneratePairy());
-                session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
+                // in 2 // send only when partner present
+                // cond 2 // send only when partner present
+                session.SendPacket("pinit 0"); // clear party list
+                //session.SendPacket(session.Character.GeneratePairy());
+                session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.All);
                 session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
                 ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
@@ -617,6 +618,8 @@ namespace OpenNos.GameObject
         {
             foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
             {
+                session.SendPacket(session.Character.GenerateAt());
+                session.SendPacket(session.Character.GenerateCMap());
                 session.SendPacket(session.Character.GenerateMapOut());
                 session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
