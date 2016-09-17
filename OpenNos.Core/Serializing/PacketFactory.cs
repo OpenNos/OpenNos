@@ -36,12 +36,10 @@ namespace OpenNos.Core
         public static TPacket Serialize<TPacket>(string packetContent)
                     where TPacket : PacketBase
         {
-            packetContent = packetContent + " "; //hotfix
-
             var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Equals(typeof(TPacket)));
             TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); //reflection is bad, improve?
 
-            MatchCollection matches = Regex.Matches(packetContent, @"([\d\w]+)(?=\s)|([\d\w]*\.[\d\w]\s*)+((?=\s)|$)");
+            MatchCollection matches = Regex.Matches(packetContent, @"([\d\w]+)((?=\s)|$)|([\d\w]*\.[\d\w]\s*)+((?=\s)|$)");
 
             if (matches.Count > 0)
             {
@@ -50,9 +48,8 @@ namespace OpenNos.Core
                     int currentIndex = packetBasePropertyInfo.Key.Index + 2; //adding 2 because we need to skip incrementing number and packet header
                     string currentValue = matches[currentIndex].Value;
 
-                    if (currentValue.Contains(".")) //NOT TESTED, SEEMS TO NEVER HAPPEN
+                    if (currentValue.Contains("."))
                     {
-                        //throw new Exception("Are your sure that you received a packet with a list inside?");
 
                         //currentvalue is list, check if property is also a list
                         if (typeof(IList).IsAssignableFrom(packetBasePropertyInfo.Value.PropertyType))
