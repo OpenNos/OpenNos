@@ -316,6 +316,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
@@ -367,6 +368,30 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
+        }
+
+        [Packet("$SearchMonster")]
+        public void SearchMonster(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length == 3)
+            {
+                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(packetsplit[2]).OrderBy(s => s.NpcMonsterVNum).ToList();
+                if (monsterlist.Any())
+                {
+                    foreach (NpcMonsterDTO NpcMonster in monsterlist)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay($"Monster : {NpcMonster.Name} VNum {NpcMonster.NpcMonsterVNum}", 12));
+                    }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MONSTER_NOT_FOUND"), 11));
+                }
+            }
+            else
+                Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME", 10));
         }
 
         [Packet("$SearchItem")]

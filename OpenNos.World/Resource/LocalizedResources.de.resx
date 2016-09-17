@@ -822,4 +822,7 @@
   <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
     <value>Der Skill existiert nicht.</value>
   </data>
+  <data name="MONSTER_NOT_FOUND" xml:space="preserve">
+    <value />
+  </data>
 </root>

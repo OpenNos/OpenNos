@@ -944,6 +944,9 @@ Veux-tu le porter ?</value>
     <value>Cet objet ne t'appartient pas.</value>
   </data>
   <data name="ITEM_NOT_FOUND" xml:space="preserve">
-    <value>L'objet que vous recherchez est introuvable.</value>
+    <value>L'objet que tu recherches est introuvable.</value>
+  </data>
+  <data name="MONSTER_NOT_FOUND" xml:space="preserve">
+    <value>Le monstre que tu recherches est introuvable.</value>
   </data>
 </root>

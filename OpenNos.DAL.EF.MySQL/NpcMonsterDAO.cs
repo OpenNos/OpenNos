@@ -116,6 +116,17 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        #endregion
+        public IEnumerable<NpcMonsterDTO> FindByName(string name)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (NpcMonster NpcMonster in context.NpcMonster.Where(s => s.Name.Contains(name)))
+                {
+                    yield return _mapper.Map<NpcMonsterDTO>(NpcMonster);
+                }
+            }
+
+            #endregion
+        }
     }
 }

@@ -7,30 +7,31 @@ using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
+    [Header("equip")]
     public class EquipPacket : PacketBase
     {
-        [Index(0)]
-        public byte WeaponUpgrade { get; set; }
+        [PacketIndex(0)]
+        public byte WeaponArmourUpgrade { get; set; }
 
-        [Index(1)]
-        public byte ArmorUpgrade { get; set; }
+        [PacketIndex(1)]
+        public byte Design { get; set; }
 
-        [Index(2)]
+        [PacketIndex(2)]
         public List<EquipSubPacket> EquipEntries { get; set; }
     }
 
     public class EquipSubPacket : PacketBase
     {
-        [Index(0)]
+        [PacketIndex(0)]
         public byte Index { get; set; }
 
-        [Index(1)]
+        [PacketIndex(1)]
         public int ItemVNum { get; set; }
 
-        [Index(2)]
+        [PacketIndex(2)]
         public byte Rare { get; set; }
 
-        [Index(3)]
+        [PacketIndex(3)]
         public byte Upgrade { get; set; }
     }
 }
