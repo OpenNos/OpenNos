@@ -316,8 +316,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 12));
@@ -351,11 +349,13 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SkillAdd SKILLID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SkillAdd SKILLID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Stat", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 12));
@@ -382,7 +382,7 @@ namespace OpenNos.Handler
                 {
                     foreach (NpcMonsterDTO NpcMonster in monsterlist)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay($"Monster : {NpcMonster.Name} VNum {NpcMonster.NpcMonsterVNum}", 12));
+                        Session.SendPacket(Session.Character.GenerateSay($"Monster: {NpcMonster.Name} VNum: {NpcMonster.NpcMonsterVNum}", 12));
                     }
                 }
                 else
