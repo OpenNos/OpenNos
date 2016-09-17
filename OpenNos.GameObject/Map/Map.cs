@@ -94,6 +94,7 @@ namespace OpenNos.GameObject
                     firstY = monster.MapY,
                     IsMoving = monster.IsMoving,
                     Alive = true,
+                    Respawn = true,
                     CurrentHp = npcmonster.MaxHP,
                     CurrentMp = npcmonster.MaxMP
                 });
@@ -373,6 +374,7 @@ namespace OpenNos.GameObject
         {
             var rnd = new Random();
             List<Task> MonsterLifeTask = new List<Task>();
+            Monsters.RemoveAll(s=>!s.Alive && !s.Respawn);
             foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
             {
                 MonsterLifeTask.Add(new Task(() => monster.MonsterLife()));

@@ -56,6 +56,7 @@ namespace OpenNos.GameObject
         public long Target { get; set; }
         public bool inWaiting { get; set; }
         public IDictionary<long, long> DamageList { get; set; }
+        public bool Respawn { get; set; }
 
         #endregion
 

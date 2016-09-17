@@ -1111,7 +1111,7 @@ namespace OpenNos.Handler
                         mapx = (short)rnd.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
                         mapy = (short)rnd.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
                     }
-                    MapMonster monst = new MapMonster(map, vnum) { Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.GenerateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
+                    MapMonster monst = new MapMonster(map, vnum) { Alive = true,Respawn = false, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.GenerateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
                     Session.CurrentMap.Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
                     Session.CurrentMap?.Broadcast(monst.GenerateIn3());
