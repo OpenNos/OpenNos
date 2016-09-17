@@ -50,6 +50,7 @@ namespace OpenNos.DAL.EF.MySQL
         public short DefenceDodge { get; set; }
         public short DistanceDefence { get; set; }
         public short DistanceDefenceDodge { get; set; }
+        public virtual ICollection<Mail> Mail { get; set; }
         public virtual ICollection<Drop> Drop { get; set; }
         public short Effect { get; set; }
         public int EffectValue { get; set; }

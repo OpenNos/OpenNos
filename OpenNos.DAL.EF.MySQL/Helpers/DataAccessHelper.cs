@@ -115,6 +115,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                     context.Inventory.Any();
                     context.ItemInstance.Any();
                     context.Teleporter.Any();
+                    context.Mail.Any();
                     context.Item.Any();
                     context.Respawn.Any();
                     context.Recipe.Any();

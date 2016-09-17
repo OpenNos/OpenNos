@@ -35,6 +35,7 @@ namespace OpenNos.DAL.EF.MySQL
         #region Properties
 
         public virtual Account Account { get; set; }
+
         public long AccountId { get; set; }
         public int Act4Dead { get; set; }
         public int Act4Kill { get; set; }
@@ -54,6 +55,8 @@ namespace OpenNos.DAL.EF.MySQL
         public bool FamilyRequestBlocked { get; set; }
         public bool FriendRequestBlocked { get; set; }
         public byte Gender { get; set; }
+        public virtual ICollection<Mail> Mail { get; set; }
+        public virtual ICollection<Mail> Mail1 { get; set; }
         public virtual ICollection<GeneralLog> GeneralLog { get; set; }
         public long Gold { get; set; }
         public bool GroupRequestBlocked { get; set; }
