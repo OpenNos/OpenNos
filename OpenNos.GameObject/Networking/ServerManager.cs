@@ -337,15 +337,11 @@ namespace OpenNos.GameObject
             ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == characterId);
             if (Session != null && Session.Character != null)
             {
-                Session.SendPacket("cancel 0 0");
-                Session.SendPacket("cancel 2 0");
                 if (Session.Character.IsVehicled)
                     Session.Character.RemoveVehicle();
                 Session.SendPacket(Session.Character.GenerateStat());
-                Session.SendPacket("vb 340 0 0");
-                Session.SendPacket("vb 339 0 0");
-                Session.SendPacket("vb 472 0 0");
-                Session.SendPacket("vb 471 0 0");
+                Session.SendPacket(Session.Character.GenerateCond());
+                Session.SendPacket(Session.Character.GenerateVb());
                 if (Session.Character.Level > 20)
                 {
                     Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
