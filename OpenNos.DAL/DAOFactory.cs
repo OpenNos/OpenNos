@@ -32,6 +32,7 @@ namespace OpenNos.DAL
         private static IGeneralLogDAO _generallogDAO;
         private static IInventoryDAO _inventoryDAO;
         private static IItemDAO _itemDAO;
+        private static IMailDAO _mailDAO;
         private static IMapDAO _mapDAO;
         private static IMapMonsterDAO _mapmonsterDAO;
         private static IMapNpcDAO _mapnpcDAO;
@@ -185,6 +186,18 @@ namespace OpenNos.DAL
                 }
 
                 return _itemDAO;
+            }
+        }
+        public static IMailDAO MailDAO
+        {
+            get
+            {
+                if (_mailDAO == null)
+                {
+                    _mailDAO = new MySQL.MailDAO();
+                }
+
+                return _mailDAO;
             }
         }
 

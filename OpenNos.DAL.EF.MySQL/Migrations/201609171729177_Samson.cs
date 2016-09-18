@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Rhea : DbMigration
+    public partial class Samson : DbMigration
     {
         public override void Up()
         {
@@ -306,6 +306,26 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         WaterResistance = c.Byte(nullable: false),
                     })
                 .PrimaryKey(t => t.VNum);
+            
+            CreateTable(
+                "dbo.Mail",
+                c => new
+                    {
+                        MailId = c.Long(nullable: false, identity: true),
+                        Amount = c.Byte(nullable: false),
+                        Date = c.DateTime(nullable: false, precision: 0),
+                        ItemVNum = c.Short(),
+                        Message = c.String(maxLength: 255, storeType: "nvarchar"),
+                        ReceiverId = c.Long(nullable: false),
+                        SenderId = c.Long(nullable: false),
+                    })
+                .PrimaryKey(t => t.MailId)
+                .ForeignKey("dbo.Item", t => t.ItemVNum)
+                .ForeignKey("dbo.Character", t => t.SenderId)
+                .ForeignKey("dbo.Character", t => t.ReceiverId)
+                .Index(t => t.ItemVNum)
+                .Index(t => t.ReceiverId)
+                .Index(t => t.SenderId);
             
             CreateTable(
                 "dbo.Recipe",
@@ -669,6 +689,8 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.Character", "AccountId", "dbo.Account");
             DropForeignKey("dbo.Respawn", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.QuicklistEntry", "CharacterId", "dbo.Character");
+            DropForeignKey("dbo.Mail", "ReceiverId", "dbo.Character");
+            DropForeignKey("dbo.Mail", "SenderId", "dbo.Character");
             DropForeignKey("dbo.Inventory", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.CellonOption", "WearableInstanceId", "dbo.ItemInstance");
             DropForeignKey("dbo.ItemInstance", "ItemVNum", "dbo.Item");
@@ -700,6 +722,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.MapNpc", "MapId", "dbo.Map");
             DropForeignKey("dbo.MapMonster", "MapId", "dbo.Map");
             DropForeignKey("dbo.Character", "MapId", "dbo.Map");
+            DropForeignKey("dbo.Mail", "ItemVNum", "dbo.Item");
             DropForeignKey("dbo.Drop", "ItemVNum", "dbo.Item");
             DropForeignKey("dbo.Combo", "SkillVNum", "dbo.Skill");
             DropForeignKey("dbo.CharacterSkill", "SkillVNum", "dbo.Skill");
@@ -732,6 +755,9 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.MapNpc", new[] { "MapId" });
             DropIndex("dbo.Recipe", new[] { "MapNpcId" });
             DropIndex("dbo.Recipe", new[] { "ItemVNum" });
+            DropIndex("dbo.Mail", new[] { "SenderId" });
+            DropIndex("dbo.Mail", new[] { "ReceiverId" });
+            DropIndex("dbo.Mail", new[] { "ItemVNum" });
             DropIndex("dbo.Drop", new[] { "MonsterVNum" });
             DropIndex("dbo.Drop", new[] { "MapTypeId" });
             DropIndex("dbo.Drop", new[] { "ItemVNum" });
@@ -761,6 +787,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropTable("dbo.Map");
             DropTable("dbo.MapNpc");
             DropTable("dbo.Recipe");
+            DropTable("dbo.Mail");
             DropTable("dbo.Item");
             DropTable("dbo.Drop");
             DropTable("dbo.NpcMonster");

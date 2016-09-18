@@ -204,13 +204,13 @@ namespace OpenNos.GameObject
             _client.Disconnect();
         }
 
-        public void Initialize(EncryptionBase encryptor, Type packetHandler)
+        public void Initialize(EncryptionBase encryptor, Type packetHandler, bool isWorldServer)
         {
             _encryptor = encryptor;
             _client.Initialize(encryptor);
 
             //dynamically create packethandler references
-            GenerateHandlerReferences(packetHandler);
+            GenerateHandlerReferences(packetHandler, isWorldServer);
         }
 
         public void InitializeAccount(Account account)
@@ -256,10 +256,13 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void GenerateHandlerReferences(Type type)
+        private void GenerateHandlerReferences(Type type, bool isWorldServer)
         {
+            IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) //shitty but it works
+                                                            : type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterfaces().FirstOrDefault().IsAssignableFrom(p));
+
             //iterate thru each type in the given assembly, the IPacketHandler is expected in the same dll
-            foreach (Type handlerType in type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterfaces().FirstOrDefault().IsAssignableFrom(p)))
+            foreach (Type handlerType in handlerTypes)
             {
                 object handler = Activator.CreateInstance(handlerType, new object[] { this });
 

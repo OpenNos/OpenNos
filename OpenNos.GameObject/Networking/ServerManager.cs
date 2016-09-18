@@ -699,7 +699,8 @@ namespace OpenNos.GameObject
                 {
                     foreach (ClientSession session in grp.Characters)
                     {
-                        session.SendPackets(grp.GeneratePst());
+                        foreach (string str in grp.GeneratePst())
+                            session.SendPacket(str);
                     }
                 }
                 await Task.Delay(2000);

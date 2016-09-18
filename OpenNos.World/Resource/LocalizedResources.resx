@@ -943,7 +943,7 @@
   <data name="MONSTER_NOT_FOUND" xml:space="preserve">
     <value>Impossible to find this monster.</value>
   </data>
-  <data name="ADVENTURERS_CANT_USE" xml:space="preserve">
-    <value>Adventurers can't use this object.</value>
+    <data name="NOT_YOUR_ITEM" xml:space="preserve">
+    <value>The item is not yours!</value>
   </data>
 </root>

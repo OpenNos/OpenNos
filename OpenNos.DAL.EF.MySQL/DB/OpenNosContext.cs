@@ -44,6 +44,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<Inventory> Inventory { get; set; }
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
+        public virtual DbSet<Mail> Mail { get; set; }
         public virtual DbSet<Map> Map { get; set; }
         public virtual DbSet<MapMonster> MapMonster { get; set; }
         public virtual DbSet<MapNpc> MapNpc { get; set; }
@@ -127,6 +128,18 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WithRequired(e => e.Character)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Character>()
+                .HasMany(e => e.Mail)
+                .WithRequired(e => e.Sender)
+                .HasForeignKey(e => e.SenderId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Character>()
+                .HasMany(e => e.Mail1)
+                .WithRequired(e => e.Receiver)
+                .HasForeignKey(e => e.ReceiverId)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Item>()
                 .HasMany(e => e.Drop)
                 .WithRequired(e => e.Item)
@@ -146,6 +159,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
             modelBuilder.Entity<Item>()
                 .HasMany(e => e.ShopItem)
                 .WithRequired(e => e.Item)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Item>()
+                .HasMany(e => e.Mail)
+                .WithOptional(e => e.Item)
+                .HasForeignKey(e => e.ItemVNum)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Map>()
