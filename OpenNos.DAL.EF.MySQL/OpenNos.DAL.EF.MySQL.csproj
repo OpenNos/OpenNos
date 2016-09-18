@@ -94,6 +94,7 @@
     <Compile Include="Entities\Inventory.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\ItemInstance.cs" />
+    <Compile Include="Entities\Mail.cs" />
     <Compile Include="Entities\Map.cs" />
     <Compile Include="Entities\MapMonster.cs" />
     <Compile Include="Entities\MapType.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Entities\WearableInstance.cs" />
     <Compile Include="Helpers\ColumnBuilderExtension.cs" />
     <Compile Include="Helpers\MigrationHelper.cs" />
+    <Compile Include="MailDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="Entities\MapNpc.cs" />
     <Compile Include="MapNpcDAO.cs" />
@@ -111,9 +113,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201609151806279_Rhea.cs" />
-    <Compile Include="Migrations\201609151806279_Rhea.Designer.cs">
-      <DependentUpon>201609151806279_Rhea.cs</DependentUpon>
+    <Compile Include="Migrations\201609171729177_Samson.cs" />
+    <Compile Include="Migrations\201609171729177_Samson.Designer.cs">
+      <DependentUpon>201609171729177_Samson.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -193,8 +195,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609151806279_Rhea.resx">
-      <DependentUpon>201609151806279_Rhea.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609171729177_Samson.resx">
+      <DependentUpon>201609171729177_Samson.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

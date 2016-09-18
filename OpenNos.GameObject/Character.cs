@@ -637,7 +637,7 @@ namespace OpenNos.GameObject
                 color = headWearable.Design;
             Inventory fairy = EquipmentList.LoadInventoryBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Equipment);
 
-            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Element : 0)} 0 {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
+            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Element : 0)} 0 {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
         public List<string> GenerateIn2()
@@ -986,6 +986,12 @@ namespace OpenNos.GameObject
                 + (QuickGetUp ? Math.Pow(2, (int)ConfigType.QuickGetUp - 1) : 0);
             ;
             return $"stat {Hp} {HPLoad()} {Mp} {MPLoad()} 0 {option}";
+        }
+
+        public string[] GenerateVb()
+
+        { 
+                return new string[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
         }
 
         public string GenerateStatChar()
@@ -1650,7 +1656,7 @@ namespace OpenNos.GameObject
             SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
             IsVehicled = false;
             LoadSpeed();
-            if (Session.Character.UseSp)
+            if (UseSp)
             {
                 if (sp != null)
                 {
@@ -1663,6 +1669,8 @@ namespace OpenNos.GameObject
             {
                 Morph = 0;
             }
+            Session.CurrentMap?.Broadcast(GenerateCMode());
+            Session.SendPacket(GenerateCond());
         }
 
         public void Rest()
