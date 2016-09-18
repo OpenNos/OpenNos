@@ -1361,7 +1361,6 @@ namespace OpenNos.Import.Console
             List<ComboDTO> Combo = new List<ComboDTO>();
             string line;
             int counter = 0;
-
             using (StreamReader skillIdLangStream = new StreamReader(fileSkillLang, Encoding.GetEncoding(1252)))
             {
                 while ((line = skillIdLangStream.ReadLine()) != null)
@@ -1525,6 +1524,9 @@ namespace OpenNos.Import.Console
                                         case 6:
                                             skill.LevelMinimum = 4;
                                             break;
+
+
+                                       
 
                                         default:
                                             skill.LevelMinimum = 0;

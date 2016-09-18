@@ -888,7 +888,7 @@ namespace OpenNos.GameObject
             List<CharacterSkill> skillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.GetAllSkill())
             {
-                if (ski.Class == inventoryItem.Item.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel && !skillsSp.Any(s => s.Skill.Name.StartsWith(ski.Name.Split(' ').FirstOrDefault())))
+                if (ski.Class == inventoryItem.Item.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel && !skillsSp.Any(s => s.Skill.MpCost == ski.MpCost && s.Skill.Cooldown == ski.Cooldown && s.Skill.Duration == ski.Duration))
                     skillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
             }
             byte spdestroyed = 0;
