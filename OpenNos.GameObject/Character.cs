@@ -1650,7 +1650,7 @@ namespace OpenNos.GameObject
             SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
             IsVehicled = false;
             LoadSpeed();
-            if (Session.Character.UseSp)
+            if (UseSp)
             {
                 if (sp != null)
                 {
@@ -1663,6 +1663,8 @@ namespace OpenNos.GameObject
             {
                 Morph = 0;
             }
+            Session.CurrentMap?.Broadcast(GenerateCMode());
+            Session.SendPacket(GenerateCond());
         }
 
         public void Rest()
