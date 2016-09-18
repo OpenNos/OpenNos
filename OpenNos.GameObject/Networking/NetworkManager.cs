@@ -127,7 +127,7 @@ namespace OpenNos.GameObject
             }
 
             ClientSession session = new ClientSession(customClient);
-            session.Initialize(_encryptor, _packetHandler);
+            session.Initialize(_encryptor, _packetHandler, IsWorldServer);
 
             if (IsWorldServer)
             {
