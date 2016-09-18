@@ -631,7 +631,7 @@
     <value>Tu as ouvert un magasin.</value>
   </data>
   <data name="ASK_REVIVE" xml:space="preserve">
-    <value>Continuer ici? 10 graine de pouvoir seront utilisées.</value>
+    <value>Continuer ici ? Tu auras besoin de 10 graines de pouvoir.</value>
   </data>
   <data name="ASK_REVIVE_FREE" xml:space="preserve">
     <value>Continuer ici? Il est gratuit pour le niveau 20 et plus bas !</value>
@@ -646,7 +646,7 @@
     <value>Ton niveau héroïque a bien été changé !</value>
   </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
-    <value>Dignité réduite : -{0}</value>
+    <value>Dignité réduite : --{0}</value>
   </data>
   <data name="MUTED" xml:space="preserve">
     <value>Vous avez été sanctionné.</value>
