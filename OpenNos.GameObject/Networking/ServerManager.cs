@@ -341,7 +341,7 @@ namespace OpenNos.GameObject
                     Session.Character.RemoveVehicle();
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
-                Session.SendPacket(Session.Character.GenerateVb());
+                Session.SendPackets(Session.Character.GenerateVb());
                 if (Session.Character.Level > 20)
                 {
                     Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);

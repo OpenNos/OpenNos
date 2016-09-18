@@ -988,15 +988,10 @@ namespace OpenNos.GameObject
             return $"stat {Hp} {HPLoad()} {Mp} {MPLoad()} 0 {option}";
         }
 
-        public string GenerateVb()
-        {
-            {
-                Session.SendPacket("vb 340 0 0");
-                Session.SendPacket("vb 339 0 0");
-                Session.SendPacket("vb 472 0 0");
-                ;
-                return $"vb 471 0 0";
-            }
+        public string[] GenerateVb()
+
+        { 
+                return new[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
         }
 
         public string GenerateStatChar()
