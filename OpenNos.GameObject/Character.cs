@@ -991,7 +991,7 @@ namespace OpenNos.GameObject
         public string[] GenerateVb()
 
         { 
-                return new[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
+                return new string[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
         }
 
         public string GenerateStatChar()
