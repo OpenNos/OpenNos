@@ -85,7 +85,6 @@ namespace OpenNos.GameObject
             _monsters = new List<MapMonster>();
             foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
             {
-                NpcMonster npcmonster = ServerManager.GetNpc(monster.MonsterVNum);
                 _monsters.Add(new MapMonster(monster, this));
             }
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
@@ -93,7 +92,7 @@ namespace OpenNos.GameObject
             _npcs = new List<MapNpc>();
             foreach (MapNpcDTO npc in npcsDTO)
             {
-                _npcs.Add(new GameObject.MapNpc(npc, this));
+                _npcs.Add(new MapNpc(npc, this));
             }
         }
 

@@ -31,6 +31,7 @@ namespace OpenNos.GameObject
             MapId = monsterdto.MapId;
             MapX = monsterdto.MapX;
             MapMonsterId = monsterdto.MapMonsterId;
+            MonsterVNum = monsterdto.MonsterVNum;
             MapY = monsterdto.MapY;
             Position = monsterdto.Position;
             firstX = monsterdto.MapX;
