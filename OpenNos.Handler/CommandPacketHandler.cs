@@ -71,7 +71,7 @@ namespace OpenNos.Handler
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
-                    monster = new MapMonster(map, vnum) { MapY = monst.MapY, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, IsMoving = isMoving == 1 ? true : false };
+                    monster = new MapMonster(monst,map);
                     ServerManager.Monsters.Add(monster);
                     Session.CurrentMap.Monsters.Add(monster);
                     Session.CurrentMap?.Broadcast(monster.GenerateIn3());
@@ -1136,7 +1136,11 @@ namespace OpenNos.Handler
                         mapx = (short)rnd.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
                         mapy = (short)rnd.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
                     }
-                    MapMonster monst = new MapMonster(map, vnum) { Alive = true,Respawn = false, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.GenerateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
+                    //Replace by MAPPING
+                    MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
+
+                    MapMonster monst = new MapMonster(monster,map) { Respawn = false };
+                    ///////////////////
                     Session.CurrentMap.Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
                     Session.CurrentMap?.Broadcast(monst.GenerateIn3());

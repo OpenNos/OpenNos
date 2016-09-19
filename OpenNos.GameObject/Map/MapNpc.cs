@@ -24,20 +24,37 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public MapNpc(int npcId, Map parent)
+        public MapNpc(MapNpcDTO npc, Map parent)
         {
+            //Replace by MAPPING
+            MapId = npc.MapId;
+            MapX = npc.MapX;
+            MapY = npc.MapY;
+            Position = npc.Position;
+            NpcVNum = npc.NpcVNum;
+            IsSitting = npc.IsSitting;
+            IsMoving = npc.IsMoving;
+            Effect = npc.Effect;
+            EffectDelay = npc.EffectDelay;
+            Dialog = npc.Dialog;
+            FirstX = npc.MapX;
+            FirstY = npc.MapY;
+            MapNpcId = npc.MapNpcId;
+           ////////////////////////
 
-            MapNpcId = npcId;
             Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = LastMove = DateTime.Now;
-
+            Map = parent;
             IEnumerable<RecipeDTO> recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId);
             if (recipe != null)
             {
                 Recipes = new List<Recipe>();
                 foreach (RecipeDTO rec in recipe)
                 {
-                    Recipes.Add(new GameObject.Recipe(rec.RecipeId) { ItemVNum = rec.ItemVNum, MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId, Amount = rec.Amount });
+
+                    //Replace by MAPPING
+                    Recipes.Add(new Recipe(rec.RecipeId) { ItemVNum = rec.ItemVNum, MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId, Amount = rec.Amount });
+                    ///////////////////
                 }
             }
 
@@ -47,17 +64,21 @@ namespace OpenNos.GameObject
                 Teleporters = new List<Teleporter>();
                 foreach (TeleporterDTO teleporter in teleporters)
                 {
-                    Teleporters.Add(new GameObject.Teleporter() { MapId = teleporter.MapId, Index = teleporter.Index, MapNpcId = teleporter.MapNpcId, MapX = teleporter.MapX, MapY = teleporter.MapY, TeleporterId = teleporter.TeleporterId });
+                    //Replace by MAPPING
+                    Teleporters.Add(new Teleporter() { MapId = teleporter.MapId, Index = teleporter.Index, MapNpcId = teleporter.MapNpcId, MapX = teleporter.MapX, MapY = teleporter.MapY, TeleporterId = teleporter.TeleporterId });
+                    ///////////////////
                 }
             }
 
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
             if (shop != null)
             {
+                //Replace by MAPPING
                 Shop = new Shop(shop.ShopId) { Name = shop.Name, MapNpcId = MapNpcId, MenuType = shop.MenuType, ShopType = shop.ShopType };
+                ///////////////////
             }
 
-            Map = parent;
+
         }
 
         #endregion

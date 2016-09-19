@@ -1570,11 +1570,12 @@ namespace OpenNos.GameObject
             foreach (InventoryDTO inventory in inventories)
             {
                 inventory.CharacterId = CharacterId;
-
+                //Replace by MAPPING
                 if (inventory.Type != InventoryType.Equipment)
                     InventoryList.Inventory.Add(new Inventory(inventory));
                 else
                     EquipmentList.Inventory.Add(new Inventory(inventory));
+                ///////////////////
             }
         }
 

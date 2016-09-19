@@ -25,14 +25,28 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public MapMonster(Map parent, short VNum)
+        public MapMonster(MapMonsterDTO monsterdto, Map parent)
         {
+            //Replace by MAPPING
+            MapId = monsterdto.MapId;
+            MapX = monsterdto.MapX;
+            MapMonsterId = monsterdto.MapMonsterId;
+            MapY = monsterdto.MapY;
+            Position = monsterdto.Position;
+            firstX = monsterdto.MapX;
+            firstY = monsterdto.MapY;
+            IsMoving = monsterdto.IsMoving;
+            ///////////////////////////////////
+
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
             Path = new List<MapCell>();
             Map = parent;
-            MonsterVNum = VNum;
+            Alive = true;
+            Respawn = true;
             Monster = ServerManager.GetNpc(MonsterVNum);
+            CurrentHp = Monster.MaxHP;
+            CurrentMp = Monster.MaxMP;
             Skills = Monster.Skills.ToList();
             DamageList = new Dictionary<long, long>();
         }

@@ -53,18 +53,20 @@ namespace OpenNos.GameObject
             foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId))
             {
                 MapTypeDTO MT = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
+                //Replace by MAPPING
                 MapType maptype = new MapType()
                 {
                     MapTypeId = MT.MapTypeId,
                     MapTypeName = MT.MapTypeName,
                     PotionDelay = MT.PotionDelay
                 };
+                ///////////////
                 MapTypes.Add(maptype);
             }
 
             UserShops = new Dictionary<long, MapShop>();
             foreach (PortalDTO portal in portals)
-            {
+            {//Replace by MAPPING
                 _portals.Add(new GameObject.Portal()
                 {
                     DestinationMapId = portal.DestinationMapId,
@@ -77,48 +79,21 @@ namespace OpenNos.GameObject
                     PortalId = portal.PortalId,
                     IsDisabled = portal.IsDisabled
                 });
+                //////////////////
             }
 
             _monsters = new List<MapMonster>();
             foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
             {
                 NpcMonster npcmonster = ServerManager.GetNpc(monster.MonsterVNum);
-                _monsters.Add(new MapMonster(this, monster.MonsterVNum)
-                {
-                    MapId = monster.MapId,
-                    MapX = monster.MapX,
-                    MapMonsterId = monster.MapMonsterId,
-                    MapY = monster.MapY,
-                    Position = monster.Position,
-                    firstX = monster.MapX,
-                    firstY = monster.MapY,
-                    IsMoving = monster.IsMoving,
-                    Alive = true,
-                    Respawn = true,
-                    CurrentHp = npcmonster.MaxHP,
-                    CurrentMp = npcmonster.MaxMP
-                });
+                _monsters.Add(new MapMonster(monster, this));
             }
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
 
             _npcs = new List<MapNpc>();
             foreach (MapNpcDTO npc in npcsDTO)
             {
-                _npcs.Add(new GameObject.MapNpc(npc.MapNpcId, this)
-                {
-                    MapId = npc.MapId,
-                    MapX = npc.MapX,
-                    MapY = npc.MapY,
-                    Position = npc.Position,
-                    NpcVNum = npc.NpcVNum,
-                    IsSitting = npc.IsSitting,
-                    IsMoving = npc.IsMoving,
-                    Effect = npc.Effect,
-                    EffectDelay = npc.EffectDelay,
-                    Dialog = npc.Dialog,
-                    FirstX = npc.MapX,
-                    FirstY = npc.MapY
-                });
+                _npcs.Add(new GameObject.MapNpc(npc, this));
             }
         }
 
