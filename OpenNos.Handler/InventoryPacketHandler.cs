@@ -1273,9 +1273,8 @@ namespace OpenNos.Handler
                 if (Session.Character.IsVehicled)
                     return;
                 Logger.Debug(vnum.ToString(), Session.SessionId);
-                SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
-                Session.Character.Speed -= sp.Item.Speed;
                 Session.Character.UseSp = false;
+                Session.Character.LoadSpeed();
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPacket(Session.Character.GenerateLev());
                 Session.Character.SpCooldown = 30;

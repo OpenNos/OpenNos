@@ -103,13 +103,13 @@ namespace OpenNos.GameObject
                             Session.Character.Morph = Morph + Session.Character.Gender;
                             Session.Character.Speed = Speed;
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                            Session.SendPacket(Session.Character.GenerateCond());
                         }
                         else
                         {
                             Session.Character.RemoveVehicle();
                         }
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-                        Session.SendPacket(Session.Character.GenerateCond());
                     }
                     break;
 
