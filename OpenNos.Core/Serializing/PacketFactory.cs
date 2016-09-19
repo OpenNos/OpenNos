@@ -41,18 +41,7 @@ namespace OpenNos.Core
                 }
                 else
                 {
-                    if (packetBasePropertyInfo.Value.PropertyType.BaseType.Equals(typeof(Enum))) //enum should be casted to number
-                    {
-                        deserializedPacket += String.Format(" {0}", Convert.ToInt16(packetBasePropertyInfo.Value.GetValue(packet)));
-                    }
-                    else if (packetBasePropertyInfo.Key.HasStringOffset)
-                    {
-                        deserializedPacket += String.Format(" {0}", String.Format("{0} -", packetBasePropertyInfo.Value.GetValue(packet)));
-                    }
-                    else
-                    {
-                        deserializedPacket += String.Format(" {0}", packetBasePropertyInfo.Value.GetValue(packet));
-                    }
+                    deserializedPacket += ConvertPacketValueBack(packetBasePropertyInfo.Value.PropertyType, packetBasePropertyInfo.Value.GetValue(packet));
                 }
 
                 iterator++;
@@ -77,7 +66,7 @@ namespace OpenNos.Core
             var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(typeof(TPacket)));
             TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); //reflection is bad, improve?
 
-            MatchCollection matches = Regex.Matches(packetContent, @"([\d\w]+)((?=\s)|$)|([\d\w]*\.[\d\w]\s*)+((?=\s)|$)");
+            MatchCollection matches = Regex.Matches(packetContent, @"([^\s]+[\.\^][^\s]+[\s]?)+((?=\s)|$)|([^\s]+)((?=\s)|$)");
 
             if (matches.Count > 0)
             {
@@ -86,65 +75,148 @@ namespace OpenNos.Core
                     int currentIndex = packetBasePropertyInfo.Key.Index + 2; //adding 2 because we need to skip incrementing number and packet header
                     string currentValue = matches[currentIndex].Value;
 
-                    //check for offset and remove it
-                    if (packetBasePropertyInfo.Key.HasStringOffset)
-                    {
-                        currentValue = currentValue.TrimEnd(' ', '-');
-                    }
-
-                    if (currentValue.Contains("."))
-                    {
-                        //currentvalue is list, check if property is also a list
-                        if (typeof(IList).IsAssignableFrom(packetBasePropertyInfo.Value.PropertyType))
-                        {
-                            IList subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(packetBasePropertyInfo.Value.PropertyType), packetBasePropertyInfo.Value.PropertyType);
-                            IEnumerable<String> splittedSubpackets = currentValue.Split(' ');
-                            Type subPacketType = packetBasePropertyInfo.Value.PropertyType.GetGenericArguments()[0];
-                            var subpacketSerializationInfo = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(subPacketType));
-
-                            foreach (string subpacket in splittedSubpackets)
-                            {
-                                string[] subpacketValues = subpacket.Split('.');
-                                var newSubpacket = Activator.CreateInstance(subPacketType);
-
-                                foreach (var subpacketPropertyInfo in subpacketSerializationInfo.Value)
-                                {
-                                    int currentSubIndex = subpacketPropertyInfo.Key.Index;
-                                    string currentSubValue = subpacketValues[currentSubIndex];
-
-                                    if (packetBasePropertyInfo.Value.PropertyType.BaseType.Equals(typeof(Enum))) //enum should be casted to number
-                                    {
-                                        subpacketPropertyInfo.Value.SetValue(newSubpacket, Enum.Parse(subpacketPropertyInfo.Value.PropertyType, currentSubValue));
-                                    }
-                                    else
-                                    {
-                                        subpacketPropertyInfo.Value.SetValue(newSubpacket, Convert.ChangeType(currentSubValue, subpacketPropertyInfo.Value.PropertyType));
-                                    }
-                                }
-
-                                subpackets.Add(newSubpacket);
-                            }
-
-                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, Convert.ChangeType(subpackets, packetBasePropertyInfo.Value.PropertyType));
-                        }
-                    }
-                    else
-                    {
-                        //simple value
-                        //set the value & convert currentValue
-                        if (packetBasePropertyInfo.Value.PropertyType.BaseType.Equals(typeof(Enum))) //enum should be casted to number
-                        {
-                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, Enum.Parse(packetBasePropertyInfo.Value.PropertyType, currentValue));
-                        }
-                        else
-                        {
-                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, Convert.ChangeType(currentValue, packetBasePropertyInfo.Value.PropertyType));
-                        }
-                    }
+                    //set the value & convert currentValue
+                    packetBasePropertyInfo.Value.SetValue(deserializedPacket, ConvertPacketValue(packetBasePropertyInfo.Value.PropertyType, currentValue));
                 }
             }
 
             return deserializedPacket;
+        }
+
+        private static IList ConvertAdvancedList(string currentValue, Type packetBasePropertyType)
+        {
+            IList subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(packetBasePropertyType), packetBasePropertyType);
+            IEnumerable<String> splittedSubpackets = currentValue.Split(' ');
+            Type subPacketType = packetBasePropertyType.GetGenericArguments()[0];
+            var subpacketSerializationInfo = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(subPacketType));
+
+            foreach (string subpacket in splittedSubpackets)
+            {
+                string[] subpacketValues = subpacket.Split('.');
+                var newSubpacket = Activator.CreateInstance(subPacketType);
+
+                foreach (var subpacketPropertyInfo in subpacketSerializationInfo.Value)
+                {
+                    int currentSubIndex = subpacketPropertyInfo.Key.Index;
+                    string currentSubValue = subpacketValues[currentSubIndex];
+
+                    subpacketPropertyInfo.Value.SetValue(newSubpacket, ConvertPacketValue(subpacketPropertyInfo.Value.PropertyType, currentSubValue));
+                }
+
+                subpackets.Add(newSubpacket);
+            }
+
+            return subpackets;
+        }
+
+        private static object ConvertPacketValue(Type packetPropertyType, string currentValue)
+        {
+            if (currentValue == "-1" || currentValue == "-")//check for empty value and cast it to null
+            {
+                currentValue = null;
+            }
+
+            if (packetPropertyType.BaseType != null && packetPropertyType.BaseType.Equals(typeof(Enum))) //enum should be casted to number
+            {
+                return Enum.Parse(packetPropertyType, currentValue);
+            }
+            else if (packetPropertyType.Equals(typeof(bool)))
+            {
+                return currentValue == "0" ? false : true;
+            }
+            else if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)) && packetPropertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketBase)))
+            {
+                return ConvertAdvancedList(currentValue, packetPropertyType);
+            }
+            else if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //check for IList but not IList<PacketBase> -> Simple lists
+            {
+                return ConvertSimpleList(currentValue, packetPropertyType);
+            }
+            else if (Nullable.GetUnderlyingType(packetPropertyType) != null && String.IsNullOrEmpty(currentValue))
+            {
+                return null;
+            }
+            else if (Nullable.GetUnderlyingType(packetPropertyType) != null)
+            {
+                return Convert.ChangeType(currentValue, packetPropertyType.GenericTypeArguments[0]);
+            }
+            else
+            {
+                return Convert.ChangeType(currentValue, packetPropertyType);
+            }
+        }
+
+        private static string ConvertPacketValueBack(Type propertyType, object value)
+        {
+            //check for nullable without value or string
+            if (propertyType.Equals(typeof(string)) && String.IsNullOrEmpty(Convert.ToString(value)))
+            {
+                return " -";
+            }
+            if (Nullable.GetUnderlyingType(propertyType) != null && String.IsNullOrEmpty(Convert.ToString(value)))
+            {
+                return " -1";
+            }
+            if (propertyType.BaseType != null && propertyType.BaseType.Equals(typeof(Enum))) //enum should be casted to number
+            {
+                return String.Format(" {0}", Convert.ToInt16(value));
+            }
+            else if (propertyType.Equals(typeof(bool))) //vool is 0 or 1 not True or False
+            {
+                return Convert.ToBoolean(value) ? " 1" : " 0";
+            }
+            else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))
+                && propertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketBase)))
+            {
+                //TODO Advanced List
+                return String.Empty;
+            }
+            else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //check for IList but not IList<PacketBase> -> Simple lists
+            {
+                return ConvertSimpleListBack(value, propertyType);
+            }
+            else
+            {
+                return String.Format(" {0}", value);
+            }
+        }
+
+        /// <summary>
+        /// Converts for instance -1.12.1.8.-1.-1.-1.-1.-1
+        /// </summary>
+        /// <param name="currentValues">String to convert</param>
+        /// <param name="genericListType">Values to convert</param>
+        /// <returns></returns>
+        private static IList ConvertSimpleList(string currentValues, Type genericListType)
+        {
+            IList subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(genericListType), genericListType);
+            IEnumerable<String> splittedValues = currentValues.Split('.');
+
+            foreach (string currentValue in splittedValues)
+            {
+                object value = ConvertPacketValue(genericListType.GenericTypeArguments[0], currentValue);
+                subpackets.Add(value);
+            }
+
+            return subpackets;
+        }
+
+        private static string ConvertSimpleListBack(object value, Type propertyType)
+        {
+            IList listValues = (IList)value;
+            string resultListPacket = String.Empty;
+            int listValueCount = listValues.Count;
+            if (listValueCount > 0)
+            {
+                resultListPacket += ConvertPacketValueBack(propertyType.GenericTypeArguments[0], listValues[0]);
+
+                for (int i = 1; i < listValueCount; i++)
+                {
+                    resultListPacket += $".{ConvertPacketValueBack(propertyType.GenericTypeArguments[0], listValues[i]).Replace(" ", "")}";
+                }
+            }
+
+            return resultListPacket;
         }
 
         private static void GenerateSerializationInformations<TPacketBase>()
