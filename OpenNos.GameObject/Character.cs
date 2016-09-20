@@ -283,11 +283,6 @@ namespace OpenNos.GameObject
             return String.Empty;
         }
 
-        public Character DeepCopy()
-        {
-            return (Character)this.MemberwiseClone();
-        }
-
         public void DeleteItem(InventoryType type, short slot)
         {
             InventoryList.DeleteFromSlotAndType(slot, type);
@@ -988,12 +983,6 @@ namespace OpenNos.GameObject
             return $"stat {Hp} {HPLoad()} {Mp} {MPLoad()} 0 {option}";
         }
 
-        public string[] GenerateVb()
-
-        { 
-                return new string[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
-        }
-
         public string GenerateStatChar()
         {
             int type = 0;
@@ -1216,6 +1205,12 @@ namespace OpenNos.GameObject
         public string GenerateTp()
         {
             return $"tp 1 {CharacterId} {MapX} {MapY} 0";
+        }
+
+        public string[] GenerateVb()
+
+        {
+            return new string[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
         }
 
         public void GenerateXp(NpcMonster monsterinfo)
@@ -1697,7 +1692,8 @@ namespace OpenNos.GameObject
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
                 //load and concat inventory with equipment
-                IEnumerable<InventoryDTO> inventories = InventoryList.Inventory.Concat(EquipmentList.Inventory);
+                InventoryList copiedInventoryList = InventoryList.DeepCopy();
+                IEnumerable<InventoryDTO> inventories = copiedInventoryList.Inventory.Concat(EquipmentList.Inventory);
                 IEnumerable<Guid> currentlySavedInventories = DAOFactory.InventoryDAO.LoadKeysByCharacterId(CharacterId).ToList();
 
                 //remove all which are saved but not in our current enumerable

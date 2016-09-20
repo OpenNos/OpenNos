@@ -146,6 +146,14 @@ namespace OpenNos.GameObject
             return count;
         }
 
+        public InventoryList DeepCopy()
+        {
+            InventoryList clonedList = (InventoryList)this.MemberwiseClone();
+            clonedList.Inventory = this.Inventory.Select(x => x.DeepCopy()).ToList();
+
+            return clonedList;
+        }
+
         public Tuple<short, InventoryType> DeleteByInventoryItemId(Guid id)
         {
             Logger.Debug(id.ToString(), Owner.Session.SessionId);

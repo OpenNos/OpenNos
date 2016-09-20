@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject
@@ -31,6 +32,11 @@ namespace OpenNos.GameObject
             this.Type = inventory.Type;
             this.ItemInstance = inventory.ItemInstance;
             this.Id = inventory.Id;
+        }
+
+        internal Inventory DeepCopy()
+        {
+            return (Inventory)this.MemberwiseClone();
         }
 
         #endregion

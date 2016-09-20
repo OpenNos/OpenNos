@@ -161,7 +161,8 @@ namespace OpenNos.GameObject
                         {
                             ServerManager.Instance.GroupLeave(session);
                         }
-                        session.Character.DeepCopy().Save();
+
+                        session.Character.Save();
 
                         //only remove the character from map if the character has been set
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
