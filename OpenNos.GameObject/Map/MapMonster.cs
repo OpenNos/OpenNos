@@ -265,7 +265,7 @@ namespace OpenNos.GameObject
                         }
                         if (npcMonsterSkill != null && (npcMonsterSkill.Skill.Range > 0 || npcMonsterSkill.Skill.TargetRange > 0))
                         {
-                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(npcMonsterSkill.Skill.TargetRange == 0 ? this.MapX : targetSession.Character.MapX, npcMonsterSkill.Skill.TargetRange == 0 ? this.MapY : targetSession.Character.MapY, (byte)(npcMonsterSkill.Skill.TargetRange + npcMonsterSkill.Skill.Range)).Where(s => s.CharacterId != Target))
+                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(npcMonsterSkill.Skill.TargetRange == 0 ? this.MapX : targetSession.Character.MapX, npcMonsterSkill.Skill.TargetRange == 0 ? this.MapY : targetSession.Character.MapY, (byte)(npcMonsterSkill.Skill.TargetRange + npcMonsterSkill.Skill.Range)).Where(s => s.CharacterId != Target && s.Hp > 0))
                             {
                                 if (chara.IsSitting)
                                 {
