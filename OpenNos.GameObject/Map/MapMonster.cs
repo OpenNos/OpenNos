@@ -199,6 +199,7 @@ namespace OpenNos.GameObject
             }
             else
             {
+                CurrentMp = 0;
                 ClientSession targetSession = Map.Sessions.SingleOrDefault(s => s.Character.CharacterId == Target);
 
                 if (targetSession == null || targetSession.Character.Invisible)
@@ -219,13 +220,15 @@ namespace OpenNos.GameObject
                 }
 
                 int damage = 100;
-                if (targetSession != null && ((npcMonsterSkill != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
+
+                if (targetSession != null && ((npcMonsterSkill != null && CurrentMp - npcMonsterSkill.Skill.MpCost >= 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
                 {
                     if ((DateTime.Now - LastEffect).TotalMilliseconds >= Monster.BasicCooldown * 200 && !inWaiting)
-                    {
+                    {                        
                         if (npcMonsterSkill != null)
                         {
                             npcMonsterSkill.LastUse = DateTime.Now;
+                            CurrentMp -= npcMonsterSkill.Skill.MpCost;
                             Map.Broadcast($"ct 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.Skill.CastAnimation} -1 {npcMonsterSkill.Skill.SkillVNum}");
                         }
                         LastMove = DateTime.Now;
