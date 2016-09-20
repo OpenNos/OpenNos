@@ -228,7 +228,7 @@ namespace OpenNos.GameObject
                         {
                             npcMonsterSkill.LastUse = DateTime.Now;
                             CurrentMp -= npcMonsterSkill.Skill.MpCost;
-                            Map.Broadcast($"ct 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.Skill.CastAnimation} -1 {npcMonsterSkill.Skill.SkillVNum}");
+                            Map.Broadcast($"ct 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
                         }
                         LastMove = DateTime.Now;
 
