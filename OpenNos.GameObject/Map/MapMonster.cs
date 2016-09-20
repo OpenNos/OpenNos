@@ -159,7 +159,7 @@ namespace OpenNos.GameObject
                             return;
                         }
                     }
-                    else if (time > random.Next(1, MoveFrequent) + 1)
+                    else if (time > 0.50 * random.Next(1, MoveFrequent))
                     {
                         int moveDistance = (int)Math.Round((double)Monster.Speed / 2);
                         byte xpoint = (byte)(random.Next(1, moveDistance + 1));
