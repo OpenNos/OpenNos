@@ -140,7 +140,7 @@ namespace OpenNos.GameObject
                     MoveFrequent = 1;
                 if (IsMoving)
                 {
-                    if (Path.Where(s => s != null).ToList().Count > 0)//fix a path problem
+                    if (Path.Where(s => s != null).ToList().Count > 0)
                     {
                         if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / Monster.Speed)
                         {
@@ -310,7 +310,11 @@ namespace OpenNos.GameObject
                         }
                         if (targetSession == null || MapId != targetSession.Character.MapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) > maxDistance))
                         {
-                            Path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
+                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
+                            if (!Path.Any())
+                            {
+                                Path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
+                            }
                             Target = -1;
                         }
                         else
