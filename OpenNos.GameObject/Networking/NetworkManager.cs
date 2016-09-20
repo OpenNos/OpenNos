@@ -165,8 +165,6 @@ namespace OpenNos.GameObject
 
                         //only remove the character from map if the character has been set
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
-
-                     
                     }
                 }
 

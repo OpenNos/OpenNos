@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,52 +38,58 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public bool Broadcast(string message)
+        public void Broadcast(string message)
         {
-            return Broadcast(null, message);
+            Broadcast(null, message);
         }
 
-        public bool Broadcast(ClientSession client, string message, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        public void Broadcast(ClientSession client, string message, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
         {
-            switch (receiver)
+            try
             {
-                case ReceiverType.All:
-                    for (int i = Sessions.Where(s => s != null && s.Character != null && !s.IsDisposing).Count() - 1; i >= 0; i--)
-                    {
-                        Sessions.Where(s => s != null).ElementAt(i).SendPacket(message);
-                    }
-                    break;
+                switch (receiver)
+                {
+                    case ReceiverType.All:
+                        for (int i = Sessions.Where(s => s != null && s.Character != null && !s.IsDisposing).Count() - 1; i >= 0; i--)
+                        {
+                            Sessions.Where(s => s != null).ElementAt(i).SendPacket(message);
+                        }
+                        break;
 
-                case ReceiverType.AllExceptMe:
-                    for (int i = Sessions.Where(s => s != null && s.Character != null && s != client && !s.IsDisposing).Count() - 1; i >= 0; i--)
-                        Sessions.Where(s => s != null && s != client).ElementAt(i).SendPacket(message);
-                    break;
+                    case ReceiverType.AllExceptMe:
+                        for (int i = Sessions.Where(s => s != null && s.Character != null && s != client && !s.IsDisposing).Count() - 1; i >= 0; i--)
+                            Sessions.Where(s => s != null && s != client).ElementAt(i).SendPacket(message);
+                        break;
 
-                case ReceiverType.OnlySomeone:
-                    ClientSession targetSession = Sessions.FirstOrDefault(s => s.Character != null && !s.IsDisposing && (s.Character.Name.Equals(characterName) || s.Character.CharacterId.Equals(characterId)));
+                    case ReceiverType.OnlySomeone:
+                        {
+                            ClientSession targetSession = Sessions.FirstOrDefault(s => s.Character != null && !s.IsDisposing && (s.Character.Name.Equals(characterName) || s.Character.CharacterId.Equals(characterId)));
 
-                    if (targetSession == null) return false;
+                            if (targetSession == null) return;
 
-                    targetSession.SendPacket(message);
-                    return true;
+                            targetSession.SendPacket(message);
+                            break;
+                        }
+                    case ReceiverType.AllNoEmoBlocked:
+                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.MapId.Equals(client.Character.MapId) && !s.Character.EmoticonsBlocked))
+                            session.SendPacket(message);
+                        break;
 
-                case ReceiverType.AllNoEmoBlocked:
-                    foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.MapId.Equals(client.Character.MapId) && !s.Character.EmoticonsBlocked))
-                        session.SendPacket(message);
-                    break;
+                    case ReceiverType.AllNoHeroBlocked:
+                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && !s.Character.HeroChatBlocked))
+                            session.SendPacket(message);
+                        break;
 
-                case ReceiverType.AllNoHeroBlocked:
-                    foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && !s.Character.HeroChatBlocked))
-                        session.SendPacket(message);
-                    break;
-
-                case ReceiverType.Group:
-                    foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.Group != null && s.Character.Group.GroupId.Equals(client.Character.Group.GroupId)))
-                        session.SendPacket(message);
-                    break;
+                    case ReceiverType.Group:
+                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.Group != null && s.Character.Group.GroupId.Equals(client.Character.Group.GroupId)))
+                            session.SendPacket(message);
+                        break;
+                }
             }
-
-            return true;
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         public virtual void RegisterSession(ClientSession session)

@@ -173,96 +173,111 @@ namespace OpenNos.GameObject
 
         public List<MapCell> AStar(MapCell cell1, MapCell cell2)
         {
-            List<MapCell> SolutionPathList = new List<MapCell>();
-
-            SortedCostMapCellList OPEN = new SortedCostMapCellList();
-            SortedCostMapCellList CLOSED = new SortedCostMapCellList();
-            MapCellAStar cell_start = new MapCellAStar(null, null, cell1.X, cell1.Y, cell1.MapId);
-            MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
-            OPEN.Push(cell_start);
-            if (cell1.MapId != cell2.MapId)
+            try
             {
-                SolutionPathList.Insert(0, cell_start);
+                List<MapCell> SolutionPathList = new List<MapCell>();
+
+                SortedCostMapCellList OPEN = new SortedCostMapCellList();
+                SortedCostMapCellList CLOSED = new SortedCostMapCellList();
+                MapCellAStar cell_start = new MapCellAStar(null, null, cell1.X, cell1.Y, cell1.MapId);
+                MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
+                OPEN.Push(cell_start);
+                if (cell1.MapId != cell2.MapId)
+                {
+                    SolutionPathList.Insert(0, cell_start);
+                    return SolutionPathList;
+                }
+                while (OPEN.Count > 0)
+                {
+                    MapCellAStar cell_current = OPEN.Pop();
+
+                    if (cell_current.IsMatch(cell_goal))
+                    {
+                        cell_goal.parentcell = cell_current.parentcell;
+                        break;
+                    }
+
+                    List<MapCellAStar> successors = cell_current.GetSuccessors();
+
+                    foreach (MapCellAStar cell_successor in successors)
+                    {
+                        int oFound = OPEN.IndexOf(cell_successor);
+
+                        if (oFound > 0)
+                        {
+                            MapCellAStar existing_cell = OPEN.CellAt(oFound);
+                            if (existing_cell.CompareTo(cell_current) <= 0)
+                                continue;
+                        }
+
+                        int cFound = CLOSED.IndexOf(cell_successor);
+
+                        if (cFound > 0)
+                        {
+                            MapCellAStar existing_cell = CLOSED.CellAt(cFound);
+                            if (existing_cell.CompareTo(cell_current) <= 0)
+                                continue;
+                        }
+
+                        if (oFound != -1)
+                            OPEN.RemoveAt(oFound);
+                        if (cFound != -1)
+                            CLOSED.RemoveAt(cFound);
+
+                        OPEN.Push(cell_successor);
+                    }
+                    CLOSED.Push(cell_current);
+                }
+                MapCellAStar p = cell_goal;
+                while (p != null)
+                {
+                    SolutionPathList.Insert(0, p);
+                    p = p.parentcell;
+                }
                 return SolutionPathList;
             }
-            while (OPEN.Count > 0)
+            catch (Exception e)
             {
-                MapCellAStar cell_current = OPEN.Pop();
-
-                if (cell_current.IsMatch(cell_goal))
-                {
-                    cell_goal.parentcell = cell_current.parentcell;
-                    break;
-                }
-
-                List<MapCellAStar> successors = cell_current.GetSuccessors();
-
-                foreach (MapCellAStar cell_successor in successors)
-                {
-                    int oFound = OPEN.IndexOf(cell_successor);
-
-                    if (oFound > 0)
-                    {
-                        MapCellAStar existing_cell = OPEN.CellAt(oFound);
-                        if (existing_cell.CompareTo(cell_current) <= 0)
-                            continue;
-                    }
-
-                    int cFound = CLOSED.IndexOf(cell_successor);
-
-                    if (cFound > 0)
-                    {
-                        MapCellAStar existing_cell = CLOSED.CellAt(cFound);
-                        if (existing_cell.CompareTo(cell_current) <= 0)
-                            continue;
-                    }
-
-                    if (oFound != -1)
-                        OPEN.RemoveAt(oFound);
-                    if (cFound != -1)
-                        CLOSED.RemoveAt(cFound);
-
-                    OPEN.Push(cell_successor);
-                }
-                CLOSED.Push(cell_current);
+                Logger.Error(e);
+                return new List<MapCell>();
             }
-            MapCellAStar p = cell_goal;
-            while (p != null)
-            {
-                SolutionPathList.Insert(0, p);
-                p = p.parentcell;
-            }
-            return SolutionPathList;
         }
 
         public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY)
         {
-            Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-            MapItem droppedItem = null;
-            short localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-            short localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
-            while (IsBlockedZone(localMapX, localMapY))
+            try
             {
-                localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-                localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+                Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                MapItem droppedItem = null;
+                short localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+                short localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+                while (IsBlockedZone(localMapX, localMapY))
+                {
+                    localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+                    localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+                }
+
+                ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum);
+                newInstance.Amount = drop.Amount;
+
+                droppedItem = new MapItem(localMapX, localMapY)
+                {
+                    ItemInstance = newInstance,
+                    Owner = Owner
+                };
+
+                //rarify
+                if (droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                    droppedItem.Rarify(null);
+
+                ServerManager.GetMap(MapId).DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
+
+                Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");//TODO UseTransportId
             }
-
-            ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum);
-            newInstance.Amount = drop.Amount;
-
-            droppedItem = new MapItem(localMapX, localMapY)
+            catch (Exception e)
             {
-                ItemInstance = newInstance,
-                Owner = Owner
-            };
-
-            //rarify
-            if (droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
-                droppedItem.Rarify(null);
-
-            ServerManager.GetMap(MapId).DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
-
-            Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");//TODO UseTransportId
+                Logger.Error(e);
+            }
         }
 
         public IEnumerable<string> GenerateUserShops()
@@ -346,29 +361,43 @@ namespace OpenNos.GameObject
 
         public async void MonsterLifeManager()
         {
-            var rnd = new Random();
-            List<Task> MonsterLifeTask = new List<Task>();
-            Monsters.RemoveAll(s=>!s.Alive && !s.Respawn);
-            foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
+            try
             {
-                MonsterLifeTask.Add(new Task(() => monster.MonsterLife()));
-                MonsterLifeTask.Last().Start();
+                var rnd = new Random();
+                List<Task> MonsterLifeTask = new List<Task>();
+                Monsters.RemoveAll(s => !s.Alive && !s.Respawn);
+                foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
+                {
+                    MonsterLifeTask.Add(new Task(() => monster.MonsterLife()));
+                    MonsterLifeTask.Last().Start();
+                }
+                foreach (Task monsterLiveTask in MonsterLifeTask)
+                    await monsterLiveTask;
             }
-            foreach (Task monsterLiveTask in MonsterLifeTask)
-                await monsterLiveTask;
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         public async void NpcLifeManager()
         {
-            var rnd = new Random();
-            List<Task> NpcLifeTask = new List<Task>();
-            foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
+            try
             {
-                NpcLifeTask.Add(new Task(() => npc.NpcLife()));
-                NpcLifeTask.Last().Start();
+                var rnd = new Random();
+                List<Task> NpcLifeTask = new List<Task>();
+                foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
+                {
+                    NpcLifeTask.Add(new Task(() => npc.NpcLife()));
+                    NpcLifeTask.Last().Start();
+                }
+                foreach (Task t in NpcLifeTask)
+                    await t;
             }
-            foreach (Task t in NpcLifeTask)
-                await t;
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
@@ -417,18 +446,25 @@ namespace OpenNos.GameObject
 
         internal async void MapTaskManager()
         {
-            Task npcLifeTask = new Task(() => NpcLifeManager());
-            npcLifeTask.Start();
-            Task monsterLifeTask = new Task(() => MonsterLifeManager());
-            monsterLifeTask.Start();
-            Task characterLifeTask = new Task(() => CharacterLifeManager());
-            characterLifeTask.Start();
+            try
+            {
+                Task npcLifeTask = new Task(() => NpcLifeManager());
+                npcLifeTask.Start();
+                Task monsterLifeTask = new Task(() => MonsterLifeManager());
+                monsterLifeTask.Start();
+                Task characterLifeTask = new Task(() => CharacterLifeManager());
+                characterLifeTask.Start();
 
-            RemoveMapItem();
+                RemoveMapItem();
 
-            await npcLifeTask;
-            await monsterLifeTask;
-            await characterLifeTask;
+                await npcLifeTask;
+                await monsterLifeTask;
+                await characterLifeTask;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         internal List<MapCell> StraightPath(MapCell mapCell1, MapCell mapCell2)
@@ -479,73 +515,80 @@ namespace OpenNos.GameObject
 
         private void CharacterLifeManager()
         {
-            List<Task> NpcLifeTask = new List<Task>();
-            foreach (ClientSession Session in Sessions.Where(s => s?.Character != null))
+            try
             {
-                int x = 1;
-                bool change = false;
-                if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)
+                List<Task> NpcLifeTask = new List<Task>();
+                foreach (ClientSession Session in Sessions.Where(s => s?.Character != null))
                 {
-                    Session.Character.Mp = 0;
-                    Session.SendPacket(Session.Character.GenerateStat());
-                    Session.Character.LastHealth = DateTime.Now;
-                    continue;
-                }
-                WearableInstance amulet = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Equipment);
-                if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
-                {
-                    if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
-                    else
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
-                    Session.Character.LastEffect = DateTime.Now;
-                }
-
-                if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
-                {
-                    Session.Character.LastHealth = DateTime.Now;
-                    if (Session.healthStop == true)
+                    int x = 1;
+                    bool change = false;
+                    if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)
                     {
-                        Session.healthStop = false;
-                        return;
+                        Session.Character.Mp = 0;
+                        Session.SendPacket(Session.Character.GenerateStat());
+                        Session.Character.LastHealth = DateTime.Now;
+                        continue;
+                    }
+                    WearableInstance amulet = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Equipment);
+                    if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
+                    {
+                        if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
+                        else
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
+                        Session.Character.LastEffect = DateTime.Now;
                     }
 
-                    if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkill.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
+                    if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
                     {
-                        if (x == 0)
-                            x = 1;
-                        if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
+                        Session.Character.LastHealth = DateTime.Now;
+                        if (Session.healthStop == true)
                         {
-                            change = true;
-                            Session.Character.Hp += Session.Character.HealthHPLoad();
+                            Session.healthStop = false;
+                            return;
                         }
-                        else
+
+                        if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkill.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
                         {
-                            if (Session.Character.Hp != (int)Session.Character.HPLoad())
-                                change = true;
-                            Session.Character.Hp = (int)Session.Character.HPLoad();
-                        }
-                        if (x == 1)
-                        {
-                            if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
+                            if (x == 0)
+                                x = 1;
+                            if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
                             {
-                                Session.Character.Mp += Session.Character.HealthMPLoad();
                                 change = true;
+                                Session.Character.Hp += Session.Character.HealthHPLoad();
                             }
                             else
                             {
-                                if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                                if (Session.Character.Hp != (int)Session.Character.HPLoad())
                                     change = true;
-                                Session.Character.Mp = (int)Session.Character.MPLoad();
+                                Session.Character.Hp = (int)Session.Character.HPLoad();
                             }
-                            x = 0;
-                        }
-                        if (change)
-                        {
-                            Session.SendPacket(Session.Character.GenerateStat());
+                            if (x == 1)
+                            {
+                                if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
+                                {
+                                    Session.Character.Mp += Session.Character.HealthMPLoad();
+                                    change = true;
+                                }
+                                else
+                                {
+                                    if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                                        change = true;
+                                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                                }
+                                x = 0;
+                            }
+                            if (change)
+                            {
+                                Session.SendPacket(Session.Character.GenerateStat());
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
