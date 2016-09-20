@@ -431,13 +431,14 @@ namespace OpenNos.Handler
                 return;
 
             byte type = 0;
-            byte.TryParse(packetsplit[2], out type);
+            short VNum = 0;
+            if (!byte.TryParse(packetsplit[2], out type) && !short.TryParse(packetsplit[3], out VNum)) return;
             if (type == 1)
             {
                 MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
                 if (npc != null)
                 {
-                    Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
+                    Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
                     if (rec != null && rec.Amount > 0)
                     {
                         string rece = $"m_list 3 {rec.Amount}";
@@ -456,7 +457,7 @@ namespace OpenNos.Handler
                 MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
                 if (npc != null)
                 {
-                    Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
+                    Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
                     if (rec != null)
                     {
                         if (rec.Amount <= 0)
@@ -684,7 +685,9 @@ namespace OpenNos.Handler
                 }
                 else// Npc Shop , ignore if has drop
                 {
-                    MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
+                    short MapNpcId = -1;
+                    if (!short.TryParse(packetsplit[3], out MapNpcId)) return;
+                    MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
                     NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
 
                     if (mapobject.Drops.Any(s => s.MonsterVNum != null) && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5)) // mining mapobjects

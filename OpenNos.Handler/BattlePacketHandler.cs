@@ -94,13 +94,18 @@ namespace OpenNos.Handler
 
                     if (skills != null)
                     {
-                        CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == short.Parse(packetsplit[i]));
-                        MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == short.Parse(packetsplit[i + 1]));
-                        if (mon != null && ski != null)
+                        short CastId = -1;
+                        short MapMonsterId = -1;
+                        if (short.TryParse(packetsplit[i], out CastId) && short.TryParse(packetsplit[i+1], out MapMonsterId))
                         {
-                            Session.Character.LastSkill = DateTime.Now;
-                            damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
-                            Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 0 {ski.Skill.SkillType - 1}");
+                            CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == CastId);
+                            MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == MapMonsterId);
+                            if (mon != null && ski != null)
+                            {
+                                Session.Character.LastSkill = DateTime.Now;
+                                damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
+                                Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 0 {ski.Skill.SkillType - 1}");
+                            }
                         }
                     }
                 }
@@ -281,10 +286,14 @@ namespace OpenNos.Handler
                 string[] packetsplit = packet.Split(' ');
                 if (packetsplit.Length > 6)
                 {
-                    Session.Character.MapX = Convert.ToInt16(packetsplit[5]);
-                    Session.Character.MapY = Convert.ToInt16(packetsplit[6]);
+                    short MapX =-1, MapY =-1;
+                    if (!short.TryParse(packetsplit[5], out MapX) && !short.TryParse(packetsplit[6], out MapY)) return;
+                    Session.Character.MapX = MapX;
+                    Session.Character.MapY = MapY;
                 }
-                byte usertype = byte.Parse(packetsplit[3]);
+                byte usrType;
+                if (!byte.TryParse(packetsplit[3], out usrType)) return;
+                byte usertype = usrType;
                 if (Session.Character.IsSitting)
                     Session.Character.Rest();
                 if (Session.Character.IsVehicled)
@@ -366,7 +375,11 @@ namespace OpenNos.Handler
                     if (packetsplit.Length > 4)
                         if (Session.Character.Hp > 0)
                         {
-                            ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4]));
+                            int CastingId;
+                            short x = -1;
+                            short y = -1;
+                            if (!int.TryParse(packetsplit[2], out CastingId) && !short.TryParse(packetsplit[3], out x) && !short.TryParse(packetsplit[4], out y)) return;
+                            ZoneHit(CastingId, x, y);
                         }
                 }
             }

@@ -719,7 +719,11 @@ namespace OpenNos.Handler
 
             if (packetsplit.Length == 10 && packetsplit[2] == "10")
             {
-                if (!Session.Character.UseSp || specialistInstance == null || int.Parse(packetsplit[5]) != specialistInstance.TransportId)
+                short SLDamage = 0, SLDefence = 0, SLElement = 0, SLHP = 0;
+                int TransportId = -1;
+                if (!int.TryParse(packetsplit[5], out TransportId) && !short.TryParse(packetsplit[6], out SLDamage) && !short.TryParse(packetsplit[7], out SLDefence) && !short.TryParse(packetsplit[8], out SLElement) && !short.TryParse(packetsplit[8], out SLHP)) return;
+
+                if (!Session.Character.UseSp || specialistInstance == null || TransportId != specialistInstance.TransportId)
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
@@ -727,14 +731,14 @@ namespace OpenNos.Handler
                 if (ServersData.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade)
                     - specialistInstance.SlDamage - specialistInstance.SlHP
                     - specialistInstance.SlElement - specialistInstance.SlDefence
-                    - short.Parse(packetsplit[6]) - short.Parse(packetsplit[7])
-                    - short.Parse(packetsplit[8]) - short.Parse(packetsplit[9]) < 0)
+                    - SLDamage - SLDefence
+                    - SLElement - SLHP < 0)
                     return;
-                if (short.Parse(packetsplit[6]) < 0 || short.Parse(packetsplit[7]) < 0 || short.Parse(packetsplit[8]) < 0 || short.Parse(packetsplit[9]) < 0) { return; }
-                specialistInstance.SlDamage += short.Parse(packetsplit[6]);
-                specialistInstance.SlDefence += short.Parse(packetsplit[7]);
-                specialistInstance.SlElement += short.Parse(packetsplit[8]);
-                specialistInstance.SlHP += short.Parse(packetsplit[9]);
+                if (SLDamage < 0 || SLDefence < 0 || SLElement < 0 || SLHP < 0) { return; }
+                specialistInstance.SlDamage += SLDamage;
+                specialistInstance.SlDefence += SLDefence;
+                specialistInstance.SlElement += SLElement;
+                specialistInstance.SlHP += SLHP;
 
                 int slElement = ServersData.SlPoint(specialistInstance.SlElement, 2);
                 int slHp = ServersData.SlPoint(specialistInstance.SlHP, 3);

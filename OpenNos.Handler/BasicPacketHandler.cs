@@ -446,7 +446,9 @@ namespace OpenNos.Handler
                 case "400":
                     if (packetsplit.Length > 3)
                     {
-                        MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
+                        short MapNpcId = -1;
+                        if (!short.TryParse(packetsplit[3], out MapNpcId)) return;
+                        MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
                         Random rnd = new Random();
                         int RateDrop = ServerManager.DropRate;
@@ -621,10 +623,15 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length == 4)
             {
-                switch (int.Parse(packetsplit[2]))
+                int TypeOption = -1;
+                int OptionValue = -1;
+
+                if(int.TryParse(packetsplit[3], out TypeOption) && int.TryParse(packetsplit[3], out OptionValue))
+
+                switch (TypeOption)
                 {
                     case (int)ConfigType.BuffBlocked:
-                        Session.Character.BuffBlocked = int.Parse(packetsplit[3]) == 1;
+                        Session.Character.BuffBlocked = OptionValue == 1;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.BuffBlocked
                                 ? "BUFF_BLOCKED"
@@ -633,7 +640,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.EmoticonsBlocked:
-                        Session.Character.EmoticonsBlocked = int.Parse(packetsplit[3]) == 1;
+                        Session.Character.EmoticonsBlocked = OptionValue == 1;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.EmoticonsBlocked
                                 ? "EMO_BLOCKED"
@@ -642,7 +649,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.ExchangeBlocked:
-                        Session.Character.ExchangeBlocked = int.Parse(packetsplit[3]) == 0;
+                        Session.Character.ExchangeBlocked = OptionValue == 0;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.ExchangeBlocked
                                 ? "EXCHANGE_BLOCKED"
@@ -651,7 +658,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.FriendRequestBlocked:
-                        Session.Character.FriendRequestBlocked = int.Parse(packetsplit[3]) == 0;
+                        Session.Character.FriendRequestBlocked = OptionValue == 0;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.FriendRequestBlocked
                                 ? "FRIEND_REQ_BLOCKED"
@@ -660,7 +667,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.GroupRequestBlocked:
-                        Session.Character.GroupRequestBlocked = int.Parse(packetsplit[3]) == 0;
+                        Session.Character.GroupRequestBlocked = OptionValue == 0;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.GroupRequestBlocked
                                 ? "GROUP_REQ_BLOCKED"
@@ -669,7 +676,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.HeroChatBlocked:
-                        Session.Character.HeroChatBlocked = int.Parse(packetsplit[3]) == 1;
+                        Session.Character.HeroChatBlocked = OptionValue == 1;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.HeroChatBlocked
                                 ? "HERO_CHAT_BLOCKED"
@@ -678,7 +685,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.HpBlocked:
-                        Session.Character.HpBlocked = int.Parse(packetsplit[3]) == 1;
+                        Session.Character.HpBlocked = OptionValue == 1;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.HpBlocked
                                 ? "HP_BLOCKED"
@@ -687,7 +694,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.MinilandInviteBlocked:
-                        Session.Character.MinilandInviteBlocked = int.Parse(packetsplit[3]) == 1;
+                        Session.Character.MinilandInviteBlocked = OptionValue == 1;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.MinilandInviteBlocked
                                 ? "MINI_INV_BLOCKED"
@@ -696,7 +703,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.MouseAimLock:
-                        Session.Character.MouseAimLock = int.Parse(packetsplit[3]) == 1;
+                        Session.Character.MouseAimLock = OptionValue == 1;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.MouseAimLock
                                 ? "MOUSE_LOCKED"
@@ -705,7 +712,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.QuickGetUp:
-                        Session.Character.QuickGetUp = int.Parse(packetsplit[3]) == 1;
+                        Session.Character.QuickGetUp = OptionValue == 1;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.QuickGetUp
                                 ? "QUICK_GET_UP_ENABLED"
@@ -714,7 +721,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.WhisperBlocked:
-                        Session.Character.WhisperBlocked = int.Parse(packetsplit[3]) == 0;
+                        Session.Character.WhisperBlocked = OptionValue == 0;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.WhisperBlocked
                                 ? "WHISPER_BLOCKED"
@@ -723,7 +730,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.FamilyRequestBlocked:
-                        Session.Character.FamilyRequestBlocked = int.Parse(packetsplit[3]) == 0;
+                        Session.Character.FamilyRequestBlocked = OptionValue == 0;
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.FamilyRequestBlocked
                                 ? "FAMILY_REQ_LOCKED"
@@ -740,7 +747,7 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_MASTER"), 0));
                             return;
                         }
-                        if (int.Parse(packetsplit[3]) == 0)
+                        if (OptionValue == 0)
                         {
                             ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 1;
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0), ReceiverType.Group);
@@ -883,10 +890,14 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2] == "5")
             {
-                NpcMonster npc = ServerManager.GetNpc(short.Parse(packetsplit[3]));
-                if (npc != null)
-                {
-                    Session.SendPacket(npc.GenerateEInfo());
+                short VNumNpc = -1;
+                if(short.TryParse(packetsplit[3], out VNumNpc))
+                {                
+                    NpcMonster npc = ServerManager.GetNpc(VNumNpc);
+                    if (npc != null)
+                    {
+                        Session.SendPacket(npc.GenerateEInfo());
+                    }
                 }
             }
             else
