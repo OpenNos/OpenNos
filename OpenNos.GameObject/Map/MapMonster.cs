@@ -199,7 +199,6 @@ namespace OpenNos.GameObject
             }
             else
             {
-                CurrentMp = 0;
                 ClientSession targetSession = Map.Sessions.SingleOrDefault(s => s.Character.CharacterId == Target);
 
                 if (targetSession == null || targetSession.Character.Invisible)
