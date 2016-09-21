@@ -141,7 +141,17 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 {
                     if (_clientSocket.Connected)
                     {
-                        var sent = _clientSocket.Send(messageBytes, totalSent, messageBytes.Length - totalSent, SocketFlags.None);
+                        var sent = 0;
+                        try
+                        {
+                            sent = _clientSocket.Send(messageBytes, totalSent, messageBytes.Length - totalSent, SocketFlags.None);
+                        }
+                        catch (Exception e)
+                        {
+                            //annoying bug
+                            Logger.Log.Error("A packet would have been sent to a disconnected client. IGNORE THIS.", e);
+                        }
+
                         if (sent <= 0)
                         {
                             throw new CommunicationException("Message could not be sent via TCP socket. Only " + totalSent + " bytes of " + messageBytes.Length + " bytes are sent.");

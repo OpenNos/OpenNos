@@ -138,6 +138,8 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool HasSelectedCharacter { get; set; }
+
         public bool HasSession
         {
             get
@@ -221,17 +223,20 @@ namespace OpenNos.GameObject
 
         public void SendPacket(string packet)
         {
-            _client.SendPacket(packet);
+            if (!IsDisposing)
+                _client.SendPacket(packet);
         }
 
         public void SendPacketFormat(string packet, params object[] param)
         {
-            _client.SendPacketFormat(packet, param);
+            if (!IsDisposing)
+                _client.SendPacketFormat(packet, param);
         }
 
         public void SendPackets(IEnumerable<String> packets)
         {
-            _client.SendPackets(packets);
+            if (!IsDisposing)
+                _client.SendPackets(packets);
         }
 
         private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)
@@ -436,8 +441,11 @@ namespace OpenNos.GameObject
                     }
                     try
                     {
-                        //call actual handler method
-                        action.Value.Item1(action.Value.Item2, packet);
+                        if (HasSelectedCharacter || action.Value.Item2.GetType().Name == "CharacterScreenPacketHandler" || action.Value.Item2.GetType().Name == "LoginPacketHandler")
+                        {
+                            //call actual handler method
+                            action.Value.Item1(action.Value.Item2, packet);
+                        }
                     }
                     catch (Exception ex)
                     {

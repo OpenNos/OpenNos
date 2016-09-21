@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacterScreenPacketHandler.cs" />
     <Compile Include="NpcPacketHandler.cs" />
     <Compile Include="BattlePacketHandler.cs" />
     <Compile Include="Packets\ClientPackets\WalkPacket.cs" />
