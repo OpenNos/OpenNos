@@ -26,28 +26,36 @@ namespace OpenNos.Core
         public static string Deserialize<TPacket>(TPacket packet)
             where TPacket : PacketBase
         {
-            //load pregenerated serialization information
-            var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(typeof(TPacket)));
-
-            string deserializedPacket = serializationInformation.Key.Item2; //set header
-
-            int iterator = 0;
-            foreach (var packetBasePropertyInfo in serializationInformation.Value)
+            try
             {
-                //check if we need to add a non mapped value or a mapped
-                if (packetBasePropertyInfo.Key.Index > iterator)
+                //load pregenerated serialization information
+                var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(typeof(TPacket)));
+
+                string deserializedPacket = serializationInformation.Key.Item2; //set header
+
+                int iterator = 0;
+                foreach (var packetBasePropertyInfo in serializationInformation.Value)
                 {
-                    deserializedPacket += " 0";
-                }
-                else
-                {
-                    deserializedPacket += ConvertPacketValueBack(packetBasePropertyInfo.Value.PropertyType, packetBasePropertyInfo.Value.GetValue(packet));
+                    //check if we need to add a non mapped value or a mapped
+                    if (packetBasePropertyInfo.Key.Index > iterator)
+                    {
+                        deserializedPacket += " 0";
+                    }
+                    else
+                    {
+                        deserializedPacket += ConvertValueBack(packetBasePropertyInfo.Value.PropertyType, packetBasePropertyInfo.Value.GetValue(packet));
+                    }
+
+                    iterator++;
                 }
 
-                iterator++;
+                return deserializedPacket;
             }
-
-            return deserializedPacket;
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return String.Empty;
+            }
         }
 
         public static void Initialize<TBaseType>()
@@ -63,27 +71,84 @@ namespace OpenNos.Core
         public static TPacket Serialize<TPacket>(string packetContent)
             where TPacket : PacketBase
         {
-            var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(typeof(TPacket)));
-            TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); //reflection is bad, improve?
-
-            MatchCollection matches = Regex.Matches(packetContent, @"([^\s]+[\.\^][^\s]+[\s]?)+((?=\s)|$)|([^\s]+)((?=\s)|$)");
-
-            if (matches.Count > 0)
+            try
             {
-                foreach (var packetBasePropertyInfo in serializationInformation.Value)
-                {
-                    int currentIndex = packetBasePropertyInfo.Key.Index + 2; //adding 2 because we need to skip incrementing number and packet header
-                    string currentValue = matches[currentIndex].Value;
+                var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(typeof(TPacket)));
+                TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); //reflection is bad, improve?
 
-                    //set the value & convert currentValue
-                    packetBasePropertyInfo.Value.SetValue(deserializedPacket, ConvertPacketValue(packetBasePropertyInfo.Value.PropertyType, currentValue));
+                MatchCollection matches = Regex.Matches(packetContent, @"([^\s]+[\.\^][^\s]+[\s]?)+((?=\s)|$)|([^\s]+)((?=\s)|$)");
+
+                if (matches.Count > 0)
+                {
+                    foreach (var packetBasePropertyInfo in serializationInformation.Value)
+                    {
+                        int currentIndex = packetBasePropertyInfo.Key.Index + 2; //adding 2 because we need to skip incrementing number and packet header
+                        string currentValue = matches[currentIndex].Value;
+
+                        //set the value & convert currentValue
+                        packetBasePropertyInfo.Value.SetValue(deserializedPacket, ConvertValue(packetBasePropertyInfo.Value.PropertyType, currentValue));
+                    }
+                }
+
+                return deserializedPacket;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return Activator.CreateInstance<TPacket>();
+            }
+        }
+
+        /// <summary>
+        /// Converts for instance -1.12.1.8.-1.-1.-1.-1.-1 to eg. List<byte?>
+        /// </summary>
+        /// <param name="currentValues">String to convert</param>
+        /// <param name="genericListType">Type of the property to convert</param>
+        /// <returns>The string as converted List</returns>
+        private static IList ConvertSimpleList(string currentValues, Type genericListType)
+        {
+            IList subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(genericListType), genericListType);
+            IEnumerable<String> splittedValues = currentValues.Split('.');
+
+            foreach (string currentValue in splittedValues)
+            {
+                object value = ConvertValue(genericListType.GenericTypeArguments[0], currentValue);
+                subpackets.Add(value);
+            }
+
+            return subpackets;
+        }
+
+        /// <summary>
+        /// Converts for instance List<byte?> to -1.12.1.8.-1.-1.-1.-1.-1
+        /// </summary>
+        /// <param name="listValues">Values in List of simple type.</param>
+        /// <param name="propertyType">The simple type.</param>
+        /// <returns></returns>
+        private static string ConvertSimpleListBack(IList listValues, Type propertyType)
+        {
+            string resultListPacket = String.Empty;
+            int listValueCount = listValues.Count;
+            if (listValueCount > 0)
+            {
+                resultListPacket += ConvertValueBack(propertyType.GenericTypeArguments[0], listValues[0]);
+
+                for (int i = 1; i < listValueCount; i++)
+                {
+                    resultListPacket += $".{ConvertValueBack(propertyType.GenericTypeArguments[0], listValues[i]).Replace(" ", "")}";
                 }
             }
 
-            return deserializedPacket;
+            return resultListPacket;
         }
 
-        private static IList ConvertAdvancedList(string currentValue, Type packetBasePropertyType)
+        /// <summary>
+        /// Converts a Sublist of Packets, For instance 0.4903.5.0.0 2.340.0.0.0 3.720.0.0.0 5.4912.6.0.0 9.227.0.0.0 10.803.0.0.0
+        /// </summary>
+        /// <param name="currentValue">The value as String</param>
+        /// <param name="packetBasePropertyType">Type of the Property to convert to</param>
+        /// <returns></returns>
+        private static IList ConvertSubList(string currentValue, Type packetBasePropertyType)
         {
             IList subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(packetBasePropertyType), packetBasePropertyType);
             IEnumerable<String> splittedSubpackets = currentValue.Split(' ');
@@ -100,7 +165,7 @@ namespace OpenNos.Core
                     int currentSubIndex = subpacketPropertyInfo.Key.Index;
                     string currentSubValue = subpacketValues[currentSubIndex];
 
-                    subpacketPropertyInfo.Value.SetValue(newSubpacket, ConvertPacketValue(subpacketPropertyInfo.Value.PropertyType, currentSubValue));
+                    subpacketPropertyInfo.Value.SetValue(newSubpacket, ConvertValue(subpacketPropertyInfo.Value.PropertyType, currentSubValue));
                 }
 
                 subpackets.Add(newSubpacket);
@@ -109,7 +174,7 @@ namespace OpenNos.Core
             return subpackets;
         }
 
-        private static object ConvertPacketValue(Type packetPropertyType, string currentValue)
+        private static object ConvertValue(Type packetPropertyType, string currentValue)
         {
             if (currentValue == "-1" || currentValue == "-")//check for empty value and cast it to null
             {
@@ -126,7 +191,7 @@ namespace OpenNos.Core
             }
             else if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)) && packetPropertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketBase)))
             {
-                return ConvertAdvancedList(currentValue, packetPropertyType);
+                return ConvertSubList(currentValue, packetPropertyType);
             }
             else if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //check for IList but not IList<PacketBase> -> Simple lists
             {
@@ -146,7 +211,7 @@ namespace OpenNos.Core
             }
         }
 
-        private static string ConvertPacketValueBack(Type propertyType, object value)
+        private static string ConvertValueBack(Type propertyType, object value)
         {
             //check for nullable without value or string
             if (propertyType.Equals(typeof(string)) && String.IsNullOrEmpty(Convert.ToString(value)))
@@ -173,50 +238,12 @@ namespace OpenNos.Core
             }
             else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //check for IList but not IList<PacketBase> -> Simple lists
             {
-                return ConvertSimpleListBack(value, propertyType);
+                return ConvertSimpleListBack((IList)value, propertyType);
             }
             else
             {
                 return String.Format(" {0}", value);
             }
-        }
-
-        /// <summary>
-        /// Converts for instance -1.12.1.8.-1.-1.-1.-1.-1
-        /// </summary>
-        /// <param name="currentValues">String to convert</param>
-        /// <param name="genericListType">Values to convert</param>
-        /// <returns></returns>
-        private static IList ConvertSimpleList(string currentValues, Type genericListType)
-        {
-            IList subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(genericListType), genericListType);
-            IEnumerable<String> splittedValues = currentValues.Split('.');
-
-            foreach (string currentValue in splittedValues)
-            {
-                object value = ConvertPacketValue(genericListType.GenericTypeArguments[0], currentValue);
-                subpackets.Add(value);
-            }
-
-            return subpackets;
-        }
-
-        private static string ConvertSimpleListBack(object value, Type propertyType)
-        {
-            IList listValues = (IList)value;
-            string resultListPacket = String.Empty;
-            int listValueCount = listValues.Count;
-            if (listValueCount > 0)
-            {
-                resultListPacket += ConvertPacketValueBack(propertyType.GenericTypeArguments[0], listValues[0]);
-
-                for (int i = 1; i < listValueCount; i++)
-                {
-                    resultListPacket += $".{ConvertPacketValueBack(propertyType.GenericTypeArguments[0], listValues[i]).Replace(" ", "")}";
-                }
-            }
-
-            return resultListPacket;
         }
 
         private static void GenerateSerializationInformations<TPacketBase>()
