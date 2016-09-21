@@ -33,20 +33,25 @@ namespace OpenNos.Core
 
                 string deserializedPacket = serializationInformation.Key.Item2; //set header
 
-                int iterator = 0;
+                int lastIndex = 0;
                 foreach (var packetBasePropertyInfo in serializationInformation.Value)
                 {
-                    //check if we need to add a non mapped value or a mapped
-                    if (packetBasePropertyInfo.Key.Index > iterator)
+                    //check if we need to add a non mapped values (pseudovalues)
+                    if (packetBasePropertyInfo.Key.Index > lastIndex + 1)
                     {
-                        deserializedPacket += " 0";
-                    }
-                    else
-                    {
-                        deserializedPacket += ConvertValueBack(packetBasePropertyInfo.Value.PropertyType, packetBasePropertyInfo.Value.GetValue(packet));
+                        int amountOfEmptyValuesToAdd = packetBasePropertyInfo.Key.Index - (lastIndex + 1);
+
+                        for (int i = 0; i < amountOfEmptyValuesToAdd; i++)
+                        {
+                            deserializedPacket += " 0";
+                        }
                     }
 
-                    iterator++;
+                    //add value for current configuration
+                    deserializedPacket += ConvertValueBack(packetBasePropertyInfo.Value.PropertyType, packetBasePropertyInfo.Value.GetValue(packet));
+
+                    //set new index
+                    lastIndex = packetBasePropertyInfo.Key.Index;
                 }
 
                 return deserializedPacket;
@@ -143,7 +148,7 @@ namespace OpenNos.Core
         }
 
         /// <summary>
-        /// Converts a Sublist of Packets, For instance 0.4903.5.0.0 2.340.0.0.0 3.720.0.0.0 5.4912.6.0.0 9.227.0.0.0 10.803.0.0.0
+        /// Converts a Sublist of Packets, For instance 0.4903.5.0.0 2.340.0.0.0 3.720.0.0.0 5.4912.6.0.0 9.227.0.0.0 10.803.0.0.0 to List<EquipSubPacket>
         /// </summary>
         /// <param name="currentValue">The value as String</param>
         /// <param name="packetBasePropertyType">Type of the Property to convert to</param>
@@ -172,6 +177,33 @@ namespace OpenNos.Core
             }
 
             return subpackets;
+        }
+
+        private static string ConvertSubListBack(IList listValues, Type packetBasePropertyType)
+        {
+            string serializedSubPacket = String.Empty;
+            var subpacketSerializationInfo = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(packetBasePropertyType.GetGenericArguments()[0]));
+
+            if (listValues.Count > 0)
+            {
+                foreach (var listValue in listValues)
+                {
+                    serializedSubPacket += " ";
+
+                    //iterate thru configure subpacket properties
+                    foreach (var subpacketPropertyInfo in subpacketSerializationInfo.Value)
+                    {
+                        if (!(subpacketPropertyInfo.Key.Index == 0)) //first element
+                        {
+                            serializedSubPacket += ".";
+                        }
+
+                        serializedSubPacket += ConvertValueBack(subpacketPropertyInfo.Value.PropertyType, subpacketPropertyInfo.Value.GetValue(listValue)).Replace(" ", "");
+                    }
+                }
+            }
+
+            return serializedSubPacket;
         }
 
         private static object ConvertValue(Type packetPropertyType, string currentValue)
@@ -213,37 +245,41 @@ namespace OpenNos.Core
 
         private static string ConvertValueBack(Type propertyType, object value)
         {
-            //check for nullable without value or string
-            if (propertyType.Equals(typeof(string)) && String.IsNullOrEmpty(Convert.ToString(value)))
+            if (propertyType != null)
             {
-                return " -";
+                //check for nullable without value or string
+                if (propertyType.Equals(typeof(string)) && String.IsNullOrEmpty(Convert.ToString(value)))
+                {
+                    return " -";
+                }
+                if (Nullable.GetUnderlyingType(propertyType) != null && String.IsNullOrEmpty(Convert.ToString(value)))
+                {
+                    return " -1";
+                }
+                if (propertyType.BaseType != null && propertyType.BaseType.Equals(typeof(Enum))) //enum should be casted to number
+                {
+                    return String.Format(" {0}", Convert.ToInt16(value));
+                }
+                else if (propertyType.Equals(typeof(bool))) //vool is 0 or 1 not True or False
+                {
+                    return Convert.ToBoolean(value) ? " 1" : " 0";
+                }
+                else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))
+                    && propertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketBase)))
+                {
+                    return ConvertSubListBack((IList)value, propertyType);
+                }
+                else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //check for IList but not IList<PacketBase> -> Simple lists
+                {
+                    return ConvertSimpleListBack((IList)value, propertyType);
+                }
+                else
+                {
+                    return String.Format(" {0}", value);
+                }
             }
-            if (Nullable.GetUnderlyingType(propertyType) != null && String.IsNullOrEmpty(Convert.ToString(value)))
-            {
-                return " -1";
-            }
-            if (propertyType.BaseType != null && propertyType.BaseType.Equals(typeof(Enum))) //enum should be casted to number
-            {
-                return String.Format(" {0}", Convert.ToInt16(value));
-            }
-            else if (propertyType.Equals(typeof(bool))) //vool is 0 or 1 not True or False
-            {
-                return Convert.ToBoolean(value) ? " 1" : " 0";
-            }
-            else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))
-                && propertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketBase)))
-            {
-                //TODO Advanced List
-                return String.Empty;
-            }
-            else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //check for IList but not IList<PacketBase> -> Simple lists
-            {
-                return ConvertSimpleListBack((IList)value, propertyType);
-            }
-            else
-            {
-                return String.Format(" {0}", value);
-            }
+
+            return String.Empty;
         }
 
         private static void GenerateSerializationInformations<TPacketBase>()
