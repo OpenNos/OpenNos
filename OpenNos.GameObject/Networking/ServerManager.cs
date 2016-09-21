@@ -713,17 +713,17 @@ namespace OpenNos.GameObject
         //Map ??
         private async void TaskLauncherProcess()
         {
-            Task TaskMap = null;
+            List<Task> TaskMaps = null;
             while (true)
             {
+                TaskMaps = new List<Task>();
                 foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
                 {
-                    TaskMap = new Task(() => ServerManager.GetMap(GroupedSession.First().Character.MapId).MapTaskManager());
-                    TaskMap.Start();
-
+                    TaskMaps.Add( new Task(() => ServerManager.GetMap(GroupedSession.First().Character.MapId).MapTaskManager()));
+                    TaskMaps.Last().Start();
                 }
-                if (TaskMap != null)
-                    await TaskMap;
+               foreach(Task ta in TaskMaps)
+                    await ta;
                 await Task.Delay(300);
             }
         }

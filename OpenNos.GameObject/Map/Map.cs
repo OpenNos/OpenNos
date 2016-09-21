@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using EpPathFinding.cs;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -19,6 +20,7 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +31,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private char[,] _grid;
+        private BaseGrid _grid;
         private List<MapMonster> _monsters;
         private List<MapNpc> _npcs;
         private List<Portal> _portals;
@@ -94,6 +96,8 @@ namespace OpenNos.GameObject
             {
                 _npcs.Add(new MapNpc(npc, this));
             }
+
+            JumpPointParameters = new JumpPointParam(this._grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
 
         #endregion
@@ -106,6 +110,7 @@ namespace OpenNos.GameObject
 
         public int IsDancing { get; set; }
 
+        public JumpPointParam JumpPointParameters { get; set; }
         public short MapId { get; set; }
 
         public List<MapType> MapTypes
@@ -298,7 +303,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (y >= 0 && x >= 0 && y < _grid.GetLength(0) && x < _grid.GetLength(1) && _grid[y, x] != 0)
+            if (y >= 0 && x >= 0 && y < _grid.height && x < _grid.width && !_grid.IsWalkableAt(x, y))
             {
                 return true;
             }
@@ -326,6 +331,28 @@ namespace OpenNos.GameObject
             return false;
         }
 
+        public List<MapCell> JPSPlus(MapCell cell1, MapCell cell2)
+        {
+            List<MapCell> path = new List<MapCell>();
+            List<GridPos> lpath = new List<GridPos>();
+            if (cell1.MapId != cell2.MapId)
+            {
+                return path;
+            }
+
+            JumpPointParameters.Reset(new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y));
+            List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
+            lpath = JumpPointFinder.GetFullPath(resultPathList);
+            Debug.WriteLine($"From X: {cell1.X} Y: {cell1.Y}, To X: {cell2.X} Y: {cell2.Y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
+            if (lpath.Count > 0)
+            {
+                foreach (GridPos item in lpath)
+                    path.Add(new MapCell { X = Convert.ToInt16(item.x), Y = Convert.ToInt16(item.y), MapId = cell1.MapId });
+            }
+
+            return path;
+        }
+
         public void LoadZone()
         {
             Stream stream = new MemoryStream(Data);
@@ -348,13 +375,13 @@ namespace OpenNos.GameObject
             YLength = BitConverter.ToInt16(ylength, 0);
             XLength = BitConverter.ToInt16(xlength, 0);
 
-            _grid = new char[YLength, XLength];
+            _grid = new StaticGrid(XLength, YLength);
             for (int i = 0; i < YLength; ++i)
             {
                 for (int t = 0; t < XLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
-                    _grid[i, t] = Convert.ToChar(bytes[0]);
+                    _grid.SetWalkableAt(t, i, (Convert.ToChar(bytes[0]) == 0 ? true : false));
                 }
             }
         }
