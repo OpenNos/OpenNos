@@ -275,7 +275,7 @@ namespace OpenNos.GameObject
                 if (droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
                     droppedItem.Rarify(null);
 
-                ServerManager.GetMap(MapId).DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
+                DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
 
                 Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");//TODO UseTransportId
             }
@@ -448,7 +448,7 @@ namespace OpenNos.GameObject
 
             foreach (MapCell cell in cells.OrderBy(s => r.Next(int.MaxValue)))
             {
-                if (!ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY, cell.X, cell.Y))
+                if (!IsBlockedZone(firstX, firstY, cell.X, cell.Y))
                 {
                     firstX = cell.X;
                     firstY = cell.Y;
