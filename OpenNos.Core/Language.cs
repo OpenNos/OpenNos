@@ -35,7 +35,10 @@ namespace OpenNos.Core
         private Language()
         {
             _resourceCulture = new System.Globalization.CultureInfo(System.Configuration.ConfigurationManager.AppSettings["language"]);
-            _manager = new ResourceManager(Assembly.GetEntryAssembly().GetName().Name + ".Resource.LocalizedResources", Assembly.GetEntryAssembly());
+            if(Assembly.GetEntryAssembly() != null)
+            {
+                _manager = new ResourceManager(Assembly.GetEntryAssembly().GetName().Name + ".Resource.LocalizedResources", Assembly.GetEntryAssembly());
+            }
         }
 
         #endregion
@@ -57,7 +60,7 @@ namespace OpenNos.Core
 
         public string GetMessageFromKey(string message)
         {
-            string resourceMessage = _manager.GetString(message, _resourceCulture);
+            string resourceMessage = _manager != null ? _manager.GetString(message, _resourceCulture) : String.Empty;
 
             if (!String.IsNullOrEmpty(resourceMessage))
             {
