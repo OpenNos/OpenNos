@@ -574,8 +574,7 @@ namespace OpenNos.GameObject
                             sess.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
                     }
-                    session.SendPacket($"pidx -1 1.{ session.Character.CharacterId}");
-                    Broadcast(session, $"pidx -1 1.{session.Character.CharacterId}", ReceiverType.AllExceptMe);
+                    Broadcast(session.Character.GeneratePidx());
                     session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                 }
                 else
@@ -586,7 +585,7 @@ namespace OpenNos.GameObject
                         {
                             sess.SendPacket("pinit 0");
                             sess.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
-                            Broadcast(sess, $"pidx -1 1.{targetSession.Character.CharacterId}", ReceiverType.All);
+                            Broadcast(sess.Character.GeneratePidx());
                         }
                     }
                     ServerManager.Instance.Groups.Remove(grp);
