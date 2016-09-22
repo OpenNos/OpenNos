@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private BaseGrid _grid;
+        private short[,] _grid;
         private List<MapMonster> _monsters;
         private List<MapNpc> _npcs;
         private List<Portal> _portals;
@@ -97,7 +97,6 @@ namespace OpenNos.GameObject
                 _npcs.Add(new MapNpc(npc, this));
             }
 
-            JumpPointParameters = new JumpPointParam(this._grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
 
         #endregion
@@ -110,7 +109,6 @@ namespace OpenNos.GameObject
 
         public int IsDancing { get; set; }
 
-        public JumpPointParam JumpPointParameters { get; set; }
         public short MapId { get; set; }
 
         public List<MapType> MapTypes
@@ -164,7 +162,6 @@ namespace OpenNos.GameObject
         {
             return GetDistance(new MapCell() { MapId = character1.MapId, X = character1.MapX, Y = character1.MapY }, new MapCell() { MapId = character2.MapId, X = character2.MapX, Y = character2.MapY });
         }
-
         public static int GetDistance(MapCell p, MapCell q)
         {
             double a = p.X - q.X;
@@ -176,77 +173,7 @@ namespace OpenNos.GameObject
             return (int)distance;
         }
 
-        public List<MapCell> AStar(MapCell cell1, MapCell cell2)
-        {
-            try
-            {
-                List<MapCell> SolutionPathList = new List<MapCell>();
 
-                SortedCostMapCellList OPEN = new SortedCostMapCellList();
-                SortedCostMapCellList CLOSED = new SortedCostMapCellList();
-                MapCellAStar cell_start = new MapCellAStar(null, null, cell1.X, cell1.Y, cell1.MapId);
-                MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
-                OPEN.Push(cell_start);
-                if (cell1.MapId != cell2.MapId)
-                {
-                    SolutionPathList.Insert(0, cell_start);
-                    return SolutionPathList;
-                }
-                while (OPEN.Count > 0)
-                {
-                    MapCellAStar cell_current = OPEN.Pop();
-
-                    if (cell_current.IsMatch(cell_goal))
-                    {
-                        cell_goal.parentcell = cell_current.parentcell;
-                        break;
-                    }
-
-                    List<MapCellAStar> successors = cell_current.GetSuccessors();
-
-                    foreach (MapCellAStar cell_successor in successors)
-                    {
-                        int oFound = OPEN.IndexOf(cell_successor);
-
-                        if (oFound > 0)
-                        {
-                            MapCellAStar existing_cell = OPEN.CellAt(oFound);
-                            if (existing_cell.CompareTo(cell_current) <= 0)
-                                continue;
-                        }
-
-                        int cFound = CLOSED.IndexOf(cell_successor);
-
-                        if (cFound > 0)
-                        {
-                            MapCellAStar existing_cell = CLOSED.CellAt(cFound);
-                            if (existing_cell.CompareTo(cell_current) <= 0)
-                                continue;
-                        }
-
-                        if (oFound != -1)
-                            OPEN.RemoveAt(oFound);
-                        if (cFound != -1)
-                            CLOSED.RemoveAt(cFound);
-
-                        OPEN.Push(cell_successor);
-                    }
-                    CLOSED.Push(cell_current);
-                }
-                MapCellAStar p = cell_goal;
-                while (p != null)
-                {
-                    SolutionPathList.Insert(0, p);
-                    p = p.parentcell;
-                }
-                return SolutionPathList;
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return new List<MapCell>();
-            }
-        }
 
         public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY)
         {
@@ -303,7 +230,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (y >= 0 && x >= 0 && y < _grid.height && x < _grid.width && !_grid.IsWalkableAt(x, y))
+            if (y >= 0 && x >= 0 && y < _grid.GetLength(0) && x < _grid.GetLength(1) && _grid[y, x] != 0)
             {
                 return true;
             }
@@ -331,6 +258,19 @@ namespace OpenNos.GameObject
             return false;
         }
 
+        public BaseGrid ConvertToGrid(short[,] _grid)
+        {
+            BaseGrid grid = new StaticGrid(XLength, YLength);
+            for (int i = 0; i < YLength; ++i)
+            {
+                for (int t = 0; t < XLength; ++t)
+                {
+                    grid.SetWalkableAt(t, i, (_grid[i,t] == 0 ? true : false));
+                }
+            }
+            return grid;
+        }
+
         public List<MapCell> JPSPlus(MapCell cell1, MapCell cell2)
         {
             List<MapCell> path = new List<MapCell>();
@@ -339,8 +279,7 @@ namespace OpenNos.GameObject
             {
                 return path;
             }
-
-            JumpPointParameters.Reset(new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y));
+            JumpPointParam JumpPointParameters = new JumpPointParam(ConvertToGrid(_grid), new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y), false, true, true, HeuristicMode.MANHATTAN);
             List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
             lpath = JumpPointFinder.GetFullPath(resultPathList);
             Debug.WriteLine($"From X: {cell1.X} Y: {cell1.Y}, To X: {cell2.X} Y: {cell2.Y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
@@ -372,21 +311,18 @@ namespace OpenNos.GameObject
             stream.Read(bytes, numBytesRead, numBytesToRead);
             ylength[1] = bytes[0];
 
-            YLength = BitConverter.ToInt16(ylength, 0);
-            XLength = BitConverter.ToInt16(xlength, 0);
-
-            _grid = new StaticGrid(XLength, YLength);
+            _grid = new short[YLength, XLength];
             for (int i = 0; i < YLength; ++i)
             {
                 for (int t = 0; t < XLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
-                    _grid.SetWalkableAt(t, i, (Convert.ToChar(bytes[0]) == 0 ? true : false));
+                    _grid[i, t] = Convert.ToInt16(bytes[0]);
                 }
             }
         }
 
-        public async void MonsterLifeManager()
+        public async Task MonsterLifeManager()
         {
             try
             {
@@ -398,8 +334,8 @@ namespace OpenNos.GameObject
                     MonsterLifeTask.Add(new Task(() => monster.MonsterLife()));
                     MonsterLifeTask.Last().Start();
                 }
-                foreach (Task monsterLiveTask in MonsterLifeTask)
-                    await monsterLiveTask;
+                foreach (Task mtask in MonsterLifeTask)
+                    await mtask;
             }
             catch (Exception e)
             {
@@ -407,7 +343,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public async void NpcLifeManager()
+        public async Task NpcLifeManager()
         {
             try
             {
@@ -471,22 +407,17 @@ namespace OpenNos.GameObject
             return characters;
         }
 
-        internal async void MapTaskManager()
+        internal async Task MapTaskManager()
         {
             try
             {
-                Task npcLifeTask = new Task(() => NpcLifeManager());
-                npcLifeTask.Start();
-                Task monsterLifeTask = new Task(() => MonsterLifeManager());
-                monsterLifeTask.Start();
-                Task characterLifeTask = new Task(() => CharacterLifeManager());
-                characterLifeTask.Start();
-
+                Task npclifemanager = NpcLifeManager();
+                Task monsterlifemanager = MonsterLifeManager();
+                CharacterLifeManager();
                 RemoveMapItem();
+                await npclifemanager;
+                await monsterlifemanager;
 
-                await npcLifeTask;
-                await monsterLifeTask;
-                await characterLifeTask;
             }
             catch (Exception e)
             {
