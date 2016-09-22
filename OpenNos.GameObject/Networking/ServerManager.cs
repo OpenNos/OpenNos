@@ -718,7 +718,7 @@ namespace OpenNos.GameObject
             while (true)
             {
                 TaskMaps = new List<Task>();
-                foreach (var map in GetAllMap().Where(s => s.Value?.Sessions.Count() > 0 || s.Value?.LastUnregister.AddMinutes(1) < DateTime.Now))
+                foreach (var map in GetAllMap().Where(s => s.Value.Sessions.Any() || s.Value.LastUnregister.AddSeconds(30) > DateTime.Now))
                 {
                     TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
                 }
