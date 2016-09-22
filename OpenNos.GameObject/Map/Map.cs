@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private BaseGrid _grid;
+        private short[,] _grid;
         private List<MapMonster> _monsters;
         private List<MapNpc> _npcs;
         private List<Portal> _portals;
@@ -301,7 +301,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (y >= 0 && x >= 0 && y < _grid.height && x < _grid.width && !_grid.IsWalkableAt(x, y))
+            if (y >= 0 && x >= 0 && y < _grid.GetLength(0) && x < _grid.GetLength(1) && _grid[y, x] != 0)
             {
                 return true;
             }
@@ -329,6 +329,19 @@ namespace OpenNos.GameObject
             return false;
         }
 
+        public BaseGrid ConvertToGrid(short[,] _grid)
+        {
+            BaseGrid grid = new StaticGrid(XLength, YLength);
+            for (int i = 0; i < YLength; ++i)
+            {
+                for (int t = 0; t < XLength; ++t)
+                {
+                    grid.SetWalkableAt(t, i, (_grid[i,t] == 0 ? true : false));
+                }
+            }
+            return grid;
+        }
+
         public List<MapCell> JPSPlus(MapCell cell1, MapCell cell2)
         {
             List<MapCell> path = new List<MapCell>();
@@ -337,7 +350,7 @@ namespace OpenNos.GameObject
             {
                 return path;
             }
-            JumpPointParam JumpPointParameters = new JumpPointParam(this._grid, new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y), false, true, true, HeuristicMode.MANHATTAN);
+            JumpPointParam JumpPointParameters = new JumpPointParam(ConvertToGrid(_grid), new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y), false, true, true, HeuristicMode.MANHATTAN);
             List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
             lpath = JumpPointFinder.GetFullPath(resultPathList);
             Debug.WriteLine($"From X: {cell1.X} Y: {cell1.Y}, To X: {cell2.X} Y: {cell2.Y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
@@ -369,16 +382,13 @@ namespace OpenNos.GameObject
             stream.Read(bytes, numBytesRead, numBytesToRead);
             ylength[1] = bytes[0];
 
-            YLength = BitConverter.ToInt16(ylength, 0);
-            XLength = BitConverter.ToInt16(xlength, 0);
-
-            _grid = new StaticGrid(XLength, YLength);
+            _grid = new short[YLength, XLength];
             for (int i = 0; i < YLength; ++i)
             {
                 for (int t = 0; t < XLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
-                    _grid.SetWalkableAt(t, i, (Convert.ToChar(bytes[0]) == 0 ? true : false));
+                    _grid[i, t] = Convert.ToInt16(bytes[0]);
                 }
             }
         }
