@@ -176,77 +176,77 @@ namespace OpenNos.GameObject
             return (int)distance;
         }
 
-        public List<MapCell> AStar(MapCell cell1, MapCell cell2)
-        {
-            try
-            {
-                List<MapCell> SolutionPathList = new List<MapCell>();
+        //public List<MapCell> AStar(MapCell cell1, MapCell cell2)
+        //{
+        //    try
+        //    {
+        //        List<MapCell> SolutionPathList = new List<MapCell>();
 
-                SortedCostMapCellList OPEN = new SortedCostMapCellList();
-                SortedCostMapCellList CLOSED = new SortedCostMapCellList();
-                MapCellAStar cell_start = new MapCellAStar(null, null, cell1.X, cell1.Y, cell1.MapId);
-                MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
-                OPEN.Push(cell_start);
-                if (cell1.MapId != cell2.MapId)
-                {
-                    SolutionPathList.Insert(0, cell_start);
-                    return SolutionPathList;
-                }
-                while (OPEN.Count > 0)
-                {
-                    MapCellAStar cell_current = OPEN.Pop();
+        //        SortedCostMapCellList OPEN = new SortedCostMapCellList();
+        //        SortedCostMapCellList CLOSED = new SortedCostMapCellList();
+        //        MapCellAStar cell_start = new MapCellAStar(null, null, cell1.X, cell1.Y, cell1.MapId);
+        //        MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
+        //        OPEN.Push(cell_start);
+        //        if (cell1.MapId != cell2.MapId)
+        //        {
+        //            SolutionPathList.Insert(0, cell_start);
+        //            return SolutionPathList;
+        //        }
+        //        while (OPEN.Count > 0)
+        //        {
+        //            MapCellAStar cell_current = OPEN.Pop();
 
-                    if (cell_current.IsMatch(cell_goal))
-                    {
-                        cell_goal.parentcell = cell_current.parentcell;
-                        break;
-                    }
+        //            if (cell_current.IsMatch(cell_goal))
+        //            {
+        //                cell_goal.parentcell = cell_current.parentcell;
+        //                break;
+        //            }
 
-                    List<MapCellAStar> successors = cell_current.GetSuccessors();
+        //            List<MapCellAStar> successors = cell_current.GetSuccessors();
 
-                    foreach (MapCellAStar cell_successor in successors)
-                    {
-                        int oFound = OPEN.IndexOf(cell_successor);
+        //            foreach (MapCellAStar cell_successor in successors)
+        //            {
+        //                int oFound = OPEN.IndexOf(cell_successor);
 
-                        if (oFound > 0)
-                        {
-                            MapCellAStar existing_cell = OPEN.CellAt(oFound);
-                            if (existing_cell.CompareTo(cell_current) <= 0)
-                                continue;
-                        }
+        //                if (oFound > 0)
+        //                {
+        //                    MapCellAStar existing_cell = OPEN.CellAt(oFound);
+        //                    if (existing_cell.CompareTo(cell_current) <= 0)
+        //                        continue;
+        //                }
 
-                        int cFound = CLOSED.IndexOf(cell_successor);
+        //                int cFound = CLOSED.IndexOf(cell_successor);
 
-                        if (cFound > 0)
-                        {
-                            MapCellAStar existing_cell = CLOSED.CellAt(cFound);
-                            if (existing_cell.CompareTo(cell_current) <= 0)
-                                continue;
-                        }
+        //                if (cFound > 0)
+        //                {
+        //                    MapCellAStar existing_cell = CLOSED.CellAt(cFound);
+        //                    if (existing_cell.CompareTo(cell_current) <= 0)
+        //                        continue;
+        //                }
 
-                        if (oFound != -1)
-                            OPEN.RemoveAt(oFound);
-                        if (cFound != -1)
-                            CLOSED.RemoveAt(cFound);
+        //                if (oFound != -1)
+        //                    OPEN.RemoveAt(oFound);
+        //                if (cFound != -1)
+        //                    CLOSED.RemoveAt(cFound);
 
-                        OPEN.Push(cell_successor);
-                    }
-                    CLOSED.Push(cell_current);
-                }
-                MapCellAStar p = cell_goal;
-                while (p != null)
-                {
-                    SolutionPathList.Insert(0, p);
-                    p = p.parentcell;
-                }
-                return SolutionPathList;
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return new List<MapCell>();
-            }
-        }
+        //                OPEN.Push(cell_successor);
+        //            }
+        //            CLOSED.Push(cell_current);
+        //        }
+        //        MapCellAStar p = cell_goal;
+        //        while (p != null)
+        //        {
+        //            SolutionPathList.Insert(0, p);
+        //            p = p.parentcell;
+        //        }
+        //        return SolutionPathList;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Logger.Error(e);
+        //        return new List<MapCell>();
+        //    }
+        //}
 
         public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY)
         {

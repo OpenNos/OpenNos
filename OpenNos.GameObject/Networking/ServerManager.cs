@@ -720,7 +720,6 @@ namespace OpenNos.GameObject
                 foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
                 {
                     TaskMaps.Add(GetMap(GroupedSession.First().Character.MapId).MapTaskManager());
-                    TaskMaps.Last().Start();
                 }
                 Task.WaitAll(TaskMaps.ToArray());
                 await Task.Delay(300);
