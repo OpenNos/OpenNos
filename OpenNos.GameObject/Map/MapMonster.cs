@@ -159,28 +159,30 @@ namespace OpenNos.GameObject
                             return;
                         }
                     }
-                    else if (time > 0.8 * random.Next(1, MoveFrequent))
+                    else if (time > random.Next(1, 3) * (0.5 + random.NextDouble()))
                     {
-                        int moveDistance = (int)Math.Round((double)Monster.Speed / 2);
-                        byte xpoint = (byte)(random.Next(1, moveDistance + 1));
-                        byte ypoint = (byte)(random.Next(1, moveDistance + 1));
+                        byte point = (byte)random.Next(2, 5);
+                        byte fpoint = (byte)random.Next(0, 2);
+
+                        byte xpoint = (byte)random.Next(fpoint, point);
+                        byte ypoint = (byte)(point - xpoint);
 
                         short mapX = firstX;
                         short mapY = firstY;
                         if (ServerManager.GetMap(MapId).GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                         {
-                            LastMove = DateTime.Now;
-
-                            string movePacket = $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}";
-                            Map.Broadcast(movePacket);
-
                             Task.Factory.StartNew(async () =>
                             {
                                 await Task.Delay(500);
                                 this.MapX = mapX;
                                 this.MapY = mapY;
                             });
+                            LastMove = DateTime.Now;
+
+                            string movePacket = $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}";
+                            Map.Broadcast(movePacket);
                         }
+
                     }
                 }
                 if (Monster.IsHostile)
