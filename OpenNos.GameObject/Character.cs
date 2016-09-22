@@ -735,7 +735,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePidx()
         {
-            int? count = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId)).Characters?.Select(c => c.Character.CharacterId).Count();
+            int? count = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId))?.Characters?.Select(c => c.Character.CharacterId).Count();
             string str = String.Empty;
             if (count != null)
             {
