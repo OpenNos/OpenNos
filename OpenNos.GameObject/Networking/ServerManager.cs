@@ -649,7 +649,7 @@ namespace OpenNos.GameObject
 
         public void SaveAll()
         {
-            List<ClientSession> sessions = Sessions.Where(c => c.CommunicationState == Core.Networking.Communication.Scs.Communication.CommunicationStates.Connected).ToList();
+            List<ClientSession> sessions = Sessions.Where(c => c.IsConnected).ToList();
             sessions.ForEach(s => s.Character?.Save());
         }
 

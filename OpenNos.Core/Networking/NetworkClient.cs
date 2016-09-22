@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.Core
 {
-    public class NetworkClient : ScsServerClient
+    public class NetworkClient : ScsServerClient, INetworkClient
     {
         #region Members
 
@@ -30,11 +30,29 @@ namespace OpenNos.Core
 
         #region Instantiation
 
-        public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel) { }
+        public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
+        {
+        }
 
         #endregion
 
         #region Properties
+
+        public string IpAddress
+        {
+            get
+            {
+                return RemoteEndPoint.ToString();
+            }
+        }
+
+        public bool IsConnected
+        {
+            get
+            {
+                return CommunicationState == Networking.Communication.Scs.Communication.CommunicationStates.Connected;
+            }
+        }
 
         public bool IsDisposing { get; set; }
 
@@ -52,6 +70,7 @@ namespace OpenNos.Core
             if (!IsDisposing)
             {
                 ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
+                //Logger.Debug(packet, -1);
                 SendMessage(rawMessage);
             }
         }
