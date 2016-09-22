@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -712,7 +713,7 @@ namespace OpenNos.GameObject
         }
 
         //Map ??
-        private async void TaskLauncherProcess()
+        private void TaskLauncherProcess()
         {
             List<Task> TaskMaps = null;
             while (true)
@@ -720,10 +721,11 @@ namespace OpenNos.GameObject
                 TaskMaps = new List<Task>();
                 foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
                 {
-                    TaskMaps.Add(GetMap(GroupedSession.First().Character.MapId).MapTaskManager());
+                    TaskMaps.Add(new Task(() => GetMap(GroupedSession.First().Character.MapId).MapTaskManager()));
                 }
+                TaskMaps.ForEach(s => s.Start());
                 Task.WaitAll(TaskMaps.ToArray());
-                await Task.Delay(300);
+                Thread.Sleep(300);
             }
         }
 

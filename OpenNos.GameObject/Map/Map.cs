@@ -400,19 +400,18 @@ namespace OpenNos.GameObject
             return characters;
         }
 
-        internal async Task MapTaskManager()
+        internal void MapTaskManager()
         {
             try
             {
-                Task npclifemanager = new Task(() => NpcLifeManager());
-                Task monsterlifemanager = new Task(() => NpcLifeManager());
-                Task characterlifemanager = new Task(() => CharacterLifeManager());
-                Task mapitemlifemanager = new Task(() => RemoveMapItem());
-                await mapitemlifemanager;
-                await npclifemanager;
-                await monsterlifemanager;
-                await characterlifemanager;
+                List<Task> MapTasks = new List<Task>();
+                MapTasks.Add(new Task(() => NpcLifeManager()));
+                MapTasks.Add(new Task(() => MonsterLifeManager()));
+                MapTasks.Add(new Task(() => CharacterLifeManager()));
+                MapTasks.Add(new Task(() => RemoveMapItem()));
 
+                MapTasks.ForEach(s => s.Start());
+                Task.WaitAll(MapTasks.ToArray());
             }
             catch (Exception e)
             {
