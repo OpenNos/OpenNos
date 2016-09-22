@@ -721,7 +721,7 @@ namespace OpenNos.Handler
             {
                 short specialistDamage = 0, specialistDefense = 0, specialistElement = 0, specialistHealpoints = 0;
                 int transportId = -1;
-                if (!int.TryParse(packetsplit[5], out transportId) && !short.TryParse(packetsplit[6], out specialistDamage) && !short.TryParse(packetsplit[7], out specialistDefense) && !short.TryParse(packetsplit[8], out specialistElement) && !short.TryParse(packetsplit[8], out specialistHealpoints)) return;
+                if (!int.TryParse(packetsplit[5], out transportId) || !short.TryParse(packetsplit[6], out specialistDamage) || !short.TryParse(packetsplit[7], out specialistDefense) || !short.TryParse(packetsplit[8], out specialistElement) || !short.TryParse(packetsplit[9], out specialistHealpoints)) return;
 
                 if (!Session.Character.UseSp || specialistInstance == null || transportId != specialistInstance.TransportId)
                 {

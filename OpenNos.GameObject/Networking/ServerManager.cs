@@ -585,7 +585,7 @@ namespace OpenNos.GameObject
                         {
                             sess.SendPacket("pinit 0");
                             sess.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
-                            Broadcast(sess.Character.GeneratePidx();
+                            Broadcast(sess.Character.GeneratePidx());
                         }
                     }
                     ServerManager.Instance.Groups.Remove(grp);
