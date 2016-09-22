@@ -265,7 +265,7 @@ namespace OpenNos.GameObject
             {
                 for (int t = 0; t < XLength; ++t)
                 {
-                    grid.SetWalkableAt(t, i, (_grid[t,i] == 0 ? true : false));
+                    grid.SetWalkableAt(t, i, (_grid[t, i] == 0 ? true : false));
                 }
             }
             return grid;
@@ -322,7 +322,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public async Task MonsterLifeManager()
+        public void MonsterLifeManager()
         {
             try
             {
@@ -331,11 +331,8 @@ namespace OpenNos.GameObject
                 Monsters.RemoveAll(s => !s.Alive && !s.Respawn);
                 foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
                 {
-                    MonsterLifeTask.Add(new Task(() => monster.MonsterLife()));
-                    MonsterLifeTask.Last().Start();
+                    monster.MonsterLife();
                 }
-                foreach (Task mtask in MonsterLifeTask)
-                    await mtask;
             }
             catch (Exception e)
             {
@@ -343,17 +340,15 @@ namespace OpenNos.GameObject
             }
         }
 
-        public async Task NpcLifeManager()
+        public void NpcLifeManager()
         {
             try
             {
                 var rnd = new Random();
-                List<Task> NpcLifeTask = new List<Task>();
                 foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
                 {
-                    NpcLifeTask.Add(npc.NpcLife());
+                    npc.NpcLife();
                 }
-                Task.WaitAll(NpcLifeTask.ToArray());
             }
             catch (Exception e)
             {
@@ -409,12 +404,14 @@ namespace OpenNos.GameObject
         {
             try
             {
-                Task npclifemanager = NpcLifeManager();
-                Task monsterlifemanager = MonsterLifeManager();
-                CharacterLifeManager();
-                RemoveMapItem();
+                Task npclifemanager = new Task(() => NpcLifeManager());
+                Task monsterlifemanager = new Task(() => NpcLifeManager());
+                Task characterlifemanager = new Task(() => CharacterLifeManager());
+                Task mapitemlifemanager = new Task(() => RemoveMapItem());
+                await mapitemlifemanager;
                 await npclifemanager;
                 await monsterlifemanager;
+                await characterlifemanager;
 
             }
             catch (Exception e)
