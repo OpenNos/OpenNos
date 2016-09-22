@@ -97,7 +97,6 @@ namespace OpenNos.GameObject
                 _npcs.Add(new MapNpc(npc, this));
             }
 
-            JumpPointParameters = new JumpPointParam(this._grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
 
         #endregion
@@ -110,7 +109,6 @@ namespace OpenNos.GameObject
 
         public int IsDancing { get; set; }
 
-        public JumpPointParam JumpPointParameters { get; set; }
         public short MapId { get; set; }
 
         public List<MapType> MapTypes
@@ -339,8 +337,7 @@ namespace OpenNos.GameObject
             {
                 return path;
             }
-
-            JumpPointParameters.Reset(new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y));
+            JumpPointParam JumpPointParameters = new JumpPointParam(this._grid, new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y), false, true, true, HeuristicMode.MANHATTAN);
             List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
             lpath = JumpPointFinder.GetFullPath(resultPathList);
             Debug.WriteLine($"From X: {cell1.X} Y: {cell1.Y}, To X: {cell2.X} Y: {cell2.Y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
