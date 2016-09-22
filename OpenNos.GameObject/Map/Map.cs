@@ -36,7 +36,8 @@ namespace OpenNos.GameObject
         private List<MapNpc> _npcs;
         private List<Portal> _portals;
         private Guid _uniqueIdentifier;
-
+        private BaseGrid _tempgrid;
+     
         #endregion
 
         #region Instantiation
@@ -121,6 +122,20 @@ namespace OpenNos.GameObject
             get
             {
                 return _monsters;
+            }
+        }
+
+        public BaseGrid Tempgrid
+        {
+            get
+            {
+                if (_tempgrid == null)
+                    _tempgrid = ConvertToGrid(_grid);
+                return _tempgrid;
+            }
+            set
+            {
+                _tempgrid = value;
             }
         }
 
@@ -279,7 +294,7 @@ namespace OpenNos.GameObject
             {
                 return path;
             }
-            JumpPointParam JumpPointParameters = new JumpPointParam(ConvertToGrid(_grid), new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y), false, true, true, HeuristicMode.MANHATTAN);
+            JumpPointParam JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y), false, true, true, HeuristicMode.MANHATTAN);
             List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
             lpath = JumpPointFinder.GetFullPath(resultPathList);
             Debug.WriteLine($"From X: {cell1.X} Y: {cell1.Y}, To X: {cell2.X} Y: {cell2.Y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
