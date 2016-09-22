@@ -54,7 +54,7 @@ namespace OpenNos.Handler
                 {
                     bool isIllegalCharacter = false;
 
-                    System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[a-zA-Z0-9ąáàâäãåçćéèêëęíìîïłńñóòôöõúùûüśźżýÿæœĄÁÀÂÄÃÅĆÇĘÉÈÊËÍÌÎÏŁŃÑÓÒÔÖÕÚÙÛÜŚŹŻÝŸÆŒ.¤*-|#²§µß™€=$^<>£!()&~{}@]*$`~");
+                    System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[\u4E00-\u9FA5a-zA-Z0-9ąáàâäãåçćéèêëęíìîïłńñóòôöõúùûüśźżýÿæœĄÁÀÂÄÃÅĆÇĘÉÈÊËÍÌÎÏŁŃÑÓÒÔÖÕÚÙÛÜŚŹŻÝŸÆŒ.¤*-|#²§µß™€=$^<>£!()&~{}@]*$`~");
                     isIllegalCharacter = rg.IsMatch(characterName);
 
                     if (!isIllegalCharacter)
