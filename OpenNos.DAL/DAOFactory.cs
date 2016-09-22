@@ -51,6 +51,7 @@ namespace OpenNos.DAL
         private static IShopSkillDAO _shopskillDAO;
         private static ISkillDAO _skillDAO;
         private static ITeleporterDAO _teleporterDAO;
+        private static bool _useMock;
 
         #endregion
 
@@ -60,7 +61,12 @@ namespace OpenNos.DAL
         {
             try
             {
-                MySQL.Helpers.MigrationHelper.GenerateSQLScript();
+                _useMock = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["UseMock"]);
+
+                if (!_useMock)
+                {
+                    MySQL.Helpers.MigrationHelper.GenerateSQLScript();
+                }
             }
             catch (Exception ex)
             {
@@ -78,7 +84,10 @@ namespace OpenNos.DAL
             {
                 if (_accountDAO == null)
                 {
-                    _accountDAO = new MySQL.AccountDAO();
+                    if (_useMock)
+                        _accountDAO = new Mock.AccountDAO();
+                    else
+                        _accountDAO = new MySQL.AccountDAO();
                 }
 
                 return _accountDAO;
@@ -91,7 +100,10 @@ namespace OpenNos.DAL
             {
                 if (_cellonoptionDAO == null)
                 {
-                    _cellonoptionDAO = new MySQL.CellonOptionDAO();
+                    if (_useMock)
+                        _cellonoptionDAO = new Mock.CellonOptionDAO();
+                    else
+                        _cellonoptionDAO = new MySQL.CellonOptionDAO();
                 }
 
                 return _cellonoptionDAO;
@@ -104,7 +116,10 @@ namespace OpenNos.DAL
             {
                 if (_characterDAO == null)
                 {
-                    _characterDAO = new MySQL.CharacterDAO();
+                    if (_useMock)
+                        _characterDAO = new Mock.CharacterDAO();
+                    else
+                        _characterDAO = new MySQL.CharacterDAO();
                 }
 
                 return _characterDAO;
@@ -117,7 +132,10 @@ namespace OpenNos.DAL
             {
                 if (_characterskillDAO == null)
                 {
-                    _characterskillDAO = new MySQL.CharacterSkillDAO();
+                    if (_useMock)
+                        _characterskillDAO = new Mock.CharacterSkillDAO();
+                    else
+                        _characterskillDAO = new MySQL.CharacterSkillDAO();
                 }
 
                 return _characterskillDAO;
@@ -130,7 +148,10 @@ namespace OpenNos.DAL
             {
                 if (_comboDAO == null)
                 {
-                    _comboDAO = new MySQL.ComboDAO();
+                    if (_useMock)
+                        _comboDAO = new Mock.ComboDAO();
+                    else
+                        _comboDAO = new MySQL.ComboDAO();
                 }
 
                 return _comboDAO;
@@ -143,7 +164,10 @@ namespace OpenNos.DAL
             {
                 if (_dropDAO == null)
                 {
-                    _dropDAO = new MySQL.DropDAO();
+                    if (_useMock)
+                        _dropDAO = new Mock.DropDAO();
+                    else
+                        _dropDAO = new MySQL.DropDAO();
                 }
 
                 return _dropDAO;
@@ -156,7 +180,10 @@ namespace OpenNos.DAL
             {
                 if (_generallogDAO == null)
                 {
-                    _generallogDAO = new MySQL.GeneralLogDAO();
+                    if (_useMock)
+                        _generallogDAO = new Mock.GeneralLogDAO();
+                    else
+                        _generallogDAO = new MySQL.GeneralLogDAO();
                 }
 
                 return _generallogDAO;
@@ -169,7 +196,10 @@ namespace OpenNos.DAL
             {
                 if (_inventoryDAO == null)
                 {
-                    _inventoryDAO = new MySQL.InventoryDAO();
+                    if (_useMock)
+                        _inventoryDAO = new Mock.InventoryDAO();
+                    else
+                        _inventoryDAO = new MySQL.InventoryDAO();
                 }
 
                 return _inventoryDAO;
@@ -182,19 +212,26 @@ namespace OpenNos.DAL
             {
                 if (_itemDAO == null)
                 {
-                    _itemDAO = new MySQL.ItemDAO();
+                    if (_useMock)
+                        _itemDAO = new Mock.ItemDAO();
+                    else
+                        _itemDAO = new MySQL.ItemDAO();
                 }
 
                 return _itemDAO;
             }
         }
+
         public static IMailDAO MailDAO
         {
             get
             {
                 if (_mailDAO == null)
                 {
-                    _mailDAO = new MySQL.MailDAO();
+                    if (_useMock)
+                        _mailDAO = new Mock.MailDAO();
+                    else
+                        _mailDAO = new MySQL.MailDAO();
                 }
 
                 return _mailDAO;
@@ -207,7 +244,10 @@ namespace OpenNos.DAL
             {
                 if (_mapDAO == null)
                 {
-                    _mapDAO = new MySQL.MapDAO();
+                    if (_useMock)
+                        _mapDAO = new Mock.MapDAO();
+                    else
+                        _mapDAO = new MySQL.MapDAO();
                 }
 
                 return _mapDAO;
@@ -220,7 +260,10 @@ namespace OpenNos.DAL
             {
                 if (_mapmonsterDAO == null)
                 {
-                    _mapmonsterDAO = new MySQL.MapMonsterDAO();
+                    if (_useMock)
+                        _mapmonsterDAO = new Mock.MapMonsterDAO();
+                    else
+                        _mapmonsterDAO = new MySQL.MapMonsterDAO();
                 }
 
                 return _mapmonsterDAO;
@@ -233,7 +276,10 @@ namespace OpenNos.DAL
             {
                 if (_mapnpcDAO == null)
                 {
-                    _mapnpcDAO = new MySQL.MapNpcDAO();
+                    if (_useMock)
+                        _mapnpcDAO = new Mock.MapNpcDAO();
+                    else
+                        _mapnpcDAO = new MySQL.MapNpcDAO();
                 }
 
                 return _mapnpcDAO;
@@ -246,7 +292,10 @@ namespace OpenNos.DAL
             {
                 if (_maptypeDAO == null)
                 {
-                    _maptypeDAO = new MySQL.MapTypeDAO();
+                    if (_useMock)
+                        _maptypeDAO = new Mock.MapTypeDAO();
+                    else
+                        _maptypeDAO = new MySQL.MapTypeDAO();
                 }
 
                 return _maptypeDAO;
@@ -259,7 +308,10 @@ namespace OpenNos.DAL
             {
                 if (_maptypemapDAO == null)
                 {
-                    _maptypemapDAO = new MySQL.MapTypeMapDAO();
+                    if (_useMock)
+                        _maptypemapDAO = new Mock.MapTypeMapDAO();
+                    else
+                        _maptypemapDAO = new MySQL.MapTypeMapDAO();
                 }
 
                 return _maptypemapDAO;
@@ -272,7 +324,10 @@ namespace OpenNos.DAL
             {
                 if (_npcmonsterDAO == null)
                 {
-                    _npcmonsterDAO = new MySQL.NpcMonsterDAO();
+                    if (_useMock)
+                        _npcmonsterDAO = new Mock.NpcMonsterDAO();
+                    else
+                        _npcmonsterDAO = new MySQL.NpcMonsterDAO();
                 }
 
                 return _npcmonsterDAO;
@@ -285,7 +340,10 @@ namespace OpenNos.DAL
             {
                 if (_npcmonsterskillDAO == null)
                 {
-                    _npcmonsterskillDAO = new MySQL.NpcMonsterSkillDAO();
+                    if (_useMock)
+                        _npcmonsterskillDAO = new Mock.NpcMonsterSkillDAO();
+                    else
+                        _npcmonsterskillDAO = new MySQL.NpcMonsterSkillDAO();
                 }
 
                 return _npcmonsterskillDAO;
@@ -298,7 +356,10 @@ namespace OpenNos.DAL
             {
                 if (_penaltylogDAO == null)
                 {
-                    _penaltylogDAO = new MySQL.PenaltyLogDAO();
+                    if (_useMock)
+                        _penaltylogDAO = new Mock.PenaltyLogDAO();
+                    else
+                        _penaltylogDAO = new MySQL.PenaltyLogDAO();
                 }
 
                 return _penaltylogDAO;
@@ -311,7 +372,10 @@ namespace OpenNos.DAL
             {
                 if (_portalDAO == null)
                 {
-                    _portalDAO = new MySQL.PortalDAO();
+                    if (_useMock)
+                        _portalDAO = new Mock.PortalDAO();
+                    else
+                        _portalDAO = new MySQL.PortalDAO();
                 }
 
                 return _portalDAO;
@@ -324,8 +388,12 @@ namespace OpenNos.DAL
             {
                 if (_quicklistDAO == null)
                 {
-                    _quicklistDAO = new MySQL.QuicklistEntryDAO();
+                    if (_useMock)
+                        _quicklistDAO = new Mock.QuicklistEntryDAO();
+                    else
+                        _quicklistDAO = new MySQL.QuicklistEntryDAO();
                 }
+
                 return _quicklistDAO;
             }
         }
@@ -336,7 +404,10 @@ namespace OpenNos.DAL
             {
                 if (_recipeDAO == null)
                 {
-                    _recipeDAO = new MySQL.RecipeDAO();
+                    if (_useMock)
+                        _recipeDAO = new Mock.RecipeDAO();
+                    else
+                        _recipeDAO = new MySQL.RecipeDAO();
                 }
 
                 return _recipeDAO;
@@ -349,7 +420,10 @@ namespace OpenNos.DAL
             {
                 if (_recipeitemDAO == null)
                 {
-                    _recipeitemDAO = new MySQL.RecipeItemDAO();
+                    if (_useMock)
+                        _recipeitemDAO = new Mock.RecipeItemDAO();
+                    else
+                        _recipeitemDAO = new MySQL.RecipeItemDAO();
                 }
 
                 return _recipeitemDAO;
@@ -362,7 +436,10 @@ namespace OpenNos.DAL
             {
                 if (_respawnDAO == null)
                 {
-                    _respawnDAO = new MySQL.RespawnDAO();
+                    if (_useMock)
+                        _respawnDAO = new Mock.RespawnDAO();
+                    else
+                        _respawnDAO = new MySQL.RespawnDAO();
                 }
 
                 return _respawnDAO;
@@ -375,7 +452,10 @@ namespace OpenNos.DAL
             {
                 if (_shopDAO == null)
                 {
-                    _shopDAO = new MySQL.ShopDAO();
+                    if (_useMock)
+                        _shopDAO = new Mock.ShopDAO();
+                    else
+                        _shopDAO = new MySQL.ShopDAO();
                 }
 
                 return _shopDAO;
@@ -388,7 +468,10 @@ namespace OpenNos.DAL
             {
                 if (_shopitemDAO == null)
                 {
-                    _shopitemDAO = new MySQL.ShopItemDAO();
+                    if (_useMock)
+                        _shopitemDAO = new Mock.ShopItemDAO();
+                    else
+                        _shopitemDAO = new MySQL.ShopItemDAO();
                 }
 
                 return _shopitemDAO;
@@ -401,7 +484,10 @@ namespace OpenNos.DAL
             {
                 if (_shopskillDAO == null)
                 {
-                    _shopskillDAO = new MySQL.ShopSkillDAO();
+                    if (_useMock)
+                        _shopskillDAO = new Mock.ShopSkillDAO();
+                    else
+                        _shopskillDAO = new MySQL.ShopSkillDAO();
                 }
 
                 return _shopskillDAO;
@@ -414,7 +500,10 @@ namespace OpenNos.DAL
             {
                 if (_skillDAO == null)
                 {
-                    _skillDAO = new MySQL.SkillDAO();
+                    if (_useMock)
+                        _skillDAO = new Mock.SkillDAO();
+                    else
+                        _skillDAO = new MySQL.SkillDAO();
                 }
 
                 return _skillDAO;
@@ -427,7 +516,10 @@ namespace OpenNos.DAL
             {
                 if (_teleporterDAO == null)
                 {
-                    _teleporterDAO = new MySQL.TeleporterDAO();
+                    if (_useMock)
+                        _teleporterDAO = new Mock.TeleporterDAO();
+                    else
+                        _teleporterDAO = new MySQL.TeleporterDAO();
                 }
 
                 return _teleporterDAO;
