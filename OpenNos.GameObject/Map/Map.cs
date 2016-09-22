@@ -265,7 +265,7 @@ namespace OpenNos.GameObject
             {
                 for (int t = 0; t < XLength; ++t)
                 {
-                    grid.SetWalkableAt(t, i, (_grid[i,t] == 0 ? true : false));
+                    grid.SetWalkableAt(t, i, (_grid[i, t] == 0 ? true : false));
                 }
             }
             return grid;
@@ -351,11 +351,9 @@ namespace OpenNos.GameObject
                 List<Task> NpcLifeTask = new List<Task>();
                 foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
                 {
-                    NpcLifeTask.Add(new Task(() => npc.NpcLife()));
-                    NpcLifeTask.Last().Start();
+                    NpcLifeTask.Add(npc.NpcLife());
                 }
-                foreach (Task t in NpcLifeTask)
-                    await t;
+                Task.WaitAll(NpcLifeTask.ToArray());
             }
             catch (Exception e)
             {

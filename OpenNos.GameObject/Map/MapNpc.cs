@@ -121,7 +121,7 @@ namespace OpenNos.GameObject
             return $"npc_req 2 {MapNpcId} {Dialog}";
         }
 
-        internal async void NpcLife()
+        internal async Task NpcLife()
         {
             await Task.Delay((1000 / ServerManager.GetMap(MapId).Npcs.Count));
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
