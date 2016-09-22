@@ -719,11 +719,11 @@ namespace OpenNos.Handler
 
             if (packetsplit.Length == 10 && packetsplit[2] == "10")
             {
-                short SLDamage = 0, SLDefence = 0, SLElement = 0, SLHP = 0;
-                int TransportId = -1;
-                if (!int.TryParse(packetsplit[5], out TransportId) && !short.TryParse(packetsplit[6], out SLDamage) && !short.TryParse(packetsplit[7], out SLDefence) && !short.TryParse(packetsplit[8], out SLElement) && !short.TryParse(packetsplit[8], out SLHP)) return;
+                short specialistDamage = 0, specialistDefense = 0, specialistElement = 0, specialistHealpoints = 0;
+                int transportId = -1;
+                if (!int.TryParse(packetsplit[5], out transportId) || !short.TryParse(packetsplit[6], out specialistDamage) || !short.TryParse(packetsplit[7], out specialistDefense) || !short.TryParse(packetsplit[8], out specialistElement) || !short.TryParse(packetsplit[9], out specialistHealpoints)) return;
 
-                if (!Session.Character.UseSp || specialistInstance == null || TransportId != specialistInstance.TransportId)
+                if (!Session.Character.UseSp || specialistInstance == null || transportId != specialistInstance.TransportId)
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
@@ -731,14 +731,14 @@ namespace OpenNos.Handler
                 if (ServersData.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade)
                     - specialistInstance.SlDamage - specialistInstance.SlHP
                     - specialistInstance.SlElement - specialistInstance.SlDefence
-                    - SLDamage - SLDefence
-                    - SLElement - SLHP < 0)
+                    - specialistDamage - specialistDefense
+                    - specialistElement - specialistHealpoints < 0)
                     return;
-                if (SLDamage < 0 || SLDefence < 0 || SLElement < 0 || SLHP < 0) { return; }
-                specialistInstance.SlDamage += SLDamage;
-                specialistInstance.SlDefence += SLDefence;
-                specialistInstance.SlElement += SLElement;
-                specialistInstance.SlHP += SLHP;
+                if (specialistDamage < 0 || specialistDefense < 0 || specialistElement < 0 || specialistHealpoints < 0) { return; }
+                specialistInstance.SlDamage += specialistDamage;
+                specialistInstance.SlDefence += specialistDefense;
+                specialistInstance.SlElement += specialistElement;
+                specialistInstance.SlHP += specialistHealpoints;
 
                 int slElement = ServersData.SlPoint(specialistInstance.SlElement, 2);
                 int slHp = ServersData.SlPoint(specialistInstance.SlHP, 3);
@@ -746,6 +746,7 @@ namespace OpenNos.Handler
                 int slHit = ServersData.SlPoint(specialistInstance.SlDamage, 0);
 
                 //so add upgrade to sp
+        
                 //slhit
                 specialistInstance.DamageMinimum = 0;
                 specialistInstance.DamageMaximum = 0;

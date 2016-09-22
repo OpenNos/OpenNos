@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
         private static EncryptionBase _encryptor;
         private Account _account;
         private Character _character;
-        private NetworkClient _client;
+        private INetworkClient _client;
         private IDictionary<PacketAttribute, Tuple<Action<object, string>, object>> _handlerMethods;
         private SequentialItemProcessor<byte[]> _queue;
         private IList<String> _waitForPacketList = new List<String>();
@@ -47,7 +47,7 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public ClientSession(NetworkClient client)
+        public ClientSession(INetworkClient client)
         {
             _client = client;
 
@@ -102,11 +102,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        public CommunicationStates CommunicationState
+        public bool IsConnected
         {
             get
             {
-                return _client.CommunicationState;
+                return _client.IsConnected;
             }
         }
 
@@ -152,7 +152,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return _client.RemoteEndPoint.ToString();
+                return _client.IpAddress;
             }
         }
 

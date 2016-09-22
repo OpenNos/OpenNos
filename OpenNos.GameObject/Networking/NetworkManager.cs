@@ -16,32 +16,26 @@ using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Core.Networking.Communication.Scs.Server;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.GameObject
 {
-    public class NetworkManager<EncryptorT>
+    public class NetworkManager<EncryptorT> : SessionManager
         where EncryptorT : EncryptionBase
     {
         #region Members
 
+        private IDictionary<string, DateTime> _connectionLog;
         private EncryptorT _encryptor;
         private EncryptionBase _fallbackEncryptor;
-        private IDictionary<string, DateTime> _generalLog;
-        private ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
-        private Type _packetHandler;
-        private ConcurrentDictionary<long, ClientSession> _sessions = new ConcurrentDictionary<long, ClientSession>();
 
         #endregion
 
         #region Instantiation
 
-        public NetworkManager(string ipAddress, int port, Type packetHandler, Type fallbackEncryptor, bool isWorldServer)
+        public NetworkManager(string ipAddress, int port, Type packetHandler, Type fallbackEncryptor, bool isWorldServer) : base(packetHandler, isWorldServer)
         {
-            IsWorldServer = isWorldServer;
-            _packetHandler = packetHandler;
             _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
 
             if (fallbackEncryptor != null)
@@ -62,118 +56,77 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public IDictionary<string, DateTime> GeneralLog
+        public IDictionary<string, DateTime> ConnectionLog
         {
             get
             {
-                if (_generalLog == null)
+                if (_connectionLog == null)
                 {
-                    _generalLog = new Dictionary<string, DateTime>();
+                    _connectionLog = new Dictionary<string, DateTime>();
                 }
 
-                return _generalLog;
+                return _connectionLog;
             }
             set
             {
-                if (_generalLog != value)
+                if (_connectionLog != value)
                 {
-                    _generalLog = value;
+                    _connectionLog = value;
                 }
             }
         }
-
-        public bool IsWorldServer { get; set; }
 
         #endregion
 
         #region Methods
 
-        private bool CheckGeneralLog(NetworkClient client)
+        protected override ClientSession IntializeNewSession(INetworkClient client)
         {
-            ScsTcpEndPoint currentEndpoint = client.RemoteEndPoint as ScsTcpEndPoint;
-
-            if (GeneralLog.Any())
+            if (!CheckGeneralLog(client))
             {
-                foreach (var item in GeneralLog.Where(cl => cl.Key.Equals(currentEndpoint.IpAddress) && (DateTime.Now - cl.Value).Seconds > 3).ToList())
+                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), client.ClientId);
+                client.Initialize(_fallbackEncryptor);
+                client.SendPacket($"fail {Language.Instance.GetMessageFromKey("CONNECTION_LOST")}");
+                client.Disconnect();
+                client = null;
+                return null;
+            }
+
+            ClientSession session = new ClientSession(client);
+            session.Initialize(_encryptor, _packetHandler, IsWorldServer);
+
+            return session;
+        }
+
+        private bool CheckGeneralLog(INetworkClient client)
+        {
+            if (ConnectionLog.Any())
+            {
+                foreach (var item in ConnectionLog.Where(cl => cl.Key.Equals(client.IpAddress) && (DateTime.Now - cl.Value).Seconds > 3).ToList())
                 {
-                    GeneralLog.Remove(item.Key);
+                    ConnectionLog.Remove(item.Key);
                 }
             }
 
-            if (GeneralLog.ContainsKey(currentEndpoint.IpAddress))
+            if (ConnectionLog.ContainsKey(client.IpAddress))
             {
                 return false;
             }
             else
             {
-                GeneralLog.Add(currentEndpoint.IpAddress, DateTime.Now);
+                ConnectionLog.Add(client.IpAddress, DateTime.Now);
                 return true;
             }
         }
 
         private void Server_ClientConnected(object sender, ServerClientEventArgs e)
         {
-            Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + e.Client.ClientId);
-            NetworkClient customClient = e.Client as NetworkClient;
-
-            if (!CheckGeneralLog(customClient))
-            {
-                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
-                customClient.Initialize(_fallbackEncryptor);
-                customClient.SendPacket($"fail {Language.Instance.GetMessageFromKey("CONNECTION_LOST")}");
-                customClient.Disconnect();
-                customClient = null;
-                return;
-            }
-
-            ClientSession session = new ClientSession(customClient);
-            session.Initialize(_encryptor, _packetHandler, IsWorldServer);
-
-            if (IsWorldServer)
-            {
-                ServerManager.Instance.RegisterSession(session);
-                if (!_sessions.TryAdd(customClient.ClientId, session))
-                {
-                    Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
-                    customClient.Disconnect();
-                    _sessions.TryRemove(customClient.ClientId, out session);
-                    ServerManager.Instance.UnregisterSession(session);
-                    return;
-                };
-            }
+            AddSession(e.Client as NetworkClient);
         }
 
         private void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
         {
-            ClientSession session;
-            _sessions.TryRemove(e.Client.ClientId, out session);
-
-            //check if session hasnt been already removed
-            if (session != null)
-            {
-                session.IsDisposing = true;
-
-                if (IsWorldServer)
-                {
-                    if (session.Character != null)
-                    {
-                        if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(session.Character.CharacterId)))
-                        {
-                            ServerManager.Instance.GroupLeave(session);
-                        }
-
-                        session.Character.Save();
-
-                        //only remove the character from map if the character has been set
-                        session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
-                    }
-                }
-
-                session.Destroy();
-                e.Client.Disconnect();
-                Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);
-                session = null;
-            }
+            RemoveSession(e.Client as NetworkClient);
         }
 
         #endregion

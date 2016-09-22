@@ -70,6 +70,10 @@
       <Project>{175c851b-8dc8-43a5-af93-af32d106cd77}</Project>
       <Name>OpenNos.DAL.Interface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.DAL.Mock\OpenNos.DAL.Mock.csproj">
+      <Project>{17391a4a-68fd-49c9-87ea-61cf0b30934b}</Project>
+      <Name>OpenNos.DAL.Mock</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

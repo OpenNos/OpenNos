@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -415,11 +416,11 @@ namespace OpenNos.GameObject
         //Both partly
         public void ChangeMap(long id)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == id);
+            ClientSession session = Sessions.SingleOrDefault(s => s.Character != null && s.Character.CharacterId == id);
             if (session != null)
             {
                 session.CurrentMap.UnregisterSession(session);
-                session.CurrentMap = ServerManager.GetMap(session.Character.MapId);
+                session.CurrentMap = GetMap(session.Character.MapId);
                 session.CurrentMap.RegisterSession(session);
                 session.SendPacket(session.Character.GenerateCInfo());
                 session.SendPacket(session.Character.GenerateCMode());
@@ -440,7 +441,7 @@ namespace OpenNos.GameObject
                 session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.All);
                 session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
-                ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
+                Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
 
                 session.SendPackets(session.Character.GenerateGp());
                 // wp 23 124 4 4 12 99
@@ -573,8 +574,7 @@ namespace OpenNos.GameObject
                             sess.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
                     }
-                    session.SendPacket($"pidx -1 1.{ session.Character.CharacterId}");
-                    Broadcast(session, $"pidx -1 1.{session.Character.CharacterId}", ReceiverType.AllExceptMe);
+                    Broadcast(session.Character.GeneratePidx());
                     session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                 }
                 else
@@ -585,7 +585,7 @@ namespace OpenNos.GameObject
                         {
                             sess.SendPacket("pinit 0");
                             sess.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
-                            Broadcast(sess, $"pidx -1 1.{targetSession.Character.CharacterId}", ReceiverType.All);
+                            Broadcast(sess.Character.GeneratePidx());
                         }
                     }
                     ServerManager.Instance.Groups.Remove(grp);
@@ -608,13 +608,14 @@ namespace OpenNos.GameObject
         //Map
         public void MapOut(long id)
         {
-            foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
-            {
-                session.SendPacket(session.Character.GenerateAt());
-                session.SendPacket(session.Character.GenerateCMap());
-                session.SendPacket(session.Character.GenerateMapOut());
-                session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
-            }
+            ClientSession session = Sessions.SingleOrDefault(s => s.Character != null && s.Character.CharacterId == id);
+            if (session == null)
+                return;
+            session.SendPacket(session.Character.GenerateAt());
+            session.SendPacket(session.Character.GenerateCMap());
+            session.SendPacket(session.Character.GenerateMapOut());
+            session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+
         }
 
         public void RequireBroadcastFromUser(ClientSession client, long characterId, string methodName)
@@ -648,7 +649,7 @@ namespace OpenNos.GameObject
 
         public void SaveAll()
         {
-            List<ClientSession> sessions = Sessions.Where(c => c.CommunicationState == Core.Networking.Communication.Scs.Communication.CommunicationStates.Connected).ToList();
+            List<ClientSession> sessions = Sessions.Where(c => c.IsConnected).ToList();
             sessions.ForEach(s => s.Character?.Save());
         }
 
@@ -711,18 +712,23 @@ namespace OpenNos.GameObject
         }
 
         //Map ??
-        private async void TaskLauncherProcess()
+        private void TaskLauncherProcess()
         {
             List<Task> TaskMaps = null;
             while (true)
             {
                 TaskMaps = new List<Task>();
-                foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
+                foreach (var map in _maps.Where(s => s.Value.Sessions.Any() || s.Value.LastUnregister.AddSeconds(30) > DateTime.Now))
                 {
-                    TaskMaps.Add(GetMap(GroupedSession.First().Character.MapId).MapTaskManager());
+                    TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
                 }
+                foreach (var map in _maps.Where(s => s.Value.Tempgrid !=null &&( !s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
+                {
+                    map.Value.Tempgrid = null;
+                }
+                TaskMaps.ForEach(s => s.Start());
                 Task.WaitAll(TaskMaps.ToArray());
-                await Task.Delay(300);
+                Thread.Sleep(700);
             }
         }
 

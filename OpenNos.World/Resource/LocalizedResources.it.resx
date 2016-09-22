@@ -940,6 +940,9 @@
     <value>Oggetto non trovato!</value>
   </data>
   <data name="MONSTER_NOT_FOUND" xml:space="preserve">
-    <value />
+    <value>Impossibile trovare questo mostro!</value>
+  </data>
+  <data name="NOT_YOUR_ITEM" xml:space="preserve">
+    <value>L'item non ti appartiene!</value>
   </data>
 </root>

@@ -1,5 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using log4net;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.GameObject;
+using OpenNos.GameObject.Mock;
 using OpenNos.Handler;
 
 namespace OpenNos.Test
@@ -28,6 +32,32 @@ namespace OpenNos.Test
             InPacket serializedInPacket = PacketFactory.Serialize<InPacket>(inPacket);
             string deserializedInPacket = PacketFactory.Deserialize(serializedInPacket);
             Assert.AreEqual(inPacket, $"1234 {deserializedInPacket}");
+        }
+
+        [TestMethod]
+        public void SessionManagerTest()
+        {
+            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+
+            //initialize Logger
+            Logger.InitializeLogger(LogManager.GetLogger(typeof(CoreTest)));
+
+            //initialilize maps
+            ServerManager.Initialize();
+
+            //register mappings for items
+            DAOFactory.InventoryDAO.RegisterMapping(typeof(SpecialistInstance));
+            DAOFactory.InventoryDAO.RegisterMapping(typeof(WearableInstance));
+            DAOFactory.InventoryDAO.RegisterMapping(typeof(UsableInstance));
+            DAOFactory.InventoryDAO.InitializeMapper(typeof(ItemInstance));
+
+            //initialize PacketSerialization
+            PacketFactory.Initialize<WalkPacket>();
+
+            //initialize new manager
+            SessionManager manager = new SessionManager(typeof(CharacterScreenPacketHandler), true);
+            FakeNetworkClient client = new FakeNetworkClient();
+            manager.AddSession(client);
         }
 
         #endregion

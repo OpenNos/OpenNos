@@ -36,7 +36,8 @@ namespace OpenNos.GameObject
         private List<MapNpc> _npcs;
         private List<Portal> _portals;
         private Guid _uniqueIdentifier;
-
+        private BaseGrid _tempgrid;
+     
         #endregion
 
         #region Instantiation
@@ -121,6 +122,20 @@ namespace OpenNos.GameObject
             get
             {
                 return _monsters;
+            }
+        }
+
+        public BaseGrid Tempgrid
+        {
+            get
+            {
+                if (_tempgrid == null)
+                    _tempgrid = ConvertToGrid(_grid);
+                return _tempgrid;
+            }
+            set
+            {
+                _tempgrid = value;
             }
         }
 
@@ -265,7 +280,7 @@ namespace OpenNos.GameObject
             {
                 for (int t = 0; t < XLength; ++t)
                 {
-                    grid.SetWalkableAt(t, i, (_grid[t,i] == 0 ? true : false));
+                    grid.SetWalkableAt(t, i, (_grid[t, i] == 0 ? true : false));
                 }
             }
             return grid;
@@ -279,7 +294,7 @@ namespace OpenNos.GameObject
             {
                 return path;
             }
-            JumpPointParam JumpPointParameters = new JumpPointParam(ConvertToGrid(_grid), new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y), false, true, true, HeuristicMode.MANHATTAN);
+            JumpPointParam JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y), false, true, true, HeuristicMode.MANHATTAN);
             List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
             lpath = JumpPointFinder.GetFullPath(resultPathList);
             Debug.WriteLine($"From X: {cell1.X} Y: {cell1.Y}, To X: {cell2.X} Y: {cell2.Y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
@@ -322,7 +337,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public async Task MonsterLifeManager()
+        public void MonsterLifeManager()
         {
             try
             {
@@ -331,11 +346,8 @@ namespace OpenNos.GameObject
                 Monsters.RemoveAll(s => !s.Alive && !s.Respawn);
                 foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
                 {
-                    MonsterLifeTask.Add(new Task(() => monster.MonsterLife()));
-                    MonsterLifeTask.Last().Start();
+                    monster.MonsterLife();
                 }
-                foreach (Task mtask in MonsterLifeTask)
-                    await mtask;
             }
             catch (Exception e)
             {
@@ -343,19 +355,15 @@ namespace OpenNos.GameObject
             }
         }
 
-        public async Task NpcLifeManager()
+        public void NpcLifeManager()
         {
             try
             {
                 var rnd = new Random();
-                List<Task> NpcLifeTask = new List<Task>();
                 foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
                 {
-                    NpcLifeTask.Add(new Task(() => npc.NpcLife()));
-                    NpcLifeTask.Last().Start();
+                    npc.NpcLife();
                 }
-                foreach (Task t in NpcLifeTask)
-                    await t;
             }
             catch (Exception e)
             {
@@ -407,17 +415,18 @@ namespace OpenNos.GameObject
             return characters;
         }
 
-        internal async Task MapTaskManager()
+        internal void MapTaskManager()
         {
             try
             {
-                Task npclifemanager = NpcLifeManager();
-                Task monsterlifemanager = MonsterLifeManager();
-                CharacterLifeManager();
-                RemoveMapItem();
-                await npclifemanager;
-                await monsterlifemanager;
+                List<Task> MapTasks = new List<Task>();
+                MapTasks.Add(new Task(() => NpcLifeManager()));
+                MapTasks.Add(new Task(() => MonsterLifeManager()));
+                MapTasks.Add(new Task(() => CharacterLifeManager()));
+                MapTasks.Add(new Task(() => RemoveMapItem()));
 
+                MapTasks.ForEach(s => s.Start());
+                Task.WaitAll(MapTasks.ToArray());
             }
             catch (Exception e)
             {
