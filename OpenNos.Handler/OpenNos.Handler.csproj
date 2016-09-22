@@ -61,6 +61,7 @@
     <Compile Include="Packets\ClientPackets\WalkPacket.cs" />
     <Compile Include="Packets\ServerPackets\InPacket.cs" />
     <Compile Include="Packets\ServerPackets\EquipPacket.cs" />
+    <Compile Include="Packets\ServerPackets\MovePacket.cs" />
     <Compile Include="UselessPacketHandler.cs" />
     <Compile Include="InventoryPacketHandler.cs" />
     <Compile Include="CommandPacketHandler.cs" />
