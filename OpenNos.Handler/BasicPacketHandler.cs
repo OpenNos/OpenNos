@@ -327,7 +327,7 @@ namespace OpenNos.Handler
                 int TypeOption = -1;
                 int OptionValue = -1;
 
-                if (int.TryParse(packetsplit[3], out TypeOption) && int.TryParse(packetsplit[3], out OptionValue))
+                if (int.TryParse(packetsplit[2], out TypeOption) && int.TryParse(packetsplit[3], out OptionValue))
 
                     switch (TypeOption)
                     {

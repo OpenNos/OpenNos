@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -415,11 +416,11 @@ namespace OpenNos.GameObject
         //Both partly
         public void ChangeMap(long id)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == id);
+            ClientSession session = Sessions.SingleOrDefault(s => s.Character != null && s.Character.CharacterId == id);
             if (session != null)
             {
                 session.CurrentMap.UnregisterSession(session);
-                session.CurrentMap = ServerManager.GetMap(session.Character.MapId);
+                session.CurrentMap = GetMap(session.Character.MapId);
                 session.CurrentMap.RegisterSession(session);
                 session.SendPacket(session.Character.GenerateCInfo());
                 session.SendPacket(session.Character.GenerateCMode());
@@ -440,7 +441,7 @@ namespace OpenNos.GameObject
                 session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.All);
                 session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
-                ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
+                Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
 
                 session.SendPackets(session.Character.GenerateGp());
                 // wp 23 124 4 4 12 99
@@ -608,13 +609,14 @@ namespace OpenNos.GameObject
         //Map
         public void MapOut(long id)
         {
-            foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
-            {
-                session.SendPacket(session.Character.GenerateAt());
-                session.SendPacket(session.Character.GenerateCMap());
-                session.SendPacket(session.Character.GenerateMapOut());
-                session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
-            }
+            ClientSession session = Sessions.SingleOrDefault(s => s.Character != null && s.Character.CharacterId == id);
+            if (session == null)
+                return;
+            session.SendPacket(session.Character.GenerateAt());
+            session.SendPacket(session.Character.GenerateCMap());
+            session.SendPacket(session.Character.GenerateMapOut());
+            session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+
         }
 
         public void RequireBroadcastFromUser(ClientSession client, long characterId, string methodName)
@@ -711,19 +713,19 @@ namespace OpenNos.GameObject
         }
 
         //Map ??
-        private async void TaskLauncherProcess()
+        private void TaskLauncherProcess()
         {
-            Task TaskMap = null;
+            List<Task> TaskMaps = null;
             while (true)
             {
+                TaskMaps = new List<Task>();
                 foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
                 {
-                    TaskMap = new Task(() => ServerManager.GetMap(GroupedSession.First().Character.MapId).MapTaskManager());
-                    TaskMap.Start();
+                    TaskMaps.Add(new Task(() => GetMap(GroupedSession.First().Character.MapId).MapTaskManager()));
                 }
-                if (TaskMap != null)
-                    await TaskMap;
-                await Task.Delay(300);
+                TaskMaps.ForEach(s => s.Start());
+                Task.WaitAll(TaskMaps.ToArray());
+                Thread.Sleep(300);
             }
         }
 

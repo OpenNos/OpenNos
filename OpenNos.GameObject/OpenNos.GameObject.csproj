@@ -42,6 +42,10 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EpPathFinding.cs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EpPathFinding.cs.1.1.4\lib\EpPathFinding.cs.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -78,12 +82,9 @@
     <Compile Include="Item\WearableItem.cs" />
     <Compile Include="Map\Map.cs" />
     <Compile Include="Group.cs" />
-    <Compile Include="Map\MapCellAStar.cs" />
     <Compile Include="Map\MapCell.cs" />
-    <Compile Include="Map\MapCellComparer.cs" />
     <Compile Include="Map\MapMonster.cs" />
     <Compile Include="Map\MapType.cs" />
-    <Compile Include="Map\SortedCostMapCellList.cs" />
     <Compile Include="Networking\BroadcastableBase.cs" />
     <Compile Include="Networking\TransportFactory.cs" />
     <Compile Include="NpcMonsterSkill.cs" />
