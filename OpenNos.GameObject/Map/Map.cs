@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
         private List<MapNpc> _npcs;
         private List<Portal> _portals;
         private Guid _uniqueIdentifier;
-
+       
         #endregion
 
         #region Instantiation

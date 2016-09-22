@@ -26,6 +26,7 @@ namespace OpenNos.GameObject
         public BroadcastableBase()
         {
             Sessions = new List<ClientSession>();
+            LastUnregister = DateTime.Now.AddMinutes(-1);
         }
 
         #endregion
@@ -33,7 +34,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<ClientSession> Sessions { get; set; }
-
+        public DateTime LastUnregister { get; set; }
         #endregion
 
         #region Methods
@@ -102,6 +103,7 @@ namespace OpenNos.GameObject
 
         public virtual void UnregisterSession(ClientSession session)
         {
+            LastUnregister = DateTime.Now;
             if (Sessions.Contains(session))
             {
                 Sessions.Remove(session);
