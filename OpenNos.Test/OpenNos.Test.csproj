@@ -92,6 +92,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resource\LocalizedResources.it.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedResources.Designer.cs</LastGenOutput>
