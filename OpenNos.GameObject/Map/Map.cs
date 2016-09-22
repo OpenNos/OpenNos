@@ -265,7 +265,7 @@ namespace OpenNos.GameObject
             {
                 for (int t = 0; t < XLength; ++t)
                 {
-                    grid.SetWalkableAt(t, i, (_grid[i,t] == 0 ? true : false));
+                    grid.SetWalkableAt(t, i, (_grid[t,i] == 0 ? true : false));
                 }
             }
             return grid;
