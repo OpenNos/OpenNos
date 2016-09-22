@@ -159,9 +159,9 @@ namespace OpenNos.GameObject
                             return;
                         }
                     }
-                    else if (time > random.Next(1, 3) * (0.5 + random.NextDouble()))
+                    else if (time > 1.3 * random.Next(1, 3) * (0.5 + random.NextDouble()))
                     {
-                        byte point = (byte)random.Next(2, 5);
+                        byte point = (byte)random.Next(2, 4);
                         byte fpoint = (byte)random.Next(0, 2);
 
                         byte xpoint = (byte)random.Next(fpoint, point);

@@ -132,9 +132,9 @@ namespace OpenNos.GameObject
 
             Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             time = (DateTime.Now - LastMove).TotalSeconds;
-            if (IsMoving && time > random.Next(1, 3) * (0.5 + random.NextDouble()))
+            if (IsMoving && time > 1.3 * random.Next(1, 3) * (0.5 + random.NextDouble()))
             {
-                byte point = (byte)random.Next(2, 5);
+                byte point = (byte)random.Next(2, 4);
                 byte fpoint = (byte)random.Next(0, 2);
 
                 byte xpoint = (byte)random.Next(fpoint, point);
