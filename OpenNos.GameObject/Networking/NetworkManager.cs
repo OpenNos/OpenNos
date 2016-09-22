@@ -88,33 +88,9 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        private bool CheckGeneralLog(NetworkClient client)
+        public void AddSession(INetworkClient customClient)
         {
-            ScsTcpEndPoint currentEndpoint = client.RemoteEndPoint as ScsTcpEndPoint;
-
-            if (GeneralLog.Any())
-            {
-                foreach (var item in GeneralLog.Where(cl => cl.Key.Equals(currentEndpoint.IpAddress) && (DateTime.Now - cl.Value).Seconds > 3).ToList())
-                {
-                    GeneralLog.Remove(item.Key);
-                }
-            }
-
-            if (GeneralLog.ContainsKey(currentEndpoint.IpAddress))
-            {
-                return false;
-            }
-            else
-            {
-                GeneralLog.Add(currentEndpoint.IpAddress, DateTime.Now);
-                return true;
-            }
-        }
-
-        private void Server_ClientConnected(object sender, ServerClientEventArgs e)
-        {
-            Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + e.Client.ClientId);
-            NetworkClient customClient = e.Client as NetworkClient;
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + customClient.ClientId);
 
             if (!CheckGeneralLog(customClient))
             {
@@ -141,6 +117,32 @@ namespace OpenNos.GameObject
                     return;
                 };
             }
+        }
+
+        private bool CheckGeneralLog(INetworkClient client)
+        {
+            if (GeneralLog.Any())
+            {
+                foreach (var item in GeneralLog.Where(cl => cl.Key.Equals(client.IpAddress) && (DateTime.Now - cl.Value).Seconds > 3).ToList())
+                {
+                    GeneralLog.Remove(item.Key);
+                }
+            }
+
+            if (GeneralLog.ContainsKey(client.IpAddress))
+            {
+                return false;
+            }
+            else
+            {
+                GeneralLog.Add(client.IpAddress, DateTime.Now);
+                return true;
+            }
+        }
+
+        private void Server_ClientConnected(object sender, ServerClientEventArgs e)
+        {
+            AddSession(e.Client as NetworkClient);
         }
 
         private void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
