@@ -1,4 +1,5 @@
 [![Build Status](http://134.255.238.79:8080/job/OpenNos/badge/icon)](http://134.255.238.79:8080/job/OpenNos/)
+[![Build Status](http://91.134.173.36:8080/job/OpenNos/badge/icon)](http://91.134.173.36:8080/job/OpenNos/)
 
 #Errors#
 1. Database issues
