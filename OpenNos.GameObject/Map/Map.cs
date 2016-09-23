@@ -332,7 +332,7 @@ namespace OpenNos.GameObject
                 for (int t = 0; t < XLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
-                    _grid[i, t] = Convert.ToInt16(bytes[0]);
+                    _grid[t, i] = Convert.ToInt16(bytes[0]);
                 }
             }
         }
