@@ -127,7 +127,7 @@
     <value>La base de données n'est pas à jour, essayez à nouveau après l'avoir mise à jour.</value>
   </data>
   <data name="DONE" xml:space="preserve">
-    <value>Analyse des fichiers finie !</value>
+    <value>L'analyse des fichiers est terminée !</value>
   </data>
   <data name="DROP_PARSED" xml:space="preserve">
     <value>{0} Drops d'objets analysés !</value>
@@ -152,9 +152,6 @@
   </data>
   <data name="NEED_TREE" xml:space="preserve">
     <value>Vous avez besoin de répertoires comme ceci :</value>
-  </data>
-  <data name="NO_ITEM" xml:space="preserve">
-    <value>L'ID de cet objet n'est pas valide.</value>
   </data>
   <data name="NPCMONSTERS_PARSED" xml:space="preserve">
     <value>{0} Pnj-Monstres analysés !</value>

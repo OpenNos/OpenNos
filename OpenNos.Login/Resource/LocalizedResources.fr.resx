@@ -124,13 +124,13 @@
     <value>Échec. Votre compte à été banni. Veuillez contacter l'équipe du jeu.</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
-    <value>Connexion fermée par le client !</value>
+    <value>La connexion a été fermée par le client.</value>
   </data>
   <data name="CLIENT_DISCONNECTED" xml:space="preserve">
-    <value>La connexion est fermée.</value>
+    <value>Le client a été déconnecté du serveur.</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">
-    <value>Configuration chargée !</value>
+    <value>La configuration a été chargée.</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
     <value>CONNECTION {0} Connecté -- session:{1}</value>
@@ -148,7 +148,7 @@
     <value>Erreur : Votre identifiant ou mot de passe est incorrect.</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
-    <value>Message reçu {0} on client {1}</value>
+    <value>Message reçu {0} sur le client {1}</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
     <value>Message envoyé au client :</value>
@@ -157,7 +157,7 @@
     <value>Un nouveau client est connecté. ClientId =</value>
   </data>
   <data name="NOTVALIDATE" xml:space="preserve">
-    <value>Le compte n'est pas valide.</value>
+    <value>Ce compte n'a pas été validé.</value>
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Échec de l'envoi de paquets {0} au client {1}, {2}.</value>
@@ -166,7 +166,7 @@
     <value>Le serveur à démarré sans problèmes !</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
-    <value>Le message est trop grand ({0} bytes). Longueur maximum permise est {1} bytes</value>
+    <value>Le message est trop grand ({0} bytes). La longueur maximum permise est {1} bytes</value>
   </data>
   <data name="CONNECTION_LOST" xml:space="preserve">
     <value>La connexion au serveur a été perdue.</value>

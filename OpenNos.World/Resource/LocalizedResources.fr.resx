@@ -952,4 +952,7 @@ Veux-tu le porter ?</value>
   <data name="ADVENTURERS_CANT_USE" xml:space="preserve">
     <value>Ton personnage ne remplis les conditions requise pour utiliser cet objet.</value>
   </data>
+  <data name="SAVING_ALL" xml:space="preserve">
+    <value>Le serveur vient d'effectuer une sauvegarde des données.</value>
+  </data>
 </root>
