@@ -740,7 +740,7 @@ namespace OpenNos.GameObject
             {
                 str = $"pidx {Group.GroupId}";
                 int i = 0;
-                foreach (ClientSession c in Group.Characters)
+                foreach (ClientSession c in Group.Characters.Where(s=>s.Character != null))
                 {
                     i++;
                     str += $" {i}.{c.Character.CharacterId} ";
