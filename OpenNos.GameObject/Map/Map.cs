@@ -326,7 +326,7 @@ namespace OpenNos.GameObject
             stream.Read(bytes, numBytesRead, numBytesToRead);
             ylength[1] = bytes[0];
 
-            _grid = new short[YLength, XLength];
+            _grid = new short[XLength, YLength];
             for (int i = 0; i < YLength; ++i)
             {
                 for (int t = 0; t < XLength; ++t)
