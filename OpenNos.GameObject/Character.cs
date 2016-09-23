@@ -735,22 +735,19 @@ namespace OpenNos.GameObject
 
         public string GeneratePidx()
         {
-            int? count = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId))?.Characters?.Select(c => c.Character.CharacterId).Count();
             string str = String.Empty;
-            if (count != null)
+            if (Group != null)
             {
-                str = $"pidx {count}";
+                str = $"pidx {Group.GroupId}";
                 int i = 0;
-                foreach (long Id in ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId)).Characters?.Select(c => c.Character.CharacterId))
+                foreach (ClientSession c in Group.Characters)
                 {
                     i++;
-                    str += $" {i}.{Id} ";
+                    str += $" {i}.{c.Character.CharacterId} ";
                 }
-            }
-            if (str == $"pidx {count}")
-                return String.Empty;
-            else
                 return str;
+            }
+            return $"pidx -1 1.{Session.Character.CharacterId}";
         }
 
         public string GeneratePinit()
