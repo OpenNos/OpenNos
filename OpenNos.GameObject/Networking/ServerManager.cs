@@ -728,7 +728,7 @@ namespace OpenNos.GameObject
                 }
                 TaskMaps.ForEach(s => s.Start());
                 Task.WaitAll(TaskMaps.ToArray());
-                Thread.Sleep(700);
+                Thread.Sleep(100);
             }
         }
 
