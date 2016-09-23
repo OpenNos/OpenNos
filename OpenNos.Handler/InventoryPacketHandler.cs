@@ -440,7 +440,7 @@ namespace OpenNos.Handler
             }
             if (long.TryParse(packetsplit[4], out transportId) && Session.CurrentMap.DroppedList.TryGetValue(transportId, out mapitem))
             {
-             
+
                 int amount = mapitem.ItemInstance.Amount;
 
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
@@ -450,10 +450,10 @@ namespace OpenNos.Handler
                     {
                         gr = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)mapitem.Owner) && g.IsMemberOfGroup(Session.Character.CharacterId));
                         if (mapitem.CreateDate.AddSeconds(30) > DateTime.Now && !(mapitem.Owner == Session.Character.CharacterId || (gr != null && gr.SharingMode == (byte)GroupSharingType.Everyone)))
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"), 10));
-                        return;
-                    }
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"), 10));
+                            return;
+                        }
                     }
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
@@ -746,7 +746,7 @@ namespace OpenNos.Handler
                 int slHit = ServersData.SlPoint(specialistInstance.SlDamage, 0);
 
                 //so add upgrade to sp
-        
+
                 //slhit
                 specialistInstance.DamageMinimum = 0;
                 specialistInstance.DamageMaximum = 0;
@@ -1061,10 +1061,6 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
                     return;
                 }
-                if (Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkill.AddSeconds(2) >= DateTime.Now)
-                {
-                    return;
-                }
                 if (specialistInstance == null)
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
@@ -1085,6 +1081,10 @@ namespace OpenNos.Handler
                 }
                 else
                 {
+                    if (Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkill.AddSeconds(2) >= DateTime.Now)
+                    {
+                        return;
+                    }
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
                     if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
@@ -1252,7 +1252,7 @@ namespace OpenNos.Handler
                 Session.Character.Morph = sp.Item.Morph;
                 Session.Character.MorphUpgrade = sp.Upgrade;
                 Session.Character.MorphUpgrade2 = sp.Design;
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());     
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.All);
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                 Session.SendPacket(Session.Character.GenerateSpPoint());
