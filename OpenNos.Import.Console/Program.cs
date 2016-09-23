@@ -36,10 +36,10 @@ namespace OpenNos.Import.Console
             if (args.Length == 0)
             {
                 int offset = (System.Console.WindowWidth - text.Length) / 2;
-                System.Console.WriteLine("===============================================================================");
+                System.Console.WriteLine(new String('=', System.Console.WindowWidth));
                 System.Console.SetCursorPosition(offset < 0 ? 0 : offset, System.Console.CursorTop);
                 System.Console.WriteLine(text + "\n" +
-                "===============================================================================\n");
+                new String('=', System.Console.WindowWidth) + "\n");
             }
 
             DataAccessHelper.Initialize();

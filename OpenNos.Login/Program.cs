@@ -45,10 +45,10 @@ namespace OpenNos.Login
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
                     string text = $"LOGIN SERVER VERSION {fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
                     int offset = (Console.WindowWidth - text.Length) / 2;
-                    Console.WriteLine("===============================================================================");
+                    Console.WriteLine(new String('=', Console.WindowWidth));
                     Console.SetCursorPosition(offset < 0 ? 0 : offset, Console.CursorTop);
                     Console.WriteLine(text + "\n" +
-                    "===============================================================================\n");
+                    new String('=', Console.WindowWidth) + "\n");
 
                     //initialize DB
                     DataAccessHelper.Initialize();
