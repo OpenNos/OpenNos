@@ -293,7 +293,7 @@ namespace OpenNos.Handler
                 if (packetsplit.Length > 6)
                 {
                     short MapX =-1, MapY =-1;
-                    if (!short.TryParse(packetsplit[5], out MapX) && !short.TryParse(packetsplit[6], out MapY)) return;
+                    if (!short.TryParse(packetsplit[5], out MapX) || !short.TryParse(packetsplit[6], out MapY)) return;
                     Session.Character.MapX = MapX;
                     Session.Character.MapY = MapY;
                 }
