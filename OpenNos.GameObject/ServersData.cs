@@ -255,6 +255,7 @@ namespace OpenNos.GameObject
         public static int RarityPoint(short rarity, short lvl)
         {
             int p;
+            Random rnd = new Random();
             switch (rarity)
             {
                 default:
@@ -263,11 +264,11 @@ namespace OpenNos.GameObject
                     break;
 
                 case -2:
-                    p = -2;
+                    p = 0;
                     break;
 
                 case -1:
-                    p = -1;
+                    p = 0;
                     break;
 
                 case 0:
@@ -303,10 +304,10 @@ namespace OpenNos.GameObject
                     break;
 
                 case 8:
-                    p = 14;
+                    p = rnd.Next(11,16);
                     break;
             }
-            return p * (1 + lvl / 5);
+            return p * (lvl / 5) + 1;
         }
 
         public static int SlPoint(short spPoint, short mode)
