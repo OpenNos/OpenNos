@@ -109,7 +109,7 @@ namespace OpenNos.GameObject
 
         internal void MonsterLife()
         {
-          
+
             //Respawn
             if (!Alive && Respawn)
             {
@@ -137,7 +137,7 @@ namespace OpenNos.GameObject
                     return;
                 }
                 Random random = new Random((int)DateTime.Now.Ticks * MapMonsterId & 0x0000FFFF);
-               
+
                 if (IsMoving && Monster.Speed > 0)
                 {
                     double time = (DateTime.Now - LastMove).TotalMilliseconds;
@@ -318,24 +318,28 @@ namespace OpenNos.GameObject
                                 Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
                             }
                         }
-                        if (DateTime.Now > LastMove && Path.Count > 0)
+                        if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Count > 0)
                         {
                             if (Path.Count > Monster.Speed / 2)
                             {
+                                short mapX = Path.ElementAt(Monster.Speed / 2).X;
+                                short mapY = Path.ElementAt(Monster.Speed / 2).Y;
+                                LastMove = DateTime.Now.AddSeconds(Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed / 2));
                                 this.MapX = Path.ElementAt(Monster.Speed / 2).X;
                                 this.MapY = Path.ElementAt(Monster.Speed / 2).Y;
-                                for (int i = Monster.Speed / 2-1; i >=0 ; i--)
+
+                                for (int i = Monster.Speed / 2 - 1; i >= 0; i--)
                                 {
                                     Path.RemoveAt(i);
                                 }
-                                LastMove = DateTime.Now.AddSeconds(1);
+
                             }
                             else
                             {
                                 this.MapX = Path.ElementAt(Path.Count - 1).X;
                                 this.MapY = Path.ElementAt(Path.Count - 1).Y;
                                 LastMove = DateTime.Now.AddSeconds(1 / (Path.Count * 2));
-                                for (int i = Path.Count -1; i >=0 ; i--)
+                                for (int i = Path.Count - 1; i >= 0; i--)
                                 {
                                     Path.RemoveAt(i);
                                 }
