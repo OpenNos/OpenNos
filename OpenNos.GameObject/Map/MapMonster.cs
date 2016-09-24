@@ -24,9 +24,10 @@ namespace OpenNos.GameObject
     public class MapMonster : MapMonsterDTO
     {
         #region Instantiation
-
+        private int _movetime;
         public MapMonster(MapMonsterDTO monsterdto, Map parent)
         {
+            
             //Replace by MAPPING
             MapId = monsterdto.MapId;
             MapX = monsterdto.MapX;
@@ -50,6 +51,7 @@ namespace OpenNos.GameObject
             CurrentMp = Monster.MaxMP;
             Skills = Monster.Skills.ToList();
             DamageList = new Dictionary<long, long>();
+            _movetime = new Random().Next(300, 3000);
         }
 
         #endregion
@@ -133,16 +135,14 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                double time = (DateTime.Now - LastMove).TotalSeconds;
-                int MoveFrequent = 5 - (int)Math.Round((double)(Monster.Speed / 5));
-                if (MoveFrequent < 1)
-                    MoveFrequent = 1;
+                Random random = new Random((int)DateTime.Now.Ticks*MapMonsterId & 0x0000FFFF);
+                double time = (DateTime.Now - LastMove).TotalMilliseconds;
                 if (IsMoving)
                 {
                     if (Path.Where(s => s != null).ToList().Count > 0)
                     {
-                        if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / Monster.Speed)
+                        int timetowalk = 1000 / (2 * Monster.Speed);
+                        if (time > timetowalk)
                         {
                             short mapX = Path.ElementAt(0).X;
                             short mapY = Path.ElementAt(0).Y;
@@ -152,15 +152,16 @@ namespace OpenNos.GameObject
 
                             Task.Factory.StartNew(async () =>
                             {
-                                await Task.Delay(400);
-                                this.MapX = mapX;
-                                this.MapY = mapY;
+                                await Task.Delay(timetowalk);
+                                MapX = mapX;
+                                MapY = mapY;
                             });
                             return;
                         }
                     }
-                    else if (time > 0.5 * random.Next(1, 3) * (0.5 + random.NextDouble()))
+                    else if (time >_movetime)
                     {
+                        _movetime = random.Next(500, 3000);
                         byte point = (byte)random.Next(2, 4);
                         byte fpoint = (byte)random.Next(0, 2);
 
@@ -173,11 +174,11 @@ namespace OpenNos.GameObject
                         {
                             Task.Factory.StartNew(async () =>
                             {
-                                await Task.Delay(400);
+                                await Task.Delay(1000 * (xpoint+ ypoint) / (2 * Monster.Speed));
                                 this.MapX = mapX;
                                 this.MapY = mapY;
                             });
-                            LastMove = DateTime.Now;
+                            LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Monster.Speed));
 
                             string movePacket = $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}";
                             Map.Broadcast(movePacket);

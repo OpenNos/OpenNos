@@ -24,6 +24,7 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
+        private int _movetime;
         public MapNpc(MapNpcDTO npc, Map parent)
         {
             //Replace by MAPPING
@@ -45,6 +46,7 @@ namespace OpenNos.GameObject
             Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = LastMove = DateTime.Now;
             Map = parent;
+            _movetime = new Random().Next(300, 3000);
             IEnumerable<RecipeDTO> recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId);
             if (recipe != null)
             {
@@ -131,9 +133,11 @@ namespace OpenNos.GameObject
             }
 
             Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-            time = (DateTime.Now - LastMove).TotalSeconds;
-            if (IsMoving && time > 1.3 * random.Next(1, 3) * (0.5 + random.NextDouble()))
+            time = (DateTime.Now - LastMove).TotalMilliseconds;
+            if (IsMoving && time > _movetime)
             {
+
+                _movetime = random.Next(500, 3000);
                 byte point = (byte)random.Next(2, 4);
                 byte fpoint = (byte)random.Next(0, 2);
 
@@ -142,15 +146,22 @@ namespace OpenNos.GameObject
 
                 short mapX = FirstX;
                 short mapY = FirstY;
+
                 if (ServerManager.GetMap(MapId).GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                 {
-                    this.MapX = mapX;
-                    this.MapY = mapY;
-                    LastMove = DateTime.Now;
+                    Task.Factory.StartNew(async () =>
+                    {
+                        await Task.Delay(1000 * (xpoint + ypoint) / (2 * Npc.Speed));
+                        this.MapX = mapX;
+                        this.MapY = mapY;
+                    });
+                    LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Npc.Speed));
 
                     string movePacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {Npc.Speed}";
                     Map.Broadcast(movePacket);
                 }
+
+               
             }
         }
 
