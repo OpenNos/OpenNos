@@ -328,7 +328,7 @@ namespace OpenNos.GameObject
                                 LastMove = DateTime.Now.AddSeconds(waitingtime * 2);
                                 Task.Factory.StartNew(async () =>
                                 {
-                                    await Task.Delay(waitingtime);
+                                    await Task.Delay(waitingtime * 1000);
                                     this.MapX = mapX;
                                     this.MapY = mapY;
                                 });
@@ -345,11 +345,11 @@ namespace OpenNos.GameObject
                                 int waitingtime = 2 * Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
                                 Task.Factory.StartNew(async () =>
                                 {
-                                    await Task.Delay(waitingtime);
+                                    await Task.Delay(waitingtime*1000);
                                     this.MapX = mapX;
                                     this.MapY = mapY;
                                 });
-                                LastMove = DateTime.Now.AddSeconds(1 / (Path.Count));
+                                LastMove = DateTime.Now.AddSeconds(waitingtime * 2);
                                 for (int i = Path.Count - 1; i >= 0; i--)
                                 {
                                     Path.RemoveAt(i);
