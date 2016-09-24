@@ -1041,9 +1041,8 @@ namespace OpenNos.Handler
                 for (int i = 2; i < packetsplit.Length; i++)
                     message += packetsplit[i] + " ";
             message.Trim();
+            ServerManager.Instance.Shout(message);
 
-            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
         }
 
         [Packet("$Shutdown")]

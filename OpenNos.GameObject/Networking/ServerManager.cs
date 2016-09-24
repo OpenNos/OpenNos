@@ -110,6 +110,9 @@ namespace OpenNos.GameObject
         public static int DropRate { get; set; }
         public static int FairyXpRate { get; set; }
         public static int GoldRate { get; set; }
+
+      
+
         public static List<MapMonster> Monsters { get; set; }
         public static EventHandler NotifyChildren { get; set; }
         public static int XPRate { get; set; }
@@ -330,6 +333,11 @@ namespace OpenNos.GameObject
         public static void OnBroadCast(BroacastPacket mapPacket)
         {
             NotifyChildren?.Invoke(mapPacket, new EventArgs());
+        }
+        public void Shout(string message)
+        {
+          Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+          Broadcast($"msg 2 {message}");
         }
 
         //PacketHandler -> with Callback?
