@@ -164,8 +164,7 @@ namespace OpenNos.Handler
                     case 5:
                         if (Session.Character.ExchangeInfo != null)
                         {
-                            byte exchangeInventoryType;
-                            if (byte.TryParse(packetsplit[3], out exchangeInventoryType) && short.TryParse(packetsplit[4], out slot))
+                            if (short.TryParse(packetsplit[4], out slot))
                             {
                                 ExchangeInfo exch = ServerManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.ExchangeInfo));
                                 Guid id;
