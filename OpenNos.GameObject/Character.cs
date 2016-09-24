@@ -739,11 +739,9 @@ namespace OpenNos.GameObject
             if (Group != null)
             {
                 str = $"pidx {Group.GroupId}";
-                int i = 0;
                 foreach (ClientSession c in Group.Characters.Where(s => s.Character != null))
                 {
-                    i++;
-                    str += $" {i}.{c.Character.CharacterId} ";
+                    str += $" {(Group.IsMemberOfGroup(CharacterId)?1:0)}.{c.Character.CharacterId} ";
                 }
                 return str;
             }
