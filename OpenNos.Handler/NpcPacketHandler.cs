@@ -311,7 +311,7 @@ namespace OpenNos.Handler
                     }
                     MapShop myShop = new MapShop();
 
-                    if (packetsplit.Length > 2)
+                    if (packetsplit.Length > 82)
                         for (short j = 3, i = 0; j < 82; j += 4, i++)
                         {
                             Enum.TryParse<InventoryType>(packetsplit[j], out type[i]);
