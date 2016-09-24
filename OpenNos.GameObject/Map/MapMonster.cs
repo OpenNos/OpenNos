@@ -324,8 +324,8 @@ namespace OpenNos.GameObject
                             {
                                 short mapX = Path.ElementAt(Monster.Speed).X;
                                 short mapY = Path.ElementAt(Monster.Speed).Y;
-                                int waitingtime = Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
-                                LastMove = DateTime.Now.AddSeconds(waitingtime);
+                                int waitingtime = 2 * Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
+                                LastMove = DateTime.Now.AddSeconds(waitingtime * 2);
                                 Task.Factory.StartNew(async () =>
                                 {
                                     await Task.Delay(waitingtime);
@@ -340,8 +340,15 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                this.MapX = Path.ElementAt(Path.Count - 1).X;
-                                this.MapY = Path.ElementAt(Path.Count - 1).Y;
+                                short mapX = Path.ElementAt(Path.Count - 1).X;
+                                short mapY = Path.ElementAt(Path.Count - 1).Y;
+                                int waitingtime = 2 * Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
+                                Task.Factory.StartNew(async () =>
+                                {
+                                    await Task.Delay(waitingtime);
+                                    this.MapX = Path.ElementAt(Path.Count - 1).X;
+                                    this.MapY = Path.ElementAt(Path.Count - 1).Y;
+                                });
                                 LastMove = DateTime.Now.AddSeconds(1 / (Path.Count));
                                 for (int i = Path.Count - 1; i >= 0; i--)
                                 {
