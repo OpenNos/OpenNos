@@ -353,12 +353,6 @@ namespace OpenNos.GameObject
                             if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / Monster.Speed)
                             {
                                 LastMove = DateTime.Now;
-                                Task.Factory.StartNew(async () =>
-                                {
-                                    await Task.Delay(500);
-                                    this.MapX = mapX;
-                                    this.MapY = mapY;
-                                });
                                 Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
                             }
                         }
