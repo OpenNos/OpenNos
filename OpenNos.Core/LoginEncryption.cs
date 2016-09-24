@@ -13,6 +13,7 @@
  */
 
 using System;
+using System.Text;
 
 namespace OpenNos.Core
 {
@@ -80,17 +81,23 @@ namespace OpenNos.Core
 
         public override byte[] Encrypt(string packet)
         {
-            byte[] encryptedPacket = new byte[
-                packet.Length + 1];
-
-            for (int i = 0; i < packet.Length; i++)
+            try
             {
-                encryptedPacket[i] = Convert.ToByte(packet[i] + 15);
+                packet += " ";
+                byte[] tmp = new byte[packet.Length + 1];
+                tmp = Encoding.UTF8.GetBytes(packet);
+                for (int i = 0; i < packet.Length; i++)
+                {
+                    tmp[i] = Convert.ToByte(packet[i] + 15);
+                }
+                tmp[tmp.Length - 1] = 25;
+                return tmp;
+            }
+            catch
+            {
+                return new byte[0];
             }
 
-            encryptedPacket[encryptedPacket.Length - 1] = 25; //endpacket -> shows the server that the packet ends
-
-            return encryptedPacket;
         }
 
         #endregion
