@@ -27,7 +27,7 @@ namespace OpenNos.GameObject
         private int _movetime;
         public MapMonster(MapMonsterDTO monsterdto, Map parent)
         {
-            
+
             //Replace by MAPPING
             MapId = monsterdto.MapId;
             MapX = monsterdto.MapX;
@@ -109,6 +109,7 @@ namespace OpenNos.GameObject
 
         internal void MonsterLife()
         {
+          
             //Respawn
             if (!Alive && Respawn)
             {
@@ -135,10 +136,12 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                Random random = new Random((int)DateTime.Now.Ticks*MapMonsterId & 0x0000FFFF);
-                double time = (DateTime.Now - LastMove).TotalMilliseconds;
+                Random random = new Random((int)DateTime.Now.Ticks * MapMonsterId & 0x0000FFFF);
+               
                 if (IsMoving && Monster.Speed > 0)
                 {
+                    double time = (DateTime.Now - LastMove).TotalMilliseconds;
+
                     if (Path.Where(s => s != null).ToList().Count > 0)
                     {
                         int timetowalk = 1000 / (2 * Monster.Speed);
@@ -159,7 +162,7 @@ namespace OpenNos.GameObject
                             return;
                         }
                     }
-                    else if (time >_movetime)
+                    else if (time > _movetime)
                     {
                         _movetime = random.Next(500, 3000);
                         byte point = (byte)random.Next(2, 4);
@@ -174,7 +177,7 @@ namespace OpenNos.GameObject
                         {
                             Task.Factory.StartNew(async () =>
                             {
-                                await Task.Delay(1000 * (xpoint+ ypoint) / (2 * Monster.Speed));
+                                await Task.Delay(1000 * (xpoint + ypoint) / (2 * Monster.Speed));
                                 this.MapX = mapX;
                                 this.MapY = mapY;
                             });
@@ -309,15 +312,15 @@ namespace OpenNos.GameObject
                                 yoffset = (short)random.Next(-1, 1);
                             }
 
-                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX+ xoffset), Y = (short)(targetSession.Character.MapY+ yoffset), MapId = this.MapId });
+                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
                             if (!Path.Any())
                             {
-                                Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX+ xoffset), Y = (short)(targetSession.Character.MapY+ yoffset), MapId = this.MapId });
+                                Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
                             }
                         }
-                        if (Path.Count > 0)
+                        if (DateTime.Now > LastMove && Path.Count > 0)
                         {
-                           if(Path.Count > Monster.Speed/2)
+                            if (Path.Count > Monster.Speed / 2)
                             {
                                 this.MapX = Path.ElementAt(Monster.Speed / 2).X;
                                 this.MapY = Path.ElementAt(Monster.Speed / 2).Y;
@@ -327,22 +330,22 @@ namespace OpenNos.GameObject
                                 }
                                 LastMove = DateTime.Now.AddSeconds(1);
                             }
-                           else
+                            else
                             {
-                                this.MapX = Path.ElementAt(Path.Count-1).X;
-                                this.MapY = Path.ElementAt(Path.Count-1).Y;
+                                this.MapX = Path.ElementAt(Path.Count - 1).X;
+                                this.MapY = Path.ElementAt(Path.Count - 1).Y;
                                 LastMove = DateTime.Now.AddSeconds(1 / (Path.Count * 2));
                                 for (int i = 0; i < Path.Count; i++)
                                 {
                                     Path.RemoveAt(i);
                                 }
-                               
+
                             }
                             Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
                         }
                         if (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance)
                         {
-                            
+
                             Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
                             if (!Path.Any())
                             {
