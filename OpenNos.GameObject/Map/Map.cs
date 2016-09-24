@@ -179,13 +179,7 @@ namespace OpenNos.GameObject
         }
         public static int GetDistance(MapCell p, MapCell q)
         {
-            double a = p.X - q.X;
-            double b = p.Y - q.Y;
-
-            if (a * a == b * b)
-                a = 0;
-            double distance = Math.Sqrt(a * a + b * b);
-            return (int)distance;
+            return Math.Max(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
 
 
