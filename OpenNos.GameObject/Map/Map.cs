@@ -270,11 +270,11 @@ namespace OpenNos.GameObject
         public BaseGrid ConvertToGrid(short[,] _grid)
         {
             BaseGrid grid = new StaticGrid(XLength, YLength);
-            for (int i = 0; i < YLength; ++i)
+            for (int y = 0; y < YLength; ++y)
             {
-                for (int t = 0; t < XLength; ++t)
+                for (int x = 0; x < XLength; ++x)
                 {
-                    grid.SetWalkableAt(t, i, (_grid[t, i] == 0 ? true : false));
+                    grid.SetWalkableAt(x, y, IsBlockedZone(x,y));
                 }
             }
             return grid;
