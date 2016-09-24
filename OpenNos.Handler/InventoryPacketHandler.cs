@@ -167,8 +167,17 @@ namespace OpenNos.Handler
                             byte exchangeInventoryType;
                             if (byte.TryParse(packetsplit[3], out exchangeInventoryType) && short.TryParse(packetsplit[4], out slot))
                             {
-                                InventoryList inv = ServerManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.InventoryList));
-                                inventory = inv.LoadBySlotAndType<WearableInstance>(slot, (InventoryType)exchangeInventoryType);
+                                ExchangeInfo exch = ServerManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.ExchangeInfo));
+                                Guid id;
+                                if (exch?.ExchangeList?.ElementAtOrDefault(slot) != null)
+                                {
+                                    id = exch.ExchangeList.ElementAt(slot).Id;
+
+                                    InventoryList inv = ServerManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.InventoryList));
+                                    inventory = inv.LoadByItemInstance<WearableInstance>(id);
+                                    if (inventory == null)
+                                        inventory = inv.LoadByItemInstance<SpecialistInstance>(id);
+                                }
                             }
                         }
                         break;
