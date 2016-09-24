@@ -658,7 +658,7 @@ namespace OpenNos.Import.Console
                             npc.DamageMinimum = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 4) + 32 + Convert.ToInt16(currentLine[4]) + Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
                             npc.DamageMaximum = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 6) + 40 + Convert.ToInt16(currentLine[5]) - Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
                             npc.Concentrate = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 5) + 27 + Convert.ToInt16(currentLine[6]));
-                            npc.CriticalLuckRate = Convert.ToByte(4 + Convert.ToByte(currentLine[7]));
+                            npc.CriticalLuckRate = Convert.ToByte(4 + Convert.ToInt16(currentLine[7]));
                             npc.CriticalRate = Convert.ToByte(70 + Convert.ToInt16(currentLine[8]));
                         }
                         else if (currentLine[3] == "2")
