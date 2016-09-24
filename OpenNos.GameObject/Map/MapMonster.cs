@@ -322,42 +322,22 @@ namespace OpenNos.GameObject
                         {
                             short mapX;
                             short mapY;
-                            if (Path.Count > Monster.Speed/2)
-                            {
-                                mapX = Path.ElementAt(Monster.Speed/2).X;
-                                mapY = Path.ElementAt(Monster.Speed/2).Y;
-                                int waitingtime = 2 * Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
-                                LastMove = DateTime.Now.AddSeconds(waitingtime);
-                                Task.Factory.StartNew(async () =>
-                                {
-                                    await Task.Delay(waitingtime * 1000);
-                                    this.MapX = mapX;
-                                    this.MapY = mapY;
-                                });
-                                for (int i = Monster.Speed - 1; i >= 0; i--)
-                                {
-                                    Path.RemoveAt(i);
-                                }
 
-                            }
-                            else
+                            mapX = Path.ElementAt(Path.Count - 1).X;
+                            mapY = Path.ElementAt(Path.Count - 1).Y;
+                            int waitingtime = 2 * Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
+                            Task.Factory.StartNew(async () =>
                             {
-                                mapX = Path.ElementAt(Path.Count - 1).X;
-                                mapY = Path.ElementAt(Path.Count - 1).Y;
-                                int waitingtime = 2 * Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
-                                Task.Factory.StartNew(async () =>
-                                {
-                                    await Task.Delay(waitingtime * 1000);
-                                    this.MapX = mapX;
-                                    this.MapY = mapY;
-                                });
-                                LastMove = DateTime.Now.AddSeconds(waitingtime);
-                                for (int i = Path.Count - 1; i >= 0; i--)
-                                {
-                                    Path.RemoveAt(i);
-                                }
-
+                                await Task.Delay(waitingtime * 1000);
+                                this.MapX = mapX;
+                                this.MapY = mapY;
+                            });
+                            LastMove = DateTime.Now.AddSeconds(waitingtime);
+                            for (int j = 0, i = Path.Count - 1; i >= 0 && j < Monster.Speed; j++, i--)
+                            {
+                                Path.RemoveAt(i);
                             }
+
                             Map.Broadcast($"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}");
                         }
                         if (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance)
