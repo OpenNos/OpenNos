@@ -76,19 +76,17 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    if (session.Character.UseSp
-                        && EquipmentSlot == (byte)EquipmentType.Fairy
-                        && Element !=
-                            session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(
-                                (byte)EquipmentType.Sp,
-                                InventoryType.Equipment).Item.Element &&
-                                Element !=
-                            session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(
-                                (byte)EquipmentType.Sp,
-                                InventoryType.Equipment).Item.SecondaryElement)
+                    if (session.Character.UseSp)
                     {
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
-                        return;
+                        SpecialistInstance sp = session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(
+                                (byte)EquipmentType.Sp,
+                                InventoryType.Equipment);
+
+                        if (sp.Item.Element !=0 && EquipmentSlot == (byte)EquipmentType.Fairy && Element != sp.Item.Element &&  Element != sp.Item.SecondaryElement)
+                        {
+                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
+                            return;
+                        }
                     }
 
                     if (session.Character.UseSp && EquipmentSlot == (byte)EquipmentType.Sp)
