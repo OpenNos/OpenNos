@@ -240,7 +240,8 @@ namespace OpenNos.GameObject
                         if (targetSession.Character.IsSitting)
                         {
                             targetSession.Character.IsSitting = false;
-                            Map.Broadcast(null, targetSession.Character.GenerateRest(), ReceiverType.OnlySomeone, "", targetSession.Character.CharacterId);
+                            Map.Broadcast(targetSession.Character.GenerateRest());
+                            Thread.Sleep(500);
                         }
                         if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                         {
@@ -273,7 +274,8 @@ namespace OpenNos.GameObject
                                 if (chara.IsSitting)
                                 {
                                     chara.IsSitting = false;
-                                    Map.Broadcast(null, chara.GenerateRest(), ReceiverType.OnlySomeone, "", chara.CharacterId);
+                                    Map.Broadcast(chara.GenerateRest());
+                                    Thread.Sleep(500);
                                 }
                                 damage = chara.HasGodMode ? 0 : 100;
                                 bool AlreadyDead2 = chara.Hp <= 0;
