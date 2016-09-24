@@ -320,10 +320,12 @@ namespace OpenNos.GameObject
                         }
                         if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Count > 0)
                         {
+                            short mapX;
+                            short mapY;
                             if (Path.Count > Monster.Speed)
                             {
-                                short mapX = Path.ElementAt(Monster.Speed).X;
-                                short mapY = Path.ElementAt(Monster.Speed).Y;
+                                mapX = Path.ElementAt(Monster.Speed).X;
+                                mapY = Path.ElementAt(Monster.Speed).Y;
                                 int waitingtime = 2 * Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
                                 LastMove = DateTime.Now.AddSeconds(waitingtime * 2);
                                 Task.Factory.StartNew(async () =>
@@ -340,12 +342,12 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                short mapX = Path.ElementAt(Path.Count - 1).X;
-                                short mapY = Path.ElementAt(Path.Count - 1).Y;
+                                mapX = Path.ElementAt(Path.Count - 1).X;
+                                mapY = Path.ElementAt(Path.Count - 1).Y;
                                 int waitingtime = 2 * Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
                                 Task.Factory.StartNew(async () =>
                                 {
-                                    await Task.Delay(waitingtime*1000);
+                                    await Task.Delay(waitingtime * 1000);
                                     this.MapX = mapX;
                                     this.MapY = mapY;
                                 });
@@ -356,7 +358,7 @@ namespace OpenNos.GameObject
                                 }
 
                             }
-                            Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
+                            Map.Broadcast($"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}");
                         }
                         if (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance)
                         {
