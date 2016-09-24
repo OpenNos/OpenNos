@@ -663,7 +663,9 @@ namespace OpenNos.Import.Console
                         }
                         else if (currentLine[3] == "2")
                         {
-
+                            npc.DamageMinimum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) * 6.5f) + 23 + Convert.ToInt16(currentLine[4]));   //Approsimative
+                            npc.DamageMaximum = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 8) + 38 + Convert.ToInt16(currentLine[5])); //Approsimative
+                            npc.Concentrate = Convert.ToInt16(70 + Convert.ToInt16(currentLine[6]));
                         }
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "ARMOR")
