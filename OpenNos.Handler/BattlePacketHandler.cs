@@ -553,7 +553,7 @@ namespace OpenNos.Handler
             int Bsp5 = 0;            // Bonus SP (IMPORTANT) This already Added when SP Point has been set
             int SLPerfect = 0;       // Bonus SP (IMPORTANT) This already Added when Perfect SP has been done
             int Esp = Convert.ToInt32((Session.Character.UseSp ? Convert.ToInt32(specialistInstance.SlElement + Bsp5 + SLPerfect) / 200 : 0));
-            int E = Convert.ToInt32((At + 0) * (1 + (F + Esp)));
+            int E = Convert.ToInt32((At + 100) * (1 + (F + Esp)));
             int Eeff = 0;            // Element given by effects of equip as weapons, jewelry, masks, hats, res
             int ESkill = Convert.ToInt32(skill.ElementalDamage);
             int Br1 = 0;             // Fire properties increased
