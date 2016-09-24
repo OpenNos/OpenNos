@@ -328,8 +328,8 @@ namespace OpenNos.GameObject
                             }
                            else
                             {
-                                this.MapX = Path.ElementAt(Path.Count).X;
-                                this.MapY = Path.ElementAt(Path.Count).Y;
+                                this.MapX = Path.ElementAt(Path.Count-1).X;
+                                this.MapY = Path.ElementAt(Path.Count-1).Y;
                                 LastMove = DateTime.Now.AddSeconds(1 / (Path.Count * 2));
                                 for (int i = 0; i < Path.Count; i++)
                                 {
