@@ -322,9 +322,9 @@ namespace OpenNos.GameObject
                         {
                             short mapX;
                             short mapY;
-
-                            mapX = Path.ElementAt(Path.Count - 1).X;
-                            mapY = Path.ElementAt(Path.Count - 1).Y;
+                            int maxindex = (Path.Count - 1) > Monster.Speed? Monster.Speed: (Path.Count - 1);
+                            mapX = Path.ElementAt(maxindex).X;
+                            mapY = Path.ElementAt(maxindex).Y;
                             int waitingtime = Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
                             Task.Factory.StartNew(async () =>
                             {
@@ -333,7 +333,7 @@ namespace OpenNos.GameObject
                                 this.MapY = mapY;
                             });
                             LastMove = DateTime.Now.AddSeconds(waitingtime);
-                            for (int j = 0, i = Path.Count - 1; i >= 0 && j < Monster.Speed/2; j++, i--)
+                            for (int j = 0, i = Path.Count - 1; i >= 0 && j < Monster.Speed; j++, i--)
                             {
                                 Path.RemoveAt(i);
                             }
