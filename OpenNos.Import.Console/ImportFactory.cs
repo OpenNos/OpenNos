@@ -650,6 +650,32 @@ namespace OpenNos.Import.Console
                         npc.Speed = Convert.ToByte(currentLine[5]);
                         npc.RespawnTime = Convert.ToInt32(currentLine[6]);
                     }
+                    else if (currentLine.Length > 6 && currentLine[1] == "WEAPON")
+                    {
+                        //WEAPON	9	2	-10	15	0	0	30
+                        if (currentLine[3] == "1")      //MELEE MOBS
+                        {
+                            npc.DamageMinimum = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 4) + 32 + Convert.ToInt16(currentLine[4]) + Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
+                            npc.DamageMaximum = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 6) + 40 + Convert.ToInt16(currentLine[5]) - Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
+                            npc.Concentrate = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 5) + 27 + Convert.ToInt16(currentLine[6]));
+                            npc.CriticalLuckRate = Convert.ToByte(4 + Convert.ToByte(currentLine[7]));
+                            npc.CriticalRate = Convert.ToByte(70 + Convert.ToInt16(currentLine[8]));
+                        }
+                        else if (currentLine[3] == "2")
+                        {
+
+                        }
+                    }
+                    else if (currentLine.Length > 6 && currentLine[1] == "ARMOR")
+                    {
+                        //ARMOR	21	20	0	0	0
+                        //EVERY MOB
+                        npc.CloseDefence = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 2) + 18);
+                        npc.DistanceDefence = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 3) + 17);
+                        npc.MagicDefence = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 2) + 13);
+                        npc.DefenceDodge = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 5) + 31);
+                        npc.DistanceDefenceDodge = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 5) + 31);
+                    }
                     else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
                         unknownData = Convert.ToInt64(currentLine[2]);
