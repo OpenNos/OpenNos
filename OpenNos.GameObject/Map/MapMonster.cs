@@ -333,7 +333,7 @@ namespace OpenNos.GameObject
                                 this.MapY = mapY;
                             });
                             LastMove = DateTime.Now.AddSeconds(waitingtime);
-                            for (int j = 0, i = Path.Count - 1; i >= 0 && j < Monster.Speed; j++, i--)
+                            for (int j = 0, i = Path.Count - 1; i >= 0 && j < Monster.Speed/2; j++, i--)
                             {
                                 Path.RemoveAt(i);
                             }
