@@ -322,7 +322,7 @@ namespace OpenNos.GameObject
                                 this.MapY = Path.ElementAt(Monster.Speed / 2).Y;
                                 for (int i = 0; i < Monster.Speed / 2; i++)
                                 {
-                                    Path.RemoveAt(0);
+                                    Path.RemoveAt(i);
                                 }
                                 LastMove = DateTime.Now.AddSeconds(1);
                             }
