@@ -322,6 +322,8 @@ namespace OpenNos.GameObject
                         {
                             short mapX;
                             short mapY;
+                            short destinationX = Path.Last().X;
+                            short destinationY = Path.Last().Y;
                             if (Path.Count > Monster.Speed)
                             {
                                 mapX = Path.ElementAt(Monster.Speed).X;
@@ -358,7 +360,7 @@ namespace OpenNos.GameObject
                                 }
 
                             }
-                            Map.Broadcast($"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}");
+                            Map.Broadcast($"mv 3 {this.MapMonsterId} {destinationX} {destinationY} {Monster.Speed}");
                         }
                         if (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance)
                         {
