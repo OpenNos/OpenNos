@@ -297,23 +297,50 @@ namespace OpenNos.GameObject
                     if (IsMoving == true)
                     {
                         short maxDistance = 22;
-
-                        if (Path.Count() == 0 && targetSession != null && (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < maxDistance))
+                        int distance = Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY });
+                        if (Path.Count() == 0 && targetSession != null && distance > 1 && distance < maxDistance)
                         {
-                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY, MapId = this.MapId });
+                            short xoffset = 0;
+                            short yoffset = 0;
+                            while (xoffset == 0 && yoffset == 0)
+                            {
+                                xoffset = (short)random.Next(-1, 1);
+                                yoffset = (short)random.Next(-1, 1);
+                            }
+
+                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX+ xoffset), Y = (short)(targetSession.Character.MapY+ yoffset), MapId = this.MapId });
                             if (!Path.Any())
                             {
-                                Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY, MapId = this.MapId });
+                                Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX+ xoffset), Y = (short)(targetSession.Character.MapY+ yoffset), MapId = this.MapId });
                             }
                         }
-                        if (Path.Count > 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY, MapId = this.MapId }) > 1)
+                        if (Path.Count > 0)
                         {
-                            this.MapX = Path.ElementAt(0).X;
-                            this.MapY = Path.ElementAt(0).Y;
-                            Path.RemoveAt(0);
+                           if(Path.Count > Monster.Speed/2)
+                            {
+                                this.MapX = Path.ElementAt(Monster.Speed / 2).X;
+                                this.MapY = Path.ElementAt(Monster.Speed / 2).Y;
+                                for (int i = 0; i < Monster.Speed / 2; i++)
+                                {
+                                    Path.RemoveAt(0);
+                                }
+                                LastMove = DateTime.Now.AddSeconds(1);
+                            }
+                           else
+                            {
+                                this.MapX = Path.ElementAt(Path.Count).X;
+                                this.MapY = Path.ElementAt(Path.Count).Y;
+                                LastMove = DateTime.Now.AddSeconds(1 / (Path.Count * 2));
+                                for (int i = 0; i < Path.Count; i++)
+                                {
+                                    Path.RemoveAt(i);
+                                }
+                               
+                            }
                         }
                         if (targetSession == null || MapId != targetSession.Character.MapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) > maxDistance))
                         {
+                            
                             Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
                             if (!Path.Any())
                             {
@@ -326,6 +353,12 @@ namespace OpenNos.GameObject
                             if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / Monster.Speed)
                             {
                                 LastMove = DateTime.Now;
+                                Task.Factory.StartNew(async () =>
+                                {
+                                    await Task.Delay(500);
+                                    this.MapX = mapX;
+                                    this.MapY = mapY;
+                                });
                                 Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
                             }
                         }
