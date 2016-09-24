@@ -195,7 +195,7 @@ namespace OpenNos.Handler
                                     short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
 
                                     if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY },
-                                                        new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + (DateTime.Now - monsterToAttack.LastMove).TotalSeconds * 2 * monsterToAttackInfo.Speed || ski.Skill.TargetRange != 0)
+                                                        new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + (DateTime.Now - monsterToAttack.LastMove).TotalSeconds * 2 * (monsterToAttackInfo.Speed == 0? 1 : monsterToAttackInfo.Speed) || ski.Skill.TargetRange != 0)
                                     {
                                         Session.Character.LastSkill = DateTime.Now;
                                         damage = GenerateDamage(monsterToAttack.MapMonsterId, ski.Skill, ref hitmode);

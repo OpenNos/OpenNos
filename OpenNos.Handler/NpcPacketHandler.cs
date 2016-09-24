@@ -319,7 +319,7 @@ namespace OpenNos.Handler
                             byte.TryParse(packetsplit[j + 2], out qty[i]);
 
                             long.TryParse(packetsplit[j + 3], out gold[i]);
-                            if (gold[i] < 0)
+                            if (gold[i] <= 0)
                                 return;
                             if (qty[i] > 0)
                             {
