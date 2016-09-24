@@ -132,7 +132,7 @@ namespace OpenNos.GameObject
                 LastEffect = DateTime.Now;
             }
 
-            Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            Random random = new Random((int)DateTime.Now.Ticks * MapNpcId & 0x0000FFFF);
             time = (DateTime.Now - LastMove).TotalMilliseconds;
             if (IsMoving && time > _movetime)
             {
