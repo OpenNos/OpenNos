@@ -111,7 +111,7 @@ namespace OpenNos.GameObject
         public static int FairyXpRate { get; set; }
         public static int GoldRate { get; set; }
 
-      
+
 
         public static List<MapMonster> Monsters { get; set; }
         public static EventHandler NotifyChildren { get; set; }
@@ -336,8 +336,8 @@ namespace OpenNos.GameObject
         }
         public void Shout(string message)
         {
-          Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-          Broadcast($"msg 2 {message}");
+            Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Broadcast($"msg 2 {message}");
         }
 
         //PacketHandler -> with Callback?
@@ -730,7 +730,7 @@ namespace OpenNos.GameObject
                 {
                     TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
                 }
-                foreach (var map in _maps.Where(s => s.Value.Tempgrid !=null &&( !s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
+                foreach (var map in _maps.Where(s => s.Value.Tempgrid != null && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
                 {
                     map.Value.Tempgrid = null;
                 }
