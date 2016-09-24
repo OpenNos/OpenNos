@@ -137,7 +137,7 @@ namespace OpenNos.GameObject
                 }
                 Random random = new Random((int)DateTime.Now.Ticks*MapMonsterId & 0x0000FFFF);
                 double time = (DateTime.Now - LastMove).TotalMilliseconds;
-                if (IsMoving)
+                if (IsMoving && Monster.Speed > 0)
                 {
                     if (Path.Where(s => s != null).ToList().Count > 0)
                     {

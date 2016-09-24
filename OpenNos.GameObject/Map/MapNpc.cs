@@ -134,7 +134,7 @@ namespace OpenNos.GameObject
 
             Random random = new Random((int)DateTime.Now.Ticks * MapNpcId & 0x0000FFFF);
             time = (DateTime.Now - LastMove).TotalMilliseconds;
-            if (IsMoving && time > _movetime)
+            if (IsMoving && Npc.Speed > 0 && time > _movetime)
             {
 
                 _movetime = random.Next(500, 3000);
