@@ -164,7 +164,7 @@ namespace OpenNos.Handler
                     case 5:
                         if (Session.Character.ExchangeInfo != null)
                         {
-                            if (short.TryParse(packetsplit[4], out slot))
+                            if (short.TryParse(packetsplit[3], out slot))
                             {
                                 ExchangeInfo exch = ServerManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.ExchangeInfo));
                                 Guid id;
@@ -418,7 +418,7 @@ namespace OpenNos.Handler
                     if (type[i] != 0)
                         packetList += $"{i}.{type[i]}.{it.ItemVNum}.{qty[i]} ";
                     else
-                        packetList += $"{i}.{type[i]}.{it.ItemVNum}.0.0 ";
+                        packetList += $"{i}.{type[i]}.{it.ItemVNum}.{it.Rare}.{it.Upgrade} ";
                 }
                 else if (it.IsBound)
                 {
