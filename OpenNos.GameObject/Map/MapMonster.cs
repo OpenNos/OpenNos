@@ -329,8 +329,8 @@ namespace OpenNos.GameObject
                                 Task.Factory.StartNew(async () =>
                                 {
                                     await Task.Delay(waitingtime);
-                                    this.MapX = Path.ElementAt(Monster.Speed).X;
-                                    this.MapY = Path.ElementAt(Monster.Speed).Y;
+                                    this.MapX = mapX;
+                                    this.MapY = mapY;
                                 });
                                 for (int i = Monster.Speed - 1; i >= 0; i--)
                                 {
@@ -346,8 +346,8 @@ namespace OpenNos.GameObject
                                 Task.Factory.StartNew(async () =>
                                 {
                                     await Task.Delay(waitingtime);
-                                    this.MapX = Path.ElementAt(Path.Count - 1).X;
-                                    this.MapY = Path.ElementAt(Path.Count - 1).Y;
+                                    this.MapX = mapX;
+                                    this.MapY = mapY;
                                 });
                                 LastMove = DateTime.Now.AddSeconds(1 / (Path.Count));
                                 for (int i = Path.Count - 1; i >= 0; i--)
