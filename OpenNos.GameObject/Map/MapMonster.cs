@@ -324,7 +324,7 @@ namespace OpenNos.GameObject
                             {
                                 this.MapX = Path.ElementAt(Monster.Speed / 2).X;
                                 this.MapY = Path.ElementAt(Monster.Speed / 2).Y;
-                                for (int i = 0; i < Monster.Speed / 2; i++)
+                                for (int i = Monster.Speed / 2-1; i >=0 ; i--)
                                 {
                                     Path.RemoveAt(i);
                                 }
@@ -335,7 +335,7 @@ namespace OpenNos.GameObject
                                 this.MapX = Path.ElementAt(Path.Count - 1).X;
                                 this.MapY = Path.ElementAt(Path.Count - 1).Y;
                                 LastMove = DateTime.Now.AddSeconds(1 / (Path.Count * 2));
-                                for (int i = 0; i < Path.Count; i++)
+                                for (int i = Path.Count -1; i >=0 ; i--)
                                 {
                                     Path.RemoveAt(i);
                                 }
