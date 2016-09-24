@@ -294,10 +294,11 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
+                    int distance = Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY });
+
                     if (IsMoving == true)
                     {
                         short maxDistance = 22;
-                        int distance = Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY });
                         if (Path.Count() == 0 && targetSession != null && distance > 1 && distance < maxDistance)
                         {
                             short xoffset = 0;
@@ -337,8 +338,9 @@ namespace OpenNos.GameObject
                                 }
                                
                             }
+                            Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
                         }
-                        if (targetSession == null || MapId != targetSession.Character.MapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) > maxDistance))
+                        if (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance)
                         {
                             
                             Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
@@ -347,14 +349,6 @@ namespace OpenNos.GameObject
                                 Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
                             }
                             Target = -1;
-                        }
-                        else
-                        {
-                            if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / Monster.Speed)
-                            {
-                                LastMove = DateTime.Now;
-                                Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
-                            }
                         }
                     }
                 }
