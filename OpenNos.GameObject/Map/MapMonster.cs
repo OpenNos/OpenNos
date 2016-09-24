@@ -320,15 +320,19 @@ namespace OpenNos.GameObject
                         }
                         if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Count > 0)
                         {
-                            if (Path.Count > Monster.Speed / 2)
+                            if (Path.Count > Monster.Speed)
                             {
-                                short mapX = Path.ElementAt(Monster.Speed / 2).X;
-                                short mapY = Path.ElementAt(Monster.Speed / 2).Y;
-                                LastMove = DateTime.Now.AddSeconds(Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed / 2));
-                                this.MapX = Path.ElementAt(Monster.Speed / 2).X;
-                                this.MapY = Path.ElementAt(Monster.Speed / 2).Y;
-
-                                for (int i = Monster.Speed / 2 - 1; i >= 0; i--)
+                                short mapX = Path.ElementAt(Monster.Speed).X;
+                                short mapY = Path.ElementAt(Monster.Speed).Y;
+                                int waitingtime = Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
+                                LastMove = DateTime.Now.AddSeconds(waitingtime);
+                                Task.Factory.StartNew(async () =>
+                                {
+                                    await Task.Delay(waitingtime);
+                                    this.MapX = Path.ElementAt(Monster.Speed).X;
+                                    this.MapY = Path.ElementAt(Monster.Speed).Y;
+                                });
+                                for (int i = Monster.Speed - 1; i >= 0; i--)
                                 {
                                     Path.RemoveAt(i);
                                 }
@@ -338,7 +342,7 @@ namespace OpenNos.GameObject
                             {
                                 this.MapX = Path.ElementAt(Path.Count - 1).X;
                                 this.MapY = Path.ElementAt(Path.Count - 1).Y;
-                                LastMove = DateTime.Now.AddSeconds(1 / (Path.Count * 2));
+                                LastMove = DateTime.Now.AddSeconds(1 / (Path.Count));
                                 for (int i = Path.Count - 1; i >= 0; i--)
                                 {
                                     Path.RemoveAt(i);
