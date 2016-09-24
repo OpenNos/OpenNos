@@ -325,7 +325,7 @@ namespace OpenNos.GameObject
 
                             mapX = Path.ElementAt(Path.Count - 1).X;
                             mapY = Path.ElementAt(Path.Count - 1).Y;
-                            int waitingtime = 2 * Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
+                            int waitingtime = Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (Monster.Speed);
                             Task.Factory.StartNew(async () =>
                             {
                                 await Task.Delay(waitingtime * 1000);
