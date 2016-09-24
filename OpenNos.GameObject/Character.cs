@@ -129,7 +129,6 @@ namespace OpenNos.GameObject
         public DateTime LastTransform { get; set; }
         public int LightResistance { get; set; }
         public int MagicalDefence { get; set; }
-        public Map Map { get; set; }
         public int MaxDistance { get; set; }
         public int MaxHit { get; set; }
         public int MaxSnack { get; set; }
@@ -1007,6 +1006,7 @@ namespace OpenNos.GameObject
             int weaponUpgrade = 0;
             int secondaryUpgrade = 0;
             int armorUpgrade = 0;
+
             MinHit = ServersData.MinHit(Class, Level);
             MaxHit = ServersData.MaxHit(Class, Level);
             HitRate = ServersData.HitRate(Class, Level);

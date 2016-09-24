@@ -13,6 +13,7 @@
  */
 
 using AutoMapper;
+using EpPathFinding.cs;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -729,9 +730,12 @@ namespace OpenNos.GameObject
                 foreach (var map in _maps.Where(s => s.Value.Sessions.Any() || s.Value.LastUnregister.AddSeconds(30) > DateTime.Now))
                 {
                     TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
+                    map.Value.Disabled = false;
+                    map.Value.Tempgrid = new StaticGrid(0, 0);
                 }
-                foreach (var map in _maps.Where(s => s.Value.Tempgrid != null && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
+                foreach (var map in _maps.Where(s => !s.Value.Disabled && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
                 {
+                    map.Value.Disabled = true;
                     map.Value.Tempgrid = null;
                 }
                 TaskMaps.ForEach(s => s.Start());

@@ -124,18 +124,25 @@ namespace OpenNos.GameObject
                 return _monsters;
             }
         }
-
+        public JumpPointParam JumpPointParameters { get; set; }
         public BaseGrid Tempgrid
         {
             get
             {
-                if (_tempgrid == null)
-                    _tempgrid = ConvertToGrid(_grid);
                 return _tempgrid;
             }
             set
             {
-                _tempgrid = value;
+                if (value == null)
+                {
+                    _tempgrid = null;
+                    JumpPointParameters = null;
+                }
+                else
+                {
+                    _tempgrid = ConvertToGrid(_grid);
+                    JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
+                }
             }
         }
 
@@ -168,6 +175,7 @@ namespace OpenNos.GameObject
         public int XLength { get; set; }
 
         public int YLength { get; set; }
+        public bool Disabled { get; internal set; }
 
         #endregion
 
@@ -239,7 +247,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (y >= 0 && x >= 0 && y < _grid.GetLength(0) && x < _grid.GetLength(1) && _grid[y, x] != 0)
+            if (y >= 0 && x >= 0 && y < _grid.GetLength(1) && x < _grid.GetLength(0) && _grid[x, y] != 0)
             {
                 return true;
             }
@@ -274,7 +282,7 @@ namespace OpenNos.GameObject
             {
                 for (int x = 0; x < XLength; ++x)
                 {
-                    grid.SetWalkableAt(x, y, IsBlockedZone(x,y));
+                    grid.SetWalkableAt(x, y, !IsBlockedZone(x,y));
                 }
             }
             return grid;
@@ -288,7 +296,7 @@ namespace OpenNos.GameObject
             {
                 return path;
             }
-            JumpPointParam JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y), false, true, true, HeuristicMode.MANHATTAN);
+            JumpPointParameters.Reset(new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y));
             List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
             lpath = JumpPointFinder.GetFullPath(resultPathList);
             Debug.WriteLine($"From X: {cell1.X} Y: {cell1.Y}, To X: {cell2.X} Y: {cell2.Y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
@@ -319,8 +327,10 @@ namespace OpenNos.GameObject
             ylength[0] = bytes[0];
             stream.Read(bytes, numBytesRead, numBytesToRead);
             ylength[1] = bytes[0];
+            YLength = BitConverter.ToInt16(ylength, 0);
+            XLength = BitConverter.ToInt16(xlength, 0);
 
-            _grid = new short[XLength, YLength];
+           _grid = new short[XLength, YLength];
             for (int i = 0; i < YLength; ++i)
             {
                 for (int t = 0; t < XLength; ++t)

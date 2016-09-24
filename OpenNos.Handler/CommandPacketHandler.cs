@@ -417,7 +417,20 @@ namespace OpenNos.Handler
             else
                 Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 10));
         }
+        [Packet("$Grid")]
+        public void ShowGrid(string packet)
+        {
+            string grid = String.Empty;
+            for (int y = 0; y < Session.CurrentMap.YLength; y++)
+            {
+                for (int x = 0; x < Session.CurrentMap.XLength; x++)
+                {
+                    if(Session.CurrentMap.Tempgrid.IsWalkableAt(x,y))
+                    Session.SendPacket($"in 2 {1} {int.MaxValue - (x * y)} {x} {y} {1} 100 100 -1 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0");
+                }
+            }
 
+        }
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
         {
