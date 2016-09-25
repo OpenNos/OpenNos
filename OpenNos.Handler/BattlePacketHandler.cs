@@ -384,7 +384,7 @@ namespace OpenNos.Handler
                             int CastingId;
                             short x = -1;
                             short y = -1;
-                            if (!int.TryParse(packetsplit[2], out CastingId) && !short.TryParse(packetsplit[3], out x) && !short.TryParse(packetsplit[4], out y)) return;
+                            if (!int.TryParse(packetsplit[2], out CastingId) || !short.TryParse(packetsplit[3], out x) || !short.TryParse(packetsplit[4], out y)) return;
                             ZoneHit(CastingId, x, y);
                         }
                 }
