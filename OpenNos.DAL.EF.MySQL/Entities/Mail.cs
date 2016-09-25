@@ -28,6 +28,8 @@ namespace OpenNos.DAL.EF.MySQL
         }
 
         public byte Amount { get; set; }
+        public virtual Item Item { get; set; }
+        public short? ItemVnum { get; set; }
         public DateTime Date { get; set; }
         public bool IsOpened { get; set; }
         public virtual ICollection<MailEquipment> MailEquipment { get; set; } 

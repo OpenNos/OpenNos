@@ -174,10 +174,16 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<MailEquipment>()
-                  .HasRequired(e => e.Mail)
-                  .WithMany(e => e.MailEquipment)
-                  .HasForeignKey(e => e.MailId) // nice ;) yep try now
-                  .WillCascadeOnDelete(false);
+                 .HasRequired(e => e.Mail)
+                 .WithMany(e => e.MailEquipment)
+                 .HasForeignKey(e => e.MailId) 
+                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Mail>()
+                 .HasOptional(e => e.Item)
+                 .WithMany(e => e.Mail)
+                 .HasForeignKey(e=>e.ItemVnum)
+                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<MailEquipment>()
                 .HasRequired(e => e.Item)
