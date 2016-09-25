@@ -813,12 +813,7 @@ namespace OpenNos.GameObject
                 return $"post 1 {type} {MailList.IndexOf(mail)} 0 1 {mail.Date.ToString("yyMMddhhmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
             }
         }
-
-        public string GeneratePostMessage(MailDTO mailDTO, byte type)
-        {
-            CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDTO.SenderId);
-            return $"post 5 {type} {MailList.IndexOf(mailDTO)} 0 0 0 0 -1 0 0 -1.-1.-1.-1.-1.-1.-1.-1.-1 {sender.Name} {mailDTO.Title} {mailDTO.Message}";
-        }
+        
 
         public string GeneratePslInfo(SpecialistInstance inventoryItem, int type)
         {
