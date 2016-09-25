@@ -58,7 +58,7 @@ namespace OpenNos.Core
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Log.Warn("Wrong Packet Format!", e);
                 return String.Empty;
             }
         }
@@ -91,7 +91,14 @@ namespace OpenNos.Core
                         string currentValue = matches[currentIndex].Value;
 
                         //set the value & convert currentValue
-                        packetBasePropertyInfo.Value.SetValue(deserializedPacket, ConvertValue(packetBasePropertyInfo.Value.PropertyType, currentValue));
+                        if (currentValue != null)
+                        {
+                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, ConvertValue(packetBasePropertyInfo.Value.PropertyType, currentValue));
+                        }
+                        else
+                        {
+                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, Activator.CreateInstance(packetBasePropertyInfo.Value.PropertyType));
+                        }
                     }
                 }
 

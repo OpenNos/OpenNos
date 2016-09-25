@@ -119,10 +119,9 @@ namespace OpenNos.GameObject
         public DateTime LastEffect { get; set; }
         public DateTime LastHealth { get; set; }
         public DateTime LastLogin { get; set; }
+        public DateTime LastMailRefresh { get; set; }
         public DateTime LastMapObject { get; set; }
         public DateTime LastMove { get; set; }
-        public DateTime LastMailRefresh { get; set; }
-        public List<MailDTO> MailList { get; set; }
         public short LastNRunId { get; set; }
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
         public DateTime LastPotion { get; set; }
@@ -132,6 +131,7 @@ namespace OpenNos.GameObject
         public DateTime LastTransform { get; set; }
         public int LightResistance { get; set; }
         public int MagicalDefence { get; set; }
+        public List<MailDTO> MailList { get; set; }
         public int MaxDistance { get; set; }
         public int MaxHit { get; set; }
         public int MaxSnack { get; set; }
@@ -283,6 +283,12 @@ namespace OpenNos.GameObject
         {
             IsDancing = IsDancing == 0 ? 1 : 0;
             return String.Empty;
+        }
+
+        public Character DeepCopy()
+        {
+            Character clonedCharacter = (Character)this.MemberwiseClone();
+            return clonedCharacter;
         }
 
         public void DeleteItem(InventoryType type, short slot)
@@ -479,32 +485,6 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
-        public void RefreshMail()
-        {
-            foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.MailId == s.MailId)))
-            {
-                MailList.Add(mail);
-                if (!mail.IsOpened)
-                {
-                    mail.IsOpened = true;
-                    MailDTO mailupdate = mail;
-                    DAOFactory.MailDAO.InsertOrUpdate(ref mailupdate);
-                    Session.SendPacket(Session.Character.GeneratePost(mail, 1));
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEW_MAIL"), 10));
-                }
-            }
-            LastMailRefresh = DateTime.Now;
-
-        }
-        public void loadSendedMail()
-        {
-            foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId))
-            {
-                MailList.Add(mail);
-                Session.SendPacket(Session.Character.GeneratePost(mail, 2));
-            }
-        }
-
         public string GenerateEq()
         {
             int color = HairColor;
@@ -663,12 +643,6 @@ namespace OpenNos.GameObject
             return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Element : 0)} 0 {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
-        public string GeneratePostMessage(MailDTO mailDTO,byte type)
-        {
-            CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDTO.SenderId);
-            return $"post 5 {type} {MailList.IndexOf(mailDTO)} 0 0 0 0 -1 0 0 -1.-1.-1.-1.-1.-1.-1.-1.-1 {sender.Name} {mailDTO.Title} {mailDTO.Message}";
-        }
-
         public List<string> GenerateIn2()
         {
             return ServerManager.GetMap(MapId).Npcs.Select(npc => npc.GenerateIn2()).ToList();
@@ -805,6 +779,26 @@ namespace OpenNos.GameObject
             return ServerManager.GetMap(MapId).UserShops.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
         }
 
+        public string GeneratePost(MailDTO mail, byte type)
+        {
+            if (type == 1 && mail.ItemVNum != null)
+            {
+                type = 0;
+                //item
+                return $"";
+            }
+            else
+            {
+                return $"post 1 {type} {MailList.IndexOf(mail)} 0 1 {mail.Date.ToString("yyMMddhhmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
+            }
+        }
+
+        public string GeneratePostMessage(MailDTO mailDTO, byte type)
+        {
+            CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDTO.SenderId);
+            return $"post 5 {type} {MailList.IndexOf(mailDTO)} 0 0 0 0 -1 0 0 -1.-1.-1.-1.-1.-1.-1.-1.-1 {sender.Name} {mailDTO.Title} {mailDTO.Message}";
+        }
+
         public string GeneratePslInfo(SpecialistInstance inventoryItem, int type)
         {
             // 1235.3 1237.4 1239.5 <= skills SkillVNum.Grade
@@ -897,20 +891,6 @@ namespace OpenNos.GameObject
             }
 
             return $"ski {skibase}{skills}";
-        }
-
-        public string GeneratePost(MailDTO mail, byte type)
-        {
-            if (type == 1 && mail.ItemVNum != null)
-            {
-                type = 0;
-                //item
-                return $"";
-            }
-            else
-            {
-                return $"post 1 {type} {MailList.IndexOf(mail)} 0 1 {mail.Date.ToString("yyMMddhhmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
-            }
         }
 
         public string GenerateSlInfo(SpecialistInstance inventoryItem, int type)
@@ -1627,6 +1607,15 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void loadSendedMail()
+        {
+            foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId))
+            {
+                MailList.Add(mail);
+                Session.SendPacket(Session.Character.GeneratePost(mail, 2));
+            }
+        }
+
         public void LoadSkills()
         {
             Skills = new List<CharacterSkill>();
@@ -1690,6 +1679,23 @@ namespace OpenNos.GameObject
             ServerManager.Instance.Broadcast(Session, GenerateEff(3005), ReceiverType.All);
         }
 
+        public void RefreshMail()
+        {
+            foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.MailId == s.MailId)))
+            {
+                MailList.Add(mail);
+                if (!mail.IsOpened)
+                {
+                    mail.IsOpened = true;
+                    MailDTO mailupdate = mail;
+                    DAOFactory.MailDAO.InsertOrUpdate(ref mailupdate);
+                    Session.SendPacket(Session.Character.GeneratePost(mail, 1));
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEW_MAIL"), 10));
+                }
+            }
+            LastMailRefresh = DateTime.Now;
+        }
+
         public void RemoveVehicle()
         {
             SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
@@ -1731,7 +1737,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                CharacterDTO character = this;
+                CharacterDTO character = this.DeepCopy();
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
                 //load and concat inventory with equipment
@@ -1766,7 +1772,9 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                if (QuicklistEntries != null)
+                IEnumerable<QuicklistEntry> quickListEntriesToInsertOrUpdate = QuicklistEntries.ToList();
+
+                if (quickListEntriesToInsertOrUpdate != null)
                 {
                     IEnumerable<Guid> currentlySavedQuicklistEntries = DAOFactory.QuicklistEntryDAO.LoadKeysByCharacterId(CharacterId).ToList();
                     if (currentlySavedQuicklistEntries != null)
@@ -1775,7 +1783,7 @@ namespace OpenNos.GameObject
                         {
                             DAOFactory.QuicklistEntryDAO.Delete(quicklistEntryToDelete);
                         }
-                        foreach (QuicklistEntryDTO quicklistEntry in QuicklistEntries)
+                        foreach (QuicklistEntryDTO quicklistEntry in quickListEntriesToInsertOrUpdate)
                         {
                             DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
                         }
