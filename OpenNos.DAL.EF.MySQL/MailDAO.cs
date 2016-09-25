@@ -18,6 +18,7 @@ using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
@@ -82,35 +83,27 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public MailDTO LoadByReceiverId(long receiverId)
+        public IEnumerable<MailDTO> LoadByReceiverId(long receiverId)
         {
-            try
+
+            using (var context = DataAccessHelper.CreateContext())
             {
-                using (var context = DataAccessHelper.CreateContext())
+                foreach (Mail mail in context.Mail.Where(i => i.ReceiverId.Equals(receiverId)))
                 {
-                    return _mapper.Map<MailDTO>(context.Mail.FirstOrDefault(i => i.ReceiverId.Equals(receiverId)));
+                    yield return _mapper.Map<MailDTO>(mail);
                 }
             }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return null;
-            }
+
         }
 
-        public MailDTO LoadBySenderId(long senderId)
+        public IEnumerable<MailDTO> LoadBySenderId(long senderId)
         {
-            try
+            using (var context = DataAccessHelper.CreateContext())
             {
-                using (var context = DataAccessHelper.CreateContext())
+                foreach (Mail mail in context.Mail.Where(i => i.SenderId.Equals(senderId)))
                 {
-                    return _mapper.Map<MailDTO>(context.Mail.FirstOrDefault(i => i.SenderId.Equals(senderId)));
+                    yield return _mapper.Map<MailDTO>(mail);
                 }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return null;
             }
         }
 

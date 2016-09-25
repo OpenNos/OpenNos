@@ -13,6 +13,8 @@
  */
 
 using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
@@ -678,7 +680,7 @@ namespace OpenNos.Handler
                 }
             }
         }
-
+      
         [Packet("sortopen")]
         public void SortOpen(string packet)
         {
@@ -708,7 +710,7 @@ namespace OpenNos.Handler
                             }
                         }
                     }
-                    Session.Character.InventoryList.Reorder(Session,type = (i == 0) ? InventoryType.Sp : InventoryType.Costume);
+                    Session.Character.InventoryList.Reorder(Session, type = (i == 0) ? InventoryType.Sp : InventoryType.Costume);
                 }
 
             }

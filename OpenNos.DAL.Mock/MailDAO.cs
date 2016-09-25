@@ -1,6 +1,7 @@
 ﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
@@ -18,12 +19,12 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public MailDTO LoadByReceiverId(long receiverId)
+        public IEnumerable<MailDTO> LoadByReceiverId(long receiverId)
         {
             throw new NotImplementedException();
         }
 
-        public MailDTO LoadBySenderId(long senderId)
+        public IEnumerable<MailDTO> LoadBySenderId(long senderId)
         {
             throw new NotImplementedException();
         }

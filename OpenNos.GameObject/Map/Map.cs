@@ -491,6 +491,8 @@ namespace OpenNos.GameObject
                 List<Task> NpcLifeTask = new List<Task>();
                 foreach (ClientSession Session in Sessions.Where(s => s?.Character != null))
                 {
+                    if(Session.Character.LastMailRefresh.AddSeconds(30) < DateTime.Now)
+                    Session.Character.RefreshMail();
                     int x = 1;
                     bool change = false;
                     if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)

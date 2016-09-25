@@ -604,6 +604,41 @@ namespace OpenNos.Handler
             else
                 ServerManager.Instance.RequireBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
         }
+        [Packet("pst")]
+        public void Sendmail(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            switch (packetsplit.Count())
+            {
+                case 10:
+                    CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(packetsplit[7]);
+                    if (Receiver != null)
+                    {
+                        MailDTO mail = new MailDTO() { Amount = 0, Date = DateTime.Now, Message = packetsplit[9], ReceiverId = Receiver.CharacterId, SenderId = Session.Character.CharacterId };
+                        DAOFactory.MailDAO.Insert(mail);
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
+                        Session.SendPacket(Session.Character.GeneratePost(mail, 2));
+                    }
+                    else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                    break;
+                case 5:
+                    int id;
+                    if (int.TryParse(packetsplit[4], out id))
+                    {
+                        if (Session.Character.MailList.Count > id)
+                        {
+                            
+                            Session.SendPacket("post 3 1 0 1");
+                            Session.SendPacket(Session.Character.GeneratePostMessage(Session.Character.MailList.ElementAt(id)));
+
+                        }
+                    }
+                    break;
+            }
+
+
+        }
 
         [Packet("rest")]
         public void Rest(string packet)
@@ -847,6 +882,7 @@ namespace OpenNos.Handler
             Session.SendPacket(kdlinit);
             // finfo - friends info
             Session.SendPacket("p_clear");
+            Session.Character.loadSendedMail();
         }
 
         [Packet("#pjoin")]

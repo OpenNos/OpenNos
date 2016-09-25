@@ -14,6 +14,7 @@
 
 namespace OpenNos.DAL.EF.MySQL
 {
+    using Data;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
