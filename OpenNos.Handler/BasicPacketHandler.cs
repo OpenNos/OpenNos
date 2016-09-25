@@ -615,8 +615,12 @@ namespace OpenNos.Handler
                     CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(packetsplit[7]);
                     if (Receiver != null)
                     {
-                        MailDTO mail = new MailDTO() { Amount = 0, Date = DateTime.Now, Title = packetsplit[9], Message = packetsplit[9], ReceiverId = Receiver.CharacterId, SenderId = Session.Character.CharacterId };
+                        MailDTO mailcopy = new MailDTO() { Amount = 0, Date = DateTime.Now, Title = packetsplit[9], Message = packetsplit[9], ReceiverId = Receiver.CharacterId, SenderId = Session.Character.CharacterId,OwnerId= Session.Character.CharacterId };
+                        MailDTO mail = new MailDTO() { Amount = 0, Date = DateTime.Now, Title = packetsplit[9], Message = packetsplit[9], ReceiverId = Receiver.CharacterId, SenderId = Session.Character.CharacterId, OwnerId = Receiver.CharacterId };
+
+                        DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
                         DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+
                         Session.Character.MailList.Add(mail);
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
                         Session.SendPacket(Session.Character.GeneratePost(mail, 2));

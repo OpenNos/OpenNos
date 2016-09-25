@@ -8,8 +8,12 @@ namespace OpenNos.DAL.Mock
 {
     public class MailDAO : IMailDAO
     {
-        #region Methods
 
+        #region Methods
+        public DeleteResult DeleteById(long mailId)
+        {
+            throw new NotImplementedException();
+        }
         public SaveResult InsertOrUpdate(ref MailDTO mail)
         {
             throw new NotImplementedException();
