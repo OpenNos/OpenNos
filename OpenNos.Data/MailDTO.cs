@@ -22,7 +22,7 @@ namespace OpenNos.Data
 
         public byte Amount { get; set; }
         public DateTime Date { get; set; }
-        public short ItemVNum { get; set; }
+        public short? ItemVNum { get; set; }
         public long MailId { get; set; }
         public string Message { get; set; }
         public long ReceiverId { get; set; }

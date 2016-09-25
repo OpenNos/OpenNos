@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
@@ -24,9 +25,9 @@ namespace OpenNos.DAL.Interface
 
         MailDTO LoadById(long mailId);
 
-        MailDTO LoadByReceiverId(long receiverId);
+        IEnumerable<MailDTO> LoadByReceiverId(long receiverId);
 
-        MailDTO LoadBySenderId(long senderId);
+        IEnumerable<MailDTO> LoadBySenderId(long senderId);
 
         #endregion
     }

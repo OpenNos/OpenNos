@@ -58,6 +58,7 @@ namespace OpenNos.GameObject
             LastDefence = DateTime.Now.AddSeconds(-21);
             LastHealth = DateTime.Now;
             LastEffect = DateTime.Now;
+            MailList = new List<MailDTO>();
             _session = Session;
             Group = null;
         }
@@ -120,6 +121,8 @@ namespace OpenNos.GameObject
         public DateTime LastLogin { get; set; }
         public DateTime LastMapObject { get; set; }
         public DateTime LastMove { get; set; }
+        public DateTime LastMailRefresh { get; set; }
+        public List<MailDTO> MailList { get; set; }
         public short LastNRunId { get; set; }
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
         public DateTime LastPotion { get; set; }
@@ -476,6 +479,26 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
+        public void RefreshMail()
+        {
+            foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s=> !MailList.Any(m=>m.MailId == s.MailId)))
+            {
+                MailList.Add(mail);
+                Session.SendPacket(Session.Character.GeneratePost(mail,1));
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEW_MAIL"), 10));
+            }
+            LastMailRefresh = DateTime.Now;
+
+        }
+        public void loadSendedMail()
+        {
+            foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId))
+            {
+                MailList.Add(mail);
+                Session.SendPacket(Session.Character.GeneratePost(mail, 2));
+            }
+        }
+
         public string GenerateEq()
         {
             int color = HairColor;
@@ -634,6 +657,12 @@ namespace OpenNos.GameObject
             return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Element : 0)} 0 {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
+        public string GeneratePostMessage(MailDTO mailDTO)
+        {
+            CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDTO.SenderId);
+            return $"post 5 1 0 0 0 {sender.Class} 0 -1 3 7 -1.-1.-1.-1.-1.-1.-1.-1.-1 {sender.Name} title {mailDTO.Message}";
+        }
+
         public List<string> GenerateIn2()
         {
             return ServerManager.GetMap(MapId).Npcs.Select(npc => npc.GenerateIn2()).ToList();
@@ -740,7 +769,7 @@ namespace OpenNos.GameObject
                 str = $"pidx {Group.GroupId}";
                 foreach (ClientSession c in Group.Characters.Where(s => s.Character != null))
                 {
-                    str += $" {(Group.IsMemberOfGroup(CharacterId)?1:0)}.{c.Character.CharacterId} ";
+                    str += $" {(Group.IsMemberOfGroup(CharacterId) ? 1 : 0)}.{c.Character.CharacterId} ";
                 }
                 return str;
             }
@@ -862,6 +891,20 @@ namespace OpenNos.GameObject
             }
 
             return $"ski {skibase}{skills}";
+        }
+
+        public string GeneratePost(MailDTO mail,byte type)
+        {
+            if (type == 1 && mail.ItemVNum != null)
+            {
+                type = 0;
+                //item
+                return $"";
+            }
+            else
+            {
+                return $"post 1 {type} {MailList.IndexOf(mail)} 0 1 {mail.Date.ToString("yyMMddhhmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Message}";
+            }
         }
 
         public string GenerateSlInfo(SpecialistInstance inventoryItem, int type)
