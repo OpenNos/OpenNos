@@ -58,6 +58,7 @@ namespace OpenNos.DAL.EF.MySQL
         public byte Gender { get; set; }
         public virtual ICollection<Mail> Mail { get; set; }
         public virtual ICollection<Mail> Mail1 { get; set; }
+        public virtual ICollection<Mail> Mail2 { get; set; }
         public virtual ICollection<GeneralLog> GeneralLog { get; set; }
         public long Gold { get; set; }
         public bool GroupRequestBlocked { get; set; }

@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Samson : DbMigration
+    public partial class samson : DbMigration
     {
         public override void Up()
         {
@@ -319,14 +319,17 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Title = c.String(maxLength: 255, storeType: "nvarchar"),
                         Message = c.String(maxLength: 255, storeType: "nvarchar"),
                         ReceiverId = c.Long(nullable: false),
+                        OwnerId = c.Long(nullable: false),
                         SenderId = c.Long(nullable: false),
                     })
                 .PrimaryKey(t => t.MailId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)
                 .ForeignKey("dbo.Character", t => t.SenderId)
                 .ForeignKey("dbo.Character", t => t.ReceiverId)
+                .ForeignKey("dbo.Character", t => t.OwnerId)
                 .Index(t => t.ItemVNum)
                 .Index(t => t.ReceiverId)
+                .Index(t => t.OwnerId)
                 .Index(t => t.SenderId);
             
             CreateTable(
@@ -691,6 +694,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.Character", "AccountId", "dbo.Account");
             DropForeignKey("dbo.Respawn", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.QuicklistEntry", "CharacterId", "dbo.Character");
+            DropForeignKey("dbo.Mail", "OwnerId", "dbo.Character");
             DropForeignKey("dbo.Mail", "ReceiverId", "dbo.Character");
             DropForeignKey("dbo.Mail", "SenderId", "dbo.Character");
             DropForeignKey("dbo.Inventory", "CharacterId", "dbo.Character");
@@ -758,6 +762,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.Recipe", new[] { "MapNpcId" });
             DropIndex("dbo.Recipe", new[] { "ItemVNum" });
             DropIndex("dbo.Mail", new[] { "SenderId" });
+            DropIndex("dbo.Mail", new[] { "OwnerId" });
             DropIndex("dbo.Mail", new[] { "ReceiverId" });
             DropIndex("dbo.Mail", new[] { "ItemVNum" });
             DropIndex("dbo.Drop", new[] { "MonsterVNum" });

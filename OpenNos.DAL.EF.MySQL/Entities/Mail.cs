@@ -39,6 +39,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         public virtual Character Receiver { get; set; }
         public long ReceiverId { get; set; }
+        public virtual Character Owner { get; set; }
+        public long OwnerId { get; set; }
         public virtual Character Sender { get; set; }
         public long SenderId { get; set; }
 

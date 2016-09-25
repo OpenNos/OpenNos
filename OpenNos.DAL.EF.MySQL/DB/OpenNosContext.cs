@@ -140,6 +140,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .HasForeignKey(e => e.ReceiverId)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Character>()
+                .HasMany(e => e.Mail2)
+                .WithRequired(e => e.Owner)
+                .HasForeignKey(e => e.OwnerId)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Item>()
                 .HasMany(e => e.Drop)
                 .WithRequired(e => e.Item)

@@ -28,6 +28,7 @@ namespace OpenNos.Data
         public long MailId { get; set; }
         public string Message { get; set; }
         public long ReceiverId { get; set; }
+        public long OwnerId { get; set; }
         public long SenderId { get; set; }
 
         #endregion
