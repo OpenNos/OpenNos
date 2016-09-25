@@ -180,6 +180,9 @@
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Do you want to parse Maps?</value>
   </data>
+  <data name="PARSE_MAPTYPEMAPS" xml:space="preserve">
+    <value>Do you want to parse MapTypeMaps?</value>
+  </data>
   <data name="PARSE_MAPTYPES" xml:space="preserve">
     <value>Do you want to parse MapTypes? we suggest using with MapTypeMaps</value>
   </data>
