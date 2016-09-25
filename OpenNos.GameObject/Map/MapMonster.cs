@@ -322,27 +322,27 @@ namespace OpenNos.GameObject
                         {
                             short mapX;
                             short mapY;
-                            int maxindex = (Path.Count - 1) > Monster.Speed/2 ? Monster.Speed/2 : (Path.Count - 1);
-                            mapX = Path.ElementAt(maxindex).X;
-                            mapY = Path.ElementAt(maxindex).Y;
-                            double waitingtime = (double)Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId }) / (double)(Monster.Speed);
+                            int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
+                            mapX = Path.ElementAt(maxindex - 1).X;
+                            mapY = Path.ElementAt(maxindex - 1).Y;
+                            double waitingtime = (double)(Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId })) / (double)(Monster.Speed);
                             Map.Broadcast($"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}");
-                            LastMove = DateTime.Now.AddSeconds(0.2+(waitingtime > 1 ? 1 : waitingtime));
+                            LastMove = DateTime.Now.AddSeconds((waitingtime > 1 ? 1 : waitingtime));
                             Task.Factory.StartNew(async () =>
                             {
-                                await Task.Delay((int)(waitingtime > 1 ? 1000 : waitingtime * 1000));
+                                await Task.Delay((int)((waitingtime > 1 ? 1 : waitingtime) * 1000));
                                 this.MapX = mapX;
                                 this.MapY = mapY;
                             });
 
-                            for (int j = 0, i = Path.Count - 1; i >= 0 && j < Monster.Speed; j++, i--)
+                            for (int j = maxindex; j > 0; j--)
                             {
-                                Path.RemoveAt(i);
+                                Path.RemoveAt(0);
                             }
 
 
                         }
-                        if (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance)
+                        if (Path.Count() == 0 && (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance))
                         {
                             Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
                             if (!Path.Any())
