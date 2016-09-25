@@ -433,7 +433,7 @@ namespace OpenNos.GameObject
                 session.CurrentMap.RegisterSession(session);
                 session.SendPacket(session.Character.GenerateCInfo());
                 session.SendPacket(session.Character.GenerateCMode());
-                session.CurrentMap?.Broadcast(session, session.Character.GenerateEq(), ReceiverType.All);
+                session.SendPacket(session.Character.GenerateEq());
                 session.SendPacket(session.Character.GenerateEquipment());
                 session.SendPacket(session.Character.GenerateLev());
                 session.SendPacket(session.Character.GenerateStat());
@@ -447,7 +447,7 @@ namespace OpenNos.GameObject
                 // cond 2 // send only when partner present
                 session.SendPacket("pinit 0"); // clear party list
                 //session.SendPacket(session.Character.GeneratePairy());
-                session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.All);
+                session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy());
                 session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
                 Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
