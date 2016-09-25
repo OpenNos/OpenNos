@@ -1623,12 +1623,17 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void loadSendedMail()
+        public void loadBaseMail()
         {
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId))
             {
                 MailList.Add(mail);
                 Session.SendPacket(Session.Character.GeneratePost(mail, 2));
+            }
+            foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId))
+            {
+                MailList.Add(mail);
+                Session.SendPacket(Session.Character.GeneratePost(mail, 1));
             }
         }
 

@@ -22,6 +22,8 @@ namespace OpenNos.Data
 
         public long MailEquipmentId { get; set; }
 
+        public long MailId { get; set; }
+
         public short ItemVNum { get; set; }
 
         public byte Slot { get; set; }

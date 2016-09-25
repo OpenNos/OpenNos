@@ -85,8 +85,8 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 Mail entity = _mapper.Map<Mail>(mail);
                 context.Mail.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<MailDTO>(mail);
+                context.SaveChanges();            
+                return _mapper.Map<MailDTO>(entity);
             }
             catch (Exception e)
             {

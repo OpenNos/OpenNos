@@ -647,7 +647,8 @@ namespace OpenNos.Handler
                             SenderHairStyle = Session.Character.HairStyle,
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)Session.Character.Morph
                         };
-                        DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
+                        if (mailcopy.SenderId != mail.SenderId)
+                            DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
                         DAOFactory.MailDAO.InsertOrUpdate(ref mail);
 
                         for (byte i = 0; i < 16; i++)
@@ -655,8 +656,9 @@ namespace OpenNos.Handler
                             Inventory inv = Session.Character.EquipmentList.LoadInventoryBySlotAndType(i, InventoryType.Equipment);
                             if (inv != null)
                             {
-                                DAOFactory.MailEquipmentDAO.Insert(new MailEquipmentDTO() { ItemVNum = inv.ItemInstance.ItemVNum, Slot = i, MailEquipmentId = mail.MailId });
-                                DAOFactory.MailEquipmentDAO.Insert(new MailEquipmentDTO() { ItemVNum = inv.ItemInstance.ItemVNum, Slot = i, MailEquipmentId = mailcopy.MailId });
+                                DAOFactory.MailEquipmentDAO.Insert(new MailEquipmentDTO() { ItemVNum = inv.ItemInstance.ItemVNum, Slot = i, MailId = mail.MailId });
+                                if (mailcopy.SenderId != mail.SenderId)
+                                    DAOFactory.MailEquipmentDAO.Insert(new MailEquipmentDTO() { ItemVNum = inv.ItemInstance.ItemVNum, Slot = i, MailId = mailcopy.MailId });
                             }
                         }
 
@@ -942,7 +944,7 @@ namespace OpenNos.Handler
             Session.SendPacket(kdlinit);
             // finfo - friends info
             Session.SendPacket("p_clear");
-            Session.Character.loadSendedMail();
+            Session.Character.loadBaseMail();
         }
 
         [Packet("#pjoin")]

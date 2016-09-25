@@ -38,8 +38,8 @@ namespace OpenNos.DAL.EF.MySQL
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Mail, MailDTO>();
-                cfg.CreateMap<MailDTO, Mail>();
+                cfg.CreateMap<MailEquipment, MailEquipmentDTO>();
+                cfg.CreateMap<MailEquipmentDTO, MailEquipment>();
             });
 
             _mapper = config.CreateMapper();
