@@ -945,4 +945,13 @@
   <data name="NOT_YOUR_ITEM" xml:space="preserve">
     <value>L'item non ti appartiene!</value>
   </data>
+  <data name="MAILED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MAIL_DELETED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NEW_MAIL" xml:space="preserve">
+    <value />
+  </data>
 </root>

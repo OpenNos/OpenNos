@@ -955,4 +955,13 @@ Veux-tu le porter ?</value>
   <data name="SAVING_ALL" xml:space="preserve">
     <value>Le serveur vient d'effectuer une sauvegarde des données.</value>
   </data>
+  <data name="MAILED" xml:space="preserve">
+    <value>La note a été envoyée.</value>
+  </data>
+  <data name="MAIL_DELETED" xml:space="preserve">
+    <value>La note a été supprimée.</value>
+  </data>
+  <data name="NEW_MAIL" xml:space="preserve">
+    <value>Une nouvelle note est arrivée.</value>
+  </data>
 </root>

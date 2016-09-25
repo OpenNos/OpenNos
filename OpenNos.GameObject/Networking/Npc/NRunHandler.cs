@@ -215,6 +215,7 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
+                            Session.SendPacket("it 3");
                             ServerManager.Instance.MapOut(Session.Character.CharacterId);
                             Session.Character.MapY = tp.MapY;
                             Session.Character.MapX = tp.MapX;

@@ -949,4 +949,13 @@
   <data name="ADVENTURERS_CANT_USE" xml:space="preserve">
     <value />
   </data>
+  <data name="MAILED" xml:space="preserve">
+    <value>You sent a mail!</value>
+  </data>
+  <data name="MAIL_DELETED" xml:space="preserve">
+    <value>The mail has been removed!</value>
+  </data>
+  <data name="NEW_MAIL" xml:space="preserve">
+    <value>An new mail arrived!</value>
+  </data>
 </root>

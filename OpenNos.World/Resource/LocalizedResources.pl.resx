@@ -925,4 +925,13 @@
   <data name="ADVENTURERS_CANT_USE" xml:space="preserve">
     <value />
   </data>
+  <data name="MAILED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MAIL_DELETED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NEW_MAIL" xml:space="preserve">
+    <value />
+  </data>
 </root>
