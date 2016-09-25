@@ -20,6 +20,11 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
+        public DeleteResult DeleteById(long mailId)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<MailDTO> LoadByReceiverId(long receiverId)
         {
             throw new NotImplementedException();

@@ -95,6 +95,7 @@
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\ItemInstance.cs" />
     <Compile Include="Entities\Mail.cs" />
+    <Compile Include="Entities\MailEquipment.cs" />
     <Compile Include="Entities\Map.cs" />
     <Compile Include="Entities\MapMonster.cs" />
     <Compile Include="Entities\MapType.cs" />
@@ -113,9 +114,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201609251449355_samson.cs" />
-    <Compile Include="Migrations\201609251449355_samson.Designer.cs">
-      <DependentUpon>201609251449355_samson.cs</DependentUpon>
+    <Compile Include="Migrations\201609251613411_Eris.cs" />
+    <Compile Include="Migrations\201609251613411_Eris.Designer.cs">
+      <DependentUpon>201609251613411_Eris.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -195,8 +196,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609251449355_samson.resx">
-      <DependentUpon>201609251449355_samson.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609251613411_Eris.resx">
+      <DependentUpon>201609251613411_Eris.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

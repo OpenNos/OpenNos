@@ -14,7 +14,6 @@
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    using Data;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
@@ -56,9 +55,6 @@ namespace OpenNos.DAL.EF.MySQL
         public bool FamilyRequestBlocked { get; set; }
         public bool FriendRequestBlocked { get; set; }
         public byte Gender { get; set; }
-        public virtual ICollection<Mail> Mail { get; set; }
-        public virtual ICollection<Mail> Mail1 { get; set; }
-        public virtual ICollection<Mail> Mail2 { get; set; }
         public virtual ICollection<GeneralLog> GeneralLog { get; set; }
         public long Gold { get; set; }
         public bool GroupRequestBlocked { get; set; }
@@ -74,6 +70,9 @@ namespace OpenNos.DAL.EF.MySQL
         public long JobLevelXp { get; set; }
         public byte Level { get; set; }
         public long LevelXp { get; set; }
+        public virtual ICollection<Mail> Mail { get; set; }
+        public virtual ICollection<Mail> Mail1 { get; set; }
+        public virtual ICollection<Mail> Mail2 { get; set; }
         public virtual Map Map { get; set; }
         public short MapId { get; set; }
         public short MapX { get; set; }

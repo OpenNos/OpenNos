@@ -13,8 +13,8 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenNos.DAL.EF.MySQL
 {
@@ -24,12 +24,10 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte Amount { get; set; }
         public DateTime Date { get; set; }
+        public bool IsOpened { get; set; }
         public virtual Item Item { get; set; }
         public short? ItemVNum { get; set; }
-        public bool IsOpened { get; set; }
-
-        [MaxLength(255)]
-        public string Title { get; set; }
+        public virtual ICollection<MailEquipment> MailEquipment { get; set; }
 
         [Key]
         public long MailId { get; set; }
@@ -37,12 +35,30 @@ namespace OpenNos.DAL.EF.MySQL
         [MaxLength(255)]
         public string Message { get; set; }
 
-        public virtual Character Receiver { get; set; }
-        public long ReceiverId { get; set; }
         public virtual Character Owner { get; set; }
+
         public long OwnerId { get; set; }
+
+        public virtual Character Receiver { get; set; }
+
+        public long ReceiverId { get; set; }
+
         public virtual Character Sender { get; set; }
+
+        public byte SenderClass { get; set; }
+
+        public bool SenderGender { get; set; }
+
+        public byte SenderHairColor { get; set; }
+
+        public byte SenderHairStyle { get; set; }
+
         public long SenderId { get; set; }
+
+        public short SenderMorphId { get; set; }
+
+        [MaxLength(255)]
+        public string Title { get; set; }
 
         #endregion
     }
