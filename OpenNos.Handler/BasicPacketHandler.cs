@@ -615,7 +615,7 @@ namespace OpenNos.Handler
                     CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(packetsplit[7]);
                     if (Receiver != null)
                     {
-                        MailDTO mail = new MailDTO() { Amount = 0, Date = DateTime.Now,Title = packetsplit[9], Message = packetsplit[9], ReceiverId = Receiver.CharacterId, SenderId = Session.Character.CharacterId };
+                        MailDTO mail = new MailDTO() { Amount = 0, Date = DateTime.Now, Title = packetsplit[9], Message = packetsplit[9], ReceiverId = Receiver.CharacterId, SenderId = Session.Character.CharacterId };
                         DAOFactory.MailDAO.InsertOrUpdate(ref mail);
                         Session.Character.MailList.Add(mail);
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
@@ -628,11 +628,15 @@ namespace OpenNos.Handler
                     byte type;
                     if (int.TryParse(packetsplit[4], out id) && byte.TryParse(packetsplit[3], out type))
                     {
-                        if (Session.Character.MailList.Count > id)
+                        if (packetsplit[2] == "3")
                         {
-                            
-                            Session.SendPacket("post 3 1 0 1");
-                            Session.SendPacket(Session.Character.GeneratePostMessage(Session.Character.MailList.ElementAt(id),type));
+                            if (Session.Character.MailList.Count > id)
+                            {
+                                Session.SendPacket(Session.Character.GeneratePostMessage(Session.Character.MailList.ElementAt(id), type));
+                            }
+                        }
+                        else if (packetsplit[2] == "2")
+                        {
 
                         }
                     }

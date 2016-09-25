@@ -29,6 +29,8 @@ namespace OpenNos.DAL.Interface
         IEnumerable<MailDTO> LoadBySenderId(long senderId);
 
         SaveResult InsertOrUpdate(ref MailDTO mail);
+
+        DeleteResult DeleteById(long mailId);
         #endregion
     }
 }

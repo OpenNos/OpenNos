@@ -120,7 +120,29 @@ namespace OpenNos.DAL.EF.MySQL
                 return null;
             }
         }
+        public DeleteResult DeleteById(long mailId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Mail mail = context.Mail.First(i => i.MailId.Equals(mailId));
 
+                    if (mail != null)
+                    {
+                        context.Mail.Remove(mail);
+                        context.SaveChanges();
+                    }
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return DeleteResult.Error;
+            }
+        }
         public IEnumerable<MailDTO> LoadByReceiverId(long receiverId)
         {
 
