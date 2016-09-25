@@ -698,7 +698,11 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAIL_DELETED"), 11));
                                 Session.SendPacket($"post 2 {type} {id}");
                                 if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
+                                {
+                                    DAOFactory.MailEquipmentDAO.DeleteByMailId(mail.MailId);
                                     DAOFactory.MailDAO.DeleteById(mail.MailId);
+                                }
+                                    
                                 Session.Character.MailList.RemoveAt(id);
 
                             }
