@@ -2,6 +2,7 @@
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL.Mock
 {
@@ -9,7 +10,7 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
-        public MailDTO Insert(MailDTO mail)
+        public SaveResult InsertOrUpdate(ref MailDTO mail)
         {
             throw new NotImplementedException();
         }

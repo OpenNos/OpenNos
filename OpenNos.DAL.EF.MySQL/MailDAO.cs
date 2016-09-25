@@ -14,9 +14,11 @@
 
 using AutoMapper;
 using OpenNos.Core;
+using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,23 +50,59 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Methods
 
-        public MailDTO Insert(MailDTO mail)
+        public SaveResult InsertOrUpdate(ref MailDTO mail)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Mail entity = _mapper.Map<Mail>(mail);
-                    context.Mail.Add(entity);
-                    context.SaveChanges();
-                    return _mapper.Map<MailDTO>(mail);
+                    long mailId = mail.MailId;
+                    Mail entity = context.Mail.FirstOrDefault(c => c.MailId.Equals(mailId));
+
+                    if (entity == null) //new entity
+                    {
+                        mail = Insert(mail, context);
+                        return SaveResult.Inserted;
+                    }
+                    else //existing entity
+                    {
+                        mail.MailId = entity.MailId;
+                        mail = Update(entity, mail, context);
+                        return SaveResult.Updated;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return SaveResult.Error;
+            }
+        }
+
+        private MailDTO Insert(MailDTO mail, OpenNosContext context)
+        {
+            try
+            {
+                Mail entity = _mapper.Map<Mail>(mail);
+                context.Mail.Add(entity);
+                context.SaveChanges();
+                return _mapper.Map<MailDTO>(mail);
             }
             catch (Exception e)
             {
                 Logger.Error(e);
                 return null;
             }
+        }
+
+        private MailDTO Update(Mail entity, MailDTO respawn, OpenNosContext context)
+        {
+            if (entity != null)
+            {
+                _mapper.Map(respawn, entity);
+                context.SaveChanges();
+            }
+            return _mapper.Map<MailDTO>(entity);
         }
 
         public MailDTO LoadById(long mailId)

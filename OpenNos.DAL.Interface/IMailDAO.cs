@@ -13,15 +13,14 @@
  */
 
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
     public interface IMailDAO
     {
-        #region Methods
-
-        MailDTO Insert(MailDTO mail);
+        #region Methods      
 
         MailDTO LoadById(long mailId);
 
@@ -29,6 +28,7 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<MailDTO> LoadBySenderId(long senderId);
 
+        SaveResult InsertOrUpdate(ref MailDTO mail);
         #endregion
     }
 }
