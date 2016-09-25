@@ -438,6 +438,39 @@ namespace OpenNos.GameObject
             return -1;
         }
 
+        public void Reorder(ClientSession Session, InventoryType inventoryType)
+        {
+            List<Inventory> templist = new List<Inventory>();
+            switch (inventoryType)
+            {
+                case InventoryType.Costume:
+                    templist = Inventory.Where(s => s.Type == InventoryType.Costume).OrderBy(s => s.ItemInstance.ItemVNum).ToList();
+                    break;
+                case InventoryType.Sp:
+                    templist = Inventory.Where(s => s.Type == InventoryType.Sp).OrderBy(s => ServerManager.GetItem(s.ItemInstance.ItemVNum).LevelJobMinimum).ToList();
+                    break;
+            }
+            short i = 0;
+            foreach (Inventory invtemp in templist)
+            {
+
+                Inventory temp = new GameObject.Inventory();
+                Inventory temp2 = new GameObject.Inventory();
+                if (invtemp.Slot != i)
+                {
+                    MoveItem(inventoryType, invtemp.Slot, 1, i, out temp, out temp2);
+
+                    if (temp2 == null || temp == null) return;
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(temp2.ItemInstance.ItemVNum, temp2.ItemInstance.Amount, inventoryType, temp2.Slot, temp2.ItemInstance.Rare, temp2.ItemInstance.Design, temp2.ItemInstance.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(temp.ItemInstance.ItemVNum, temp.ItemInstance.Amount, inventoryType, temp.Slot, temp.ItemInstance.Rare, temp.ItemInstance.Design, temp.ItemInstance.Upgrade, 0));
+
+                }
+                i++;
+
+            }
+
+        }
+
         #endregion
     }
 }

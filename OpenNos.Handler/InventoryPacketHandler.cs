@@ -688,10 +688,11 @@ namespace OpenNos.Handler
             while (gravity)
             {
                 gravity = false;
-                for (short x = 0; x < 44; x++)
+                for (short i = 0; i < 2; i++)
                 {
-                    for (short i = 0; i < 2; i++)
+                    for (short x = 0; x < 44; x++)
                     {
+
                         type = (i == 0) ? InventoryType.Sp : InventoryType.Costume;
                         if (Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(x, type) == null)
                         {
@@ -707,7 +708,9 @@ namespace OpenNos.Handler
                             }
                         }
                     }
+                    Session.Character.InventoryList.Reorder(Session,type = (i == 0) ? InventoryType.Sp : InventoryType.Costume);
                 }
+
             }
         }
 
@@ -1250,7 +1253,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
                     return;
                 }
-                if (fairy != null && sp.Item.Element !=0 && fairy.Item.Element != sp.Item.Element && fairy.Item.Element != sp.Item.SecondaryElement)
+                if (fairy != null && sp.Item.Element != 0 && fairy.Item.Element != sp.Item.Element && fairy.Item.Element != sp.Item.SecondaryElement)
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                     return;
