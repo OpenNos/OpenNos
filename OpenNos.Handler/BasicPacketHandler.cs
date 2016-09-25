@@ -694,7 +694,6 @@ namespace OpenNos.Handler
                             {
                                 
                                 MailDTO mail = Session.Character.MailList.ElementAt(id);
-                                DAOFactory.MailEquipmentDAO.DeleteByMailId(mail.MailId);
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAIL_DELETED"), 11));
                                 Session.SendPacket($"post 2 {type} {id}");
                                 if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)

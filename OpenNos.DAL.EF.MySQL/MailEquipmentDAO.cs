@@ -56,9 +56,9 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    foreach (Mail mail in context.Mail.Where(s => s.MailId.Equals(mailId)))
+                    foreach (MailEquipment mail in context.MailEquipment.Where(s => s.MailId.Equals(mailId)))
                     {
-                        context.Mail.Remove(mail);
+                        context.MailEquipment.Remove(mail);
                     }
                     context.SaveChanges();
 
