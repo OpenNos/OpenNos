@@ -113,9 +113,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201609171729177_Samson.cs" />
-    <Compile Include="Migrations\201609171729177_Samson.Designer.cs">
-      <DependentUpon>201609171729177_Samson.cs</DependentUpon>
+    <Compile Include="Migrations\201609251257439_Samson.cs" />
+    <Compile Include="Migrations\201609251257439_Samson.Designer.cs">
+      <DependentUpon>201609251257439_Samson.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -195,8 +195,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609171729177_Samson.resx">
-      <DependentUpon>201609171729177_Samson.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609251257439_Samson.resx">
+      <DependentUpon>201609251257439_Samson.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
