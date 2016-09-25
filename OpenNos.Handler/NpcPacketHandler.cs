@@ -432,7 +432,7 @@ namespace OpenNos.Handler
 
             byte type = 0;
             short VNum = 0;
-            if (!byte.TryParse(packetsplit[2], out type) && !short.TryParse(packetsplit[3], out VNum)) return;
+            if (!byte.TryParse(packetsplit[2], out type) || !short.TryParse(packetsplit[3], out VNum)) return;
             if (type == 1)
             {
                 MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
