@@ -39,9 +39,10 @@ namespace OpenNos.GameObject
                         {
                             specialistInstance.Design = (byte)EffectValue;
                             Session.Character.MorphUpgrade2 = EffectValue;
-                            Session.SendPacket(Session.Character.GenerateCMode());
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                             Session.SendPacket(Session.Character.GenerateStat());
                             Session.SendPacket(Session.Character.GenerateStatChar());
+
                             inventory.ItemInstance.Amount--;
                             if (inventory.ItemInstance.Amount > 0)
                                 Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
