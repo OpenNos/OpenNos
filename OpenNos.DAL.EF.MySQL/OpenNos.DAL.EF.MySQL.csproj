@@ -115,9 +115,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201609251919332_Xena.cs" />
-    <Compile Include="Migrations\201609251919332_Xena.Designer.cs">
-      <DependentUpon>201609251919332_Xena.cs</DependentUpon>
+    <Compile Include="Migrations\201609252019329_Xena.cs" />
+    <Compile Include="Migrations\201609252019329_Xena.Designer.cs">
+      <DependentUpon>201609252019329_Xena.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -197,8 +197,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609251919332_Xena.resx">
-      <DependentUpon>201609251919332_Xena.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609252019329_Xena.resx">
+      <DependentUpon>201609252019329_Xena.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

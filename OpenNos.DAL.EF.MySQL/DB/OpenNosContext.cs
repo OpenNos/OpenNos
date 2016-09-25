@@ -176,13 +176,13 @@ namespace OpenNos.DAL.EF.MySQL.DB
             modelBuilder.Entity<MailEquipment>()
                  .HasRequired(e => e.Mail)
                  .WithMany(e => e.MailEquipment)
-                 .HasForeignKey(e => e.MailId) 
+                 .HasForeignKey(e => e.MailId)
                  .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Mail>()
                  .HasOptional(e => e.Item)
                  .WithMany(e => e.Mail)
-                 .HasForeignKey(e=>e.ItemVnum)
+                 .HasForeignKey(e => e.ItemVNum)
                  .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<MailEquipment>()
