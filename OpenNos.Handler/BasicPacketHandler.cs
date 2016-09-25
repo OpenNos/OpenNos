@@ -630,7 +630,7 @@ namespace OpenNos.Handler
                             SenderGender = Session.Character.Gender,
                             SenderHairColor = Session.Character.HairColor,
                             SenderHairStyle = Session.Character.HairStyle,
-                            SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)Session.Character.Morph
+                            SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue)?0: Session.Character.Morph)
 
                         };
                         MailDTO mail = new MailDTO()
@@ -647,7 +647,7 @@ namespace OpenNos.Handler
                             SenderGender = Session.Character.Gender,
                             SenderHairColor = Session.Character.HairColor,
                             SenderHairStyle = Session.Character.HairStyle,
-                            SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)Session.Character.Morph
+                            SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
                         };
                         if (mailcopy.SenderId != mail.SenderId)
                             DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
@@ -664,9 +664,9 @@ namespace OpenNos.Handler
                             }
                         }
 
-                        Session.Character.MailList.Add(mail);
+                        Session.Character.MailList.Add(mailcopy);
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
-                        Session.SendPacket(Session.Character.GeneratePost(mail, 2));
+                        Session.SendPacket(Session.Character.GeneratePost(mailcopy, 2));
                     }
                     else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                     break;
