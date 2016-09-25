@@ -810,7 +810,7 @@ namespace OpenNos.GameObject
             }
             else
             {
-                return $"post 1 {type} {MailList.IndexOf(mail)} 0 1 {mail.Date.ToString("yyMMddhhmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
+                return $"post 1 {type} {MailList.IndexOf(mail)} 0 {mail.IsOpened} {mail.Date.ToString("yyMMddhhmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
             }
         }
         
