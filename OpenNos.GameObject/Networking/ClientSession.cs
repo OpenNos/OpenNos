@@ -13,7 +13,6 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Threading;
 using OpenNos.Domain;
@@ -102,14 +101,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool IsConnected
-        {
-            get
-            {
-                return _client.IsConnected;
-            }
-        }
-
         public Map CurrentMap { get; set; }
 
         public IDictionary<PacketAttribute, Tuple<Action<object, string>, object>> HandlerMethods
@@ -156,6 +147,14 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool IsConnected
+        {
+            get
+            {
+                return _client.IsConnected;
+            }
+        }
+
         public bool IsDisposing
         {
             get
@@ -189,8 +188,13 @@ namespace OpenNos.GameObject
 
                 //disconnect client
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
-                CurrentMap.UnregisterSession(this);
-                CurrentMap = null;
+
+                //unregister from map if registered
+                if (CurrentMap != null)
+                {
+                    CurrentMap.UnregisterSession(this);
+                    CurrentMap = null;
+                }
             }
 
             if (Account != null)
