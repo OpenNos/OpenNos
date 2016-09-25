@@ -26,6 +26,10 @@ namespace OpenNos.DAL.EF.MySQL
         public DateTime Date { get; set; }
         public virtual Item Item { get; set; }
         public short? ItemVNum { get; set; }
+        public bool IsOpened { get; set; }
+
+        [MaxLength(255)]
+        public string Title { get; set; }
 
         [Key]
         public long MailId { get; set; }

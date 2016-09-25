@@ -315,6 +315,8 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Amount = c.Byte(nullable: false),
                         Date = c.DateTime(nullable: false, precision: 0),
                         ItemVNum = c.Short(),
+                        IsOpened = c.Boolean(nullable: false),
+                        Title = c.String(maxLength: 255, storeType: "nvarchar"),
                         Message = c.String(maxLength: 255, storeType: "nvarchar"),
                         ReceiverId = c.Long(nullable: false),
                         SenderId = c.Long(nullable: false),
