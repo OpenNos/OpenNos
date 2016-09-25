@@ -12,26 +12,21 @@
  * GNU General Public License for more details.
  */
 
-using System.ComponentModel.DataAnnotations;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using System.Collections.Generic;
 
-namespace OpenNos.DAL.EF.MySQL
+namespace OpenNos.DAL.Interface
 {
-    public class MailEquipment
+    public interface IMailEquipmentDAO
     {
-        #region Properties
+        #region Methods      
 
-        public virtual Item Item { get; set; }
+        IEnumerable<MailEquipmentDTO> LoadByMailId(long mailId);
 
-        public short ItemVNum { get; set; }
+        DeleteResult DeleteByMailId(long mailId);
 
-        public long MailId { get; set; }
-
-        public virtual Mail Mail { get; set; }
-
-        [Key]
-        public long MailEquipmentId { get; set; }
-
-        public byte Slot { get; set; }
+        MailEquipmentDTO Insert(MailEquipmentDTO mail);
 
         #endregion
     }

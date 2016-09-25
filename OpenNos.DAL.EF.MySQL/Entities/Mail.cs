@@ -22,12 +22,15 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Properties
 
+        public Mail ()
+        {
+            MailEquipment = new HashSet<MailEquipment>();
+        }
+
         public byte Amount { get; set; }
         public DateTime Date { get; set; }
         public bool IsOpened { get; set; }
-        public virtual Item Item { get; set; }
-        public short? ItemVNum { get; set; }
-        public virtual ICollection<MailEquipment> MailEquipment { get; set; }
+        public virtual ICollection<MailEquipment> MailEquipment { get; set; } 
 
         [Key]
         public long MailId { get; set; }
@@ -47,7 +50,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte SenderClass { get; set; }
 
-        public bool SenderGender { get; set; }
+        public byte SenderGender { get; set; }
 
         public byte SenderHairColor { get; set; }
 

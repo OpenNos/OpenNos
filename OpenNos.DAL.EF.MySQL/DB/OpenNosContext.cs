@@ -159,6 +159,11 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Item>()
+             .HasMany(e => e.MailEquipment)
+             .WithRequired(e => e.Item)
+             .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Item>()
                 .HasMany(e => e.RecipeItem)
                 .WithRequired(e => e.Item)
                 .WillCascadeOnDelete(false);
@@ -168,20 +173,14 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WithRequired(e => e.Item)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Item>()
-                .HasMany(e => e.Mail)
-                .WithOptional(e => e.Item)
-                .HasForeignKey(e => e.ItemVNum)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Item>()
-                .HasMany(e => e.MailEquipment)
-                .WithOptional(e => e.Item)
-                .HasForeignKey(e => e.ItemVNum)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<MailEquipment>()
+                  .HasRequired(e => e.Mail)
+                  .WithMany(e => e.MailEquipment)
+                  .HasForeignKey(e => e.MailId) // nice ;) yep try now
+                  .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<MailEquipment>()
-                .HasOptional(e => e.Mail)
+                .HasRequired(e => e.Item)
                 .WithMany(e => e.MailEquipment)
                 .WillCascadeOnDelete(false);
 

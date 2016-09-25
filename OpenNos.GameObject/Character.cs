@@ -666,7 +666,22 @@ namespace OpenNos.GameObject
         public string GeneratePostMessage(MailDTO mailDTO,byte type)
         {
             CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDTO.SenderId);
-            return $"post 5 {type} {MailList.IndexOf(mailDTO)} 0 0 0 0 -1 0 0 -1.-1.-1.-1.-1.-1.-1.-1.-1 {sender.Name} {mailDTO.Title} {mailDTO.Message}";
+            string temp = string.Empty;
+
+            IEnumerable<MailEquipmentDTO> mailequipments = DAOFactory.MailEquipmentDAO.LoadByMailId(mailDTO.MailId);
+            string[] invarray = new string[16];
+            for (short i = 0; i < 16; i++)
+            {
+                
+                MailEquipmentDTO inv = mailequipments.FirstOrDefault(s=>s.Slot==i);
+                if (inv != null)
+                {
+                    invarray[i] = inv.ItemVNum.ToString();
+                }
+                else invarray[i] = "-1";
+            }
+
+            return $"post 5 {type} {MailList.IndexOf(mailDTO)} 0 0 {mailDTO.SenderClass} {mailDTO.SenderGender} {mailDTO.SenderMorphId} {mailDTO.SenderHairStyle} {mailDTO.SenderHairColor} {invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuit]}.{invarray[(byte)EquipmentType.CostumeHat]}.{invarray[(byte)EquipmentType.WeaponSkin]} {sender.Name} {mailDTO.Title} {mailDTO.Message}";
         }
 
         public List<string> GenerateIn2()

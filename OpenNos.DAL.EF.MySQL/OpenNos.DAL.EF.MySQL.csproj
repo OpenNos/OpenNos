@@ -106,6 +106,7 @@
     <Compile Include="Entities\WearableInstance.cs" />
     <Compile Include="Helpers\ColumnBuilderExtension.cs" />
     <Compile Include="Helpers\MigrationHelper.cs" />
+    <Compile Include="MailEquipmentDAO.cs" />
     <Compile Include="MailDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="Entities\MapNpc.cs" />
@@ -114,9 +115,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201609251613411_Eris.cs" />
-    <Compile Include="Migrations\201609251613411_Eris.Designer.cs">
-      <DependentUpon>201609251613411_Eris.cs</DependentUpon>
+    <Compile Include="Migrations\201609251919332_Xena.cs" />
+    <Compile Include="Migrations\201609251919332_Xena.Designer.cs">
+      <DependentUpon>201609251919332_Xena.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -196,8 +197,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609251613411_Eris.resx">
-      <DependentUpon>201609251613411_Eris.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609251919332_Xena.resx">
+      <DependentUpon>201609251919332_Xena.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

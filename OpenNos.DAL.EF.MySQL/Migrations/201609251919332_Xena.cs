@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Eris : DbMigration
+    public partial class Xena : DbMigration
     {
         public override void Up()
         {
@@ -308,6 +308,21 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 .PrimaryKey(t => t.VNum);
             
             CreateTable(
+                "dbo.MailEquipment",
+                c => new
+                    {
+                        MailEquipmentId = c.Long(nullable: false, identity: true),
+                        ItemVNum = c.Short(nullable: false),
+                        MailId = c.Long(nullable: false),
+                        Slot = c.Byte(nullable: false),
+                    })
+                .PrimaryKey(t => t.MailEquipmentId)
+                .ForeignKey("dbo.Mail", t => t.MailId)
+                .ForeignKey("dbo.Item", t => t.ItemVNum)
+                .Index(t => t.ItemVNum)
+                .Index(t => t.MailId);
+            
+            CreateTable(
                 "dbo.Mail",
                 c => new
                     {
@@ -315,12 +330,11 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Amount = c.Byte(nullable: false),
                         Date = c.DateTime(nullable: false, precision: 0),
                         IsOpened = c.Boolean(nullable: false),
-                        ItemVNum = c.Short(),
                         Message = c.String(maxLength: 255, storeType: "nvarchar"),
                         OwnerId = c.Long(nullable: false),
                         ReceiverId = c.Long(nullable: false),
                         SenderClass = c.Byte(nullable: false),
-                        SenderGender = c.Boolean(nullable: false),
+                        SenderGender = c.Byte(nullable: false),
                         SenderHairColor = c.Byte(nullable: false),
                         SenderHairStyle = c.Byte(nullable: false),
                         SenderId = c.Long(nullable: false),
@@ -328,29 +342,12 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Title = c.String(maxLength: 255, storeType: "nvarchar"),
                     })
                 .PrimaryKey(t => t.MailId)
-                .ForeignKey("dbo.Item", t => t.ItemVNum)
                 .ForeignKey("dbo.Character", t => t.SenderId)
                 .ForeignKey("dbo.Character", t => t.ReceiverId)
                 .ForeignKey("dbo.Character", t => t.OwnerId)
-                .Index(t => t.ItemVNum)
                 .Index(t => t.OwnerId)
                 .Index(t => t.ReceiverId)
                 .Index(t => t.SenderId);
-            
-            CreateTable(
-                "dbo.MailEquipment",
-                c => new
-                    {
-                        MailEquipmentId = c.Long(nullable: false, identity: true),
-                        ItemVNum = c.Short(),
-                        Slot = c.Byte(nullable: false),
-                        Mail_MailId = c.Long(),
-                    })
-                .PrimaryKey(t => t.MailEquipmentId)
-                .ForeignKey("dbo.Mail", t => t.Mail_MailId)
-                .ForeignKey("dbo.Item", t => t.ItemVNum)
-                .Index(t => t.ItemVNum)
-                .Index(t => t.Mail_MailId);
             
             CreateTable(
                 "dbo.Recipe",
@@ -749,8 +746,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.MapMonster", "MapId", "dbo.Map");
             DropForeignKey("dbo.Character", "MapId", "dbo.Map");
             DropForeignKey("dbo.MailEquipment", "ItemVNum", "dbo.Item");
-            DropForeignKey("dbo.Mail", "ItemVNum", "dbo.Item");
-            DropForeignKey("dbo.MailEquipment", "Mail_MailId", "dbo.Mail");
+            DropForeignKey("dbo.MailEquipment", "MailId", "dbo.Mail");
             DropForeignKey("dbo.Drop", "ItemVNum", "dbo.Item");
             DropForeignKey("dbo.Combo", "SkillVNum", "dbo.Skill");
             DropForeignKey("dbo.CharacterSkill", "SkillVNum", "dbo.Skill");
@@ -783,12 +779,11 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.MapNpc", new[] { "MapId" });
             DropIndex("dbo.Recipe", new[] { "MapNpcId" });
             DropIndex("dbo.Recipe", new[] { "ItemVNum" });
-            DropIndex("dbo.MailEquipment", new[] { "Mail_MailId" });
-            DropIndex("dbo.MailEquipment", new[] { "ItemVNum" });
             DropIndex("dbo.Mail", new[] { "SenderId" });
             DropIndex("dbo.Mail", new[] { "ReceiverId" });
             DropIndex("dbo.Mail", new[] { "OwnerId" });
-            DropIndex("dbo.Mail", new[] { "ItemVNum" });
+            DropIndex("dbo.MailEquipment", new[] { "MailId" });
+            DropIndex("dbo.MailEquipment", new[] { "ItemVNum" });
             DropIndex("dbo.Drop", new[] { "MonsterVNum" });
             DropIndex("dbo.Drop", new[] { "MapTypeId" });
             DropIndex("dbo.Drop", new[] { "ItemVNum" });
@@ -818,8 +813,8 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropTable("dbo.Map");
             DropTable("dbo.MapNpc");
             DropTable("dbo.Recipe");
-            DropTable("dbo.MailEquipment");
             DropTable("dbo.Mail");
+            DropTable("dbo.MailEquipment");
             DropTable("dbo.Item");
             DropTable("dbo.Drop");
             DropTable("dbo.NpcMonster");

@@ -54,6 +54,7 @@
     <Compile Include="GeneralLogDAO.cs" />
     <Compile Include="InventoryDAO.cs" />
     <Compile Include="ItemDAO.cs" />
+    <Compile Include="MailEquipmentDAO.cs" />
     <Compile Include="MailDAO.cs" />
     <Compile Include="MapDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />

@@ -16,25 +16,17 @@ using System;
 
 namespace OpenNos.Data
 {
-    public class MailDTO
+    public class MailEquipmentDTO
     {
         #region Properties
 
-        public byte Amount { get; set; }
-        public DateTime Date { get; set; }
+        public long MailEquipmentId { get; set; }
+
         public short ItemVNum { get; set; }
-        public bool IsOpened { get; set; }
-        public string Title { get; set; }
-        public long MailId { get; set; }
-        public string Message { get; set; }
-        public long ReceiverId { get; set; }
-        public long OwnerId { get; set; }
-        public long SenderId { get; set; }
-        public byte SenderClass { get; set; }
-        public byte SenderGender { get; set; }
-        public byte SenderHairColor { get; set; }
-        public byte SenderHairStyle { get; set; }
-        public short SenderMorphId { get; set; }
+
+        public byte Slot { get; set; }
+
+
         #endregion
     }
 }

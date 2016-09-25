@@ -148,7 +148,7 @@ namespace OpenNos.DAL.EF.MySQL
 
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Mail mail in context.Mail.Where(i => i.ReceiverId.Equals(receiverId)))
+                foreach (Mail mail in context.Mail.Where(i => i.ReceiverId.Equals(receiverId) && i.OwnerId.Equals(receiverId)))
                 {
                     yield return _mapper.Map<MailDTO>(mail);
                 }
@@ -160,7 +160,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Mail mail in context.Mail.Where(i => i.SenderId.Equals(senderId)))
+                foreach (Mail mail in context.Mail.Where(i => i.SenderId.Equals(senderId) && i.OwnerId.Equals(senderId)))
                 {
                     yield return _mapper.Map<MailDTO>(mail);
                 }

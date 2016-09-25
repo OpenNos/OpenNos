@@ -7,13 +7,13 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Eris : IMigrationMetadata
+    public sealed partial class Xena : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Eris));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Xena));
         
         string IMigrationMetadata.Id
         {
-            get { return "201609251613411_Eris"; }
+            get { return "201609251919332_Xena"; }
         }
         
         string IMigrationMetadata.Source

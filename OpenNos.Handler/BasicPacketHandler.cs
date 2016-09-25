@@ -605,7 +605,7 @@ namespace OpenNos.Handler
                 ServerManager.Instance.RequireBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
         }
         [Packet("pst")]
-        public void Sendmail(string packet)
+        public void SendMail(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
@@ -615,11 +615,50 @@ namespace OpenNos.Handler
                     CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(packetsplit[7]);
                     if (Receiver != null)
                     {
-                        MailDTO mailcopy = new MailDTO() { Amount = 0, Date = DateTime.Now, Title = packetsplit[9], Message = packetsplit[9], ReceiverId = Receiver.CharacterId, SenderId = Session.Character.CharacterId,OwnerId= Session.Character.CharacterId };
-                        MailDTO mail = new MailDTO() { Amount = 0, Date = DateTime.Now, Title = packetsplit[9], Message = packetsplit[9], ReceiverId = Receiver.CharacterId, SenderId = Session.Character.CharacterId, OwnerId = Receiver.CharacterId };
 
+                        MailDTO mailcopy = new MailDTO()
+                        {
+                            Amount = 0,
+                            Date = DateTime.Now,
+                            Title = packetsplit[9],
+                            Message = packetsplit[9],
+                            ReceiverId = Receiver.CharacterId,
+                            SenderId = Session.Character.CharacterId,
+                            OwnerId = Session.Character.CharacterId,
+                            SenderClass = Session.Character.Class,
+                            SenderGender = Session.Character.Gender,
+                            SenderHairColor = Session.Character.HairColor,
+                            SenderHairStyle = Session.Character.HairStyle,
+                            SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)Session.Character.Morph
+
+                        };
+                        MailDTO mail = new MailDTO()
+                        {
+                            Amount = 0,
+                            Date = DateTime.Now,
+                            Title = packetsplit[9],
+                            Message = packetsplit[9],
+                            ReceiverId = Receiver.CharacterId,
+                            SenderId = Session.Character.CharacterId,
+                            OwnerId = Receiver.CharacterId,
+                            SenderClass = Session.Character.Class,
+                            SenderGender = Session.Character.Gender,
+                            SenderHairColor = Session.Character.HairColor,
+                            SenderHairStyle = Session.Character.HairStyle,
+                            SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)Session.Character.Morph
+                        };
                         DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
                         DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+
+                        for (byte i = 0; i < 16; i++)
+                        {
+                            Inventory inv = Session.Character.EquipmentList.LoadInventoryBySlotAndType(i, InventoryType.Equipment);
+                            if (inv != null)
+                            {
+                                DAOFactory.MailEquipmentDAO.Insert(new MailEquipmentDTO() { ItemVNum = inv.ItemInstance.ItemVNum, Slot = i, MailEquipmentId = mail.MailId });
+                                DAOFactory.MailEquipmentDAO.Insert(new MailEquipmentDTO() { ItemVNum = inv.ItemInstance.ItemVNum, Slot = i, MailEquipmentId = mailcopy.MailId });
+                            }
+                        }
 
                         Session.Character.MailList.Add(mail);
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
@@ -641,7 +680,18 @@ namespace OpenNos.Handler
                         }
                         else if (packetsplit[2] == "2")
                         {
+                            if (Session.Character.MailList.Count > id)
+                            {
+                                
+                                MailDTO mail = Session.Character.MailList.ElementAt(id);
+                                DAOFactory.MailEquipmentDAO.DeleteByMailId(mail.MailId);
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAIL_DELETED"), 11));
+                                Session.SendPacket($"post 2 {type} {id}");
+                                if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
+                                    DAOFactory.MailDAO.DeleteById(mail.MailId);
+                                Session.Character.MailList.RemoveAt(id);
 
+                            }
                         }
                     }
                     break;

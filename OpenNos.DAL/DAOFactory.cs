@@ -33,6 +33,7 @@ namespace OpenNos.DAL
         private static IInventoryDAO _inventoryDAO;
         private static IItemDAO _itemDAO;
         private static IMailDAO _mailDAO;
+        private static IMailEquipmentDAO _mailEquipmentDAO;
         private static IMapDAO _mapDAO;
         private static IMapMonsterDAO _mapmonsterDAO;
         private static IMapNpcDAO _mapnpcDAO;
@@ -237,7 +238,21 @@ namespace OpenNos.DAL
                 return _mailDAO;
             }
         }
+        public static IMailEquipmentDAO MailEquipmentDAO
+        {
+            get
+            {
+                if (_mailEquipmentDAO == null)
+                {
+                    if (_useMock)
+                        _mailEquipmentDAO = new Mock.MailEquipmentDAO();
+                    else
+                        _mailEquipmentDAO = new MySQL.MailEquipmentDAO();
+                }
 
+                return _mailEquipmentDAO;
+            }
+        }
         public static IMapDAO MapDAO
         {
             get
