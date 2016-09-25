@@ -679,6 +679,12 @@ namespace OpenNos.Handler
                         {
                             if (Session.Character.MailList.Count > id)
                             {
+                                if (!Session.Character.MailList.ElementAt(id).IsOpened)
+                                {
+                                    Session.Character.MailList.ElementAt(id).IsOpened = true;
+                                    MailDTO mailupdate = Session.Character.MailList.ElementAt(id);
+                                    DAOFactory.MailDAO.InsertOrUpdate(ref mailupdate);
+                                }
                                 Session.SendPacket(Session.Character.GeneratePostMessage(Session.Character.MailList.ElementAt(id), type));
                             }
                         }
