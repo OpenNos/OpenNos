@@ -619,6 +619,7 @@ namespace OpenNos.Handler
                         MailDTO mailcopy = new MailDTO()
                         {
                             Amount = 0,
+                            IsOpened = false,
                             Date = DateTime.Now,
                             Title = packetsplit[9],
                             Message = packetsplit[9],
@@ -635,6 +636,7 @@ namespace OpenNos.Handler
                         MailDTO mail = new MailDTO()
                         {
                             Amount = 0,
+                            IsOpened = false,
                             Date = DateTime.Now,
                             Title = packetsplit[9],
                             Message = packetsplit[9],

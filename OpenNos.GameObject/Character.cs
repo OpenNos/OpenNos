@@ -1705,14 +1705,14 @@ namespace OpenNos.GameObject
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.MailId == s.MailId)))
             {
                 MailList.Add(mail);
+                mail.IsOpened = true;
+                MailDTO mailupdate = mail;
                 if (!mail.IsOpened)
                 {
-                    mail.IsOpened = true;
-                    MailDTO mailupdate = mail;
-                    DAOFactory.MailDAO.InsertOrUpdate(ref mailupdate);
-                    Session.SendPacket(Session.Character.GeneratePost(mail, 1));
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEW_MAIL"), 10));
                 }
+                DAOFactory.MailDAO.InsertOrUpdate(ref mailupdate);
+                Session.SendPacket(Session.Character.GeneratePost(mail, 1));
             }
             LastMailRefresh = DateTime.Now;
         }
