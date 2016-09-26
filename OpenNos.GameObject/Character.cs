@@ -788,7 +788,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePost(MailDTO mail, byte type)
         {
-            return $"post 1 {type} {MailList.First(s => s.Value == (mail)).Key} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddhhmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
+            return $"post 1 {type} {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddhhmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
         }
 
 
@@ -957,7 +957,7 @@ namespace OpenNos.GameObject
 
         public string GenerateParcel(MailDTO mail)
         {
-            return $"parcel 1 1 {MailList.First(s => s.Value == (mail)).Key} {(mail.Title == "NOSMALL" ? 1:4)} 0 {mail.Date.ToString("yyMMddhhmm")} {mail.Title} {mail.ItemVNum} {mail.Amount} {ServerManager.GetItem((short)mail.ItemVNum).Type}";
+            return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1:4)} 0 {mail.Date.ToString("yyMMddhhmm")} {mail.Title} {mail.ItemVNum} {mail.Amount} {ServerManager.GetItem((short)mail.ItemVNum).Type}";
         }
 
         public void GenerateStartupInventory()
@@ -1633,25 +1633,7 @@ namespace OpenNos.GameObject
                 QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntry>(qle));
             }
         }
-
-        public void loadBaseMail()
-        {
-            foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId))
-            {
-
-                MailList.Add((MailList.Any()? MailList.Last().Key:0) + 1,mail);
-                Session.SendPacket(Session.Character.GeneratePost(mail, 2));
-            }
-            foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId))
-            {
-                MailList.Add((MailList.Any()? MailList.Last().Key:0) + 1, mail);
-                if (!mail.IsOpened)
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEW_MAIL"), 10));
-                }
-                Session.SendPacket(Session.Character.GeneratePost(mail, 1));
-            }
-        }
+        
 
         public void LoadSkills()
         {

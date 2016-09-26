@@ -648,7 +648,7 @@ namespace OpenNos.Handler
 
 
                     }
-                    else if (packetsplit[2] == "2")
+                    else if (packetsplit[2] == "5")
                     {
                         Session.SendPacket($"parcel 2 1 {packetsplit[3]}");
         
@@ -1004,7 +1004,7 @@ namespace OpenNos.Handler
             Session.SendPacket(kdlinit);
             // finfo - friends info
             Session.SendPacket("p_clear");
-            Session.Character.loadBaseMail();
+            Session.Character.RefreshMail();
         }
 
         [Packet("#pjoin")]
