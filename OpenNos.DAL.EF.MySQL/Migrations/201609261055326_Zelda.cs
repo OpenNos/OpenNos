@@ -317,7 +317,8 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                     Date = c.DateTime(nullable: false, precision: 0),
                     IsOpened = c.Boolean(nullable: false),
                     Message = c.String(maxLength: 255, storeType: "nvarchar"),
-                    OwnerId = c.Long(nullable: false),
+                    IsSenderCopy = c.Boolean(nullable: false),
+                    EqPacket = c.String(maxLength: 255, storeType: "nvarchar"),
                     ReceiverId = c.Long(nullable: false),
                     SenderClass = c.Byte(nullable: false),
                     SenderGender = c.Byte(nullable: false),
@@ -331,9 +332,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 .ForeignKey("dbo.Item", t => t.ItemVNum)
                 .ForeignKey("dbo.Character", t => t.SenderId)
                 .ForeignKey("dbo.Character", t => t.ReceiverId)
-                .ForeignKey("dbo.Character", t => t.OwnerId)
                 .Index(t => t.ItemVNum)
-                .Index(t => t.OwnerId)
                 .Index(t => t.ReceiverId)
                 .Index(t => t.SenderId);
 
