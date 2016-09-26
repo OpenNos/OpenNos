@@ -1152,12 +1152,12 @@ namespace OpenNos.Handler
             short vnum;
             if (packetsplit.Length > 3)
             {
-               
+
                 if (packetsplit.Length == 4)
                 {
                     if (!(byte.TryParse(packetsplit[3], out amount) && short.TryParse(packetsplit[2], out vnum)))
                         return;
-                    Session.Character.SendGift(Session.Character.CharacterId,vnum,amount,false);
+                    Session.Character.SendGift(Session.Character.CharacterId, vnum, amount, false);
                 }
                 else
                 {
@@ -1168,7 +1168,7 @@ namespace OpenNos.Handler
 
                     if (chara != null)
                     {
-                        Session.Character.SendGift((chara.CharacterId),vnum, amount, false);
+                        Session.Character.SendGift((chara.CharacterId), vnum, amount, false);
                     }
                     else
                     {
@@ -1280,20 +1280,40 @@ namespace OpenNos.Handler
             {
                 string name = packetsplit[2];
 
-                long? id = ServerManager.Instance.GetProperty<long?>(name, nameof(Character.CharacterId));
-
-                if (id != null)
+                if (name == "*")
                 {
-                    ServerManager.Instance.MapOut((long)id);
-                    ServerManager.Instance.SetProperty((long)id, nameof(Character.IsSitting), false);
-                    ServerManager.Instance.SetProperty((long)id, nameof(Character.MapId), Session.Character.MapId);
-                    ServerManager.Instance.SetProperty((long)id, nameof(Character.MapX), (short)((Session.Character.MapX) + (short)1));
-                    ServerManager.Instance.SetProperty((long)id, nameof(Character.MapY), (short)((Session.Character.MapY) + (short)1));
-                    ServerManager.Instance.ChangeMap((long)id);
+                    foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null))
+                    {
+                        ServerManager.Instance.MapOut(session.Character.CharacterId);
+                        int i = 0;
+                        do
+                        {
+                            i++;
+                            session.Character.MapX += (short)new Random().Next(-5, 5);
+                            session.Character.MapY += (short)new Random().Next(-5, 5);
+                        }
+                        while (i < 1000 && Session.CurrentMap.IsBlockedZone(session.Character.MapX, session.Character.MapY));
+                        session.Character.MapId = Session.Character.MapId;
+                        ServerManager.Instance.ChangeMap(session.Character.CharacterId);
+                    }
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                    long? id = ServerManager.Instance.GetProperty<long?>(name, nameof(Character.CharacterId));
+
+                    if (id != null)
+                    {
+                        ServerManager.Instance.MapOut((long)id);
+                        ServerManager.Instance.SetProperty((long)id, nameof(Character.IsSitting), false);
+                        ServerManager.Instance.SetProperty((long)id, nameof(Character.MapId), Session.Character.MapId);
+                        ServerManager.Instance.SetProperty((long)id, nameof(Character.MapX), (short)((Session.Character.MapX) + (short)1));
+                        ServerManager.Instance.SetProperty((long)id, nameof(Character.MapY), (short)((Session.Character.MapY) + (short)1));
+                        ServerManager.Instance.ChangeMap((long)id);
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                    }
                 }
             }
             else
