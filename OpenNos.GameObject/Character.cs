@@ -944,14 +944,14 @@ namespace OpenNos.GameObject
                 SenderHairStyle = Session.Character.HairStyle,
                 EqPacket = Session.Character.GenerateEqListForPacket(),
                 SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
-            };
-            DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+            };  
             if (id == CharacterId)
             {
                 Session.Character.MailList.Add((MailList.Any()? MailList.Last().Key:0) + 1, mail);
                 Session.SendPacket(GenerateParcel(mail));
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
             }
+            DAOFactory.MailDAO.InsertOrUpdate(ref mail);
         }
 
         public string GenerateParcel(MailDTO mail)
