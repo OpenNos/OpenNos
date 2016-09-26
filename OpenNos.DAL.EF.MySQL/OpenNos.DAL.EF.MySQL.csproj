@@ -95,7 +95,6 @@
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\ItemInstance.cs" />
     <Compile Include="Entities\Mail.cs" />
-    <Compile Include="Entities\MailEquipment.cs" />
     <Compile Include="Entities\Map.cs" />
     <Compile Include="Entities\MapMonster.cs" />
     <Compile Include="Entities\MapType.cs" />
@@ -106,7 +105,6 @@
     <Compile Include="Entities\WearableInstance.cs" />
     <Compile Include="Helpers\ColumnBuilderExtension.cs" />
     <Compile Include="Helpers\MigrationHelper.cs" />
-    <Compile Include="MailEquipmentDAO.cs" />
     <Compile Include="MailDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="Entities\MapNpc.cs" />

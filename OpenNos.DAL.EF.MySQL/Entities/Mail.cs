@@ -23,17 +23,13 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Properties
 
-        public Mail ()
-        {
-            MailEquipment = new HashSet<MailEquipment>();
-        }
+       
 
         public byte Amount { get; set; }
         public virtual Item Item { get; set; }
         public short? ItemVNum { get; set; }
         public DateTime Date { get; set; }
         public bool IsOpened { get; set; }
-        public virtual ICollection<MailEquipment> MailEquipment { get; set; } 
 
         [Key]
         public long MailId { get; set; }
@@ -41,9 +37,7 @@ namespace OpenNos.DAL.EF.MySQL
         [MaxLength(255)]
         public string Message { get; set; }
 
-        public virtual Character Owner { get; set; }
-
-        public long OwnerId { get; set; }
+        public bool IsSenderCopy { get; set; }
 
         public virtual Character Receiver { get; set; }
 
@@ -52,7 +46,8 @@ namespace OpenNos.DAL.EF.MySQL
         public virtual Character Sender { get; set; }
 
         public byte SenderClass { get; set; }
-
+        
+        public string EqPacket { get; set; }
         public byte SenderGender { get; set; }
 
         public byte SenderHairColor { get; set; }

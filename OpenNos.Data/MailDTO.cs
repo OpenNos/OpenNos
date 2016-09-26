@@ -28,13 +28,14 @@ namespace OpenNos.Data
         public long MailId { get; set; }
         public string Message { get; set; }
         public long ReceiverId { get; set; }
-        public long OwnerId { get; set; }
+        public bool IsSenderCopy { get; set; }
         public long SenderId { get; set; }
         public byte SenderClass { get; set; }
         public byte SenderGender { get; set; }
         public byte SenderHairColor { get; set; }
         public byte SenderHairStyle { get; set; }
         public short SenderMorphId { get; set; }
+        public string EqPacket { get; set; }
         #endregion
     }
 }

@@ -50,9 +50,6 @@ CREATE index  `IX_ItemVNum` on `Mail` (`ItemVNum` DESC) using HASH;
 CREATE index  `IX_OwnerId` on `Mail` (`OwnerId` DESC) using HASH;
 CREATE index  `IX_ReceiverId` on `Mail` (`ReceiverId` DESC) using HASH;
 CREATE index  `IX_SenderId` on `Mail` (`SenderId` DESC) using HASH;
-create table `MailEquipment` (`MailEquipmentId` bigint not null  auto_increment ,`ItemVNum` smallint not null ,`MailId` bigint not null ,`Slot` TINYINT UNSIGNED not null ,primary key ( `MailEquipmentId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_ItemVNum` on `MailEquipment` (`ItemVNum` DESC) using HASH;
-CREATE index  `IX_MailId` on `MailEquipment` (`MailId` DESC) using HASH;
 create table `Recipe` (`RecipeId` smallint not null  auto_increment ,`Amount` TINYINT UNSIGNED not null ,`ItemVNum` smallint not null ,`MapNpcId` int not null ,primary key ( `RecipeId`) ) engine=InnoDb auto_increment=0;
 CREATE index  `IX_ItemVNum` on `Recipe` (`ItemVNum` DESC) using HASH;
 CREATE index  `IX_MapNpcId` on `Recipe` (`MapNpcId` DESC) using HASH;
@@ -115,8 +112,6 @@ alter table `Mail` add constraint `FK_Mail_Item_ItemVNum`  foreign key (`ItemVNu
 alter table `Mail` add constraint `FK_Mail_Character_SenderId`  foreign key (`SenderId`) references `Character` ( `CharacterId`) ;
 alter table `Mail` add constraint `FK_Mail_Character_ReceiverId`  foreign key (`ReceiverId`) references `Character` ( `CharacterId`) ;
 alter table `Mail` add constraint `FK_Mail_Character_OwnerId`  foreign key (`OwnerId`) references `Character` ( `CharacterId`) ;
-alter table `MailEquipment` add constraint `FK_MailEquipment_Mail_MailId`  foreign key (`MailId`) references `Mail` ( `MailId`) ;
-alter table `MailEquipment` add constraint `FK_MailEquipment_Item_ItemVNum`  foreign key (`ItemVNum`) references `Item` ( `VNum`) ;
 alter table `Recipe` add constraint `FK_Recipe_MapNpc_MapNpcId`  foreign key (`MapNpcId`) references `MapNpc` ( `MapNpcId`) ;
 alter table `Recipe` add constraint `FK_Recipe_Item_ItemVNum`  foreign key (`ItemVNum`) references `Item` ( `VNum`) ;
 alter table `MapNpc` add constraint `FK_MapNpc_Map_MapId`  foreign key (`MapId`) references `Map` ( `MapId`) ;

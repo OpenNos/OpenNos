@@ -628,11 +628,12 @@ namespace OpenNos.Handler
                             Message = packetsplit[9],
                             ReceiverId = Receiver.CharacterId,
                             SenderId = Session.Character.CharacterId,
-                            OwnerId = Session.Character.CharacterId,
+                            IsSenderCopy = true,
                             SenderClass = Session.Character.Class,
                             SenderGender = Session.Character.Gender,
                             SenderHairColor = Session.Character.HairColor,
                             SenderHairStyle = Session.Character.HairStyle,
+                            EqPacket = Session.Character.GenerateEqListForPacket(),
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue)?0: Session.Character.Morph)
 
                         };
@@ -645,27 +646,18 @@ namespace OpenNos.Handler
                             Message = packetsplit[9],
                             ReceiverId = Receiver.CharacterId,
                             SenderId = Session.Character.CharacterId,
-                            OwnerId = Receiver.CharacterId,
+                            IsSenderCopy = false,
                             SenderClass = Session.Character.Class,
                             SenderGender = Session.Character.Gender,
                             SenderHairColor = Session.Character.HairColor,
                             SenderHairStyle = Session.Character.HairStyle,
+                            EqPacket = Session.Character.GenerateEqListForPacket(),
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
                         };
                         if (mailcopy.SenderId != mail.SenderId)
                             DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
                         DAOFactory.MailDAO.InsertOrUpdate(ref mail);
 
-                        for (byte i = 0; i < 16; i++)
-                        {
-                            Inventory inv = Session.Character.EquipmentList.LoadInventoryBySlotAndType(i, InventoryType.Equipment);
-                            if (inv != null)
-                            {
-                                DAOFactory.MailEquipmentDAO.Insert(new MailEquipmentDTO() { ItemVNum = inv.ItemInstance.ItemVNum, Slot = i, MailId = mail.MailId });
-                                if (mailcopy.SenderId != mail.SenderId)
-                                    DAOFactory.MailEquipmentDAO.Insert(new MailEquipmentDTO() { ItemVNum = inv.ItemInstance.ItemVNum, Slot = i, MailId = mailcopy.MailId });
-                            }
-                        }
 
                         Session.Character.MailList.Add(mailcopy);
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
@@ -701,7 +693,6 @@ namespace OpenNos.Handler
                                 Session.SendPacket($"post 2 {type} {id}");
                                 if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                                 {
-                                    DAOFactory.MailEquipmentDAO.DeleteByMailId(mail.MailId);
                                     DAOFactory.MailDAO.DeleteById(mail.MailId);
                                 }
                                     

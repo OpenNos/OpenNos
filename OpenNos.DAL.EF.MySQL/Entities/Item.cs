@@ -26,7 +26,6 @@ namespace OpenNos.DAL.EF.MySQL
         public Item()
         {
             Drop = new HashSet<Drop>();
-            MailEquipment = new HashSet<MailEquipment>();
             Recipe = new HashSet<Recipe>();
             Mail = new HashSet<Mail>();
             RecipeItem = new HashSet<RecipeItem>();
@@ -54,7 +53,6 @@ namespace OpenNos.DAL.EF.MySQL
         public short DistanceDefenceDodge { get; set; }
         public virtual ICollection<Drop> Drop { get; set; }
         public virtual ICollection<Mail> Mail { get; set; }
-        public virtual ICollection<MailEquipment> MailEquipment { get; set; }
         public short Effect { get; set; }
         public int EffectValue { get; set; }
         public byte Element { get; set; }

@@ -85,8 +85,8 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 Mail entity = _mapper.Map<Mail>(mail);
                 context.Mail.Add(entity);
-                context.SaveChanges();            
-                return _mapper.Map<MailDTO>(entity);
+                context.SaveChanges();
+                return _mapper.Map<MailDTO>(mail);
             }
             catch (Exception e)
             {
@@ -148,7 +148,7 @@ namespace OpenNos.DAL.EF.MySQL
 
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Mail mail in context.Mail.Where(i => i.ReceiverId.Equals(receiverId) && i.IsSenderCopy.Equals(false)))
+                foreach (Mail mail in context.Mail.Where(i => i.ReceiverId.Equals(receiverId) && i.OwnerId.Equals(receiverId)))
                 {
                     yield return _mapper.Map<MailDTO>(mail);
                 }
@@ -160,7 +160,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Mail mail in context.Mail.Where(i => i.SenderId.Equals(senderId) && i.IsSenderCopy.Equals(true)))
+                foreach (Mail mail in context.Mail.Where(i => i.SenderId.Equals(senderId) && i.OwnerId.Equals(senderId)))
                 {
                     yield return _mapper.Map<MailDTO>(mail);
                 }

@@ -45,7 +45,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
         public virtual DbSet<Mail> Mail { get; set; }
-        public virtual DbSet<MailEquipment> MailEquipment { get; set; }
         public virtual DbSet<Map> Map { get; set; }
         public virtual DbSet<MapMonster> MapMonster { get; set; }
         public virtual DbSet<MapNpc> MapNpc { get; set; }
@@ -141,12 +140,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .HasForeignKey(e => e.ReceiverId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Character>()
-                .HasMany(e => e.Mail2)
-                .WithRequired(e => e.Owner)
-                .HasForeignKey(e => e.OwnerId)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<Item>()
                 .HasMany(e => e.Drop)
                 .WithRequired(e => e.Item)
@@ -159,11 +152,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Item>()
-             .HasMany(e => e.MailEquipment)
-             .WithRequired(e => e.Item)
-             .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Item>()
                 .HasMany(e => e.RecipeItem)
                 .WithRequired(e => e.Item)
                 .WillCascadeOnDelete(false);
@@ -173,22 +161,11 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WithRequired(e => e.Item)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<MailEquipment>()
-                 .HasRequired(e => e.Mail)
-                 .WithMany(e => e.MailEquipment)
-                 .HasForeignKey(e => e.MailId)
-                 .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<Mail>()
                  .HasOptional(e => e.Item)
                  .WithMany(e => e.Mail)
                  .HasForeignKey(e => e.ItemVNum)
-                 .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<MailEquipment>()
-                .HasRequired(e => e.Item)
-                .WithMany(e => e.MailEquipment)
-                .WillCascadeOnDelete(false);
+                 .WillCascadeOnDelete(false);          
 
             modelBuilder.Entity<Map>()
                 .HasMany(e => e.Character)

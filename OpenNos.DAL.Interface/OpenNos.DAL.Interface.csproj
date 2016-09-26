@@ -63,7 +63,6 @@
     <Compile Include="IGeneralLogDAO.cs" />
     <Compile Include="IAccountDAO.cs" />
     <Compile Include="ICharacterDAO.cs" />
-    <Compile Include="IMailEquipmentDAO.cs" />
     <Compile Include="IMailDAO.cs" />
     <Compile Include="IMapMonsterDAO.cs" />
     <Compile Include="IMapNpcDAO.cs" />
