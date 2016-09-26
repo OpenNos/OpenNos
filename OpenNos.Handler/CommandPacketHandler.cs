@@ -280,6 +280,28 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("$ChangeDignity")]
+        public void ChangeDignity(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            float dignity;
+            if (packetsplit.Length != 3)
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$ChangeDignity DIGNITY", 10));
+                return;
+            }
+
+            if (float.TryParse(packetsplit[2], out dignity) && dignity >= -1000 && dignity <= 100)
+            {
+                Session.Character.Dignity = dignity;
+                Session.SendPacket(Session.Character.GenerateFd());
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DIGNITY_CHANGED"), 12));
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+            }
+            else Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DIGNITY"), 11));
+        }
+
         [Packet("$SPLvl")]
         public void ChangeSpecialistLevel(string packet)
         {
@@ -368,19 +390,19 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift VNUM AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME VNUM AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$RemoveNearestPortal", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
         }
 
-        [Packet("$RemoveNearestPortal")]
+        [Packet("$RemovePortal")]
         public void RemoveNearestPortal(string packet)
         {
-            Portal pt = ServerManager.GetMap(Session.Character.MapId).Portals.Where(s => s.SourceMapId == Session.Character.MapId).OrderBy(s => Map.GetDistance(new MapCell {MapId = s.SourceMapId, X = s.SourceMapId, Y = s.SourceY}, new MapCell { MapId = Session.Character.MapId , X = Session.Character.MapX, Y = Session.Character.MapY})).FirstOrDefault();
+            Portal pt = Session.CurrentMap.Portals.FirstOrDefault(s => s.SourceMapId == Session.Character.MapId && Map.GetDistance(new MapCell { MapId = s.SourceMapId, X = s.SourceX, Y = s.SourceY }, new MapCell { MapId = Session.Character.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }) < 10);
             if(pt != null)
             {
-                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX,pt.SourceY), 12));
-                ServerManager.GetMap(Session.Character.MapId).Portals.Remove(pt);
+                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
+                Session.CurrentMap.Portals.Remove(pt);
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
             }
             else    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_PORTAL_FOUND"), 11));            
