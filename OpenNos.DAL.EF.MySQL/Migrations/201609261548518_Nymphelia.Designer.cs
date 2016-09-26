@@ -7,13 +7,13 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Zelda : IMigrationMetadata
+    public sealed partial class Nymphelia : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Zelda));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Nymphelia));
         
         string IMigrationMetadata.Id
         {
-            get { return "201609261055326_Zelda"; }
+            get { return "201609261548518_Nymphelia"; }
         }
         
         string IMigrationMetadata.Source

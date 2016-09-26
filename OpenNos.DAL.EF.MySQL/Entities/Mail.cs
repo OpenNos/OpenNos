@@ -21,9 +21,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class Mail
     {
-        #region Properties
-
-       
+        #region Properties     
 
         public byte Amount { get; set; }
         public virtual Item Item { get; set; }

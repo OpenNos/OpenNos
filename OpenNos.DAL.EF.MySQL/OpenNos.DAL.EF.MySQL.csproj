@@ -113,13 +113,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201609261055326_Zelda.cs" />
-    <Compile Include="Migrations\201609261055326_Zelda.Designer.cs">
-      <DependentUpon>201609261055326_Zelda.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609261154152_Warrior.cs" />
-    <Compile Include="Migrations\201609261154152_Warrior.Designer.cs">
-      <DependentUpon>201609261154152_Warrior.cs</DependentUpon>
+    <Compile Include="Migrations\201609261548518_Nymphelia.cs" />
+    <Compile Include="Migrations\201609261548518_Nymphelia.Designer.cs">
+      <DependentUpon>201609261548518_Nymphelia.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -199,11 +195,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609261055326_Zelda.resx">
-      <DependentUpon>201609261055326_Zelda.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609261154152_Warrior.resx">
-      <DependentUpon>201609261154152_Warrior.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609261548518_Nymphelia.resx">
+      <DependentUpon>201609261548518_Nymphelia.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
