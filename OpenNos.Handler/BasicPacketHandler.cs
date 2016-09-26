@@ -647,7 +647,7 @@ namespace OpenNos.Handler
 
 
                     }
-                    else if (packetsplit[2] == "")
+                    else if (packetsplit[2] == "2")
                     {
 
                         Session.SendPacket($"pcl 2 {packetsplit[3]}");
