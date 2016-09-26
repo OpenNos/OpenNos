@@ -233,8 +233,6 @@ namespace OpenNos.Handler
                             Session.Character.InventoryList.RemoveItemAmount(vnumToUse, 1);
                             Session.Character.EquipmentList.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Equipment);
                             Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Equipment, (byte)EquipmentType.Sp);
-
-                            // missing packet "sl 10 -1 {SpUpgrade} 793454 0 0 0 1" Session.SendPacket(Session.Character.GenerateSl());
                             Session.SendPacket(Session.Character.GenerateCond());
                             Session.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
                             Session.SendPacket(Session.Character.GenerateLev());
