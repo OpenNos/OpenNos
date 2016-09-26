@@ -1304,15 +1304,15 @@ namespace OpenNos.Handler
 
                 if (name == "*")
                 {
-                    foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null))
+                    foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId))
                     {
                         ServerManager.Instance.MapOut(session.Character.CharacterId);
                         int i = 0;
                         do
                         {
                             i++;
-                            session.Character.MapX += (short)new Random().Next(-5, 5);
-                            session.Character.MapY += (short)new Random().Next(-5, 5);
+                            session.Character.MapX = (short)(Session.Character.MapX + new Random().Next(-5, 5));
+                            session.Character.MapY = (short)(Session.Character.MapY + new Random().Next(-5, 5));
                         }
                         while (i < 1000 && Session.CurrentMap.IsBlockedZone(session.Character.MapX, session.Character.MapY));
                         session.Character.MapId = Session.Character.MapId;
