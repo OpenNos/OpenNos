@@ -942,7 +942,7 @@ namespace OpenNos.GameObject
                 ItemVNum = vnum,
                 SenderClass = Session.Character.Class,
                 SenderGender = Session.Character.Gender,
-                SenderHairColor = (headWearable != null && headWearable.Item.IsColored)?Session.Character.HairColor: headWearable.Design,
+                SenderHairColor = (headWearable != null && headWearable.Item.IsColored) ? headWearable.Design:Session.Character.HairColor,
                 SenderHairStyle = Session.Character.HairStyle,
                 EqPacket = Session.Character.GenerateEqListForPacket(),
                 SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
