@@ -643,10 +643,10 @@ namespace OpenNos.GameObject
             return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Element : 0)} 0 {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
-        public string GeneratePostMessage(MailDTO mailDTO,byte type)
+        public string GeneratePostMessage(MailDTO mailDTO, byte type)
         {
             CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDTO.SenderId);
-  
+
             return $"post 5 {type} {MailList.IndexOf(mailDTO)} 0 0 {mailDTO.SenderClass} {mailDTO.SenderGender} {mailDTO.SenderMorphId} {mailDTO.SenderHairStyle} {mailDTO.SenderHairColor} {mailDTO.EqPacket} {sender.Name} {mailDTO.Title} {mailDTO.Message}";
         }
 
@@ -788,18 +788,9 @@ namespace OpenNos.GameObject
 
         public string GeneratePost(MailDTO mail, byte type)
         {
-            if (type == 1 && mail.ItemVNum != null)
-            {
-                type = 0;
-                //item
-                return $"";
-            }
-            else
-            {
-                return $"post 1 {type} {MailList.IndexOf(mail)} 0 {(mail.IsOpened?1:0)} {mail.Date.ToString("yyMMddhhmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
-            }
+            return $"post 1 {type} {MailList.IndexOf(mail)} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddhhmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
         }
-        
+
 
         public string GeneratePslInfo(SpecialistInstance inventoryItem, int type)
         {
@@ -933,6 +924,38 @@ namespace OpenNos.GameObject
         public string GenerateSpPoint()
         {
             return $"sp {SpAdditionPoint} 1000000 {SpPoint} 10000";
+        }
+        public void SendGift(long id,short vnum, byte amount,bool isNosmall)
+        {
+            MailDTO mail = new MailDTO()
+            {
+                Amount = amount,
+                IsOpened = false,
+                Date = DateTime.Now,
+                ReceiverId = id,
+                SenderId = id,
+                IsSenderCopy = false,
+                Title = isNosmall ? "NOSMALL" : "NOSTALE",
+                ItemVNum = vnum,
+                SenderClass = Session.Character.Class,
+                SenderGender = Session.Character.Gender,
+                SenderHairColor = Session.Character.HairColor,
+                SenderHairStyle = Session.Character.HairStyle,
+                EqPacket = Session.Character.GenerateEqListForPacket(),
+                SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
+            };
+            DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+            if (id == CharacterId)
+            {
+                Session.Character.MailList.Add(mail);
+                Session.SendPacket(GenerateParcel(mail));
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
+            }
+        }
+
+        public string GenerateParcel(MailDTO mail)
+        {
+            return $"parcel 1 {MailList.IndexOf(mail)} 0 {(mail.Title == "NOSMALL" ? 1:4)} 0 {mail.Date.ToString("yyMMddhhmm")} {mail.Title} {mail.ItemVNum} {mail.Amount} {ServerManager.GetItem((short)mail.ItemVNum).Type}";
         }
 
         public void GenerateStartupInventory()
@@ -1695,11 +1718,27 @@ namespace OpenNos.GameObject
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.MailId == s.MailId)))
             {
                 MailList.Add(mail);
-                if (!mail.IsOpened)
+               
+                if (mail.ItemVNum != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEW_MAIL"), 10));
+                    Session.SendPacket(GenerateParcel(mail));
+                    if (!mail.IsOpened)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
+                        mail.IsOpened = true;
+                        MailDTO temp = mail;
+                        DAOFactory.MailDAO.InsertOrUpdate(ref temp);
+                    }
                 }
-                Session.SendPacket(Session.Character.GeneratePost(mail, 1));
+                else
+                {
+                    if (!mail.IsOpened)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEW_MAIL"), 10));
+                    }
+                    Session.SendPacket(Session.Character.GeneratePost(mail, 1));
+                }
+                   
             }
             LastMailRefresh = DateTime.Now;
         }

@@ -302,7 +302,7 @@ namespace OpenNos.Handler
                 byte usertype = usrType;
                 if (Session.Character.IsSitting)
                     Session.Character.Rest();
-                if (Session.Character.IsVehicled)
+                if (Session.Character.IsVehicled || Session.Character.InvisibleGm)
                 {
                     Session.SendPacket("cancel 0 0");
                     return;

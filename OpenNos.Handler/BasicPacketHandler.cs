@@ -607,6 +607,33 @@ namespace OpenNos.Handler
             else
                 ServerManager.Instance.RequireBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
         }
+        [Packet("pcl")]
+        public void GetGift(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            /*
+            
+            pcl 4 0
+            pcl 2 0
+            info Ton inventaire est plein !
+
+            parcel 5 1 0
+
+
+
+            Accept is ok
+            ------------
+
+            pcl 4 0
+            pcl 2 0
+            ivn 2 44.2027.1.0
+
+            say 1 626114 11 Paquet reçu >> Poulet rôti x 1
+
+            parcel 2 1 0
+            */
+        }
         [Packet("pst")]
         public void SendMail(string packet)
         {

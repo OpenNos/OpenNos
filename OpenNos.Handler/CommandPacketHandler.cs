@@ -71,7 +71,7 @@ namespace OpenNos.Handler
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
-                    monster = new MapMonster(monst,map);
+                    monster = new MapMonster(monst, map);
                     ServerManager.Monsters.Add(monster);
                     Session.CurrentMap.Monsters.Add(monster);
                     Session.CurrentMap?.Broadcast(monster.GenerateIn3());
@@ -425,8 +425,8 @@ namespace OpenNos.Handler
             {
                 for (int x = 0; x < Session.CurrentMap.XLength; x++)
                 {
-                    if(Session.CurrentMap.Tempgrid.IsWalkableAt(x,y))
-                    Session.SendPacket($"in 2 {1} {int.MaxValue - (x * y)} {x} {y} {1} 100 100 -1 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0");
+                    if (Session.CurrentMap.Tempgrid.IsWalkableAt(x, y))
+                        Session.SendPacket($"in 2 {1} {int.MaxValue - (x * y)} {x} {y} {1} 100 100 -1 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0");
                 }
             }
 
@@ -1124,7 +1124,43 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("SERVER_WORKING_TIME")}: {(Process.GetCurrentProcess().StartTime - DateTime.Now).ToString("d\\ hh\\:mm\\:ss")} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("MEMORY")}: {(GC.GetTotalMemory(true) / (1024 * 1024))}MB ", 13));
         }
+        [Packet("$Gift")]
+        public void Gift(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte amount;
+            short vnum;
+            if (packetsplit.Length > 3)
+            {
+               
+                if (packetsplit.Length == 4)
+                {
+                    if (!(byte.TryParse(packetsplit[3], out amount) && short.TryParse(packetsplit[2], out vnum)))
+                        return;
+                    Session.Character.SendGift(Session.Character.CharacterId,vnum,amount,false);
+                }
+                else
+                {
+                    string name = packetsplit[2];
+                    if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum)))
+                        return;
+                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(name);
 
+                    if (chara != null)
+                    {
+                        Session.Character.SendGift((chara.CharacterId),vnum, amount, false);
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                    }
+                }
+            }
+            else
+                Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
+
+        }
         [Packet("$Summon")]
         public void Summon(string packet)
         {
@@ -1151,7 +1187,7 @@ namespace OpenNos.Handler
                     //Replace by MAPPING
                     MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
 
-                    MapMonster monst = new MapMonster(monster,map) { Respawn = false };
+                    MapMonster monst = new MapMonster(monster, map) { Respawn = false };
                     ///////////////////
                     Session.CurrentMap.Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);

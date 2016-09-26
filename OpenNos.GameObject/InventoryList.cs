@@ -89,7 +89,7 @@ namespace OpenNos.GameObject
             }
             return inv;
         }
-
+         
         public Inventory AddToInventory(ItemInstance newItem)
         {
             Logger.Debug(newItem.ItemVNum.ToString(), Owner.Session.SessionId);
