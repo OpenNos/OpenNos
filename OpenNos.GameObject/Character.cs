@@ -928,6 +928,8 @@ namespace OpenNos.GameObject
         public void SendGift(long id,short vnum, byte amount,bool isNosmall)
         {
             Item it = ServerManager.GetItem((short)vnum);
+            int color = HairColor;
+            WearableInstance headWearable = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
             MailDTO mail = new MailDTO()
             {
                 Amount = (it.Type == InventoryType.Etc || it.Type == InventoryType.Main)?amount:(byte)1,
@@ -940,7 +942,7 @@ namespace OpenNos.GameObject
                 ItemVNum = vnum,
                 SenderClass = Session.Character.Class,
                 SenderGender = Session.Character.Gender,
-                SenderHairColor = Session.Character.HairColor,
+                SenderHairColor = (headWearable != null && headWearable.Item.IsColored)?Session.Character.HairColor: headWearable.Design,
                 SenderHairStyle = Session.Character.HairStyle,
                 EqPacket = Session.Character.GenerateEqListForPacket(),
                 SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
