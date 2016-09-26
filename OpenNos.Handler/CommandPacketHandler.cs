@@ -391,7 +391,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift VNUM AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME VNUM AMOUNT", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME(*) VNUM AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
@@ -1196,7 +1196,14 @@ namespace OpenNos.Handler
                     string name = packetsplit[2];
                     if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum)))
                         return;
-                  
+
+                    if (name == "*")
+                    {
+                        foreach (ClientSession session in Session.CurrentMap.Sessions.Where(s => s.Character != null))
+                            Session.Character.SendGift((session.Character.CharacterId), vnum, amount, false);
+                    }
+                    else
+                    {
                         CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(name);
 
                         if (chara != null)
@@ -1206,9 +1213,12 @@ namespace OpenNos.Handler
                         else
                         {
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                            return;
                         }
-                    
+                    }
                 }
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFT_SENDED"), 10));
+
             }
             else
                 Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME VNUM AMOUNT", 10));
