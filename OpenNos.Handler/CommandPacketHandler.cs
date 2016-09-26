@@ -71,7 +71,7 @@ namespace OpenNos.Handler
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
-                    monster = new MapMonster(monst,map);
+                    monster = new MapMonster(monst, map);
                     ServerManager.Monsters.Add(monster);
                     Session.CurrentMap.Monsters.Add(monster);
                     Session.CurrentMap?.Broadcast(monster.GenerateIn3());
@@ -425,8 +425,8 @@ namespace OpenNos.Handler
             {
                 for (int x = 0; x < Session.CurrentMap.XLength; x++)
                 {
-                    if(Session.CurrentMap.Tempgrid.IsWalkableAt(x,y))
-                    Session.SendPacket($"in 2 {1} {int.MaxValue - (x * y)} {x} {y} {1} 100 100 -1 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0");
+                    if (Session.CurrentMap.Tempgrid.IsWalkableAt(x, y))
+                        Session.SendPacket($"in 2 {1} {int.MaxValue - (x * y)} {x} {y} {1} 100 100 -1 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0");
                 }
             }
 
@@ -681,9 +681,12 @@ namespace OpenNos.Handler
 
                 if (id != null)
                 {
+                    bool hasGodMode = ServerManager.Instance.GetProperty<bool>(name, nameof(Character.HasGodMode));
+                    if (hasGodMode) return;
+
                     int? Hp = ServerManager.Instance.GetProperty<int?>((long)id, nameof(Character.Hp));
-                    if (Hp == 0)
-                        return;
+                    if (Hp == 0) return;
+
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.Hp), 0);
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.LastDefence), DateTime.Now);
                     Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
@@ -1151,7 +1154,7 @@ namespace OpenNos.Handler
                     //Replace by MAPPING
                     MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
 
-                    MapMonster monst = new MapMonster(monster,map) { Respawn = false };
+                    MapMonster monst = new MapMonster(monster, map) { Respawn = false };
                     ///////////////////
                     Session.CurrentMap.Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
