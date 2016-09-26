@@ -292,7 +292,7 @@ namespace OpenNos.GameObject
         {
             if (this.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || this.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
             {
-                int point = ServersData.RarityPoint(this.Rare, this.Item.LevelMinimum);
+                int point = ServersData.RarityPoint(this.Rare, (this.Item.IsHeroic ? (short)(95 + this.Item.LevelMinimum) : this.Item.LevelMinimum));
                 Random rnd = new Random();
                 this.Concentrate = 0;
                 this.HitRate = 0;
