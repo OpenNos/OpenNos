@@ -681,9 +681,12 @@ namespace OpenNos.Handler
 
                 if (id != null)
                 {
+                    bool hasGodMode = ServerManager.Instance.GetProperty<bool>(name, nameof(Character.HasGodMode));
+                    if (hasGodMode) return;
+
                     int? Hp = ServerManager.Instance.GetProperty<int?>((long)id, nameof(Character.Hp));
-                    if (Hp == 0)
-                        return;
+                    if (Hp == 0) return;
+
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.Hp), 0);
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.LastDefence), DateTime.Now);
                     Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0");

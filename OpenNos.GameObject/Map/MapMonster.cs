@@ -23,11 +23,16 @@ namespace OpenNos.GameObject
 {
     public class MapMonster : MapMonsterDTO
     {
-        #region Instantiation
+        #region Members
+
         private int _movetime;
+
+        #endregion
+
+        #region Instantiation
+
         public MapMonster(MapMonsterDTO monsterdto, Map parent)
         {
-
             //Replace by MAPPING
             MapId = monsterdto.MapId;
             MapX = monsterdto.MapX;
@@ -61,19 +66,19 @@ namespace OpenNos.GameObject
         public bool Alive { get; set; }
         public int CurrentHp { get; set; }
         public int CurrentMp { get; set; }
+        public IDictionary<long, long> DamageList { get; set; }
         public DateTime Death { get; set; }
         public short firstX { get; set; }
         public short firstY { get; set; }
+        public bool inWaiting { get; set; }
         public DateTime LastEffect { get; set; }
         public DateTime LastMove { get; set; }
         public Map Map { get; set; }
         public NpcMonster Monster { get; set; }
         public List<MapCell> Path { get; set; }
+        public bool Respawn { get; set; }
         public List<NpcMonsterSkill> Skills { get; set; }
         public long Target { get; set; }
-        public bool inWaiting { get; set; }
-        public IDictionary<long, long> DamageList { get; set; }
-        public bool Respawn { get; set; }
 
         #endregion
 
@@ -109,7 +114,6 @@ namespace OpenNos.GameObject
 
         internal void MonsterLife()
         {
-
             //Respawn
             if (!Alive && Respawn)
             {
@@ -186,20 +190,16 @@ namespace OpenNos.GameObject
                             string movePacket = $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}";
                             Map.Broadcast(movePacket);
                         }
-
                     }
                 }
                 if (Monster.IsHostile)
                 {
-                    Character character = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY })).FirstOrDefault(s => s.Character != null && !s.Character.Invisible && s.Character.MapId == MapId)?.Character;
+                    Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapId == MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY }) < 10)?.Character;
                     if (character != null)
                     {
-                        if (Map.GetDistance(new MapCell() { X = character.MapX, Y = character.MapY }, new MapCell() { X = MapX, Y = MapY }) < 10)
-                        {
-                            Target = character.CharacterId;
-                            if (!Monster.NoAggresiveIcon)
-                                character.Session.SendPacket(GenerateEff(5000));
-                        }
+                        Target = character.CharacterId;
+                        if (!Monster.NoAggresiveIcon)
+                            character.Session.SendPacket(GenerateEff(5000));
                     }
                 }
             }
@@ -261,7 +261,6 @@ namespace OpenNos.GameObject
                             Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} 0 0");
                         else
                             Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} 0 0");
-
 
                         LastEffect = DateTime.Now;
                         if (targetSession.Character.Hp <= 0)
@@ -339,8 +338,6 @@ namespace OpenNos.GameObject
                             {
                                 Path.RemoveAt(0);
                             }
-
-
                         }
                         if (Path.Count() == 0 && (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance))
                         {
