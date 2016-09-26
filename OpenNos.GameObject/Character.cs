@@ -1633,25 +1633,7 @@ namespace OpenNos.GameObject
                 QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntry>(qle));
             }
         }
-
-        public void loadBaseMail()
-        {
-            foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId))
-            {
-
-                MailList.Add((MailList.Any()? MailList.Last().Key:0) + 1,mail);
-                Session.SendPacket(Session.Character.GeneratePost(mail, 2));
-            }
-            foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId))
-            {
-                MailList.Add((MailList.Any()? MailList.Last().Key:0) + 1, mail);
-                if (!mail.IsOpened)
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEW_MAIL"), 10));
-                }
-                Session.SendPacket(Session.Character.GeneratePost(mail, 1));
-            }
-        }
+        
 
         public void LoadSkills()
         {
