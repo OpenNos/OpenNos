@@ -650,8 +650,6 @@ namespace OpenNos.Handler
                     }
                     else if (packetsplit[2] == "2")
                     {
-
-                        Session.SendPacket($"pcl 2 {packetsplit[3]}");
                         Session.SendPacket($"parcel 2 1 {packetsplit[3]}");
         
                         if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
