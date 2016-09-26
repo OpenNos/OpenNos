@@ -1062,6 +1062,7 @@ namespace OpenNos.Handler
                     specialistInstance.MagicDefence += 30;
                     specialistInstance.CriticalDodge += 3;
                 }
+                
                 Session.SendPacket(Session.Character.GenerateStatChar());
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
