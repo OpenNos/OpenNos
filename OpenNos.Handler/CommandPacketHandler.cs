@@ -415,6 +415,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
+            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
