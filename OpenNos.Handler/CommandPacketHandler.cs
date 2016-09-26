@@ -366,6 +366,8 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Gift VNUM AMOUNT", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME VNUM AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
         }
@@ -1161,7 +1163,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME VNUM AMOUNT", 10));
 
         }
         [Packet("$Summon")]

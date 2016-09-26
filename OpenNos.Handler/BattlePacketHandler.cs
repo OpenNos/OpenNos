@@ -688,7 +688,7 @@ namespace OpenNos.Handler
                                 x++;
                                 if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterinfo.MonsterType == MonsterType.Elite)
                                 {
-                                    Session.Character.GiftAdd(drop.ItemVNum, drop.Amount);
+                                    Session.Character.GiftAdd(drop.ItemVNum, (byte)drop.Amount);
                                 }
                                 else
                                 {
