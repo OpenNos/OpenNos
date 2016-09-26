@@ -375,8 +375,8 @@ namespace OpenNos.Handler
             //Session.SendPacket(Session.Character.GenerateSay("$RemoveMonster MonsterId", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(%)", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME(%)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SkillAdd SKILLID", 12));
@@ -385,7 +385,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME(*)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Unban CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 12));
@@ -401,13 +401,13 @@ namespace OpenNos.Handler
         public void RemoveNearestPortal(string packet)
         {
             Portal pt = Session.CurrentMap.Portals.FirstOrDefault(s => s.SourceMapId == Session.Character.MapId && Map.GetDistance(new MapCell { MapId = s.SourceMapId, X = s.SourceX, Y = s.SourceY }, new MapCell { MapId = Session.Character.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }) < 10);
-            if(pt != null)
+            if (pt != null)
             {
                 Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
                 Session.CurrentMap.Portals.Remove(pt);
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
             }
-            else    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_PORTAL_FOUND"), 11));            
+            else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_PORTAL_FOUND"), 11));
         }
 
         [Packet("$ArenaWinner")]
@@ -1197,16 +1197,18 @@ namespace OpenNos.Handler
                     string name = packetsplit[2];
                     if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum)))
                         return;
-                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(name);
+                  
+                        CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(name);
 
-                    if (chara != null)
-                    {
-                        Session.Character.SendGift((chara.CharacterId), vnum, amount, false);
-                    }
-                    else
-                    {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
-                    }
+                        if (chara != null)
+                        {
+                            Session.Character.SendGift((chara.CharacterId), vnum, amount, false);
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                        }
+                    
                 }
             }
             else
