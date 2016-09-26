@@ -958,4 +958,10 @@
   <data name="NEW_MAIL" xml:space="preserve">
     <value>An new mail arrived!</value>
   </data>
+  <data name="NEAREST_PORTAL" xml:space="preserve">
+    <value>Nearest Portal(MapID: {0},MapX: {1},MapY: {2}) has been removed</value>
+  </data>
+  <data name="NO_PORTAL_FOUND" xml:space="preserve">
+    <value>No portal has been found</value>
+  </data>
 </root>
