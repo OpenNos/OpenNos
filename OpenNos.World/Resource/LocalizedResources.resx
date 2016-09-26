@@ -970,4 +970,10 @@
   <data name="NO_PORTAL_FOUND" xml:space="preserve">
     <value>No portal has been found</value>
   </data>
+  <data name="GIFTED" xml:space="preserve">
+    <value>Gift receive !</value>
+  </data>
+  <data name="ITEM_GIFTED" xml:space="preserve">
+    <value>You get an item &gt;&gt;</value>
+  </data>
 </root>

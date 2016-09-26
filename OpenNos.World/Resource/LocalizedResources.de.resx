@@ -825,4 +825,16 @@
   <data name="MONSTER_NOT_FOUND" xml:space="preserve">
     <value />
   </data>
+  <data name="GIFTED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ITEM_GIFTED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NEAREST_PORTAL" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NO_PORTAL_FOUND" xml:space="preserve">
+    <value />
+  </data>
 </root>

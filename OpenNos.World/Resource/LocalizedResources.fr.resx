@@ -964,4 +964,16 @@ Veux-tu le porter ?</value>
   <data name="NEW_MAIL" xml:space="preserve">
     <value>Une nouvelle note est arrivée.</value>
   </data>
+  <data name="GIFTED" xml:space="preserve">
+    <value>Un nouveau paquet est arrivé.</value>
+  </data>
+  <data name="ITEM_GIFTED" xml:space="preserve">
+    <value>Paquet reçu &gt;&gt;</value>
+  </data>
+  <data name="NEAREST_PORTAL" xml:space="preserve">
+    <value>Le portail avec les coordonnées [Map: {0},X: {1},Y: {2}] a été supprimé.</value>
+  </data>
+  <data name="NO_PORTAL_FOUND" xml:space="preserve">
+    <value>Aucun portail trouvé à proximitée.</value>
+  </data>
 </root>
