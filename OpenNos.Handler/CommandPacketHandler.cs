@@ -332,6 +332,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
+            Session.SendPacket(Session.Character.GenerateSay("$ArenaWinner", 12));
             Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
@@ -371,6 +372,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
+            //Session.SendPacket(Session.Character.GenerateSay("$RemoveMonster MonsterId", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(%)", 12));
@@ -406,6 +408,14 @@ namespace OpenNos.Handler
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
             }
             else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_PORTAL_FOUND"), 11));
+        }
+
+        [Packet("$ArenaWinner")]
+        public void ArenaWinner(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
+            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
         [Packet("$SearchMonster")]
