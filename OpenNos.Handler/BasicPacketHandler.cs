@@ -234,6 +234,7 @@ namespace OpenNos.Handler
                             Session.Character.EquipmentList.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Equipment);
                             Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Equipment, (byte)EquipmentType.Sp);
                             Session.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
+                            Session.SendPacket(Session.Character.GenerateEq());
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_RESET"), 0));
                         }
                     }
