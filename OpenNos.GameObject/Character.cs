@@ -647,7 +647,7 @@ namespace OpenNos.GameObject
         {
             CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDTO.SenderId);
   
-            return $"post 5 {type} {MailList.IndexOf(mailDTO)} 0 0 {mailDTO.SenderClass} {mailDTO.SenderGender} {mailDTO.SenderMorphId} {mailDTO.SenderHairStyle} {mailDTO.EqPacket} {sender.Name} {mailDTO.Title} {mailDTO.Message}";
+            return $"post 5 {type} {MailList.IndexOf(mailDTO)} 0 0 {mailDTO.SenderClass} {mailDTO.SenderGender} {mailDTO.SenderMorphId} {mailDTO.SenderHairStyle} {mailDTO.SenderHairColor} {mailDTO.EqPacket} {sender.Name} {mailDTO.Title} {mailDTO.Message}";
         }
 
         public List<string> GenerateIn2()

@@ -28,6 +28,8 @@ namespace OpenNos.DAL.EF.MySQL
             QuicklistEntry = new HashSet<QuicklistEntry>();
             Respawn = new HashSet<Respawn>();
             GeneralLog = new HashSet<GeneralLog>();
+            Mail = new HashSet<Mail>();
+            Mail1 = new HashSet<Mail>();
         }
 
         #endregion
@@ -72,7 +74,6 @@ namespace OpenNos.DAL.EF.MySQL
         public long LevelXp { get; set; }
         public virtual ICollection<Mail> Mail { get; set; }
         public virtual ICollection<Mail> Mail1 { get; set; }
-        public virtual ICollection<Mail> Mail2 { get; set; }
         public virtual Map Map { get; set; }
         public short MapId { get; set; }
         public short MapX { get; set; }
