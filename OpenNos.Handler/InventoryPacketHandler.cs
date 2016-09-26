@@ -1265,12 +1265,13 @@ namespace OpenNos.Handler
                 Session.Character.Morph = sp.Item.Morph;
                 Session.Character.MorphUpgrade = sp.Upgrade;
                 Session.Character.MorphUpgrade2 = sp.Design;
+                Session.SendPacket(Session.Character.GenerateCond());
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                Session.SendPacket(Session.Character.GenerateLev());
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.All);
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                 Session.SendPacket(Session.Character.GenerateSpPoint());
                 Session.Character.LoadSpeed();
-                Session.SendPacket(Session.Character.GenerateLev());
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateStatChar());
                 Session.Character.SkillsSp = new List<CharacterSkill>();
