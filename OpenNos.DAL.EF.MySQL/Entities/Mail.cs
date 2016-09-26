@@ -46,8 +46,10 @@ namespace OpenNos.DAL.EF.MySQL
         public virtual Character Sender { get; set; }
 
         public byte SenderClass { get; set; }
-        
+
+        [MaxLength(255)]
         public string EqPacket { get; set; }
+
         public byte SenderGender { get; set; }
 
         public byte SenderHairColor { get; set; }
