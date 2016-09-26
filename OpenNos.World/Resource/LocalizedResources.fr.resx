@@ -976,4 +976,7 @@ Veux-tu le porter ?</value>
   <data name="NO_PORTAL_FOUND" xml:space="preserve">
     <value>Aucun portail trouvé à proximitée.</value>
   </data>
+  <data name="GIFT_SENDED" xml:space="preserve">
+    <value>Le colis a été envoyé.</value>
+  </data>
 </root>
