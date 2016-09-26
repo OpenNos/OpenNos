@@ -20,9 +20,10 @@ namespace OpenNos.GameObject
 
         public BroacastPacket(ClientSession session, string content, ReceiverType receiver, string someonesCharacterName = "", long someonesCharacterId = -1)
         {
-            Sender = session;
-            Content = content;
             Receiver = receiver;
+            Content = content;
+            Sender = session;
+
             SomeonesCharacterName = someonesCharacterName;
             SomeonesCharacterId = someonesCharacterId;
         }
