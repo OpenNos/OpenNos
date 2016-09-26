@@ -840,4 +840,7 @@
   <data name="GIFT_SENDED" xml:space="preserve">
     <value />
   </data>
+  <data name="ITEM_ACQUIRED_BY_THE_GIANT_MONSTER" xml:space="preserve">
+    <value />
+  </data>
 </root>

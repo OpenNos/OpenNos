@@ -979,4 +979,7 @@ Veux-tu le porter ?</value>
   <data name="GIFT_SENDED" xml:space="preserve">
     <value>Le colis a été envoyé.</value>
   </data>
+  <data name="ITEM_ACQUIRED_BY_THE_GIANT_MONSTER" xml:space="preserve">
+    <value>Tu as obtenu l'objet du monstre géant !</value>
+  </data>
 </root>
