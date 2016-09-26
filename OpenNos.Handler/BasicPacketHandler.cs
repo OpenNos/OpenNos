@@ -623,8 +623,7 @@ namespace OpenNos.Handler
                     MailDTO mail = Session.Character.MailList[id];
                     if (packetsplit[2] == "4")
                     {
-                        Session.SendPacket($"pcl 2 {packetsplit[3]}");
-
+                    
                         Inventory newInv = Session.Character.InventoryList.AddNewItemToInventory((short)mail.ItemVNum,mail.Amount);
                         if (newInv != null)
                         {
