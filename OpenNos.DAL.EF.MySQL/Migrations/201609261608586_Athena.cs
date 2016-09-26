@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Nymphelia : DbMigration
+    public partial class Athena : DbMigration
     {
         public override void Up()
         {
@@ -306,28 +306,28 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         WaterResistance = c.Byte(nullable: false),
                     })
                 .PrimaryKey(t => t.VNum);
-
+            
             CreateTable(
                 "dbo.Mail",
                 c => new
-                {
-                    MailId = c.Long(nullable: false, identity: true),
-                    Amount = c.Byte(nullable: false),
-                    ItemVNum = c.Short(),
-                    Date = c.DateTime(nullable: false, precision: 0),
-                    IsOpened = c.Boolean(nullable: false),
-                    Message = c.String(maxLength: 255, storeType: "nvarchar"),
-                    IsSenderCopy = c.Boolean(nullable: false),
-                    ReceiverId = c.Long(nullable: false),
-                    SenderClass = c.Byte(nullable: false),
-                    EqPacket = c.String(maxLength: 255, storeType: "nvarchar"),
-                    SenderGender = c.Byte(nullable: false),
-                    SenderHairColor = c.Byte(nullable: false),
-                    SenderHairStyle = c.Byte(nullable: false),
-                    SenderId = c.Long(nullable: false),
-                    SenderMorphId = c.Short(nullable: false),
-                    Title = c.String(maxLength: 255, storeType: "nvarchar"),
-                })
+                    {
+                        MailId = c.Long(nullable: false, identity: true),
+                        Amount = c.Byte(nullable: false),
+                        ItemVNum = c.Short(),
+                        Date = c.DateTime(nullable: false, precision: 0),
+                        IsOpened = c.Boolean(nullable: false),
+                        Message = c.String(maxLength: 255, storeType: "nvarchar"),
+                        IsSenderCopy = c.Boolean(nullable: false),
+                        ReceiverId = c.Long(nullable: false),
+                        SenderId = c.Long(nullable: false),
+                        SenderClass = c.Byte(nullable: false),
+                        EqPacket = c.String(maxLength: 255, storeType: "nvarchar"),
+                        SenderGender = c.Byte(nullable: false),
+                        SenderHairColor = c.Byte(nullable: false),
+                        SenderHairStyle = c.Byte(nullable: false),
+                        SenderMorphId = c.Short(nullable: false),
+                        Title = c.String(maxLength: 255, storeType: "nvarchar"),
+                    })
                 .PrimaryKey(t => t.MailId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)
                 .ForeignKey("dbo.Character", t => t.SenderId)
@@ -698,7 +698,6 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.Character", "AccountId", "dbo.Account");
             DropForeignKey("dbo.Respawn", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.QuicklistEntry", "CharacterId", "dbo.Character");
-            DropForeignKey("dbo.Mail", "Character_CharacterId", "dbo.Character");
             DropForeignKey("dbo.Mail", "ReceiverId", "dbo.Character");
             DropForeignKey("dbo.Mail", "SenderId", "dbo.Character");
             DropForeignKey("dbo.Inventory", "CharacterId", "dbo.Character");

@@ -43,6 +43,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         public virtual Character Sender { get; set; }
 
+        public long SenderId { get; set; }
+
         public byte SenderClass { get; set; }
 
         [MaxLength(255)]
@@ -54,7 +56,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte SenderHairStyle { get; set; }
 
-        public long SenderId { get; set; }
+
 
         public short SenderMorphId { get; set; }
 
