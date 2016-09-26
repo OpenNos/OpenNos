@@ -958,6 +958,12 @@
   <data name="NEW_MAIL" xml:space="preserve">
     <value>An new mail arrived!</value>
   </data>
+  <data name="BAD_DIGNITY" xml:space="preserve">
+    <value>Bad Dignity Value!</value>
+  </data>
+  <data name="DIGNITY_CHANGED" xml:space="preserve">
+    <value>Dignity Changed!</value>
+  </data>
   <data name="NEAREST_PORTAL" xml:space="preserve">
     <value>Nearest Portal(MapID: {0},MapX: {1},MapY: {2}) has been removed</value>
   </data>
