@@ -120,7 +120,7 @@ namespace OpenNos.Handler
                     {
                         NpcMonster npcinfo = ServerManager.GetNpc(npc.NpcVNum);
                         if (npcinfo == null)
-                            return;                        
+                            return;
                         Session.SendPacket($"st 2 {characterInformationPacket[3]} {npcinfo.Level} {npcinfo.HeroLevel} 100 100 50000 50000");
                     }
                 }
@@ -261,7 +261,7 @@ namespace OpenNos.Handler
                         if (!short.TryParse(packetsplit[3], out MapNpcId)) return;
                         MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
-                        
+
                         int RateDrop = ServerManager.DropRate;
                         if (Session.Character.LastMapObject.AddSeconds(6) < DateTime.Now)
                         {
@@ -624,8 +624,8 @@ namespace OpenNos.Handler
                     MailDTO mail = Session.Character.MailList[id];
                     if (packetsplit[2] == "4")
                     {
-                    
-                        Inventory newInv = Session.Character.InventoryList.AddNewItemToInventory((short)mail.ItemVNum,mail.Amount);
+
+                        Inventory newInv = Session.Character.InventoryList.AddNewItemToInventory((short)mail.ItemVNum, mail.Amount);
                         if (newInv != null)
                         {
                             if ((newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Armor || (newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Weapon || (newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Shell)
@@ -652,7 +652,7 @@ namespace OpenNos.Handler
                     else if (packetsplit[2] == "5")
                     {
                         Session.SendPacket($"parcel 7 1 {packetsplit[3]}");
-        
+
                         if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                         {
                             DAOFactory.MailDAO.DeleteById(mail.MailId);
@@ -716,7 +716,7 @@ namespace OpenNos.Handler
                         DAOFactory.MailDAO.InsertOrUpdate(ref mail);
 
 
-                        Session.Character.MailList.Add((Session.Character.MailList.Any() ? Session.Character.MailList.Last().Key:0) + 1, mailcopy);
+                        Session.Character.MailList.Add((Session.Character.MailList.Any() ? Session.Character.MailList.Last().Key : 0) + 1, mailcopy);
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
                         Session.SendPacket(Session.Character.GeneratePost(mailcopy, 2));
                     }
@@ -1019,9 +1019,9 @@ namespace OpenNos.Handler
             bool blocked1 = false, blocked2 = false;
             if (packetsplit.Length > 3)
             {
-                if (!int.TryParse(packetsplit[2], out type))
+                if (!(int.TryParse(packetsplit[2], out type) && long.TryParse(packetsplit[3], out charId)))
                     return;
-                long.TryParse(packetsplit[3], out charId);
+
 
                 if (type == 3 && ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name)) != null)
                 {
