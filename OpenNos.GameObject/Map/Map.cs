@@ -199,12 +199,19 @@ namespace OpenNos.GameObject
                 MapItem droppedItem = null;
                 short localMapX = (short)(ServerManager.Instance.Random.Next(mapX - 1, mapX + 1));
                 short localMapY = (short)(ServerManager.Instance.Random.Next(mapY - 1, mapY + 1));
-                int retry = 0;
-                while (IsBlockedZone(localMapX, localMapY) && retry < 100)
+
+
+                List<MapCell> Possibilities = new List<MapCell>();
+
+                for (short x = -1; x < 2; x++)
+                    for (short y = -1; y < 2; y++)
+                        Possibilities.Add(new MapCell() { X = x, Y = y });
+                foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
                 {
-                    retry++;
-                    localMapX = (short)(ServerManager.Instance.Random.Next(mapX - 1, mapX + 1));
-                    localMapY = (short)(ServerManager.Instance.Random.Next(mapY - 1, mapY + 1));
+                    localMapX = (short)(mapX + possibilitie.X);
+                    localMapY = (short)(mapY + possibilitie.Y);
+                    if (!IsBlockedZone(localMapX, localMapY))
+                        break;
                 }
 
                 ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum);

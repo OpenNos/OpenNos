@@ -299,13 +299,10 @@ namespace OpenNos.GameObject
                         short maxDistance = 22;
                         if (Path.Count() == 0 && targetSession != null && distance > 1 && distance < maxDistance)
                         {
-                            short xoffset = 0;
-                            short yoffset = 0;
-                            while (xoffset == 0 && yoffset == 0)
-                            {
-                                xoffset = (short)ServerManager.Instance.Random.Next(-1, 1);
-                                yoffset = (short)ServerManager.Instance.Random.Next(-1, 1);
-                            }
+
+                            short xoffset = (short)ServerManager.Instance.Random.Next(-1, 1);
+                            short yoffset = (short)ServerManager.Instance.Random.Next(-1, 1);
+
 
                             Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
                             if (!Path.Any())

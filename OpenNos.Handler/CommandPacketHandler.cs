@@ -18,6 +18,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -56,7 +57,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short vnum = 0, isMoving = 0;
-           
+
 
             if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out isMoving))
             {
@@ -1256,12 +1257,19 @@ namespace OpenNos.Handler
                 Map map = Session.CurrentMap;
                 for (int i = 0; i < qty; i++)
                 {
-                    short mapx = (short)ServerManager.Instance.Random.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
-                    short mapy = (short)ServerManager.Instance.Random.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
-                    while (Session.CurrentMap.IsBlockedZone(mapx, mapy))
+                    short mapx;
+                    short mapy;
+                    List<MapCell> Possibilities = new List<MapCell>();
+                    for (short x = -4; x < 5; x++)
+                        for (short y = -4; y < 5; y++)
+                            Possibilities.Add(new MapCell() { X = x, Y = y });
+
+                    foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
                     {
-                        mapx = (short)ServerManager.Instance.Random.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
-                        mapy = (short)ServerManager.Instance.Random.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
+                        mapx = (short)(Session.Character.MapX + possibilitie.X);
+                        mapy = (short)(Session.Character.MapY + possibilitie.Y);
+                        if (!Session.CurrentMap.IsBlockedZone(mapx, mapy))
+                            break;
                     }
                     //Replace by MAPPING
                     MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
@@ -1345,14 +1353,20 @@ namespace OpenNos.Handler
                     foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId))
                     {
                         ServerManager.Instance.MapOut(session.Character.CharacterId);
-                        int i = 0;
-                        do
+                      
+                        List<MapCell> Possibilities = new List<MapCell>();
+                        for (short x = -6; x < 6; x++)
+                            for (short y = -6; y < 6; y++)
+                                Possibilities.Add(new MapCell() { X = x, Y = y });
+
+                        foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
                         {
-                            i++;
-                            session.Character.MapX = (short)(Session.Character.MapX + ServerManager.Instance.Random.Next(-5, 5));
-                            session.Character.MapY = (short)(Session.Character.MapY + ServerManager.Instance.Random.Next(-5, 5));
+                            session.Character.MapX = (short)(Session.Character.MapX + possibilitie.X);
+                            session.Character.MapY  = (short)(Session.Character.MapY + possibilitie.Y);
+                            if (!Session.CurrentMap.IsBlockedZone(session.Character.MapX, session.Character.MapY))
+                                break;
                         }
-                        while (i < 1000 && Session.CurrentMap.IsBlockedZone(session.Character.MapX, session.Character.MapY));
+
                         session.Character.MapId = Session.Character.MapId;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
                     }
