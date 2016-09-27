@@ -146,10 +146,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                         {
                             sent = _clientSocket.Send(messageBytes, totalSent, messageBytes.Length - totalSent, SocketFlags.None);
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                             //annoying bug
-                            Logger.Log.Error("A packet would have been sent to a disconnected client. IGNORE THIS.", e);
+                            Logger.Log.Warn("A packet would have been sent to a disconnected client. IGNORE THIS.");
                         }
 
                         if (sent <= 0)
@@ -158,6 +158,11 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                         }
 
                         totalSent += sent;
+                    }
+                    else
+                    {
+                        Logger.Log.Warn("A packet would have been sent to a disconnected client. IGNORE THIS.");
+                        break;
                     }
                 }
 
