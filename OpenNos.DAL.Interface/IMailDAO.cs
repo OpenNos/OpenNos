@@ -20,7 +20,11 @@ namespace OpenNos.DAL.Interface
 {
     public interface IMailDAO
     {
-        #region Methods      
+        #region Methods
+
+        DeleteResult DeleteById(long mailId);
+
+        SaveResult InsertOrUpdate(ref MailDTO mail);
 
         MailDTO LoadById(long mailId);
 
@@ -28,9 +32,6 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<MailDTO> LoadBySenderId(long senderId);
 
-        SaveResult InsertOrUpdate(ref MailDTO mail);
-
-        DeleteResult DeleteById(long mailId);
         #endregion
     }
 }

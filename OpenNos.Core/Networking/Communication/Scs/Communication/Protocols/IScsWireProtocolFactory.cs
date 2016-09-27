@@ -14,9 +14,9 @@
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols
 {
-    ///<summary>
+    /// <summary>
     /// Defines a Wire Protocol Factory class that is used to create Wire Protocol objects.
-    ///</summary>
+    /// </summary>
     public interface IScsWireProtocolFactory
     {
         #region Methods

@@ -39,9 +39,11 @@ namespace OpenNos.DAL.EF.MySQL
         public short EffectDelay { get; set; }
 
         public bool IsDisabled { get; set; }
+
         public bool IsMoving { get; set; }
 
         public bool IsSitting { get; set; }
+
         public virtual Map Map { get; set; }
 
         public short MapId { get; set; }
@@ -50,10 +52,15 @@ namespace OpenNos.DAL.EF.MySQL
         public int MapNpcId { get; set; }
 
         public short MapX { get; set; }
+
         public short MapY { get; set; }
+
         public virtual NpcMonster NpcMonster { get; set; }
+
         public short NpcVNum { get; set; }
+
         public byte Position { get; set; }
+
         public virtual ICollection<Recipe> Recipe { get; set; }
 
         public virtual ICollection<Shop> Shop { get; set; }

@@ -19,9 +19,9 @@ using System;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints
 {
-    ///<summary>
+    /// <summary>
     /// Represents a server side end point in SCS.
-    ///</summary>
+    /// </summary>
     public abstract class ScsEndPoint
     {
         #region Methods
@@ -36,27 +36,27 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints
         /// <returns>Created end point</returns>
         public static ScsEndPoint CreateEndPoint(string endPointAddress)
         {
-            //Check if end point address is null
+            // Check if end point address is null
             if (string.IsNullOrEmpty(endPointAddress))
             {
                 throw new ArgumentNullException("endPointAddress");
             }
 
-            //If not protocol specified, assume TCP.
+            // If not protocol specified, assume TCP.
             var endPointAddr = endPointAddress;
             if (!endPointAddr.Contains("://"))
             {
                 endPointAddr = "tcp://" + endPointAddr;
             }
 
-            //Split protocol and address parts
+            // Split protocol and address parts
             var splittedEndPoint = endPointAddr.Split(new[] { "://" }, StringSplitOptions.RemoveEmptyEntries);
             if (splittedEndPoint.Length != 2)
             {
                 throw new ApplicationException(endPointAddress + " is not a valid endpoint address.");
             }
 
-            //Split end point, find protocol and address
+            // Split end point, find protocol and address
             var protocol = splittedEndPoint[0].Trim().ToLower();
             var address = splittedEndPoint[1].Trim();
             switch (protocol)

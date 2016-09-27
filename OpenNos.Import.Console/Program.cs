@@ -48,11 +48,13 @@ namespace OpenNos.Import.Console
             System.Console.BackgroundColor = ConsoleColor.Blue;
             System.Console.WriteLine("Root");
             System.Console.ResetColor();
+
             //System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_BCard.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Item.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Skill.txt");
+
             //System.Console.WriteLine("-----BCard.dat");
             System.Console.WriteLine("-----Item.dat");
             System.Console.WriteLine("-----MapIDData.dat");

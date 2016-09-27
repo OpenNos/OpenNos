@@ -13,11 +13,10 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using OpenNos.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;

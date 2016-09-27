@@ -129,5 +129,4 @@ namespace OpenNos.DAL.EF.MySQL
     }
 
     #endregion
-
 }

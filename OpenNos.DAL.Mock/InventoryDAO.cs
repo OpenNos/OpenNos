@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using OpenNos.DAL.Interface;
+﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;

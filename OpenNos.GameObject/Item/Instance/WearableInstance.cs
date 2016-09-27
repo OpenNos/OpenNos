@@ -66,23 +66,37 @@ namespace OpenNos.GameObject
         public short DefenceDodge { get; set; }
 
         public short DistanceDefence { get; set; }
+
         public short DistanceDefenceDodge { get; set; }
+
         public short ElementRate { get; set; }
+
         public byte FireElement { get; set; }
+
         public byte FireResistance { get; set; }
+
         public short HitRate { get; set; }
+
         public short HP { get; set; }
+
         public bool IsEmpty { get; set; }
+
         public bool IsFixed { get; set; }
+
         public byte LightElement { get; set; }
+
         public byte LightResistance { get; set; }
+
         public short MagicDefence { get; set; }
+
         public byte MaxElementRate { get; set; }
+
         public short MP { get; set; }
 
         public byte WaterElement { get; set; }
 
         public byte WaterResistance { get; set; }
+
         public long XP { get; set; }
 
         #endregion
@@ -101,6 +115,7 @@ namespace OpenNos.GameObject
             double rare5 = 5;
             double rare6 = 2;
             double rare7 = 0;
+
             //double rare8 = 0; //disabled for now
             double reducedchancefactor = 1.1;
 
@@ -123,6 +138,7 @@ namespace OpenNos.GameObject
                 rare5 = rare5 * reducedchancefactor;
                 rare6 = rare6 * reducedchancefactor;
                 rare7 = rare7 * reducedchancefactor;
+
                 //rare8 = rare8 * reducedchancefactor;
             }
             switch (mode)
@@ -131,6 +147,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case RarifyMode.Reduced:
+
                     // TODO: Reduced Item Amount
                     if (Session.Character.Gold < goldprice * reducedpricefactor)
                         return;
@@ -142,6 +159,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case RarifyMode.Normal:
+
                     // TODO: Normal Item Amount
                     if (Session.Character.Gold < goldprice)
                         return;
@@ -155,130 +173,130 @@ namespace OpenNos.GameObject
 
             Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             int rnd = r.Next(0, 100);
-            
-                //if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
-                //{
-                //    if (mode != RarifyMode.Drop)
-                //    {
-                //        Session.Character.NotifyRarifyResult(8);
-                //    }
 
-                //    this.Rare = 8;
-                //    SetRarityPoint();
-                //}
-                if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
-                {
-                    if (mode != RarifyMode.Drop)
-                    {
-                        Session.Character.NotifyRarifyResult(7);
-                    }
+            //if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
+            //{
+            //    if (mode != RarifyMode.Drop)
+            //    {
+            //        Session.Character.NotifyRarifyResult(8);
+            //    }
 
-                    this.Rare = 7;
-                    SetRarityPoint();
-                }
-                else if (rnd <= rare6 && !(protection == RarifyProtection.Scroll && this.Rare >= 6))
+            //    this.Rare = 8;
+            //    SetRarityPoint();
+            //}
+            if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
+            {
+                if (mode != RarifyMode.Drop)
                 {
-                    if (mode != RarifyMode.Drop)
+                    Session.Character.NotifyRarifyResult(7);
+                }
+
+                this.Rare = 7;
+                SetRarityPoint();
+            }
+            else if (rnd <= rare6 && !(protection == RarifyProtection.Scroll && this.Rare >= 6))
+            {
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotifyRarifyResult(6);
+                }
+                this.Rare = 6;
+                SetRarityPoint();
+            }
+            else if (rnd <= rare5 && !(protection == RarifyProtection.Scroll && this.Rare >= 5))
+            {
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotifyRarifyResult(5);
+                }
+                this.Rare = 5;
+                SetRarityPoint();
+            }
+            else if (rnd <= rare4 && !(protection == RarifyProtection.Scroll && this.Rare >= 4))
+            {
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotifyRarifyResult(4);
+                }
+                this.Rare = 4;
+                SetRarityPoint();
+            }
+            else if (rnd <= rare3 && !(protection == RarifyProtection.Scroll && this.Rare >= 3))
+            {
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotifyRarifyResult(3);
+                }
+                this.Rare = 3;
+                SetRarityPoint();
+            }
+            else if (rnd <= rare2 && !(protection == RarifyProtection.Scroll && this.Rare >= 2))
+            {
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotifyRarifyResult(2);
+                }
+                this.Rare = 2;
+                SetRarityPoint();
+            }
+            else if (rnd <= rare1 && !(protection == RarifyProtection.Scroll && this.Rare >= 1))
+            {
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotifyRarifyResult(1);
+                }
+                this.Rare = 1;
+                SetRarityPoint();
+            }
+            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
+            {
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotifyRarifyResult(0);
+                }
+                this.Rare = 0;
+                SetRarityPoint();
+            }
+            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
+            {
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotifyRarifyResult(-1);
+                }
+                this.Rare = -1;
+                SetRarityPoint();
+            }
+            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
+            {
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotifyRarifyResult(-2);
+                }
+                this.Rare = -2;
+                SetRarityPoint();
+            }
+            else if (this.Rare == 0 && this.Item.ItemType == (byte)ItemType.Shell)
+            {
+                this.Rare = 1;
+            }
+            else
+            {
+                if (mode != RarifyMode.Drop)
+                {
+                    if (protection == RarifyProtection.None)
                     {
-                        Session.Character.NotifyRarifyResult(6);
+                        Session.Character.DeleteItemByItemInstanceId(this.Id);
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
                     }
-                    this.Rare = 6;
-                    SetRarityPoint();
-                }
-                else if (rnd <= rare5 && !(protection == RarifyProtection.Scroll && this.Rare >= 5))
-                {
-                    if (mode != RarifyMode.Drop)
+                    else
                     {
-                        Session.Character.NotifyRarifyResult(5);
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
+                        ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3004));
                     }
-                    this.Rare = 5;
-                    SetRarityPoint();
                 }
-                else if (rnd <= rare4 && !(protection == RarifyProtection.Scroll && this.Rare >= 4))
-                {
-                    if (mode != RarifyMode.Drop)
-                    {
-                        Session.Character.NotifyRarifyResult(4);
-                    }
-                    this.Rare = 4;
-                    SetRarityPoint();
-                }
-                else if (rnd <= rare3 && !(protection == RarifyProtection.Scroll && this.Rare >= 3))
-                {
-                    if (mode != RarifyMode.Drop)
-                    {
-                        Session.Character.NotifyRarifyResult(3);
-                    }
-                    this.Rare = 3;
-                    SetRarityPoint();
-                }
-                else if (rnd <= rare2 && !(protection == RarifyProtection.Scroll && this.Rare >= 2))
-                {
-                    if (mode != RarifyMode.Drop)
-                    {
-                        Session.Character.NotifyRarifyResult(2);
-                    }
-                    this.Rare = 2;
-                    SetRarityPoint();
-                }
-                else if (rnd <= rare1 && !(protection == RarifyProtection.Scroll && this.Rare >= 1))
-                {
-                    if (mode != RarifyMode.Drop)
-                    {
-                        Session.Character.NotifyRarifyResult(1);
-                    }
-                    this.Rare = 1;
-                    SetRarityPoint();
-                }
-                else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
-                {
-                    if (mode != RarifyMode.Drop)
-                    {
-                        Session.Character.NotifyRarifyResult(0);
-                    }
-                    this.Rare = 0;
-                    SetRarityPoint();
-                }
-                else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
-                {
-                    if (mode != RarifyMode.Drop)
-                    {
-                        Session.Character.NotifyRarifyResult(-1);
-                    }
-                    this.Rare = -1;
-                    SetRarityPoint();
-                }
-                else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
-                {
-                    if (mode != RarifyMode.Drop)
-                    {
-                        Session.Character.NotifyRarifyResult(-2);
-                    }
-                    this.Rare = -2;
-                    SetRarityPoint();
-                }
-                else if (this.Rare == 0 && this.Item.ItemType == (byte)ItemType.Shell)
-                {
-                    this.Rare = 1;
-                }
-                else
-                {
-                    if (mode != RarifyMode.Drop)
-                    {
-                        if (protection == RarifyProtection.None)
-                        {
-                            Session.Character.DeleteItemByItemInstanceId(this.Id);
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
-                        }
-                        else
-                        {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
-                            ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3004));
-                        }
-                    }
-                
+
                 if (mode != RarifyMode.Drop)
                 {
                     Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
@@ -378,7 +396,7 @@ namespace OpenNos.GameObject
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
-                    Session.SendPacket(Session.Character.GenerateGuri(19, 1 , 1332));
+                    Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1332));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                     Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
                     Session.Character.DeleteItemByItemInstanceId(this.Id);
@@ -417,6 +435,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case UpgradeMode.Reduced:
+
                         // TODO: Reduced Item Amount
                         if (Session.Character.Gold < goldprice[this.Upgrade] * reducedpricefactor)
                             return;
@@ -440,6 +459,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case UpgradeMode.Normal:
+
                         // TODO: Normal Item Amount
                         if (Session.Character.Gold < goldprice[this.Upgrade])
                             return;

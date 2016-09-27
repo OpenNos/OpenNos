@@ -19,6 +19,12 @@ namespace OpenNos.GameObject
 {
     public class Group
     {
+        #region Members
+
+        private int order;
+
+        #endregion
+
         #region Instantiation
 
         public Group()
@@ -33,18 +39,11 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<ClientSession> Characters { get; set; }
-        public long GroupId { get; set; }
-        public byte SharingMode { get; set; }
-        private int order;
-        public long OrderedCharacterId(Character Character)
-        {
-            order++;
-            IEnumerable<ClientSession> lst = Characters.Where(s => Map.GetDistance(s.Character, Character) < 50);
-            if (order > lst.Count() - 1)
-                order = 0;
-            return lst.ElementAt(order).Character.CharacterId;
 
-        }
+        public long GroupId { get; set; }
+
+        public byte SharingMode { get; set; }
+
         #endregion
 
         #region Methods
@@ -89,6 +88,18 @@ namespace OpenNos.GameObject
         {
             session.Character.Group = null;
             Characters.Remove(session);
+        }
+
+        public long OrderedCharacterId(Character Character)
+        {
+            order++;
+            IEnumerable<ClientSession> lst = Characters.Where(s => Map.GetDistance(s.Character, Character) < 50);
+            if (order > lst.Count() - 1)
+            {
+                order = 0;
+            }
+
+            return lst.ElementAt(order).Character.CharacterId;
         }
 
         #endregion

@@ -40,9 +40,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         /// </summary>
         CommunicationStates CommunicationState { get; }
 
-        ///<summary>
+        /// <summary>
         /// Gets endpoint of remote application.
-        ///</summary>
+        /// </summary>
         ScsEndPoint RemoteEndPoint { get; }
 
         #endregion

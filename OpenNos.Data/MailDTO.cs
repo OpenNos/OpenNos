@@ -21,21 +21,37 @@ namespace OpenNos.Data
         #region Properties
 
         public byte Amount { get; set; }
+
         public DateTime Date { get; set; }
-        public short? ItemVNum { get; set; }
-        public bool IsOpened { get; set; }
-        public string Title { get; set; }
-        public long MailId { get; set; }
-        public string Message { get; set; }
-        public long ReceiverId { get; set; }
-        public bool IsSenderCopy { get; set; }
-        public long SenderId { get; set; }
-        public byte SenderClass { get; set; }
-        public byte SenderGender { get; set; }
-        public byte SenderHairColor { get; set; }
-        public byte SenderHairStyle { get; set; }
-        public short SenderMorphId { get; set; }
+
         public string EqPacket { get; set; }
+
+        public bool IsOpened { get; set; }
+
+        public bool IsSenderCopy { get; set; }
+
+        public short? ItemVNum { get; set; }
+
+        public long MailId { get; set; }
+
+        public string Message { get; set; }
+
+        public long ReceiverId { get; set; }
+
+        public byte SenderClass { get; set; }
+
+        public byte SenderGender { get; set; }
+
+        public byte SenderHairColor { get; set; }
+
+        public byte SenderHairStyle { get; set; }
+
+        public long SenderId { get; set; }
+
+        public short SenderMorphId { get; set; }
+
+        public string Title { get; set; }
+
         #endregion
     }
 }

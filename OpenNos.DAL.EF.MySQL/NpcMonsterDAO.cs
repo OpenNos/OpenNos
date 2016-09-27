@@ -13,10 +13,10 @@
  */
 
 using AutoMapper;
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using OpenNos.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +47,17 @@ namespace OpenNos.DAL.EF.MySQL
         #endregion
 
         #region Methods
+
+        public IEnumerable<NpcMonsterDTO> FindByName(string name)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (NpcMonster NpcMonster in context.NpcMonster.Where(s => s.Name.Contains(name)))
+                {
+                    yield return _mapper.Map<NpcMonsterDTO>(NpcMonster);
+                }
+            }
+        }
 
         public void Insert(List<NpcMonsterDTO> npcs)
         {
@@ -116,17 +127,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<NpcMonsterDTO> FindByName(string name)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (NpcMonster NpcMonster in context.NpcMonster.Where(s => s.Name.Contains(name)))
-                {
-                    yield return _mapper.Map<NpcMonsterDTO>(NpcMonster);
-                }
-            }
-
-            #endregion
-        }
+        #endregion
     }
 }

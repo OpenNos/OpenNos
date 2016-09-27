@@ -22,12 +22,12 @@ namespace OpenNos.Core.Threading
     {
         #region Members
 
+        // private Task _task;
         private Action<TValue> _action;
+
         private SequentialItemProcessor<TValue> _queue;
 
         #endregion
-
-        //private Task _task;
 
         #region Instantiation
 
@@ -35,10 +35,9 @@ namespace OpenNos.Core.Threading
         {
             _action = triggeredMethod;
             var cancellationTokenSource = new CancellationTokenSource();
-            //this will cost a lot of resource
-            //_task = Repeat.Interval(
-            //        TimeSpan.FromMilliseconds(milliseconds),
-            //        () => triggeredMethod((TValue)Activator.CreateInstance(typeof(TValue))), cancellationTokenSource.Token);
+
+            // this will cost a lot of resource
+            // _task = Repeat.Interval(TimeSpan.FromMilliseconds(milliseconds), () => triggeredMethod((TValue)Activator.CreateInstance(typeof(TValue))), cancellationTokenSource.Token);
             Queue.Start();
         }
 
@@ -57,6 +56,7 @@ namespace OpenNos.Core.Threading
 
                 return _queue;
             }
+
             set
             {
                 _queue = value;
@@ -97,8 +97,9 @@ namespace OpenNos.Core.Threading
                     for (;;)
                     {
                         if (token.WaitCancellationRequested(pollInterval))
+                        {
                             break;
-
+                        }
                         action();
                     }
                 }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);

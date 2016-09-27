@@ -13,11 +13,9 @@
  */
 
 using AutoMapper;
-using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,7 +27,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         private IMapper _mapper;
 
-        #endregion Members
+        #endregion
 
         #region Instantiation
 
@@ -44,7 +42,7 @@ namespace OpenNos.DAL.EF.MySQL
             _mapper = config.CreateMapper();
         }
 
-        #endregion Instantiation
+        #endregion
 
         #region Methods
 
@@ -59,6 +57,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        #endregion Methods
+        #endregion
     }
 }

@@ -25,11 +25,11 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<MapTypeMapDTO> LoadAll();
 
+        MapTypeMapDTO LoadByMapAndMapType(short mapId, short maptypeId);
+
         IEnumerable<MapTypeMapDTO> LoadByMapId(short mapId);
 
         IEnumerable<MapTypeMapDTO> LoadByMapTypeId(short maptypeId);
-
-        MapTypeMapDTO LoadByMapAndMapType(short mapId, short maptypeId);
 
         #endregion
     }

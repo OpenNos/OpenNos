@@ -21,10 +21,15 @@ namespace OpenNos.Data
         #region Properties
 
         public long AccountId { get; set; }
+
         public AuthorityType Authority { get; set; }
+
         public System.DateTime LastCompliment { get; set; }
+
         public int LastSession { get; set; }
+
         public string Name { get; set; }
+
         public string Password { get; set; }
 
         #endregion

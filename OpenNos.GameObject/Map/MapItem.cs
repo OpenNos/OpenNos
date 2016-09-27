@@ -31,15 +31,25 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
-        
-        public ItemInstance ItemInstance { get; set; }
-        public short PositionX { get; set; }
-        public short PositionY { get; set; }
+
         public DateTime CreateDate { get; set; }
+
+        public ItemInstance ItemInstance { get; set; }
+
         public long? Owner { get; set; }
+
+        public short PositionX { get; set; }
+
+        public short PositionY { get; set; }
+
         #endregion
 
         #region Methods
+
+        public string GenerateOut(long id)
+        {
+            return $"out 9 {id}";
+        }
 
         public void Rarify(ClientSession session)
         {
@@ -47,11 +57,6 @@ namespace OpenNos.GameObject
             {
                 ((WearableInstance)ItemInstance).RarifyItem(session, RarifyMode.Drop, RarifyProtection.None);
             }
-        }
-
-        public string GenerateOut(long id)
-        {
-            return $"out 9 {id}";
         }
 
         #endregion

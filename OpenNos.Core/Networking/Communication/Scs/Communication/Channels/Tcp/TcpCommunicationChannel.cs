@@ -38,7 +38,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// </summary>
         private readonly byte[] _buffer;
 
-        //4KB
         /// <summary>
         /// Socket object to send/reveice messages.
         /// </summary>
@@ -81,9 +80,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         #region Properties
 
-        ///<summary>
+        /// <summary>
         /// Gets the endpoint of remote application.
-        ///</summary>
+        /// </summary>
         public override ScsEndPoint RemoteEndPoint
         {
             get
@@ -130,13 +129,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// <param name="message">Message to be sent</param>
         protected override void SendMessagepublic(IScsMessage message)
         {
-            //Send message
+            // Send message
             var totalSent = 0;
             lock (_syncLock)
             {
-                //Create a byte array from message according to current protocol
+                // Create a byte array from message according to current protocol
                 var messageBytes = WireProtocol.GetBytes(message);
-                //Send all bytes to the remote application
+
+                // Send all bytes to the remote application
                 while (totalSent < messageBytes.Length)
                 {
                     if (_clientSocket.Connected)
@@ -148,7 +148,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                         }
                         catch (Exception e)
                         {
-                            //annoying bug
+                            // annoying bug
                             Logger.Log.Error("A packet would have been sent to a disconnected client. IGNORE THIS.", e);
                         }
 
@@ -191,18 +191,21 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             {
                 var bytesRead = -1;
 
-                //Get received bytes count
+                // Get received bytes count
                 bytesRead = _clientSocket.EndReceive(ar);
 
                 if (bytesRead > 0)
                 {
                     LastReceivedMessageTime = DateTime.Now;
-                    //Copy received bytes to a new byte array
+
+                    // Copy received bytes to a new byte array
                     var receivedBytes = new byte[bytesRead];
                     Array.Copy(_buffer, receivedBytes, bytesRead);
-                    //Read messages according to current wire protocol
+
+                    // Read messages according to current wire protocol
                     var messages = WireProtocol.CreateMessages(receivedBytes);
-                    //Raise MessageReceived event for all received messages
+
+                    // Raise MessageReceived event for all received messages
                     foreach (var message in messages)
                     {
                         OnMessageReceived(message);
@@ -214,7 +217,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                     Disconnect();
                 }
 
-                //Read more bytes if still running
+                // Read more bytes if still running
                 if (_running)
                 {
                     _clientSocket.BeginReceive(_buffer, 0, _buffer.Length, 0, new AsyncCallback(ReceiveCallback), null);

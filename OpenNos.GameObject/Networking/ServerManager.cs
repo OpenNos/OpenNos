@@ -109,16 +109,21 @@ namespace OpenNos.GameObject
         #region Properties
 
         public static int DropRate { get; set; }
+
         public static int FairyXpRate { get; set; }
+
         public static int GoldRate { get; set; }
 
-
-
         public static List<MapMonster> Monsters { get; set; }
+
         public static EventHandler NotifyChildren { get; set; }
+
         public static int XPRate { get; set; }
+
         public List<Group> Groups { get; set; }
+
         public static ServerManager Instance => _instance ?? (_instance = new ServerManager());
+
         public Task TaskShutdown { get; set; }
 
         #endregion
@@ -300,6 +305,7 @@ namespace OpenNos.GameObject
                     Map newMap = new Map(Convert.ToInt16(map.MapId), guid, map.Data);
                     newMap.Music = map.Music;
                     newMap.ShopAllowed = map.ShopAllowed;
+
                     //register for broadcast
                     _maps.TryAdd(guid, newMap);
                     i++;
@@ -334,11 +340,6 @@ namespace OpenNos.GameObject
         public static void OnBroadCast(BroacastPacket mapPacket)
         {
             NotifyChildren?.Invoke(mapPacket, new EventArgs());
-        }
-        public void Shout(string message)
-        {
-            Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Broadcast($"msg 2 {message}");
         }
 
         //PacketHandler -> with Callback?
@@ -408,7 +409,7 @@ namespace OpenNos.GameObject
             {
                 // Send empty slot to owners inventory
                 shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, itemshop.Type, itemshop.Slot, 0, 0, 0, 0));
-                if (clientSession.CurrentMap.UserShops[shop.Key].Items.Where(s=>s.Amount > 0).ToList().Count == 0)
+                if (clientSession.CurrentMap.UserShops[shop.Key].Items.Where(s => s.Amount > 0).ToList().Count == 0)
                 {
                     clientSession.SendPacket("shop_end 0");
 
@@ -443,6 +444,7 @@ namespace OpenNos.GameObject
                 session.SendPacket(session.Character.GenerateCond());
                 session.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
                 session.SendPacket("rsfp 0 -1");
+
                 // in 2 // send only when partner present
                 // cond 2 // send only when partner present
                 session.SendPacket("pinit 0"); // clear party list
@@ -452,6 +454,7 @@ namespace OpenNos.GameObject
                 Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
 
                 session.SendPackets(session.Character.GenerateGp());
+
                 // wp 23 124 4 4 12 99
                 session.SendPackets(session.Character.GenerateIn3());
                 session.SendPackets(session.Character.GenerateIn2());
@@ -623,7 +626,6 @@ namespace OpenNos.GameObject
             session.SendPacket(session.Character.GenerateCMap());
             session.SendPacket(session.Character.GenerateMapOut());
             session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
-
         }
 
         public void RequireBroadcastFromUser(ClientSession client, long characterId, string methodName)
@@ -668,6 +670,12 @@ namespace OpenNos.GameObject
 
             PropertyInfo propertyinfo = session.Character.GetType().GetProperties().Single(pi => pi.Name == property);
             propertyinfo.SetValue(session.Character, value, null);
+        }
+
+        public void Shout(string message)
+        {
+            Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Broadcast($"msg 2 {message}");
         }
 
         //Server

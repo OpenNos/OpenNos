@@ -33,8 +33,10 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public List<ClientSession> Sessions { get; set; }
         public DateTime LastUnregister { get; set; }
+
+        public List<ClientSession> Sessions { get; set; }
+
         #endregion
 
         #region Methods

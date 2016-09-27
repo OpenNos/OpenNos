@@ -130,7 +130,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
             }
             catch
             {
-                //No need to catch since it will try to re-connect again
+                // No need to catch since it will try to re-connect again
             }
         }
 

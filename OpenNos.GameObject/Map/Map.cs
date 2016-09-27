@@ -35,9 +35,9 @@ namespace OpenNos.GameObject
         private List<MapMonster> _monsters;
         private List<MapNpc> _npcs;
         private List<Portal> _portals;
-        private Guid _uniqueIdentifier;
         private BaseGrid _tempgrid;
-     
+        private Guid _uniqueIdentifier;
+
         #endregion
 
         #region Instantiation
@@ -56,6 +56,7 @@ namespace OpenNos.GameObject
             foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId))
             {
                 MapTypeDTO MT = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
+
                 //Replace by MAPPING
                 MapType maptype = new MapType()
                 {
@@ -97,7 +98,6 @@ namespace OpenNos.GameObject
             {
                 _npcs.Add(new MapNpc(npc, this));
             }
-
         }
 
         #endregion
@@ -106,9 +106,13 @@ namespace OpenNos.GameObject
 
         public byte[] Data { get; set; }
 
+        public bool Disabled { get; internal set; }
+
         public ConcurrentDictionary<long, MapItem> DroppedList { get; set; }
 
         public int IsDancing { get; set; }
+
+        public JumpPointParam JumpPointParameters { get; set; }
 
         public short MapId { get; set; }
 
@@ -122,27 +126,6 @@ namespace OpenNos.GameObject
             get
             {
                 return _monsters;
-            }
-        }
-        public JumpPointParam JumpPointParameters { get; set; }
-        public BaseGrid Tempgrid
-        {
-            get
-            {
-                return _tempgrid;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    _tempgrid = null;
-                    JumpPointParameters = null;
-                }
-                else
-                {
-                    _tempgrid = ConvertToGrid(_grid);
-                    JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
-                }
             }
         }
 
@@ -170,12 +153,32 @@ namespace OpenNos.GameObject
 
         public bool ShopAllowed { get; set; }
 
+        public BaseGrid Tempgrid
+        {
+            get
+            {
+                return _tempgrid;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    _tempgrid = null;
+                    JumpPointParameters = null;
+                }
+                else
+                {
+                    _tempgrid = ConvertToGrid(_grid);
+                    JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
+                }
+            }
+        }
+
         public Dictionary<long, MapShop> UserShops { get; set; }
 
         public int XLength { get; set; }
 
         public int YLength { get; set; }
-        public bool Disabled { get; internal set; }
 
         #endregion
 
@@ -185,12 +188,24 @@ namespace OpenNos.GameObject
         {
             return GetDistance(new MapCell() { MapId = character1.MapId, X = character1.MapX, Y = character1.MapY }, new MapCell() { MapId = character2.MapId, X = character2.MapX, Y = character2.MapY });
         }
+
         public static int GetDistance(MapCell p, MapCell q)
         {
             return Math.Max(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
 
-
+        public BaseGrid ConvertToGrid(short[,] _grid)
+        {
+            BaseGrid grid = new StaticGrid(XLength, YLength);
+            for (int y = 0; y < YLength; ++y)
+            {
+                for (int x = 0; x < XLength; ++x)
+                {
+                    grid.SetWalkableAt(x, y, !IsBlockedZone(x, y));
+                }
+            }
+            return grid;
+        }
 
         public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY)
         {
@@ -277,19 +292,6 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        public BaseGrid ConvertToGrid(short[,] _grid)
-        {
-            BaseGrid grid = new StaticGrid(XLength, YLength);
-            for (int y = 0; y < YLength; ++y)
-            {
-                for (int x = 0; x < XLength; ++x)
-                {
-                    grid.SetWalkableAt(x, y, !IsBlockedZone(x,y));
-                }
-            }
-            return grid;
-        }
-
         public List<MapCell> JPSPlus(MapCell cell1, MapCell cell2)
         {
             List<MapCell> path = new List<MapCell>();
@@ -332,7 +334,7 @@ namespace OpenNos.GameObject
             YLength = BitConverter.ToInt16(ylength, 0);
             XLength = BitConverter.ToInt16(xlength, 0);
 
-           _grid = new short[XLength, YLength];
+            _grid = new short[XLength, YLength];
             for (int i = 0; i < YLength; ++i)
             {
                 for (int t = 0; t < XLength; ++t)
@@ -493,8 +495,8 @@ namespace OpenNos.GameObject
                 List<Task> NpcLifeTask = new List<Task>();
                 foreach (ClientSession Session in Sessions.Where(s => s?.Character != null))
                 {
-                    if(Session.Character.LastMailRefresh.AddSeconds(30) < DateTime.Now)
-                    Session.Character.RefreshMail();
+                    if (Session.Character.LastMailRefresh.AddSeconds(30) < DateTime.Now)
+                        Session.Character.RefreshMail();
                     int x = 1;
                     bool change = false;
                     if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)

@@ -19,6 +19,12 @@ namespace OpenNos.GameObject
 {
     public class NpcMonsterSkill : NpcMonsterSkillDTO
     {
+        #region Members
+
+        private Skill skill;
+
+        #endregion
+
         #region Instantiation
 
         public NpcMonsterSkill()
@@ -32,7 +38,12 @@ namespace OpenNos.GameObject
         #region Properties
 
         public short Hit { get; set; }
-        private Skill skill;
+
+        public DateTime LastUse
+        {
+            get; set;
+        }
+
         public Skill Skill
         {
             get
@@ -40,11 +51,6 @@ namespace OpenNos.GameObject
                 if (skill == null) skill = ServerManager.GetSkill(this.SkillVNum);
                 return skill;
             }
-        }
-
-        public DateTime LastUse
-        {
-            get; set;
         }
 
         #endregion

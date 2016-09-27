@@ -216,7 +216,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// <exception cref="CommunicationException">Throws CommunicationException if communication fails before reply message.</exception>
         public IScsMessage SendMessageAndWaitForResponse(IScsMessage message, int timeoutMilliseconds)
         {
-            //Create a waiting message record and add to list
+            // Create a waiting message record and add to list
             var waitingMessage = new WaitingMessage();
             lock (_syncObj)
             {
@@ -225,13 +225,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
             try
             {
-                //Send message
+                // Send message
                 Messenger.SendMessage(message);
 
-                //Wait for response
+                // Wait for response
                 waitingMessage.WaitEvent.Wait(timeoutMilliseconds);
 
-                //Check for exceptions
+                // Check for exceptions
                 switch (waitingMessage.State)
                 {
                     case WaitingMessageStates.WaitingForResponse:
@@ -240,12 +240,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                         throw new CommunicationException("Disconnected before response received.");
                 }
 
-                //return response message
+                // return response message
                 return waitingMessage.ResponseMessage;
             }
             finally
             {
-                //Remove message from waiting messages
+                // Remove message from waiting messages
                 lock (_syncObj)
                 {
                     if (_waitingMessages.ContainsKey(message.MessageId))
@@ -274,8 +274,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         {
             _incomingMessageProcessor.Stop();
 
-            //Pulse waiting threads for incoming messages, since underlying messenger is disconnected
-            //and can not receive messages anymore.
+            // Pulse waiting threads for incoming messages, since underlying messenger is disconnected
+            // and can not receive messages anymore.
             lock (_syncObj)
             {
                 foreach (var waitingMessage in _waitingMessages.Values)
@@ -321,7 +321,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// <param name="e">Event arguments</param>
         private void Messenger_MessageReceived(object sender, MessageEventArgs e)
         {
-            //Check if there is a waiting thread for this message in SendMessageAndWaitForResponse method
+            // Check if there is a waiting thread for this message in SendMessageAndWaitForResponse method
             if (!string.IsNullOrEmpty(e.Message.RepliedMessageId))
             {
                 WaitingMessage waitingMessage = null;
@@ -333,7 +333,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                     }
                 }
 
-                //If there is a thread waiting for this response message, pulse it
+                // If there is a thread waiting for this response message, pulse it
                 if (waitingMessage != null)
                 {
                     waitingMessage.ResponseMessage = e.Message;

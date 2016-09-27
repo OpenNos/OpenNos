@@ -69,6 +69,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             UserDTO user = new UserDTO() { Name = packetsplit[2], Password = packetsplit[3] };
+
             //closed
             bool flag = true;
             if (flag)

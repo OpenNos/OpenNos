@@ -126,6 +126,7 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
+
         public IEnumerable<ComboDTO> LoadByVNumHitAndEffect(short skillVNum, short hit, short effect)
         {
             using (var context = DataAccessHelper.CreateContext())

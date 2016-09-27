@@ -1,16 +1,15 @@
 ﻿using OpenNos.DAL.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
     public class PenaltyLogDAO : IPenaltyLogDAO
     {
+        #region Methods
+
         public DeleteResult Delete(int penaltylogId)
         {
             throw new NotImplementedException();
@@ -40,5 +39,7 @@ namespace OpenNos.DAL.Mock
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

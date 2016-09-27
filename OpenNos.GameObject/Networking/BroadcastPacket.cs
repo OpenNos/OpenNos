@@ -33,9 +33,13 @@ namespace OpenNos.GameObject
         #region Properties
 
         public string Content { get; set; }
+
         public ReceiverType Receiver { get; set; }
+
         public ClientSession Sender { get; set; }
+
         public long SomeonesCharacterId { get; set; }
+
         public string SomeonesCharacterName { get; set; }
 
         #endregion

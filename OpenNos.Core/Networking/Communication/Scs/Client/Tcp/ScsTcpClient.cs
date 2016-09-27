@@ -54,11 +54,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
         /// <returns>Ready communication channel to communicate</returns>
         protected override ICommunicationChannel CreateCommunicationChannel()
         {
-            return new TcpCommunicationChannel(
-                TcpHelper.ConnectToServer(
-                    new IPEndPoint(IPAddress.Parse(_serverEndPoint.IpAddress), _serverEndPoint.TcpPort),
-                    ConnectTimeout
-                    ));
+            return new TcpCommunicationChannel(TcpHelper.ConnectToServer(new IPEndPoint(IPAddress.Parse(_serverEndPoint.IpAddress), _serverEndPoint.TcpPort), ConnectTimeout));
         }
 
         #endregion

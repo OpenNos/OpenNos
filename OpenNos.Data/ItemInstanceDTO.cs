@@ -21,13 +21,19 @@ namespace OpenNos.Data
         #region Properties
 
         public int Amount { get; set; }
-        public byte Design { get; set; }
-        public Guid Id { get; set; }
+
         public long? BoundCharacterId { get; set; }
+
+        public byte Design { get; set; }
+
+        public Guid Id { get; set; }
+
         public DateTime? ItemDeleteTime { get; set; }
+
         public short ItemVNum { get; set; }
 
         public sbyte Rare { get; set; }
+
         public byte Upgrade { get; set; }
 
         #endregion

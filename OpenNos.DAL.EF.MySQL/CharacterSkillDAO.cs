@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
@@ -26,7 +25,6 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class CharacterSkillDAO : SynchronizableBaseDAO<CharacterSkill, CharacterSkillDTO>, ICharacterSkillDAO
     {
-
         #region Methods
 
         public DeleteResult Delete(long characterId, short skillVNum)

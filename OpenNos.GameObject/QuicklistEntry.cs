@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject

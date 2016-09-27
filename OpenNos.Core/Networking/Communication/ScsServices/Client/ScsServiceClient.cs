@@ -213,21 +213,21 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// <param name="e">Event arguments</param>
         private void RequestReplyMessenger_MessageReceived(object sender, MessageEventArgs e)
         {
-            //Cast message to ScsRemoteInvokeMessage and check it
+            // Cast message to ScsRemoteInvokeMessage and check it
             var invokeMessage = e.Message as ScsRemoteInvokeMessage;
             if (invokeMessage == null)
             {
                 return;
             }
 
-            //Check client object.
+            // Check client object.
             if (_clientObject == null)
             {
                 SendInvokeResponse(invokeMessage, null, new ScsRemoteException("Client does not wait for method invocations by server."));
                 return;
             }
 
-            //Invoke method
+            // Invoke method
             object returnValue;
             try
             {
@@ -247,7 +247,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
                 return;
             }
 
-            //Send return value
+            // Send return value
             SendInvokeResponse(invokeMessage, returnValue, null);
         }
 

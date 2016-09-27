@@ -25,9 +25,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
     {
         #region Instantiation
 
-        ///<summary>
+        /// <summary>
         /// Creates a new PingMessage object.
-        ///</summary>
+        /// </summary>
         public ScsPingMessage()
         {
         }

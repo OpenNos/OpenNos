@@ -53,20 +53,24 @@ namespace OpenNos.Core
 
         public IEnumerable<IScsMessage> CreateMessages(byte[] receivedBytes)
         {
-            //Write all received bytes to the _receiveMemoryStream
+            // Write all received bytes to the _receiveMemoryStream
             _receiveMemoryStream.Write(receivedBytes, 0, receivedBytes.Length);
-            //Create a list to collect messages
-            var messages = new List<IScsMessage>();
-            //Read all available messages and add to messages collection
-            while (ReadSingleMessage(messages)) { }
-            //Return message list
 
+            // Create a list to collect messages
+            var messages = new List<IScsMessage>();
+
+            // Read all available messages and add to messages collection
+            while (ReadSingleMessage(messages))
+            {
+            }
+
+            // Return message list
             return messages;
         }
 
         public byte[] GetBytes(IScsMessage message)
         {
-            //Serialize the message to a byte array
+            // Serialize the message to a byte array
             byte[] bytes = message is ScsTextMessage ?
                 Encoding.Default.GetBytes(((ScsTextMessage)message).Text) :
                 ((ScsRawDataMessage)message).MessageData;
@@ -112,44 +116,44 @@ namespace OpenNos.Core
         /// <exception cref="CommunicationException">Throws CommunicationException if message is bigger than maximum allowed message length.</exception>
         private bool ReadSingleMessage(ICollection<IScsMessage> messages)
         {
-            //Go to the beginning of the stream
+            // Go to the beginning of the stream
             _receiveMemoryStream.Position = 0;
 
-            //check if message length is 0
+            // check if message length is 0
             if (_receiveMemoryStream.Length == 0)
             {
                 return false;
             }
 
-            //get length of frame
+            // get length of frame
             short frameLength = (short)_receiveMemoryStream.Length;
 
-            //Read length of the message
+            // Read length of the message
             if (frameLength > MaxMessageLength)
             {
                 throw new Exception("Message is too big (" + frameLength + " bytes). Max allowed length is " + MaxMessageLength + " bytes.");
             }
 
-            //Read bytes of serialized message and deserialize it
+            // Read bytes of serialized message and deserialize it
             var serializedMessageBytes = ReadByteArray(_receiveMemoryStream, frameLength);
             messages.Add(new ScsRawDataMessage(serializedMessageBytes));
 
-            //Read remaining bytes to an array
+            // Read remaining bytes to an array
             if (_receiveMemoryStream.Length > frameLength)
             {
                 var remainingBytes = ReadByteArray(_receiveMemoryStream, (short)(_receiveMemoryStream.Length - frameLength));
 
-                ////Re-create the receive memory stream and write remaining bytes
+                // Re-create the receive memory stream and write remaining bytes
                 _receiveMemoryStream = new MemoryStream();
                 _receiveMemoryStream.Write(remainingBytes, 0, remainingBytes.Length);
             }
             else
             {
-                //nothing left, just recreate
+                // nothing left, just recreate
                 _receiveMemoryStream = new MemoryStream();
             }
 
-            //Return true to re-call this method to try to read next message
+            // Return true to re-call this method to try to read next message
             return (_receiveMemoryStream.Length > 0);
         }
 

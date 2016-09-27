@@ -20,9 +20,9 @@ namespace OpenNos.Domain
 
         public enum CardType : byte
         {
-            //1-20
-
+            // 1-20
             SpecialAttack = 1,
+
             SpecialDefence = 2,
             AttackPowerChange = 3,
             ChangeTarget = 4,
@@ -43,9 +43,9 @@ namespace OpenNos.Domain
             Move = 19,
             Reflection = 20,
 
-            //21-40
-
+            // 21-40
             DrainAndSteal = 21,
+
             HealingBurningAndCasting = 22,
             ChangeHPMP = 23,
             SpecialisationBuffResistance = 24,
@@ -66,9 +66,9 @@ namespace OpenNos.Domain
             NoDefeatAndNoDamage = 39,
             SpecialActions = 40,
 
-            //41-60
-
+            // 41-60
             ChangeMode = 41,
+
             NoCharacteristicValue = 42,
             LightAndShadow = 43,
             Item = 44,
@@ -89,8 +89,7 @@ namespace OpenNos.Domain
             SummonSkill = 59,
             InflictSkill = 60,
 
-            //61-80
-
+            // 61-80
             // Missingno = 61,
             HideBarrelSkill = 62,
 
@@ -113,9 +112,9 @@ namespace OpenNos.Domain
             ArenaCamera = 79,
             DarkCloneSummon = 80,
 
-            //81-??
-
+            // 81-??
             AbsorbedSpirit = 81,
+
             AngerSkill = 82,
             MeteoriteTeleport = 83,
             StealBuff = 84
@@ -124,7 +123,7 @@ namespace OpenNos.Domain
 
     public class AdditionalTypes : BCardType
     {
-        //1-20
+        // 1-20
         private enum SpecialAttack : byte
         {
             NoAttack = 11,
@@ -391,7 +390,7 @@ namespace OpenNos.Domain
             EnemyMPDecreased = 42
         }
 
-        //21-40
+        // 21-40
         private enum DrainAndSteal : byte
         {
             ReceiveHpFromMP = 11,
@@ -627,7 +626,7 @@ namespace OpenNos.Domain
             SeeHiddenThings = 52
         }
 
-        //41-60
+        // 41-60
         private enum ChangeMode : byte
         {
             ChangeRange = 11,
@@ -819,14 +818,12 @@ namespace OpenNos.Domain
             InflictDamageAtLocationNegated = 12
         }
 
-        //61-80
-        /*
-        private enum Missingno : byte
-         {
-             Unknown = 11,
-             Unknown2 = 12
-         }
-         */
+        // 61-80
+        /*private enum Missingno : byte
+        {
+            Unknown = 11,
+            Unknown2 = 12
+        }*/
 
         private enum HideBarrelSkill : byte
         {
@@ -837,6 +834,7 @@ namespace OpenNos.Domain
         private enum FocusEnemyAttentionSkill : byte
         {
             FocusEnemyAttention = 11
+
             // Unknown = 12,
             // Unknown2 = 21,
             // Unknown3 = 22,
@@ -980,6 +978,7 @@ namespace OpenNos.Domain
         {
             MovementLocked = 11,
             MovementLockedNegated = 12
+
             // Unknown = 21,
             // Unknown2 = 22
         }
@@ -1027,7 +1026,7 @@ namespace OpenNos.Domain
         private enum ArenaCamera : byte
         {
             CallParticipant1 = 11,
-            CallParticipant2 = 12,// propably we will need to fix "Their" Mistake soo CallParticipant1 = 11 and 12, CallParticipant2 = 21 and 22 :D
+            CallParticipant2 = 12, // propably we will need to fix "Their" Mistake soo CallParticipant1 = 11 and 12, CallParticipant2 = 21 and 22 :D
             CallParticipant2Negated = 21,
             CallParticipant2NegatedNegated = 22,
             CallParticipant3 = 31,
@@ -1052,7 +1051,7 @@ namespace OpenNos.Domain
             DarkElementDamageDecreaseChance = 52
         }
 
-        //81-??
+        // 81-??
         private enum AbsorbedSpirit : byte
         {
             ApplyEffectIfPresent = 11,
@@ -1101,7 +1100,7 @@ namespace OpenNos.Domain
             StealGoodEffectNegated = 42
         }
 
-        //end!
+        // end!
     }
 
     #endregion

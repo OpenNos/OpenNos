@@ -27,25 +27,6 @@ namespace OpenNos.Core
 
         #endregion
 
-        //public static string GetPassword(string passcrypt)
-        //{
-        //    bool equal = passcrypt.Length % 2 == 0 ? true : false;
-        //    string str = equal == true ? passcrypt.Remove(0, 3) : passcrypt.Remove(0, 4);
-        //    string decpass = string.Empty;
-        //    for (int i = 0; i < str.Length; i += 2) decpass += str[i];
-        //    if (decpass.Length % 2 != 0)
-        //    {
-        //        str = decpass = string.Empty;
-        //        str = passcrypt.Remove(0, 2);
-        //        for (int i = 0; i < str.Length; i += 2) decpass += str[i];
-        //    }
-        //    StringBuilder temp = new StringBuilder();
-        //    for (int i = 0; i < decpass.Length; i += 2)
-        //        temp.Append(Convert.ToChar(Convert.ToUInt32(decpass.Substring(i, 2), 16)));
-        //    decpass = temp.ToString();
-        //    return decpass;
-        //}
-
         #region Methods
 
         public override string Decrypt(byte[] packet, int customParameter = 0)
@@ -56,11 +37,11 @@ namespace OpenNos.Core
 
                 for (int i = 0; i < packet.Length; i++)
                 {
-                    if (packet[i] > 14) // (x - 15) ^ 195
+                    if (packet[i] > 14)
                     {
                         decryptedPacket += Convert.ToChar((packet[i] - 15) ^ 195);
                     }
-                    else //if (packet[i])// (256 - ( 15 - (x)))
+                    else
                     {
                         decryptedPacket += Convert.ToChar((256 - (15 - (packet[i]))) ^ 195);
                     }
@@ -97,7 +78,6 @@ namespace OpenNos.Core
             {
                 return new byte[0];
             }
-
         }
 
         #endregion

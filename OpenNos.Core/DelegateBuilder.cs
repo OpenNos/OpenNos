@@ -69,13 +69,19 @@ namespace OpenNos.Core
         private static Expression CreateParam(ParameterExpression[] paramsOfDelegate, int i, ParameterInfo callParamType, Queue<object> queueMissingParams)
         {
             if (i < paramsOfDelegate.Length)
+            {
                 return Expression.Convert(paramsOfDelegate[i], callParamType.ParameterType);
+            }
 
             if (queueMissingParams.Count > 0)
+            {
                 return Expression.Constant(queueMissingParams.Dequeue());
+            }
 
             if (callParamType.ParameterType.IsValueType)
+            {
                 return Expression.Constant(Activator.CreateInstance(callParamType.ParameterType));
+            }
 
             return Expression.Constant(null);
         }

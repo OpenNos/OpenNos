@@ -39,6 +39,7 @@ namespace OpenNos.DAL.EF.MySQL
         public long LogId { get; set; }
 
         public string LogType { get; set; }
+
         public DateTime Timestamp { get; set; }
 
         #endregion

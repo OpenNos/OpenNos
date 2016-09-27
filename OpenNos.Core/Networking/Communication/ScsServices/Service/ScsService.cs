@@ -53,6 +53,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
                 return _currentClient;
             }
+
             set
             {
                 _currentClient = value;

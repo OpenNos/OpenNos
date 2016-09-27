@@ -22,6 +22,8 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
+        bool IdAlreadySet(long id);
+
         GeneralLogDTO Insert(GeneralLogDTO generallog);
 
         IEnumerable<GeneralLogDTO> LoadByAccount(long accountId);
@@ -31,8 +33,6 @@ namespace OpenNos.DAL.Interface
         void SetCharIdNull(Nullable<long> CharacterId);
 
         void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
-
-        bool IdAlreadySet(long id);
 
         #endregion
     }

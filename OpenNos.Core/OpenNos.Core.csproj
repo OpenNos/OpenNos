@@ -64,7 +64,9 @@
     <Compile Include="Networking\Communication\ScsServices\Client\IScsServiceClient.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClient.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClientBuilder.cs" />
-    <Compile Include="Networking\Communication\ScsServices\Communication\AutoConnectRemoteInvokeProxy.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Communication\AutoConnectRemoteInvokeProxy.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="Networking\Communication\ScsServices\Communication\Messages\ScsRemoteException.cs" />
     <Compile Include="Networking\Communication\ScsServices\Communication\Messages\ScsRemoteInvokeMessage.cs" />
     <Compile Include="Networking\Communication\ScsServices\Communication\Messages\ScsRemoteInvokeReturnMessage.cs" />
