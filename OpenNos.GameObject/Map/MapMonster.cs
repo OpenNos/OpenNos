@@ -56,7 +56,7 @@ namespace OpenNos.GameObject
             CurrentMp = Monster.MaxMP;
             Skills = Monster.Skills.ToList();
             DamageList = new Dictionary<long, long>();
-            _movetime = new Random().Next(300, 3000);
+            _movetime = ServerManager.Instance.Random.Next(300, 3000);
         }
 
         #endregion
@@ -101,7 +101,6 @@ namespace OpenNos.GameObject
 
         public static int GenerateMapMonsterId()
         {
-            Random rnd = new Random();
             List<int> monsterIds = new List<int>();
 
             for (int i = ServerManager.Monsters.Count - 1; i >= 0; i--)
@@ -155,8 +154,6 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                Random random = new Random((int)DateTime.Now.Ticks * MapMonsterId & 0x0000FFFF);
-
                 if (IsMoving && Monster.Speed > 0)
                 {
                     double time = (DateTime.Now - LastMove).TotalMilliseconds;
@@ -183,11 +180,11 @@ namespace OpenNos.GameObject
                     }
                     else if (time > _movetime)
                     {
-                        _movetime = random.Next(500, 3000);
-                        byte point = (byte)random.Next(2, 4);
-                        byte fpoint = (byte)random.Next(0, 2);
+                        _movetime = ServerManager.Instance.Random.Next(500, 3000);
+                        byte point = (byte)ServerManager.Instance.Random.Next(2, 4);
+                        byte fpoint = (byte)ServerManager.Instance.Random.Next(0, 2);
 
-                        byte xpoint = (byte)random.Next(fpoint, point);
+                        byte xpoint = (byte)ServerManager.Instance.Random.Next(fpoint, point);
                         byte ypoint = (byte)(point - xpoint);
 
                         short mapX = firstX;
@@ -227,16 +224,15 @@ namespace OpenNos.GameObject
                     Target = -1;
                     return;
                 }
-                Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 NpcMonsterSkill npcMonsterSkill = null;
-                if (random.Next(10) > 8 || inWaiting)
+                if (ServerManager.Instance.Random.Next(10) > 8 || inWaiting)
                 {
                     inWaiting = false;
                     if ((DateTime.Now - LastEffect).TotalMilliseconds < Monster.BasicCooldown * 200)
                     {
                         inWaiting = true;
                     }
-                    npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => random.Next()).FirstOrDefault();
+                    npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => ServerManager.Instance.Random.Next()).FirstOrDefault();
                 }
 
                 int damage = 100;
@@ -318,13 +314,10 @@ namespace OpenNos.GameObject
                         short maxDistance = 22;
                         if (Path.Count() == 0 && targetSession != null && distance > 1 && distance < maxDistance)
                         {
-                            short xoffset = 0;
-                            short yoffset = 0;
-                            while (xoffset == 0 && yoffset == 0)
-                            {
-                                xoffset = (short)random.Next(-1, 1);
-                                yoffset = (short)random.Next(-1, 1);
-                            }
+
+                            short xoffset = (short)ServerManager.Instance.Random.Next(-1, 1);
+                            short yoffset = (short)ServerManager.Instance.Random.Next(-1, 1);
+
 
                             Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
                             if (!Path.Any())

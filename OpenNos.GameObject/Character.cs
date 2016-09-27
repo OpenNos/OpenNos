@@ -59,6 +59,7 @@ namespace OpenNos.GameObject
             LastHealth = DateTime.Now;
             LastEffect = DateTime.Now;
             MailList = new Dictionary<int, MailDTO>();
+            LastMailRefresh = DateTime.Now;
             _session = Session;
             Group = null;
         }
@@ -68,7 +69,6 @@ namespace OpenNos.GameObject
         #region Properties
 
         public AuthorityType Authority { get { return _authority; } set { _authority = value; } }
-
         public int BackPack { get { return _backpack; } set { _backpack = value; } }
 
         public bool CanFight
@@ -80,43 +80,24 @@ namespace OpenNos.GameObject
         }
 
         public int DarkResistance { get; set; }
-
         public int Defence { get; set; }
-
         public int DefenceRate { get; set; }
-
         public int Direction { get { return _direction; } set { _direction = value; } }
-
         public int DistanceCritical { get; set; }
-
         public int DistanceCriticalRate { get; set; }
-
         public int DistanceDefence { get; set; }
-
         public int DistanceDefenceRate { get; set; }
-
         public int DistanceRate { get; set; }
-
         public int Element { get; set; }
-
         public int ElementRate { get; set; }
-
         public InventoryList EquipmentList { get { return _equipmentlist; } set { _equipmentlist = value; } }
-
         public ExchangeInfo ExchangeInfo { get; set; }
-
         public int FireResistance { get; set; }
-
         public Group Group { get; set; }
-
         public bool HasGodMode { get; set; }
-
         public bool HasShopOpened { get; set; }
-
         public int HitCritical { get; set; }
-
         public int HitCriticalRate { get; set; }
-
         public int HitRate { get; set; }
 
         public bool InExchangeOrTrade
@@ -128,93 +109,48 @@ namespace OpenNos.GameObject
         }
 
         public InventoryList InventoryList { get { return _inventorylist; } set { _inventorylist = value; } }
-
         public bool Invisible { get { return _invisible; } set { _invisible = value; } }
-
         public bool InvisibleGm { get; set; }
-
         public bool IsCustomSpeed { get; set; }
-
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
-
         public bool IsShopping { get; set; }
-
         public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
-
         public bool IsVehicled { get; set; }
-
         public DateTime LastDefence { get; set; }
-
         public DateTime LastEffect { get; set; }
-
         public DateTime LastHealth { get; set; }
-
         public DateTime LastLogin { get; set; }
-
         public DateTime LastMailRefresh { get; set; }
-
         public DateTime LastMapObject { get; set; }
-
-        public int LastMonsterId { get; set; }
-
         public DateTime LastMove { get; set; }
-
         public short LastNRunId { get; set; }
-
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
-
         public DateTime LastPotion { get; set; }
-
         public int LastPulse { get { return _lastPulse; } set { _lastPulse = value; } }
-
         public DateTime LastSkill { get; set; }
-
         public double LastSp { get; set; }
-
         public DateTime LastTransform { get; set; }
-
         public int LightResistance { get; set; }
-
         public int MagicalDefence { get; set; }
-
         public IDictionary<int, MailDTO> MailList { get; set; }
-
         public int MaxDistance { get; set; }
-
         public int MaxHit { get; set; }
-
         public int MaxSnack { get; set; }
-
         public int MinDistance { get; set; }
-
         public int MinHit { get; set; }
-
         public int Morph { get { return _morph; } set { _morph = value; } }
-
         public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
-
         public int MorphUpgrade2 { get { return _morphUpgrade2; } set { _morphUpgrade2 = value; } }
-
         public List<QuicklistEntry> QuicklistEntries { get; set; }
-
         public short SaveX { get; set; }
-
         public short SaveY { get; set; }
-
         public ClientSession Session { get { return _session; } }
-
         public int Size { get { return _size; } set { _size = value; } }
-
         public List<CharacterSkill> Skills { get; set; }
-
         public List<CharacterSkill> SkillsSp { get; set; }
-
         public int SnackAmount { get; set; }
-
         public int SnackHp { get; set; }
-
         public int SnackMp { get; set; }
-
         public int SpCooldown { get; set; }
 
         public byte Speed
@@ -230,7 +166,6 @@ namespace OpenNos.GameObject
         }
 
         public bool UseSp { get; set; }
-
         public int WaterResistance { get; set; }
 
         #endregion
@@ -254,16 +189,14 @@ namespace OpenNos.GameObject
                 Hp = (int)HPLoad();
                 Mp = (int)MPLoad();
                 Session.SendPacket(GenerateTit());
-
                 //Session.SendPacket(GenerateEquipment());
                 Session.SendPacket(GenerateStat());
                 Session.CurrentMap?.Broadcast(Session, GenerateEq(), ReceiverType.All);
                 Session.CurrentMap?.Broadcast(Session, GenerateEff(8), ReceiverType.All);
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
                 Session.CurrentMap?.Broadcast(Session, GenerateEff(196), ReceiverType.All);
-
-                Random rand = new Random();
-                int faction = 1 + (int)rand.Next(0, 2);
+                
+                int faction = 1 + (int)ServerManager.Instance.Random.Next(0, 2);
                 Faction = faction;
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
 
@@ -710,6 +643,13 @@ namespace OpenNos.GameObject
             return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Element : 0)} 0 {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
+        public string GeneratePostMessage(MailDTO mailDTO, byte type)
+        {
+            CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDTO.SenderId);
+
+            return $"post 5 {type} {MailList.First(s => s.Value == (mailDTO)).Key} 0 0 {mailDTO.SenderClass} {mailDTO.SenderGender} {mailDTO.SenderMorphId} {mailDTO.SenderHairStyle} {mailDTO.SenderHairColor} {mailDTO.EqPacket} {sender.Name} {mailDTO.Title} {mailDTO.Message}";
+        }
+
         public List<string> GenerateIn2()
         {
             return ServerManager.GetMap(MapId).Npcs.Select(npc => npc.GenerateIn2()).ToList();
@@ -808,11 +748,6 @@ namespace OpenNos.GameObject
                 : $"pairy 1 {CharacterId} 0 0 0 0";
         }
 
-        public string GenerateParcel(MailDTO mail)
-        {
-            return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.ItemVNum} {mail.Amount} {ServerManager.GetItem((short)mail.ItemVNum).Type}";
-        }
-
         public string GeneratePidx()
         {
             string str = String.Empty;
@@ -853,15 +788,9 @@ namespace OpenNos.GameObject
 
         public string GeneratePost(MailDTO mail, byte type)
         {
-            return $"post 1 {type} {MailList.Single(s => s.Value.MailId == (mail.MailId)).Key} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddHHmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
+            return $"post 1 {type} {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddHHmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
         }
 
-        public string GeneratePostMessage(MailDTO mailDTO, byte type)
-        {
-            CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDTO.SenderId);
-
-            return $"post 5 {type} {MailList.First(s => s.Value == (mailDTO)).Key} 0 0 {mailDTO.SenderClass} {mailDTO.SenderGender} {mailDTO.SenderMorphId} {mailDTO.SenderHairStyle} {mailDTO.SenderHairColor} {mailDTO.EqPacket} {sender.Name} {mailDTO.Title} {mailDTO.Message}";
-        }
 
         public string GeneratePslInfo(SpecialistInstance inventoryItem, int type)
         {
@@ -896,7 +825,6 @@ namespace OpenNos.GameObject
             WearableInstance armor = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Equipment);
             WearableInstance weapon2 = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Equipment);
             WearableInstance weapon = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Equipment);
-
             //tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary ispvparmor herolvl desc
             return $"tc_info {Level} {Name} {(fairy != null ? fairy.Item.Element : 0)} {ElementRate} {Class} {Gender} -1 - {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 0 0 0 {HeroLevel} {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
         }
@@ -983,7 +911,6 @@ namespace OpenNos.GameObject
                 if (skillsSp.Count >= i + 1)
                     skill += $"{skillsSp[i].SkillVNum}.";
             }
-
             //10 9 8 '0 0 0 0'<- bonusdamage bonusarmor bonuselement bonushpmp its after upgrade and 3 first values are not important
             skill = skill.TrimEnd('.');
             return $"slinfo {type} {inventoryItem.ItemVNum} {inventoryItem.Item.Morph} {inventoryItem.SpLevel} {inventoryItem.Item.LevelJobMinimum} {inventoryItem.Item.ReputationMinimum} 0 0 0 0 0 0 0 {inventoryItem.Item.SpType} {inventoryItem.Item.FireResistance} {inventoryItem.Item.WaterResistance} {inventoryItem.Item.LightResistance} {inventoryItem.Item.DarkResistance} {inventoryItem.XP} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.TransportId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
@@ -997,6 +924,42 @@ namespace OpenNos.GameObject
         public string GenerateSpPoint()
         {
             return $"sp {SpAdditionPoint} 1000000 {SpPoint} 10000";
+        }
+        public void SendGift(long id, short vnum, byte amount, bool isNosmall)
+        {
+            Item it = ServerManager.GetItem((short)vnum);
+            int color = HairColor;
+            
+            MailDTO mail = new MailDTO()
+            {
+                Amount = (it.Type == InventoryType.Etc || it.Type == InventoryType.Main) ? amount : (byte)1,
+                IsOpened = false,
+                Date = DateTime.Now,
+                ReceiverId = id,
+                SenderId = id,
+                IsSenderCopy = false,
+                Title = isNosmall ? "NOSMALL" : "NOSTALE",
+                ItemVNum = vnum,
+                SenderClass = Session.Character.Class,
+                SenderGender = Session.Character.Gender,
+                SenderHairColor = Session.Character.HairColor,
+                SenderHairStyle = Session.Character.HairStyle,
+                EqPacket = Session.Character.GenerateEqListForPacket(),
+                SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
+            };
+            DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+            if (id == CharacterId)
+            {
+                Session.Character.MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
+                Session.SendPacket(GenerateParcel(mail));
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
+            }
+
+        }
+
+        public string GenerateParcel(MailDTO mail)
+        {
+            return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.ItemVNum} {mail.Amount} {ServerManager.GetItem((short)mail.ItemVNum).Type}";
         }
 
         public void GenerateStartupInventory()
@@ -1201,7 +1164,6 @@ namespace OpenNos.GameObject
                     Element += p;
                 }
             }
-
             //TODO: add base stats
             WearableInstance weapon = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Equipment);
             if (weapon != null)
@@ -1212,7 +1174,6 @@ namespace OpenNos.GameObject
                 HitRate += weapon.HitRate + weapon.Item.HitRate;
                 HitCriticalRate += weapon.CriticalLuckRate + weapon.Item.CriticalLuckRate;
                 HitCritical += weapon.CriticalRate + weapon.Item.CriticalRate;
-
                 //maxhp-mp
             }
 
@@ -1225,7 +1186,6 @@ namespace OpenNos.GameObject
                 DistanceRate += weapon2.HitRate + weapon2.Item.HitRate;
                 DistanceCriticalRate += weapon2.CriticalLuckRate + weapon2.Item.CriticalLuckRate;
                 DistanceCritical += weapon2.CriticalRate + weapon2.Item.CriticalRate;
-
                 //maxhp-mp
             }
 
@@ -1658,7 +1618,6 @@ namespace OpenNos.GameObject
             foreach (InventoryDTO inventory in inventories)
             {
                 inventory.CharacterId = CharacterId;
-
                 //Replace by MAPPING
                 if (inventory.Type != InventoryType.Equipment)
                     InventoryList.Inventory.Add(new Inventory(inventory));
@@ -1677,6 +1636,7 @@ namespace OpenNos.GameObject
                 QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntry>(qle));
             }
         }
+
 
         public void LoadSkills()
         {
@@ -1766,12 +1726,15 @@ namespace OpenNos.GameObject
                     }
                     Session.SendPacket(Session.Character.GeneratePost(mail, 1));
                 }
+
             }
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
                 MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
 
                 Session.SendPacket(Session.Character.GeneratePost(mail, 2));
+
+
             }
             LastMailRefresh = DateTime.Now;
         }
@@ -1884,37 +1847,6 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Log.Error("Save Character failed. SessionId: " + Session.SessionId, e);
-            }
-        }
-
-        public void SendGift(long id, short vnum, byte amount, bool isNosmall)
-        {
-            Item it = ServerManager.GetItem((short)vnum);
-            int color = HairColor;
-
-            MailDTO mail = new MailDTO()
-            {
-                Amount = (it.Type == InventoryType.Etc || it.Type == InventoryType.Main) ? amount : (byte)1,
-                IsOpened = false,
-                Date = DateTime.Now,
-                ReceiverId = id,
-                SenderId = id,
-                IsSenderCopy = false,
-                Title = isNosmall ? "NOSMALL" : "NOSTALE",
-                ItemVNum = vnum,
-                SenderClass = Session.Character.Class,
-                SenderGender = Session.Character.Gender,
-                SenderHairColor = Session.Character.HairColor,
-                SenderHairStyle = Session.Character.HairStyle,
-                EqPacket = Session.Character.GenerateEqListForPacket(),
-                SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
-            };
-            DAOFactory.MailDAO.InsertOrUpdate(ref mail);
-            if (id == CharacterId)
-            {
-                Session.Character.MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
-                Session.SendPacket(GenerateParcel(mail));
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
             }
         }
 
@@ -2059,7 +1991,7 @@ namespace OpenNos.GameObject
 
         private object HeroXPLoad()
         {
-            return 949560; // need to load true algoritm
+            return 949560;//need to load true algoritm
         }
 
         #endregion

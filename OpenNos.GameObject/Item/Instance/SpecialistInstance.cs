@@ -227,19 +227,18 @@ namespace OpenNos.GameObject
                 return;
 
             SpecialistInstance specialist = Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.Id);
-
-            Random r = new Random();
-            int rnd = r.Next(100);
+            
+            int rnd = ServerManager.Instance.Random.Next(100);
             if (rnd <= upsuccess[upmode - 1])
             {
-                byte type = (byte)r.Next(16), count = 1;
+                byte type = (byte)ServerManager.Instance.Random.Next(16), count = 1;
                 if (upmode == 4)
                 {
                     count = 2;
                 }
                 if (upmode == 5)
                 {
-                    count = (byte)r.Next(3, 6);
+                    count = (byte)ServerManager.Instance.Random.Next(3, 6);
                 }
 
                 ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3005), ReceiverType.All);
@@ -404,8 +403,7 @@ namespace OpenNos.GameObject
             }
             WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
             Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
-            Random r = new Random();
-            int rnd = r.Next(100);
+            int rnd = ServerManager.Instance.Random.Next(100);
             if (rnd <= upfail[this.Upgrade])
             {
                 if (protect == UpgradeProtection.Protected)

@@ -354,20 +354,25 @@ namespace OpenNos.GameObject
         public MapItem PutItem(byte type, short slot, byte amount, ref Inventory inv)
         {
             Logger.Debug($"type: {type} slot: {slot} amount: {amount}", Owner.Session.SessionId);
-            Random rnd = new Random();
             Guid random = Guid.NewGuid();
             int i = 0;
             MapItem droppedItem = null;
-            short MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 2));
-            short MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 2));
-            while (Owner.Session.CurrentMap.IsBlockedZone(MapX, MapY) && i < 5)
+
+            List<MapCell> Possibilities = new List<MapCell>();
+
+            for (short x = -2; x < 3; x++)
+                for (short y = -2; y < 3; y++)
+                    Possibilities.Add(new MapCell() { X = x, Y = y });
+            short MapX = 0;
+            short MapY = 0;
+            foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
             {
-                MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 2));
-                MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 2));
-                i++;
+                MapX = (short)(Owner.MapX + possibilitie.X);
+                MapY = (short)(Owner.MapY + possibilitie.Y);
+                if (!Owner.Session.CurrentMap.IsBlockedZone(MapX, MapY))
+                    break;
             }
-            if (i == 5)
-                return null;
+            
             if (amount > 0 && amount <= inv.ItemInstance.Amount)
             {
                 droppedItem = new MapItem(MapX, MapY)

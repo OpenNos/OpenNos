@@ -22,15 +22,9 @@ namespace OpenNos.GameObject
 {
     public class MapNpc : MapNpcDTO
     {
-        #region Members
-
-        public NpcMonster Npc;
-        private int _movetime;
-
-        #endregion
-
         #region Instantiation
 
+        private int _movetime;
         public MapNpc(MapNpcDTO npc, Map parent)
         {
             //Replace by MAPPING
@@ -47,18 +41,19 @@ namespace OpenNos.GameObject
             FirstX = npc.MapX;
             FirstY = npc.MapY;
             MapNpcId = npc.MapNpcId;
-            ////////////////////////
+           ////////////////////////
 
             Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = LastMove = DateTime.Now;
             Map = parent;
-            _movetime = new Random().Next(300, 3000);
+            _movetime = ServerManager.Instance.Random.Next(300, 3000);
             IEnumerable<RecipeDTO> recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId);
             if (recipe != null)
             {
                 Recipes = new List<Recipe>();
                 foreach (RecipeDTO rec in recipe)
                 {
+
                     //Replace by MAPPING
                     Recipes.Add(new Recipe(rec.RecipeId) { ItemVNum = rec.ItemVNum, MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId, Amount = rec.Amount });
                     ///////////////////
@@ -84,6 +79,8 @@ namespace OpenNos.GameObject
                 Shop = new Shop(shop.ShopId) { Name = shop.Name, MapNpcId = MapNpcId, MenuType = shop.MenuType, ShopType = shop.ShopType };
                 ///////////////////
             }
+
+
         }
 
         #endregion
@@ -91,20 +88,15 @@ namespace OpenNos.GameObject
         #region Properties
 
         public short FirstX { get; set; }
-
         public short FirstY { get; set; }
-
         public DateTime LastEffect { get; private set; }
-
         public DateTime LastMove { get; private set; }
-
         public Map Map { get; set; }
-
         public List<Recipe> Recipes { get; set; }
-
         public Shop Shop { get; set; }
-
         public List<Teleporter> Teleporters { get; set; }
+        public NpcMonster Npc;
+
 
         #endregion
 
@@ -139,16 +131,16 @@ namespace OpenNos.GameObject
                 Map.Broadcast(GenerateEff());
                 LastEffect = DateTime.Now;
             }
-
-            Random random = new Random((int)DateTime.Now.Ticks * MapNpcId & 0x0000FFFF);
+            
             time = (DateTime.Now - LastMove).TotalMilliseconds;
             if (IsMoving && Npc.Speed > 0 && time > _movetime)
             {
-                _movetime = random.Next(500, 3000);
-                byte point = (byte)random.Next(2, 4);
-                byte fpoint = (byte)random.Next(0, 2);
 
-                byte xpoint = (byte)random.Next(fpoint, point);
+                _movetime = ServerManager.Instance.Random.Next(500, 3000);
+                byte point = (byte)ServerManager.Instance.Random.Next(2, 4);
+                byte fpoint = (byte)ServerManager.Instance.Random.Next(0, 2);
+
+                byte xpoint = (byte)ServerManager.Instance.Random.Next(fpoint, point);
                 byte ypoint = (byte)(point - xpoint);
 
                 short mapX = FirstX;
@@ -167,6 +159,8 @@ namespace OpenNos.GameObject
                     string movePacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {Npc.Speed}";
                     Map.Broadcast(movePacket);
                 }
+
+               
             }
         }
 

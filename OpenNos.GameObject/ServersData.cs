@@ -255,7 +255,6 @@ namespace OpenNos.GameObject
         public static int RarityPoint(short rarity, short lvl)
         {
             int p;
-            Random rnd = new Random();
             switch (rarity)
             {
                 default:
@@ -304,7 +303,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 8:
-                    p = rnd.Next(11, 16);
+                    p = ServerManager.Instance.Random.Next(11,16);
                     break;
             }
             return p * (lvl / 5) + 1;
@@ -586,7 +585,6 @@ namespace OpenNos.GameObject
         private void LoadHpData()
         {
             HP = new int[4, 100];
-
             //Adventurer HP
             for (int i = 1; i < HP.GetLength(1); i++)
             {

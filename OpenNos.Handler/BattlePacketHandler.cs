@@ -96,7 +96,7 @@ namespace OpenNos.Handler
                     {
                         short CastId = -1;
                         short MapMonsterId = -1;
-                        if (short.TryParse(packetsplit[i], out CastId) && short.TryParse(packetsplit[i + 1], out MapMonsterId))
+                        if (short.TryParse(packetsplit[i], out CastId) && short.TryParse(packetsplit[i+1], out MapMonsterId))
                         {
                             CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == CastId);
                             MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == MapMonsterId);
@@ -112,6 +112,7 @@ namespace OpenNos.Handler
                                 Session.SendPacket($"sr {CastId}");
                             }));
                         }
+                      
                     }
                 }
         }
@@ -161,7 +162,6 @@ namespace OpenNos.Handler
                         CharacterSkill skillinfo = Session.Character.Skills.OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
                         Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {(skillinfo != null ? skillinfo.Skill.CastEffect : ski.Skill.CastEffect)} {ski.Skill.SkillVNum}");
-
                         //Generate scp
                         ski.LastUse = DateTime.Now;
                         if (ski.Skill.CastEffect != 0)
@@ -195,7 +195,7 @@ namespace OpenNos.Handler
                                     short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
 
                                     if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY },
-                                                        new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + (DateTime.Now - monsterToAttack.LastMove).TotalSeconds * 2 * (monsterToAttackInfo.Speed == 0 ? 1 : monsterToAttackInfo.Speed) || ski.Skill.TargetRange != 0)
+                                                        new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + (DateTime.Now - monsterToAttack.LastMove).TotalSeconds * 2 * (monsterToAttackInfo.Speed == 0? 1 : monsterToAttackInfo.Speed) || ski.Skill.TargetRange != 0)
                                     {
                                         Session.Character.LastSkill = DateTime.Now;
                                         damage = GenerateDamage(monsterToAttack.MapMonsterId, ski.Skill, ref hitmode);
@@ -211,7 +211,6 @@ namespace OpenNos.Handler
 
                                         Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.CastAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.CastEffect : ski.Skill.CastEffect)} {ski.Skill.SkillVNum}");
                                         Session.Character.Skills.Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
-
                                         //Generate scp
                                         ski.LastUse = DateTime.Now;
                                         if (damage == 0 || (DateTime.Now - ski.LastUse).TotalSeconds > 3)
@@ -293,7 +292,7 @@ namespace OpenNos.Handler
                 string[] packetsplit = packet.Split(' ');
                 if (packetsplit.Length > 6)
                 {
-                    short MapX = -1, MapY = -1;
+                    short MapX =-1, MapY =-1;
                     if (!short.TryParse(packetsplit[5], out MapX) || !short.TryParse(packetsplit[6], out MapY)) return;
                     Session.Character.MapX = MapX;
                     Session.Character.MapY = MapY;
@@ -400,10 +399,8 @@ namespace OpenNos.Handler
             short distanceX = (short)(Session.Character.MapX - monsterToAttack.MapX);
             short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
             NpcMonster monsterinfo = ServerManager.GetNpc(monsterToAttack.MonsterVNum);
-            Random random = new Random();
 
-            int generated = random.Next(0, 100);
-
+            int generated = ServerManager.Instance.Random.Next(0, 100);
             //int miss_chance = 20;
             int monsterDefence = 0;
 
@@ -422,7 +419,6 @@ namespace OpenNos.Handler
             int SecHitRate = 0;
 
             int CritChance = 4;
-
             //int CritHit = 70;
             //int MinDmg = 0;
             //int MaxDmg = 0;
@@ -501,19 +497,17 @@ namespace OpenNos.Handler
             #endregion
 
             float[] Bonus = new float[10] { 0.1f, 0.15f, 0.22f, 0.32f, 0.43f, 0.54f, 0.65f, 0.90f, 1.20f, 2f };
-
             // TODO: Add skill uprade effect on damage
-            int AEq = Convert.ToInt32(random.Next(MainMinDmg, MainMaxDmg) * (1 + (MainUpgrade > monsterinfo.DefenceUpgrade ? Bonus[MainUpgrade - monsterinfo.DefenceUpgrade - 1] : 0)));
+            int AEq = Convert.ToInt32(ServerManager.Instance.Random.Next(MainMinDmg, MainMaxDmg) * (1 + (MainUpgrade > monsterinfo.DefenceUpgrade ? Bonus[MainUpgrade - monsterinfo.DefenceUpgrade - 1] : 0)));
             int DEq = Convert.ToInt32(monsterDefence * (1 + (MainUpgrade < monsterinfo.DefenceUpgrade ? Bonus[monsterinfo.DefenceUpgrade - MainUpgrade - 1] : 0)));
-            int ABase = Convert.ToInt32(random.Next(ServersData.MinHit(Session.Character.Class, Session.Character.Level), ServersData.MaxHit(Session.Character.Class, Session.Character.Level)));
+            int ABase = Convert.ToInt32(ServerManager.Instance.Random.Next(ServersData.MinHit(Session.Character.Class, Session.Character.Level), ServersData.MaxHit(Session.Character.Class, Session.Character.Level)));
             int Aeff = 0;            // Attack of equip given by effects like weapons, jewelry, masks, hats, res, etc .. (eg. X mask: +13 attack // Crossbow
             int Bsp6 = 0;            // Attack power increased (IMPORTANT) This already Added when SP Point has been set
             int Bsp7 = 0;            // Attack power increased (IMPORTANT) This already Added when SP Point has been set
-            int Asp = Convert.ToInt32((Session.Character.UseSp ? Convert.ToInt32(random.Next(specialistInstance.DamageMinimum, specialistInstance.DamageMaximum + 1)) + Bsp6 + Bsp7 + (specialistInstance.SlDamage * 10) / 200 : 0));
+            int Asp = Convert.ToInt32((Session.Character.UseSp ? Convert.ToInt32(ServerManager.Instance.Random.Next(specialistInstance.DamageMinimum, specialistInstance.DamageMaximum + 1)) + Bsp6 + Bsp7 + (specialistInstance.SlDamage * 10) / 200 : 0));
             int Br7 = 0;             // Improved Damage (Bonus Rune)
             int Br22 = 0;            // % Of damage in pvp (Bonus Rune)
             int APg = Convert.ToInt32(((AEq + ABase + Aeff + Asp + Br7) * (1 + Br22)));
-
             //Logger.Debug(String.Format("APg = (AEq({0}) +  ABase({1}) + Aeff({2}) + Asp({3}) + Br7({4})) * (1 + Br22({5})) = {6}", AEq, ABase, Aeff, Asp, Br7, Br22, APg));
 
             int DBase = 0;           // Defense Of Pg Convert.ToInt32 Base (Monster Defense);
@@ -526,7 +520,6 @@ namespace OpenNos.Handler
             int Br31 = 0;            // % To all defense
             int Br32 = 0;            // % To all defense in PvP
             int DPg = Convert.ToInt32((DEq + DBase + Deff + Dsp + Br28 + Br29 + Br30) * (1 + (Br31 + Br32) - Br21));
-
             //Logger.Debug(String.Format("DPg = (DEq({0}) +  DBase({1}) + Deff({2}) + Dsp({3}) + Br28({4}) + Br29({5}) + Br30({6})) * (1 + (Br31({7}) + + Br32({8}) - Br21({9}))) = {10}", DEq, DBase, Deff, Dsp, Br28, Br29, Br30, Br31, Br32, Br21, DPg));
 
             int Br6 = 0;             // % of Damage
@@ -538,7 +531,6 @@ namespace OpenNos.Handler
             int Br13 = 0;            // Increase damage on tall monster
             int BonusEq = 0;         // Bonus% of the weapons, known as bug 90 (ex. Arc 90 -> With a 25% probability increases damage up to 40%. and add effect 15 when damage have the bonus (damage up)
             int At = Convert.ToInt32(((APg + skill.Damage) * (1 + (Br6 + Br8 + Br9 + Br10 + Br11 + Br12 + Br13))) * (1 + BonusEq));
-
             //Logger.Debug(String.Format("At = ((APg {0} + skill.Damage {1} + 15) * (1 + (Br6 {2} + Br8 {3} + Br9 {4} + Br10 {5} + Br11 {6} + Br12 {7} + Br13 {8}))) * (1 + BonusEq{9}) = {10}", APg, skill.Damage, Br6, Br8, Br9, Br10, Br11, Br12, Br13, BonusEq, At));
 
             int DSkill = 0;          // base defense (not basic) given by the skill (eg. light protection Caster Defense + lv = * 2)
@@ -548,14 +540,12 @@ namespace OpenNos.Handler
             int DPet = 0;            // Defence given by pet
             int DOilFlower = 0;      // Defense given by the oil flower(?)
             int Dt = Convert.ToInt32((DPg + DSkill) * (1 + EffectPetPvp) + (1 + (DOilFlower != 0 ? DOilFlower : (DefensePotion + DArmor + DPet))));
-
             //Logger.Debug(String.Format("Dt = (DPg{0} + DSkill{1}) * (1 + EffectPetPvp{2}) + (1 + (DOilFlower{3} != 0 ? DOilFlower{4} : (DefensePotion{5} + DArmor{6} + DPet{7})) = {8}", DPg, DSkill, EffectPetPvp, DOilFlower, DOilFlower, DefensePotion, DArmor, DPet, Dt));
 
             int AOilFlower = 0;      // Attack given by the oil flower(?)
             int Bskl8 = 0;           // of the Iron Warrior Skin
             int Bskl5 = 0;           // Hawkeye ranger
             int Damage = Convert.ToInt32((At - Dt) * (1 + AOilFlower) * (1 + Bskl8) * (1 - Bskl5));
-
             //Logger.Debug(String.Format("Damage: {0}", Damage));
 
             int F = Convert.ToInt32(Session.Character.ElementRate / 100);
@@ -571,12 +561,10 @@ namespace OpenNos.Handler
             int Br4 = 0;             // Properties of Dark increased
             int Br5 = 0;             // Elemental properties of increased
             int Et = Convert.ToInt32(E + Eeff + ESkill + Br1 + Br2 + Br3 + Br4 + Br5);
-
             //Logger.Debug(String.Format("Et = E{0} + Eeff{1} + ESkill{2} + Br1{3} + Br2{4} + Br3{5} + Br4{6} + Br5{7} = {8}", E, Eeff, ESkill, Br1, Br2, Br3, Br4, Br5, Et));
 
             float Eele = 0;
             float EPg = Session.Character.Element;
-
             // Need to add skill element
             float EMob = monsterinfo.Element;
             if ((EPg == 0 && EMob >= 0 && EMob < 5) || (EPg == 1 && EMob == 3) || (EPg == 2 && EMob == 4) || (EPg == 3 && EMob == 2) || (EPg == 4 && EMob == 1)) Eele = 1f; // 0 No Element | 1 Fire | 2 Water | 3 Light | Darkness
@@ -607,11 +595,9 @@ namespace OpenNos.Handler
             int Br20 = 0;            // Reduce all defense of enemy in PvP
             float Ares = AReff + ARskill + Br16 + Br17 + Br18 + Br19 + Br20;
             int Ef = Convert.ToInt32((Et * Eele) * (1 - (Dres - Ares) / 100));
-
             //Logger.Debug(String.Format("Ef = (Et {0} * Eele{1}) * (1 - (Dres{2} - Ares{3})) = {4}", Et, Eele, Dres, Ares, Ef));
 
             int moralDefence = Session.Character.Level + /*Session.Character.Morale */ -monsterinfo.Level; //Morale Atk pg - Morale def pg
-
             //short Damage = 0;
 
             if (Session.Character.Class != 3)
@@ -648,7 +634,6 @@ namespace OpenNos.Handler
             if (Session.Character.Class != 2) rangedDistance = 1;
 
             int finalDamage = Convert.ToInt32((Damage + Ef + moralDefence + Dmob) * (1 - Bsp3) * (1 + (AttackPotion + Ahair + Apet)) * rangedDistance);
-
             //Logger.Debug(String.Format("FinalDamage = (Damage {0} + Ef {1}  + MoralDifference{2} + Dmob{3})  (1 - Bsp3{4})  (1 + (AttackPotion{5} + Ahair{6} + Apet{7})) * RangedDistance{8} = {9}", Damage, Ef, MoralDifference, Dmob, Bsp3, AttackPotion, Ahair, Apet, RangedDistance, FinalDamage));
 
             if (Session.Character.Class != 3 && !Session.Character.HasGodMode)
@@ -675,7 +660,6 @@ namespace OpenNos.Handler
                 monsterToAttack.CurrentHp = 0;
                 monsterToAttack.CurrentMp = 0;
                 monsterToAttack.Death = DateTime.Now;
-
                 //owner set
                 long? Owner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?)null;
                 Group gr = null;
@@ -683,22 +667,19 @@ namespace OpenNos.Handler
                 {
                     gr = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)Owner));
                 }
-
                 //end owner set
-                Random rnd = new Random();
                 int i = 1;
                 List<DropDTO> droplist = monsterinfo.Drops.Where(s => Session.CurrentMap.MapTypes.FirstOrDefault(m => m.MapTypeId == s.MapTypeId) != null || (s.MapTypeId == null)).ToList();
                 if (monsterToAttack.Monster.MonsterType != MonsterType.Special)
                 {
                     int RateDrop = ServerManager.DropRate;
                     int x = 0;
-                    foreach (DropDTO drop in droplist.OrderBy(s => rnd.Next()))
+                    foreach (DropDTO drop in droplist.OrderBy(s => ServerManager.Instance.Random.Next()))
                     {
                         if (x < 4)
                         {
                             i++;
-                            rnd = new Random(i * (int)DateTime.Now.Ticks & 0x0000FFFF);
-                            double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
+                            double rndamount = ServerManager.Instance.Random.Next(0, 100) * ServerManager.Instance.Random.NextDouble();
                             if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
                             {
                                 x++;
@@ -724,9 +705,9 @@ namespace OpenNos.Handler
                         }
                     }
 
-                    rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                 
                     int RateGold = ServerManager.GoldRate;
-                    int gold = Convert.ToInt32((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level) * RateGold * (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1));
+                    int gold = Convert.ToInt32((ServerManager.Instance.Random.Next(1, 8) >= 7 ? 1 : 0) * ServerManager.Instance.Random.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level) * RateGold * (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1));
                     gold = gold > 1000000000 ? 1000000000 : gold;
                     if (gold != 0)
                     {

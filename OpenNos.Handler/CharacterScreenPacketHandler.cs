@@ -64,7 +64,6 @@ namespace OpenNos.Handler
                         {
                             if (Convert.ToByte(packetsplit[3]) > 2)
                                 return;
-                            Random r = new Random();
                             CharacterDTO newCharacter = new CharacterDTO()
                             {
                                 Class = (byte)ClassType.Adventurer,
@@ -78,8 +77,8 @@ namespace OpenNos.Handler
                                 Level = 1,
                                 LevelXp = 0,
                                 MapId = 1,
-                                MapX = (short)(r.Next(78, 81)),
-                                MapY = (short)(r.Next(114, 118)),
+                                MapX = (short)(ServerManager.Instance.Random.Next(78, 81)),
+                                MapY = (short)(ServerManager.Instance.Random.Next(114, 118)),
                                 Mp = 221,
                                 Name = characterName,
                                 Slot = slot,
@@ -212,11 +211,16 @@ namespace OpenNos.Handler
                 return;
             string[] deleteCharacterPacket = packet.Split(' ');
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
+            if (account == null)
+                return;
             if (deleteCharacterPacket.Length <= 3)
                 return;
             if (account != null && account.Password.ToLower() == EncryptionBase.Sha512(deleteCharacterPacket[3]))
             {
-                DAOFactory.GeneralLogDAO.SetCharIdNull(Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(deleteCharacterPacket[2])).CharacterId));
+                CharacterDTO character = DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
+                if (character == null)
+                    return;
+                DAOFactory.GeneralLogDAO.SetCharIdNull(Convert.ToInt64(character.CharacterId));
                 DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
                 LoadCharacters(packet);
             }
