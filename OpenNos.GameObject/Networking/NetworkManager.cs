@@ -42,6 +42,7 @@ namespace OpenNos.GameObject
                 _fallbackEncryptor = (EncryptionBase)Activator.CreateInstance(fallbackEncryptor);
 
             var server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
+
             //Register events of the server to be informed about clients
             server.ClientConnected += Server_ClientConnected;
             server.ClientDisconnected += Server_ClientDisconnected;

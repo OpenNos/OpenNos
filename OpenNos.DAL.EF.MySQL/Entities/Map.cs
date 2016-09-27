@@ -38,23 +38,29 @@ namespace OpenNos.DAL.EF.MySQL
         #region Properties
 
         public virtual ICollection<Character> Character { get; set; }
+
         public byte[] Data { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public short MapId { get; set; }
 
         public virtual ICollection<MapMonster> MapMonster { get; set; }
+
         public virtual ICollection<MapNpc> MapNpc { get; set; }
 
         public virtual ICollection<MapTypeMap> MapTypeMap { get; set; }
+
         public int Music { get; set; }
 
         [MaxLength(255)]
         public string Name { get; set; }
-        public bool ShopAllowed { get; set; }
 
         public virtual ICollection<Portal> Portal { get; set; }
+
         public virtual ICollection<Portal> Portal1 { get; set; }
+
+        public bool ShopAllowed { get; set; }
+
         public virtual ICollection<Teleporter> Teleporter { get; set; }
 
         #endregion

@@ -20,7 +20,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.3.*")]
-
 [assembly: AssemblyTitle("OpenNos.World")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyTrademark("")]
@@ -33,5 +32,4 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("ec300279-181e-4e6e-a94c-e8baf0eab2ad")]
-
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]

@@ -13,21 +13,28 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class Mail
     {
-        #region Properties     
+        #region Properties
 
         public byte Amount { get; set; }
-        public virtual Item Item { get; set; }
-        public short? ItemVNum { get; set; }
+
         public DateTime Date { get; set; }
+
+        [MaxLength(255)]
+        public string EqPacket { get; set; }
+
         public bool IsOpened { get; set; }
+
+        public bool IsSenderCopy { get; set; }
+
+        public virtual Item Item { get; set; }
+
+        public short? ItemVNum { get; set; }
 
         [Key]
         public long MailId { get; set; }
@@ -35,20 +42,13 @@ namespace OpenNos.DAL.EF.MySQL
         [MaxLength(255)]
         public string Message { get; set; }
 
-        public bool IsSenderCopy { get; set; }
-
         public virtual Character Receiver { get; set; }
 
         public long ReceiverId { get; set; }
 
         public virtual Character Sender { get; set; }
 
-        public long SenderId { get; set; }
-
         public byte SenderClass { get; set; }
-
-        [MaxLength(255)]
-        public string EqPacket { get; set; }
 
         public byte SenderGender { get; set; }
 
@@ -56,7 +56,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte SenderHairStyle { get; set; }
 
-
+        public long SenderId { get; set; }
 
         public short SenderMorphId { get; set; }
 

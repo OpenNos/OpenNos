@@ -21,6 +21,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
     /// </summary>
     public interface IScsClient : IMessenger, IConnectableClient
     {
-        //Does not define any additional member
+        // Does not define any additional member
     }
 }

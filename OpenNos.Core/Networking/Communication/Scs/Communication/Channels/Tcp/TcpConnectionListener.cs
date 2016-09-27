@@ -101,7 +101,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 }
                 catch
                 {
-                    //Disconnect, wait for a while and connect again.
+                    // Disconnect, wait for a while and connect again.
                     StopSocket();
                     Thread.Sleep(1000);
                     if (!_running)

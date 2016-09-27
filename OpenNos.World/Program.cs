@@ -74,8 +74,10 @@ namespace OpenNos.World
             Console.SetCursorPosition(offset < 0 ? 0 : offset, Console.CursorTop);
             Console.WriteLine(text + "\n" +
             new String('=', Console.WindowWidth) + "\n");
+
             //initialize DB
             if (DataAccessHelper.Initialize())
+
                 //initialilize maps
                 ServerManager.Initialize();
 

@@ -28,15 +28,15 @@ namespace OpenNos.Core
         {
             try
             {
-                //load pregenerated serialization information
+                // load pregenerated serialization information
                 var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(typeof(TPacket)));
 
-                string deserializedPacket = serializationInformation.Key.Item2; //set header
+                string deserializedPacket = serializationInformation.Key.Item2; // set header
 
                 int lastIndex = 0;
                 foreach (var packetBasePropertyInfo in serializationInformation.Value)
                 {
-                    //check if we need to add a non mapped values (pseudovalues)
+                    // check if we need to add a non mapped values (pseudovalues)
                     if (packetBasePropertyInfo.Key.Index > lastIndex + 1)
                     {
                         int amountOfEmptyValuesToAdd = packetBasePropertyInfo.Key.Index - (lastIndex + 1);
@@ -47,10 +47,10 @@ namespace OpenNos.Core
                         }
                     }
 
-                    //add value for current configuration
+                    // add value for current configuration
                     deserializedPacket += ConvertValueBack(packetBasePropertyInfo.Value.PropertyType, packetBasePropertyInfo.Value.GetValue(packet));
 
-                    //set new index
+                    // set new index
                     lastIndex = packetBasePropertyInfo.Key.Index;
                 }
 
@@ -79,7 +79,7 @@ namespace OpenNos.Core
             try
             {
                 var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(typeof(TPacket)));
-                TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); //reflection is bad, improve?
+                TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); // reflection is bad, improve?
 
                 MatchCollection matches = Regex.Matches(packetContent, @"([^\s]+[\.\^][^\s]+[\s]?)+((?=\s)|$)|([^\s]+)((?=\s)|$)");
 
@@ -87,10 +87,10 @@ namespace OpenNos.Core
                 {
                     foreach (var packetBasePropertyInfo in serializationInformation.Value)
                     {
-                        int currentIndex = packetBasePropertyInfo.Key.Index + 2; //adding 2 because we need to skip incrementing number and packet header
+                        int currentIndex = packetBasePropertyInfo.Key.Index + 2; // adding 2 because we need to skip incrementing number and packet header
                         string currentValue = matches[currentIndex].Value;
 
-                        //set the value & convert currentValue
+                        // set the value & convert currentValue
                         if (currentValue != null)
                         {
                             packetBasePropertyInfo.Value.SetValue(deserializedPacket, ConvertValue(packetBasePropertyInfo.Value.PropertyType, currentValue));
@@ -197,10 +197,11 @@ namespace OpenNos.Core
                 {
                     serializedSubPacket += " ";
 
-                    //iterate thru configure subpacket properties
+                    // iterate thru configure subpacket properties
                     foreach (var subpacketPropertyInfo in subpacketSerializationInfo.Value)
                     {
-                        if (!(subpacketPropertyInfo.Key.Index == 0)) //first element
+                        // first element
+                        if (!(subpacketPropertyInfo.Key.Index == 0))
                         {
                             serializedSubPacket += ".";
                         }
@@ -215,12 +216,14 @@ namespace OpenNos.Core
 
         private static object ConvertValue(Type packetPropertyType, string currentValue)
         {
-            if (currentValue == "-1" || currentValue == "-")//check for empty value and cast it to null
+            // check for empty value and cast it to null
+            if (currentValue == "-1" || currentValue == "-")
             {
                 currentValue = null;
             }
 
-            if (packetPropertyType.BaseType != null && packetPropertyType.BaseType.Equals(typeof(Enum))) //enum should be casted to number
+            // enum should be casted to number
+            if (packetPropertyType.BaseType != null && packetPropertyType.BaseType.Equals(typeof(Enum)))
             {
                 return Enum.Parse(packetPropertyType, currentValue);
             }
@@ -232,8 +235,9 @@ namespace OpenNos.Core
             {
                 return ConvertSubList(currentValue, packetPropertyType);
             }
-            else if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //check for IList but not IList<PacketBase> -> Simple lists
+            else if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)))
             {
+                // check for IList but not IList<PacketBase> -> Simple lists
                 return ConvertSimpleList(currentValue, packetPropertyType);
             }
             else if (Nullable.GetUnderlyingType(packetPropertyType) != null && String.IsNullOrEmpty(currentValue))
@@ -254,7 +258,7 @@ namespace OpenNos.Core
         {
             if (propertyType != null)
             {
-                //check for nullable without value or string
+                // check for nullable without value or string
                 if (propertyType.Equals(typeof(string)) && String.IsNullOrEmpty(Convert.ToString(value)))
                 {
                     return " -";
@@ -263,12 +267,15 @@ namespace OpenNos.Core
                 {
                     return " -1";
                 }
-                if (propertyType.BaseType != null && propertyType.BaseType.Equals(typeof(Enum))) //enum should be casted to number
+
+                // enum should be casted to number
+                if (propertyType.BaseType != null && propertyType.BaseType.Equals(typeof(Enum)))
                 {
                     return String.Format(" {0}", Convert.ToInt16(value));
                 }
-                else if (propertyType.Equals(typeof(bool))) //vool is 0 or 1 not True or False
+                else if (propertyType.Equals(typeof(bool)))
                 {
+                    // bool is 0 or 1 not True or False
                     return Convert.ToBoolean(value) ? " 1" : " 0";
                 }
                 else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))
@@ -276,8 +283,9 @@ namespace OpenNos.Core
                 {
                     return ConvertSubListBack((IList)value, propertyType);
                 }
-                else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //check for IList but not IList<PacketBase> -> Simple lists
+                else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)))
                 {
+                    // check for IList but not IList<PacketBase> -> Simple lists
                     return ConvertSimpleListBack((IList)value, propertyType);
                 }
                 else
@@ -294,7 +302,7 @@ namespace OpenNos.Core
         {
             _packetSerializationInformations = new Dictionary<Tuple<Type, String>, Dictionary<PacketIndexAttribute, PropertyInfo>>();
 
-            //Iterate thru all PacketBase implementations
+            // Iterate thru all PacketBase implementations
             foreach (Type packetBaseType in typeof(TPacketBase).Assembly.GetTypes().Where(p => !p.IsInterface && typeof(TPacketBase).BaseType.IsAssignableFrom(p)))
             {
                 string header = packetBaseType.GetCustomAttribute<HeaderAttribute>()?.Identification;
@@ -310,10 +318,10 @@ namespace OpenNos.Core
                     }
                 }
 
-                //order by index
+                // order by index
                 PacketsForPacketDefinition.OrderBy(p => p.Key.Index);
 
-                //add to serialization informations
+                // add to serialization informations
                 _packetSerializationInformations.Add(new Tuple<Type, String>(packetBaseType, header), PacketsForPacketDefinition);
             }
         }

@@ -237,6 +237,7 @@ namespace OpenNos.DAL
                 return _mailDAO;
             }
         }
+
         public static IMapDAO MapDAO
         {
             get

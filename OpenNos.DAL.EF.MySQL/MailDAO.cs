@@ -50,6 +50,30 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Methods
 
+        public DeleteResult DeleteById(long mailId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Mail mail = context.Mail.First(i => i.MailId.Equals(mailId));
+
+                    if (mail != null)
+                    {
+                        context.Mail.Remove(mail);
+                        context.SaveChanges();
+                    }
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return DeleteResult.Error;
+            }
+        }
+
         public SaveResult InsertOrUpdate(ref MailDTO mail)
         {
             try
@@ -79,13 +103,51 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public MailDTO LoadById(long mailId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<MailDTO>(context.Mail.FirstOrDefault(i => i.MailId.Equals(mailId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+        }
+
+        public IEnumerable<MailDTO> LoadByReceiverId(long receiverId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Mail mail in context.Mail.Where(i => i.ReceiverId.Equals(receiverId) && i.IsSenderCopy.Equals(false)))
+                {
+                    yield return _mapper.Map<MailDTO>(mail);
+                }
+            }
+        }
+
+        public IEnumerable<MailDTO> LoadBySenderId(long senderId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Mail mail in context.Mail.Where(i => i.SenderId.Equals(senderId) && i.IsSenderCopy.Equals(true)))
+                {
+                    yield return _mapper.Map<MailDTO>(mail);
+                }
+            }
+        }
+
         private MailDTO Insert(MailDTO mail, OpenNosContext context)
         {
             try
             {
                 Mail entity = _mapper.Map<Mail>(mail);
                 context.Mail.Add(entity);
-                context.SaveChanges();            
+                context.SaveChanges();
                 return _mapper.Map<MailDTO>(entity);
             }
             catch (Exception e)
@@ -103,68 +165,6 @@ namespace OpenNos.DAL.EF.MySQL
                 context.SaveChanges();
             }
             return _mapper.Map<MailDTO>(entity);
-        }
-
-        public MailDTO LoadById(long mailId)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    return _mapper.Map<MailDTO>(context.Mail.FirstOrDefault(i => i.MailId.Equals(mailId)));
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return null;
-            }
-        }
-        public DeleteResult DeleteById(long mailId)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    Mail mail = context.Mail.First(i => i.MailId.Equals(mailId));
-
-                    if (mail != null)
-                    {
-                        context.Mail.Remove(mail);
-                        context.SaveChanges();
-                    }
-
-                    return DeleteResult.Deleted;
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return DeleteResult.Error;
-            }
-        }
-        public IEnumerable<MailDTO> LoadByReceiverId(long receiverId)
-        {
-
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Mail mail in context.Mail.Where(i => i.ReceiverId.Equals(receiverId) && i.IsSenderCopy.Equals(false)))
-                {
-                    yield return _mapper.Map<MailDTO>(mail);
-                }
-            }
-
-        }
-
-        public IEnumerable<MailDTO> LoadBySenderId(long senderId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Mail mail in context.Mail.Where(i => i.SenderId.Equals(senderId) && i.IsSenderCopy.Equals(true)))
-                {
-                    yield return _mapper.Map<MailDTO>(mail);
-                }
-            }
         }
 
         #endregion

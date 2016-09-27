@@ -1,15 +1,14 @@
 ﻿using OpenNos.DAL.Interface;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Data;
 
 namespace OpenNos.DAL.Mock
 {
     public class ItemDAO : IItemDAO
     {
+        #region Methods
+
         public IEnumerable<ItemDTO> FindByName(string name)
         {
             throw new NotImplementedException();
@@ -37,5 +36,7 @@ namespace OpenNos.DAL.Mock
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

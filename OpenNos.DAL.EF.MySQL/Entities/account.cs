@@ -41,7 +41,9 @@ namespace OpenNos.DAL.EF.MySQL
         public virtual ICollection<Character> Character { get; set; }
 
         public virtual ICollection<GeneralLog> GeneralLog { get; set; }
+
         public DateTime LastCompliment { get; set; }
+
         public int LastSession { get; set; }
 
         [MaxLength(255)]

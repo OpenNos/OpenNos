@@ -64,20 +64,35 @@ namespace OpenNos.GameObject
         #region Properties
 
         public bool Alive { get; set; }
+
         public int CurrentHp { get; set; }
+
         public int CurrentMp { get; set; }
+
         public IDictionary<long, long> DamageList { get; set; }
+
         public DateTime Death { get; set; }
+
         public short firstX { get; set; }
+
         public short firstY { get; set; }
+
         public bool inWaiting { get; set; }
+
         public DateTime LastEffect { get; set; }
+
         public DateTime LastMove { get; set; }
+
         public Map Map { get; set; }
+
         public NpcMonster Monster { get; set; }
+
         public List<MapCell> Path { get; set; }
+
         public bool Respawn { get; set; }
+
         public List<NpcMonsterSkill> Skills { get; set; }
+
         public long Target { get; set; }
 
         #endregion

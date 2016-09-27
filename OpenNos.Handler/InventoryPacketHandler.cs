@@ -13,8 +13,6 @@
  */
 
 using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
@@ -31,7 +29,7 @@ namespace OpenNos.Handler
 
         private readonly ClientSession _session;
 
-        #endregion Members
+        #endregion
 
         #region Instantiation
 
@@ -40,13 +38,13 @@ namespace OpenNos.Handler
             _session = session;
         }
 
-        #endregion Instantiation
+        #endregion
 
         #region Properties
 
         public ClientSession Session { get { return _session; } }
 
-        #endregion Properties
+        #endregion
 
         #region Methods
 
@@ -450,7 +448,6 @@ namespace OpenNos.Handler
             }
             if (long.TryParse(packetsplit[4], out transportId) && Session.CurrentMap.DroppedList.TryGetValue(transportId, out mapitem))
             {
-
                 int amount = mapitem.ItemInstance.Amount;
 
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
@@ -640,6 +637,7 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                         return;
                     }
+
                     // Put item back to inventory
                     Inventory inv = Session.Character.InventoryList.AddToInventory(inventory);
                     if (inv == null)
@@ -680,7 +678,7 @@ namespace OpenNos.Handler
                 }
             }
         }
-      
+
         [Packet("sortopen")]
         public void SortOpen(string packet)
         {
@@ -694,7 +692,6 @@ namespace OpenNos.Handler
                 {
                     for (short x = 0; x < 44; x++)
                     {
-
                         type = (i == 0) ? InventoryType.Sp : InventoryType.Costume;
                         if (Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(x, type) == null)
                         {
@@ -712,7 +709,6 @@ namespace OpenNos.Handler
                     }
                     Session.Character.InventoryList.Reorder(Session, type = (i == 0) ? InventoryType.Sp : InventoryType.Costume);
                 }
-
             }
         }
 
@@ -824,6 +820,7 @@ namespace OpenNos.Handler
                 {
                     specialistInstance.CriticalRate += 20;
                 }
+
                 //sldef
                 if (slDefence >= 20)
                 {
@@ -871,6 +868,7 @@ namespace OpenNos.Handler
                 {
                     specialistInstance.HP += 300;
                 }
+
                 //slele
                 if (slElement >= 1)
                 {
@@ -930,6 +928,7 @@ namespace OpenNos.Handler
                     specialistInstance.LightResistance += 6;
                     specialistInstance.DarkResistance += 6;
                 }
+
                 //slhp
                 if (slElement >= 5)
                 {
@@ -1062,7 +1061,7 @@ namespace OpenNos.Handler
                     specialistInstance.MagicDefence += 30;
                     specialistInstance.CriticalDodge += 3;
                 }
-                
+
                 Session.SendPacket(Session.Character.GenerateStatChar());
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
@@ -1265,7 +1264,7 @@ namespace OpenNos.Handler
                 Session.Character.UseSp = true;
                 Session.Character.Morph = sp.Item.Morph;
                 Session.Character.MorphUpgrade = sp.Upgrade;
-                Session.Character.MorphUpgrade2 = sp.Design;                
+                Session.Character.MorphUpgrade2 = sp.Design;
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                 Session.SendPacket(Session.Character.GenerateLev());
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.All);
@@ -1312,6 +1311,7 @@ namespace OpenNos.Handler
                 Session.SendPacket($"sd {Session.Character.SpCooldown}");
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
+
                 //ms_c
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());
@@ -1323,6 +1323,6 @@ namespace OpenNos.Handler
             }
         }
 
-        #endregion Methods
+        #endregion
     }
 }

@@ -81,6 +81,15 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 10));
         }
 
+        [Packet("$ArenaWinner")]
+        public void ArenaWinner(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
+            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        }
+
         [Packet("$Ban")]
         public void Ban(string packet)
         {
@@ -134,22 +143,26 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
         }
 
-        [Packet("$Guri")]
-        public void TestGuri(string packet)
+        [Packet("$ChangeDignity")]
+        public void ChangeDignity(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            byte type = 0, argument = 0;
-            short value = 0;
-            if (packetsplit.Length > 3)
+            float dignity;
+            if (packetsplit.Length != 3)
             {
-                if (byte.TryParse(packetsplit[2], out type) && byte.TryParse(packetsplit[3], out argument) && short.TryParse(packetsplit[4], out value))
-                {
-                    Session.SendPacket(Session.Character.GenerateGuri(type, argument, value));
-                }
+                Session.SendPacket(Session.Character.GenerateSay("$ChangeDignity DIGNITY", 10));
+                return;
             }
-            else
-                Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
+
+            if (float.TryParse(packetsplit[2], out dignity) && dignity >= -1000 && dignity <= 100)
+            {
+                Session.Character.Dignity = dignity;
+                Session.SendPacket(Session.Character.GenerateFd());
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DIGNITY_CHANGED"), 12));
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+            }
+            else Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DIGNITY"), 11));
         }
 
         [Packet("$FLvl")]
@@ -280,28 +293,6 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$ChangeDignity")]
-        public void ChangeDignity(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            float dignity;
-            if (packetsplit.Length != 3)
-            {
-                Session.SendPacket(Session.Character.GenerateSay("$ChangeDignity DIGNITY", 10));
-                return;
-            }
-
-            if (float.TryParse(packetsplit[2], out dignity) && dignity >= -1000 && dignity <= 100)
-            {
-                Session.Character.Dignity = dignity;
-                Session.SendPacket(Session.Character.GenerateFd());
-                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DIGNITY_CHANGED"), 12));
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-            }
-            else Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DIGNITY"), 11));
-        }
-
         [Packet("$SPLvl")]
         public void ChangeSpecialistLevel(string packet)
         {
@@ -372,6 +363,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
+
             //Session.SendPacket(Session.Character.GenerateSay("$RemoveMonster MonsterId", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
@@ -397,89 +389,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
         }
 
-        [Packet("$RemovePortal")]
-        public void RemoveNearestPortal(string packet)
-        {
-            Portal pt = Session.CurrentMap.Portals.FirstOrDefault(s => s.SourceMapId == Session.Character.MapId && Map.GetDistance(new MapCell { MapId = s.SourceMapId, X = s.SourceX, Y = s.SourceY }, new MapCell { MapId = Session.Character.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }) < 10);
-            if (pt != null)
-            {
-                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
-                Session.CurrentMap.Portals.Remove(pt);
-                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
-            }
-            else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_PORTAL_FOUND"), 11));
-        }
-
-        [Packet("$ArenaWinner")]
-        public void ArenaWinner(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        }
-
-        [Packet("$SearchMonster")]
-        public void SearchMonster(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length == 3)
-            {
-                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(packetsplit[2]).OrderBy(s => s.NpcMonsterVNum).ToList();
-                if (monsterlist.Any())
-                {
-                    foreach (NpcMonsterDTO NpcMonster in monsterlist)
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay($"Monster: {NpcMonster.Name} VNum: {NpcMonster.NpcMonsterVNum}", 12));
-                    }
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MONSTER_NOT_FOUND"), 11));
-                }
-            }
-            else
-                Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME", 10));
-        }
-
-        [Packet("$SearchItem")]
-        public void SearchItem(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length == 3)
-            {
-                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(packetsplit[2]).OrderBy(s => s.VNum).ToList();
-                if (itemlist.Any())
-                {
-                    foreach (ItemDTO item in itemlist)
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay($"Item: {item.Name} VNum: {item.VNum}", 12));
-                    }
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_NOT_FOUND"), 11));
-                }
-            }
-            else
-                Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 10));
-        }
-        [Packet("$Grid")]
-        public void ShowGrid(string packet)
-        {
-            string grid = String.Empty;
-            for (int y = 0; y < Session.CurrentMap.YLength; y++)
-            {
-                for (int x = 0; x < Session.CurrentMap.XLength; x++)
-                {
-                    if (Session.CurrentMap.Tempgrid.IsWalkableAt(x, y))
-                        Session.SendPacket($"in 2 {1} {int.MaxValue - (x * y)} {x} {y} {1} 100 100 -1 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0");
-                }
-            }
-
-        }
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
         {
@@ -615,6 +524,53 @@ namespace OpenNos.Handler
             }
             else
                 Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
+        }
+
+        [Packet("$Gift")]
+        public void Gift(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte amount;
+            short vnum;
+            if (packetsplit.Length > 3)
+            {
+                if (packetsplit.Length == 4)
+                {
+                    if (!(byte.TryParse(packetsplit[3], out amount) && short.TryParse(packetsplit[2], out vnum)))
+                        return;
+                    Session.Character.SendGift(Session.Character.CharacterId, vnum, amount, false);
+                }
+                else
+                {
+                    string name = packetsplit[2];
+                    if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum)))
+                        return;
+
+                    if (name == "*")
+                    {
+                        foreach (ClientSession session in Session.CurrentMap.Sessions.Where(s => s.Character != null))
+                            Session.Character.SendGift((session.Character.CharacterId), vnum, amount, false);
+                    }
+                    else
+                    {
+                        CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(name);
+
+                        if (chara != null)
+                        {
+                            Session.Character.SendGift((chara.CharacterId), vnum, amount, false);
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                            return;
+                        }
+                    }
+                }
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFT_SENDED"), 10));
+            }
+            else
+                Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME VNUM AMOUNT", 10));
         }
 
         [Packet("$GodMode")]
@@ -1016,6 +972,36 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
         }
 
+        [Packet("$RemoveMob")]
+        public void RemoveMob(string packet)
+        {
+            MapMonster monst = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == Session.Character.LastMonsterId);
+            if (monst != null)
+            {
+                if (monst.Alive)
+                {
+                    Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
+                    Session.CurrentMap.Monsters.Remove(monst);
+                }
+                else Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_MUST_BE_ALIVE")), 11));
+            }
+            else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MOB_DONT_FIND"), 11));
+        }
+
+        [Packet("$RemovePortal")]
+        public void RemoveNearestPortal(string packet)
+        {
+            Portal pt = Session.CurrentMap.Portals.FirstOrDefault(s => s.SourceMapId == Session.Character.MapId && Map.GetDistance(new MapCell { MapId = s.SourceMapId, X = s.SourceX, Y = s.SourceY }, new MapCell { MapId = Session.Character.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }) < 10);
+            if (pt != null)
+            {
+                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
+                Session.CurrentMap.Portals.Remove(pt);
+                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+            }
+            else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_PORTAL_FOUND"), 11));
+        }
+
         [Packet("$Resize")]
         public void Resize(string packet)
         {
@@ -1038,21 +1024,95 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 10));
         }
 
-        [Packet("$RemoveMob")]
-        public void RemoveMob(string packet)
+        [Packet("$SearchItem")]
+        public void SearchItem(string packet)
         {
-            MapMonster monst = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == Session.Character.LastMonsterId);
-            if (monst != null)
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length == 3)
             {
-                if (monst.Alive)
+                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(packetsplit[2]).OrderBy(s => s.VNum).ToList();
+                if (itemlist.Any())
                 {
-                    Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
-                    Session.CurrentMap.Monsters.Remove(monst);
+                    foreach (ItemDTO item in itemlist)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay($"Item: {item.Name} VNum: {item.VNum}", 12));
+                    }
                 }
-                else Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_MUST_BE_ALIVE")), 11));
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_NOT_FOUND"), 11));
+                }
             }
-            else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MOB_DONT_FIND"), 11));
+            else
+                Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 10));
+        }
+
+        [Packet("$SearchMonster")]
+        public void SearchMonster(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length == 3)
+            {
+                IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(packetsplit[2]).OrderBy(s => s.NpcMonsterVNum).ToList();
+                if (monsterlist.Any())
+                {
+                    foreach (NpcMonsterDTO NpcMonster in monsterlist)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay($"Monster: {NpcMonster.Name} VNum: {NpcMonster.NpcMonsterVNum}", 12));
+                    }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MONSTER_NOT_FOUND"), 11));
+                }
+            }
+            else
+                Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME", 10));
+        }
+
+        [Packet("$Shout")]
+        public void Shout(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            string message = String.Empty;
+            if (packetsplit.Length > 2)
+                for (int i = 2; i < packetsplit.Length; i++)
+                    message += packetsplit[i] + " ";
+            message.Trim();
+            ServerManager.Instance.Shout(message);
+        }
+
+        [Packet("$Grid")]
+        public void ShowGrid(string packet)
+        {
+            string grid = String.Empty;
+            for (int y = 0; y < Session.CurrentMap.YLength; y++)
+            {
+                for (int x = 0; x < Session.CurrentMap.XLength; x++)
+                {
+                    if (Session.CurrentMap.Tempgrid.IsWalkableAt(x, y))
+                        Session.SendPacket($"in 2 {1} {int.MaxValue - (x * y)} {x} {y} {1} 100 100 -1 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0");
+                }
+            }
+        }
+
+        [Packet("$Shutdown")]
+        public void Shutdown(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            if (ServerManager.Instance.TaskShutdown != null)
+            {
+                ServerManager.Instance.ShutdownStop = true;
+                ServerManager.Instance.TaskShutdown = null;
+            }
+            else
+            {
+                ServerManager.Instance.TaskShutdown = new Task(ShutdownTask);
+                ServerManager.Instance.TaskShutdown.Start();
+            }
         }
 
         [Packet("$SkillAdd")]
@@ -1087,6 +1147,7 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_ALREADY_EXIST"), 11));
                         return;
                     }
+
                     //if (Session.Character.Class != skillinfo.Class)
                     //{
                     //    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
@@ -1111,36 +1172,6 @@ namespace OpenNos.Handler
             }
             else
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-        }
-
-        [Packet("$Shout")]
-        public void Shout(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            string message = String.Empty;
-            if (packetsplit.Length > 2)
-                for (int i = 2; i < packetsplit.Length; i++)
-                    message += packetsplit[i] + " ";
-            message.Trim();
-            ServerManager.Instance.Shout(message);
-
-        }
-
-        [Packet("$Shutdown")]
-        public void Shutdown(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            if (ServerManager.Instance.TaskShutdown != null)
-            {
-                ServerManager.Instance.ShutdownStop = true;
-                ServerManager.Instance.TaskShutdown = null;
-            }
-            else
-            {
-                ServerManager.Instance.TaskShutdown = new Task(ShutdownTask);
-                ServerManager.Instance.TaskShutdown.Start();
-            }
         }
 
         [Packet("$Speed")]
@@ -1193,55 +1224,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("SERVER_WORKING_TIME")}: {(Process.GetCurrentProcess().StartTime - DateTime.Now).ToString("d\\ hh\\:mm\\:ss")} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("MEMORY")}: {(GC.GetTotalMemory(true) / (1024 * 1024))}MB ", 13));
         }
-        [Packet("$Gift")]
-        public void Gift(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            byte amount;
-            short vnum;
-            if (packetsplit.Length > 3)
-            {
 
-                if (packetsplit.Length == 4)
-                {
-                    if (!(byte.TryParse(packetsplit[3], out amount) && short.TryParse(packetsplit[2], out vnum)))
-                        return;
-                    Session.Character.SendGift(Session.Character.CharacterId, vnum, amount, false);
-                }
-                else
-                {
-                    string name = packetsplit[2];
-                    if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum)))
-                        return;
-
-                    if (name == "*")
-                    {
-                        foreach (ClientSession session in Session.CurrentMap.Sessions.Where(s => s.Character != null))
-                            Session.Character.SendGift((session.Character.CharacterId), vnum, amount, false);
-                    }
-                    else
-                    {
-                        CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(name);
-
-                        if (chara != null)
-                        {
-                            Session.Character.SendGift((chara.CharacterId), vnum, amount, false);
-                        }
-                        else
-                        {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
-                            return;
-                        }
-                    }
-                }
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFT_SENDED"), 10));
-
-            }
-            else
-                Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME VNUM AMOUNT", 10));
-
-        }
         [Packet("$Summon")]
         public void Summon(string packet)
         {
@@ -1271,6 +1254,7 @@ namespace OpenNos.Handler
                         if (!Session.CurrentMap.IsBlockedZone(mapx, mapy))
                             break;
                     }
+
                     //Replace by MAPPING
                     MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
 
@@ -1392,6 +1376,24 @@ namespace OpenNos.Handler
             }
             else
                 Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
+        }
+
+        [Packet("$Guri")]
+        public void TestGuri(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte type = 0, argument = 0;
+            short value = 0;
+            if (packetsplit.Length > 3)
+            {
+                if (byte.TryParse(packetsplit[2], out type) && byte.TryParse(packetsplit[3], out argument) && short.TryParse(packetsplit[4], out value))
+                {
+                    Session.SendPacket(Session.Character.GenerateGuri(type, argument, value));
+                }
+            }
+            else
+                Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
         }
 
         [Packet("$Unban")]

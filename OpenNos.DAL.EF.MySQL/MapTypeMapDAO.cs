@@ -81,6 +81,22 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public MapTypeMapDTO LoadByMapAndMapType(short mapId, short maptypeId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<MapTypeMapDTO>(context.MapTypeMap.FirstOrDefault(i => i.MapId.Equals(mapId) && i.MapTypeId.Equals(maptypeId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+        }
+
         public IEnumerable<MapTypeMapDTO> LoadByMapId(short mapId)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -100,22 +116,6 @@ namespace OpenNos.DAL.EF.MySQL
                 {
                     yield return _mapper.Map<MapTypeMapDTO>(MapTypeMap);
                 }
-            }
-        }
-
-        public MapTypeMapDTO LoadByMapAndMapType(short mapId, short maptypeId)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    return _mapper.Map<MapTypeMapDTO>(context.MapTypeMap.FirstOrDefault(i => i.MapId.Equals(mapId) && i.MapTypeId.Equals(maptypeId)));
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return null;
             }
         }
 

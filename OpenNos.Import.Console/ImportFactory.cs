@@ -472,6 +472,7 @@ namespace OpenNos.Import.Console
                     mapTypeId = 19;
                     objectset = true;
                 }
+
                 // add "act6.1a" and "act6.1d" when ids found
                 if (objectset && DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.MapTypeMapDAO.LoadByMapAndMapType((short)i, mapTypeId) == null)
                 {
@@ -563,6 +564,7 @@ namespace OpenNos.Import.Console
             {
                 basicMp[i] = basicHp[i];
             }
+
             //basicXPLoad
             for (int i = 0; i < 100; i++)
             {
@@ -578,6 +580,7 @@ namespace OpenNos.Import.Console
             string fileNpcId = $"{_folder}\\monster.dat";
             string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
             List<NpcMonsterDTO> npcs = new List<NpcMonsterDTO>();
+
             // Store like this: (vnum, (name, level))
 
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
@@ -788,6 +791,7 @@ namespace OpenNos.Import.Console
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
+
             //Act 1
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 13000, MapTypeId = (short)MapTypeEnum.Act1 });
 
@@ -823,6 +827,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act2 });
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act2 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act2 });
+
             //Act3
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act3 });
@@ -857,6 +862,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2285, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 230, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act3 });
+
             //Act4
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act4 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act4 });
@@ -871,6 +877,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act4 });
             drops.Add(new DropDTO { ItemVNum = 2307, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = (short)MapTypeEnum.Act4 });
             drops.Add(new DropDTO { ItemVNum = 2308, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = (short)MapTypeEnum.Act4 });
+
             //Act5
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act51 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act51 });
@@ -900,6 +907,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2351, Amount = 1, MonsterVNum = null, DropChance = 900, MapTypeId = (short)MapTypeEnum.Act51 });
             drops.Add(new DropDTO { ItemVNum = 2379, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act51 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act51 });
+
             //Act5.2
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act52 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act52 });
@@ -922,6 +930,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2900, Amount = 2, MonsterVNum = null, DropChance = 2000, MapTypeId = (short)MapTypeEnum.Act52 });
             drops.Add(new DropDTO { ItemVNum = 2901, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act52 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act52 });
+
             //Act6.1
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
@@ -948,11 +957,13 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2805, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 2806, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 2807, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61 });
+
             //drops.Add(new DropDTO { ItemVNum = 2815, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 9 }); //Only for angel camp need group act6.1 angel
             drops.Add(new DropDTO { ItemVNum = 2816, Amount = 1, MonsterVNum = null, DropChance = 350, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 2818, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 2819, Amount = 1, MonsterVNum = null, DropChance = 350, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act61 });
+
             //drops.Add(new DropDTO { ItemVNum = 5881, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 10 }); //Only for demon camp need group act6.1 demon
 
             //Act6.2 (need some information) > soon )
@@ -1553,9 +1564,6 @@ namespace OpenNos.Import.Console
                                             skill.LevelMinimum = 4;
                                             break;
 
-
-                                       
-
                                         default:
                                             skill.LevelMinimum = 0;
                                             break;
@@ -1599,6 +1607,7 @@ namespace OpenNos.Import.Console
                         switch (currentLine[2])
                         {
                             case "0":
+
                                 // All needs to be divided by 4
                                 if (currentLine[3] == "3")
                                 {
@@ -1611,6 +1620,7 @@ namespace OpenNos.Import.Console
                                 if (currentLine[3] == "29")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
+
                                     //skill.MonsterVNum = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "43")
@@ -1625,11 +1635,13 @@ namespace OpenNos.Import.Console
                                 if (currentLine[3] == "64")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
+
                                     //skill.Unknown = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "66")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
+
                                     //skill.Unknown = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "68")
@@ -1643,6 +1655,7 @@ namespace OpenNos.Import.Console
                                 if (currentLine[3] == "69")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
+
                                     //skill.MonsterVNum = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "72")
@@ -1653,6 +1666,7 @@ namespace OpenNos.Import.Console
                                 if (currentLine[3] == "80")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
+
                                     //skill.CloneAmount = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "81")
@@ -1666,6 +1680,7 @@ namespace OpenNos.Import.Console
 
                             case "1":
                                 skill.ElementalDamage = short.Parse(currentLine[5]); // Divide by 4(?)
+
                                 //skill.Unknown = short.Parse(currentLine[2]);
                                 //skill.Unknown = short.Parse(currentLine[3]);
                                 //skill.Unknown = short.Parse(currentLine[4]);
@@ -1674,6 +1689,7 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case "2":
+
                                 //unknown
                                 /*
                                 skill.Unknown = short.Parse(currentLine[2]);
@@ -1686,6 +1702,7 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case "3":
+
                                 //unknown
                                 /*
                                 skill.Unknown = short.Parse(currentLine[2]);
@@ -1698,6 +1715,7 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case "4":
+
                                 //unknown
                                 /*
                                 skill.Unknown = short.Parse(currentLine[2]);
@@ -1857,6 +1875,7 @@ namespace OpenNos.Import.Console
                         item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{(byte)item.Type}{currentLine[3]}") : (byte)0;
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
+
                         //item.DesignId = Convert.ToInt16(currentLine[6]);
                         switch (item.VNum)
                         {
@@ -2038,9 +2057,11 @@ namespace OpenNos.Import.Console
                                         case 4503:
                                             item.EffectValue = 4544;
                                             break;
+
                                         case 4504:
                                             item.EffectValue = 4294;
                                             break;
+
                                         default:
                                             item.EffectValue = Convert.ToInt16(currentLine[7]);
                                             break;
@@ -2123,6 +2144,7 @@ namespace OpenNos.Import.Console
                                 item.DefenceDodge = Convert.ToInt16(currentLine[6]);
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.CostumeHat) || item.EquipmentSlot.Equals((byte)EquipmentType.CostumeSuit))
                                     item.ItemValidTime = Convert.ToInt32(currentLine[13]) * 3600;
+
                                 //else
                                 //    item.Unknown = Convert.ToInt32(currentLine[13]);
                                 break;
@@ -2136,6 +2158,7 @@ namespace OpenNos.Import.Console
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
                                 {
                                     item.LevelMinimum = Convert.ToByte(currentLine[2]);
+
                                     // needed to hardcode some missing ItemValidTime
                                     if ((item.VNum > 4055 && item.VNum < 4061) || (item.VNum > 4172 && item.VNum < 4176))
                                         item.ItemValidTime = 10800;
@@ -2208,16 +2231,19 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case (byte)ItemType.Specialist:
+
                                 //item.isSpecialist = Convert.ToByte(currentLine[2]);
                                 //item.Unknown = Convert.ToInt16(currentLine[3]);
                                 item.ElementRate = Convert.ToInt16(currentLine[4]);
                                 item.Speed = Convert.ToByte(currentLine[5]);
                                 item.SpType = Convert.ToByte(currentLine[13]);
+
                                 //item.Morph = Convert.ToInt16(currentLine[14]) + 1; // idk whats that, its useless
                                 item.FireResistance = Convert.ToByte(currentLine[15]);
                                 item.WaterResistance = Convert.ToByte(currentLine[16]);
                                 item.LightResistance = Convert.ToByte(currentLine[17]);
                                 item.DarkResistance = Convert.ToByte(currentLine[18]);
+
                                 //item.PartnerClass = Convert.ToInt16(currentLine[19]);
                                 item.LevelJobMinimum = Convert.ToByte(currentLine[20]);
                                 item.ReputationMinimum = Convert.ToByte(currentLine[21]);
@@ -2248,6 +2274,7 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case (byte)ItemType.Shell:
+
                                 //item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);
                                 //item.ShellMaximumLevel = Convert.ToInt16(linesave[4]);
                                 //item.ShellType = Convert.ToByte(linesave[5]); // 3 shells of each type
@@ -2286,27 +2313,33 @@ namespace OpenNos.Import.Console
                             case (byte)ItemType.Teacher:
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
+
                                 //item.PetLoyality = Convert.ToInt16(linesave[4]);
                                 //item.PetFood = Convert.ToInt16(linesave[7]);
                                 break;
 
                             case (byte)ItemType.Part:
+
                                 //nothing to parse
                                 break;
 
                             case (byte)ItemType.Sell:
+
                                 //nothing to parse
                                 break;
 
                             case (byte)ItemType.Quest2:
+
                                 //nothing to parse
                                 break;
 
                             case (byte)ItemType.Quest1:
+
                                 //nothing to parse
                                 break;
 
                             case (byte)ItemType.Ammo:
+
                                 //nothing to parse
                                 break;
 
@@ -2322,6 +2355,7 @@ namespace OpenNos.Import.Console
                             item.LightResistance = Convert.ToByte(currentLine[9]);
                             item.DarkResistance = Convert.ToByte(currentLine[11]);
                         }
+
                         //else // thanks to this sometimes we have 0 where we shouldnt, add verification on where you need it.
                         //{
                         //    item.Effect = Convert.ToInt16(currentLine[2]);

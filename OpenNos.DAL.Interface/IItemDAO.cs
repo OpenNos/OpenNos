@@ -21,6 +21,8 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
+        IEnumerable<ItemDTO> FindByName(string name);
+
         ItemDTO Insert(ItemDTO item);
 
         void Insert(List<ItemDTO> items);
@@ -28,8 +30,6 @@ namespace OpenNos.DAL.Interface
         IEnumerable<ItemDTO> LoadAll();
 
         ItemDTO LoadById(short Vnum);
-
-        IEnumerable<ItemDTO> FindByName(string name);
 
         #endregion
     }

@@ -16,8 +16,9 @@ namespace OpenNos.Domain
 {
     public enum MapTypeEnum : short
     {
-        // Act 
+        // Act
         Act1 = 1,
+
         Act2 = 2,
         Act3 = 3,
         Act4 = 4,
@@ -27,7 +28,6 @@ namespace OpenNos.Domain
         Act62 = 8,
         Act61a = 9,
         Act61d = 10,
-        // Group in the act part
         CometPlain = 11,
         Mine1 = 12,
         Mine2 = 13,
@@ -36,10 +36,8 @@ namespace OpenNos.Domain
         Fernon = 16,
         FernonF = 17,
         Cliff = 18,
+        LandOfTheDead = 19
 
         // Future group : Raid | Time-Space | Land Of The Dead |
-        LandOfTheDead = 19,
-
-
     }
 }

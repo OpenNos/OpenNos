@@ -75,9 +75,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         /// </summary>
         public DateTime LastSentMessageTime { get; protected set; }
 
-        ///<summary>
+        /// <summary>
         /// Gets endpoint of remote application.
-        ///</summary>
+        /// </summary>
         public abstract ScsEndPoint RemoteEndPoint { get; }
 
         /// <summary>

@@ -19,8 +19,11 @@ namespace OpenNos.Data
         #region Properties
 
         public long InventoryItemId { get; set; }
+
         public byte Level { get; set; }
+
         public byte Type { get; set; }
+
         public int Value { get; set; }
 
         #endregion

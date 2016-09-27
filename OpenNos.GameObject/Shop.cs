@@ -43,6 +43,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<ShopItem> ShopItems { get; set; }
+
         public List<ShopSkill> ShopSkills { get; set; }
 
         #endregion

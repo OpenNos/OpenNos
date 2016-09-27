@@ -26,6 +26,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public OpenNosContext() : base("name=OpenNosContext")
         {
             this.Configuration.LazyLoadingEnabled = true;
+
             //--DO NOT DISABLE, otherwise the mapping will fail
             this.Configuration.ProxyCreationEnabled = false; //only one time access to database so no proxy generation needed, its just slowing down in our case
         }
@@ -35,33 +36,61 @@ namespace OpenNos.DAL.EF.MySQL.DB
         #region Properties
 
         public virtual DbSet<Account> Account { get; set; }
+
         public virtual DbSet<CellonOption> CellonOption { get; set; }
+
         public virtual DbSet<Character> Character { get; set; }
+
         public virtual DbSet<CharacterSkill> CharacterSkill { get; set; }
+
         public virtual DbSet<Combo> Combo { get; set; }
+
         public virtual DbSet<Drop> Drop { get; set; }
+
         public virtual DbSet<GeneralLog> GeneralLog { get; set; }
+
         public virtual DbSet<Inventory> Inventory { get; set; }
+
         public virtual DbSet<Item> Item { get; set; }
+
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
+
         public virtual DbSet<Mail> Mail { get; set; }
+
         public virtual DbSet<Map> Map { get; set; }
+
         public virtual DbSet<MapMonster> MapMonster { get; set; }
+
         public virtual DbSet<MapNpc> MapNpc { get; set; }
+
         public virtual DbSet<MapType> MapType { get; set; }
+
         public virtual DbSet<MapTypeMap> MapTypeMap { get; set; }
+
         public virtual DbSet<NpcMonster> NpcMonster { get; set; }
+
         public virtual DbSet<NpcMonsterSkill> NpcMonsterSkill { get; set; }
+
         public virtual DbSet<PenaltyLog> PenaltyLog { get; set; }
+
         public virtual DbSet<Portal> Portal { get; set; }
+
         public virtual DbSet<QuicklistEntry> QuicklistEntry { get; set; }
+
         public virtual DbSet<Recipe> Recipe { get; set; }
+
         public virtual DbSet<RecipeItem> RecipeItem { get; set; }
+
         public virtual DbSet<Respawn> Respawn { get; set; }
+
         public virtual DbSet<Shop> Shop { get; set; }
+
         public virtual DbSet<ShopItem> ShopItem { get; set; }
+
         public virtual DbSet<ShopSkill> ShopSkill { get; set; }
+
         public virtual DbSet<Skill> Skill { get; set; }
+
         public virtual DbSet<Teleporter> Teleporter { get; set; }
 
         #endregion
@@ -165,7 +194,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
                  .HasOptional(e => e.Item)
                  .WithMany(e => e.Mail)
                  .HasForeignKey(e => e.ItemVNum)
-                 .WillCascadeOnDelete(false);          
+                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Map>()
                 .HasMany(e => e.Character)

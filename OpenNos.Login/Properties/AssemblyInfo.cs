@@ -22,7 +22,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.3.*")]
-
 [assembly: AssemblyTitle("OpenNos.Login")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyTrademark("")]

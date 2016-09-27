@@ -38,7 +38,7 @@ namespace OpenNos.Core
 
         #region Methods
 
-        public static string sha512(string inputString)
+        public static string Sha512(string inputString)
         {
             using (SHA512 hash = SHA512Managed.Create())
             {

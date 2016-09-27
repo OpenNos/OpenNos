@@ -51,20 +51,20 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #region Instantiation
 
-        ///<summary>
+        /// <summary>
         /// Creates a new SynchronizedMessenger object.
-        ///</summary>
-        ///<param name="messenger">A IMessenger object to be used to send/receive messages</param>
+        /// </summary>
+        /// <param name="messenger">A IMessenger object to be used to send/receive messages</param>
         public SynchronizedMessenger(T messenger)
             : this(messenger, int.MaxValue)
         {
         }
 
-        ///<summary>
+        /// <summary>
         /// Creates a new SynchronizedMessenger object.
-        ///</summary>
-        ///<param name="messenger">A IMessenger object to be used to send/receive messages</param>
-        ///<param name="incomingMessageQueueCapacity">capacity of the incoming message queue</param>
+        /// </summary>
+        /// <param name="messenger">A IMessenger object to be used to send/receive messages</param>
+        /// <param name="incomingMessageQueueCapacity">capacity of the incoming message queue</param>
         public SynchronizedMessenger(T messenger, int incomingMessageQueueCapacity)
             : base(messenger)
         {
@@ -77,12 +77,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #region Properties
 
-        ///<summary>
+        /// <summary>
         /// Gets/sets capacity of the incoming message queue.
         /// No message is received from remote application if
         /// number of messages in public queue exceeds this value.
         /// Default value: int.MaxValue (2147483647).
-        ///</summary>
+        /// </summary>
         public int IncomingMessageQueueCapacity { get; set; }
 
         #endregion
@@ -116,13 +116,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             {
                 lock (_receivingMessageQueue)
                 {
-                    //Check if SynchronizedMessenger is running
+                    // Check if SynchronizedMessenger is running
                     if (!_running)
                     {
                         throw new Exception("SynchronizedMessenger is stopped. Can not receive message.");
                     }
 
-                    //Get a message immediately if any message does exists
+                    // Get a message immediately if any message does exists
                     if (_receivingMessageQueue.Count > 0)
                     {
                         return _receivingMessageQueue.Dequeue();
@@ -131,10 +131,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                     _receiveWaiter.Reset();
                 }
 
-                //Wait for a message
+                // Wait for a message
                 var signalled = _receiveWaiter.Wait(timeout);
 
-                //If not signalled, throw exception
+                // If not signalled, throw exception
                 if (!signalled)
                 {
                     throw new TimeoutException("Timeout occured. Can not received any message");

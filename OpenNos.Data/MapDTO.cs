@@ -19,9 +19,13 @@ namespace OpenNos.Data
         #region Properties
 
         public byte[] Data { get; set; }
+
         public short MapId { get; set; }
+
         public int Music { get; set; }
+
         public string Name { get; set; }
+
         public bool ShopAllowed { get; set; }
 
         #endregion

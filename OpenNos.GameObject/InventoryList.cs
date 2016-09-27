@@ -36,6 +36,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<Inventory> Inventory { get; set; }
+
         public Character Owner { get; set; }
 
         #endregion
@@ -51,9 +52,13 @@ namespace OpenNos.GameObject
                 {
                     case (byte)InventoryType.Wear:
                         if (iteminstance.Item.ItemType == (byte)ItemType.Specialist)
+                        {
                             iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = 1 };
+                        }
                         else
+                        {
                             iteminstance = new WearableInstance() { ItemVNum = vnum, Amount = 1 };
+                        }
                         break;
                 }
             }
@@ -84,12 +89,12 @@ namespace OpenNos.GameObject
                 if (Slot != -1)
                 {
                     inv = AddToInventoryWithSlotAndType(newItem, newItem.Item.Type, Slot);
-                    inv.ItemInstance.Id = inv.Id; //set id because its a one to one
+                    inv.ItemInstance.Id = inv.Id; // set id because its a one to one
                 }
             }
             return inv;
         }
-         
+
         public Inventory AddToInventory(ItemInstance newItem)
         {
             Logger.Debug(newItem.ItemVNum.ToString(), Owner.Session.SessionId);
@@ -111,7 +116,7 @@ namespace OpenNos.GameObject
                 if (Slot != -1)
                 {
                     inv = AddToInventoryWithSlotAndType(newItem, newItem.Item.Type, Slot);
-                    inv.ItemInstance.Id = inv.Id; //set id because its a one to one
+                    inv.ItemInstance.Id = inv.Id; // set id because its a one to one
                 }
             }
 
@@ -129,9 +134,11 @@ namespace OpenNos.GameObject
             }
 
             if (Inventory.Any(s => s.Slot == slot && s.Type == type))
+            {
                 return null;
+            }
 
-            inv.ItemInstance.Id = inv.Id; //set id because its a one to one
+            inv.ItemInstance.Id = inv.Id; // set id because its a one to one
             Inventory.Add(inv);
             return inv;
         }
@@ -200,17 +207,23 @@ namespace OpenNos.GameObject
                 {
                     Inventory result = LoadInventoryBySlotAndType(i, (InventoryType)item[k].Item.Type);
                     if (result != null && result.Type == 0)
+                    {
                         place[k]--;
+                    }
                     else if (result != null)
                     {
                         bool check = false;
                         foreach (ItemInstance itemins in item)
                         {
                             if (itemins.Item.Type != 0 && itemins.Amount + result.ItemInstance.Amount <= 99)
+                            {
                                 check = true;
+                            }
                         }
                         if (!check)
+                        {
                             place[k]--;
+                        }
                     }
                 }
             }
@@ -418,6 +431,36 @@ namespace OpenNos.GameObject
             return inv;
         }
 
+        public void Reorder(ClientSession Session, InventoryType inventoryType)
+        {
+            List<Inventory> templist = new List<Inventory>();
+            switch (inventoryType)
+            {
+                case InventoryType.Costume:
+                    templist = Inventory.Where(s => s.Type == InventoryType.Costume).OrderBy(s => s.ItemInstance.ItemVNum).ToList();
+                    break;
+
+                case InventoryType.Sp:
+                    templist = Inventory.Where(s => s.Type == InventoryType.Sp).OrderBy(s => ServerManager.GetItem(s.ItemInstance.ItemVNum).LevelJobMinimum).ToList();
+                    break;
+            }
+            short i = 0;
+            foreach (Inventory invtemp in templist)
+            {
+                Inventory temp = new GameObject.Inventory();
+                Inventory temp2 = new GameObject.Inventory();
+                if (invtemp.Slot != i)
+                {
+                    MoveItem(inventoryType, invtemp.Slot, 1, i, out temp, out temp2);
+
+                    if (temp2 == null || temp == null) return;
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(temp2.ItemInstance.ItemVNum, temp2.ItemInstance.Amount, inventoryType, temp2.Slot, temp2.ItemInstance.Rare, temp2.ItemInstance.Design, temp2.ItemInstance.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(temp.ItemInstance.ItemVNum, temp.ItemInstance.Amount, inventoryType, temp.Slot, temp.ItemInstance.Rare, temp.ItemInstance.Design, temp.ItemInstance.Upgrade, 0));
+                }
+                i++;
+            }
+        }
+
         /// <summary>
         /// Takes a Single Inventory including ItemInstance from the List and removes it.
         /// </summary>
@@ -441,39 +484,6 @@ namespace OpenNos.GameObject
                     return i;
             }
             return -1;
-        }
-
-        public void Reorder(ClientSession Session, InventoryType inventoryType)
-        {
-            List<Inventory> templist = new List<Inventory>();
-            switch (inventoryType)
-            {
-                case InventoryType.Costume:
-                    templist = Inventory.Where(s => s.Type == InventoryType.Costume).OrderBy(s => s.ItemInstance.ItemVNum).ToList();
-                    break;
-                case InventoryType.Sp:
-                    templist = Inventory.Where(s => s.Type == InventoryType.Sp).OrderBy(s => ServerManager.GetItem(s.ItemInstance.ItemVNum).LevelJobMinimum).ToList();
-                    break;
-            }
-            short i = 0;
-            foreach (Inventory invtemp in templist)
-            {
-
-                Inventory temp = new GameObject.Inventory();
-                Inventory temp2 = new GameObject.Inventory();
-                if (invtemp.Slot != i)
-                {
-                    MoveItem(inventoryType, invtemp.Slot, 1, i, out temp, out temp2);
-
-                    if (temp2 == null || temp == null) return;
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(temp2.ItemInstance.ItemVNum, temp2.ItemInstance.Amount, inventoryType, temp2.Slot, temp2.ItemInstance.Rare, temp2.ItemInstance.Design, temp2.ItemInstance.Upgrade, 0));
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(temp.ItemInstance.ItemVNum, temp.ItemInstance.Amount, inventoryType, temp.Slot, temp.ItemInstance.Rare, temp.ItemInstance.Design, temp.ItemInstance.Upgrade, 0));
-
-                }
-                i++;
-
-            }
-
         }
 
         #endregion

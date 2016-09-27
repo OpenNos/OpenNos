@@ -75,13 +75,18 @@ namespace OpenNos.Core.Threading
 
         #region Methods
 
+        public void ClearQueue()
+        {
+            _queue.Clear();
+        }
+
         /// <summary>
         /// Adds an item to queue to process the item.
         /// </summary>
         /// <param name="item">Item to add to the queue</param>
         public void EnqueueMessage(TItem item)
         {
-            //Add the item to the queue and start a new Task if needed
+            // Add the item to the queue and start a new Task if needed
             lock (_syncObj)
             {
                 if (!_isRunning)
@@ -96,11 +101,6 @@ namespace OpenNos.Core.Threading
                     _currentProcessTask = Task.Factory.StartNew(ProcessItem);
                 }
             }
-        }
-
-        public void ClearQueue()
-        {
-            _queue.Clear();
         }
 
         /// <summary>
@@ -118,19 +118,19 @@ namespace OpenNos.Core.Threading
         {
             _isRunning = false;
 
-            //Clear all incoming messages
+            // Clear all incoming messages
             lock (_syncObj)
             {
                 _queue.Clear();
             }
 
-            //Check if is there a message that is being processed now
+            // Check if is there a message that is being processed now
             if (!_isProcessing)
             {
                 return;
             }
 
-            //Wait current processing task to finish
+            // Wait current processing task to finish
             try
             {
                 _currentProcessTask.Wait();
@@ -146,7 +146,7 @@ namespace OpenNos.Core.Threading
         /// </summary>
         private void ProcessItem()
         {
-            //Try to get an item from queue to process it.
+            // Try to get an item from queue to process it.
             TItem itemToProcess;
             lock (_syncObj)
             {
@@ -164,10 +164,10 @@ namespace OpenNos.Core.Threading
                 itemToProcess = _queue.Dequeue();
             }
 
-            //Process the item (by calling the _processMethod delegate)
+            // Process the item (by calling the _processMethod delegate)
             _processMethod(itemToProcess);
 
-            //Process next item if available
+            // Process next item if available
             lock (_syncObj)
             {
                 _isProcessing = false;
@@ -176,7 +176,7 @@ namespace OpenNos.Core.Threading
                     return;
                 }
 
-                //Start a new task
+                // Start a new task
                 _currentProcessTask = Task.Factory.StartNew(ProcessItem);
             }
         }

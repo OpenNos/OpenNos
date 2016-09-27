@@ -70,7 +70,8 @@ namespace OpenNos.Core
             if (!IsDisposing)
             {
                 ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
-                //Logger.Debug(packet, -1);
+
+                // Logger.Debug(packet, -1);
                 SendMessage(rawMessage);
             }
         }
@@ -82,7 +83,7 @@ namespace OpenNos.Core
 
         public void SendPackets(IEnumerable<String> packets)
         {
-            //TODO: maybe send at once with delimiter
+            // TODO: maybe send at once with delimiter
             foreach (string packet in packets)
             {
                 SendPacket(packet);

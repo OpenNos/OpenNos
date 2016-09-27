@@ -373,6 +373,7 @@ namespace OpenNos.GameObject
                     else
                     {
                         string[] packetHeader = packet.Split(' ', '^');
+
                         // 0 is a keep alive packet with no content to handle
                         int permit = 1;
                         if (packetHeader.Length > 0)

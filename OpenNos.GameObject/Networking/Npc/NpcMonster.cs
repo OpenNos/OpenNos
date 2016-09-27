@@ -38,31 +38,20 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        public float GetRes(int skillelement)
-        {
-            switch (skillelement)
-            {
-                case 0:
-                    return FireResistance / 100;
-                case 1:
-                    return WaterResistance / 100;
-                case 2:
-                    return LightResistance / 100;
-                case 3:
-                    return DarkResistance / 100;
-                default:
-                    return 0f;
-            }
-        }
-
         #region Properties
 
         public IEnumerable<DropDTO> Drops { get; set; }
+
         public short FirstX { get; set; }
+
         public short FirstY { get; set; }
+
         public DateTime LastEffect { get; private set; }
+
         public DateTime LastMove { get; private set; }
+
         public IEnumerable<NpcMonsterSkill> Skills { get; set; }
+
         public IEnumerable<TeleporterDTO> Teleporters { get; set; }
 
         #endregion
@@ -72,6 +61,27 @@ namespace OpenNos.GameObject
         public string GenerateEInfo()
         {
             return $"e_info 10 {NpcMonsterVNum} {Level} {Element} {AttackClass} {ElementRate} {AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {CriticalLuckRate} {CriticalRate} {DefenceUpgrade} {CloseDefence} {DefenceDodge} {DistanceDefence} {DistanceDefenceDodge} {MagicDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance} {MaxHP} {MaxMP} -1 {Name.Replace(' ', '^')}"; // {Hp} {Mp} in 0 0
+        }
+
+        public float GetRes(int skillelement)
+        {
+            switch (skillelement)
+            {
+                case 0:
+                    return FireResistance / 100;
+
+                case 1:
+                    return WaterResistance / 100;
+
+                case 2:
+                    return LightResistance / 100;
+
+                case 3:
+                    return DarkResistance / 100;
+
+                default:
+                    return 0f;
+            }
         }
 
         #endregion

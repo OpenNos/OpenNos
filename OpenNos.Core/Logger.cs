@@ -34,6 +34,7 @@ namespace OpenNos.Core
             {
                 return _log;
             }
+
             set
             {
                 _log = value;
@@ -57,16 +58,6 @@ namespace OpenNos.Core
             }
         }
 
-        public static void InitializeLogger(ILog log)
-        {
-            Log = log;
-        }
-
-        public static void InitializeLogger(object p)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Wraps up the error message with the CallerMemberName
         /// </summary>
@@ -78,6 +69,16 @@ namespace OpenNos.Core
             {
                 Log.Error($"{memberName}: {innerException.Message}", innerException);
             }
+        }
+
+        public static void InitializeLogger(ILog log)
+        {
+            Log = log;
+        }
+
+        public static void InitializeLogger(object p)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

@@ -93,9 +93,9 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             }
         }
 
-        ///<summary>
+        /// <summary>
         /// Gets endpoint of remote application.
-        ///</summary>
+        /// </summary>
         public ScsEndPoint RemoteEndPoint
         {
             get { return _serverClient.RemoteEndPoint; }

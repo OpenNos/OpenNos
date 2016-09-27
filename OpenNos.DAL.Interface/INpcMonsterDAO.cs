@@ -21,6 +21,8 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
+        IEnumerable<NpcMonsterDTO> FindByName(string name);
+
         NpcMonsterDTO Insert(NpcMonsterDTO npc);
 
         void Insert(List<NpcMonsterDTO> npc);
@@ -28,7 +30,6 @@ namespace OpenNos.DAL.Interface
         IEnumerable<NpcMonsterDTO> LoadAll();
 
         NpcMonsterDTO LoadByVnum(short MapId);
-        IEnumerable<NpcMonsterDTO> FindByName(string name);
 
         #endregion
     }

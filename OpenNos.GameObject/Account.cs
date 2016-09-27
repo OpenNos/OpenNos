@@ -18,6 +18,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<GeneralLog> GeneralLogs { get; set; }
+
         public List<PenaltyLog> PenaltyLogs { get; set; }
 
         #endregion

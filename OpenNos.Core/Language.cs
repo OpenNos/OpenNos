@@ -23,7 +23,7 @@ namespace OpenNos.Core
     {
         #region Members
 
-        private static readonly object myLock = new object();
+        private static readonly object MyLock = new object();
         private static Language instance = null;
         private ResourceManager _manager;
         private CultureInfo _resourceCulture;
@@ -35,7 +35,7 @@ namespace OpenNos.Core
         private Language()
         {
             _resourceCulture = new System.Globalization.CultureInfo(System.Configuration.ConfigurationManager.AppSettings["language"]);
-            if(Assembly.GetEntryAssembly() != null)
+            if (Assembly.GetEntryAssembly() != null)
             {
                 _manager = new ResourceManager(Assembly.GetEntryAssembly().GetName().Name + ".Resource.LocalizedResources", Assembly.GetEntryAssembly());
             }
@@ -49,7 +49,10 @@ namespace OpenNos.Core
         {
             get
             {
-                if (instance == null) instance = new Language();
+                if (instance == null)
+                {
+                    instance = new Language();
+                }
                 return instance;
             }
         }

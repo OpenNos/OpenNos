@@ -64,14 +64,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp
 
         #region Properties
 
-        ///<summary>
+        /// <summary>
         /// IP address of the server.
-        ///</summary>
+        /// </summary>
         public string IpAddress { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// Listening TCP Port for incoming connection requests on server.
-        ///</summary>
+        /// </summary>
         public int TcpPort { get; private set; }
 
         #endregion

@@ -42,7 +42,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// <summary>
         /// Maximum length of a message.
         /// </summary>
-        private const int MaxMessageLength = 128 * 1024 * 1024; //128 Megabytes.
+        private const int MaxMessageLength = 128 * 1024 * 1024; // 128 Megabytes.
 
         /// <summary>
         /// This MemoryStream object is used to collect receiving bytes to build messages.
@@ -80,14 +80,18 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// </returns>
         public IEnumerable<IScsMessage> CreateMessages(byte[] receivedBytes)
         {
-            //Write all received bytes to the _receiveMemoryStream
+            // Write all received bytes to the _receiveMemoryStream
             _receiveMemoryStream.Write(receivedBytes, 0, receivedBytes.Length);
-            //Create a list to collect messages
+
+            // Create a list to collect messages
             var messages = new List<IScsMessage>();
 
-            //Read all available messages and add to messages collection
-            while (ReadSingleMessage(messages)) { }
-            //Return message list
+            // Read all available messages and add to messages collection
+            while (ReadSingleMessage(messages))
+            {
+            }
+
+            // Return message list
             return messages;
         }
 
@@ -99,22 +103,22 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// <exception cref="CommunicationException">Throws CommunicationException if message is bigger than maximum allowed message length.</exception>
         public byte[] GetBytes(IScsMessage message)
         {
-            //Serialize the message to a byte array
+            // Serialize the message to a byte array
             var serializedMessage = SerializeMessage(message);
 
-            //Check for message length
+            // Check for message length
             var messageLength = serializedMessage.Length;
             if (messageLength > MaxMessageLength)
             {
                 throw new CommunicationException("Message is too big (" + messageLength + " bytes). Max allowed length is " + MaxMessageLength + " bytes.");
             }
 
-            //Create a byte array including the length of the message (4 bytes) and serialized message content
+            // Create a byte array including the length of the message (4 bytes) and serialized message content
             var bytes = new byte[messageLength + 4];
             WriteInt32(bytes, 0, messageLength);
             Array.Copy(serializedMessage, 0, bytes, 4, messageLength);
 
-            //Return serialized message by this protocol
+            // Return serialized message by this protocol
             return bytes;
         }
 
@@ -142,20 +146,20 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// <returns>Deserialized message</returns>
         protected virtual IScsMessage DeserializeMessage(byte[] bytes)
         {
-            //Create a MemoryStream to convert bytes to a stream
+            // Create a MemoryStream to convert bytes to a stream
             using (var deserializeMemoryStream = new MemoryStream(bytes))
             {
-                //Go to head of the stream
+                // Go to head of the stream
                 deserializeMemoryStream.Position = 0;
 
-                //Deserialize the message
+                // Deserialize the message
                 var binaryFormatter = new BinaryFormatter
                 {
                     AssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple,
                     Binder = new DeserializationAppDomainBinder()
                 };
 
-                //Return the deserialized message
+                // Return the deserialized message
                 return (IScsMessage)binaryFormatter.Deserialize(deserializeMemoryStream);
             }
         }
@@ -228,66 +232,67 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// <exception cref="CommunicationException">Throws CommunicationException if message is bigger than maximum allowed message length.</exception>
         private bool ReadSingleMessage(ICollection<IScsMessage> messages)
         {
-            //Go to the begining of the stream
+            // Go to the begining of the stream
             _receiveMemoryStream.Position = 0;
 
-            //If stream has less than 4 bytes, that means we can not even read length of the message
-            //So, return false to wait more bytes from remore application.
+            // If stream has less than 4 bytes, that means we can not even read length of the message
+            // So, return false to wait more bytes from remore application.
             if (_receiveMemoryStream.Length < 4)
             {
                 return false;
             }
 
-            //Read length of the message
-            int messageLength = Convert.ToInt32(_receiveMemoryStream.Length); //fix,always read to end TODO: implement framing
+            // Read length of the message
+            int messageLength = Convert.ToInt32(_receiveMemoryStream.Length); // fix, always read to end TODO: implement framing
             if (messageLength > MaxMessageLength)
             {
                 throw new Exception("Message is too big (" + messageLength + " bytes). Max allowed length is " + MaxMessageLength + " bytes.");
             }
 
-            //If message is zero-length (It must not be but good approach to check it)
-            //if (messageLength == 0)
-            //{
-            //    //if no more bytes, return immediately
-            //    if (_receiveMemoryStream.Length == 4)
-            //    {
-            //        _receiveMemoryStream = new MemoryStream(); //Clear the stream
-            //        return false;
-            //    }
+            ////If message is zero-length (It must not be but good approach to check it)
+            /*if (messageLength == 0)
+            {
+                //if no more bytes, return immediately
+                if (_receiveMemoryStream.Length == 4)
+                {
+                    _receiveMemoryStream = new MemoryStream(); //Clear the stream
+                    return false;
+                }
 
-            //    //Create a new memory stream from current except first 4-bytes.
-            //    var bytes = _receiveMemoryStream.ToArray();
-            //    _receiveMemoryStream = new MemoryStream();
-            //    _receiveMemoryStream.Write(bytes, 4, bytes.Length - 4);
-            //    return true;
-            //}
+                //Create a new memory stream from current except first 4-bytes.
+                var bytes = _receiveMemoryStream.ToArray();
+                _receiveMemoryStream = new MemoryStream();
+                _receiveMemoryStream.Write(bytes, 4, bytes.Length - 4);
+                return true;
+            }*/
 
             ////If all bytes of the message is not received yet, return to wait more bytes
-            //if (_receiveMemoryStream.Length < (4 + messageLength))
-            //{
-            //    _receiveMemoryStream.Position = _receiveMemoryStream.Length;
-            //    return false;
-            //}
+            /*if (_receiveMemoryStream.Length < (4 + messageLength))
+            {
+                _receiveMemoryStream.Position = _receiveMemoryStream.Length;
+                return false;
+            }*/
 
-            //Read bytes of serialized message and deserialize it
+            // Read bytes of serialized message and deserialize it
             var serializedMessageBytes = ReadByteArray(_receiveMemoryStream, messageLength);
             messages.Add(DeserializeMessage(serializedMessageBytes));
-            //Read remaining bytes to an array
+
+            // Read remaining bytes to an array
             if (_receiveMemoryStream.Length != _receiveMemoryStream.Position)
             {
                 var remainingBytes = ReadByteArray(_receiveMemoryStream, (int)(_receiveMemoryStream.Length));
 
-                ////Re-create the receive memory stream and write remaining bytes
+                // Re-create the receive memory stream and write remaining bytes
                 _receiveMemoryStream = new MemoryStream();
                 _receiveMemoryStream.Write(remainingBytes, 0, remainingBytes.Length);
             }
             else
             {
-                //nothing left, just recreate
+                // nothing left, just recreate
                 _receiveMemoryStream = new MemoryStream();
             }
 
-            //Return true to re-call this method to try to read next message
+            // Return true to re-call this method to try to read next message
             return (_receiveMemoryStream.Length > 0);
         }
 

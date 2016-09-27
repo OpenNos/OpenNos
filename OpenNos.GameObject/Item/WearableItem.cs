@@ -32,7 +32,6 @@ namespace OpenNos.GameObject
                     InventoryType type = inventory.Type;
                     if (inventory == null) return;
 
-
                     if (ItemValidTime > 0 && ((ItemInstance)inventory.ItemInstance).IsBound)
                     {
                         inventory.ItemInstance.ItemDeleteTime = DateTime.Now.AddSeconds(ItemValidTime);
@@ -82,7 +81,7 @@ namespace OpenNos.GameObject
                                 (byte)EquipmentType.Sp,
                                 InventoryType.Equipment);
 
-                        if (sp.Item.Element !=0 && EquipmentSlot == (byte)EquipmentType.Fairy && Element != sp.Item.Element &&  Element != sp.Item.SecondaryElement)
+                        if (sp.Item.Element != 0 && EquipmentSlot == (byte)EquipmentType.Fairy && Element != sp.Item.Element && Element != sp.Item.SecondaryElement)
                         {
                             session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                             return;

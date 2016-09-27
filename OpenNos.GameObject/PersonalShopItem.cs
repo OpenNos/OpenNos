@@ -19,6 +19,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         public byte Amount { get; set; }
+
         public long Price { get; set; }
 
         #endregion

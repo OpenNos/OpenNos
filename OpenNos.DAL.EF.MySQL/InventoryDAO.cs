@@ -99,21 +99,22 @@ namespace OpenNos.DAL.EF.MySQL
                 Type itemInstanceType = typeof(ItemInstance);
                 foreach (KeyValuePair<Type, Type> entry in itemInstanceMappings)
                 {
-                        //GameObject -> Entity
-                        cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
-                                        .IncludeBase(baseType, typeof(ItemInstance));
+                    //GameObject -> Entity
+                    cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
+                                    .IncludeBase(baseType, typeof(ItemInstance));
 
-                        //Entity -> GameObject
-                        cfg.CreateMap(entry.Value, entry.Key)
-                                        .IncludeBase(typeof(ItemInstance), baseType);
+                    //Entity -> GameObject
+                    cfg.CreateMap(entry.Value, entry.Key)
+                                    .IncludeBase(typeof(ItemInstance), baseType);
 
                     Type retrieveDTOType = Type.GetType($"OpenNos.Data.{entry.Key.Name}DTO, OpenNos.Data");
-                        //Entity -> DTO
-                        cfg.CreateMap(entry.Value, typeof(ItemInstanceDTO)).As(entry.Key);
+
+                    //Entity -> DTO
+                    cfg.CreateMap(entry.Value, typeof(ItemInstanceDTO)).As(entry.Key);
                 }
 
-                    //Inventory Mappings
-                    cfg.CreateMap<InventoryDTO, Inventory>();
+                //Inventory Mappings
+                cfg.CreateMap<InventoryDTO, Inventory>();
                 cfg.CreateMap<Inventory, InventoryDTO>();
             });
 

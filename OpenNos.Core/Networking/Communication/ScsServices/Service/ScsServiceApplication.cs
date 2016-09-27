@@ -177,10 +177,10 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// <param name="e">Event arguments</param>
         private void Client_MessageReceived(object sender, MessageEventArgs e)
         {
-            //Get RequestReplyMessenger object (sender of event) to get client
+            // Get RequestReplyMessenger object (sender of event) to get client
             var requestReplyMessenger = (RequestReplyMessenger<IScsServerClient>)sender;
 
-            //Cast message to ScsRemoteInvokeMessage and check it
+            // Cast message to ScsRemoteInvokeMessage and check it
             var invokeMessage = e.Message as ScsRemoteInvokeMessage;
             if (invokeMessage == null)
             {
@@ -189,7 +189,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
             try
             {
-                //Get client object
+                // Get client object
                 var client = _serviceClients[requestReplyMessenger.Messenger.ClientId];
                 if (client == null)
                 {
@@ -197,7 +197,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                     return;
                 }
 
-                //Get service object
+                // Get service object
                 var serviceObject = _serviceObjects[invokeMessage.ServiceClassName];
                 if (serviceObject == null)
                 {
@@ -205,12 +205,12 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                     return;
                 }
 
-                //Invoke method
+                // Invoke method
                 try
                 {
+                    // Set client to service, so user service can get client
+                    // in service method using CurrentClient property.
                     object returnValue;
-                    //Set client to service, so user service can get client
-                    //in service method using CurrentClient property.
                     serviceObject.Service.CurrentClient = client;
                     try
                     {
@@ -218,11 +218,11 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                     }
                     finally
                     {
-                        //Set CurrentClient as null since method call completed
+                        // Set CurrentClient as null since method call completed
                         serviceObject.Service.CurrentClient = null;
                     }
 
-                    //Send method invocation return value to the client
+                    // Send method invocation return value to the client
                     SendInvokeResponse(requestReplyMessenger, invokeMessage, returnValue, null);
                 }
                 catch (TargetInvocationException ex)
@@ -374,16 +374,16 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             /// <returns>Return value of method</returns>
             public object InvokeMethod(string methodName, params object[] parameters)
             {
-                //Check if there is a method with name methodName
+                // Check if there is a method with name methodName
                 if (!_methods.ContainsKey(methodName))
                 {
                     throw new Exception("There is not a method with name '" + methodName + "' in service class.");
                 }
 
-                //Get method
+                // Get method
                 var method = _methods[methodName];
 
-                //Invoke method and return invoke result
+                // Invoke method and return invoke result
                 return method.Invoke(Service, parameters);
             }
 

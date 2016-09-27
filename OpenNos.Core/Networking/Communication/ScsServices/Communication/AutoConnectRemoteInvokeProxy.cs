@@ -62,11 +62,11 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
         {
             if (_client.CommunicationState == CommunicationStates.Connected)
             {
-                //If already connected, behave as base class (RemoteInvokeProxy).
+                // If already connected, behave as base class (RemoteInvokeProxy).
                 return base.Invoke(msg);
             }
 
-            //Connect, call method and finally disconnect
+            // Connect, call method and finally disconnect
             _client.Connect();
             try
             {

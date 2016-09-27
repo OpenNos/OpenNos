@@ -49,7 +49,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #region Instantiation
 
-        //15 seconds.
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -140,7 +139,11 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </summary>
         public IScsWireProtocol WireProtocol
         {
-            get { return _wireProtocol; }
+            get
+            {
+                return _wireProtocol;
+            }
+
             set
             {
                 if (CommunicationState == CommunicationStates.Connected)
