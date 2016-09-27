@@ -982,4 +982,13 @@
   <data name="ITEM_ACQUIRED_BY_THE_GIANT_MONSTER" xml:space="preserve">
     <value>You get the item from the giant monster !</value>
   </data>
+  <data name="MOB_DONT_FIND" xml:space="preserve">
+    <value>This mob hasn't been find</value>
+  </data>
+  <data name="MOB_MUST_BE_ALIVE" xml:space="preserve">
+    <value>If you want to remove a mob, this must be alive!</value>
+  </data>
+  <data name="MOB_REMOVED" xml:space="preserve">
+    <value>Mob removed(MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
+  </data>
 </root>

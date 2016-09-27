@@ -121,6 +121,7 @@ namespace OpenNos.GameObject
         public DateTime LastLogin { get; set; }
         public DateTime LastMailRefresh { get; set; }
         public DateTime LastMapObject { get; set; }
+        public int LastMonsterId { get; set; }
         public DateTime LastMove { get; set; }
         public short LastNRunId { get; set; }
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
