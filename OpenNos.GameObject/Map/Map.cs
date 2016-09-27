@@ -200,8 +200,10 @@ namespace OpenNos.GameObject
                 MapItem droppedItem = null;
                 short localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
                 short localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
-                while (IsBlockedZone(localMapX, localMapY))
+                int retry = 0;
+                while (IsBlockedZone(localMapX, localMapY) && retry < 100)
                 {
+                    retry++;
                     localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
                     localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
                 }

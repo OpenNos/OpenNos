@@ -673,20 +673,21 @@ namespace OpenNos.Handler
                     CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(packetsplit[7]);
                     if (Receiver != null)
                     {
-
+                        WearableInstance headWearable = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
+                        byte color = (headWearable != null && headWearable.Item.IsColored) ? headWearable.Design : Session.Character.HairColor;
                         MailDTO mailcopy = new MailDTO()
                         {
                             Amount = 0,
                             IsOpened = false,
                             Date = DateTime.Now,
-                            Title = packetsplit[9],
+                            Title = packetsplit[8],
                             Message = packetsplit[9],
                             ReceiverId = Receiver.CharacterId,
                             SenderId = Session.Character.CharacterId,
                             IsSenderCopy = true,
                             SenderClass = Session.Character.Class,
                             SenderGender = Session.Character.Gender,
-                            SenderHairColor = Session.Character.HairColor,
+                            SenderHairColor = color,
                             SenderHairStyle = Session.Character.HairStyle,
                             EqPacket = Session.Character.GenerateEqListForPacket(),
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
@@ -697,14 +698,14 @@ namespace OpenNos.Handler
                             Amount = 0,
                             IsOpened = false,
                             Date = DateTime.Now,
-                            Title = packetsplit[9],
+                            Title = packetsplit[8],
                             Message = packetsplit[9],
                             ReceiverId = Receiver.CharacterId,
                             SenderId = Session.Character.CharacterId,
                             IsSenderCopy = false,
                             SenderClass = Session.Character.Class,
                             SenderGender = Session.Character.Gender,
-                            SenderHairColor = Session.Character.HairColor,
+                            SenderHairColor = color,
                             SenderHairStyle = Session.Character.HairStyle,
                             EqPacket = Session.Character.GenerateEqListForPacket(),
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)

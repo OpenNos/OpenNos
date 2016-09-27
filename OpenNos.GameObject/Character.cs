@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
             LastDefence = DateTime.Now.AddSeconds(-21);
             LastHealth = DateTime.Now;
             LastEffect = DateTime.Now;
-            MailList = new Dictionary<int,MailDTO>();
+            MailList = new Dictionary<int, MailDTO>();
             _session = Session;
             Group = null;
         }
@@ -131,7 +131,7 @@ namespace OpenNos.GameObject
         public DateTime LastTransform { get; set; }
         public int LightResistance { get; set; }
         public int MagicalDefence { get; set; }
-        public IDictionary<int,MailDTO> MailList { get; set; }
+        public IDictionary<int, MailDTO> MailList { get; set; }
         public int MaxDistance { get; set; }
         public int MaxHit { get; set; }
         public int MaxSnack { get; set; }
@@ -647,7 +647,7 @@ namespace OpenNos.GameObject
         {
             CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDTO.SenderId);
 
-            return $"post 5 {type} {MailList.First(s=>s.Value == (mailDTO)).Key} 0 0 {mailDTO.SenderClass} {mailDTO.SenderGender} {mailDTO.SenderMorphId} {mailDTO.SenderHairStyle} {mailDTO.SenderHairColor} {mailDTO.EqPacket} {sender.Name} {mailDTO.Title} {mailDTO.Message}";
+            return $"post 5 {type} {MailList.First(s => s.Value == (mailDTO)).Key} 0 0 {mailDTO.SenderClass} {mailDTO.SenderGender} {mailDTO.SenderMorphId} {mailDTO.SenderHairStyle} {mailDTO.SenderHairColor} {mailDTO.EqPacket} {sender.Name} {mailDTO.Title} {mailDTO.Message}";
         }
 
         public List<string> GenerateIn2()
@@ -925,14 +925,14 @@ namespace OpenNos.GameObject
         {
             return $"sp {SpAdditionPoint} 1000000 {SpPoint} 10000";
         }
-        public void SendGift(long id,short vnum, byte amount,bool isNosmall)
+        public void SendGift(long id, short vnum, byte amount, bool isNosmall)
         {
             Item it = ServerManager.GetItem((short)vnum);
             int color = HairColor;
-            WearableInstance headWearable = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
+            
             MailDTO mail = new MailDTO()
             {
-                Amount = (it.Type == InventoryType.Etc || it.Type == InventoryType.Main)?amount:(byte)1,
+                Amount = (it.Type == InventoryType.Etc || it.Type == InventoryType.Main) ? amount : (byte)1,
                 IsOpened = false,
                 Date = DateTime.Now,
                 ReceiverId = id,
@@ -942,7 +942,7 @@ namespace OpenNos.GameObject
                 ItemVNum = vnum,
                 SenderClass = Session.Character.Class,
                 SenderGender = Session.Character.Gender,
-                SenderHairColor = (headWearable != null && headWearable.Item.IsColored) ? headWearable.Design:Session.Character.HairColor,
+                SenderHairColor = Session.Character.HairColor,
                 SenderHairStyle = Session.Character.HairStyle,
                 EqPacket = Session.Character.GenerateEqListForPacket(),
                 SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
@@ -950,16 +950,16 @@ namespace OpenNos.GameObject
             DAOFactory.MailDAO.InsertOrUpdate(ref mail);
             if (id == CharacterId)
             {
-                Session.Character.MailList.Add((MailList.Any()? MailList.Last().Key:0) + 1, mail);
+                Session.Character.MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
                 Session.SendPacket(GenerateParcel(mail));
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
             }
-           
+
         }
 
         public string GenerateParcel(MailDTO mail)
         {
-            return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1:4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.ItemVNum} {mail.Amount} {ServerManager.GetItem((short)mail.ItemVNum).Type}";
+            return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.ItemVNum} {mail.Amount} {ServerManager.GetItem((short)mail.ItemVNum).Type}";
         }
 
         public void GenerateStartupInventory()
@@ -1635,7 +1635,7 @@ namespace OpenNos.GameObject
                 QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntry>(qle));
             }
         }
-        
+
 
         public void LoadSkills()
         {
@@ -1704,8 +1704,8 @@ namespace OpenNos.GameObject
         {
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
-                MailList.Add((MailList.Any()? MailList.Last().Key:0) + 1, mail);
-               
+                MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
+
                 if (mail.ItemVNum != null)
                 {
                     Session.SendPacket(GenerateParcel(mail));
@@ -1725,7 +1725,15 @@ namespace OpenNos.GameObject
                     }
                     Session.SendPacket(Session.Character.GeneratePost(mail, 1));
                 }
-                   
+
+            }
+            foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
+            {
+                MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
+
+                Session.SendPacket(Session.Character.GeneratePost(mail, 2));
+
+
             }
             LastMailRefresh = DateTime.Now;
         }
