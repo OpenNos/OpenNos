@@ -210,11 +210,16 @@ namespace OpenNos.Handler
                 return;
             string[] deleteCharacterPacket = packet.Split(' ');
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
+            if (account == null)
+                return;
             if (deleteCharacterPacket.Length <= 3)
                 return;
             if (account != null && account.Password.ToLower() == EncryptionBase.sha512(deleteCharacterPacket[3]))
             {
-                DAOFactory.GeneralLogDAO.SetCharIdNull(Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(deleteCharacterPacket[2])).CharacterId));
+                CharacterDTO character = DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
+                if (character == null)
+                    return;
+                DAOFactory.GeneralLogDAO.SetCharIdNull(Convert.ToInt64(character.CharacterId));
                 DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
                 LoadCharacters(packet);
             }
