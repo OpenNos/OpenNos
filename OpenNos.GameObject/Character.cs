@@ -194,9 +194,8 @@ namespace OpenNos.GameObject
                 Session.CurrentMap?.Broadcast(Session, GenerateEff(8), ReceiverType.All);
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
                 Session.CurrentMap?.Broadcast(Session, GenerateEff(196), ReceiverType.All);
-
-                Random rand = new Random();
-                int faction = 1 + (int)rand.Next(0, 2);
+                
+                int faction = 1 + (int)ServerManager.Instance.Random.Next(0, 2);
                 Faction = faction;
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
 

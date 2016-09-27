@@ -42,6 +42,7 @@ namespace OpenNos.GameObject
         private static List<Skill> _skills = new List<Skill>();
         private long lastGroupId;
 
+
         #endregion
 
         #region Instantiation
@@ -82,6 +83,7 @@ namespace OpenNos.GameObject
             Task TaskController = new Task(() => TaskLauncherProcess());
             TaskController.Start();
             lastGroupId = 1;
+            Random = new Random();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -112,7 +114,7 @@ namespace OpenNos.GameObject
         public static int FairyXpRate { get; set; }
         public static int GoldRate { get; set; }
 
-
+        public Random Random;
 
         public static List<MapMonster> Monsters { get; set; }
         public static EventHandler NotifyChildren { get; set; }

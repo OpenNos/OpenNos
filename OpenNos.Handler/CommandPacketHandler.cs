@@ -56,8 +56,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short vnum = 0, isMoving = 0;
-
-            Random rnd = new Random();
+           
 
             if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out isMoving))
             {
@@ -1232,7 +1231,6 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             short vnum = 0;
             byte qty = 1, move = 0;
-            Random rnd = new Random();
             if (packetsplit.Length == 5 && short.TryParse(packetsplit[2], out vnum) && byte.TryParse(packetsplit[3], out qty) && byte.TryParse(packetsplit[4], out move))
             {
                 NpcMonster npcmonster = ServerManager.GetNpc(vnum);
@@ -1241,12 +1239,12 @@ namespace OpenNos.Handler
                 Map map = Session.CurrentMap;
                 for (int i = 0; i < qty; i++)
                 {
-                    short mapx = (short)rnd.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
-                    short mapy = (short)rnd.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
+                    short mapx = (short)ServerManager.Instance.Random.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
+                    short mapy = (short)ServerManager.Instance.Random.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
                     while (Session.CurrentMap.IsBlockedZone(mapx, mapy))
                     {
-                        mapx = (short)rnd.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
-                        mapy = (short)rnd.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
+                        mapx = (short)ServerManager.Instance.Random.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
+                        mapy = (short)ServerManager.Instance.Random.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
                     }
                     //Replace by MAPPING
                     MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
@@ -1334,8 +1332,8 @@ namespace OpenNos.Handler
                         do
                         {
                             i++;
-                            session.Character.MapX = (short)(Session.Character.MapX + new Random().Next(-5, 5));
-                            session.Character.MapY = (short)(Session.Character.MapY + new Random().Next(-5, 5));
+                            session.Character.MapX = (short)(Session.Character.MapX + ServerManager.Instance.Random.Next(-5, 5));
+                            session.Character.MapY = (short)(Session.Character.MapY + ServerManager.Instance.Random.Next(-5, 5));
                         }
                         while (i < 1000 && Session.CurrentMap.IsBlockedZone(session.Character.MapX, session.Character.MapY));
                         session.Character.MapId = Session.Character.MapId;

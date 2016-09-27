@@ -63,7 +63,6 @@ namespace OpenNos.Handler
                         {
                             if (Convert.ToByte(packetsplit[3]) > 2)
                                 return;
-                            Random r = new Random();
                             CharacterDTO newCharacter = new CharacterDTO()
                             {
                                 Class = (byte)ClassType.Adventurer,
@@ -77,8 +76,8 @@ namespace OpenNos.Handler
                                 Level = 1,
                                 LevelXp = 0,
                                 MapId = 1,
-                                MapX = (short)(r.Next(78, 81)),
-                                MapY = (short)(r.Next(114, 118)),
+                                MapX = (short)(ServerManager.Instance.Random.Next(78, 81)),
+                                MapY = (short)(ServerManager.Instance.Random.Next(114, 118)),
                                 Mp = 221,
                                 Name = characterName,
                                 Slot = slot,

@@ -260,7 +260,7 @@ namespace OpenNos.Handler
                         if (!short.TryParse(packetsplit[3], out MapNpcId)) return;
                         MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
-                        Random rnd = new Random();
+                        
                         int RateDrop = ServerManager.DropRate;
                         if (Session.Character.LastMapObject.AddSeconds(6) < DateTime.Now)
                         {
@@ -272,8 +272,8 @@ namespace OpenNos.Handler
                                     return;
                                 }
                             }
-                            rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                            double randomAmount = rnd.Next(0, 100) * rnd.NextDouble();
+
+                            double randomAmount = ServerManager.Instance.Random.Next(0, 100) * ServerManager.Instance.Random.NextDouble();
                             int dropChance = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).DropChance;
                             if (randomAmount <= ((double)dropChance * RateDrop) / 5000.000)
                             {

@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
             Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = LastMove = DateTime.Now;
             Map = parent;
-            _movetime = new Random().Next(300, 3000);
+            _movetime = ServerManager.Instance.Random.Next(300, 3000);
             IEnumerable<RecipeDTO> recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId);
             if (recipe != null)
             {
@@ -131,17 +131,16 @@ namespace OpenNos.GameObject
                 Map.Broadcast(GenerateEff());
                 LastEffect = DateTime.Now;
             }
-
-            Random random = new Random((int)DateTime.Now.Ticks * MapNpcId & 0x0000FFFF);
+            
             time = (DateTime.Now - LastMove).TotalMilliseconds;
             if (IsMoving && Npc.Speed > 0 && time > _movetime)
             {
 
-                _movetime = random.Next(500, 3000);
-                byte point = (byte)random.Next(2, 4);
-                byte fpoint = (byte)random.Next(0, 2);
+                _movetime = ServerManager.Instance.Random.Next(500, 3000);
+                byte point = (byte)ServerManager.Instance.Random.Next(2, 4);
+                byte fpoint = (byte)ServerManager.Instance.Random.Next(0, 2);
 
-                byte xpoint = (byte)random.Next(fpoint, point);
+                byte xpoint = (byte)ServerManager.Instance.Random.Next(fpoint, point);
                 byte ypoint = (byte)(point - xpoint);
 
                 short mapX = FirstX;

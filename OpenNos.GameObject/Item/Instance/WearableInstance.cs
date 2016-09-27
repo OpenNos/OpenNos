@@ -152,9 +152,8 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateGold());
                     break;
             }
-
-            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-            int rnd = r.Next(0, 100);
+            
+            int rnd = ServerManager.Instance.Random.Next(0, 100);
             
                 //if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
                 //{
@@ -293,14 +292,13 @@ namespace OpenNos.GameObject
             if (this.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || this.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
             {
                 int point = ServersData.RarityPoint(this.Rare, (this.Item.IsHeroic ? (short)(95 + this.Item.LevelMinimum) : this.Item.LevelMinimum));
-                Random rnd = new Random();
                 this.Concentrate = 0;
                 this.HitRate = 0;
                 this.DamageMinimum = 0;
                 this.DamageMaximum = 0;
                 for (int i = 0; i < point; i++)
                 {
-                    int rndn = rnd.Next(0, 3);
+                    int rndn = ServerManager.Instance.Random.Next(0, 3);
                     if (rndn == 0)
                     {
                         this.Concentrate++;
@@ -316,7 +314,6 @@ namespace OpenNos.GameObject
             else if (this.Item.EquipmentSlot == (byte)EquipmentType.Armor)
             {
                 int point = ServersData.RarityPoint(this.Rare, this.Item.LevelMinimum);
-                Random rnd = new Random();
                 this.DefenceDodge = 0;
                 this.DistanceDefenceDodge = 0;
                 this.DistanceDefence = 0;
@@ -324,7 +321,7 @@ namespace OpenNos.GameObject
                 this.CloseDefence = 0;
                 for (int i = 0; i < point; i++)
                 {
-                    int rndn = rnd.Next(0, 3);
+                    int rndn = ServerManager.Instance.Random.Next(0, 3);
                     if (rndn == 0)
                     {
                         this.DefenceDodge++;
@@ -354,9 +351,8 @@ namespace OpenNos.GameObject
                 if (Session.Character.InventoryList.CountItem(sandVnum) < sand[this.Upgrade])
                     return;
                 Session.Character.InventoryList.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
-
-                Random r = new Random();
-                int rnd = r.Next(100);
+                
+                int rnd = ServerManager.Instance.Random.Next(100);
                 if (rnd <= upsuccess[this.Upgrade + itemToSum.Upgrade])
                 {
                     this.Upgrade += (byte)(itemToSum.Upgrade + 1);
@@ -464,8 +460,8 @@ namespace OpenNos.GameObject
                 }
                 WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
                 Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
-                Random r = new Random();
-                int rnd = r.Next(100);
+               
+                int rnd = ServerManager.Instance.Random.Next(100);
                 if (rnd <= upfix[this.Upgrade])
                 {
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);

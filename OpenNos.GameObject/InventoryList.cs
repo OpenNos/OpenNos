@@ -341,16 +341,15 @@ namespace OpenNos.GameObject
         public MapItem PutItem(byte type, short slot, byte amount, ref Inventory inv)
         {
             Logger.Debug($"type: {type} slot: {slot} amount: {amount}", Owner.Session.SessionId);
-            Random rnd = new Random();
             Guid random = Guid.NewGuid();
             int i = 0;
             MapItem droppedItem = null;
-            short MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 2));
-            short MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 2));
+            short MapX = (short)(ServerManager.Instance.Random.Next(Owner.MapX - 1, Owner.MapX + 2));
+            short MapY = (short)(ServerManager.Instance.Random.Next(Owner.MapY - 1, Owner.MapY + 2));
             while (Owner.Session.CurrentMap.IsBlockedZone(MapX, MapY) && i < 5)
             {
-                MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 2));
-                MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 2));
+                MapX = (short)(ServerManager.Instance.Random.Next(Owner.MapX - 1, Owner.MapX + 2));
+                MapY = (short)(ServerManager.Instance.Random.Next(Owner.MapY - 1, Owner.MapY + 2));
                 i++;
             }
             if (i == 5)

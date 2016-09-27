@@ -196,16 +196,15 @@ namespace OpenNos.GameObject
         {
             try
             {
-                Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 MapItem droppedItem = null;
-                short localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-                short localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+                short localMapX = (short)(ServerManager.Instance.Random.Next(mapX - 1, mapX + 1));
+                short localMapY = (short)(ServerManager.Instance.Random.Next(mapY - 1, mapY + 1));
                 int retry = 0;
                 while (IsBlockedZone(localMapX, localMapY) && retry < 100)
                 {
                     retry++;
-                    localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-                    localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+                    localMapX = (short)(ServerManager.Instance.Random.Next(mapX - 1, mapX + 1));
+                    localMapY = (short)(ServerManager.Instance.Random.Next(mapY - 1, mapY + 1));
                 }
 
                 ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum);
@@ -347,10 +346,9 @@ namespace OpenNos.GameObject
         {
             try
             {
-                var rnd = new Random();
                 List<Task> MonsterLifeTask = new List<Task>();
                 Monsters.RemoveAll(s => !s.Alive && !s.Respawn);
-                foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
+                foreach (MapMonster monster in Monsters.OrderBy(i => ServerManager.Instance.Random.Next()))
                 {
                     monster.MonsterLife();
                 }
@@ -365,8 +363,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                var rnd = new Random();
-                foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
+                foreach (MapNpc npc in Npcs.OrderBy(i => ServerManager.Instance.Random.Next()))
                 {
                     npc.NpcLife();
                 }
@@ -379,7 +376,6 @@ namespace OpenNos.GameObject
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
         {
-            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             short MinX = (short)(-xpoint + firstX);
             short MaxX = (short)(xpoint + firstX);
 
@@ -396,7 +392,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            foreach (MapCell cell in cells.OrderBy(s => r.Next(int.MaxValue)))
+            foreach (MapCell cell in cells.OrderBy(s => ServerManager.Instance.Random.Next(int.MaxValue)))
             {
                 if (!IsBlockedZone(firstX, firstY, cell.X, cell.Y))
                 {
