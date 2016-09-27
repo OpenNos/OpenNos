@@ -120,7 +120,7 @@ namespace OpenNos.Handler
                     {
                         NpcMonster npcinfo = ServerManager.GetNpc(npc.NpcVNum);
                         if (npcinfo == null)
-                            return;
+                            return;                        
                         Session.SendPacket($"st 2 {characterInformationPacket[3]} {npcinfo.Level} {npcinfo.HeroLevel} 100 100 50000 50000");
                     }
                 }
@@ -134,6 +134,7 @@ namespace OpenNos.Handler
                         NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
                         if (monsterinfo == null)
                             return;
+                        Session.Character.LastMonsterId = monster.MapMonsterId;
                         Session.SendPacket($"st 3 {characterInformationPacket[3]} {monsterinfo.Level} {monsterinfo.HeroLevel} {((int)((float)monster.CurrentHp / (float)monsterinfo.MaxHP * 100))} {((int)((float)monster.CurrentMp / (float)monsterinfo.MaxMP * 100))} {monster.CurrentHp} {monster.CurrentMp}");
                     }
                 }

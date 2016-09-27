@@ -121,6 +121,7 @@ namespace OpenNos.GameObject
         public DateTime LastLogin { get; set; }
         public DateTime LastMailRefresh { get; set; }
         public DateTime LastMapObject { get; set; }
+        public int LastMonsterId { get; set; }
         public DateTime LastMove { get; set; }
         public short LastNRunId { get; set; }
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
@@ -787,7 +788,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePost(MailDTO mail, byte type)
         {
-            return $"post 1 {type} {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddHHmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
+            return $"post 1 {type} {MailList.Single(s => s.Value.MailId == (mail.MailId)).Key} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddHHmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
         }
 
 

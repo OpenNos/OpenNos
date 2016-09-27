@@ -1,15 +1,20 @@
 ﻿using OpenNos.Core;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 
 namespace OpenNos.GameObject.Mock
 {
     public class FakeNetworkClient : INetworkClient
     {
+        #region Events
+
+        public event EventHandler<MessageEventArgs> MessageReceived;
+
+        #endregion
+
+        #region Properties
+
         public long ClientId
         {
             get
@@ -52,7 +57,9 @@ namespace OpenNos.GameObject.Mock
             }
         }
 
-        public event EventHandler<MessageEventArgs> MessageReceived;
+        #endregion
+
+        #region Methods
 
         public void Disconnect()
         {
@@ -78,5 +85,7 @@ namespace OpenNos.GameObject.Mock
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }
