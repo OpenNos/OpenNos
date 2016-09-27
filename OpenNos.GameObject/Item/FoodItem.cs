@@ -45,10 +45,17 @@ namespace OpenNos.GameObject
                 session.Character.Hp += session.Character.SnackHp;
                 session.Character.Mp += session.Character.SnackMp;
                 if ((session.Character.SnackHp > 0 && session.Character.SnackHp > 0) && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
+                {
                     session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
+                }
                 if (session.IsConnected)
+                {
                     session.SendPacket(session.Character.GenerateStat());
-                else return;
+                }
+                else
+                {
+                    return;
+                }
                 Thread.Sleep(1800);
             }
         }
@@ -56,15 +63,21 @@ namespace OpenNos.GameObject
         public override void Use(ClientSession session, ref Inventory Inv, bool DelayUsed = false)
         {
             if ((DateTime.Now - session.Character.LastPotion).TotalMilliseconds < 750)
+            {
                 return;
+            }
             else
+            {
                 session.Character.LastPotion = DateTime.Now;
+            }
             Item item = ((ItemInstance)Inv.ItemInstance).Item;
             switch (Effect)
             {
                 default:
                     if (session.Character.Hp <= 0)
+                    {
                         return;
+                    }
                     if (!session.Character.IsSitting)
                     {
                         session.Character.Rest();
@@ -76,12 +89,16 @@ namespace OpenNos.GameObject
                     if (amount < 5)
                     {
                         if (!session.Character.IsSitting)
+                        {
                             return;
+                        }
                         Thread workerThread = new Thread(() => Regenerate(session, item));
                         workerThread.Start();
                         Inv.ItemInstance.Amount--;
                         if (Inv.ItemInstance.Amount > 0)
+                        {
                             session.SendPacket(session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        }
                         else
                         {
                             session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
@@ -91,14 +108,20 @@ namespace OpenNos.GameObject
                     else
                     {
                         if (session.Character.Gender == 1)
+                        {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1));
+                        }
                         else
+                        {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
+                        }
                     }
                     if (amount == 0)
                     {
                         if (!session.Character.IsSitting)
+                        {
                             return;
+                        }
                         Thread workerThread2 = new Thread(() => Sync(session, item));
                         workerThread2.Start();
                     }

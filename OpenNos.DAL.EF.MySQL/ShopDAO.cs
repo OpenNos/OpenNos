@@ -83,7 +83,10 @@ namespace OpenNos.DAL.EF.MySQL
                         context.SaveChanges();
                         return _mapper.Map<ShopDTO>(entity);
                     }
-                    else return new ShopDTO();
+                    else
+                    {
+                        return new ShopDTO();
+                    }
                 }
             }
             catch (Exception e)

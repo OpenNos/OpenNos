@@ -40,7 +40,7 @@ namespace OpenNos.ServiceRef.Internal
 
         public void ConnectCharacterCallback(string characterName)
         {
-            //inform clients about a new connected character
+            // inform clients about a new connected character
             OnCharacterConnected(characterName);
         }
 
@@ -51,13 +51,13 @@ namespace OpenNos.ServiceRef.Internal
 
         public void DisconnectCharacterCallback(string characterName)
         {
-            //inform clients about a disconnected character
+            // inform clients about a disconnected character
             OnCharacterDisconnected(characterName);
         }
 
         public void Dispose()
         {
-            //dispose communication callback service
+            // dispose communication callback service
         }
 
         public void OnAccountDisconnected(string accountName)

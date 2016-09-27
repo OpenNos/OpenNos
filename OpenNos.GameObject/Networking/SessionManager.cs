@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
 
         public void AddSession(INetworkClient customClient)
         {
-            Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + customClient.ClientId);
+            Logger.Log.Info(Language.GetMessageFromKey.Instance("NEW_CONNECT") + customClient.ClientId);
 
             ClientSession session = IntializeNewSession(customClient);
 
@@ -48,7 +48,7 @@ namespace OpenNos.GameObject
                     _sessions.TryRemove(customClient.ClientId, out session);
                     ServerManager.Instance.UnregisterSession(session);
                     return;
-                };
+                }
             }
         }
 
@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
             ClientSession session;
             _sessions.TryRemove(client.ClientId, out session);
 
-            //check if session hasnt been already removed
+            // check if session hasnt been already removed
             if (session != null)
             {
                 session.IsDisposing = true;
@@ -73,7 +73,7 @@ namespace OpenNos.GameObject
 
                         session.Character.Save();
 
-                        //only remove the character from map if the character has been set
+                        // only remove the character from map if the character has been set
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
                     }
                 }

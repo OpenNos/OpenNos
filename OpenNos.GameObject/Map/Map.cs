@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
             {
                 MapTypeDTO MT = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
 
-                //Replace by MAPPING
+                // Replace by MAPPING
                 MapType maptype = new MapType()
                 {
                     MapTypeId = MT.MapTypeId,
@@ -70,7 +70,8 @@ namespace OpenNos.GameObject
 
             UserShops = new Dictionary<long, MapShop>();
             foreach (PortalDTO portal in portals)
-            {//Replace by MAPPING
+            {
+                // Replace by MAPPING
                 _portals.Add(new GameObject.Portal()
                 {
                     DestinationMapId = portal.DestinationMapId,
@@ -159,6 +160,7 @@ namespace OpenNos.GameObject
             {
                 return _tempgrid;
             }
+
             set
             {
                 if (value == null)
@@ -214,19 +216,24 @@ namespace OpenNos.GameObject
                 MapItem droppedItem = null;
                 short localMapX = (short)(ServerManager.Instance.Random.Next(mapX - 1, mapX + 1));
                 short localMapY = (short)(ServerManager.Instance.Random.Next(mapY - 1, mapY + 1));
-
-
                 List<MapCell> Possibilities = new List<MapCell>();
 
                 for (short x = -1; x < 2; x++)
+                {
                     for (short y = -1; y < 2; y++)
+                    {
                         Possibilities.Add(new MapCell() { X = x, Y = y });
+                    }
+                }
+
                 foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
                 {
                     localMapX = (short)(mapX + possibilitie.X);
                     localMapY = (short)(mapY + possibilitie.Y);
                     if (!IsBlockedZone(localMapX, localMapY))
+                    {
                         break;
+                    }
                 }
 
                 ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum);
@@ -238,13 +245,16 @@ namespace OpenNos.GameObject
                     Owner = Owner
                 };
 
-                //rarify
+                // rarify
                 if (droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                {
                     droppedItem.Rarify(null);
+                }
 
                 DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
 
-                Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");//TODO UseTransportId
+                // TODO: UseTransportId
+                Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1"); 
             }
             catch (Exception e)
             {
@@ -263,7 +273,9 @@ namespace OpenNos.GameObject
             foreach (MapMonster monster in Monsters.Where(s => s.Alive))
             {
                 if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = monster.MapX, Y = monster.MapY }) <= distance + 1)
+                {
                     monsters.Add(monster);
+                }
             }
             return monsters;
         }
@@ -274,7 +286,6 @@ namespace OpenNos.GameObject
             {
                 return true;
             }
-
             return false;
         }
 
@@ -313,9 +324,10 @@ namespace OpenNos.GameObject
             if (lpath.Count > 0)
             {
                 foreach (GridPos item in lpath)
+                {
                     path.Add(new MapCell { X = Convert.ToInt16(item.x), Y = Convert.ToInt16(item.y), MapId = cell1.MapId });
+                }
             }
-
             return path;
         }
 
@@ -397,7 +409,9 @@ namespace OpenNos.GameObject
                 for (short x = MinX; x <= MaxX; x++)
                 {
                     if (x != firstX && y != firstY)
+                    {
                         cells.Add(new MapCell() { X = x, Y = y, MapId = MapId });
+                    }
                 }
             }
 
@@ -421,7 +435,9 @@ namespace OpenNos.GameObject
             for (int i = cl.Count() - 1; i >= 0; i--)
             {
                 if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)
+                {
                     characters.Add(cl.ElementAt(i).Character);
+                }
             }
             return characters;
         }
@@ -486,7 +502,9 @@ namespace OpenNos.GameObject
             }
             while ((Path.Last().X != mapCell2.X || Path.Last().Y != mapCell2.Y) && (!IsBlockedZone(Path.Last().X, Path.Last().Y)));
             if (IsBlockedZone(Path.Last().X, Path.Last().Y))
+            {
                 Path.Remove(Path.Last());
+            }
             Path.RemoveAt(0);
             return Path;
         }
@@ -499,7 +517,9 @@ namespace OpenNos.GameObject
                 foreach (ClientSession Session in Sessions.Where(s => s?.Character != null))
                 {
                     if (Session.Character.LastMailRefresh.AddSeconds(30) < DateTime.Now)
+                    {
                         Session.Character.RefreshMail();
+                    }
                     int x = 1;
                     bool change = false;
                     if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)
@@ -513,9 +533,13 @@ namespace OpenNos.GameObject
                     if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
                     {
                         if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
+                        {
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
+                        }
                         else
+                        {
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
+                        }
                         Session.Character.LastEffect = DateTime.Now;
                     }
 
@@ -531,7 +555,9 @@ namespace OpenNos.GameObject
                         if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkill.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
                         {
                             if (x == 0)
+                            {
                                 x = 1;
+                            }
                             if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
                             {
                                 change = true;
@@ -540,7 +566,9 @@ namespace OpenNos.GameObject
                             else
                             {
                                 if (Session.Character.Hp != (int)Session.Character.HPLoad())
+                                {
                                     change = true;
+                                }
                                 Session.Character.Hp = (int)Session.Character.HPLoad();
                             }
                             if (x == 1)
@@ -553,7 +581,9 @@ namespace OpenNos.GameObject
                                 else
                                 {
                                     if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                                    {
                                         change = true;
+                                    }
                                     Session.Character.Mp = (int)Session.Character.MPLoad();
                                 }
                                 x = 0;
@@ -574,7 +604,7 @@ namespace OpenNos.GameObject
 
         private void RemoveMapItem()
         {
-            //take the data from list to remove it without having enumeration problems (ToList)
+            // take the data from list to remove it without having enumeration problems (ToList)
             try
             {
                 IEnumerable<KeyValuePair<long, MapItem>> dropsToRemove = DroppedList.Where(dl => dl.Value.CreateDate.AddMinutes(3) < DateTime.Now).ToList();

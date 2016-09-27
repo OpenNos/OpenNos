@@ -201,7 +201,9 @@ namespace OpenNos.GameObject
                     return;
             }
             if (this.SpStoneUpgrade > 99)
+            {
                 return;
+            }
             else if (this.SpStoneUpgrade > 80)
             {
                 upmode = 5;
@@ -220,14 +222,20 @@ namespace OpenNos.GameObject
             }
 
             if (this.IsFixed)
+            {
                 return;
+            }
             if (Session.Character.Gold < goldprice[upmode - 1])
+            {
                 return;
+            }
             if (Session.Character.InventoryList.CountItem(stonevnum) < stoneprice[upmode - 1])
+            {
                 return;
+            }
 
             SpecialistInstance specialist = Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.Id);
-            
+
             int rnd = ServerManager.Instance.Random.Next(100);
             if (rnd <= upsuccess[upmode - 1])
             {
@@ -323,13 +331,21 @@ namespace OpenNos.GameObject
             short dragonHeartVnum = 2513;
 
             if (this.IsFixed)
+            {
                 return;
+            }
             if (Session.Character.Gold < goldprice[this.Upgrade])
+            {
                 return;
+            }
             if (Session.Character.InventoryList.CountItem(fullmoonVnum) < fullmoon[this.Upgrade])
+            {
                 return;
+            }
             if (Session.Character.InventoryList.CountItem(featherVnum) < feather[this.Upgrade])
+            {
                 return;
+            }
 
             if (this.Upgrade < 5)
             {
@@ -338,13 +354,17 @@ namespace OpenNos.GameObject
                     if (this.Item.Morph <= 15)
                     {
                         if (Session.Character.InventoryList.CountItem(greenSoulVnum) < soul[this.Upgrade])
+                        {
                             return;
+                        }
                         Session.Character.InventoryList.RemoveItemAmount(greenSoulVnum, (soul[this.Upgrade]));
                     }
                     else
                     {
                         if (Session.Character.InventoryList.CountItem(dragonSkinVnum) < soul[this.Upgrade])
+                        {
                             return;
+                        }
                         Session.Character.InventoryList.RemoveItemAmount(dragonSkinVnum, (soul[this.Upgrade]));
                     }
                 }
@@ -361,13 +381,17 @@ namespace OpenNos.GameObject
                     if (this.Item.Morph <= 15)
                     {
                         if (Session.Character.InventoryList.CountItem(redSoulVnum) < soul[this.Upgrade])
+                        {
                             return;
+                        }
                         Session.Character.InventoryList.RemoveItemAmount(redSoulVnum, (soul[this.Upgrade]));
                     }
                     else
                     {
                         if (Session.Character.InventoryList.CountItem(dragonBloodVnum) < soul[this.Upgrade])
+                        {
                             return;
+                        }
                         Session.Character.InventoryList.RemoveItemAmount(dragonBloodVnum, (soul[this.Upgrade]));
                     }
                 }
@@ -384,20 +408,23 @@ namespace OpenNos.GameObject
                     if (this.Item.Morph <= 15)
                     {
                         if (Session.Character.InventoryList.CountItem(blueSoulVnum) < soul[this.Upgrade])
+                        {
                             return;
+                        }
                         Session.Character.InventoryList.RemoveItemAmount(blueSoulVnum, (soul[this.Upgrade]));
                     }
                     else
                     {
                         if (Session.Character.InventoryList.CountItem(dragonHeartVnum) < soul[this.Upgrade])
+                        {
                             return;
+                        }
                         Session.Character.InventoryList.RemoveItemAmount(dragonHeartVnum, (soul[this.Upgrade]));
                     }
                 }
                 else
                 {
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 51), 11));
-
                     return;
                 }
             }
@@ -407,14 +434,18 @@ namespace OpenNos.GameObject
             if (rnd <= upfail[this.Upgrade])
             {
                 if (protect == UpgradeProtection.Protected)
+                {
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
+                }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 11));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 0));
             }
             else if (rnd <= upsuccess[this.Upgrade])
             {
                 if (protect == UpgradeProtection.Protected)
+                {
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
+                }
                 ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3005), ReceiverType.All);
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
@@ -426,8 +457,6 @@ namespace OpenNos.GameObject
                 if (protect == UpgradeProtection.Protected)
                 {
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
-
-                    //Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 11));
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 0));
                 }

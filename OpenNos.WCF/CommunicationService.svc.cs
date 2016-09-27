@@ -124,7 +124,7 @@ namespace OpenNos.WCF
         {
             try
             {
-                //Account cant connect twice
+                // Account cant connect twice
                 if (ConnectedAccounts.ContainsKey(accountName))
                 {
                     Logger.Log.DebugFormat($"[WCF] Account {accountName} is already connected.");
@@ -132,12 +132,12 @@ namespace OpenNos.WCF
                 }
                 else
                 {
-                    //TODO move in own method, cannot do this here because it needs to be called by a client who wants to know if the
-                    //Account is allowed to connect without doing it actually
+                    // TODO: move in own method, cannot do this here because it needs to be called by a client who wants to know if the
+                    // Account is allowed to connect without doing it actually
                     Logger.Log.DebugFormat($"[WCF] Account {accountName} has connected.");
                     ConnectedAccounts.Add(accountName, sessionId);
 
-                    //inform clients
+                    // inform clients
                     ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
                     callback.ConnectAccountCallback(accountName, sessionId);
                     return true;
@@ -159,7 +159,7 @@ namespace OpenNos.WCF
         {
             try
             {
-                //character cant connect twice
+                // character cant connect twice
                 if (ConnectedCharacters.ContainsKey(characterName))
                 {
                     Logger.Log.DebugFormat($"[WCF] Character {characterName} is already connected.");
@@ -167,12 +167,12 @@ namespace OpenNos.WCF
                 }
                 else
                 {
-                    //TODO move in own method, cannot do this here because it needs to be called by a client who wants to know if the
-                    //character is allowed to connect without doing it actually
+                    // TODO: move in own method, cannot do this here because it needs to be called by a client who wants to know if the
+                    // character is allowed to connect without doing it actually
                     Logger.Log.DebugFormat($"[WCF] Character {characterName} has connected.");
                     ConnectedCharacters.Add(characterName, accountName);
 
-                    //inform clients
+                    // inform clients
                     ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
                     callback.ConnectCharacterCallback(characterName);
                     return true;
@@ -195,7 +195,7 @@ namespace OpenNos.WCF
             {
                 ConnectedAccounts.Remove(accountName);
 
-                //inform clients
+                // inform clients
                 ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
                 callback.DisconnectAccountCallback(accountName);
 
@@ -217,7 +217,7 @@ namespace OpenNos.WCF
             {
                 ConnectedCharacters.Remove(characterName);
 
-                //inform clients
+                // inform clients
                 ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
                 callback.DisconnectCharacterCallback(characterName);
 
@@ -239,7 +239,7 @@ namespace OpenNos.WCF
         {
             try
             {
-                //return if the player has been registered
+                // return if the player has been registered
                 bool successful = RegisteredAccountLogins.Remove(accountName);
 
                 if (successful)
@@ -271,7 +271,9 @@ namespace OpenNos.WCF
             try
             {
                 if (!RegisteredAccountLogins.ContainsKey(accountName))
+                {
                     RegisteredAccountLogins.Add(accountName, sessionId);
+                }
                 else
                 {
                     RegisteredAccountLogins.Remove(accountName);

@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    //actually a Character wont be deleted, it just will be disabled for future traces
+                    // actually a Character wont be deleted, it just will be disabled for future traces
                     byte state = (byte)CharacterState.Active;
                     Character Character = context.Character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot) && c.State.Equals(state));
 
@@ -120,13 +120,13 @@ namespace OpenNos.DAL.EF.MySQL
                     long CharacterId = character.CharacterId;
                     Character entity = context.Character.FirstOrDefault(c => c.CharacterId.Equals(CharacterId));
 
-                    if (entity == null) //new entity
+                    if (entity == null) 
                     {
                         character = Insert(character, context);
                         return SaveResult.Inserted;
                     }
-                    else //existing entity
-                    {
+                    else 
+                    { 
                         character = Update(entity, character, context);
                         return SaveResult.Updated;
                     }

@@ -26,32 +26,23 @@ namespace OpenNos.DAL.Mock
 
         public void InitializeMapper(Type baseType)
         {
-            //_baseType = baseType;
-            //var config = new MapperConfiguration(cfg =>
-            //{
-            //    cfg.CreateMap(baseType, typeof(ItemInstanceDTO))
-            //        .ForMember("Item", opts => opts.Ignore());
-
-            //    cfg.CreateMap(typeof(ItemInstanceDTO), typeof(ItemInstanceDTO)).As(baseType);
-
-            //    Type itemInstanceType = typeof(ItemInstanceDTO);
-            //    foreach (KeyValuePair<Type, Type> entry in itemInstanceMappings)
-            //    {
-            //        //GameObject -> Entity
-            //        cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
-            //                        .IncludeBase(baseType, typeof(ItemInstanceDTO));
-
-            //        //Entity -> GameObject
-            //        cfg.CreateMap(entry.Value, entry.Key)
-            //                        .IncludeBase(typeof(ItemInstanceDTO), baseType);
-
-            //        Type retrieveDTOType = Type.GetType($"OpenNos.Data.{entry.Key.Name}DTO, OpenNos.Data");
-            //        //Entity -> DTO
-            //        cfg.CreateMap(entry.Value, typeof(ItemInstanceDTO)).As(entry.Key);
-            //    }
-            //});
-
-            //_mapper = config.CreateMapper();
+            /*
+           _baseType = baseType;
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap(baseType, typeof(ItemInstanceDTO)).ForMember("Item", opts => opts.Ignore());
+                cfg.CreateMap(typeof(ItemInstanceDTO), typeof(ItemInstanceDTO)).As(baseType);
+                Type itemInstanceType = typeof(ItemInstanceDTO);
+                foreach (KeyValuePair<Type, Type> entry in itemInstanceMappings)
+                {
+                    cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore()).IncludeBase(baseType, typeof(ItemInstanceDTO));
+                    cfg.CreateMap(entry.Value, entry.Key).IncludeBase(typeof(ItemInstanceDTO), baseType);
+                    Type retrieveDTOType = Type.GetType($"OpenNos.Data.{entry.Key.Name}DTO, OpenNos.Data");
+                    cfg.CreateMap(entry.Value, typeof(ItemInstanceDTO)).As(entry.Key);
+                }
+            });
+            _mapper = config.CreateMapper();
+            */
         }
 
         public IEnumerable<InventoryDTO> InsertOrUpdate(IEnumerable<InventoryDTO> dtos)

@@ -27,7 +27,7 @@ namespace OpenNos.GameObject
             Items = new List<RecipeItem>();
             foreach (RecipeItemDTO rec in DAOFactory.RecipeItemDAO.LoadByRecipe(RecipeId))
             {
-                //Replace by MAPPING
+                // Replace by MAPPING
                 Items.Add(new RecipeItem()
                 {
                     Amount = rec.Amount,

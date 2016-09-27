@@ -27,7 +27,8 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
-                case 650: //wings
+                // wings
+                case 650:
                     SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
                     if (Session.Character.UseSp && specialistInstance != null)
                     {
@@ -45,7 +46,9 @@ namespace OpenNos.GameObject
 
                             inventory.ItemInstance.Amount--;
                             if (inventory.ItemInstance.Amount > 0)
+                            {
                                 Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                            }
                             else
                             {
                                 Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
@@ -54,10 +57,13 @@ namespace OpenNos.GameObject
                         }
                     }
                     else
+                    {
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                    }
                     break;
 
-                case 651: // magic lamp (hardcoded)
+                // magic lamps
+                case 651:
                     if (!Session.Character.EquipmentList.Inventory.Any())
                     {
                         if (!DelayUsed)
@@ -69,7 +75,9 @@ namespace OpenNos.GameObject
                             Session.Character.ChangeSex();
                             inventory.ItemInstance.Amount--;
                             if (inventory.ItemInstance.Amount > 0)
+                            {
                                 Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                            }
                             else
                             {
                                 Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
@@ -83,7 +91,8 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                case 1000: // vehicles
+                // vehicles
+                case 1000:
                     SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
                     if (!DelayUsed && Session.Character.IsVehicled == false)
                     {

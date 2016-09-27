@@ -111,11 +111,11 @@ namespace OpenNos.DAL.EF.MySQL
         {
             Guid primaryKey = dto.Id;
             TEntity entity = context.Set<TEntity>().FirstOrDefault(c => c.Id == primaryKey);
-            if (entity == null) //new entity
+            if (entity == null)
             {
                 dto = Insert(dto, context);
             }
-            else //existing entity
+            else
             {
                 dto = Update(entity, dto, context);
             }

@@ -61,31 +61,41 @@ namespace OpenNos.GameObject
 
                     case ReceiverType.AllExceptMe:
                         for (int i = Sessions.Where(s => s != null && s.Character != null && s != client && !s.IsDisposing).Count() - 1; i >= 0; i--)
+                        {
                             Sessions.Where(s => s != null && s != client).ElementAt(i).SendPacket(message);
+                        }
                         break;
 
                     case ReceiverType.OnlySomeone:
                         {
                             ClientSession targetSession = Sessions.FirstOrDefault(s => s.Character != null && !s.IsDisposing && (s.Character.Name.Equals(characterName) || s.Character.CharacterId.Equals(characterId)));
 
-                            if (targetSession == null) return;
-
+                            if (targetSession == null)
+                            {
+                                return;
+                            }
                             targetSession.SendPacket(message);
                             break;
                         }
                     case ReceiverType.AllNoEmoBlocked:
                         foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.MapId.Equals(client.Character.MapId) && !s.Character.EmoticonsBlocked))
+                        {
                             session.SendPacket(message);
+                        }
                         break;
 
                     case ReceiverType.AllNoHeroBlocked:
                         foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && !s.Character.HeroChatBlocked))
+                        {
                             session.SendPacket(message);
+                        }
                         break;
 
                     case ReceiverType.Group:
                         foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.Group != null && s.Character.Group.GroupId.Equals(client.Character.Group.GroupId)))
+                        {
                             session.SendPacket(message);
+                        }
                         break;
                 }
             }

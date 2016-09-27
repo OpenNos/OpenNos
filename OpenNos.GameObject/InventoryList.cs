@@ -286,7 +286,7 @@ namespace OpenNos.GameObject
         {
             Logger.Debug($"type: {type} sourceSlot: {sourceSlot} amount: {amount} destinationSlot: {destinationSlot}", Owner.Session.SessionId);
 
-            //load source and destination slots
+            // load source and destination slots
             sourceInventory = LoadInventoryBySlotAndType(sourceSlot, type);
             destinationInventory = LoadInventoryBySlotAndType(destinationSlot, type);
             if (sourceInventory != null && amount <= sourceInventory.ItemInstance.Amount)
@@ -321,7 +321,7 @@ namespace OpenNos.GameObject
                             destinationInventory.ItemInstance.Amount += amount;
                             sourceInventory.ItemInstance.Amount -= amount;
 
-                            //item with amount of 0 should be removed
+                            // item with amount of 0 should be removed
                             if (sourceInventory.ItemInstance.Amount == 0)
                             {
                                 DeleteFromSlotAndType(sourceInventory.Slot, sourceInventory.Type);
@@ -330,7 +330,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        //add and remove save inventory
+                        // add and remove save inventory
                         destinationInventory = TakeInventory(destinationInventory.Slot, destinationInventory.Type);
                         destinationInventory.Slot = sourceSlot;
                         sourceInventory = TakeInventory(sourceInventory.Slot, sourceInventory.Type);
@@ -357,14 +357,16 @@ namespace OpenNos.GameObject
         {
             Logger.Debug($"type: {type} slot: {slot} amount: {amount}", Owner.Session.SessionId);
             Guid random = Guid.NewGuid();
-            int i = 0;
             MapItem droppedItem = null;
-
             List<MapCell> Possibilities = new List<MapCell>();
 
             for (short x = -2; x < 3; x++)
+            {
                 for (short y = -2; y < 3; y++)
+                {
                     Possibilities.Add(new MapCell() { X = x, Y = y });
+                }
+            }
             short MapX = 0;
             short MapY = 0;
             foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
@@ -372,7 +374,9 @@ namespace OpenNos.GameObject
                 MapX = (short)(Owner.MapX + possibilitie.X);
                 MapY = (short)(Owner.MapY + possibilitie.Y);
                 if (!Owner.Session.CurrentMap.IsBlockedZone(MapX, MapY))
+                {
                     break;
+                }
             }
 
             if (amount > 0 && amount <= inv.ItemInstance.Amount)
@@ -385,7 +389,7 @@ namespace OpenNos.GameObject
                 droppedItem.ItemInstance.Amount = amount;
                 while (Owner.Session.CurrentMap.DroppedList.ContainsKey(droppedItem.ItemInstance.TransportId))
                 {
-                    droppedItem.ItemInstance.TransportId = 0; //reset transportId
+                    droppedItem.ItemInstance.TransportId = 0; // reset transportId
                 }
 
                 Owner.Session.CurrentMap.DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
@@ -455,7 +459,10 @@ namespace OpenNos.GameObject
                 {
                     MoveItem(inventoryType, invtemp.Slot, 1, i, out temp, out temp2);
 
-                    if (temp2 == null || temp == null) return;
+                    if (temp2 == null || temp == null)
+                    {
+                        return;
+                    }
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(temp2.ItemInstance.ItemVNum, temp2.ItemInstance.Amount, inventoryType, temp2.Slot, temp2.ItemInstance.Rare, temp2.ItemInstance.Design, temp2.ItemInstance.Upgrade, 0));
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(temp.ItemInstance.ItemVNum, temp.ItemInstance.Amount, inventoryType, temp.Slot, temp.ItemInstance.Rare, temp.ItemInstance.Design, temp.ItemInstance.Upgrade, 0));
                 }
@@ -483,7 +490,9 @@ namespace OpenNos.GameObject
             {
                 result = Inventory.FirstOrDefault(c => c.Type == type && c.Slot.Equals(i));
                 if (result == null)
+                {
                     return i;
+                }
             }
             return -1;
         }

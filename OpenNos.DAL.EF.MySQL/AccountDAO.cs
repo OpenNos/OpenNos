@@ -82,12 +82,12 @@ namespace OpenNos.DAL.EF.MySQL
                     long AccountId = account.AccountId;
                     Account entity = context.Account.FirstOrDefault(c => c.AccountId.Equals(AccountId));
 
-                    if (entity == null) //new entity
+                    if (entity == null) 
                     {
                         account = Insert(account, context);
                         return SaveResult.Inserted;
                     }
-                    else //existing entity
+                    else 
                     {
                         account = Update(entity, account, context);
                         return SaveResult.Updated;

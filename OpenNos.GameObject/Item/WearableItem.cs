@@ -30,13 +30,15 @@ namespace OpenNos.GameObject
                 default:
                     short slot = inventory.Slot;
                     InventoryType type = inventory.Type;
-                    if (inventory == null) return;
 
+                    if (inventory == null)
+                    {
+                        return;
+                    }
                     if (ItemValidTime > 0 && ((ItemInstance)inventory.ItemInstance).IsBound)
                     {
                         inventory.ItemInstance.ItemDeleteTime = DateTime.Now.AddSeconds(ItemValidTime);
                     }
-
                     if (!((ItemInstance)inventory.ItemInstance).IsBound)
                     {
                         if (!DelayUsed && ((EquipmentSlot == (byte)EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80)) || (EquipmentSlot == (byte)EquipmentType.CostumeHat || EquipmentSlot == (byte)EquipmentType.CostumeSuit || EquipmentSlot == (byte)EquipmentType.WeaponSkin)))

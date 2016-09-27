@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        public Boolean healthStop = false;
+        public Boolean HealthStop = false;
 
         private static EncryptionBase _encryptor;
         private Account _account;
@@ -39,7 +39,7 @@ namespace OpenNos.GameObject
         private SequentialItemProcessor<byte[]> _queue;
         private IList<String> _waitForPacketList = new List<String>();
 
-        //Packetwait Packets
+        // Packetwait Packets
         private int? _waitForPacketsAmount;
 
         #endregion
@@ -50,17 +50,17 @@ namespace OpenNos.GameObject
         {
             _client = client;
 
-            //absolutely new instantiated Client has no SessionId
+            // absolutely new instantiated Client has no SessionId
             SessionId = 0;
 
-            //register for NetworkClient events
+            // register for NetworkClient events
             _client.MessageReceived += NetworkClient_MessageReceived;
 
-            //start queue
+            // start queue
             _queue = new SequentialItemProcessor<byte[]>(HandlePacket);
             _queue.Start();
 
-            //register WCF events
+            // register WCF events
             ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent += CommunicationCallback_CharacterConnectedEvent;
             ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent += CommunicationCallback_CharacterDisconnectedEvent;
         }
@@ -75,6 +75,7 @@ namespace OpenNos.GameObject
             {
                 return _account;
             }
+
             set
             {
                 _account = value;
@@ -87,6 +88,7 @@ namespace OpenNos.GameObject
             {
                 return _character;
             }
+
             set
             {
                 _character = value;
@@ -111,7 +113,6 @@ namespace OpenNos.GameObject
                 {
                     _handlerMethods = new Dictionary<PacketAttribute, Tuple<Action<object, string>, object>>();
                 }
-
                 return _handlerMethods;
             }
 
@@ -161,6 +162,7 @@ namespace OpenNos.GameObject
             {
                 return _client.IsDisposing;
             }
+
             set
             {
                 _client.IsDisposing = value;
@@ -228,19 +230,25 @@ namespace OpenNos.GameObject
         public void SendPacket(string packet)
         {
             if (!IsDisposing)
+            {
                 _client.SendPacket(packet);
+            }
         }
 
         public void SendPacketFormat(string packet, params object[] param)
         {
             if (!IsDisposing)
+            {
                 _client.SendPacketFormat(packet, param);
+            }
         }
 
         public void SendPackets(IEnumerable<String> packets)
         {
             if (!IsDisposing)
+            {
                 _client.SendPackets(packets);
+            }
         }
 
         private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)
@@ -267,7 +275,7 @@ namespace OpenNos.GameObject
 
         private void GenerateHandlerReferences(Type type, bool isWorldServer)
         {
-            IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) //shitty but it works
+            IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) // shitty but it works
                                                             : type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterfaces().FirstOrDefault().IsAssignableFrom(p));
 
             // iterate thru each type in the given assembly, the IPacketHandler is expected in the same dll
@@ -350,7 +358,9 @@ namespace OpenNos.GameObject
                     else if (nextKeepaliveIdentity == 0)
                     {
                         if (LastKeepAliveIdentity == UInt16.MaxValue)
+                        {
                             LastKeepAliveIdentity = nextKeepaliveIdentity;
+                        }
                     }
                     else
                     {
@@ -385,7 +395,9 @@ namespace OpenNos.GameObject
                             if (packetHeader[1][0] == '$')
                             {
                                 if (Account.Authority != AuthorityType.Admin)
+                                {
                                     permit = 0;
+                                }
                             }
 
                             if (packetHeader[1][0] == '/' || packetHeader[1][0] == ':' || packetHeader[1][0] == ';')
@@ -393,11 +405,13 @@ namespace OpenNos.GameObject
                                 TriggerHandler(packetHeader[1][0].ToString(), packet, false);
                             }
                             else
-                            if (permit == 1)
                             {
-                                if (packetHeader[1] != "0")
+                                if (permit == 1)
                                 {
-                                    TriggerHandler(packetHeader[1], packet, false);
+                                    if (packetHeader[1] != "0")
+                                    {
+                                        TriggerHandler(packetHeader[1], packet, false);
+                                    }
                                 }
                             }
                         }
@@ -412,7 +426,9 @@ namespace OpenNos.GameObject
                         TriggerHandler(packetHeader[0].ToString(), packet, false);
                     }
                     else
+                    {
                         TriggerHandler(packetHeader, packet, false);
+                    }
                 }
             }
         }
@@ -429,7 +445,6 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-
             _queue.EnqueueMessage(message.MessageData);
         }
 
@@ -460,7 +475,7 @@ namespace OpenNos.GameObject
                     {
                         // disconnect if something unexpected happens
                         Logger.Log.Error("Handler Error SessionId: " + SessionId, ex);
-                        Disconnect(); 
+                        Disconnect();
                     }
                 }
                 else

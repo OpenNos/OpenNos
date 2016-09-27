@@ -27,8 +27,9 @@ namespace OpenNos.DAL.EF.MySQL.DB
         {
             this.Configuration.LazyLoadingEnabled = true;
 
-            //--DO NOT DISABLE, otherwise the mapping will fail
-            this.Configuration.ProxyCreationEnabled = false; //only one time access to database so no proxy generation needed, its just slowing down in our case
+            // --DO NOT DISABLE, otherwise the mapping will fail
+            // only one time access to database so no proxy generation needed, its just slowing down in our case
+            this.Configuration.ProxyCreationEnabled = false;
         }
 
         #endregion
@@ -99,10 +100,10 @@ namespace OpenNos.DAL.EF.MySQL.DB
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            //remove automatic pluralization
+            // remove automatic pluralization
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
-            //build TPH tables for inheritance
+            // build TPH tables for inheritance
             modelBuilder.Entity<ItemInstance>()
                  .Map<WearableInstance>(m => m.Requires("WearableInstance"))
                  .Map<SpecialistInstance>(m => m.Requires("SpecialistInstance"))

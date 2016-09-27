@@ -33,7 +33,7 @@ namespace OpenNos.GameObject
 
         public MapMonster(MapMonsterDTO monsterdto, Map parent)
         {
-            //Replace by MAPPING
+            // Replace by MAPPING
             MapId = monsterdto.MapId;
             MapX = monsterdto.MapX;
             MapMonsterId = monsterdto.MapMonsterId;
@@ -73,11 +73,11 @@ namespace OpenNos.GameObject
 
         public DateTime Death { get; set; }
 
-        public short firstX { get; set; }
+        public short FirstX { get; set; }
 
-        public short firstY { get; set; }
+        public short FirstY { get; set; }
 
-        public bool inWaiting { get; set; }
+        public bool InWaiting { get; set; }
 
         public DateTime LastEffect { get; set; }
 
@@ -109,8 +109,12 @@ namespace OpenNos.GameObject
             }
 
             for (int i = 20000; i < int.MaxValue; i++)
+            {
                 if (!monsterIds.Contains(i))
+                {
                     return i;
+                }
+            }
             return -1;
         }
 
@@ -122,13 +126,18 @@ namespace OpenNos.GameObject
         public string GenerateIn3()
         {
             if (Alive && !IsDisabled)
+            {
                 return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {(int)(((float)CurrentMp / (float)Monster.MaxMP) * 100)} 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
-            else return string.Empty;
+            }
+            else
+            {
+                return String.Empty;
+            }
         }
 
         internal void MonsterLife()
         {
-            //Respawn
+            // Respawn
             if (!Alive && Respawn)
             {
                 double timeDeath = (DateTime.Now - Death).TotalSeconds;
@@ -139,8 +148,8 @@ namespace OpenNos.GameObject
                     Target = -1;
                     CurrentHp = Monster.MaxHP;
                     CurrentMp = Monster.MaxMP;
-                    MapX = firstX;
-                    MapY = firstY;
+                    MapX = FirstX;
+                    MapY = FirstY;
                     Path = new List<MapCell>();
                     Map.Broadcast(GenerateIn3());
                     Map.Broadcast(GenerateEff(7));
@@ -149,7 +158,7 @@ namespace OpenNos.GameObject
             }
             else if (Target == -1)
             {
-                //Normal Move Mode
+                // Normal Move Mode
                 if (Alive == false)
                 {
                     return;
@@ -187,8 +196,8 @@ namespace OpenNos.GameObject
                         byte xpoint = (byte)ServerManager.Instance.Random.Next(fpoint, point);
                         byte ypoint = (byte)(point - xpoint);
 
-                        short mapX = firstX;
-                        short mapY = firstY;
+                        short mapX = FirstX;
+                        short mapY = FirstY;
                         if (ServerManager.GetMap(MapId).GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                         {
                             Task.Factory.StartNew(async () =>
@@ -211,7 +220,9 @@ namespace OpenNos.GameObject
                     {
                         Target = character.CharacterId;
                         if (!Monster.NoAggresiveIcon)
+                        {
                             character.Session.SendPacket(GenerateEff(5000));
+                        }
                     }
                 }
             }
@@ -225,12 +236,12 @@ namespace OpenNos.GameObject
                     return;
                 }
                 NpcMonsterSkill npcMonsterSkill = null;
-                if (ServerManager.Instance.Random.Next(10) > 8 || inWaiting)
+                if (ServerManager.Instance.Random.Next(10) > 8 || InWaiting)
                 {
-                    inWaiting = false;
+                    InWaiting = false;
                     if ((DateTime.Now - LastEffect).TotalMilliseconds < Monster.BasicCooldown * 200)
                     {
-                        inWaiting = true;
+                        InWaiting = true;
                     }
                     npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => ServerManager.Instance.Random.Next()).FirstOrDefault();
                 }
@@ -239,7 +250,7 @@ namespace OpenNos.GameObject
 
                 if (targetSession != null && targetSession.Character.Hp > 0 && ((npcMonsterSkill != null && CurrentMp - npcMonsterSkill.Skill.MpCost >= 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
                 {
-                    if ((DateTime.Now - LastEffect).TotalMilliseconds >= Monster.BasicCooldown * 200 && !inWaiting)
+                    if ((DateTime.Now - LastEffect).TotalMilliseconds >= Monster.BasicCooldown * 200 && !InWaiting)
                     {
                         if (npcMonsterSkill != null)
                         {
@@ -269,9 +280,13 @@ namespace OpenNos.GameObject
                         Map.Broadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
                         if (npcMonsterSkill != null)
+                        {
                             Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} 0 0");
+                        }
                         else
+                        {
                             Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} 0 0");
+                        }
 
                         LastEffect = DateTime.Now;
                         if (targetSession.Character.Hp <= 0)
@@ -314,10 +329,8 @@ namespace OpenNos.GameObject
                         short maxDistance = 22;
                         if (Path.Count() == 0 && targetSession != null && distance > 1 && distance < maxDistance)
                         {
-
                             short xoffset = (short)ServerManager.Instance.Random.Next(-1, 1);
                             short yoffset = (short)ServerManager.Instance.Random.Next(-1, 1);
-
 
                             Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
                             if (!Path.Any())
@@ -349,10 +362,10 @@ namespace OpenNos.GameObject
                         }
                         if (Path.Count() == 0 && (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance))
                         {
-                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
+                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
                             if (!Path.Any())
                             {
-                                Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
+                                Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
                             }
                             Target = -1;
                         }

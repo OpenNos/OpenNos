@@ -39,16 +39,19 @@ namespace OpenNos.GameObject
             _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
 
             if (fallbackEncryptor != null)
+            {
                 _fallbackEncryptor = (EncryptionBase)Activator.CreateInstance(fallbackEncryptor);
+            }
 
             var server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
 
-            //Register events of the server to be informed about clients
+            // Register events of the server to be informed about clients
             server.ClientConnected += Server_ClientConnected;
             server.ClientDisconnected += Server_ClientDisconnected;
             server.WireProtocolFactory = new WireProtocolFactory<EncryptorT>();
 
-            server.Start(); //Start the server
+            // Start the server
+            server.Start();
 
             Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
         }
@@ -68,6 +71,7 @@ namespace OpenNos.GameObject
 
                 return _connectionLog;
             }
+
             set
             {
                 if (_connectionLog != value)

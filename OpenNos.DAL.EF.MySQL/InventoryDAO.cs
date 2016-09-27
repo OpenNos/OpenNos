@@ -99,21 +99,21 @@ namespace OpenNos.DAL.EF.MySQL
                 Type itemInstanceType = typeof(ItemInstance);
                 foreach (KeyValuePair<Type, Type> entry in itemInstanceMappings)
                 {
-                    //GameObject -> Entity
+                    // GameObject -> Entity
                     cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
                                     .IncludeBase(baseType, typeof(ItemInstance));
 
-                    //Entity -> GameObject
+                    // Entity -> GameObject
                     cfg.CreateMap(entry.Value, entry.Key)
                                     .IncludeBase(typeof(ItemInstance), baseType);
 
                     Type retrieveDTOType = Type.GetType($"OpenNos.Data.{entry.Key.Name}DTO, OpenNos.Data");
 
-                    //Entity -> DTO
+                    // Entity -> DTO
                     cfg.CreateMap(entry.Value, typeof(ItemInstanceDTO)).As(entry.Key);
                 }
 
-                //Inventory Mappings
+                // Inventory Mappings
                 cfg.CreateMap<InventoryDTO, Inventory>();
                 cfg.CreateMap<Inventory, InventoryDTO>();
             });
@@ -215,7 +215,7 @@ namespace OpenNos.DAL.EF.MySQL
                 long CharacterId = inventory.CharacterId;
                 Inventory entity = context.Inventory.FirstOrDefault(c => c.Id == primaryKey);
 
-                if (entity == null) //new entity
+                if (entity == null)
                 {
                     Inventory delete = context.Inventory.FirstOrDefault(s => s.CharacterId == CharacterId && s.Slot == Slot && s.Type == Type);
                     if (delete != null)
@@ -227,7 +227,7 @@ namespace OpenNos.DAL.EF.MySQL
                     }
                     inventory = Insert(inventory, context);
                 }
-                else //existing entity
+                else
                 {
                     entity.ItemInstance = context.ItemInstance.FirstOrDefault(c => c.Inventory.Id == entity.Id);
                     inventory = Update(entity, inventory, context);
@@ -252,7 +252,8 @@ namespace OpenNos.DAL.EF.MySQL
                     entity.ItemInstance = _mapper.Map(dto.ItemInstance, targetMapping.Key, targetMapping.Value) as ItemInstance;
                 }
 
-                entity.ItemInstance.Item = null; //stupid references -> maybe using mapper to ignore property?
+                // stupid references -> maybe using mapper to ignore property?
+                entity.ItemInstance.Item = null;
 
                 return entity;
             }

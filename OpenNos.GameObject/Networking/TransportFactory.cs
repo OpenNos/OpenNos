@@ -44,8 +44,9 @@ namespace OpenNos.GameObject
             lastTransportId = lastTransportId + 1;
 
             if (lastTransportId > 9999999)
+            {
                 lastTransportId = 1;
-
+            }
             _transportIds.Add(lastTransportId);
 
             return lastTransportId;

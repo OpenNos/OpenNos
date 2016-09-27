@@ -60,12 +60,12 @@ namespace OpenNos.DAL.EF.MySQL
                     short RespawnType = respawn.RespawnType;
                     Respawn entity = context.Respawn.FirstOrDefault(c => c.RespawnType.Equals(RespawnType) && c.CharacterId.Equals(CharacterId));
 
-                    if (entity == null) //new entity
+                    if (entity == null)
                     {
                         respawn = Insert(respawn, context);
                         return SaveResult.Inserted;
                     }
-                    else //existing entity
+                    else
                     {
                         respawn.RespawnId = entity.RespawnId;
                         respawn = Update(entity, respawn, context);

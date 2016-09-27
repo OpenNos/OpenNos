@@ -83,12 +83,12 @@ namespace OpenNos.DAL.EF.MySQL
                     long mailId = mail.MailId;
                     Mail entity = context.Mail.FirstOrDefault(c => c.MailId.Equals(mailId));
 
-                    if (entity == null) //new entity
+                    if (entity == null)
                     {
                         mail = Insert(mail, context);
                         return SaveResult.Inserted;
                     }
-                    else //existing entity
+                    else
                     {
                         mail.MailId = entity.MailId;
                         mail = Update(entity, mail, context);

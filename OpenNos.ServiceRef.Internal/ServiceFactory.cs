@@ -31,7 +31,7 @@ namespace OpenNos.ServiceRef.Internal
 
         public ServiceFactory()
         {
-            //callback instance will be instantiated once per process
+            // callback instance will be instantiated once per process
             _instanceCallback = new CommunicationCallback();
             _instanceContext = new InstanceContext(_instanceCallback);
         }

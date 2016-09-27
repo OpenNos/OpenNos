@@ -54,7 +54,10 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (item == null) item = ServerManager.GetItem(this.ItemVNum);
+                if (item == null)
+                {
+                    item = ServerManager.GetItem(this.ItemVNum);
+                }
                 return item;
             }
         }
@@ -65,12 +68,13 @@ namespace OpenNos.GameObject
             {
                 if (_transportId == 0)
                 {
-                    //create transportId thru factory
+                    // create transportId thru factory
                     _transportId = TransportFactory.Instance.GenerateTransportId();
                 }
 
                 return _transportId;
             }
+
             set
             {
                 if (value != _transportId)
@@ -82,7 +86,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        //TODO create Interface
+        //// TODO: create Interface
 
         #region Methods
 

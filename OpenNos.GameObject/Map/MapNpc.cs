@@ -22,12 +22,18 @@ namespace OpenNos.GameObject
 {
     public class MapNpc : MapNpcDTO
     {
+        #region Members
+
+        public NpcMonster Npc;
+        private int _movetime;
+
+        #endregion
+
         #region Instantiation
 
-        private int _movetime;
         public MapNpc(MapNpcDTO npc, Map parent)
         {
-            //Replace by MAPPING
+            // Replace by MAPPING
             MapId = npc.MapId;
             MapX = npc.MapX;
             MapY = npc.MapY;
@@ -41,7 +47,7 @@ namespace OpenNos.GameObject
             FirstX = npc.MapX;
             FirstY = npc.MapY;
             MapNpcId = npc.MapNpcId;
-           ////////////////////////
+            ////////////////////////
 
             Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = LastMove = DateTime.Now;
@@ -53,8 +59,7 @@ namespace OpenNos.GameObject
                 Recipes = new List<Recipe>();
                 foreach (RecipeDTO rec in recipe)
                 {
-
-                    //Replace by MAPPING
+                    // Replace by MAPPING
                     Recipes.Add(new Recipe(rec.RecipeId) { ItemVNum = rec.ItemVNum, MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId, Amount = rec.Amount });
                     ///////////////////
                 }
@@ -66,7 +71,7 @@ namespace OpenNos.GameObject
                 Teleporters = new List<Teleporter>();
                 foreach (TeleporterDTO teleporter in teleporters)
                 {
-                    //Replace by MAPPING
+                    // Replace by MAPPING
                     Teleporters.Add(new Teleporter() { MapId = teleporter.MapId, Index = teleporter.Index, MapNpcId = teleporter.MapNpcId, MapX = teleporter.MapX, MapY = teleporter.MapY, TeleporterId = teleporter.TeleporterId });
                     ///////////////////
                 }
@@ -75,12 +80,10 @@ namespace OpenNos.GameObject
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
             if (shop != null)
             {
-                //Replace by MAPPING
+                // Replace by MAPPING
                 Shop = new Shop(shop.ShopId) { Name = shop.Name, MapNpcId = MapNpcId, MenuType = shop.MenuType, ShopType = shop.ShopType };
                 ///////////////////
             }
-
-
         }
 
         #endregion
@@ -88,15 +91,20 @@ namespace OpenNos.GameObject
         #region Properties
 
         public short FirstX { get; set; }
-        public short FirstY { get; set; }
-        public DateTime LastEffect { get; private set; }
-        public DateTime LastMove { get; private set; }
-        public Map Map { get; set; }
-        public List<Recipe> Recipes { get; set; }
-        public Shop Shop { get; set; }
-        public List<Teleporter> Teleporters { get; set; }
-        public NpcMonster Npc;
 
+        public short FirstY { get; set; }
+
+        public DateTime LastEffect { get; private set; }
+
+        public DateTime LastMove { get; private set; }
+
+        public Map Map { get; set; }
+
+        public List<Recipe> Recipes { get; set; }
+
+        public Shop Shop { get; set; }
+
+        public List<Teleporter> Teleporters { get; set; }
 
         #endregion
 
@@ -106,16 +114,26 @@ namespace OpenNos.GameObject
         {
             NpcMonster npc = ServerManager.GetNpc(this.NpcVNum);
             if (npc != null)
+            {
                 return $"eff 2 {MapNpcId} {Effect}";
-            else return String.Empty;
+            }
+            else
+            {
+                return String.Empty;
+            }
         }
 
         public string GenerateIn2()
         {
             NpcMonster npcinfo = ServerManager.GetNpc(this.NpcVNum);
             if (npcinfo != null && !IsDisabled)
+            {
                 return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
-            else return String.Empty;
+            }
+            else
+            {
+                return String.Empty;
+            }
         }
 
         public string GetNpcDialog()
@@ -131,11 +149,10 @@ namespace OpenNos.GameObject
                 Map.Broadcast(GenerateEff());
                 LastEffect = DateTime.Now;
             }
-            
+
             time = (DateTime.Now - LastMove).TotalMilliseconds;
             if (IsMoving && Npc.Speed > 0 && time > _movetime)
             {
-
                 _movetime = ServerManager.Instance.Random.Next(500, 3000);
                 byte point = (byte)ServerManager.Instance.Random.Next(2, 4);
                 byte fpoint = (byte)ServerManager.Instance.Random.Next(0, 2);
@@ -159,8 +176,6 @@ namespace OpenNos.GameObject
                     string movePacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {Npc.Speed}";
                     Map.Broadcast(movePacket);
                 }
-
-               
             }
         }
 
