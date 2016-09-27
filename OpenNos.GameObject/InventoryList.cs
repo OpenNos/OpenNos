@@ -230,7 +230,9 @@ namespace OpenNos.GameObject
             for (int i = 0; i < item.Count(); i++)
             {
                 if (place[i] == 0)
+                {
                     return false;
+                }
             }
             return true;
         }
@@ -372,7 +374,7 @@ namespace OpenNos.GameObject
                 if (!Owner.Session.CurrentMap.IsBlockedZone(MapX, MapY))
                     break;
             }
-            
+
             if (amount > 0 && amount <= inv.ItemInstance.Amount)
             {
                 droppedItem = new MapItem(MapX, MapY)

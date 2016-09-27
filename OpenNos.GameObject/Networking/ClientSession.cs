@@ -177,19 +177,19 @@ namespace OpenNos.GameObject
 
         public void Destroy()
         {
-            //unregister from WCF events
+            // unregister from WCF events
             ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent -= CommunicationCallback_CharacterConnectedEvent;
             ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent -= CommunicationCallback_CharacterDisconnectedEvent;
 
-            //do everything necessary before removing client, DB save, Whatever
+            // do everything necessary before removing client, DB save, Whatever
             if (Character != null)
             {
                 Character.CloseShop();
 
-                //disconnect client
+                // disconnect client
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
 
-                //unregister from map if registered
+                // unregister from map if registered
                 if (CurrentMap != null)
                 {
                     CurrentMap.UnregisterSession(this);
@@ -215,7 +215,7 @@ namespace OpenNos.GameObject
             _encryptor = encryptor;
             _client.Initialize(encryptor);
 
-            //dynamically create packethandler references
+            // dynamically create packethandler references
             GenerateHandlerReferences(packetHandler, isWorldServer);
         }
 
@@ -245,7 +245,7 @@ namespace OpenNos.GameObject
 
         private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)
         {
-            //TODO filter for friendlist
+            // TODO: filter for friendlist
             string characterNameWhichHasBeenLoggedIn = (string)sender;
 
             if (Character != null && !Character.Name.Equals(characterNameWhichHasBeenLoggedIn))
@@ -256,7 +256,7 @@ namespace OpenNos.GameObject
 
         private void CommunicationCallback_CharacterDisconnectedEvent(object sender, EventArgs e)
         {
-            //TODO filter for friendlist
+            // TODO: filter for friendlist
             string characterNameWhichHasBeenLoggedIn = (string)sender;
 
             if (Character != null && !Character.Name.Equals(characterNameWhichHasBeenLoggedIn))
@@ -270,7 +270,7 @@ namespace OpenNos.GameObject
             IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) //shitty but it works
                                                             : type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterfaces().FirstOrDefault().IsAssignableFrom(p));
 
-            //iterate thru each type in the given assembly, the IPacketHandler is expected in the same dll
+            // iterate thru each type in the given assembly, the IPacketHandler is expected in the same dll
             foreach (Type handlerType in handlerTypes)
             {
                 object handler = Activator.CreateInstance(handlerType, new object[] { this });
@@ -293,19 +293,23 @@ namespace OpenNos.GameObject
         /// <param name="packetData"></param>
         private void HandlePacket(byte[] packetData)
         {
-            //determine first packet
+            // determine first packet
             if (_encryptor.HasCustomParameter && this.SessionId == 0)
             {
                 string sessionPacket = _encryptor.DecryptCustomParameter(packetData);
 
                 string[] sessionParts = sessionPacket.Split(' ');
                 if (sessionParts.Count() < 1)
+                {
                     return;
+                }
                 this.LastKeepAliveIdentity = Convert.ToInt32(sessionParts[0]);
 
-                //set the SessionId if Session Packet arrives
+                // set the SessionId if Session Packet arrives
                 if (sessionParts.Count() < 2)
+                {
                     return;
+                }
                 this.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
                 Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), this.SessionId);
 
@@ -334,7 +338,7 @@ namespace OpenNos.GameObject
 
                 if (_encryptor.HasCustomParameter)
                 {
-                    //keep alive
+                    // keep alive
                     string nextKeepAliveRaw = packetsplit[0];
                     Int32 nextKeepaliveIdentity;
                     if (!Int32.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) && nextKeepaliveIdentity != (this.LastKeepAliveIdentity + 1))
@@ -401,7 +405,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    //simple messaging
+                    // simple messaging
                     string packetHeader = packet.Split(' ')[0];
                     if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
                     {
@@ -439,7 +443,7 @@ namespace OpenNos.GameObject
                 {
                     if (!force && action.Key.Amount > 1 && !_waitForPacketsAmount.HasValue)
                     {
-                        //we need to wait for more
+                        // we need to wait for more
                         _waitForPacketsAmount = action.Key.Amount;
                         _waitForPacketList.Add(packet != String.Empty ? packet : $"1 {packetHeader} ");
                         return;
@@ -448,14 +452,15 @@ namespace OpenNos.GameObject
                     {
                         if (HasSelectedCharacter || action.Value.Item2.GetType().Name == "CharacterScreenPacketHandler" || action.Value.Item2.GetType().Name == "LoginPacketHandler")
                         {
-                            //call actual handler method
+                            // call actual handler method
                             action.Value.Item1(action.Value.Item2, packet);
                         }
                     }
                     catch (Exception ex)
                     {
+                        // disconnect if something unexpected happens
                         Logger.Log.Error("Handler Error SessionId: " + SessionId, ex);
-                        Disconnect(); //disconnect if something unexpected happens
+                        Disconnect(); 
                     }
                 }
                 else
