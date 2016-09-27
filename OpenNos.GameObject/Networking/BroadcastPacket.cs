@@ -23,6 +23,7 @@ namespace OpenNos.GameObject
             Sender = session;
             Content = content;
             Receiver = receiver;
+
             SomeonesCharacterName = someonesCharacterName;
             SomeonesCharacterId = someonesCharacterId;
         }

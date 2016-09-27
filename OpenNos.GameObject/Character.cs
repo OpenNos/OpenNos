@@ -1491,6 +1491,7 @@ namespace OpenNos.GameObject
             else
             {
                 SendGift(CharacterId, itemVNum, amount, false);
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_BY_THE_GIANT_MONSTER"), 0));
             }
         }
 

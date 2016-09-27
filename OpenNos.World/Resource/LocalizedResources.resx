@@ -976,4 +976,10 @@
   <data name="ITEM_GIFTED" xml:space="preserve">
     <value>You get an item &gt;&gt;</value>
   </data>
+  <data name="GIFT_SENDED" xml:space="preserve">
+    <value>The gift has been sended !</value>
+  </data>
+  <data name="ITEM_ACQUIRED_BY_THE_GIANT_MONSTER" xml:space="preserve">
+    <value>You get the item from the giant monster !</value>
+  </data>
 </root>
