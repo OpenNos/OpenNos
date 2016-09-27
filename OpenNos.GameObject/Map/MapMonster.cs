@@ -40,8 +40,8 @@ namespace OpenNos.GameObject
             MonsterVNum = monsterdto.MonsterVNum;
             MapY = monsterdto.MapY;
             Position = monsterdto.Position;
-            firstX = monsterdto.MapX;
-            firstY = monsterdto.MapY;
+            FirstX = monsterdto.MapX;
+            FirstY = monsterdto.MapY;
             IsMoving = monsterdto.IsMoving;
             ///////////////////////////////////
 

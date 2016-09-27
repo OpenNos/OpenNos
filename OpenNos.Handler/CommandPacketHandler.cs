@@ -1202,7 +1202,7 @@ namespace OpenNos.Handler
                 {
                     if (Session.CurrentMap.Tempgrid.IsWalkableAt(x, y))
                     {
-                        Session.SendPacket($"in 2 {1} {int.MaxValue - (x * y)} {x} {y} {1} 100 100 -1 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0");
+                        Session.SendPacket($"in 2 1 {int.MaxValue - (x * y)} {x} {y} 1 100 100 -1 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0");
                     }
                 }
             }

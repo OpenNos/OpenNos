@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
 
         public void AddSession(INetworkClient customClient)
         {
-            Logger.Log.Info(Language.GetMessageFromKey.Instance("NEW_CONNECT") + customClient.ClientId);
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + customClient.ClientId);
 
             ClientSession session = IntializeNewSession(customClient);
 
