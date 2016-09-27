@@ -18,7 +18,6 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -45,7 +44,13 @@ namespace OpenNos.Handler
 
         #region Properties
 
-        public ClientSession Session { get { return _session; } }
+        public ClientSession Session
+        {
+            get
+            {
+                return _session;
+            }
+        }
 
         #endregion
 
@@ -58,13 +63,13 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             short vnum = 0, isMoving = 0;
 
-
             if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out isMoving))
             {
                 NpcMonster npcmonster = ServerManager.GetNpc(vnum);
                 if (npcmonster == null)
+                {
                     return;
-
+                }
                 MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
                 MapMonster monster = null;
                 Map map = ServerManager.GetMap(monst.MapId);
@@ -78,7 +83,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 10));
+            }
         }
 
         [Packet("$ArenaWinner")]
@@ -117,7 +124,10 @@ namespace OpenNos.Handler
                     });
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
-                else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                }
             }
             else
             {
@@ -140,7 +150,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
+            }
         }
 
         [Packet("$ChangeDignity")]
@@ -162,7 +174,10 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DIGNITY_CHANGED"), 12));
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
             }
-            else Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DIGNITY"), 11));
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DIGNITY"), 11));
+            }
         }
 
         [Packet("$FLvl")]
@@ -184,7 +199,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 10));
+            }
         }
 
         [Packet("$ChangeSex")]
@@ -216,7 +233,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 10));
+            }
         }
 
         [Packet("$JLvl")]
@@ -240,7 +259,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 10));
+            }
         }
 
         [Packet("$Lvl")]
@@ -269,7 +290,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 10));
+            }
         }
 
         [Packet("$ChangeRep")]
@@ -283,7 +306,6 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 10));
                 return;
             }
-
             if (Int64.TryParse(packetsplit[2], out reput) && reput > 0)
             {
                 Session.Character.Reput = reput;
@@ -315,7 +337,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
+            }
         }
 
         [Packet("$Help")]
@@ -363,8 +387,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
-
-            //Session.SendPacket(Session.Character.GenerateSay("$RemoveMonster MonsterId", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(%)", 12));
@@ -415,7 +437,9 @@ namespace OpenNos.Handler
                     if (iteminfo.IsColored)
                     {
                         if (packetsplit.Count() > 3)
+                        {
                             byte.TryParse(packetsplit[3], out design);
+                        }
                     }
                     else if (iteminfo.Type == 0)
                     {
@@ -437,10 +461,12 @@ namespace OpenNos.Handler
                                 byte.TryParse(packetsplit[4], out upgrade);
                                 upgrade = upgrade > 10 ? (byte)10 : upgrade;
                                 if (upgrade == 0)
+                                {
                                     if (iteminfo.BasicUpgrade != 0)
                                     {
                                         upgrade = iteminfo.BasicUpgrade;
                                     }
+                                }
                             }
                         }
                     }
@@ -496,19 +522,24 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 4 && short.TryParse(packetsplit[2], out mapid) && short.TryParse(packetsplit[3], out destx) && short.TryParse(packetsplit[4], out desty))
             {
                 if (ServerManager.GetMap(mapid) == null)
+                {
                     return;
-
+                }
                 short mapId = Session.Character.MapId;
                 short mapX = Session.Character.MapX;
                 short mapY = Session.Character.MapY;
                 if (packetsplit.Length > 5)
+                {
                     sbyte.TryParse(packetsplit[5], out portaltype);
+                }
                 Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty, Type = portaltype };
                 Session.CurrentMap.Portals.Add(portal);
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateGp(portal));
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
+            }
         }
 
         [Packet("$Effect")]
@@ -523,7 +554,9 @@ namespace OpenNos.Handler
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(arg));
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
+            }
         }
 
         [Packet("$Gift")]
@@ -538,19 +571,24 @@ namespace OpenNos.Handler
                 if (packetsplit.Length == 4)
                 {
                     if (!(byte.TryParse(packetsplit[3], out amount) && short.TryParse(packetsplit[2], out vnum)))
+                    {
                         return;
+                    }
                     Session.Character.SendGift(Session.Character.CharacterId, vnum, amount, false);
                 }
                 else
                 {
                     string name = packetsplit[2];
                     if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum)))
+                    {
                         return;
-
+                    }
                     if (name == "*")
                     {
                         foreach (ClientSession session in Session.CurrentMap.Sessions.Where(s => s.Character != null))
+                        {
                             Session.Character.SendGift((session.Character.CharacterId), vnum, amount, false);
+                        }
                     }
                     else
                     {
@@ -570,7 +608,9 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFT_SENDED"), 10));
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME VNUM AMOUNT", 10));
+            }
         }
 
         [Packet("$GodMode")]
@@ -599,11 +639,15 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateGold());
                     }
                     else
+                    {
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                    }
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
+            }
         }
 
         [Packet("$HairColor")]
@@ -622,7 +666,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 10));
+            }
         }
 
         [Packet("$HairStyle")]
@@ -641,7 +687,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 10));
+            }
         }
 
         [Packet("$Invisible")]
@@ -668,9 +716,13 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 2)
+            {
                 ServerManager.Instance.Kick(packetsplit[2]);
+            }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 10));
+            }
         }
 
         [Packet("$Kill")]
@@ -687,11 +739,15 @@ namespace OpenNos.Handler
                 if (id != null)
                 {
                     bool hasGodMode = ServerManager.Instance.GetProperty<bool>(name, nameof(Character.HasGodMode));
-                    if (hasGodMode) return;
-
+                    if (hasGodMode)
+                    {
+                        return;
+                    }
                     int? Hp = ServerManager.Instance.GetProperty<int?>((long)id, nameof(Character.Hp));
-                    if (Hp == 0) return;
-
+                    if (Hp == 0)
+                    {
+                        return;
+                    }
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.Hp), 0);
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.LastDefence), DateTime.Now);
                     Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
@@ -704,7 +760,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 10));
+            }
         }
 
         [Packet("$MapDance")]
@@ -788,9 +846,13 @@ namespace OpenNos.Handler
                 string reason = packetsplit[3];
 
                 if (packetsplit.Length <= 4)
+                {
                     duration = 1;
+                }
                 else
+                {
                     Byte.TryParse(packetsplit[4], out duration);
+                }
 
                 ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                 if (duration != 0)
@@ -807,9 +869,13 @@ namespace OpenNos.Handler
                         });
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                         if (duration == 1)
+                        {
                             ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)), ReceiverType.OnlySomeone, name);
+                        }
                         else
+                        {
                             ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)), ReceiverType.OnlySomeone, name);
+                        }
                     }
                     else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
@@ -825,7 +891,9 @@ namespace OpenNos.Handler
                         ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, duration)), ReceiverType.OnlySomeone, name);
                     }
                     else
+                    {
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                    }
                 }
             }
             else
@@ -842,15 +910,21 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 2)
             {
-                if (packetsplit.Length <= 1) return;
-
+                if (packetsplit.Length <= 1)
+                {
+                    return;
+                }
                 short arg;
                 short.TryParse(packetsplit[2], out arg);
                 if (arg > -1)
+                {
                     Session.CurrentMap?.Broadcast($"bgm {arg}");
+                }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$PlayMusic BGMUSIC", 10));
+            }
         }
 
         [Packet("$Position")]
@@ -900,14 +974,17 @@ namespace OpenNos.Handler
                 if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
                 {
                     ServerManager.DropRate = rate;
-
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_RATE_CHANGED"), 0));
                 }
                 else
+                {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 10));
+            }
         }
 
         [Packet("$RateFairyXp")]
@@ -924,10 +1001,14 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAIRYXP_RATE_CHANGED"), 0));
                 }
                 else
+                {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 10));
+            }
         }
 
         [Packet("$RateGold")]
@@ -945,10 +1026,14 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_RATE_CHANGED"), 0));
                 }
                 else
+                {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
+            }
         }
 
         [Packet("$RateXp")]
@@ -966,10 +1051,14 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_RATE_CHANGED"), 0));
                 }
                 else
+                {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
+            }
         }
 
         [Packet("$RemoveMob")]
@@ -984,9 +1073,15 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
                     Session.CurrentMap.Monsters.Remove(monst);
                 }
-                else Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_MUST_BE_ALIVE")), 11));
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_MUST_BE_ALIVE")), 11));
+                }
             }
-            else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MOB_DONT_FIND"), 11));
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MOB_DONT_FIND"), 11));
+            }
         }
 
         [Packet("$RemovePortal")]
@@ -999,7 +1094,10 @@ namespace OpenNos.Handler
                 Session.CurrentMap.Portals.Remove(pt);
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
             }
-            else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_PORTAL_FOUND"), 11));
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_PORTAL_FOUND"), 11));
+            }
         }
 
         [Packet("$Resize")]
@@ -1014,14 +1112,15 @@ namespace OpenNos.Handler
                 short.TryParse(packetsplit[2], out arg);
 
                 if (arg > -1)
-
                 {
                     Session.Character.Size = arg;
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateScal());
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 10));
+            }
         }
 
         [Packet("$SearchItem")]
@@ -1045,7 +1144,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME", 10));
+            }
         }
 
         [Packet("$SearchMonster")]
@@ -1069,7 +1170,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME", 10));
+            }
         }
 
         [Packet("$Shout")]
@@ -1079,8 +1182,12 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             string message = String.Empty;
             if (packetsplit.Length > 2)
+            {
                 for (int i = 2; i < packetsplit.Length; i++)
+                {
                     message += packetsplit[i] + " ";
+                }
+            }
             message.Trim();
             ServerManager.Instance.Shout(message);
         }
@@ -1094,7 +1201,9 @@ namespace OpenNos.Handler
                 for (int x = 0; x < Session.CurrentMap.XLength; x++)
                 {
                     if (Session.CurrentMap.Tempgrid.IsWalkableAt(x, y))
+                    {
                         Session.SendPacket($"in 2 {1} {int.MaxValue - (x * y)} {x} {y} {1} 100 100 -1 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0");
+                    }
                 }
             }
         }
@@ -1148,11 +1257,6 @@ namespace OpenNos.Handler
                         return;
                     }
 
-                    //if (Session.Character.Class != skillinfo.Class)
-                    //{
-                    //    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
-                    //    return;
-                    //}
                     if (skillinfo.UpgradeSkill != 0)
                     {
                         CharacterSkill oldupgrade = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
@@ -1171,7 +1275,9 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateLev());
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
         }
 
         [Packet("$Speed")]
@@ -1236,7 +1342,9 @@ namespace OpenNos.Handler
             {
                 NpcMonster npcmonster = ServerManager.GetNpc(vnum);
                 if (npcmonster == null)
+                {
                     return;
+                }
                 Map map = Session.CurrentMap;
                 for (int i = 0; i < qty; i++)
                 {
@@ -1244,20 +1352,24 @@ namespace OpenNos.Handler
                     short mapy;
                     List<MapCell> Possibilities = new List<MapCell>();
                     for (short x = -4; x < 5; x++)
+                    {
                         for (short y = -4; y < 5; y++)
+                        {
                             Possibilities.Add(new MapCell() { X = x, Y = y });
-
+                        }
+                    }
                     foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
                     {
                         mapx = (short)(Session.Character.MapX + possibilitie.X);
                         mapy = (short)(Session.Character.MapY + possibilitie.Y);
                         if (!Session.CurrentMap.IsBlockedZone(mapx, mapy))
+                        {
                             break;
+                        }
                     }
 
-                    //Replace by MAPPING
+                    // Replace by MAPPING
                     MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
-
                     MapMonster monst = new MapMonster(monster, map) { Respawn = false };
                     ///////////////////
                     Session.CurrentMap.Monsters.Add(monst);
@@ -1266,9 +1378,13 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
+            }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.SpacingRules", "SA1009:ClosingParenthesisMustBeSpacedCorrectly", Justification = "Reviewed.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.SpacingRules", "SA1022:PositiveSignsMustBeSpacedCorrectly", Justification = "Reviewed.")]
         [Packet("$Teleport")]
         public void Teleport(string packet)
         {
@@ -1294,7 +1410,6 @@ namespace OpenNos.Handler
                         Session.Character.MapId = (short)mapId;
                         Session.Character.MapX = (short)((short)(mapx) + 1);
                         Session.Character.MapY = (short)((short)(mapy) + 1);
-
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                     }
                     else
@@ -1310,7 +1425,6 @@ namespace OpenNos.Handler
                         Session.Character.MapId = arg[0];
                         Session.Character.MapX = arg[1];
                         Session.Character.MapY = arg[2];
-
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                     }
                     break;
@@ -1322,6 +1436,8 @@ namespace OpenNos.Handler
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.SpacingRules", "SA1009:ClosingParenthesisMustBeSpacedCorrectly", Justification = "Reviewed.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.SpacingRules", "SA1022:PositiveSignsMustBeSpacedCorrectly", Justification = "Reviewed.")]
         [Packet("$TeleportToMe")]
         public void TeleportToMe(string packet)
         {
@@ -1337,18 +1453,24 @@ namespace OpenNos.Handler
                     foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId))
                     {
                         ServerManager.Instance.MapOut(session.Character.CharacterId);
-                      
+
                         List<MapCell> Possibilities = new List<MapCell>();
                         for (short x = -6; x < 6; x++)
+                        {
                             for (short y = -6; y < 6; y++)
+                            {
                                 Possibilities.Add(new MapCell() { X = x, Y = y });
+                            }
+                        }
 
                         foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
                         {
                             session.Character.MapX = (short)(Session.Character.MapX + possibilitie.X);
-                            session.Character.MapY  = (short)(Session.Character.MapY + possibilitie.Y);
+                            session.Character.MapY = (short)(Session.Character.MapY + possibilitie.Y);
                             if (!Session.CurrentMap.IsBlockedZone(session.Character.MapX, session.Character.MapY))
+                            {
                                 break;
+                            }
                         }
 
                         session.Character.MapId = Session.Character.MapId;
@@ -1375,7 +1497,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
+            }
         }
 
         [Packet("$Guri")]
@@ -1393,7 +1517,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
+            }
         }
 
         [Packet("$Unban")]
@@ -1414,13 +1540,19 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
                     else
+                    {
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_BANNED"), 10));
+                    }
                 }
                 else
+                {
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$Unban CHARACTERNAME", 10));
+            }
         }
 
         [Packet("$Unmute")]
@@ -1442,7 +1574,9 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
                     else
+                    {
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_MUTED"), 10));
+                    }
                 }
                 else if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
                 {
@@ -1454,13 +1588,19 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
                     else
+                    {
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_MUTED"), 10));
+                    }
                 }
                 else
+                {
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 10));
+            }
         }
 
         [Packet("$Upgrade")]
@@ -1518,7 +1658,9 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 10));
+            }
         }
 
         [Packet("$Zoom")]

@@ -139,7 +139,8 @@ namespace OpenNos.World
                     break;
             }
 
-            string[] bytes = encrypted_string.Split(Convert.ToChar(0xFF));// return string less 255 (2 strings)
+            // return string less 255 (2 strings)
+            string[] bytes = encrypted_string.Split(Convert.ToChar(0xFF));
 
             string save = String.Empty;
             for (int i = 0; i < bytes.Length; i++)
@@ -155,7 +156,10 @@ namespace OpenNos.World
             string encrypted_string = String.Empty;
             for (int i = 1; i < str.Length; i++)
             {
-                if (Convert.ToChar(str[i]) == 0xE) { return encrypted_string; }
+                if (Convert.ToChar(str[i]) == 0xE)
+                {
+                    return encrypted_string;
+                }
                 string var = (str[i] - 0xF).ToString();
 
                 int firstbyte = Convert.ToInt32((int)str[i] - (int)0xF);

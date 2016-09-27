@@ -76,16 +76,26 @@ namespace OpenNos.Import.Console
 
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("mv") && o[1].Equals("2")))
             {
-                if (long.Parse(currentPacket[2]) >= 20000) continue;
+                if (long.Parse(currentPacket[2]) >= 20000)
+                {
+                    continue;
+                }
                 if (!npcMvPacketsList.Contains(Convert.ToInt32(currentPacket[2])))
+                {
                     npcMvPacketsList.Add(Convert.ToInt32(currentPacket[2]));
+                }
             }
 
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("eff") && o[1].Equals("2")))
             {
-                if (long.Parse(currentPacket[2]) >= 20000) continue;
+                if (long.Parse(currentPacket[2]) >= 20000)
+                {
+                    continue;
+                }
                 if (!effPacketsDictionary.ContainsKey(Convert.ToInt32(currentPacket[2])))
+                {
                     effPacketsDictionary.Add(Convert.ToInt32(currentPacket[2]), Convert.ToInt16(currentPacket[3]));
+                }
             }
 
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
@@ -103,10 +113,15 @@ namespace OpenNos.Import.Console
                     npctest.MapY = short.Parse(currentPacket[5]);
                     npctest.MapId = map;
                     npctest.NpcVNum = short.Parse(currentPacket[2]);
-                    if (long.Parse(currentPacket[3]) > 20000) continue;
+                    if (long.Parse(currentPacket[3]) > 20000)
+                    {
+                        continue;
+                    }
                     npctest.MapNpcId = short.Parse(currentPacket[3]);
                     if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
+                    {
                         npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
+                    }
                     npctest.EffectDelay = 4750;
                     npctest.IsMoving = npcMvPacketsList.Contains(npctest.MapNpcId);
                     npctest.Position = byte.Parse(currentPacket[6]);
@@ -114,9 +129,10 @@ namespace OpenNos.Import.Console
                     npctest.IsSitting = currentPacket[13] != "1";
                     npctest.IsDisabled = false;
 
-                    if (DAOFactory.NpcMonsterDAO.LoadByVnum(npctest.NpcVNum) == null) continue;
-                    if (DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null) continue;
-                    if (npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0) continue;
+                    if (DAOFactory.NpcMonsterDAO.LoadByVnum(npctest.NpcVNum) == null || DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null || npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0)
+                    {
+                        continue;
+                    }
 
                     npcs.Add(npctest);
                     npcCounter++;
@@ -143,13 +159,19 @@ namespace OpenNos.Import.Console
                 while ((line = mapIdStream.ReadLine()) != null)
                 {
                     string[] linesave = line.Split(' ');
-                    if (linesave.Length <= 1) continue;
-
+                    if (linesave.Length <= 1)
+                    {
+                        continue;
+                    }
                     int mapid;
-                    if (!int.TryParse(linesave[0], out mapid)) continue;
-
+                    if (!int.TryParse(linesave[0], out mapid))
+                    {
+                        continue;
+                    }
                     if (!dictionaryId.ContainsKey(mapid))
+                    {
                         dictionaryId.Add(mapid, linesave[4]);
+                    }
                 }
                 mapIdStream.Close();
             }
@@ -159,8 +181,10 @@ namespace OpenNos.Import.Console
                 while ((line = mapIdLangStream.ReadLine()) != null)
                 {
                     string[] linesave = line.Split('\t');
-                    if (linesave.Length <= 1 || dictionaryIdLang.ContainsKey(linesave[0])) continue;
-
+                    if (linesave.Length <= 1 || dictionaryIdLang.ContainsKey(linesave[0]))
+                    {
+                        continue;
+                    }
                     dictionaryIdLang.Add(linesave[0], linesave[1]);
                 }
                 mapIdLangStream.Close();
@@ -168,9 +192,14 @@ namespace OpenNos.Import.Console
 
             foreach (string[] linesave in _packetList.Where(o => o[0].Equals("at")))
             {
-                if (linesave.Length <= 7 || linesave[0] != "at") continue;
-                if (dictionaryMusic.ContainsKey(int.Parse(linesave[2]))) continue;
-
+                if (linesave.Length <= 7 || linesave[0] != "at")
+                {
+                    continue;
+                }
+                if (dictionaryMusic.ContainsKey(int.Parse(linesave[2])))
+                {
+                    continue;
+                }
                 dictionaryMusic.Add(int.Parse(linesave[2]), int.Parse(linesave[7]));
             }
 
@@ -180,11 +209,13 @@ namespace OpenNos.Import.Console
                 int music = 0;
 
                 if (dictionaryId.ContainsKey(int.Parse(file.Name)) && dictionaryIdLang.ContainsKey(dictionaryId[int.Parse(file.Name)]))
+                {
                     name = dictionaryIdLang[dictionaryId[int.Parse(file.Name)]];
-
+                }
                 if (dictionaryMusic.ContainsKey(int.Parse(file.Name)))
+                {
                     music = dictionaryMusic[int.Parse(file.Name)];
-
+                }
                 MapDTO map = new MapDTO
                 {
                     Name = name,
@@ -193,8 +224,10 @@ namespace OpenNos.Import.Console
                     Data = File.ReadAllBytes(file.FullName),
                     ShopAllowed = short.Parse(file.Name) == 147 ? true : false
                 };
-                if (DAOFactory.MapDAO.LoadById(map.MapId) != null) continue; // Map already exists in list
-
+                if (DAOFactory.MapDAO.LoadById(map.MapId) != null)
+                {
+                    continue; // Map already exists in list
+                }
                 maps.Add(map);
                 i++;
             }
@@ -212,8 +245,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt1.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt1);
-
+            }
             MapTypeDTO mt2 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act2,
@@ -221,8 +255,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt2.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt2);
-
+            }
             MapTypeDTO mt3 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act3,
@@ -230,8 +265,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt3.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt3);
-
+            }
             MapTypeDTO mt4 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act4,
@@ -239,8 +275,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 5000
             };
             if (!list.Any(s => s.MapTypeId == mt4.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt4);
-
+            }
             MapTypeDTO mt5 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act51,
@@ -248,8 +285,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt5.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt5);
-
+            }
             MapTypeDTO mt6 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act52,
@@ -257,8 +295,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt6.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt6);
-
+            }
             MapTypeDTO mt7 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act61,
@@ -266,8 +305,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt7.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt7);
-
+            }
             MapTypeDTO mt8 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act62,
@@ -275,26 +315,29 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt8.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt8);
-
+            }
             MapTypeDTO mt9 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act61a,
-                MapTypeName = "Act6.1a",// angel camp
+                MapTypeName = "Act6.1a", // angel camp
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt9.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt9);
-
+            }
             MapTypeDTO mt10 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act61d,
-                MapTypeName = "Act6.1d",// demon camp
+                MapTypeName = "Act6.1d", // demon camp
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt10.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt10);
-
+            }
             MapTypeDTO mt11 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.CometPlain,
@@ -302,8 +345,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt11.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt11);
-
+            }
             MapTypeDTO mt12 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Mine1,
@@ -311,8 +355,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt12.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt12);
-
+            }
             MapTypeDTO mt13 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Mine2,
@@ -320,8 +365,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt13.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt13);
-
+            }
             MapTypeDTO mt14 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.MeadowOfMine,
@@ -329,8 +375,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt14.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt14);
-
+            }
             MapTypeDTO mt15 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.SunnyPlain,
@@ -338,8 +385,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt15.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt15);
-
+            }
             MapTypeDTO mt16 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Fernon,
@@ -347,8 +395,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt16.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt16);
-
+            }
             MapTypeDTO mt17 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.FernonF,
@@ -356,8 +405,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt17.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt17);
-
+            }
             MapTypeDTO mt18 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Cliff,
@@ -365,8 +415,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt18.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt18);
-
+            }
             MapTypeDTO mt19 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.LandOfTheDead,
@@ -374,8 +425,9 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt19.MapTypeId))
+            {
                 DAOFactory.MapTypeDAO.Insert(ref mt19);
-
+            }
             Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPES_PARSED"));
         }
 
@@ -387,88 +439,105 @@ namespace OpenNos.Import.Console
             for (int i = 1; i < 300; i++)
             {
                 objectset = false;
-                if ((i < 3) || (i > 48 && i < 53) || (i > 67 && i < 76) || (i == 102) || (i > 103 && i < 105) || (i > 144 && i < 149)) // "act1"
+                if ((i < 3) || (i > 48 && i < 53) || (i > 67 && i < 76) || (i == 102) || (i > 103 && i < 105) || (i > 144 && i < 149))
                 {
+                    // "act1"
                     mapTypeId = 1;
                     objectset = true;
                 }
-                else if ((i > 19 && i < 34) || (i > 52 && i < 68) || (i > 84 && i < 101)) // "act2"
+                else if ((i > 19 && i < 34) || (i > 52 && i < 68) || (i > 84 && i < 101))
                 {
+                    // "act2"
                     mapTypeId = 2;
                     objectset = true;
                 }
-                else if ((i > 40 && i < 45) || (i > 45 && i < 48) || (i > 99 && i < 102) || (i > 104 && i < 128)) // "act3"
+                else if ((i > 40 && i < 45) || (i > 45 && i < 48) || (i > 99 && i < 102) || (i > 104 && i < 128))
                 {
+                    // "act3"
                     mapTypeId = 3;
                     objectset = true;
                 }
-                else if ((i > 129 && i <= 134) || (i == 135) || (i == 137) || (i == 139) || (i == 141) || (i > 150 && i < 155)) // "act4"
+                else if ((i > 129 && i <= 134) || (i == 135) || (i == 137) || (i == 139) || (i == 141) || (i > 150 && i < 155))
                 {
+                    // "act4"
                     mapTypeId = 4;
                     objectset = true;
                 }
-                else if ((i > 169 && i < 205)) // "act5.1"
+                else if ((i > 169 && i < 205))
                 {
+                    // "act5.1"
                     mapTypeId = 5;
                     objectset = true;
                 }
-                else if ((i > 204 && i < 221)) // "act5.2"
+                else if ((i > 204 && i < 221))
                 {
+                    // "act5.2"
                     mapTypeId = 6;
                     objectset = true;
                 }
-                else if ((i > 227 && i < 241)) // "act6.1"
+                else if ((i > 227 && i < 241))
                 {
+                    // "act6.1"
                     mapTypeId = 7;
                     objectset = true;
                 }
-                else if ((i > 239 && i < 251) || (i == 299)) // "act6.2"
+                else if ((i > 239 && i < 251) || (i == 299))
                 {
+                    // "act6.2"
                     mapTypeId = 8;
                     objectset = true;
                 }
-                else if (i == 103) // "Comet plain"
+                else if (i == 103)
                 {
+                    // "Comet plain"
                     mapTypeId = 11;
                     objectset = true;
                 }
-                else if (i == 6) // "Mine1"
+                else if (i == 6)
                 {
+                    // "Mine1"
                     mapTypeId = 12;
                     objectset = true;
                 }
-                else if (i > 6 && i < 9) // "Mine2"
+                else if (i > 6 && i < 9)
                 {
+                    // "Mine2"
                     mapTypeId = 13;
                     objectset = true;
                 }
-                else if (i == 3) // "Meadown of mine"
+                else if (i == 3)
                 {
+                    // "Meadown of mine"
                     mapTypeId = 14;
                     objectset = true;
                 }
-                else if (i == 4) // "Sunny plain"
+                else if (i == 4)
                 {
+                    // "Sunny plain"
                     mapTypeId = 15;
                     objectset = true;
                 }
-                else if (i == 5) // "Fernon"
+                else if (i == 5)
                 {
+                    // "Fernon"
                     mapTypeId = 16;
                     objectset = true;
                 }
-                else if ((i > 9 && i < 19 || i > 79 && i < 85)) // "FernonF"
+                else if ((i > 9 && i < 19 || i > 79 && i < 85))
                 {
+                    // "FernonF"
                     mapTypeId = 17;
                     objectset = true;
                 }
-                else if (i > 75 && i < 79) // "Cliff"
+                else if (i > 75 && i < 79)
                 {
+                    // "Cliff"
                     mapTypeId = 18;
                     objectset = true;
                 }
-                else if (i == 150) // "Land of the dead"
+                else if (i == 150)
                 {
+                    // "Land of the dead"
                     mapTypeId = 19;
                     objectset = true;
                 }
@@ -492,7 +561,9 @@ namespace OpenNos.Import.Console
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("mv") && o[1].Equals("3")))
             {
                 if (!mobMvPacketsList.Contains(Convert.ToInt32(currentPacket[2])))
+                {
                     mobMvPacketsList.Add(Convert.ToInt32(currentPacket[2]));
+                }
             }
 
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
@@ -516,9 +587,10 @@ namespace OpenNos.Import.Console
                     };
                     monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
 
-                    if (DAOFactory.NpcMonsterDAO.LoadByVnum(monster.MonsterVNum) == null) continue;
-                    if (DAOFactory.MapMonsterDAO.LoadById(monster.MapMonsterId) != null) continue;
-                    if (monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0) continue;
+                    if (DAOFactory.NpcMonsterDAO.LoadByVnum(monster.MonsterVNum) == null || DAOFactory.MapMonsterDAO.LoadById(monster.MapMonsterId) != null || monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0)
+                    {
+                        continue;
+                    }
 
                     monsters.Add(monster);
                     monsterCounter++;
@@ -536,7 +608,7 @@ namespace OpenNos.Import.Console
             int[] basicXp = new int[100];
             int[] basicJXp = new int[100];
 
-            //basicHpLoad
+            // basicHpLoad
             int baseHp = 138;
             int basup = 17;
             for (int i = 0; i < 100; i++)
@@ -559,19 +631,19 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            //basicMpLoad
+            // basicMpLoad
             for (int i = 0; i < 100; i++)
             {
                 basicMp[i] = basicHp[i];
             }
 
-            //basicXPLoad
+            // basicXPLoad
             for (int i = 0; i < 100; i++)
             {
                 basicXp[i] = i * 180;
             }
 
-            //basicJXpLoad
+            // basicJXpLoad
             for (int i = 0; i < 100; i++)
             {
                 basicJXp[i] = 360;
@@ -582,7 +654,6 @@ namespace OpenNos.Import.Console
             List<NpcMonsterDTO> npcs = new List<NpcMonsterDTO>();
 
             // Store like this: (vnum, (name, level))
-
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             NpcMonsterDTO npc = new NpcMonsterDTO();
             List<DropDTO> drops = new List<DropDTO>();
@@ -597,7 +668,9 @@ namespace OpenNos.Import.Console
                 {
                     string[] linesave = line.Split('\t');
                     if (linesave.Length > 1 && !dictionaryIdLang.ContainsKey(linesave[0]))
+                    {
                         dictionaryIdLang.Add(linesave[0], linesave[1]);
+                    }
                 }
                 npcIdLangStream.Close();
             }
@@ -620,7 +693,10 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
                     {
-                        if (!itemAreaBegin) continue;
+                        if (!itemAreaBegin)
+                        {
+                            continue;
+                        }
                         npc.Level = Convert.ToByte(currentLine[2]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "RACE")
@@ -655,8 +731,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "WEAPON")
                     {
-                        //WEAPON	9	2	-10	15	0	0	30
-                        if (currentLine[3] == "1")      //MELEE MOBS
+                        if (currentLine[3] == "1")
                         {
                             npc.DamageMinimum = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 4) + 32 + Convert.ToInt16(currentLine[4]) + Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
                             npc.DamageMaximum = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 6) + 40 + Convert.ToInt16(currentLine[5]) - Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
@@ -666,15 +741,13 @@ namespace OpenNos.Import.Console
                         }
                         else if (currentLine[3] == "2")
                         {
-                            npc.DamageMinimum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) * 6.5f) + 23 + Convert.ToInt16(currentLine[4]));   //Approsimative
-                            npc.DamageMaximum = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 8) + 38 + Convert.ToInt16(currentLine[5])); //Approsimative
+                            npc.DamageMinimum = Convert.ToInt16((Convert.ToInt16(currentLine[2]) * 6.5f) + 23 + Convert.ToInt16(currentLine[4]));
+                            npc.DamageMaximum = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 8) + 38 + Convert.ToInt16(currentLine[5]));
                             npc.Concentrate = Convert.ToInt16(70 + Convert.ToInt16(currentLine[6]));
                         }
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "ARMOR")
                     {
-                        //ARMOR	21	20	0	0	0
-                        //EVERY MOB
                         npc.CloseDefence = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 2) + 18);
                         npc.DistanceDefence = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 3) + 17);
                         npc.MagicDefence = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 2) + 13);
@@ -745,12 +818,13 @@ namespace OpenNos.Import.Console
                         {
                             short vnum = short.Parse(currentLine[i]);
                             if (vnum == -1 || vnum == 0)
+                            {
                                 break;
-                            if (DAOFactory.SkillDAO.LoadById(vnum) == null)
+                            }
+                            if (DAOFactory.SkillDAO.LoadById(vnum) == null || DAOFactory.NpcMonsterSkillDAO.LoadByNpcMonster(npc.NpcMonsterVNum).Count(s => s.SkillVNum == vnum) != 0)
+                            {
                                 continue;
-                            if (DAOFactory.NpcMonsterSkillDAO.LoadByNpcMonster(npc.NpcMonsterVNum).Count(s => s.SkillVNum == vnum) != 0)
-                                continue;
-
+                            }
                             skills.Add(new NpcMonsterSkillDTO
                             {
                                 SkillVNum = vnum,
@@ -761,8 +835,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "ITEM")
                     {
-                        //TODO: add missing general drop if found
-                        //TODO: add map dependant drops eg. angel wings.
+                        // TODO: add missing general drop if found
+                        // TODO: add map dependant drops eg. angel wings.
                         if (DAOFactory.NpcMonsterDAO.LoadByVnum(npc.NpcMonsterVNum) == null)
                         {
                             npcs.Add(npc);
@@ -772,9 +846,13 @@ namespace OpenNos.Import.Console
                         {
                             short vnum = Convert.ToInt16(currentLine[i]);
                             if (vnum == -1)
+                            {
                                 break;
+                            }
                             if (DAOFactory.DropDAO.LoadByMonster(npc.NpcMonsterVNum).Count(s => s.ItemVNum == vnum) != 0)
+                            {
                                 continue;
+                            }
                             drops.Add(new DropDTO
                             {
                                 ItemVNum = vnum,
@@ -792,10 +870,10 @@ namespace OpenNos.Import.Console
                 npcIdStream.Close();
             }
 
-            //Act 1
+            // Act 1
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 13000, MapTypeId = (short)MapTypeEnum.Act1 });
 
-            //Act2
+            // Act2
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 650, MapTypeId = (short)MapTypeEnum.Act2 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 650, MapTypeId = (short)MapTypeEnum.Act2 });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 10000, MapTypeId = (short)MapTypeEnum.Act2 });
@@ -828,7 +906,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.Act2 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act2 });
 
-            //Act3
+            // Act3
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 9000, MapTypeId = (short)MapTypeEnum.Act3 });
@@ -863,7 +941,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 230, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act3 });
 
-            //Act4
+            // Act4
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act4 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act4 });
             drops.Add(new DropDTO { ItemVNum = 1010, Amount = 3, MonsterVNum = null, DropChance = 2000, MapTypeId = (short)MapTypeEnum.Act4 });
@@ -878,7 +956,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2307, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = (short)MapTypeEnum.Act4 });
             drops.Add(new DropDTO { ItemVNum = 2308, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = (short)MapTypeEnum.Act4 });
 
-            //Act5
+            // Act5
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act51 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act51 });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 9000, MapTypeId = (short)MapTypeEnum.Act51 });
@@ -908,7 +986,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2379, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = (short)MapTypeEnum.Act51 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.Act51 });
 
-            //Act5.2
+            // Act5.2
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act52 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act52 });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 11000, MapTypeId = (short)MapTypeEnum.Act52 });
@@ -931,7 +1009,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2901, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act52 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = (short)MapTypeEnum.Act52 });
 
-            //Act6.1
+            // Act6.1
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 1010, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act61 });
@@ -958,17 +1036,17 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2806, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 2807, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61 });
 
-            //drops.Add(new DropDTO { ItemVNum = 2815, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 9 }); //Only for angel camp need group act6.1 angel
+            // drops.Add(new DropDTO { ItemVNum = 2815, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 9 }); //Only for angel camp need group act6.1 angel
             drops.Add(new DropDTO { ItemVNum = 2816, Amount = 1, MonsterVNum = null, DropChance = 350, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 2818, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 2819, Amount = 1, MonsterVNum = null, DropChance = 350, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act61 });
 
-            //drops.Add(new DropDTO { ItemVNum = 5881, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 10 }); //Only for demon camp need group act6.1 demon
+            // drops.Add(new DropDTO { ItemVNum = 5881, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 10 }); //Only for demon camp need group act6.1 demon
 
-            //Act6.2 (need some information) > soon )
+            // Act6.2 (need some information) > soon )
 
-            //Comet plain
+            // Comet plain
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.CometPlain });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.CometPlain });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 12000, MapTypeId = (short)MapTypeEnum.CometPlain });
@@ -989,12 +1067,12 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.CometPlain });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.CometPlain });
 
-            //Mine1
+            // Mine1
             drops.Add(new DropDTO { ItemVNum = 1002, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Mine1 });
             drops.Add(new DropDTO { ItemVNum = 1005, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Mine1 });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 11000, MapTypeId = (short)MapTypeEnum.Mine1 });
 
-            //Mine2
+            // Mine2
             drops.Add(new DropDTO { ItemVNum = 1002, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Mine2 });
             drops.Add(new DropDTO { ItemVNum = 1005, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Mine2 });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 10000, MapTypeId = (short)MapTypeEnum.Mine2 });
@@ -1007,7 +1085,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Mine2 });
             drops.Add(new DropDTO { ItemVNum = 2205, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Mine2 });
 
-            //MeadownOfMine
+            // MeadownOfMine
             drops.Add(new DropDTO { ItemVNum = 1002, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
             drops.Add(new DropDTO { ItemVNum = 1005, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 10000, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
@@ -1016,7 +1094,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
             drops.Add(new DropDTO { ItemVNum = 2118, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = (short)MapTypeEnum.MeadowOfMine });
 
-            //SunnyPlain
+            // SunnyPlain
             drops.Add(new DropDTO { ItemVNum = 1003, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.SunnyPlain });
             drops.Add(new DropDTO { ItemVNum = 1006, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.SunnyPlain });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 10000, MapTypeId = (short)MapTypeEnum.SunnyPlain });
@@ -1040,7 +1118,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.SunnyPlain });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 50, MapTypeId = (short)MapTypeEnum.SunnyPlain });
 
-            //Fernon
+            // Fernon
             drops.Add(new DropDTO { ItemVNum = 1003, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Fernon });
             drops.Add(new DropDTO { ItemVNum = 1006, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Fernon });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 10000, MapTypeId = (short)MapTypeEnum.Fernon });
@@ -1060,7 +1138,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Fernon });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Fernon });
 
-            //FernonF
+            // FernonF
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.FernonF });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.FernonF });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 10000, MapTypeId = (short)MapTypeEnum.FernonF });
@@ -1085,7 +1163,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.FernonF });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.FernonF });
 
-            //Cliff
+            // Cliff
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 10000, MapTypeId = (short)MapTypeEnum.Cliff });
             drops.Add(new DropDTO { ItemVNum = 2098, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Cliff });
             drops.Add(new DropDTO { ItemVNum = 2099, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Cliff });
@@ -1095,7 +1173,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Cliff });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Cliff });
 
-            //LandOfTheDead
+            // LandOfTheDead
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.LandOfTheDead });
             drops.Add(new DropDTO { ItemVNum = 1010, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.LandOfTheDead });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 10000, MapTypeId = (short)MapTypeEnum.LandOfTheDead });
@@ -1154,10 +1232,11 @@ namespace OpenNos.Import.Console
                         IsDisabled = false
                     };
 
-                    if (listPortals1.Any(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId)
-                        || !_maps.Any(s => s.MapId == portal.SourceMapId)
-                        || !_maps.Any(s => s.MapId == portal.DestinationMapId))
-                        continue; // Portal already in list
+                    if (listPortals1.Any(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) || !_maps.Any(s => s.MapId == portal.SourceMapId) || !_maps.Any(s => s.MapId == portal.DestinationMapId))
+                    {
+                        // Portal already in list
+                        continue;
+                    }
 
                     listPortals1.Add(portal);
                 }
@@ -1167,7 +1246,10 @@ namespace OpenNos.Import.Console
             foreach (PortalDTO portal in listPortals1)
             {
                 PortalDTO p = listPortals1.Except(listPortals2).FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId);
-                if (p == null) continue;
+                if (p == null)
+                {
+                    continue;
+                }
 
                 portal.DestinationX = p.SourceX;
                 portal.DestinationY = p.SourceY;
@@ -1215,7 +1297,9 @@ namespace OpenNos.Import.Console
                                 MapNpcId = mapnpcid
                             };
                             if (DAOFactory.RecipeDAO.LoadByNpc(mapnpcid).Any(s => s.ItemVNum == recipe.ItemVNum))
+                            {
                                 continue;
+                            }
                             DAOFactory.RecipeDAO.Insert(recipe);
                             count++;
                         }
@@ -1246,7 +1330,9 @@ namespace OpenNos.Import.Console
                             };
 
                             if (!DAOFactory.RecipeItemDAO.LoadByRecipeAndItem(recipeId, recipeitem.ItemVNum).Any())
+                            {
                                 DAOFactory.RecipeItemDAO.Insert(recipeitem);
+                            }
                         }
                     }
                     item = -1;
@@ -1295,7 +1381,9 @@ namespace OpenNos.Import.Console
                             }
 
                             if (sitem == null || shopitems.Any(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) || DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).Any(s => s.ItemVNum.Equals(sitem.ItemVNum)))
+                            {
                                 continue;
+                            }
 
                             shopitems.Add(sitem);
                             itemCounter++;
@@ -1305,7 +1393,9 @@ namespace OpenNos.Import.Console
                 else
                 {
                     if (currentPacket.Length > 3)
+                    {
                         type = byte.Parse(currentPacket[1]);
+                    }
                 }
             }
 
@@ -1320,11 +1410,15 @@ namespace OpenNos.Import.Console
             foreach (string[] currentPacket in _packetList.Where(o => o.Length > 6 && o[0].Equals("shop") && o[1].Equals("2")))
             {
                 MapNpcDTO npc = DAOFactory.MapNpcDAO.LoadById(short.Parse(currentPacket[2]));
-                if (npc == null) continue;
-
+                if (npc == null)
+                {
+                    continue;
+                }
                 string named = String.Empty;
                 for (int j = 6; j < currentPacket.Length; j++)
+                {
                     named += $"{currentPacket[j]} ";
+                }
                 named = named.Trim();
 
                 ShopDTO shop = new ShopDTO
@@ -1335,7 +1429,10 @@ namespace OpenNos.Import.Console
                     ShopType = byte.Parse(currentPacket[5])
                 };
 
-                if (DAOFactory.ShopDAO.LoadByNpc(shop.MapNpcId) != null) continue;
+                if (DAOFactory.ShopDAO.LoadByNpc(shop.MapNpcId) != null)
+                {
+                    continue;
+                }
 
                 shops.Add(shop);
                 shopCounter++;
@@ -1370,7 +1467,9 @@ namespace OpenNos.Import.Console
                                 };
 
                                 if (sskill == null || shopskills.Any(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).Any(s => s.SkillVNum.Equals(sskill.SkillVNum)))
+                                {
                                     continue;
+                                }
 
                                 shopskills.Add(sskill);
                                 itemCounter++;
@@ -1381,7 +1480,9 @@ namespace OpenNos.Import.Console
                 else
                 {
                     if (currentPacket.Length > 3)
+                    {
                         type = byte.Parse(currentPacket[1]);
+                    }
                 }
             }
 
@@ -1406,7 +1507,9 @@ namespace OpenNos.Import.Console
                 {
                     string[] linesave = line.Split('\t');
                     if (linesave.Length > 1 && !dictionaryIdLang.ContainsKey(linesave[0]))
+                    {
                         dictionaryIdLang.Add(linesave[0], linesave[1]);
+                    }
                 }
                 skillIdLangStream.Close();
             }
@@ -1448,10 +1551,12 @@ namespace OpenNos.Import.Console
                             };
 
                             if (comb.Hit != 0 || comb.Animation != 0 || comb.Effect != 0)
+                            {
                                 if (!DAOFactory.ComboDAO.LoadByVNumHitAndEffect(comb.SkillVNum, comb.Hit, comb.Effect).Any())
                                 {
                                     Combo.Add(comb);
                                 }
+                            }
                         }
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "COST")
@@ -1578,7 +1683,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EFFECT")
                     {
-                        //skill.Unknown = short.Parse(currentLine[2]);
+                        // skill.Unknown = short.Parse(currentLine[2]);
                         skill.CastEffect = short.Parse(currentLine[3]);
                         skill.CastAnimation = short.Parse(currentLine[4]);
                         skill.Effect = short.Parse(currentLine[5]);
@@ -1586,8 +1691,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "TARGET")
                     {
-                        //1&2 used as type
-                        //third unknown
+                        // 1&2 used as type
+                        // third unknown
                         skill.TargetType = byte.Parse(currentLine[2]);
                         skill.HitType = byte.Parse(currentLine[3]);
                         skill.TargetRange = byte.Parse(currentLine[5]);
@@ -1621,53 +1726,57 @@ namespace OpenNos.Import.Console
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
 
-                                    //skill.MonsterVNum = short.Parse(currentLine[6]);
+                                    // skill.MonsterVNum = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "43")
                                 {
-                                    //skill.AdditionalDamage = short.Parse(currentLine[5]);
+                                    // skill.AdditionalDamage = short.Parse(currentLine[5]);
                                 }
                                 if (currentLine[3] == "48")
                                 {
-                                    //skill.MonsterSpawnAmount = short.Parse(currentLine[5]);
-                                    //skill.MonsterVNum = short.Parse(currentLine[6]);
+                                    // skill.MonsterSpawnAmount = short.Parse(currentLine[5]);
+                                    // skill.MonsterVNum = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "64")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
 
-                                    //skill.Unknown = short.Parse(currentLine[6]);
+                                    // skill.Unknown = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "66")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
 
-                                    //skill.Unknown = short.Parse(currentLine[6]);
+                                    // skill.Unknown = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "68")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
                                     if (currentLine[4] == "0")
+                                    {
                                         skill.SecondarySkillVNum = short.Parse(currentLine[6]);
+                                    }
                                     else
+                                    {
                                         skill.BuffId = short.Parse(currentLine[6]);
+                                    }
                                 }
                                 if (currentLine[3] == "69")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
 
-                                    //skill.MonsterVNum = short.Parse(currentLine[6]);
+                                    // skill.MonsterVNum = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "72")
                                 {
-                                    //skill.Times = short.Parse(currentLine[5]);
+                                    // skill.Times = short.Parse(currentLine[5]);
                                     skill.BuffId = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "80")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
 
-                                    //skill.CloneAmount = short.Parse(currentLine[6]);
+                                    // skill.CloneAmount = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "81")
                                 {
@@ -1675,22 +1784,24 @@ namespace OpenNos.Import.Console
                                     skill.BuffId = short.Parse(currentLine[6]);
                                 }
                                 else
+                                {
                                     skill.Damage = short.Parse(currentLine[5]);
+                                }
                                 break;
 
                             case "1":
                                 skill.ElementalDamage = short.Parse(currentLine[5]); // Divide by 4(?)
 
-                                //skill.Unknown = short.Parse(currentLine[2]);
-                                //skill.Unknown = short.Parse(currentLine[3]);
-                                //skill.Unknown = short.Parse(currentLine[4]);
-                                //skill.Unknown = short.Parse(currentLine[6]);
-                                //skill.Unknown = short.Parse(currentLine[7]);
+                                // skill.Unknown = short.Parse(currentLine[2]);
+                                // skill.Unknown = short.Parse(currentLine[3]);
+                                // skill.Unknown = short.Parse(currentLine[4]);
+                                // skill.Unknown = short.Parse(currentLine[6]);
+                                // skill.Unknown = short.Parse(currentLine[7]);
                                 break;
 
                             case "2":
 
-                                //unknown
+                                // unknown
                                 /*
                                 skill.Unknown = short.Parse(currentLine[2]);
                                 skill.Unknown = short.Parse(currentLine[3]);
@@ -1703,7 +1814,7 @@ namespace OpenNos.Import.Console
 
                             case "3":
 
-                                //unknown
+                                // unknown
                                 /*
                                 skill.Unknown = short.Parse(currentLine[2]);
                                 skill.Unknown = short.Parse(currentLine[3]);
@@ -1716,7 +1827,7 @@ namespace OpenNos.Import.Console
 
                             case "4":
 
-                                //unknown
+                                // unknown
                                 /*
                                 skill.Unknown = short.Parse(currentLine[2]);
                                 skill.Unknown = short.Parse(currentLine[3]);
@@ -1730,7 +1841,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
                     {
-                        /* Parse when done
+                        /* // Parse when done
                         if (currentLine[2] == "1")
                         {
                             combo.FirstActivationHit = byte.Parse(currentLine[3]);
@@ -1753,12 +1864,11 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "CELL")
                     {
-                        //skill.Unknown = short.Parse(currentLine[2]); // 2 - ??
+                        // skill.Unknown = short.Parse(currentLine[2]); // 2 - ??
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "Z_DESC")
                     {
-                        //skill.Unknown = short.Parse(currentLine[2]);
-
+                        // skill.Unknown = short.Parse(currentLine[2]);
                         if (DAOFactory.SkillDAO.LoadById(skill.SkillVNum) == null)
                         {
                             skills.Add(skill);
@@ -1783,8 +1893,9 @@ namespace OpenNos.Import.Console
                 if (currentPacket.Length > 4 && currentPacket[0] == "n_run")
                 {
                     if (DAOFactory.MapNpcDAO.LoadById(int.Parse(currentPacket[4])) == null)
+                    {
                         continue;
-
+                    }
                     teleporter = new TeleporterDTO
                     {
                         MapNpcId = int.Parse(currentPacket[4]),
@@ -1794,15 +1905,18 @@ namespace OpenNos.Import.Console
                 }
                 if (currentPacket.Length > 5 && currentPacket[0] == "at")
                 {
-                    if (teleporter == null) continue;
-
+                    if (teleporter == null)
+                    {
+                        continue;
+                    }
                     teleporter.MapId = short.Parse(currentPacket[2]);
                     teleporter.MapX = short.Parse(currentPacket[3]);
                     teleporter.MapY = short.Parse(currentPacket[4]);
 
                     if (DAOFactory.TeleporterDAO.LoadFromNpc(teleporter.MapNpcId).Any(s => s.Index == teleporter.Index))
+                    {
                         continue;
-
+                    }
                     DAOFactory.TeleporterDAO.Insert(teleporter);
                     teleporterCounter++;
                     teleporter = null;
@@ -1830,7 +1944,10 @@ namespace OpenNos.Import.Console
                 while ((line = mapIdLangStream.ReadLine()) != null)
                 {
                     string[] linesave = line.Split('\t');
-                    if (linesave.Length <= 1 || dictionaryName.ContainsKey(linesave[0])) continue;
+                    if (linesave.Length <= 1 || dictionaryName.ContainsKey(linesave[0]))
+                    {
+                        continue;
+                    }
                     dictionaryName.Add(linesave[0], linesave[1]);
                 }
                 mapIdLangStream.Close();
@@ -1854,8 +1971,10 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "END")
                     {
-                        if (!itemAreaBegin) continue;
-
+                        if (!itemAreaBegin)
+                        {
+                            continue;
+                        }
                         if (DAOFactory.ItemDAO.LoadById(item.VNum) == null)
                         {
                             items.Add(item);
@@ -1876,7 +1995,7 @@ namespace OpenNos.Import.Console
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
 
-                        //item.DesignId = Convert.ToInt16(currentLine[6]);
+                        // item.DesignId = Convert.ToInt16(currentLine[6]);
                         switch (item.VNum)
                         {
                             case 1906:
@@ -2074,11 +2193,15 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "TYPE")
                     {
-                        //currentLine[2] 0-range 2-range 3-magic
+                        // currentLine[2] 0-range 2-range 3-magic
                         if (item.EquipmentSlot == (byte)EquipmentType.Fairy)
+                        {
                             item.Class = 15;
+                        }
                         else
+                        {
                             item.Class = Convert.ToByte(currentLine[3]);
+                        }
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "FLAG")
                     {
@@ -2091,7 +2214,9 @@ namespace OpenNos.Import.Console
                         item.IsColored = currentLine[16] == "1";
                         item.Sex = currentLine[18] == "1" ? (byte)1 : currentLine[17] == "1" ? (byte)2 : (byte)0;
                         if (currentLine[21] == "1")
+                        {
                             item.ReputPrice = item.Price;
+                        }
                         item.IsHeroic = currentLine[22] == "1";
                         /*
                         item.IsVehicle = currentLine[11] == "1" ? true : false; // (?)
@@ -2143,10 +2268,9 @@ namespace OpenNos.Import.Console
                                 item.MagicDefence = Convert.ToInt16(currentLine[5]);
                                 item.DefenceDodge = Convert.ToInt16(currentLine[6]);
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.CostumeHat) || item.EquipmentSlot.Equals((byte)EquipmentType.CostumeSuit))
+                                {
                                     item.ItemValidTime = Convert.ToInt32(currentLine[13]) * 3600;
-
-                                //else
-                                //    item.Unknown = Convert.ToInt32(currentLine[13]);
+                                }
                                 break;
 
                             case (byte)ItemType.Food:
@@ -2158,41 +2282,64 @@ namespace OpenNos.Import.Console
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
                                 {
                                     item.LevelMinimum = Convert.ToByte(currentLine[2]);
-
-                                    // needed to hardcode some missing ItemValidTime
                                     if ((item.VNum > 4055 && item.VNum < 4061) || (item.VNum > 4172 && item.VNum < 4176))
+                                    {
                                         item.ItemValidTime = 10800;
-                                    else if ((item.VNum > 4045 && item.VNum < 4056) || item.VNum == 967 || item.VNum == 968) // (item.VNum > 8104 && item.VNum < 8115) <= disaled for now because doesn't work!
+                                    }
+                                    else if ((item.VNum > 4045 && item.VNum < 4056) || item.VNum == 967 || item.VNum == 968) 
+                                    {
+                                        // (item.VNum > 8104 && item.VNum < 8115) <= disaled for now because doesn't work!
                                         item.ItemValidTime = 3600;
+                                    }
                                     else
+                                    {
                                         item.ItemValidTime = Convert.ToInt32(currentLine[3]) / 10;
+                                    }
                                 }
                                 else if (item.EquipmentSlot.Equals((byte)EquipmentType.Fairy))
                                 {
                                     item.Element = Convert.ToByte(currentLine[2]);
                                     item.ElementRate = Convert.ToInt16(currentLine[3]);
                                     if (item.VNum <= 256)
+                                    {
                                         item.MaxElementRate = 50;
+                                    }
                                     else
                                     {
                                         if (item.ElementRate == 0)
+                                        {
                                             if (item.VNum >= 800 && item.VNum <= 804)
+                                            {
                                                 item.MaxElementRate = 50;
+                                            }
                                             else
+                                            {
                                                 item.MaxElementRate = 70;
+                                            }
+                                        }
                                         else if (item.ElementRate == 30)
                                         {
                                             if (item.VNum >= 884 && item.VNum <= 887)
+                                            {
                                                 item.MaxElementRate = 50;
+                                            }
                                             else
+                                            {
                                                 item.MaxElementRate = 30;
+                                            }
                                         }
                                         else if (item.ElementRate == 35)
+                                        {
                                             item.MaxElementRate = 35;
+                                        }
                                         else if (item.ElementRate == 40)
+                                        {
                                             item.MaxElementRate = 70;
+                                        }
                                         else if (item.ElementRate == 50)
+                                        {
                                             item.MaxElementRate = 80;
+                                        }
                                     }
                                 }
                                 else
@@ -2224,60 +2371,82 @@ namespace OpenNos.Import.Console
 
                             case (byte)ItemType.Magical:
                                 if (item.VNum > 2059 && item.VNum < 2070)
+                                {
                                     item.Effect = 10;
+                                }
                                 else
+                                {
                                     item.Effect = Convert.ToInt16(currentLine[2]);
+                                }
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
                             case (byte)ItemType.Specialist:
 
-                                //item.isSpecialist = Convert.ToByte(currentLine[2]);
-                                //item.Unknown = Convert.ToInt16(currentLine[3]);
+                                // item.isSpecialist = Convert.ToByte(currentLine[2]);
+                                // item.Unknown = Convert.ToInt16(currentLine[3]);
                                 item.ElementRate = Convert.ToInt16(currentLine[4]);
                                 item.Speed = Convert.ToByte(currentLine[5]);
                                 item.SpType = Convert.ToByte(currentLine[13]);
 
-                                //item.Morph = Convert.ToInt16(currentLine[14]) + 1; // idk whats that, its useless
+                                // item.Morph = Convert.ToInt16(currentLine[14]) + 1; // idk whats that, its useless
                                 item.FireResistance = Convert.ToByte(currentLine[15]);
                                 item.WaterResistance = Convert.ToByte(currentLine[16]);
                                 item.LightResistance = Convert.ToByte(currentLine[17]);
                                 item.DarkResistance = Convert.ToByte(currentLine[18]);
 
-                                //item.PartnerClass = Convert.ToInt16(currentLine[19]);
+                                // item.PartnerClass = Convert.ToInt16(currentLine[19]);
                                 item.LevelJobMinimum = Convert.ToByte(currentLine[20]);
                                 item.ReputationMinimum = Convert.ToByte(currentLine[21]);
 
                                 Dictionary<int, int> elementdic = new Dictionary<int, int> { { 0, 0 } };
                                 if (item.FireResistance != 0)
+                                {
                                     elementdic.Add(1, item.FireResistance);
+                                }
                                 if (item.WaterResistance != 0)
+                                {
                                     elementdic.Add(2, item.WaterResistance);
+                                }
                                 if (item.LightResistance != 0)
+                                {
                                     elementdic.Add(3, item.LightResistance);
+                                }
                                 if (item.DarkResistance != 0)
+                                {
                                     elementdic.Add(4, item.DarkResistance);
+                                }
+
                                 item.Element = (byte)elementdic.OrderByDescending(s => s.Value).First().Key;
                                 if (elementdic.Count > 1 && elementdic.OrderByDescending(s => s.Value).First().Value == elementdic.OrderByDescending(s => s.Value).ElementAt(1).Value)
                                 {
                                     item.SecondaryElement = (byte)elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
                                 }
 
-                                if (item.VNum == 901)// need to hardcode...
+                                // need to hardcode...
+                                if (item.VNum == 901)
+                                {
                                     item.Element = 1;
-                                else if (item.VNum == 903) // need to hardcode...
+                                }
+                                else if (item.VNum == 903)
+                                {
                                     item.Element = 2;
-                                else if (item.VNum == 906)// need to hardcode...
+                                }
+                                else if (item.VNum == 906)
+                                {
                                     item.Element = 3;
-                                else if (item.VNum == 909)// need to hardcode...
+                                }
+                                else if (item.VNum == 909)
+                                {
                                     item.Element = 3;
+                                }
                                 break;
 
                             case (byte)ItemType.Shell:
 
-                                //item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);
-                                //item.ShellMaximumLevel = Convert.ToInt16(linesave[4]);
-                                //item.ShellType = Convert.ToByte(linesave[5]); // 3 shells of each type
+                                // item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);
+                                // item.ShellMaximumLevel = Convert.ToInt16(linesave[4]);
+                                // item.ShellType = Convert.ToByte(linesave[5]); // 3 shells of each type
                                 break;
 
                             case (byte)ItemType.Main:
@@ -2314,33 +2483,33 @@ namespace OpenNos.Import.Console
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
 
-                                //item.PetLoyality = Convert.ToInt16(linesave[4]);
-                                //item.PetFood = Convert.ToInt16(linesave[7]);
+                                // item.PetLoyality = Convert.ToInt16(linesave[4]);
+                                // item.PetFood = Convert.ToInt16(linesave[7]);
                                 break;
 
                             case (byte)ItemType.Part:
 
-                                //nothing to parse
+                                // nothing to parse
                                 break;
 
                             case (byte)ItemType.Sell:
 
-                                //nothing to parse
+                                // nothing to parse
                                 break;
 
                             case (byte)ItemType.Quest2:
 
-                                //nothing to parse
+                                // nothing to parse
                                 break;
 
                             case (byte)ItemType.Quest1:
 
-                                //nothing to parse
+                                // nothing to parse
                                 break;
 
                             case (byte)ItemType.Ammo:
 
-                                //nothing to parse
+                                // nothing to parse
                                 break;
 
                             case (byte)ItemType.Event:
@@ -2356,15 +2525,17 @@ namespace OpenNos.Import.Console
                             item.DarkResistance = Convert.ToByte(currentLine[11]);
                         }
 
-                        //else // thanks to this sometimes we have 0 where we shouldnt, add verification on where you need it.
-                        //{
-                        //    item.Effect = Convert.ToInt16(currentLine[2]);
-                        //    item.EffectValue = Convert.ToInt32(currentLine[8]);
-                        //}
+                        /*
+                        else // thanks to this sometimes we have 0 where we shouldnt, add verification on where you need it.
+                        {
+                            item.Effect = Convert.ToInt16(currentLine[2]);
+                            item.EffectValue = Convert.ToInt32(currentLine[8]);
+                        }
+                        */
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "BUFF")
                     {
-                        //need to see how to use them :D (we know how to get the buff from bcard ect)
+                        // TODO: Implement buff parsing
                     }
                 }
 

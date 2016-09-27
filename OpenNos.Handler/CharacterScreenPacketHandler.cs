@@ -46,7 +46,9 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             if (Session.CurrentMap != null)
+            {
                 return;
+            }
 
             // TODO: Hold Account Information in Authorized object
             long accountId = Session.Account.AccountId;
@@ -69,7 +71,9 @@ namespace OpenNos.Handler
                         if (DAOFactory.CharacterDAO.LoadByName(characterName) == null)
                         {
                             if (Convert.ToByte(packetsplit[3]) > 2)
+                            {
                                 return;
+                            }
                             CharacterDTO newCharacter = new CharacterDTO()
                             {
                                 Class = (byte)ClassType.Adventurer,
@@ -153,7 +157,7 @@ namespace OpenNos.Handler
                             sk3 = DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk3);
 
                             IList<InventoryDTO> startupInventory = new List<InventoryDTO>();
-                            InventoryDTO inventory = new InventoryDTO() //first weapon
+                            InventoryDTO inventory = new InventoryDTO() // first weapon
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.MainWeapon,
@@ -162,7 +166,7 @@ namespace OpenNos.Handler
                             inventory.ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 1, Id = inventory.Id };
                             startupInventory.Add(inventory);
 
-                            inventory = new InventoryDTO() //second weapon
+                            inventory = new InventoryDTO() // second weapon
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.SecondaryWeapon,
@@ -171,7 +175,7 @@ namespace OpenNos.Handler
                             inventory.ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 8, Id = inventory.Id };
                             startupInventory.Add(inventory);
 
-                            inventory = new InventoryDTO() //armor
+                            inventory = new InventoryDTO() // armor
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.Armor,
@@ -180,7 +184,7 @@ namespace OpenNos.Handler
                             inventory.ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 12, Id = inventory.Id };
                             startupInventory.Add(inventory);
 
-                            inventory = new InventoryDTO() //snack
+                            inventory = new InventoryDTO() // snack
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = 0,
@@ -189,7 +193,7 @@ namespace OpenNos.Handler
                             inventory.ItemInstance = new ItemInstance() { Amount = 10, ItemVNum = 2024, Id = inventory.Id };
                             startupInventory.Add(inventory);
 
-                            inventory = new InventoryDTO() //ammo
+                            inventory = new InventoryDTO() // ammo
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = 1,
@@ -201,9 +205,15 @@ namespace OpenNos.Handler
                             DAOFactory.InventoryDAO.InsertOrUpdate(startupInventory);
                             LoadCharacters(packet);
                         }
-                        else Session.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
+                        else
+                        {
+                            Session.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
+                        }
                     }
-                    else Session.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("INVALID_CHARNAME")}");
+                    else
+                    {
+                        Session.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("INVALID_CHARNAME")}");
+                    }
                 }
             }
         }
@@ -214,18 +224,26 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
 
             if (Session.HasCurrentMap)
+            {
                 return;
+            }
             string[] deleteCharacterPacket = packet.Split(' ');
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
             if (account == null)
+            {
                 return;
+            }
             if (deleteCharacterPacket.Length <= 3)
+            {
                 return;
+            }
             if (account != null && account.Password.ToLower() == EncryptionBase.Sha512(deleteCharacterPacket[3]))
             {
                 CharacterDTO character = DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
                 if (character == null)
+                {
                     return;
+                }
                 DAOFactory.GeneralLogDAO.SetCharIdNull(Convert.ToInt64(character.CharacterId));
                 DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
                 LoadCharacters(packet);
@@ -321,7 +339,7 @@ namespace OpenNos.Handler
                 }
             }
 
-            //TODO: Wrap Database access up to GO
+            // TODO: Wrap Database access up to GO
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
             Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.SessionId);
             Session.SendPacket("clist_start 0");
@@ -332,7 +350,7 @@ namespace OpenNos.Handler
                 WearableInstance[] equipment = new WearableInstance[16];
                 foreach (InventoryDTO equipmentEntry in inventory)
                 {
-                    //explicit load of iteminstance
+                    // explicit load of iteminstance
                     WearableInstance currentInstance = equipmentEntry.ItemInstance as WearableInstance;
                     equipment[currentInstance.Item.EquipmentSlot] = currentInstance;
                 }
@@ -354,6 +372,7 @@ namespace OpenNos.Handler
                     string[] packetsplit = packet.Split(' ');
                     CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2]));
                     if (characterDTO != null)
+                    {
                         Session.Character = new Character(Session)
                         {
                             AccountId = characterDTO.AccountId,
@@ -415,15 +434,16 @@ namespace OpenNos.Handler
                             HeroLevel = characterDTO.HeroLevel,
                             HeroXp = characterDTO.HeroXp
                         };
-                    Session.Character.Update();
-                    Session.Character.LoadInventory();
-                    Session.Character.LoadQuicklists();
-                    DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.IpAddress, Session.Character.CharacterId, "Connection", "World");
-                    Session.HasSelectedCharacter = true;
-                    Session.SendPacket("OK");
+                        Session.Character.Update();
+                        Session.Character.LoadInventory();
+                        Session.Character.LoadQuicklists();
+                        DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.IpAddress, Session.Character.CharacterId, "Connection", "World");
+                        Session.HasSelectedCharacter = true;
+                        Session.SendPacket("OK");
 
-                    // Inform everyone about connected character
-                    ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
+                        // Inform everyone about connected character
+                        ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
+                    }
                 }
             }
             catch (Exception ex)

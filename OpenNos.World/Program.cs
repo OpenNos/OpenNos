@@ -61,7 +61,7 @@ namespace OpenNos.World
         {
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
 
-            //initialize Logger
+            // initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -75,22 +75,22 @@ namespace OpenNos.World
             Console.WriteLine(text + "\n" +
             new String('=', Console.WindowWidth) + "\n");
 
-            //initialize DB
+            // initialize DB
             if (DataAccessHelper.Initialize())
-
-                //initialilize maps
+            {
+                // initialilize maps
                 ServerManager.Initialize();
+            }
 
-            //register mappings for items
+            // register mappings for items
             DAOFactory.InventoryDAO.RegisterMapping(typeof(SpecialistInstance));
             DAOFactory.InventoryDAO.RegisterMapping(typeof(WearableInstance));
             DAOFactory.InventoryDAO.RegisterMapping(typeof(UsableInstance));
             DAOFactory.InventoryDAO.InitializeMapper(typeof(ItemInstance));
 
-            //initialize ClientLinkManager
-            //TODO
+            // TODO: initialize ClientLinkManager
 
-            //initialize PacketSerialization
+            // initialize PacketSerialization
             PacketFactory.Initialize<WalkPacket>();
 
             try

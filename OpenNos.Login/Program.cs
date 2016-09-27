@@ -36,7 +36,7 @@ namespace OpenNos.Login
                 {
                     System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
 
-                    //initialize Logger
+                    // initialize Logger
                     Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
                     Assembly assembly = Assembly.GetExecutingAssembly();
                     FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -50,7 +50,7 @@ namespace OpenNos.Login
                     Console.WriteLine(text + "\n" +
                     new String('=', Console.WindowWidth) + "\n");
 
-                    //initialize DB
+                    // initialize DB
                     DataAccessHelper.Initialize();
 
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));
@@ -59,7 +59,7 @@ namespace OpenNos.Login
                         ServiceFactory.Instance.CommunicationService.Open();
                         NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>("127.0.0.1", port, typeof(LoginPacketHandler), typeof(LoginEncryption), false);
 
-                        //refresh WCF
+                        // refresh WCF
                         ServiceFactory.Instance.CommunicationService.CleanupAsync();
                     }
                     catch (Exception ex)

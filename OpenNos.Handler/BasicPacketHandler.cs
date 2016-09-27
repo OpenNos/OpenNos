@@ -860,6 +860,7 @@ namespace OpenNos.Handler
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Naming proper")]
         [Packet("qset")]
         public void SetQuicklist(string packet)
         {

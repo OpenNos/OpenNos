@@ -70,11 +70,11 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             UserDTO user = new UserDTO() { Name = packetsplit[2], Password = packetsplit[3] };
 
-            //closed
+            // closed
             bool flag = true;
             if (flag)
             {
-                //TODO: implement check for maintenances
+                // TODO: implement check for maintenances
                 bool maintenanceCheck = true;
                 if (maintenanceCheck)
                 {
@@ -93,6 +93,7 @@ namespace OpenNos.Handler
                                 _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, (penalty.DateEnd).ToString("yyyy-MM-dd-HH:mm"))}");
                             }
                             else
+                            {
                                 switch (type)
                                 {
                                     case AuthorityType.Unknown:
@@ -108,7 +109,7 @@ namespace OpenNos.Handler
                                             DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, newSessionId, _session.IpAddress);
                                             Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
-                                            //inform communication service about new player from login server
+                                            // inform communication service about new player from login server
                                             try
                                             {
                                                 ServiceFactory.Instance.CommunicationService.RegisterAccountLogin(user.Name, newSessionId);
@@ -121,6 +122,7 @@ namespace OpenNos.Handler
                                         }
                                         break;
                                 }
+                            }
                         }
                         else
                         {
@@ -134,7 +136,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"))}");//add estimated time of maintenance/end of maintenance
+                    _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"))}"); // add estimated time of maintenance/end of maintenance
                 }
             }
             else

@@ -36,7 +36,13 @@ namespace OpenNos.Handler
 
         #region Properties
 
-        public ClientSession Session { get { return _session; } }
+        public ClientSession Session
+        {
+            get
+            {
+                return _session;
+            }
+        }
 
         #endregion
 

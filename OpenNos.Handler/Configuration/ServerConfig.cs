@@ -26,9 +26,9 @@ namespace OpenNos.Handler
         public object Create(object parent, object configContext, System.Xml.XmlNode section)
         {
             List<Server> liste = new List<Server>();
-            foreach (XmlNode aServer in section.ChildNodes)
+            foreach (XmlNode server in section.ChildNodes)
             {
-                liste.Add(GetServer(aServer));
+                liste.Add(GetServer(server));
             }
             return liste;
         }
