@@ -688,8 +688,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                     })
                 .PrimaryKey(t => t.PenaltyLogId)
                 .ForeignKey("dbo.Account", t => t.AccountId)
-                .Index(t => t.AccountId);
-            
+                .Index(t => t.AccountId);          
         }
         
         public override void Down()

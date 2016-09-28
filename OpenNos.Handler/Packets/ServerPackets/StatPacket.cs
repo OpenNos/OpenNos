@@ -4,7 +4,7 @@ using OpenNos.Core;
 namespace OpenNos.Handler
 {
     [Header("stat")]
-    class StatPacket : PacketBase
+    public class StatPacket : PacketBase
     {
         #region Properties
 

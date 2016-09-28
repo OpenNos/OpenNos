@@ -64,7 +64,7 @@
     <Compile Include="Packets\ServerPackets\CharacterDeletePacket.cs" />
     <Compile Include="Packets\ServerPackets\CharacterCreatePacket.cs" />
     <Compile Include="Packets\ServerPackets\CharacterRenamePacket.cs" />
-    <Compile Include="Packets\ServerPackets\ClistPacket.cs" />
+    <Compile Include="Packets\ServerPackets\CListPacket.cs" />
     <Compile Include="Packets\ServerPackets\EffectPacket.cs" />
     <Compile Include="Packets\ServerPackets\GetPacket.cs" />
     <Compile Include="Packets\ServerPackets\InPacket.cs" />

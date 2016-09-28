@@ -227,7 +227,11 @@ namespace OpenNos.GameObject
             ServiceFactory.Instance.CommunicationService.ConnectAccount(account.Name, SessionId);
         }
 
-        //handle Broadcast from Broadcastable
+        /// <summary>
+        ///  Handle Broadcast from Broadcastable
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void OnSessionBroadcast(object sender, EventArgs e)
         {
             BroadcastPacket sentPacket = sender as BroadcastPacket;
