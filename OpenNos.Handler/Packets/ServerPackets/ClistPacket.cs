@@ -12,7 +12,6 @@ namespace OpenNos.Handler
     [Header("clist")]
     class ClistPacket : PacketBase
     {
-
         #region Properties
 
         [PacketIndex(0)]
@@ -69,5 +68,3 @@ namespace OpenNos.Handler
         #endregion
     }
 }
-    // Session.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {character.HeroLevel} {(equipment[(byte)EquipmentType.Hat] != null ? equipment[(byte)EquipmentType.Hat].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Armor] != null ? equipment[(byte)EquipmentType.Armor].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.WeaponSkin] != null ? equipment[(byte)EquipmentType.WeaponSkin].ItemVNum : equipment[(byte)EquipmentType.MainWeapon] != null ? equipment[(byte)EquipmentType.MainWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.SecondaryWeapon] != null ? equipment[(byte)EquipmentType.SecondaryWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Mask] != null ? equipment[(byte)EquipmentType.Mask].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Fairy] != null ? equipment[(byte)EquipmentType.Fairy].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeSuit] != null ? equipment[(byte)EquipmentType.CostumeSuit].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeHat] != null ? equipment[(byte)EquipmentType.CostumeHat].ItemVNum : -1)} {character.JobLevel}  1 1 -1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1 {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
-    /*clist 0 Uppermost 0 0 3 7 0 2 92 1 340.-1.4903.4912.227.803.625.654 80  5 1 0.1508.0.1506.0.821.0.535.0.333.0.319.0.317.0.176.0.9.-1.-1.-1.-1.-1.-1.-1.-1 0 0*/

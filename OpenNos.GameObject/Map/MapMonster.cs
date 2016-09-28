@@ -34,6 +34,7 @@ namespace OpenNos.GameObject
         public MapMonster(MapMonsterDTO monsterdto, Map parent)
         {
             _random = new Random(monsterdto.MapMonsterId);
+
             // Replace by MAPPING
             MapId = monsterdto.MapId;
             MapX = monsterdto.MapX;
@@ -241,9 +242,8 @@ namespace OpenNos.GameObject
                     }
                 }
                 NpcMonsterSkill npcMonsterSkill = null;
-                if (_random.Next(10) > 8 )
+                if (_random.Next(10) > 8)
                 {
-                    
                     npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
                 }
 
@@ -251,7 +251,7 @@ namespace OpenNos.GameObject
 
                 if (targetSession != null && targetSession.Character.Hp > 0 && ((npcMonsterSkill != null && CurrentMp - npcMonsterSkill.Skill.MpCost >= 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
                 {
-                    if (((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 200 && !Skills.Any()) || npcMonsterSkill !=null)
+                    if (((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 200 && !Skills.Any()) || npcMonsterSkill != null)
                     {
                         if (npcMonsterSkill != null)
                         {

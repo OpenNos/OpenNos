@@ -110,16 +110,12 @@
     <Compile Include="Entities\MapNpc.cs" />
     <Compile Include="MapNpcDAO.cs" />
     <Compile Include="Entities\NpcMonster.cs" />
-    <Compile Include="Entities\NpcMonsterskill.cs" />
+    <Compile Include="Entities\NpcMonsterSkill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201609261608586_Athena.cs" />
-    <Compile Include="Migrations\201609261608586_Athena.Designer.cs">
-      <DependentUpon>201609261608586_Athena.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609281758093_first.cs" />
-    <Compile Include="Migrations\201609281758093_first.Designer.cs">
-      <DependentUpon>201609281758093_first.cs</DependentUpon>
+    <Compile Include="Migrations\201609281814524_Athena.cs" />
+    <Compile Include="Migrations\201609281814524_Athena.Designer.cs">
+      <DependentUpon>201609281814524_Athena.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -199,11 +195,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609261608586_Athena.resx">
-      <DependentUpon>201609261608586_Athena.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609281758093_first.resx">
-      <DependentUpon>201609281758093_first.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609281814524_Athena.resx">
+      <DependentUpon>201609281814524_Athena.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
