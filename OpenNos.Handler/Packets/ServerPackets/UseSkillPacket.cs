@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
-    public class U_sPacket : PacketBase
+    public class UseSkillPacket : PacketBase
     {
         #region Properties
 
@@ -13,7 +13,7 @@ namespace OpenNos.Handler.Packets.ServerPackets
         [PacketIndex(1)]
         public byte ObjectType { get; set; }
 
-        [PacketIndex(0)]
+        [PacketIndex(2)]
         public long ObjectId { get; set; }
 
         #endregion

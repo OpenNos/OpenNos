@@ -227,6 +227,57 @@ namespace OpenNos.GameObject
             ServiceFactory.Instance.CommunicationService.ConnectAccount(account.Name, SessionId);
         }
 
+        //handle Broadcast from Broadcastable
+        public void OnSessionBroadcast(object sender, EventArgs e)
+        {
+            BroadcastPacket sentPacket = sender as BroadcastPacket;
+
+            if (!IsDisposing)
+            {
+                switch (sentPacket.Receiver)
+                {
+                    case ReceiverType.All:
+                        SendPacket(sentPacket.Content);
+                        break;
+
+                    case ReceiverType.AllExceptMe:
+                        if (sentPacket.Sender != this)
+                        {
+                            SendPacket(sentPacket.Content);
+                        }
+                        break;
+
+                    case ReceiverType.OnlySomeone:
+                        {
+                            if (this.Character.CharacterId == sentPacket.SomeonesCharacterId || this.Character.Name == sentPacket.SomeonesCharacterName)
+                            {
+                                SendPacket(sentPacket.Content);
+                            }
+                            break;
+                        }
+                    case ReceiverType.AllNoEmoBlocked:
+                        if (!this.Character.EmoticonsBlocked)
+                        {
+                            SendPacket(sentPacket.Content);
+                        }
+                        break;
+
+                    case ReceiverType.AllNoHeroBlocked:
+                        if (!this.Character.HeroChatBlocked)
+                        {
+                            SendPacket(sentPacket.Content);
+                        }
+                        break;
+                    case ReceiverType.Group:
+                        if (sentPacket.Sender.Character.Group != null && Character.Group != null && Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId)
+                        {
+                            SendPacket(sentPacket.Content);
+                        }
+                        break;
+                }
+            }
+        }
+
         public void SendPacket(string packet)
         {
             if (!IsDisposing)
@@ -278,7 +329,8 @@ namespace OpenNos.GameObject
             IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) // shitty but it works
                                                             : type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterfaces().FirstOrDefault().IsAssignableFrom(p));
 
-            // iterate thru each type in the given assembly, the IPacketHandler is expected in the same dll
+            // iterate thru each type in the given assembly, the IPacketHandler is expected in the
+            // same dll
             foreach (Type handlerType in handlerTypes)
             {
                 object handler = Activator.CreateInstance(handlerType, new object[] { this });

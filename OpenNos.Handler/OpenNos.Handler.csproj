@@ -78,8 +78,8 @@
     <Compile Include="Packets\ServerPackets\SelectPacket.cs" />
     <Compile Include="Packets\ServerPackets\StatPacket.cs" />
     <Compile Include="Packets\ServerPackets\UseObjPacketcs.cs" />
-    <Compile Include="Packets\ServerPackets\U_iPacket.cs" />
-    <Compile Include="Packets\ServerPackets\U_sPacket.cs" />
+    <Compile Include="Packets\ServerPackets\UseItemPacket.cs" />
+    <Compile Include="Packets\ServerPackets\UseSkillPacket.cs" />
     <Compile Include="Packets\ServerPackets\WearPacket.cs" />
     <Compile Include="Packets\ServerPackets\WithDrawPacket.cs" />
     <Compile Include="UselessPacketHandler.cs" />
