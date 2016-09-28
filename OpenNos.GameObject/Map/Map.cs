@@ -254,7 +254,7 @@ namespace OpenNos.GameObject
                 DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
 
                 // TODO: UseTransportId
-                Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1"); 
+                Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");
             }
             catch (Exception e)
             {
@@ -417,7 +417,7 @@ namespace OpenNos.GameObject
 
             foreach (MapCell cell in cells.OrderBy(s => _random.Next(int.MaxValue)))
             {
-                if (!IsBlockedZone(firstX, firstY, firstX+cell.X, firstY+cell.Y))
+                if (!IsBlockedZone(firstX, firstY, cell.X, cell.Y))
                 {
                     firstX = cell.X;
                     firstY = cell.Y;
@@ -514,7 +514,7 @@ namespace OpenNos.GameObject
             try
             {
                 List<Task> NpcLifeTask = new List<Task>();
-                foreach (ClientSession Session in Sessions.Where(s => s?.Character != null))
+                Sessions.Where(s => s?.Character != null).ToList().ForEach(Session =>
                 {
                     if (Session.Character.LastMailRefresh.AddSeconds(30) < DateTime.Now)
                     {
@@ -527,74 +527,76 @@ namespace OpenNos.GameObject
                         Session.Character.Mp = 0;
                         Session.SendPacket(Session.Character.GenerateStat());
                         Session.Character.LastHealth = DateTime.Now;
-                        continue;
                     }
-                    WearableInstance amulet = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Equipment);
-                    if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
+                    else
                     {
-                        if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
+                        WearableInstance amulet = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Equipment);
+                        if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
                         {
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
-                        }
-                        else
-                        {
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
-                        }
-                        Session.Character.LastEffect = DateTime.Now;
-                    }
-
-                    if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
-                    {
-                        Session.Character.LastHealth = DateTime.Now;
-                        if (Session.HealthStop == true)
-                        {
-                            Session.HealthStop = false;
-                            return;
-                        }
-
-                        if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkill.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
-                        {
-                            if (x == 0)
+                            if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
                             {
-                                x = 1;
-                            }
-                            if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
-                            {
-                                change = true;
-                                Session.Character.Hp += Session.Character.HealthHPLoad();
+                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
                             }
                             else
                             {
-                                if (Session.Character.Hp != (int)Session.Character.HPLoad())
-                                {
-                                    change = true;
-                                }
-                                Session.Character.Hp = (int)Session.Character.HPLoad();
+                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
                             }
-                            if (x == 1)
+                            Session.Character.LastEffect = DateTime.Now;
+                        }
+
+                        if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
+                        {
+                            Session.Character.LastHealth = DateTime.Now;
+                            if (Session.HealthStop == true)
                             {
-                                if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
+                                Session.HealthStop = false;
+                                return;
+                            }
+
+                            if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkill.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
+                            {
+                                if (x == 0)
                                 {
-                                    Session.Character.Mp += Session.Character.HealthMPLoad();
+                                    x = 1;
+                                }
+                                if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
+                                {
                                     change = true;
+                                    Session.Character.Hp += Session.Character.HealthHPLoad();
                                 }
                                 else
                                 {
-                                    if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                                    if (Session.Character.Hp != (int)Session.Character.HPLoad())
                                     {
                                         change = true;
                                     }
-                                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                                    Session.Character.Hp = (int)Session.Character.HPLoad();
                                 }
-                                x = 0;
-                            }
-                            if (change)
-                            {
-                                Session.SendPacket(Session.Character.GenerateStat());
+                                if (x == 1)
+                                {
+                                    if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
+                                    {
+                                        Session.Character.Mp += Session.Character.HealthMPLoad();
+                                        change = true;
+                                    }
+                                    else
+                                    {
+                                        if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                                        {
+                                            change = true;
+                                        }
+                                        Session.Character.Mp = (int)Session.Character.MPLoad();
+                                    }
+                                    x = 0;
+                                }
+                                if (change)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateStat());
+                                }
                             }
                         }
                     }
-                }
+                });
             }
             catch (Exception e)
             {

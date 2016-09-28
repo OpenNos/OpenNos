@@ -186,8 +186,6 @@ namespace OpenNos.GameObject
             }
         }
 
-      
-
         public bool Invisible
         {
             get
@@ -2014,30 +2012,35 @@ namespace OpenNos.GameObject
 
         public void RefreshMail()
         {
+            int i = 0;
+            int j = 0;
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
                 MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
 
                 if (mail.ItemVNum != null)
                 {
+                    i++;
                     Session.SendPacket(GenerateParcel(mail));
-                    if (!mail.IsOpened)
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
-                        mail.IsOpened = true;
-                        MailDTO temp = mail;
-                        DAOFactory.MailDAO.InsertOrUpdate(ref temp);
-                    }
                 }
                 else
                 {
                     if (!mail.IsOpened)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEW_MAIL"), 10));
+                        j++;
                     }
                     Session.SendPacket(Session.Character.GeneratePost(mail, 1));
                 }
             }
+            if (i > 0)
+            {
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GIFTED"), i), 11));
+            }
+            if (j > 0)
+            {
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"), j), 10));
+            }
+
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
                 MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
@@ -2156,6 +2159,10 @@ namespace OpenNos.GameObject
                     {
                         DAOFactory.PenaltyLogDAO.Insert(penalty);
                     }
+                    else
+                    {
+                        DAOFactory.PenaltyLogDAO.Update(penalty);
+                    }
                 }
             }
             catch (Exception e)
@@ -2191,7 +2198,7 @@ namespace OpenNos.GameObject
             {
                 Session.Character.MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
                 Session.SendPacket(GenerateParcel(mail));
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
+                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")} {mail.Amount}", 12));
             }
         }
 

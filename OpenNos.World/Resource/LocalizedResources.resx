@@ -971,7 +971,7 @@
     <value>No portal has been found</value>
   </data>
   <data name="GIFTED" xml:space="preserve">
-    <value>Gift receive !</value>
+    <value>You received {0} gift !</value>
   </data>
   <data name="ITEM_GIFTED" xml:space="preserve">
     <value>You get an item &gt;&gt;</value>

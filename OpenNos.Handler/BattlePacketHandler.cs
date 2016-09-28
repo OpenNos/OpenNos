@@ -59,7 +59,7 @@ namespace OpenNos.Handler
         [Packet("mtlist")]
         public void SpecialZoneHit(string packet)
         {
-            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.LastOrDefault();
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted())
             {
                 if (Session.Character.Gender == 1)
@@ -289,7 +289,7 @@ namespace OpenNos.Handler
         [Packet("u_s")]
         public void UseSkill(string packet)
         {
-            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.LastOrDefault();
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted())
             {
                 if (Session.Character.Gender == 1)
@@ -373,7 +373,7 @@ namespace OpenNos.Handler
         [Packet("u_as")]
         public void UseZonesSkill(string packet)
         {
-            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.LastOrDefault();
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted())
             {
                 if (Session.Character.Gender == 1)

@@ -965,7 +965,7 @@ Veux-tu le porter ?</value>
     <value>Une nouvelle note est arrivée.</value>
   </data>
   <data name="GIFTED" xml:space="preserve">
-    <value>Un nouveau paquet est arrivé.</value>
+    <value>Tu as reçu {0} paquet(s).</value>
   </data>
   <data name="ITEM_GIFTED" xml:space="preserve">
     <value>Paquet reçu &gt;&gt;</value>

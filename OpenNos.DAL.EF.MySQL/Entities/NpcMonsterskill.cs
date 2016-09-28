@@ -21,7 +21,7 @@ namespace OpenNos.DAL.EF.MySQL
         #region Properties
 
         [Key]
-        public long CharacterSkillId { get; set; }
+        public long NpcMonsterSkillId { get; set; }
 
         public virtual NpcMonster NpcMonster { get; set; }
 

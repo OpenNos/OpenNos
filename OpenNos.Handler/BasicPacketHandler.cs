@@ -729,7 +729,7 @@ namespace OpenNos.Handler
         [Packet("say")]
         public void Say(string packet)
         {
-            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.LastOrDefault();
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             string[] packetsplit = packet.Split(' ');
             string message = String.Empty;
             for (int i = 2; i < packetsplit.Length; i++)
