@@ -22,7 +22,9 @@ namespace OpenNos.GameObject
     public class WearableInstance : ItemInstance, IWearableInstance
     {
         #region Instantiation
+
         private Random _random;
+
         public WearableInstance()
         {
             _random = new Random();

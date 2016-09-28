@@ -24,7 +24,9 @@ namespace OpenNos.GameObject
     public class InventoryList
     {
         #region Instantiation
+
         private Random _random;
+
         public InventoryList(Character Character)
         {
             Inventory = new List<Inventory>();

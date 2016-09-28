@@ -186,8 +186,6 @@ namespace OpenNos.GameObject
             }
         }
 
-
-
         public bool Invisible
         {
             get
