@@ -443,8 +443,7 @@ namespace OpenNos.Handler
             MapMonster monsterToAttack = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == monsterid);
             if (monsterToAttack == null || monsterToAttack.CurrentHp > 0)
                 return;
-            short distanceX = (short)(Session.Character.MapX - monsterToAttack.MapX);
-            short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
+
             Random random = new Random();
             Thread.Sleep(500);
           
