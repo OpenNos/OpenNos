@@ -373,7 +373,7 @@ namespace OpenNos.Handler
         [Packet("u_as")]
         public void UseZonesSkill(string packet)
         {
-            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault(); ;
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted())
             {
                 if (Session.Character.Gender == 1)

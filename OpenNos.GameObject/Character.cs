@@ -2032,10 +2032,14 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GeneratePost(mail, 1));
                 }
             }
-            if(i>0)
+            if (i > 0)
+            {
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GIFTED"), i), 11));
-            if(j>0)
-                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"),j), 10));
+            }
+            if (j > 0)
+            {
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"), j), 10));
+            }
 
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
@@ -2156,7 +2160,9 @@ namespace OpenNos.GameObject
                         DAOFactory.PenaltyLogDAO.Insert(penalty);
                     }
                     else
-                         DAOFactory.PenaltyLogDAO.Update(penalty);
+                    {
+                        DAOFactory.PenaltyLogDAO.Update(penalty);
+                    }
                 }
             }
             catch (Exception e)
