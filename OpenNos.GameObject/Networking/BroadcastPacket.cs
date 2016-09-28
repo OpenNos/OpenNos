@@ -14,11 +14,11 @@
 
 namespace OpenNos.GameObject
 {
-    public class BroacastPacket
+    public class BroadcastPacket
     {
         #region Instantiation
 
-        public BroacastPacket(ClientSession session, string content, ReceiverType receiver, string someonesCharacterName = "", long someonesCharacterId = -1)
+        public BroadcastPacket(ClientSession session, string content, ReceiverType receiver, string someonesCharacterName = "", long someonesCharacterId = -1)
         {
             Sender = session;
             Content = content;

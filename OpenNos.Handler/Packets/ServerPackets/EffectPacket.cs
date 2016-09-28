@@ -4,7 +4,7 @@ using OpenNos.Core;
 namespace OpenNos.Handler
 {
     [Header("effect")]
-    class EffectPacket : PacketBase
+    public class EffectPacket : PacketBase
     {
         #region Properties
 

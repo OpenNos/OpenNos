@@ -2,15 +2,12 @@
 using OpenNos.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenNos.Domain;
 
 namespace OpenNos.Handler
 {
     [Header("clist")]
-    class ClistPacket : PacketBase
+    public class ClistPacket : PacketBase
     {
         #region Properties
 
@@ -57,7 +54,7 @@ namespace OpenNos.Handler
         public byte QuestPart { get; set; }
 
         [PacketIndex(14)]
-        public Nullable<short> Pets { get; set; }
+        public short? Pets { get; set; }
 
         [PacketIndex(15)]
         public byte Unknown2 { get; set; }

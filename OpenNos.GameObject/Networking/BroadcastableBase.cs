@@ -15,7 +15,6 @@
 using OpenNos.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -31,6 +30,12 @@ namespace OpenNos.GameObject
 
         #endregion
 
+        #region Events
+
+        private event EventHandler BroadcastEvent;
+
+        #endregion
+
         #region Properties
 
         public DateTime LastUnregister { get; set; }
@@ -41,83 +46,38 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void Broadcast(string message)
+        public void Broadcast(string content)
         {
-            Broadcast(null, message);
+            Broadcast(null, content);
         }
 
-        public void Broadcast(ClientSession client, string message, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
         {
             try
             {
-                switch (receiver)
-                {
-                    case ReceiverType.All:
-                        for (int i = Sessions.Where(s => s != null && s.Character != null && !s.IsDisposing).Count() - 1; i >= 0; i--)
-                        {
-                            Sessions.Where(s => s != null).ElementAt(i).SendPacket(message);
-                        }
-                        break;
-
-                    case ReceiverType.AllExceptMe:
-                        for (int i = Sessions.Where(s => s != null && s.Character != null && s != client && !s.IsDisposing).Count() - 1; i >= 0; i--)
-                        {
-                            Sessions.Where(s => s != null && s != client).ElementAt(i).SendPacket(message);
-                        }
-                        break;
-
-                    case ReceiverType.OnlySomeone:
-                        {
-                            ClientSession targetSession = Sessions.FirstOrDefault(s => s.Character != null && !s.IsDisposing && (s.Character.Name.Equals(characterName) || s.Character.CharacterId.Equals(characterId)));
-
-                            if (targetSession == null)
-                            {
-                                return;
-                            }
-                            targetSession.SendPacket(message);
-                            break;
-                        }
-                    case ReceiverType.AllNoEmoBlocked:
-                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.MapId.Equals(client.Character.MapId) && !s.Character.EmoticonsBlocked))
-                        {
-                            session.SendPacket(message);
-                        }
-                        break;
-
-                    case ReceiverType.AllNoHeroBlocked:
-                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && !s.Character.HeroChatBlocked))
-                        {
-                            session.SendPacket(message);
-                        }
-                        break;
-
-                    case ReceiverType.Group:
-                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.Group != null && s.Character.Group.GroupId.Equals(client.Character.Group.GroupId)))
-                        {
-                            session.SendPacket(message);
-                        }
-                        break;
-                }
+                BroadcastEvent?.Invoke(new BroadcastPacket(client, content, receiver, characterName, characterId), new EventArgs());
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Logger.Error(e);
+                Logger.Error(ex);
             }
         }
 
         public virtual void RegisterSession(ClientSession session)
         {
-            if (!Sessions.Contains(session))
+            if (session != null && !Sessions.Contains(session))
             {
+                BroadcastEvent += session.OnSessionBroadcast;
                 Sessions.Add(session);
             }
         }
 
         public virtual void UnregisterSession(ClientSession session)
         {
-            LastUnregister = DateTime.Now;
-            if (Sessions.Contains(session))
+            if (session != null && Sessions.Contains(session))
             {
+                LastUnregister = DateTime.Now;
+                BroadcastEvent -= session.OnSessionBroadcast;
                 Sessions.Remove(session);
             }
         }

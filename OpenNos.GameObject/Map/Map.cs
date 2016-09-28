@@ -136,8 +136,6 @@ namespace OpenNos.GameObject
 
         public string Name { get; set; }
 
-        public EventHandler NotifyClients { get; set; }
-
         public List<MapNpc> Npcs
         {
             get

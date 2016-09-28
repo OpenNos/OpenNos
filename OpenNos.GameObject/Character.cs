@@ -2012,25 +2012,35 @@ namespace OpenNos.GameObject
 
         public void RefreshMail()
         {
+            int i = 0;
+            int j = 0;
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
                 MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
 
                 if (mail.ItemVNum != null)
                 {
+                    i++;
                     Session.SendPacket(GenerateParcel(mail));
-
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
                 }
                 else
                 {
                     if (!mail.IsOpened)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NEW_MAIL"), 10));
+                        j++;
                     }
                     Session.SendPacket(Session.Character.GeneratePost(mail, 1));
                 }
             }
+            if (i > 0)
+            {
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GIFTED"), i), 11));
+            }
+            if (j > 0)
+            {
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"), j), 10));
+            }
+
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
                 MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
@@ -2150,7 +2160,9 @@ namespace OpenNos.GameObject
                         DAOFactory.PenaltyLogDAO.Insert(penalty);
                     }
                     else
-                         DAOFactory.PenaltyLogDAO.Update(penalty);
+                    {
+                        DAOFactory.PenaltyLogDAO.Update(penalty);
+                    }
                 }
             }
             catch (Exception e)
