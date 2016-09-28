@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
             CurrentMp = Monster.MaxMP;
             Skills = Monster.Skills.ToList();
             DamageList = new Dictionary<long, long>();
-            _movetime = _random.Next(300, 2000);
+            _movetime = _random.Next(300, 3000);
         }
 
         #endregion
@@ -171,7 +171,7 @@ namespace OpenNos.GameObject
 
                     if (Path.Where(s => s != null).ToList().Count > 0)
                     {
-                        int timetowalk = 1500 / (2 * Monster.Speed);
+                        int timetowalk = 1000 / (2 * Monster.Speed);
                         if (time > timetowalk)
                         {
                             short mapX = Path.ElementAt(0).X;
@@ -191,7 +191,7 @@ namespace OpenNos.GameObject
                     }
                     else if (time > _movetime)
                     {
-                        _movetime = _random.Next(500, 2000);
+                        _movetime = _random.Next(500, 3000);
                         byte point = (byte)_random.Next(2, 4);
                         byte fpoint = (byte)_random.Next(0, 2);
 
@@ -204,7 +204,7 @@ namespace OpenNos.GameObject
                         {
                             Task.Factory.StartNew(async () =>
                             {
-                                await Task.Delay(1500 * (xpoint + ypoint) / (2 * Monster.Speed));
+                                await Task.Delay(1000 * (xpoint + ypoint) / (2 * Monster.Speed));
                                 this.MapX = mapX;
                                 this.MapY = mapY;
                             });
