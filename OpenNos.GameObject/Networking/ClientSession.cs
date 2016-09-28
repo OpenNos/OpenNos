@@ -42,12 +42,18 @@ namespace OpenNos.GameObject
         // Packetwait Packets
         private int? _waitForPacketsAmount;
 
+        private long lastPacketReceive;
+
         #endregion
 
         #region Instantiation
 
         public ClientSession(INetworkClient client)
         {
+            // set last received
+            lastPacketReceive = DateTime.Now.Ticks;
+
+            // initialize network client
             _client = client;
 
             // absolutely new instantiated Client has no SessionId
@@ -169,6 +175,14 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool IsLocalhost
+        {
+            get
+            {
+                return IpAddress.Contains("127.0.0.1");
+            }
+        }
+
         public int LastKeepAliveIdentity { get; set; }
 
         public int SessionId { get; set; }
@@ -228,7 +242,7 @@ namespace OpenNos.GameObject
         }
 
         /// <summary>
-        ///  Handle Broadcast from Broadcastable
+        /// Handle Broadcast from Broadcastable
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -272,6 +286,7 @@ namespace OpenNos.GameObject
                             SendPacket(sentPacket.Content);
                         }
                         break;
+
                     case ReceiverType.Group:
                         if (sentPacket.Sender.Character.Group != null && Character.Group != null && Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId)
                         {
@@ -501,7 +516,18 @@ namespace OpenNos.GameObject
             {
                 return;
             }
+
+            long currentPacketReceive = DateTime.Now.Ticks;
+
+            // ignore a packet which has been sent 10ms after the last one
+            if (currentPacketReceive - lastPacketReceive < 100000 && !IsLocalhost)
+            {
+                Logger.Log.Warn($"[AntiSpam]: Packet has been ignored, access was too fast. Last: {lastPacketReceive}, Current: {currentPacketReceive}, Difference: {currentPacketReceive - lastPacketReceive}, SessionId: {SessionId}");
+                return;
+            }
+
             _queue.EnqueueMessage(message.MessageData);
+            lastPacketReceive = DateTime.Now.Ticks;
         }
 
         private void TriggerHandler(string packetHeader, string packet, bool force)
