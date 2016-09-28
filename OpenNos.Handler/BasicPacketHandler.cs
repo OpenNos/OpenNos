@@ -174,20 +174,18 @@ namespace OpenNos.Handler
         {
             string[] characterInformationPacket = packet.Split(' ');
             long charId = 0;
-            if (!Int64.TryParse(characterInformationPacket[3], out charId))
-                return;
-                
-            
             if (characterInformationPacket[2] == "1")
-            {             
+            {
+                if (Int64.TryParse(characterInformationPacket[3], out charId))
+                {
                     ServerManager.Instance.RequireBroadcastFromUser(Session, charId, "GenerateStatInfo");
+                }
             }
             if (characterInformationPacket[2] == "2")
             {
                 foreach (MapNpc npc in Session.CurrentMap.Npcs)
                 {
-                   
-                    if (npc.MapNpcId == charId)
+                    if (npc.MapNpcId == Convert.ToInt32(characterInformationPacket[3]))
                     {
                         NpcMonster npcinfo = ServerManager.GetNpc(npc.NpcVNum);
                         if (npcinfo == null)
@@ -202,7 +200,7 @@ namespace OpenNos.Handler
             {
                 foreach (MapMonster monster in Session.CurrentMap.Monsters)
                 {
-                    if (monster.MapMonsterId == charId)
+                    if (monster.MapMonsterId == Convert.ToInt32(characterInformationPacket[3]))
                     {
                         NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
                         if (monsterinfo == null)

@@ -573,9 +573,7 @@ namespace OpenNos.Handler
             short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
             Random random = new Random();
             int generated = random.Next(0, 100);
-            if (monsterToAttack == null)
-                return 0;
-
+         
             // int miss_chance = 20;
             int monsterDefence = 0;
 
