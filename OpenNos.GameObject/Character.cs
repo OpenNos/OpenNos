@@ -1269,7 +1269,7 @@ namespace OpenNos.GameObject
                 + (GroupRequestBlocked ? Math.Pow(2, (int)ConfigType.GroupRequestBlocked - 1) : 0)
                 + (HeroChatBlocked ? Math.Pow(2, (int)ConfigType.HeroChatBlocked - 1) : 0)
                 + (QuickGetUp ? Math.Pow(2, (int)ConfigType.QuickGetUp - 1) : 0);
-            return $" {Hp} {HPLoad()} {Mp} {MPLoad()} 0 {option}";
+            return $"stat {Hp} {HPLoad()} {Mp} {MPLoad()} 0 {option}";
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
