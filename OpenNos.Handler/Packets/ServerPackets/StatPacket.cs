@@ -31,7 +31,7 @@ namespace OpenNos.Handler
         public byte Unknown { get; set; }
 
         [PacketIndex(5)]
-        public short Unknown1 { get; set; }
+        public short Options { get; set; }
 
         #endregion
     }
