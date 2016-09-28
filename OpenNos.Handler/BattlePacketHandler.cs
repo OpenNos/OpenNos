@@ -569,6 +569,7 @@ namespace OpenNos.Handler
             #region Definitions
 
             MapMonster monsterToAttack = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == monsterid);
+
             short distanceX = (short)(Session.Character.MapX - monsterToAttack.MapX);
             short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
             Random random = new Random();
@@ -841,7 +842,7 @@ namespace OpenNos.Handler
             {
                 monsterToAttack.DamageList.Add(Session.Character.CharacterId, intdamage);
             }
-            if (!(monsterToAttack.CurrentHp <= intdamage))
+            if (monsterToAttack.CurrentHp > intdamage)
             {
                 monsterToAttack.CurrentHp -= intdamage;
             }
