@@ -139,7 +139,6 @@ alter table `CellonOption` add constraint `FK_CellonOption_ItemInstance_Wearable
 alter table `QuicklistEntry` add constraint `FK_QuicklistEntry_Character_CharacterId`  foreign key (`CharacterId`) references `Character` ( `CharacterId`) ;
 alter table `Respawn` add constraint `FK_Respawn_Character_CharacterId`  foreign key (`CharacterId`) references `Character` ( `CharacterId`) ;
 alter table `PenaltyLog` add constraint `FK_PenaltyLog_Account_AccountId`  foreign key (`AccountId`) references `Account` ( `AccountId`) ;
-create table `__MigrationHistory` (`MigrationId` nvarchar(150)  not null ,`ContextKey` nvarchar(300)  not null ,`Model` longblob not null ,`ProductVersion` nvarchar(32)  not null ,primary key ( `MigrationId`) ) engine=InnoDb auto_increment=0;
 INSERT INTO `__MigrationHistory`(
 `MigrationId`, 
 `ContextKey`, 
