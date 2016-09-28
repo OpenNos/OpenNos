@@ -81,6 +81,7 @@ namespace OpenNos.GameObject
 
             Task TaskController = new Task(() => TaskLauncherProcess());
             TaskController.Start();
+
             lastGroupId = 1;
 
             var config = new MapperConfiguration(cfg =>

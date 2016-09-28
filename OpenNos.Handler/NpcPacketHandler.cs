@@ -287,6 +287,8 @@ namespace OpenNos.Handler
                 }
 
                 Inventory newItem = Session.Character.InventoryList.AddNewItemToInventory(item.ItemVNum, amount);
+                if (newItem == null)
+                    return;
                 newItem.ItemInstance.Rare = rare;
                 newItem.ItemInstance.Upgrade = item.Upgrade;
                 newItem.ItemInstance.Design = item.Color;
