@@ -2184,7 +2184,7 @@ namespace OpenNos.GameObject
             {
                 Session.Character.MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
                 Session.SendPacket(GenerateParcel(mail));
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
+                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")} {mail.Amount}", 12));
             }
         }
 
