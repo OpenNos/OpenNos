@@ -28,10 +28,10 @@ namespace OpenNos.Handler
         public short MaxMp { get; set; }
 
         [PacketIndex(4)]
-        public byte Unknow { get; set; }
+        public byte Unknown { get; set; }
 
         [PacketIndex(5)]
-        public short Unknow1 { get; set; }
+        public short Unknown1 { get; set; }
 
         #endregion
     }
