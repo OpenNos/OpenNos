@@ -519,8 +519,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        // PacketHandler // rename variables inside please
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Naming proper")]
+        // PacketHandler
         public void ExchangeValidate(ClientSession c1Session, long charId)
         {
             ClientSession c2Session = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
