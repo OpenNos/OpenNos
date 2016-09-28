@@ -2151,6 +2151,8 @@ namespace OpenNos.GameObject
                     {
                         DAOFactory.PenaltyLogDAO.Insert(penalty);
                     }
+                    else
+                         DAOFactory.PenaltyLogDAO.Update(penalty);
                 }
             }
             catch (Exception e)
