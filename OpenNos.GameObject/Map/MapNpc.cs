@@ -34,6 +34,7 @@ namespace OpenNos.GameObject
         public MapNpc(MapNpcDTO npc, Map parent)
         {
             _random = new Random(npc.MapNpcId);
+
             // Replace by MAPPING
             MapId = npc.MapId;
             MapX = npc.MapX;

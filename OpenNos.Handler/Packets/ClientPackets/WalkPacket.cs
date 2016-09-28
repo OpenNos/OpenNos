@@ -7,7 +7,6 @@ namespace OpenNos.Handler
     {
         #region Properties
 
-
         [PacketIndex(0)]
         public short XCoordinate { get; set; }
 

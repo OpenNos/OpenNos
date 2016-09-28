@@ -186,8 +186,6 @@ namespace OpenNos.GameObject
             }
         }
 
-
-
         public bool Invisible
         {
             get
@@ -2157,6 +2155,8 @@ namespace OpenNos.GameObject
                     {
                         DAOFactory.PenaltyLogDAO.Insert(penalty);
                     }
+                    else
+                         DAOFactory.PenaltyLogDAO.Update(penalty);
                 }
             }
             catch (Exception e)
