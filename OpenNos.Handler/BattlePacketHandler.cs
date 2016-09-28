@@ -442,8 +442,8 @@ namespace OpenNos.Handler
             short distanceX = (short)(Session.Character.MapX - monsterToAttack.MapX);
             short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
             NpcMonster monsterinfo = ServerManager.GetNpc(monsterToAttack.MonsterVNum);
-
-            int generated = ServerManager.Instance.Random.Next(0, 100);
+            Random random = new Random();
+            int generated = random.Next(0, 100);
 
             // int miss_chance = 20;
             int monsterDefence = 0;
@@ -544,13 +544,13 @@ namespace OpenNos.Handler
             float[] Bonus = new float[10] { 0.1f, 0.15f, 0.22f, 0.32f, 0.43f, 0.54f, 0.65f, 0.90f, 1.20f, 2f };
 
             // TODO: Add skill uprade effect on damage
-            int AEq = Convert.ToInt32(ServerManager.Instance.Random.Next(MainMinDmg, MainMaxDmg) * (1 + (MainUpgrade > monsterinfo.DefenceUpgrade ? Bonus[MainUpgrade - monsterinfo.DefenceUpgrade - 1] : 0)));
+            int AEq = Convert.ToInt32(random.Next(MainMinDmg, MainMaxDmg) * (1 + (MainUpgrade > monsterinfo.DefenceUpgrade ? Bonus[MainUpgrade - monsterinfo.DefenceUpgrade - 1] : 0)));
             int DEq = Convert.ToInt32(monsterDefence * (1 + (MainUpgrade < monsterinfo.DefenceUpgrade ? Bonus[monsterinfo.DefenceUpgrade - MainUpgrade - 1] : 0)));
-            int ABase = Convert.ToInt32(ServerManager.Instance.Random.Next(ServersData.MinHit(Session.Character.Class, Session.Character.Level), ServersData.MaxHit(Session.Character.Class, Session.Character.Level)));
+            int ABase = Convert.ToInt32(random.Next(ServersData.MinHit(Session.Character.Class, Session.Character.Level), ServersData.MaxHit(Session.Character.Class, Session.Character.Level)));
             int Aeff = 0;            // Attack of equip given by effects like weapons, jewelry, masks, hats, res, etc .. (eg. X mask: +13 attack // Crossbow
             int Bsp6 = 0;            // Attack power increased (IMPORTANT) This already Added when SP Point has been set
             int Bsp7 = 0;            // Attack power increased (IMPORTANT) This already Added when SP Point has been set
-            int Asp = Convert.ToInt32((Session.Character.UseSp ? Convert.ToInt32(ServerManager.Instance.Random.Next(specialistInstance.DamageMinimum, specialistInstance.DamageMaximum + 1)) + Bsp6 + Bsp7 + (specialistInstance.SlDamage * 10) / 200 : 0));
+            int Asp = Convert.ToInt32((Session.Character.UseSp ? Convert.ToInt32(random.Next(specialistInstance.DamageMinimum, specialistInstance.DamageMaximum + 1)) + Bsp6 + Bsp7 + (specialistInstance.SlDamage * 10) / 200 : 0));
             int Br7 = 0;             // Improved Damage (Bonus Rune)
             int Br22 = 0;            // % Of damage in pvp (Bonus Rune)
             int APg = Convert.ToInt32(((AEq + ABase + Aeff + Asp + Br7) * (1 + Br22)));
@@ -734,12 +734,12 @@ namespace OpenNos.Handler
                 {
                     int RateDrop = ServerManager.DropRate;
                     int x = 0;
-                    foreach (DropDTO drop in droplist.OrderBy(s => ServerManager.Instance.Random.Next()))
+                    foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
                     {
                         if (x < 4)
                         {
                             i++;
-                            double rndamount = ServerManager.Instance.Random.Next(0, 100) * ServerManager.Instance.Random.NextDouble();
+                            double rndamount = random.Next(0, 100) * random.NextDouble();
                             if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
                             {
                                 x++;
@@ -768,7 +768,7 @@ namespace OpenNos.Handler
                     }
 
                     int RateGold = ServerManager.GoldRate;
-                    int gold = Convert.ToInt32((ServerManager.Instance.Random.Next(1, 8) >= 7 ? 1 : 0) * ServerManager.Instance.Random.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level) * RateGold * (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1));
+                    int gold = Convert.ToInt32((random.Next(1, 8) >= 7 ? 1 : 0) * random.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level) * RateGold * (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1));
                     gold = gold > 1000000000 ? 1000000000 : gold;
                     if (gold != 0)
                     {

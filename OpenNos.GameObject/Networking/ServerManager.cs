@@ -32,7 +32,6 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        public Random Random;
         public Boolean ShutdownStop = false;
 
         private static ServerManager _instance;
@@ -83,7 +82,6 @@ namespace OpenNos.GameObject
             Task TaskController = new Task(() => TaskLauncherProcess());
             TaskController.Start();
             lastGroupId = 1;
-            Random = new Random();
 
             var config = new MapperConfiguration(cfg =>
             {

@@ -37,6 +37,7 @@ namespace OpenNos.GameObject
         private List<Portal> _portals;
         private BaseGrid _tempgrid;
         private Guid _uniqueIdentifier;
+        private Random _random;
 
         #endregion
 
@@ -44,6 +45,7 @@ namespace OpenNos.GameObject
 
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
+            _random = new Random();
             MapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             Data = data;
@@ -214,8 +216,8 @@ namespace OpenNos.GameObject
             try
             {
                 MapItem droppedItem = null;
-                short localMapX = (short)(ServerManager.Instance.Random.Next(mapX - 1, mapX + 1));
-                short localMapY = (short)(ServerManager.Instance.Random.Next(mapY - 1, mapY + 1));
+                short localMapX = (short)(_random.Next(mapX - 1, mapX + 1));
+                short localMapY = (short)(_random.Next(mapY - 1, mapY + 1));
                 List<MapCell> Possibilities = new List<MapCell>();
 
                 for (short x = -1; x < 2; x++)
@@ -226,7 +228,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
+                foreach (MapCell possibilitie in Possibilities.OrderBy(s => _random.Next()))
                 {
                     localMapX = (short)(mapX + possibilitie.X);
                     localMapY = (short)(mapY + possibilitie.Y);
@@ -369,7 +371,7 @@ namespace OpenNos.GameObject
             {
                 List<Task> MonsterLifeTask = new List<Task>();
                 Monsters.RemoveAll(s => !s.Alive && !s.Respawn);
-                foreach (MapMonster monster in Monsters.OrderBy(i => ServerManager.Instance.Random.Next()))
+                foreach (MapMonster monster in Monsters.OrderBy(i => _random.Next()))
                 {
                     monster.MonsterLife();
                 }
@@ -384,7 +386,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                foreach (MapNpc npc in Npcs.OrderBy(i => ServerManager.Instance.Random.Next()))
+                foreach (MapNpc npc in Npcs.OrderBy(i => _random.Next()))
                 {
                     npc.NpcLife();
                 }
@@ -408,16 +410,16 @@ namespace OpenNos.GameObject
             {
                 for (short x = MinX; x <= MaxX; x++)
                 {
-                    if (x != firstX && y != firstY)
+                    if (x != firstX || y != firstY)
                     {
                         cells.Add(new MapCell() { X = x, Y = y, MapId = MapId });
                     }
                 }
             }
 
-            foreach (MapCell cell in cells.OrderBy(s => ServerManager.Instance.Random.Next(int.MaxValue)))
+            foreach (MapCell cell in cells.OrderBy(s => _random.Next(int.MaxValue)))
             {
-                if (!IsBlockedZone(firstX, firstY, cell.X, cell.Y))
+                if (!IsBlockedZone(firstX, firstY, firstX+cell.X, firstY+cell.Y))
                 {
                     firstX = cell.X;
                     firstY = cell.Y;

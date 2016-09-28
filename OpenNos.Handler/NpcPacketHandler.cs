@@ -64,7 +64,7 @@ namespace OpenNos.Handler
             long owner;
             byte type;
             short slot;
-
+            Random random = new Random();
             if (packetsplit.Length < 5)
             {
                 return;
@@ -271,7 +271,7 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_REPUT")));
                         return;
                     }
-                    byte ra = (byte)ServerManager.Instance.Random.Next(0, 100);
+                    byte ra = (byte)random.Next(0, 100);
 
                     int[] rareprob = { 100, 100, 70, 50, 30, 15, 5, 1 };
                     if (iteminfo.ReputPrice != 0)

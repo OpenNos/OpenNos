@@ -21,9 +21,9 @@ namespace OpenNos.GameObject
     public class MagicalItem : Item
     {
         #region Methods
-
         public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false)
         {
+            Random random = new Random();
             switch (Effect)
             {
                 // dyes
@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
                     {
                         if (EffectValue == 99)
                         {
-                            Session.Character.HairColor = (byte)ServerManager.Instance.Random.Next(0, 127);
+                            Session.Character.HairColor = (byte)random.Next(0, 127);
                         }
                         else
                         {
@@ -139,7 +139,7 @@ namespace OpenNos.GameObject
                         WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
                         if (wig != null)
                         {
-                            wig.Design = (byte)ServerManager.Instance.Random.Next(0, 15);
+                            wig.Design = (byte)random.Next(0, 15);
                             Session.SendPacket(Session.Character.GenerateEq());
                             Session.SendPacket(Session.Character.GenerateEquipment());
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);

@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -22,13 +23,14 @@ namespace OpenNos.GameObject
 
         private long _transportId;
         private Item item;
-
+        private Random _random;
         #endregion
 
         #region Instantiation
 
         public ItemInstance()
         {
+            _random = new Random();
         }
 
         public ItemInstance(ItemInstanceDTO inventoryItem)
@@ -36,12 +38,12 @@ namespace OpenNos.GameObject
             Id = inventoryItem.Id;
             Amount = inventoryItem.Amount;
             ItemVNum = inventoryItem.ItemVNum;
+           _random = new Random();
         }
 
         #endregion
 
         #region Properties
-
         public bool IsBound
         {
             get

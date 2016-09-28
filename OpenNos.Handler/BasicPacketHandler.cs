@@ -362,8 +362,8 @@ namespace OpenNos.Handler
                                     return;
                                 }
                             }
-
-                            double randomAmount = ServerManager.Instance.Random.Next(0, 100) * ServerManager.Instance.Random.NextDouble();
+                            Random random = new Random();
+                            double randomAmount = random.Next(0, 100) * random.NextDouble();
                             int dropChance = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).DropChance;
                             if (randomAmount <= ((double)dropChance * RateDrop) / 5000.000)
                             {

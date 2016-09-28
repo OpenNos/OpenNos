@@ -254,6 +254,7 @@ namespace OpenNos.GameObject
 
         public static int RarityPoint(short rarity, short lvl)
         {
+            Random random = new Random();
             int p;
             switch (rarity)
             {
@@ -302,7 +303,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 8:
-                    p = ServerManager.Instance.Random.Next(11, 16);
+                    p = random.Next(11, 16);
                     break;
             }
             return p * (lvl / 5) + 1;

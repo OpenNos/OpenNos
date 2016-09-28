@@ -13,13 +13,14 @@
  */
 
 using OpenNos.Data;
+using System;
 
 namespace OpenNos.GameObject
 {
     public abstract class Item : ItemDTO
     {
         #region Instantiation
-
+       
         public Item()
         {
         }

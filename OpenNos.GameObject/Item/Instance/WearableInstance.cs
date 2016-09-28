@@ -22,19 +22,22 @@ namespace OpenNos.GameObject
     public class WearableInstance : ItemInstance, IWearableInstance
     {
         #region Instantiation
-
+        private Random _random;
         public WearableInstance()
         {
+            _random = new Random();
         }
 
         public WearableInstance(Guid id)
         {
             Id = id;
+            _random = new Random();
         }
 
         public WearableInstance(WearableInstanceDTO wearableInstance)
         {
             XP = wearableInstance.XP;
+            _random = new Random();
         }
 
         #endregion
@@ -179,7 +182,7 @@ namespace OpenNos.GameObject
                     break;
             }
 
-            int rnd = ServerManager.Instance.Random.Next(0, 100);
+            int rnd = _random.Next(0, 100);
             /*
             if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
             {
@@ -326,7 +329,7 @@ namespace OpenNos.GameObject
                 this.DamageMaximum = 0;
                 for (int i = 0; i < point; i++)
                 {
-                    int rndn = ServerManager.Instance.Random.Next(0, 3);
+                    int rndn = _random.Next(0, 3);
                     if (rndn == 0)
                     {
                         this.Concentrate++;
@@ -349,7 +352,7 @@ namespace OpenNos.GameObject
                 this.CloseDefence = 0;
                 for (int i = 0; i < point; i++)
                 {
-                    int rndn = ServerManager.Instance.Random.Next(0, 3);
+                    int rndn = _random.Next(0, 3);
                     if (rndn == 0)
                     {
                         this.DefenceDodge++;
@@ -384,7 +387,7 @@ namespace OpenNos.GameObject
                 }
                 Session.Character.InventoryList.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
 
-                int rnd = ServerManager.Instance.Random.Next(100);
+                int rnd = _random.Next(100);
                 if (rnd <= upsuccess[this.Upgrade + itemToSum.Upgrade])
                 {
                     this.Upgrade += (byte)(itemToSum.Upgrade + 1);
@@ -511,7 +514,7 @@ namespace OpenNos.GameObject
                 WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
                 Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
 
-                int rnd = ServerManager.Instance.Random.Next(100);
+                int rnd = _random.Next(100);
                 if (rnd <= upfix[this.Upgrade])
                 {
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);

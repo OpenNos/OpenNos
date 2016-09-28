@@ -22,18 +22,21 @@ namespace OpenNos.GameObject
     public class SpecialistInstance : WearableInstance, ISpecialistInstance
     {
         #region Instantiation
-
+        private Random _random;
         public SpecialistInstance()
         {
+            _random = new Random();
         }
 
         public SpecialistInstance(Guid id)
         {
             Id = id;
+            _random = new Random();
         }
 
         public SpecialistInstance(SpecialistInstanceDTO specialistInstance)
         {
+            _random = new Random();
             SpDamage = specialistInstance.SpDamage;
             SpDark = specialistInstance.SpDark;
             SpDefence = specialistInstance.SpDefence;
@@ -236,17 +239,17 @@ namespace OpenNos.GameObject
 
             SpecialistInstance specialist = Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.Id);
 
-            int rnd = ServerManager.Instance.Random.Next(100);
+            int rnd = _random.Next(100);
             if (rnd <= upsuccess[upmode - 1])
             {
-                byte type = (byte)ServerManager.Instance.Random.Next(16), count = 1;
+                byte type = (byte)_random.Next(16), count = 1;
                 if (upmode == 4)
                 {
                     count = 2;
                 }
                 if (upmode == 5)
                 {
-                    count = (byte)ServerManager.Instance.Random.Next(3, 6);
+                    count = (byte)_random.Next(3, 6);
                 }
 
                 ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3005), ReceiverType.All);
@@ -430,7 +433,7 @@ namespace OpenNos.GameObject
             }
             WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
             Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
-            int rnd = ServerManager.Instance.Random.Next(100);
+            int rnd = _random.Next(100);
             if (rnd <= upfail[this.Upgrade])
             {
                 if (protect == UpgradeProtection.Protected)

@@ -27,7 +27,7 @@ namespace OpenNos.GameObject
     public class Character : CharacterDTO
     {
         #region Members
-
+        private Random _random;
         private readonly ClientSession _session;
         private AuthorityType _authority;
         private int _backpack;
@@ -52,6 +52,7 @@ namespace OpenNos.GameObject
 
         public Character(ClientSession Session)
         {
+            _random = new Random();
             SpCooldown = 30;
             SaveX = 0;
             SaveY = 0;
@@ -184,6 +185,8 @@ namespace OpenNos.GameObject
                 _inventorylist = value;
             }
         }
+
+      
 
         public bool Invisible
         {
@@ -433,7 +436,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
                 Session.CurrentMap?.Broadcast(Session, GenerateEff(196), ReceiverType.All);
 
-                int faction = 1 + (int)ServerManager.Instance.Random.Next(0, 2);
+                int faction = 1 + (int)_random.Next(0, 2);
                 Faction = faction;
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
 

@@ -24,11 +24,12 @@ namespace OpenNos.GameObject
     public class InventoryList
     {
         #region Instantiation
-
+        private Random _random;
         public InventoryList(Character Character)
         {
             Inventory = new List<Inventory>();
             Owner = Character;
+            _random = new Random();
         }
 
         #endregion
@@ -356,7 +357,7 @@ namespace OpenNos.GameObject
         public MapItem PutItem(byte type, short slot, byte amount, ref Inventory inv)
         {
             Logger.Debug($"type: {type} slot: {slot} amount: {amount}", Owner.Session.SessionId);
-            Guid random = Guid.NewGuid();
+            Guid random2 = Guid.NewGuid();
             MapItem droppedItem = null;
             List<MapCell> Possibilities = new List<MapCell>();
 
@@ -369,7 +370,7 @@ namespace OpenNos.GameObject
             }
             short MapX = 0;
             short MapY = 0;
-            foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
+            foreach (MapCell possibilitie in Possibilities.OrderBy(s => _random.Next()))
             {
                 MapX = (short)(Owner.MapX + possibilitie.X);
                 MapY = (short)(Owner.MapY + possibilitie.Y);
@@ -385,7 +386,7 @@ namespace OpenNos.GameObject
                 {
                     ItemInstance = (inv.ItemInstance as ItemInstance).DeepCopy()
                 };
-                droppedItem.ItemInstance.Id = random;
+                droppedItem.ItemInstance.Id = random2;
                 droppedItem.ItemInstance.Amount = amount;
                 while (Owner.Session.CurrentMap.DroppedList.ContainsKey(droppedItem.ItemInstance.TransportId))
                 {

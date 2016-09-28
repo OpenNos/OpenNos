@@ -56,7 +56,7 @@ namespace OpenNos.Handler
 
             byte slot = Convert.ToByte(packetsplit[3]);
             string characterName = packetsplit[2];
-
+            Random random = new Random();
             if (slot <= 2 && DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) == null)
             {
                 if (characterName.Length > 3 && characterName.Length < 15)
@@ -87,8 +87,8 @@ namespace OpenNos.Handler
                                 Level = 1,
                                 LevelXp = 0,
                                 MapId = 1,
-                                MapX = (short)(ServerManager.Instance.Random.Next(78, 81)),
-                                MapY = (short)(ServerManager.Instance.Random.Next(114, 118)),
+                                MapX = (short)(random.Next(78, 81)),
+                                MapY = (short)(random.Next(114, 118)),
                                 Mp = 221,
                                 Name = characterName,
                                 Slot = slot,

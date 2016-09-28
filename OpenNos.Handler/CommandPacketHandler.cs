@@ -1334,6 +1334,7 @@ namespace OpenNos.Handler
         [Packet("$Summon")]
         public void Summon(string packet)
         {
+            Random random = new Random();
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short vnum = 0;
@@ -1358,7 +1359,7 @@ namespace OpenNos.Handler
                             Possibilities.Add(new MapCell() { X = x, Y = y });
                         }
                     }
-                    foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
+                    foreach (MapCell possibilitie in Possibilities.OrderBy(s => random.Next()))
                     {
                         mapx = (short)(Session.Character.MapX + possibilitie.X);
                         mapy = (short)(Session.Character.MapY + possibilitie.Y);
@@ -1443,7 +1444,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-
+            Random random = new Random();
             if (packetsplit.Length == 3)
             {
                 string name = packetsplit[2];
@@ -1463,7 +1464,7 @@ namespace OpenNos.Handler
                             }
                         }
 
-                        foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.Instance.Random.Next()))
+                        foreach (MapCell possibilitie in Possibilities.OrderBy(s => random.Next()))
                         {
                             session.Character.MapX = (short)(Session.Character.MapX + possibilitie.X);
                             session.Character.MapY = (short)(Session.Character.MapY + possibilitie.Y);
