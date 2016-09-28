@@ -214,7 +214,7 @@ namespace OpenNos.Handler
                                     {
                                         Session.Character.LastSkill = DateTime.Now;
                                         damage = GenerateDamage(monsterToAttack.MapMonsterId, ski.Skill, ref hitmode);
-                                       
+
                                         ski.LastUse = DateTime.Now;
                                         GenerateKillBonus(monsterToAttack.MapMonsterId);
                                         notcancel = true;
@@ -447,12 +447,7 @@ namespace OpenNos.Handler
             short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
             Random random = new Random();
             Thread.Sleep(500);
-            int generated = random.Next(0, 100);
-
-            monsterToAttack.Alive = false;
-            monsterToAttack.CurrentHp = 0;
-            monsterToAttack.CurrentMp = 0;
-            monsterToAttack.Death = DateTime.Now;
+          
 
             //owner set
             long? Owner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?)null;
@@ -569,12 +564,14 @@ namespace OpenNos.Handler
             #region Definitions
 
             MapMonster monsterToAttack = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == monsterid);
+            if (monsterToAttack == null)
+                return 0;
 
             short distanceX = (short)(Session.Character.MapX - monsterToAttack.MapX);
             short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
             Random random = new Random();
             int generated = random.Next(0, 100);
-         
+
             // int miss_chance = 20;
             int monsterDefence = 0;
 
@@ -842,7 +839,14 @@ namespace OpenNos.Handler
             {
                 monsterToAttack.DamageList.Add(Session.Character.CharacterId, intdamage);
             }
-            if (monsterToAttack.CurrentHp > intdamage)
+            if ((monsterToAttack.CurrentHp <= intdamage))
+            {
+                monsterToAttack.Alive = false;
+                monsterToAttack.CurrentHp = 0;
+                monsterToAttack.CurrentMp = 0;
+                monsterToAttack.Death = DateTime.Now;
+            }
+            else
             {
                 monsterToAttack.CurrentHp -= intdamage;
             }
