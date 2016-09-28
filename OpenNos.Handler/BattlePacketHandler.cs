@@ -445,7 +445,6 @@ namespace OpenNos.Handler
                 return;
 
             Random random = new Random();
-            Thread.Sleep(500);
           
 
             //owner set
