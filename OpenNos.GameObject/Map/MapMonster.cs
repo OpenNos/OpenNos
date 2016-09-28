@@ -234,16 +234,16 @@ namespace OpenNos.GameObject
                 if (targetSession == null || targetSession.Character.Invisible)
                 {
                     Target = -1;
-                    return;
+                    Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                    if (!Path.Any())
+                    {
+                        Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                    }
                 }
                 NpcMonsterSkill npcMonsterSkill = null;
-                if (_random.Next(10) > 8 || InWaiting)
+                if (_random.Next(10) > 8 )
                 {
-                    InWaiting = false;
-                    if ((DateTime.Now - LastEffect).TotalMilliseconds < Monster.BasicCooldown * 200)
-                    {
-                        InWaiting = true;
-                    }
+                    
                     npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
                 }
 
@@ -251,7 +251,7 @@ namespace OpenNos.GameObject
 
                 if (targetSession != null && targetSession.Character.Hp > 0 && ((npcMonsterSkill != null && CurrentMp - npcMonsterSkill.Skill.MpCost >= 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
                 {
-                    if ((DateTime.Now - LastEffect).TotalMilliseconds >= Monster.BasicCooldown * 200 && !InWaiting)
+                    if (((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 200 && !Skills.Any()) || npcMonsterSkill !=null)
                     {
                         if (npcMonsterSkill != null)
                         {
@@ -294,7 +294,11 @@ namespace OpenNos.GameObject
                         {
                             Thread.Sleep(1000);
                             ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
-                            Target = -1;
+                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                            if (!Path.Any())
+                            {
+                                Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                            }
                         }
                         if (npcMonsterSkill != null && (npcMonsterSkill.Skill.Range > 0 || npcMonsterSkill.Skill.TargetRange > 0))
                         {

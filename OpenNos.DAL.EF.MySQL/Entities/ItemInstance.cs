@@ -38,6 +38,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         public short ItemVNum { get; set; }
 
+        public int DurabilityPoint { get; set; }
+
         public sbyte Rare { get; set; }
 
         public byte Upgrade { get; set; }
