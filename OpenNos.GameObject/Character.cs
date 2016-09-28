@@ -186,7 +186,7 @@ namespace OpenNos.GameObject
             }
         }
 
-      
+
 
         public bool Invisible
         {
@@ -2021,13 +2021,8 @@ namespace OpenNos.GameObject
                 if (mail.ItemVNum != null)
                 {
                     Session.SendPacket(GenerateParcel(mail));
-                    if (!mail.IsOpened)
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
-                        mail.IsOpened = true;
-                        MailDTO temp = mail;
-                        DAOFactory.MailDAO.InsertOrUpdate(ref temp);
-                    }
+
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFTED"), 11));
                 }
                 else
                 {
