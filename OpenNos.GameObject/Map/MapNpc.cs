@@ -148,7 +148,7 @@ namespace OpenNos.GameObject
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
-                Map.HandlerBroadcast(GenerateEff());
+                Map.GeneralBroadcast(GenerateEff());
                 LastEffect = DateTime.Now;
             }
 
@@ -176,7 +176,7 @@ namespace OpenNos.GameObject
                     LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Npc.Speed));
 
                     string movePacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {Npc.Speed}";
-                    Map.HandlerBroadcast(movePacket);
+                    Map.GeneralBroadcast(movePacket);
                 }
             }
         }
