@@ -40,7 +40,7 @@ namespace OpenNos.GameObject
                         {
                             specialistInstance.Design = (byte)EffectValue;
                             Session.Character.MorphUpgrade2 = EffectValue;
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateCMode());
                             Session.SendPacket(Session.Character.GenerateStat());
                             Session.SendPacket(Session.Character.GenerateStatChar());
 
@@ -99,7 +99,7 @@ namespace OpenNos.GameObject
                         if (Session.Character.IsSitting)
                         {
                             Session.Character.IsSitting = false;
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
+                            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateRest());
                         }
                         Session.SendPacket(Session.Character.GenerateDelay(3000, 3, $"#u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^2"));
                     }
@@ -112,8 +112,8 @@ namespace OpenNos.GameObject
                             Session.Character.MorphUpgrade2 = 0;
                             Session.Character.Morph = Morph + Session.Character.Gender;
                             Session.Character.Speed = Speed;
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateEff(196));
+                            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateCMode());
                             Session.SendPacket(Session.Character.GenerateCond());
                         }
                         else

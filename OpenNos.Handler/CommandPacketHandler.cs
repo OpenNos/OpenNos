@@ -79,7 +79,7 @@ namespace OpenNos.Handler
                     monster = new MapMonster(monst, map);
                     ServerManager.Monsters.Add(monster);
                     Session.CurrentMap.Monsters.Add(monster);
-                    Session.CurrentMap?.Broadcast(monster.GenerateIn3());
+                    Session.CurrentMap?.HandlerBroadcast(monster.GenerateIn3());
                 }
             }
             else
@@ -93,7 +93,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateCMode());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
@@ -172,7 +172,7 @@ namespace OpenNos.Handler
                 Session.Character.Dignity = dignity;
                 Session.SendPacket(Session.Character.GenerateFd());
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DIGNITY_CHANGED"), 12));
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
             }
             else
             {
@@ -227,9 +227,9 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateLev());
                     Session.SendPacket(Session.Character.GenerateStatInfo());
                     Session.SendPacket(Session.Character.GenerateStatChar());
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
+                    Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateEff(6));
+                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateEff(198));
                 }
             }
             else
@@ -252,8 +252,8 @@ namespace OpenNos.Handler
                     Session.Character.JobLevelXp = 0;
                     Session.SendPacket(Session.Character.GenerateLev());
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(8));
+                    Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateEff(8));
                     Session.SendPacket(Session.Character.GenerateSki());
                     Session.Character.LearnAdventurerSkill();
                 }
@@ -283,9 +283,9 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateStatChar());
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
                     Session.SendPacket(Session.Character.GenerateLev());
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
+                    Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateEff(6));
+                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateEff(198));
                     ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
                 }
             }
@@ -311,7 +311,7 @@ namespace OpenNos.Handler
                 Session.Character.Reput = reput;
                 Session.SendPacket(Session.Character.GenerateFd());
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"), 0));
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
             }
         }
 
@@ -332,8 +332,8 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
                     Session.SendPacket(Session.Character.GenerateSki());
                     Session.Character.LearnSPSkill();
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(8));
+                    Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateEff(8));
                 }
             }
             else
@@ -534,7 +534,7 @@ namespace OpenNos.Handler
                 }
                 Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty, Type = portaltype };
                 Session.CurrentMap.Portals.Add(portal);
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateGp(portal));
+                Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateGp(portal));
             }
             else
             {
@@ -551,7 +551,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 2)
             {
                 short.TryParse(packetsplit[2], out arg);
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(arg));
+                Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateEff(arg));
             }
             else
             {
@@ -662,7 +662,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.HairColor = haircolor;
                     Session.SendPacket(Session.Character.GenerateEq());
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateIn());
                 }
             }
             else
@@ -683,7 +683,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.HairStyle = hairstyle;
                     Session.SendPacket(Session.Character.GenerateEq());
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateIn());
                 }
             }
             else
@@ -697,16 +697,16 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             Session.Character.Invisible = Session.Character.Invisible ? false : true;
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateInvisible());
+            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateInvisible());
             Session.Character.InvisibleGm = Session.Character.InvisibleGm ? false : true;
             Session.SendPacket(Session.Character.GenerateEq());
             if (Session.Character.InvisibleGm == true)
             {
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
             else
             {
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
             }
         }
 
@@ -750,8 +750,8 @@ namespace OpenNos.Handler
                     }
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.Hp), 0);
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.LastDefence), DateTime.Now);
-                    Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
-                    Session.CurrentMap?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, String.Empty, (long)id);
+                    Session.CurrentMap?.HandlerBroadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
+                    Session.CurrentMap?.HandlerBroadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, String.Empty, (long)id);
                     ServerManager.Instance.AskRevive((long)id);
                 }
                 else
@@ -774,13 +774,13 @@ namespace OpenNos.Handler
             {
                 Session.Character.Dance();
                 ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ServerManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "Dance"));
-                Session.CurrentMap?.Broadcast("dance 2");
+                Session.CurrentMap?.HandlerBroadcast("dance 2");
             }
             else
             {
                 Session.Character.Dance();
                 ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ServerManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
-                Session.CurrentMap?.Broadcast("dance");
+                Session.CurrentMap?.HandlerBroadcast("dance");
             }
         }
 
@@ -807,14 +807,14 @@ namespace OpenNos.Handler
                             Session.Character.MorphUpgrade = arg[1];
                             Session.Character.MorphUpgrade2 = arg[2];
                             Session.Character.ArenaWinner = arg[3];
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateCMode());
                         }
                         else if (arg[0] > 30)
                         {
                             Session.Character.IsVehicled = true;
                             Session.Character.Morph = arg[0];
                             Session.Character.ArenaWinner = arg[3];
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateCMode());
                         }
                         else
                         {
@@ -823,7 +823,7 @@ namespace OpenNos.Handler
                             Session.Character.ArenaWinner = 0;
                             Session.SendPacket(Session.Character.GenerateCond());
                             Session.SendPacket(Session.Character.GenerateLev());
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateCMode());
                         }
                     }
                     break;
@@ -870,11 +870,11 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                         if (duration == 1)
                         {
-                            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)), ReceiverType.OnlySomeone, name);
+                            ServerManager.Instance.HandlerBroadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)), ReceiverType.OnlySomeone, name);
                         }
                         else
                         {
-                            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)), ReceiverType.OnlySomeone, name);
+                            ServerManager.Instance.HandlerBroadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)), ReceiverType.OnlySomeone, name);
                         }
                     }
                     else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
@@ -888,7 +888,7 @@ namespace OpenNos.Handler
                             DateEnd = DateTime.Now.AddHours(duration)
                         });
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, duration)), ReceiverType.OnlySomeone, name);
+                        ServerManager.Instance.HandlerBroadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, duration)), ReceiverType.OnlySomeone, name);
                     }
                     else
                     {
@@ -918,7 +918,7 @@ namespace OpenNos.Handler
                 short.TryParse(packetsplit[2], out arg);
                 if (arg > -1)
                 {
-                    Session.CurrentMap?.Broadcast($"bgm {arg}");
+                    Session.CurrentMap?.HandlerBroadcast($"bgm {arg}");
                 }
             }
             else
@@ -1069,7 +1069,7 @@ namespace OpenNos.Handler
             {
                 if (monst.Alive)
                 {
-                    Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
+                    Session.CurrentMap.HandlerBroadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
                     Session.CurrentMap.Monsters.Remove(monst);
                 }
@@ -1114,7 +1114,7 @@ namespace OpenNos.Handler
                 if (arg > -1)
                 {
                     Session.Character.Size = arg;
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateScal());
+                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateScal());
                 }
             }
             else
@@ -1375,7 +1375,7 @@ namespace OpenNos.Handler
                     ///////////////////
                     Session.CurrentMap.Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
-                    Session.CurrentMap?.Broadcast(monst.GenerateIn3());
+                    Session.CurrentMap?.HandlerBroadcast(monst.GenerateIn3());
                 }
             }
             else
@@ -1649,7 +1649,7 @@ namespace OpenNos.Handler
                         wig.Design = wigcolor;
                         Session.SendPacket(Session.Character.GenerateEq());
                         Session.SendPacket(Session.Character.GenerateEquipment());
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                        Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateIn());
                     }
                     else
                     {
@@ -1683,8 +1683,8 @@ namespace OpenNos.Handler
         private async void ShutdownTask()
         {
             string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
-            Session.CurrentMap?.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateMsg(message, 2));
+            Session.CurrentMap?.HandlerBroadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 60 * 4; i++)
             {
                 await Task.Delay(1000);
@@ -1695,8 +1695,8 @@ namespace OpenNos.Handler
                 }
             }
             message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
-            Session.CurrentMap?.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateMsg(message, 2));
+            Session.CurrentMap?.HandlerBroadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);
@@ -1707,8 +1707,8 @@ namespace OpenNos.Handler
                 }
             }
             message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
-            Session.CurrentMap?.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateMsg(message, 2));
+            Session.CurrentMap?.HandlerBroadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);

@@ -410,7 +410,7 @@ namespace OpenNos.GameObject
                 {
                     if (packetsplit[1] == "$.*")
                     {
-                        ServerManager.Instance.Broadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
+                        ServerManager.Instance.HandlerBroadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
                         return;
                     }
                 }

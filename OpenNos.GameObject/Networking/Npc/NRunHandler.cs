@@ -70,7 +70,7 @@ namespace OpenNos.GameObject
                                 Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem86, InventoryType.Equipment, newItem86.Item.EquipmentSlot);
                                 break;
                         }
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
+                        Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateEq());
                         Session.SendPacket(Session.Character.GenerateEquipment());
                         Session.Character.ChangeClass(Convert.ToByte(type));
                     }

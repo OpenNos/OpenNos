@@ -32,7 +32,9 @@ namespace OpenNos.GameObject
 
         #region Events
 
-        private event EventHandler BroadcastEvent;
+        private event EventHandler HandlerBroadcastEvent;
+
+        private event EventHandler GeneralBroadcastEvent;
 
         #endregion
 
@@ -46,16 +48,32 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void Broadcast(string content)
+        public void HandlerBroadcast(string content)
         {
-            Broadcast(null, content);
+            HandlerBroadcast(null, content);
         }
 
-        public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        public void HandlerBroadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
         {
             try
             {
-                BroadcastEvent?.Invoke(new BroadcastPacket(client, content, receiver, characterName, characterId), new EventArgs());
+                HandlerBroadcastEvent?.Invoke(new BroadcastPacket(client, content, receiver, characterName, characterId), new EventArgs());
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
+        }
+        public void GeneralBroadcast(string content)
+        {
+            GeneralBroadcast(null, content);
+        }
+
+        public void GeneralBroadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        {
+            try
+            {
+                GeneralBroadcastEvent?.Invoke(new BroadcastPacket(client, content, receiver, characterName, characterId), new EventArgs());
             }
             catch (Exception ex)
             {
@@ -67,7 +85,9 @@ namespace OpenNos.GameObject
         {
             if (session != null && !Sessions.Contains(session))
             {
-                BroadcastEvent += session.OnSessionBroadcast;
+               
+                HandlerBroadcastEvent += session.OnSessionBroadcast;
+                GeneralBroadcastEvent += session.OnSessionBroadcast;
                 Sessions.Add(session);
             }
         }
@@ -76,12 +96,13 @@ namespace OpenNos.GameObject
         {
             if (session != null && Sessions.Contains(session))
             {
+                HandlerBroadcastEvent -= session.OnSessionBroadcast;
+                GeneralBroadcastEvent -= session.OnSessionBroadcast;
                 LastUnregister = DateTime.Now;
-                BroadcastEvent -= session.OnSessionBroadcast;
                 Sessions.Remove(session);
             }
-        }
 
-        #endregion
+            #endregion
+        }
     }
 }

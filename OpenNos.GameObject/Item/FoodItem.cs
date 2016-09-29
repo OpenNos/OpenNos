@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
                 session.Character.Mp += session.Character.SnackMp;
                 if ((session.Character.SnackHp > 0 && session.Character.SnackHp > 0) && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
                 {
-                    session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
+                    session.CurrentMap?.HandlerBroadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
                 }
                 if (session.IsConnected)
                 {

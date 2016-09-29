@@ -153,8 +153,8 @@ namespace OpenNos.GameObject
                     MapX = FirstX;
                     MapY = FirstY;
                     Path = new List<MapCell>();
-                    Map.Broadcast(GenerateIn3());
-                    Map.Broadcast(GenerateEff(7));
+                    Map.HandlerBroadcast(GenerateIn3());
+                    Map.HandlerBroadcast(GenerateEff(7));
                 }
                 return;
             }
@@ -178,7 +178,7 @@ namespace OpenNos.GameObject
                             short mapY = Path.ElementAt(0).Y;
                             Path.RemoveAt(0);
                             LastMove = DateTime.Now;
-                            Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
+                            Map.HandlerBroadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
 
                             Task.Factory.StartNew(async () =>
                             {
@@ -211,7 +211,7 @@ namespace OpenNos.GameObject
                             LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Monster.Speed));
 
                             string movePacket = $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}";
-                            Map.Broadcast(movePacket);
+                            Map.HandlerBroadcast(movePacket);
                         }
                     }
                 }
@@ -257,7 +257,7 @@ namespace OpenNos.GameObject
                         {
                             npcMonsterSkill.LastUse = DateTime.Now;
                             CurrentMp -= npcMonsterSkill.Skill.MpCost;
-                            Map.Broadcast($"ct 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
+                            Map.HandlerBroadcast($"ct 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
                         }
                         LastMove = DateTime.Now;
 
@@ -266,27 +266,27 @@ namespace OpenNos.GameObject
                         if (targetSession.Character.IsSitting)
                         {
                             targetSession.Character.IsSitting = false;
-                            Map.Broadcast(targetSession.Character.GenerateRest());
+                            Map.HandlerBroadcast(targetSession.Character.GenerateRest());
                             Thread.Sleep(500);
                         }
                         if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                         {
-                            Map.Broadcast(GenerateEff(npcMonsterSkill.Skill.CastEffect));
+                            Map.HandlerBroadcast(GenerateEff(npcMonsterSkill.Skill.CastEffect));
                             Thread.Sleep(npcMonsterSkill.Skill.CastTime * 100);
                         }
                         Path = new List<MapCell>();
                         targetSession.Character.LastDefence = DateTime.Now;
                         targetSession.Character.GetDamage(damage);
 
-                        Map.Broadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
+                        Map.HandlerBroadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
                         if (npcMonsterSkill != null)
                         {
-                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} 0 0");
+                            Map.HandlerBroadcast($"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} 0 0");
                         }
                         else
                         {
-                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} 0 0");
+                            Map.HandlerBroadcast($"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} 0 0");
                         }
 
                         LastEffect = DateTime.Now;
@@ -307,15 +307,15 @@ namespace OpenNos.GameObject
                                 if (chara.IsSitting)
                                 {
                                     chara.IsSitting = false;
-                                    Map.Broadcast(chara.GenerateRest());
+                                    Map.HandlerBroadcast(chara.GenerateRest());
                                     Thread.Sleep(500);
                                 }
                                 damage = chara.HasGodMode ? 0 : 100;
                                 bool AlreadyDead2 = chara.Hp <= 0;
                                 chara.GetDamage(damage);
                                 chara.LastDefence = DateTime.Now;
-                                Map.Broadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, "", chara.CharacterId);
-                                Map.Broadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} { (int)(chara.Hp / chara.HPLoad() * 100) } {damage} 0 0");
+                                Map.HandlerBroadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, "", chara.CharacterId);
+                                Map.HandlerBroadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} { (int)(chara.Hp / chara.HPLoad() * 100) } {damage} 0 0");
                                 if (chara.Hp <= 0 && !AlreadyDead2)
                                 {
                                     Thread.Sleep(1000);
@@ -351,7 +351,7 @@ namespace OpenNos.GameObject
                             mapX = Path.ElementAt(maxindex - 1).X;
                             mapY = Path.ElementAt(maxindex - 1).Y;
                             double waitingtime = (double)(Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId })) / (double)(Monster.Speed);
-                            Map.Broadcast($"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}");
+                            Map.HandlerBroadcast($"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}");
                             LastMove = DateTime.Now.AddSeconds((waitingtime > 1 ? 1 : waitingtime));
                             Task.Factory.StartNew(async () =>
                             {

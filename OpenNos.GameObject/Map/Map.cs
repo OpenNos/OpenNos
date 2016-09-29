@@ -254,7 +254,7 @@ namespace OpenNos.GameObject
                 DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
 
                 // TODO: UseTransportId
-                Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");
+                HandlerBroadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");
             }
             catch (Exception e)
             {
@@ -535,11 +535,11 @@ namespace OpenNos.GameObject
                         {
                             if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
                             {
-                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
+                                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
                             }
                             else
                             {
-                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
+                                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
                             }
                             Session.Character.LastEffect = DateTime.Now;
                         }
@@ -613,7 +613,7 @@ namespace OpenNos.GameObject
 
                 foreach (KeyValuePair<long, MapItem> drop in dropsToRemove)
                 {
-                    Broadcast(drop.Value.GenerateOut(drop.Key));
+                    HandlerBroadcast(drop.Value.GenerateOut(drop.Key));
                     MapItem mapItem;
                     DroppedList.TryRemove(drop.Key, out mapItem);
                 }

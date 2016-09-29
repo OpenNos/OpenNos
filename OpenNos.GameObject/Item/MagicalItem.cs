@@ -39,7 +39,7 @@ namespace OpenNos.GameObject
                             Session.Character.HairColor = (byte)EffectValue;
                         }
                         Session.SendPacket(Session.Character.GenerateEq());
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
+                        Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
                         Inv.ItemInstance.Amount--;
                         if (Inv.ItemInstance.Amount > 0)
                         {
@@ -65,7 +65,7 @@ namespace OpenNos.GameObject
                         {
                             Session.Character.HairStyle = Session.Character.HairStyle != (byte)EffectValue ? (byte)EffectValue : (byte)1;
                             Session.SendPacket(Session.Character.GenerateEq());
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
+                            Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
                             Inv.ItemInstance.Amount--;
                             if (Inv.ItemInstance.Amount > 0)
                             {
@@ -94,7 +94,7 @@ namespace OpenNos.GameObject
                                 }
                                 Session.SendPacket(Session.Character.GenerateFd());
                                 Session.SendPacket(Session.Character.GenerateEff(48));
-                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                                 Inv.ItemInstance.Amount--;
                                 if (Inv.ItemInstance.Amount > 0)
                                 {
@@ -142,7 +142,7 @@ namespace OpenNos.GameObject
                             wig.Design = (byte)random.Next(0, 15);
                             Session.SendPacket(Session.Character.GenerateEq());
                             Session.SendPacket(Session.Character.GenerateEquipment());
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
+                            Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
                             Inv.ItemInstance.Amount--;
                             if (Inv.ItemInstance.Amount > 0)
                             {
@@ -180,7 +180,7 @@ namespace OpenNos.GameObject
                         Session.Character.Dignity = 100;
                         Session.SendPacket(Session.Character.GenerateFd());
                         Session.SendPacket(Session.Character.GenerateEff(48));
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         Session.Character.InventoryList.RemoveItemAmount(this.VNum, 1);
                         if (Inv.ItemInstance.Amount - 1 > 0)
                         {

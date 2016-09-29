@@ -429,10 +429,10 @@ namespace OpenNos.GameObject
 
                 // Session.SendPacket(GenerateEquipment());
                 Session.SendPacket(GenerateStat());
-                Session.CurrentMap?.Broadcast(Session, GenerateEq(), ReceiverType.All);
-                Session.CurrentMap?.Broadcast(Session, GenerateEff(8), ReceiverType.All);
+                Session.CurrentMap?.HandlerBroadcast(Session, GenerateEq(), ReceiverType.All);
+                Session.CurrentMap?.HandlerBroadcast(Session, GenerateEff(8), ReceiverType.All);
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
-                Session.CurrentMap?.Broadcast(Session, GenerateEff(196), ReceiverType.All);
+                Session.CurrentMap?.HandlerBroadcast(Session, GenerateEff(196), ReceiverType.All);
 
                 int faction = 1 + (int)_random.Next(0, 2);
                 Faction = faction;
@@ -444,10 +444,10 @@ namespace OpenNos.GameObject
                 Session.SendPacket(GenerateEff(4799 + faction));
                 Session.SendPacket(GenerateCond());
                 Session.SendPacket(GenerateLev());
-                Session.CurrentMap?.Broadcast(Session, GenerateCMode(), ReceiverType.All);
-                Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
-                Session.CurrentMap?.Broadcast(Session, GenerateEff(6), ReceiverType.All);
-                Session.CurrentMap?.Broadcast(Session, GenerateEff(198), ReceiverType.All);
+                Session.CurrentMap?.HandlerBroadcast(Session, GenerateCMode(), ReceiverType.All);
+                Session.CurrentMap?.HandlerBroadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+                Session.CurrentMap?.HandlerBroadcast(Session, GenerateEff(6), ReceiverType.All);
+                Session.CurrentMap?.HandlerBroadcast(Session, GenerateEff(198), ReceiverType.All);
 
                 for (int i = Skills.Count - 1; i >= 0; i--)
                 {
@@ -483,7 +483,7 @@ namespace OpenNos.GameObject
                 };
                 if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session)))
                 {
-                    ServerManager.Instance.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
+                    ServerManager.Instance.HandlerBroadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
                 }
             }
         }
@@ -498,9 +498,9 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
             Session.SendPacket(GenerateEq());
             Session.SendPacket(GenerateGender());
-            Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
-            Session.CurrentMap?.Broadcast(GenerateCMode());
-            Session.CurrentMap?.Broadcast(GenerateEff(196));
+            Session.CurrentMap?.HandlerBroadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+            Session.CurrentMap?.HandlerBroadcast(GenerateCMode());
+            Session.CurrentMap?.HandlerBroadcast(GenerateEff(196));
         }
 
         public void CloseShop()
@@ -511,12 +511,12 @@ namespace OpenNos.GameObject
                 if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
                 {
                     Session.CurrentMap.UserShops.Remove(shop.Key);
-                    Session.CurrentMap?.Broadcast(GenerateShopEnd());
-                    Session.CurrentMap?.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.HandlerBroadcast(GenerateShopEnd());
+                    Session.CurrentMap?.HandlerBroadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     IsSitting = false;
                     LoadSpeed();
                     Session.SendPacket(GenerateCond());
-                    Session.CurrentMap?.Broadcast(GenerateRest());
+                    Session.CurrentMap?.HandlerBroadcast(GenerateRest());
                     Session.SendPacket("shop_end 0");
                 }
                 HasShopOpened = false;
@@ -621,7 +621,7 @@ namespace OpenNos.GameObject
                 if (Dignity == (int)Dignity)
                 {
                     Session.SendPacket(GenerateFd());
-                    Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.HandlerBroadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
                 }
             }
@@ -1567,8 +1567,8 @@ namespace OpenNos.GameObject
                 Session.SendPacket(GenerateStat());
                 Session.SendPacket($"levelup {CharacterId}");
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
-                Session.CurrentMap?.Broadcast(GenerateEff(6));
-                Session.CurrentMap?.Broadcast(GenerateEff(198));
+                Session.CurrentMap?.HandlerBroadcast(GenerateEff(6));
+                Session.CurrentMap?.HandlerBroadcast(GenerateEff(198));
                 ServerManager.Instance.UpdateGroup(CharacterId);
             }
 
@@ -1619,8 +1619,8 @@ namespace OpenNos.GameObject
                 Session.SendPacket($"levelup {CharacterId}");
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
                 LearnAdventurerSkill();
-                Session.CurrentMap?.Broadcast(GenerateEff(6));
-                Session.CurrentMap?.Broadcast(GenerateEff(198));
+                Session.CurrentMap?.HandlerBroadcast(GenerateEff(6));
+                Session.CurrentMap?.HandlerBroadcast(GenerateEff(198));
             }
             if (specialist != null)
             {
@@ -1641,8 +1641,8 @@ namespace OpenNos.GameObject
                 LearnSPSkill();
 
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
-                Session.CurrentMap?.Broadcast(GenerateEff(6));
-                Session.CurrentMap?.Broadcast(GenerateEff(198));
+                Session.CurrentMap?.HandlerBroadcast(GenerateEff(6));
+                Session.CurrentMap?.HandlerBroadcast(GenerateEff(198));
             }
             Session.SendPacket(GenerateLev());
         }
@@ -2007,7 +2007,7 @@ namespace OpenNos.GameObject
         {
             Session.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
             Session.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
-            ServerManager.Instance.Broadcast(Session, GenerateEff(3005), ReceiverType.All);
+            ServerManager.Instance.HandlerBroadcast(Session, GenerateEff(3005), ReceiverType.All);
         }
 
         public void RefreshMail()
@@ -2068,7 +2068,7 @@ namespace OpenNos.GameObject
             {
                 Morph = 0;
             }
-            Session.CurrentMap?.Broadcast(GenerateCMode());
+            Session.CurrentMap?.HandlerBroadcast(GenerateCMode());
             Session.SendPacket(GenerateCond());
         }
 
@@ -2081,7 +2081,7 @@ namespace OpenNos.GameObject
             if (!IsVehicled)
             {
                 IsSitting = !IsSitting;
-                Session.CurrentMap?.Broadcast(GenerateRest());
+                Session.CurrentMap?.HandlerBroadcast(GenerateRest());
             }
             else
             {
