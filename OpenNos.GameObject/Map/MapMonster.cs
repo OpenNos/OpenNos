@@ -327,7 +327,9 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    int distance = Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY });
+                    int distance =0;
+                    if (targetSession !=null)
+                     distance = Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY });
 
                     if (IsMoving == true)
                     {
