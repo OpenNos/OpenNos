@@ -141,6 +141,7 @@ namespace OpenNos.Handler
                 if (Session.Character.Gold < skillinfo.Price)
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
+                    return;
                 }
                 else if (Session.Character.GetCP() < skillinfo.CPCost)
                 {
