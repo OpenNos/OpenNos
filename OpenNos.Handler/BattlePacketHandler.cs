@@ -422,7 +422,7 @@ namespace OpenNos.Handler
             #endregion
 
             #region Sp
-
+            
             SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
 
             #endregion
@@ -490,12 +490,14 @@ namespace OpenNos.Handler
             #endregion
 
             #region Basic Damage Data Calculation
-
-            mainMinDmg += specialistInstance.DamageMinimum;
-            mainMaxDmg += specialistInstance.DamageMaximum;
-            mainCritHit += specialistInstance.CriticalRate;
-            mainCritChance += specialistInstance.CriticalLuckRate;
-            mainHitRate += specialistInstance.HitRate;
+            if (specialistInstance != null)
+            {
+                mainMinDmg += specialistInstance.DamageMinimum;
+                mainMaxDmg += specialistInstance.DamageMaximum;
+                mainCritHit += specialistInstance.CriticalRate;
+                mainCritChance += specialistInstance.CriticalLuckRate;
+                mainHitRate += specialistInstance.HitRate;
+            }
 
 #warning TODO: Implement BCard damage boosts, see Issue 
 
