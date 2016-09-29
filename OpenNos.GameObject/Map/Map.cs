@@ -514,8 +514,9 @@ namespace OpenNos.GameObject
             try
             {
                 List<Task> NpcLifeTask = new List<Task>();
-                Sessions.Where(s => s?.Character != null).ToList().ForEach(Session =>
+                for (int i = Sessions.Where(s => s?.Character != null).Count()-1; i >= 0; i--)
                 {
+                    ClientSession Session = Sessions.Where(s => s?.Character != null).ElementAt(i);
                     if (Session.Character.LastMailRefresh.AddSeconds(30) < DateTime.Now)
                     {
                         Session.Character.RefreshMail();
@@ -596,7 +597,7 @@ namespace OpenNos.GameObject
                             }
                         }
                     }
-                });
+                }
             }
             catch (Exception e)
             {

@@ -809,7 +809,7 @@ namespace OpenNos.Handler
                         }
                         DAOFactory.MailDAO.InsertOrUpdate(ref mail);
 
-                        Session.Character.MailList.Add((Session.Character.MailList.Any() ? Session.Character.MailList.Last().Key : 0) + 1, mailcopy);
+                        Session.Character.MailList.Add((Session.Character.MailList.Any() ? Session.Character.MailList.OrderBy(s=>s.Key).Last().Key : 0) + 1, mailcopy);
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
                         Session.SendPacket(Session.Character.GeneratePost(mailcopy, 2));
                     }

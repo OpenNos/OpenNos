@@ -2016,7 +2016,7 @@ namespace OpenNos.GameObject
             int j = 0;
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
-                MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
+                MailList.Add((MailList.Any() ? MailList.OrderBy(s=>s.Key).Last().Key : 0) + 1, mail);
 
                 if (mail.ItemVNum != null)
                 {
@@ -2043,7 +2043,7 @@ namespace OpenNos.GameObject
 
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
-                MailList.Add((MailList.Any() ? MailList.Last().Key : 0) + 1, mail);
+                MailList.Add((MailList.Any() ? MailList.OrderBy(s=>s.Key).Last().Key : 0) + 1, mail);
 
                 Session.SendPacket(Session.Character.GeneratePost(mail, 2));
             }
