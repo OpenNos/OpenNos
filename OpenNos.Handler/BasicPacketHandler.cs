@@ -241,7 +241,6 @@ namespace OpenNos.Handler
             string[] guriPacket = packet.Split(' ');
             if (guriPacket[2] == "10" && Convert.ToInt32(guriPacket[5]) >= 973 && Convert.ToInt32(guriPacket[5]) <= 999 && !Session.Character.EmoticonsBlocked)
             {
-                Session.SendPacket(Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099));
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
             }
             if (guriPacket[2] == "2")
