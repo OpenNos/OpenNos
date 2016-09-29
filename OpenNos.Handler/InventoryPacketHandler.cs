@@ -340,7 +340,7 @@ namespace OpenNos.Handler
                                     ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharacterId, nameof(Character.ExchangeInfo), null);
                                     Session.Character.ExchangeInfo = null;
                                 }
-                                else if (goldmax == true)
+                                else if (goldmax)
                                 {
                                     string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
                                     Session.SendPacket(message);

@@ -700,7 +700,7 @@ namespace OpenNos.Handler
             Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateInvisible());
             Session.Character.InvisibleGm = Session.Character.InvisibleGm ? false : true;
             Session.SendPacket(Session.Character.GenerateEq());
-            if (Session.Character.InvisibleGm == true)
+            if (Session.Character.InvisibleGm)
             {
                 Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
@@ -1688,7 +1688,7 @@ namespace OpenNos.Handler
             for (int i = 0; i < 60 * 4; i++)
             {
                 await Task.Delay(1000);
-                if (ServerManager.Instance.ShutdownStop == true)
+                if (ServerManager.Instance.ShutdownStop)
                 {
                     ServerManager.Instance.ShutdownStop = false;
                     return;
@@ -1700,7 +1700,7 @@ namespace OpenNos.Handler
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);
-                if (ServerManager.Instance.ShutdownStop == true)
+                if (ServerManager.Instance.ShutdownStop)
                 {
                     ServerManager.Instance.ShutdownStop = false;
                     return;
@@ -1712,7 +1712,7 @@ namespace OpenNos.Handler
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);
-                if (ServerManager.Instance.ShutdownStop == true)
+                if (ServerManager.Instance.ShutdownStop)
                 {
                     ServerManager.Instance.ShutdownStop = false;
                     return;
