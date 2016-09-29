@@ -514,6 +514,7 @@ namespace OpenNos.Handler
             #region Detailed Calculation
             #region Base Damage 
             int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
+            int elementalDamage = 0; //placeholder for BCard etc...
             switch (mainUpgrade)
             {
                 case -10:
@@ -608,10 +609,109 @@ namespace OpenNos.Handler
             }
             #endregion
             #region Elementary Damage
-#warning TODO: Implement Elementary Damage
+            #region Calculate Elemental Boost + Rate
+            double elementalBoost = 0;
+            short monsterResistance = 0;
+            switch (Session.Character.Element)
+            {
+                case 0:
+                    break;
+                case 1:
+                    monsterResistance = monsterInfo.FireResistance;
+                    switch (monsterInfo.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+                        case 1:
+                            elementalBoost = 1;
+                            break;
+                        case 2:
+                            elementalBoost = 2;
+                            break;
+                        case 3:
+                            elementalBoost = 0.5;
+                            break;
+                        case 4:
+                            elementalBoost = 1.5;
+                            break;
+                    }
+                    break;
+                case 2:
+                    monsterResistance = monsterInfo.WaterResistance;
+                    switch (monsterInfo.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+                        case 1:
+                            elementalBoost = 2;
+                            break;
+                        case 2:
+                            elementalBoost = 1;
+                            break;
+                        case 3:
+                            elementalBoost = 1.5;
+                            break;
+                        case 4:
+                            elementalBoost = 0.5;
+                            break;
+                    }
+                    break;
+                case 3:
+                    monsterResistance = monsterInfo.LightResistance;
+                    switch (monsterInfo.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+                        case 1:
+                            elementalBoost = 1.5;
+                            break;
+                        case 2:
+                            elementalBoost = 0.5;
+                            break;
+                        case 3:
+                            elementalBoost = 1;
+                            break;
+                        case 4:
+                            elementalBoost = 2;
+                            break;
+                    }
+                    break;
+                case 4:
+                    monsterResistance = monsterInfo.DarkResistance;
+                    switch (monsterInfo.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+                        case 1:
+                            elementalBoost = 0.5;
+                            break;
+                        case 2:
+                            elementalBoost = 1.5;
+                            break;
+                        case 3:
+                            elementalBoost = 2;
+                            break;
+                        case 4:
+                            elementalBoost = 1;
+                            break;
+                    }
+                    break;
+            }
+            #endregion;
+            if(monsterResistance < 0)
+            {
+                monsterResistance = 0;
+            }
+            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * Session.Character.ElementRate)) * elementalBoost);
+            elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
+
             #endregion
             #region Total Damage
-            int totalDamage = baseDamage - monsterDefence;
+            int totalDamage = baseDamage + elementalDamage - monsterDefence;
             #endregion
             #endregion
 
