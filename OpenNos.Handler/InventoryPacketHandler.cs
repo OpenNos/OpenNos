@@ -328,7 +328,7 @@ namespace OpenNos.Handler
                                 {
                                     goldmax = true;
                                 }
-                                if (continu == false)
+                                if (!continu)
                                 {
                                     string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0);
                                     Session.SendPacket(message);

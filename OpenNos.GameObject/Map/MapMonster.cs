@@ -161,7 +161,7 @@ namespace OpenNos.GameObject
             else if (Target == -1)
             {
                 // Normal Move Mode
-                if (Alive == false)
+                if (!Alive)
                 {
                     return;
                 }

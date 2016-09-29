@@ -617,7 +617,7 @@ namespace OpenNos.Handler
         public void GodMode(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.Character.HasGodMode = Session.Character.HasGodMode == true ? false : true;
+            Session.Character.HasGodMode = Session.Character.HasGodMode ? false : true;
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
