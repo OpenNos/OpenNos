@@ -532,7 +532,7 @@ namespace OpenNos.Handler
                 {
                     sbyte.TryParse(packetsplit[5], out portaltype);
                 }
-                Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty, Type = portaltype };
+                PortalDTO portal = new PortalDTO() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty, Type = portaltype };
                 Session.CurrentMap.Portals.Add(portal);
                 Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateGp(portal));
             }
@@ -859,7 +859,7 @@ namespace OpenNos.Handler
                 {
                     if (session != null)
                     {
-                        session.Account.PenaltyLogs.Add(new PenaltyLog()
+                        session.Account.PenaltyLogs.Add(new PenaltyLogDTO()
                         {
                             AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
                             Reason = reason,
@@ -1087,7 +1087,7 @@ namespace OpenNos.Handler
         [Packet("$RemovePortal")]
         public void RemoveNearestPortal(string packet)
         {
-            Portal pt = Session.CurrentMap.Portals.FirstOrDefault(s => s.SourceMapId == Session.Character.MapId && Map.GetDistance(new MapCell { MapId = s.SourceMapId, X = s.SourceX, Y = s.SourceY }, new MapCell { MapId = Session.Character.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }) < 10);
+            PortalDTO pt = Session.CurrentMap.Portals.FirstOrDefault(s => s.SourceMapId == Session.Character.MapId && Map.GetDistance(new MapCell { MapId = s.SourceMapId, X = s.SourceX, Y = s.SourceY }, new MapCell { MapId = Session.Character.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }) < 10);
             if (pt != null)
             {
                 Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
@@ -1570,7 +1570,7 @@ namespace OpenNos.Handler
                 {
                     if (session.Account.PenaltyLogs.Where(s => s.AccountId == session.Account.AccountId && s.Penalty == (byte)PenaltyType.Muted && s.DateEnd > DateTime.Now).Any())
                     {
-                        PenaltyLog log = session.Account.PenaltyLogs.Where(s => s.AccountId == session.Account.AccountId && s.Penalty == (byte)PenaltyType.Muted && s.DateEnd > DateTime.Now).FirstOrDefault();
+                        PenaltyLogDTO log = session.Account.PenaltyLogs.Where(s => s.AccountId == session.Account.AccountId && s.Penalty == (byte)PenaltyType.Muted && s.DateEnd > DateTime.Now).FirstOrDefault();
                         log.DateEnd = DateTime.Now.AddSeconds(-1);
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }

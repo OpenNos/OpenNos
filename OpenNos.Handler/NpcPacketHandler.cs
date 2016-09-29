@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
@@ -231,7 +232,7 @@ namespace OpenNos.Handler
             {
                 MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)owner));
 
-                ShopItem item = npc?.Shop.ShopItems.FirstOrDefault(it => it.Slot == slot);
+                ShopItemDTO item = npc?.Shop.ShopItems.FirstOrDefault(it => it.Slot == slot);
                 if (item == null)
                 {
                     return;
@@ -289,7 +290,10 @@ namespace OpenNos.Handler
 
                 Inventory newItem = Session.Character.InventoryList.AddNewItemToInventory(item.ItemVNum, amount);
                 if (newItem == null)
+                {
                     return;
+                }
+
                 newItem.ItemInstance.Rare = rare;
                 newItem.ItemInstance.Upgrade = item.Upgrade;
                 newItem.ItemInstance.Design = item.Color;
@@ -337,7 +341,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                foreach (Portal por in Session.CurrentMap.Portals)
+                foreach (PortalDTO por in Session.CurrentMap.Portals)
                 {
                     if (Session.Character.MapX < por.SourceX + 6 && Session.Character.MapX > por.SourceX - 6 && Session.Character.MapY < por.SourceY + 6 && Session.Character.MapY > por.SourceY - 6)
                     {
@@ -509,7 +513,7 @@ namespace OpenNos.Handler
                     if (rec != null && rec.Amount > 0)
                     {
                         string rece = $"m_list 3 {rec.Amount}";
-                        foreach (RecipeItem ite in rec.Items)
+                        foreach (RecipeItemDTO ite in rec.Items)
                         {
                             if (ite.Amount > 0)
                             {
@@ -533,7 +537,7 @@ namespace OpenNos.Handler
                         {
                             return;
                         }
-                        foreach (RecipeItem ite in rec.Items)
+                        foreach (RecipeItemDTO ite in rec.Items)
                         {
                             if (Session.Character.InventoryList.CountItem(ite.ItemVNum) < ite.Amount)
                             {
@@ -556,7 +560,7 @@ namespace OpenNos.Handler
                             short Slot = inv.Slot;
                             if (Slot != -1)
                             {
-                                foreach (RecipeItem ite in rec.Items)
+                                foreach (RecipeItemDTO ite in rec.Items)
                                 {
                                     Session.Character.InventoryList.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
@@ -676,7 +680,7 @@ namespace OpenNos.Handler
                 return;
             }
             string shoplist = String.Empty;
-            foreach (ShopItem item in mapnpc.Shop.ShopItems.Where(s => s.Type.Equals(type)))
+            foreach (ShopItemDTO item in mapnpc.Shop.ShopItems.Where(s => s.Type.Equals(type)))
             {
                 Item iteminfo = ServerManager.GetItem(item.ItemVNum);
                 typeshop = 100;
@@ -746,7 +750,7 @@ namespace OpenNos.Handler
                 }
             }
 
-            foreach (ShopSkill skill in mapnpc.Shop.ShopSkills.Where(s => s.Type.Equals(type)))
+            foreach (ShopSkillDTO skill in mapnpc.Shop.ShopSkills.Where(s => s.Type.Equals(type)))
             {
                 Skill skillinfo = ServerManager.GetSkill(skill.SkillVNum);
 
@@ -816,7 +820,7 @@ namespace OpenNos.Handler
                     else if (mapobject.MaxHP == 0 && !mapobject.Drops.Any(s => s.MonsterVNum != null) && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5))
                     {
                         // #guri^710^X^Y^MapNpcId
-                        Session.SendPacket(Session.Character.GenerateDelay(5000, 1, $"#guri^710^162^85^{npc.MapNpcId}")); 
+                        Session.SendPacket(Session.Character.GenerateDelay(5000, 1, $"#guri^710^162^85^{npc.MapNpcId}"));
                     }
                     else if (!string.IsNullOrEmpty(npc?.GetNpcDialog()))
                     {

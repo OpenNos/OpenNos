@@ -246,7 +246,7 @@ namespace OpenNos.Handler
                                             Thread.Sleep(ski.Skill.CastTime * 100);
                                         }
 
-                                        Combo skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
+                                        ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
                                         if (skillCombo != null)
                                         {
                                             if (ski.Skill.Combos.OrderByDescending(s => s.Hit).ElementAt(0).Hit == ski.Hit)

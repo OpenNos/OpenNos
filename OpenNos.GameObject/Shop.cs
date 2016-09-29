@@ -25,16 +25,16 @@ namespace OpenNos.GameObject
 
         public Shop(int shopId)
         {
-            ShopItems = new List<ShopItem>();
-            ShopSkills = new List<ShopSkill>();
+            ShopItems = new List<ShopItemDTO>();
+            ShopSkills = new List<ShopSkillDTO>();
             ShopId = shopId;
             foreach (ShopItemDTO item in DAOFactory.ShopItemDAO.LoadByShopId(ShopId))
             {
-                ShopItems.Add(new ShopItem() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade, Color = item.Color, Type = item.Type, ShopId = item.ShopId });
+                ShopItems.Add(new ShopItemDTO() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade, Color = item.Color, Type = item.Type, ShopId = item.ShopId });
             }
             foreach (ShopSkillDTO skill in DAOFactory.ShopSkillDAO.LoadByShopId(ShopId))
             {
-                ShopSkills.Add(new ShopSkill() { SkillVNum = skill.SkillVNum, ShopSkillId = skill.ShopSkillId, Slot = skill.Slot, Type = skill.Type, ShopId = skill.ShopId });
+                ShopSkills.Add(new ShopSkillDTO() { SkillVNum = skill.SkillVNum, ShopSkillId = skill.ShopSkillId, Slot = skill.Slot, Type = skill.Type, ShopId = skill.ShopId });
             }
         }
 
@@ -42,9 +42,9 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public List<ShopItem> ShopItems { get; set; }
+        public List<ShopItemDTO> ShopItems { get; set; }
 
-        public List<ShopSkill> ShopSkills { get; set; }
+        public List<ShopSkillDTO> ShopSkills { get; set; }
 
         #endregion
 

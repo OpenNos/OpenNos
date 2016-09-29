@@ -596,7 +596,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
             }
-            foreach (Portal portal in Session.CurrentMap.Portals)
+            foreach (PortalDTO portal in Session.CurrentMap.Portals)
             {
                 if (Session.Character.MapY >= portal.SourceY - 1 && Session.Character.MapY <= portal.SourceY + 1
                     && Session.Character.MapX >= portal.SourceX - 1 && Session.Character.MapX <= portal.SourceX + 1)
@@ -809,7 +809,7 @@ namespace OpenNos.Handler
                         }
                         DAOFactory.MailDAO.InsertOrUpdate(ref mail);
 
-                        Session.Character.MailList.Add((Session.Character.MailList.Any() ? Session.Character.MailList.OrderBy(s=>s.Key).Last().Key : 0) + 1, mailcopy);
+                        Session.Character.MailList.Add((Session.Character.MailList.Any() ? Session.Character.MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mailcopy);
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAILED"), 11));
                         Session.SendPacket(Session.Character.GeneratePost(mailcopy, 2));
                     }
@@ -884,7 +884,7 @@ namespace OpenNos.Handler
                         // client says qset 0 1 3 2 6 answer -> qset 1 3 0.2.6.0
                         Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
-                        Session.Character.QuicklistEntries.Add(new QuicklistEntry
+                        Session.Character.QuicklistEntries.Add(new QuicklistEntryDTO
                         {
                             CharacterId = Session.Character.CharacterId,
                             Type = type,
@@ -902,8 +902,8 @@ namespace OpenNos.Handler
 
                         // DragDrop / Reorder
                         // qset type to1 to2 from1 from2 vars -> q1 q2 data1 data2
-                        QuicklistEntry qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
-                        QuicklistEntry qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+                        QuicklistEntryDTO qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+                        QuicklistEntryDTO qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
                         qlFrom.Q1 = q1;
                         qlFrom.Q2 = q2;

@@ -9,17 +9,17 @@ namespace OpenNos.GameObject
 
         public Account()
         {
-            PenaltyLogs = new List<PenaltyLog>();
-            GeneralLogs = new List<GeneralLog>();
+            PenaltyLogs = new List<PenaltyLogDTO>();
+            GeneralLogs = new List<GeneralLogDTO>();
         }
 
         #endregion
 
         #region Properties
 
-        public List<GeneralLog> GeneralLogs { get; set; }
+        public List<GeneralLogDTO> GeneralLogs { get; set; }
 
-        public List<PenaltyLog> PenaltyLogs { get; set; }
+        public List<PenaltyLogDTO> PenaltyLogs { get; set; }
 
         #endregion
     }

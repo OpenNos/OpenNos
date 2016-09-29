@@ -24,11 +24,11 @@ namespace OpenNos.GameObject
 
         public Recipe(short RecipeId)
         {
-            Items = new List<RecipeItem>();
+            Items = new List<RecipeItemDTO>();
             foreach (RecipeItemDTO rec in DAOFactory.RecipeItemDAO.LoadByRecipe(RecipeId))
             {
                 // Replace by MAPPING
-                Items.Add(new RecipeItem()
+                Items.Add(new RecipeItemDTO()
                 {
                     Amount = rec.Amount,
                     ItemVNum = rec.ItemVNum,
@@ -43,7 +43,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public List<RecipeItem> Items { get; set; }
+        public List<RecipeItemDTO> Items { get; set; }
 
         #endregion
     }

@@ -294,7 +294,7 @@ namespace OpenNos.Handler
                             };
                             foreach (PenaltyLogDTO penalty in DAOFactory.PenaltyLogDAO.LoadByAccount(accountDTO.AccountId))
                             {
-                                account.PenaltyLogs.Add(new PenaltyLog()
+                                account.PenaltyLogs.Add(new PenaltyLogDTO()
                                 {
                                     AccountId = penalty.AccountId,
                                     DateEnd = penalty.DateEnd,
@@ -306,7 +306,7 @@ namespace OpenNos.Handler
                             }
                             foreach (GeneralLogDTO general in DAOFactory.GeneralLogDAO.LoadByAccount(accountDTO.AccountId))
                             {
-                                account.GeneralLogs.Add(new GeneralLog()
+                                account.GeneralLogs.Add(new GeneralLogDTO()
                                 {
                                     AccountId = general.AccountId,
                                     LogData = general.LogData,

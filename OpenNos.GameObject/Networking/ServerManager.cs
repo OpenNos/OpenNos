@@ -62,7 +62,6 @@ namespace OpenNos.GameObject
                 cfg.CreateMap<ItemDTO, TeacherItem>();
                 cfg.CreateMap<ItemDTO, UpgradeItem>();
                 cfg.CreateMap<SkillDTO, Skill>();
-                cfg.CreateMap<ComboDTO, Combo>();
                 cfg.CreateMap<NpcMonsterDTO, NpcMonster>();
             });
 
@@ -98,7 +97,6 @@ namespace OpenNos.GameObject
                 cfg.CreateMap<ItemDTO, TeacherItem>();
                 cfg.CreateMap<ItemDTO, UpgradeItem>();
                 cfg.CreateMap<SkillDTO, Skill>();
-                cfg.CreateMap<ComboDTO, Combo>();
                 cfg.CreateMap<NpcMonsterDTO, NpcMonster>();
             });
 
@@ -282,7 +280,7 @@ namespace OpenNos.GameObject
                 Skill skill = _mapper.Map<Skill>(skillDTO);
                 foreach (ComboDTO com in DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum))
                 {
-                    skill.Combos.Add(_mapper.Map<Combo>(com));
+                    skill.Combos.Add(_mapper.Map<ComboDTO>(com));
                 }
                 _skills.Add(skill);
             }

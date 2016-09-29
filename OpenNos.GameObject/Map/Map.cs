@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
         private short[,] _grid;
         private List<MapMonster> _monsters;
         private List<MapNpc> _npcs;
-        private List<Portal> _portals;
+        private List<PortalDTO> _portals;
         private BaseGrid _tempgrid;
         private Guid _uniqueIdentifier;
         private Random _random;
@@ -51,7 +51,7 @@ namespace OpenNos.GameObject
             Data = data;
             LoadZone();
             IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId);
-            _portals = new List<Portal>();
+            _portals = new List<PortalDTO>();
             DroppedList = new ConcurrentDictionary<long, MapItem>();
 
             MapTypes = new List<MapType>();
@@ -74,7 +74,7 @@ namespace OpenNos.GameObject
             foreach (PortalDTO portal in portals)
             {
                 // Replace by MAPPING
-                _portals.Add(new GameObject.Portal()
+                _portals.Add(new PortalDTO()
                 {
                     DestinationMapId = portal.DestinationMapId,
                     SourceMapId = portal.SourceMapId,
@@ -144,7 +144,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public List<Portal> Portals
+        public List<PortalDTO> Portals
         {
             get
             {
@@ -514,7 +514,7 @@ namespace OpenNos.GameObject
             try
             {
                 List<Task> NpcLifeTask = new List<Task>();
-                for (int i = Sessions.Where(s => s?.Character != null).Count()-1; i >= 0; i--)
+                for (int i = Sessions.Where(s => s?.Character != null).Count() - 1; i >= 0; i--)
                 {
                     ClientSession Session = Sessions.Where(s => s?.Character != null).ElementAt(i);
                     if (Session.Character.LastMailRefresh.AddSeconds(30) < DateTime.Now)

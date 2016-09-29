@@ -23,14 +23,14 @@ namespace OpenNos.GameObject
 
         public Skill()
         {
-            Combos = new List<Combo>();
+            Combos = new List<ComboDTO>();
         }
 
         #endregion
 
         #region Properties
 
-        public List<Combo> Combos { get; set; }
+        public List<ComboDTO> Combos { get; set; }
 
         #endregion
     }

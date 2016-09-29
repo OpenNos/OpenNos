@@ -64,6 +64,7 @@ namespace OpenNos.GameObject
                 Logger.Error(ex);
             }
         }
+
         public void GeneralBroadcast(string content)
         {
             GeneralBroadcast(null, content);
@@ -85,7 +86,6 @@ namespace OpenNos.GameObject
         {
             if (session != null && !Sessions.Contains(session))
             {
-               
                 HandlerBroadcastEvent += session.OnSessionBroadcast;
                 GeneralBroadcastEvent += session.OnSessionBroadcast;
                 Sessions.Add(session);

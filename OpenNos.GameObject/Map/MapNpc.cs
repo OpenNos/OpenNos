@@ -70,11 +70,11 @@ namespace OpenNos.GameObject
             IEnumerable<TeleporterDTO> teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
             if (teleporters != null)
             {
-                Teleporters = new List<Teleporter>();
+                Teleporters = new List<TeleporterDTO>();
                 foreach (TeleporterDTO teleporter in teleporters)
                 {
                     // Replace by MAPPING
-                    Teleporters.Add(new Teleporter() { MapId = teleporter.MapId, Index = teleporter.Index, MapNpcId = teleporter.MapNpcId, MapX = teleporter.MapX, MapY = teleporter.MapY, TeleporterId = teleporter.TeleporterId });
+                    Teleporters.Add(new TeleporterDTO() { MapId = teleporter.MapId, Index = teleporter.Index, MapNpcId = teleporter.MapNpcId, MapX = teleporter.MapX, MapY = teleporter.MapY, TeleporterId = teleporter.TeleporterId });
                     ///////////////////
                 }
             }
@@ -106,7 +106,7 @@ namespace OpenNos.GameObject
 
         public Shop Shop { get; set; }
 
-        public List<Teleporter> Teleporters { get; set; }
+        public List<TeleporterDTO> Teleporters { get; set; }
 
         #endregion
 

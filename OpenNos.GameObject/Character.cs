@@ -340,7 +340,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public List<QuicklistEntry> QuicklistEntries { get; set; }
+        public List<QuicklistEntryDTO> QuicklistEntries { get; set; }
 
         public short SaveX { get; set; }
 
@@ -469,9 +469,9 @@ namespace OpenNos.GameObject
                     DAOFactory.QuicklistEntryDAO.Delete(quicklists.Id);
                 }
 
-                QuicklistEntries = new List<QuicklistEntry>
+                QuicklistEntries = new List<QuicklistEntryDTO>
                 {
-                    new QuicklistEntry
+                    new QuicklistEntryDTO
                     {
                         CharacterId = CharacterId,
                         Q1 = 0,
@@ -858,7 +858,7 @@ namespace OpenNos.GameObject
         {
             List<string> gpList = new List<string>();
             int i = 0;
-            foreach (Portal portal in ServerManager.GetMap(MapId).Portals)
+            foreach (PortalDTO portal in ServerManager.GetMap(MapId).Portals)
             {
                 gpList.Add($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {i} {(portal.IsDisabled ? 1 : 0)}");
                 i++;
@@ -867,7 +867,7 @@ namespace OpenNos.GameObject
             return gpList;
         }
 
-        public string GenerateGp(Portal portal)
+        public string GenerateGp(PortalDTO portal)
         {
             return $"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {ServerManager.GetMap(MapId).Portals.Count} {(portal.IsDisabled ? 1 : 0)}";
         }
@@ -1067,7 +1067,7 @@ namespace OpenNos.GameObject
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i && n.Morph == (UseSp ? Morph : 0));
+                    QuicklistEntryDTO qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i && n.Morph == (UseSp ? Morph : 0));
                     pktQs[j] += $" {(qi?.Type != null ? qi?.Type : 7)}.{(qi?.Slot != null ? qi?.Slot : 7)}.{(qi != null ? qi.Pos.ToString() : "-1")}";
                 }
             }
@@ -1932,11 +1932,11 @@ namespace OpenNos.GameObject
 
         public void LoadQuicklists()
         {
-            QuicklistEntries = new List<QuicklistEntry>();
+            QuicklistEntries = new List<QuicklistEntryDTO>();
             IEnumerable<QuicklistEntryDTO> quicklistDTO = DAOFactory.QuicklistEntryDAO.LoadByCharacterId(CharacterId);
             foreach (QuicklistEntryDTO qle in quicklistDTO)
             {
-                QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntry>(qle));
+                QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntryDTO>(qle));
             }
         }
 
@@ -2016,7 +2016,7 @@ namespace OpenNos.GameObject
             int j = 0;
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
-                MailList.Add((MailList.Any() ? MailList.OrderBy(s=>s.Key).Last().Key : 0) + 1, mail);
+                MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
 
                 if (mail.ItemVNum != null)
                 {
@@ -2043,7 +2043,7 @@ namespace OpenNos.GameObject
 
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
-                MailList.Add((MailList.Any() ? MailList.OrderBy(s=>s.Key).Last().Key : 0) + 1, mail);
+                MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
 
                 Session.SendPacket(Session.Character.GeneratePost(mail, 2));
             }
@@ -2128,7 +2128,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                IEnumerable<QuicklistEntry> quickListEntriesToInsertOrUpdate = QuicklistEntries.ToList();
+                IEnumerable<QuicklistEntryDTO> quickListEntriesToInsertOrUpdate = QuicklistEntries.ToList();
 
                 if (quickListEntriesToInsertOrUpdate != null)
                 {
@@ -2146,14 +2146,14 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                foreach (GeneralLog general in Session.Account.GeneralLogs)
+                foreach (GeneralLogDTO general in Session.Account.GeneralLogs)
                 {
                     if (!DAOFactory.GeneralLogDAO.IdAlreadySet(general.LogId))
                     {
                         DAOFactory.GeneralLogDAO.Insert(general);
                     }
                 }
-                foreach (PenaltyLog penalty in Session.Account.PenaltyLogs)
+                foreach (PenaltyLogDTO penalty in Session.Account.PenaltyLogs)
                 {
                     if (!DAOFactory.PenaltyLogDAO.IdAlreadySet(penalty.PenaltyLogId))
                     {
@@ -2196,7 +2196,7 @@ namespace OpenNos.GameObject
             DAOFactory.MailDAO.InsertOrUpdate(ref mail);
             if (id == CharacterId)
             {
-                Session.Character.MailList.Add((MailList.Any() ? MailList.OrderBy(s=>s.Key).Last().Key : 0) + 1, mail);
+                Session.Character.MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
                 Session.SendPacket(GenerateParcel(mail));
                 Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")} {mail.Amount}", 12));
             }
