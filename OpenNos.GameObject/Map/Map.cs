@@ -54,13 +54,13 @@ namespace OpenNos.GameObject
             _portals = new List<PortalDTO>();
             DroppedList = new ConcurrentDictionary<long, MapItem>();
 
-            MapTypes = new List<MapType>();
+            MapTypes = new List<MapTypeDTO>();
             foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId))
             {
                 MapTypeDTO MT = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
 
                 // Replace by MAPPING
-                MapType maptype = new MapType()
+                MapTypeDTO maptype = new MapTypeDTO()
                 {
                     MapTypeId = MT.MapTypeId,
                     MapTypeName = MT.MapTypeName,
@@ -119,7 +119,7 @@ namespace OpenNos.GameObject
 
         public short MapId { get; set; }
 
-        public List<MapType> MapTypes
+        public List<MapTypeDTO> MapTypes
         {
             get; set;
         }
