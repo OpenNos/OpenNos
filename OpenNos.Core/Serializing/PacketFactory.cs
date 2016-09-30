@@ -106,8 +106,8 @@ namespace OpenNos.Core
             }
             catch (Exception e)
             {
-                Logger.Error(e);
-                return Activator.CreateInstance<TPacket>();
+                Logger.Log.Warn($"The serialized packet has the wrong format. Packet: {packetContent}", e);
+                return null;
             }
         }
 

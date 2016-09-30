@@ -1117,22 +1117,24 @@ namespace OpenNos.Handler
         public void Walk(string packet)
         {
             WalkPacket walkPacket = PacketFactory.Serialize<WalkPacket>(packet);
-
-            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-            double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
-
-            if (Session.Character.Speed >= walkPacket.Speed && !(distance > 60 && timeSpanSinceLastPortal > 5))
+            if(walkPacket != null)
             {
-                Session.Character.MapX = walkPacket.XCoordinate;
-                Session.Character.MapY = walkPacket.YCoordinate;
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateMv());
-                Session.SendPacket(Session.Character.GenerateCond());
-                Session.Character.LastMove = DateTime.Now;
-            }
-            else
-            {
-                Session.Disconnect();
+                double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+                double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
+                int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
+
+                if (Session.Character.Speed >= walkPacket.Speed && !(distance > 60 && timeSpanSinceLastPortal > 5))
+                {
+                    Session.Character.MapX = walkPacket.XCoordinate;
+                    Session.Character.MapY = walkPacket.YCoordinate;
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateMv());
+                    Session.SendPacket(Session.Character.GenerateCond());
+                    Session.Character.LastMove = DateTime.Now;
+                }
+                else
+                {
+                    Session.Disconnect();
+                }
             }
         }
 
