@@ -3,6 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
+    [Header("mvi")]
     public class MviPacket : PacketBase
     {
         #region Properties

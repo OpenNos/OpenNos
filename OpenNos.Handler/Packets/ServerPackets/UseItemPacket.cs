@@ -3,6 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
+    [Header("u_i")]
     public class UseItemPacket : PacketBase
     {
         #region Properties

@@ -3,6 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
+    [Header("ncif")]
     public class NcifPacket : PacketBase
     {
         #region Properties

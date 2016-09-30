@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
+    [Header("say")]
     public class SayPacket : PacketBase
     {
         #region Properties

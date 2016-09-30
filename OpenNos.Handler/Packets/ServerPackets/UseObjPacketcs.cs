@@ -3,6 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
+    [Header("useobj")]
     public class UseObjPacket : PacketBase
     {
         #region Properties

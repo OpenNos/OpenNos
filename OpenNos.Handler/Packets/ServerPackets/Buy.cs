@@ -3,6 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
+    [Header("buy")]
     public class BuyPacket : PacketBase
     {
         #region Properties
