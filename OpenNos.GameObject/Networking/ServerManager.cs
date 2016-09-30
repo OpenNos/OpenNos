@@ -483,7 +483,7 @@ namespace OpenNos.GameObject
                 session.SendPackets(session.Character.GenerateDroppedItem());
                 session.SendPackets(session.Character.GenerateShopOnMap());
                 session.SendPackets(session.Character.GeneratePlayerShopOnMap());
-                if (session.Character.InvisibleGm == false)
+                if (!session.Character.InvisibleGm)
                 {
                     session.CurrentMap?.HandlerBroadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 }

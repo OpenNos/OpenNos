@@ -1071,7 +1071,7 @@ namespace OpenNos.Handler
 
                             return;
                         }
-                        else if (blocked2 == true && blocked1 == true)
+                        else if (blocked2 && blocked1)
                         {
                             return;
                         }

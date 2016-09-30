@@ -94,7 +94,7 @@ namespace OpenNos.GameObject
                 // vehicles
                 case 1000:
                     SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
-                    if (!DelayUsed && Session.Character.IsVehicled == false)
+                    if (!DelayUsed && !Session.Character.IsVehicled)
                     {
                         if (Session.Character.IsSitting)
                         {

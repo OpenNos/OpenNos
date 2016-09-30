@@ -161,7 +161,7 @@ namespace OpenNos.GameObject
             else if (Target == -1)
             {
                 // Normal Move Mode
-                if (Alive == false)
+                if (!Alive)
                 {
                     return;
                 }
@@ -327,11 +327,12 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    int distance =0;
-                    if (targetSession !=null)
-                     distance = Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY });
-
-                    if (IsMoving == true)
+                    int distance = 0;
+                    if (targetSession != null)
+                    {
+                        distance = Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY });
+                    }
+                    if (IsMoving)
                     {
                         short maxDistance = 22;
                         if (Path.Count() == 0 && targetSession != null && distance > 1 && distance < maxDistance)

@@ -551,7 +551,7 @@ namespace OpenNos.GameObject
                         if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
                         {
                             Session.Character.LastHealth = DateTime.Now;
-                            if (Session.HealthStop == true)
+                            if (Session.HealthStop)
                             {
                                 Session.HealthStop = false;
                                 return;
