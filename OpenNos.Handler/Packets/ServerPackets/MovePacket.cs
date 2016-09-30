@@ -5,6 +5,7 @@ namespace OpenNos.Handler.Packets.ServerPackets
 {
     public class MovePacket : PacketBase
     {
+        [Header("mv")]
         #region Properties
 
         [PacketIndex(0)]

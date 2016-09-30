@@ -3,6 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
+    [Header("wear")]
     public class WearjPacket : PacketBase
     {
         #region Properties
