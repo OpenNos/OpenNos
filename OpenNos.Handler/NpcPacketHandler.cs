@@ -807,17 +807,17 @@ namespace OpenNos.Handler
                         return;
                     }
                     MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
-                    NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
-
-                    if (mapobject.Drops.Any(s => s.MonsterVNum != null) && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5))
+                    if (npc == null)
+                        return;
+                    if (npc.Npc.Drops.Any(s => s.MonsterVNum != null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                     {
                         Session.SendPacket(Session.Character.GenerateDelay(5000, 4, $"#guri^400^{npc.MapNpcId}"));
                     }
-                    else if (mapobject.VNumRequired > 0 && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5))
+                    else if (npc.Npc.VNumRequired > 0 && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                     {
                         Session.SendPacket(Session.Character.GenerateDelay(6000, 4, $"#guri^400^{npc.MapNpcId}"));
                     }
-                    else if (mapobject.MaxHP == 0 && !mapobject.Drops.Any(s => s.MonsterVNum != null) && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5))
+                    else if (npc.Npc.MaxHP == 0 && !npc.Npc.Drops.Any(s => s.MonsterVNum != null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                     {
                         // #guri^710^X^Y^MapNpcId
                         Session.SendPacket(Session.Character.GenerateDelay(5000, 1, $"#guri^710^162^85^{npc.MapNpcId}"));

@@ -503,7 +503,10 @@ namespace OpenNos.GameObject
             while ((Path.Last().X != mapCell2.X || Path.Last().Y != mapCell2.Y) && (!IsBlockedZone(Path.Last().X, Path.Last().Y)));
             if (IsBlockedZone(Path.Last().X, Path.Last().Y))
             {
-                Path.Remove(Path.Last());
+                if (Path.Count > 0)
+                {
+                    Path.Remove(Path.Last());
+                }
             }
             Path.RemoveAt(0);
             return Path;
