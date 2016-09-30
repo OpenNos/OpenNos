@@ -137,30 +137,30 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             {
                 // Create a byte array from message according to current protocol
                 var messageBytes = WireProtocol.GetBytes(message);
-
-                // Send all bytes to the remote application
-                while (totalSent < messageBytes.Length && _clientSocket.Connected)
+                try
                 {
-                    var sent = 0;
-                    try
+                    // Send all bytes to the remote application
+                    while (totalSent < messageBytes.Length && _clientSocket.Connected)
                     {
+                        var sent = 0;
+
                         sent = _clientSocket.Send(messageBytes, totalSent, messageBytes.Length - totalSent, SocketFlags.None);
-                    }
-                    catch (Exception)
-                    {
-                        throw new CommunicationException("A packet would have been sent to a disconnected client. IGNORE THIS.");
-                    }
 
-                    if (sent <= 0)
-                    {
-                        throw new CommunicationException("Message could not be sent via TCP socket. Only " + totalSent + " bytes of " + messageBytes.Length + " bytes are sent.");
-                    }
 
-                    totalSent += sent;
+                        if (sent <= 0)
+                        {
+                            throw new CommunicationException("Message could not be sent via TCP socket. Only " + totalSent + " bytes of " + messageBytes.Length + " bytes are sent.");
+                        }
+
+                        totalSent += sent;
+                    }
+                    LastSentMessageTime = DateTime.Now;
+                    OnMessageSent(message);
                 }
-
-                LastSentMessageTime = DateTime.Now;
-                OnMessageSent(message);
+                catch (Exception)
+                {
+                    Logger.Log.Warn("A packet would have been sent to a disconnected client. IGNORE THIS.");
+                }
             }
         }
 
