@@ -263,7 +263,9 @@ namespace OpenNos.GameObject
 
                     case ReceiverType.OnlySomeone:
                         {
-                            if (this.Character.CharacterId == sentPacket.SomeonesCharacterId || this.Character.Name == sentPacket.SomeonesCharacterName)
+                            if ((sentPacket.SomeonesCharacterId > 0 || !String.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
+                                && (this.Character != null && (this.Character.CharacterId == sentPacket.SomeonesCharacterId
+                                || this.Character.Name == sentPacket.SomeonesCharacterName)))
                             {
                                 SendPacket(sentPacket.Content);
                             }
