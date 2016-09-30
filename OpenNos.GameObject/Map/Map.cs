@@ -14,6 +14,7 @@
 
 using EpPathFinding.cs;
 using OpenNos.Core;
+using OpenNos.Core.Collections;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -31,23 +32,34 @@ namespace OpenNos.GameObject
     {
         #region Members
 
+        private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
         private short[,] _grid;
-        private List<MapMonster> _monsters;
         private List<MapNpc> _npcs;
         private List<PortalDTO> _portals;
+        private Random _random;
         private BaseGrid _tempgrid;
         private Guid _uniqueIdentifier;
-        private Random _random;
 
         #endregion
 
         #region Instantiation
+
+        public void AddMonster(MapMonster monster)
+        {
+            _monsters[monster.MapMonsterId] = monster;
+        }
+
+        public void RemoveMonster(MapMonster monsterToRemove)
+        {
+            _monsters.Remove(monsterToRemove.MapMonsterId);
+        }
 
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
             _random = new Random();
             MapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
+            _monsters = new ThreadSafeSortedList<long, MapMonster>();
             Data = data;
             LoadZone();
             IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId);
@@ -89,10 +101,9 @@ namespace OpenNos.GameObject
                 //////////////////
             }
 
-            _monsters = new List<MapMonster>();
             foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
             {
-                _monsters.Add(new MapMonster(monster, this));
+                _monsters[monster.MapMonsterId] = new MapMonster(monster, this);
             }
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
 
@@ -124,11 +135,14 @@ namespace OpenNos.GameObject
             get; set;
         }
 
+        /// <summary>
+        /// This list ONLY for READ access to MapMonster, you CANNOT MODIFY them here. Use Add/RemoveMonster instead.
+        /// </summary>
         public List<MapMonster> Monsters
         {
             get
             {
-                return _monsters;
+                return _monsters.GetAllItems();
             }
         }
 
@@ -254,7 +268,7 @@ namespace OpenNos.GameObject
                 DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
 
                 // TODO: UseTransportId
-                HandlerBroadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");
+                Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");
             }
             catch (Exception e)
             {
@@ -269,15 +283,8 @@ namespace OpenNos.GameObject
 
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
-            List<MapMonster> monsters = new List<MapMonster>();
-            foreach (MapMonster monster in Monsters.Where(s => s.Alive))
-            {
-                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = monster.MapX, Y = monster.MapY }) <= distance + 1)
-                {
-                    monsters.Add(monster);
-                }
-            }
-            return monsters;
+            return _monsters.GetAllItems().Where(s => s.Alive &&
+                    GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = s.MapX, Y = s.MapY }) <= distance + 1).ToList();
         }
 
         public bool IsBlockedZone(int x, int y)
@@ -368,7 +375,7 @@ namespace OpenNos.GameObject
             try
             {
                 List<Task> MonsterLifeTask = new List<Task>();
-                Monsters.RemoveAll(s => !s.Alive && !s.Respawn);
+                RemoveDeadMonsters();
                 foreach (MapMonster monster in Monsters.OrderBy(i => _random.Next()))
                 {
                     monster.MonsterLife();
@@ -377,6 +384,19 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Error(e);
+            }
+        }
+
+        public MapMonster GetMonster(long mapMonsterId)
+        {
+            return _monsters[mapMonsterId];
+        }
+
+        private void RemoveDeadMonsters()
+        {
+            foreach(MapMonster monster in _monsters.GetAllItems().Where(s => !s.Alive && !s.Respawn))
+            {
+                RemoveMonster(monster);
             }
         }
 
@@ -539,11 +559,11 @@ namespace OpenNos.GameObject
                         {
                             if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
                             {
-                                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
+                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
                             }
                             else
                             {
-                                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
+                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
                             }
                             Session.Character.LastEffect = DateTime.Now;
                         }
@@ -617,7 +637,7 @@ namespace OpenNos.GameObject
 
                 foreach (KeyValuePair<long, MapItem> drop in dropsToRemove)
                 {
-                    HandlerBroadcast(drop.Value.GenerateOut(drop.Key));
+                    Broadcast(drop.Value.GenerateOut(drop.Key));
                     MapItem mapItem;
                     DroppedList.TryRemove(drop.Key, out mapItem);
                 }

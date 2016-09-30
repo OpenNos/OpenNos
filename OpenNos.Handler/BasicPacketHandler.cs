@@ -76,7 +76,7 @@ namespace OpenNos.Handler
                             AccountDTO account = Session.Account;
                             account.LastCompliment = DateTime.Now;
                             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
-                            Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
                         }
                         else
                         {
@@ -104,7 +104,7 @@ namespace OpenNos.Handler
             if (Convert.ToInt32(dirPacket[4]) == Session.Character.CharacterId)
             {
                 Session.Character.Direction = Convert.ToInt32(dirPacket[2]);
-                Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateDir());
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateDir());
             }
         }
 
@@ -232,7 +232,7 @@ namespace OpenNos.Handler
             }
             message = message.Substring(1).Trim();
 
-            ServerManager.Instance.HandlerBroadcast(Session, Session.Character.GenerateSpk(message, 3), ReceiverType.Group);
+            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 3), ReceiverType.Group);
         }
 
         [Packet("guri")]
@@ -241,11 +241,11 @@ namespace OpenNos.Handler
             string[] guriPacket = packet.Split(' ');
             if (guriPacket[2] == "10" && Convert.ToInt32(guriPacket[5]) >= 973 && Convert.ToInt32(guriPacket[5]) <= 999 && !Session.Character.EmoticonsBlocked)
             {
-                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
             }
             if (guriPacket[2] == "2")
             {
-                Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateGuri(2, 1));
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(2, 1));
             }
             else if (guriPacket[2] == "4")
             {
@@ -265,7 +265,7 @@ namespace OpenNos.Handler
                         message.Trim();
 
                         Session.Character.InventoryList.RemoveItemAmount(speakerVNum, 1);
-                        ServerManager.Instance.HandlerBroadcast(Session.Character.GenerateSay(message, 13));
+                        ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }
                 }
             }
@@ -409,7 +409,7 @@ namespace OpenNos.Handler
                 }
                 message.Trim();
 
-                Session.CurrentMap?.HandlerBroadcast(Session, $"msg 5 [{Session.Character.Name}]:{message}", ReceiverType.AllNoHeroBlocked);
+                Session.CurrentMap?.Broadcast(Session, $"msg 5 [{Session.Character.Name}]:{message}", ReceiverType.AllNoHeroBlocked);
             }
             else
             {
@@ -504,12 +504,12 @@ namespace OpenNos.Handler
                             if (OptionValue == 0)
                             {
                                 ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 1;
-                                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0), ReceiverType.Group);
+                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0), ReceiverType.Group);
                             }
                             else
                             {
                                 ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 0;
-                                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_BY_ORDER"), 0), ReceiverType.Group);
+                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_BY_ORDER"), 0), ReceiverType.Group);
                             }
                             break;
                     }
@@ -571,7 +571,7 @@ namespace OpenNos.Handler
                         {
                             charName = ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name));
                             Session.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), charName)));
-                            Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
                         }
                     }
                 }
@@ -712,8 +712,8 @@ namespace OpenNos.Handler
                                 Session.Character.Hp = (int)Session.Character.HPLoad();
                                 Session.Character.Mp = (int)Session.Character.MPLoad();
                             }
-                            Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateTp(), ReceiverType.All);
-                            Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateRevive(), ReceiverType.All);
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.All);
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.All);
                             Session.SendPacket(Session.Character.GenerateStat());
                         }
                         break;
@@ -739,20 +739,20 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Gender == 1)
                 {
-                    ServerManager.Instance.HandlerBroadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
+                    ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
                 else
                 {
-                    ServerManager.Instance.HandlerBroadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                    ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
             }
             else
             {
-                Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateSay(message.Trim(), 0), ReceiverType.AllExceptMe);
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), 0), ReceiverType.AllExceptMe);
             }
         }
 
@@ -958,7 +958,7 @@ namespace OpenNos.Handler
                 Assembly assembly = Assembly.GetEntryAssembly();
                 FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
                 Session.SendPacket(Session.Character.GenerateSay("----------[World Information]----------", 10));
-                Session.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion : v{fileVersionInfo.ProductVersion}", 11));
+                Session.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion : v{fileVersionInfo.ProductVersion} c01" , 11));
                 Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
             }
             Session.Character.LoadSpeed();
@@ -1083,7 +1083,7 @@ namespace OpenNos.Handler
                         else if (group.IsMemberOfGroup(Session.Character.CharacterId))
                         {
                             group.JoinGroup(charId);
-                            Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOINED_GROUP"), 10), ReceiverType.OnlySomeone, String.Empty, charId);
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOINED_GROUP"), 10), ReceiverType.OnlySomeone, String.Empty, charId);
                             newgroup = 0;
                         }
                     }
@@ -1095,7 +1095,7 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name))), 10));
                         group.JoinGroup(Session.Character.CharacterId);
                         ServerManager.Instance.Groups.Add(group);
-                        Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_ADMIN")), ReceiverType.OnlySomeone, String.Empty, charId);
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_ADMIN")), ReceiverType.OnlySomeone, String.Empty, charId);
 
                         // set back reference to group
                         Session.Character.Group = group;
@@ -1104,11 +1104,11 @@ namespace OpenNos.Handler
 
                     // player join group
                     ServerManager.Instance.UpdateGroup(charId);
-                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GeneratePidx());
+                    Session.CurrentMap?.Broadcast(Session.Character.GeneratePidx());
                 }
                 else if (type == 4)
                 {
-                    Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10), ReceiverType.OnlySomeone, String.Empty, charId);
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10), ReceiverType.OnlySomeone, String.Empty, charId);
                 }
             }
         }
@@ -1126,7 +1126,7 @@ namespace OpenNos.Handler
             {
                 Session.Character.MapX = walkPacket.XCoordinate;
                 Session.Character.MapY = walkPacket.YCoordinate;
-                Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateMv());
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateMv());
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.Character.LastMove = DateTime.Now;
             }
@@ -1154,7 +1154,7 @@ namespace OpenNos.Handler
             {
                 if (!whisperBlocked.Value)
                 {
-                    ServerManager.Instance.HandlerBroadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
                 }
                 else
                 {

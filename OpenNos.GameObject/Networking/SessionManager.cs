@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
                     Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                     customClient.Disconnect();
                     _sessions.TryRemove(customClient.ClientId, out session);
-                    ServerManager.Instance.UnregisterSession(session);
+                    ServerManager.Instance.UnregisterSession(session.ClientId);
                     return;
                 }
             }
@@ -74,7 +74,7 @@ namespace OpenNos.GameObject
                         session.Character.Save();
 
                         // only remove the character from map if the character has been set
-                        session.CurrentMap?.HandlerBroadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                        session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
                     }
                 }
 

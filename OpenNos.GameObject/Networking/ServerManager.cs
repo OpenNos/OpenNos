@@ -312,7 +312,7 @@ namespace OpenNos.GameObject
 
                     foreach (MapMonster n in newMap.Monsters)
                     {
-                        Monsters.Add(n);
+                        newMap.AddMonster(n);
                     }
                     monstercount += newMap.Monsters.Count();
                     foreach (MapNpc n in newMap.Npcs.Where(n => n.Shop != null))
@@ -434,12 +434,12 @@ namespace OpenNos.GameObject
                 if (clientSession.CurrentMap.UserShops[shop.Key].Items.Where(s => s.Amount > 0).ToList().Count == 0)
                 {
                     clientSession.SendPacket("shop_end 0");
-                    HandlerBroadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
-                    HandlerBroadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
+                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     shopOwnerSession.Character.LoadSpeed();
                     shopOwnerSession.Character.IsSitting = false;
                     shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateCond());
-                    HandlerBroadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
+                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
                 }
             }
         }
@@ -450,7 +450,7 @@ namespace OpenNos.GameObject
             ClientSession session = Sessions.SingleOrDefault(s => s.Character != null && s.Character.CharacterId == id);
             if (session != null)
             {
-                session.CurrentMap.UnregisterSession(session);
+                session.CurrentMap.UnregisterSession(session.ClientId);
                 session.CurrentMap = GetMap(session.Character.MapId);
                 session.CurrentMap.RegisterSession(session);
                 session.SendPacket(session.Character.GenerateCInfo());
@@ -485,7 +485,7 @@ namespace OpenNos.GameObject
                 session.SendPackets(session.Character.GeneratePlayerShopOnMap());
                 if (!session.Character.InvisibleGm)
                 {
-                    session.CurrentMap?.HandlerBroadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 }
                 if (session.Character.Size != 10)
                 {
@@ -493,12 +493,12 @@ namespace OpenNos.GameObject
                 }
                 if (session.CurrentMap.IsDancing == 2 && session.Character.IsDancing == 0)
                 {
-                    session.CurrentMap?.HandlerBroadcast("dance 2");
+                    session.CurrentMap?.Broadcast("dance 2");
                 }
                 else if (session.CurrentMap.IsDancing == 0 && session.Character.IsDancing == 1)
                 {
                     session.Character.IsDancing = 0;
-                    session.CurrentMap?.HandlerBroadcast("dance");
+                    session.CurrentMap?.Broadcast("dance");
                 }
                 foreach (Group g in Groups)
                 {
@@ -511,7 +511,7 @@ namespace OpenNos.GameObject
                         }
                         if (groupSession.Character.CharacterId == groupSession.Character.CharacterId)
                         {
-                            session.CurrentMap?.HandlerBroadcast(groupSession, groupSession.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                            session.CurrentMap?.Broadcast(groupSession, groupSession.Character.GeneratePidx(), ReceiverType.AllExceptMe);
                         }
                     }
                 }
@@ -612,7 +612,7 @@ namespace OpenNos.GameObject
                 {
                     if (grp.Characters.ElementAt(0) == session)
                     {
-                        HandlerBroadcast(session, session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, String.Empty, grp.Characters.ElementAt(1).Character.CharacterId);
+                        Broadcast(session, session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, String.Empty, grp.Characters.ElementAt(1).Character.CharacterId);
                     }
                     grp.LeaveGroup(session);
                     foreach (ClientSession groupSession in grp.Characters)
@@ -623,7 +623,7 @@ namespace OpenNos.GameObject
                             sess.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
                     }
-                    HandlerBroadcast(session.Character.GeneratePidx());
+                    Broadcast(session.Character.GeneratePidx());
                     session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                 }
                 else
@@ -634,7 +634,7 @@ namespace OpenNos.GameObject
                         {
                             sess.SendPacket("pinit 0");
                             sess.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
-                            HandlerBroadcast(sess.Character.GeneratePidx());
+                            Broadcast(sess.Character.GeneratePidx());
                         }
                     }
                     ServerManager.Instance.Groups.Remove(grp);
@@ -667,7 +667,7 @@ namespace OpenNos.GameObject
             session.SendPacket(session.Character.GenerateAt());
             session.SendPacket(session.Character.GenerateCMap());
             session.SendPacket(session.Character.GenerateMapOut());
-            session.CurrentMap?.HandlerBroadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+            session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
         }
 
         public void RequireBroadcastFromUser(ClientSession client, long characterId, string methodName)
@@ -695,8 +695,8 @@ namespace OpenNos.GameObject
                 Session.Character.Hp = 1;
                 Session.Character.Mp = 1;
                 ChangeMap(Session.Character.CharacterId);
-                HandlerBroadcast(Session, Session.Character.GenerateTp(), ReceiverType.All);
-                HandlerBroadcast(Session, Session.Character.GenerateRevive(), ReceiverType.All);
+                Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.All);
+                Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.All);
                 Session.SendPacket(Session.Character.GenerateStat());
             }
         }
@@ -720,8 +720,8 @@ namespace OpenNos.GameObject
 
         public void Shout(string message)
         {
-            HandlerBroadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            HandlerBroadcast($"msg 2 {message}");
+            Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Broadcast($"msg 2 {message}");
         }
 
         // Server

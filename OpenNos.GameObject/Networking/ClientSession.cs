@@ -208,7 +208,7 @@ namespace OpenNos.GameObject
                 // unregister from map if registered
                 if (CurrentMap != null)
                 {
-                    CurrentMap.UnregisterSession(this);
+                    CurrentMap.UnregisterSession(this.ClientId);
                     CurrentMap = null;
                 }
             }
@@ -217,7 +217,7 @@ namespace OpenNos.GameObject
             {
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }
-            ServerManager.Instance.UnregisterSession(this);
+            ServerManager.Instance.UnregisterSession(this.ClientId);
             _queue.ClearQueue();
         }
 
@@ -244,13 +244,9 @@ namespace OpenNos.GameObject
         /// <summary>
         /// Handle Broadcast from Broadcastable
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void OnSessionBroadcast(object sender, EventArgs e)
+        public void ReceiveBroadcast(BroadcastPacket sentPacket)
         {
-            BroadcastPacket sentPacket = sender as BroadcastPacket;
-
-            if (!IsDisposing)
+            if (!IsDisposing && sentPacket != null)
             {
                 switch (sentPacket.Receiver)
                 {
@@ -410,7 +406,7 @@ namespace OpenNos.GameObject
                 {
                     if (packetsplit[1] == "$.*")
                     {
-                        ServerManager.Instance.HandlerBroadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
+                        ServerManager.Instance.Broadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
                         return;
                     }
                 }

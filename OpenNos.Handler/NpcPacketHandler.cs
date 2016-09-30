@@ -431,8 +431,8 @@ namespace OpenNos.Handler
 
                         Session.Character.HasShopOpened = true;
 
-                        Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
-                        Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateShop(shopname));
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateShop(shopname));
                         Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
 
                         Session.Character.IsSitting = true;
@@ -440,7 +440,7 @@ namespace OpenNos.Handler
 
                         Session.Character.LoadSpeed();
                         Session.SendPacket(Session.Character.GenerateCond());
-                        Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateRest());
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                     }
                     else
                     {
@@ -452,15 +452,15 @@ namespace OpenNos.Handler
                 {
                     KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
                     Session.CurrentMap.UserShops.Remove(shop.Key);
-                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateShopEnd());
-                    Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateShopEnd());
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
 
                     Session.Character.IsShopping = false;
                     Session.Character.IsSitting = false;
 
                     Session.Character.LoadSpeed();
                     Session.SendPacket(Session.Character.GenerateCond());
-                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateRest());
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                 }
             }
         }

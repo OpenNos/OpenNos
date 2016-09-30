@@ -53,11 +53,11 @@ namespace OpenNos.GameObject
                     }
                     if ((int)session.Character.HPLoad() - session.Character.Hp < Hp)
                     {
-                        session.CurrentMap?.HandlerBroadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
+                        session.CurrentMap?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
                     }
                     else if ((int)session.Character.HPLoad() - session.Character.Hp > Hp)
                     {
-                        session.CurrentMap?.HandlerBroadcast(session.Character.GenerateRc(Hp));
+                        session.CurrentMap?.Broadcast(session.Character.GenerateRc(Hp));
                     }
                     session.Character.Mp += Mp;
                     session.Character.Hp += Hp;
@@ -71,7 +71,7 @@ namespace OpenNos.GameObject
                     }
                     if (inv.ItemInstance.ItemVNum == 1242 || inv.ItemInstance.ItemVNum == 5582)
                     {
-                        session.CurrentMap?.HandlerBroadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
+                        session.CurrentMap?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
                         session.Character.Hp = (int)session.Character.HPLoad();
                     }
                     else if (inv.ItemInstance.ItemVNum == 1243 || inv.ItemInstance.ItemVNum == 5583)
@@ -80,7 +80,7 @@ namespace OpenNos.GameObject
                     }
                     else if (inv.ItemInstance.ItemVNum == 1244 || inv.ItemInstance.ItemVNum == 5584)
                     {
-                        session.CurrentMap?.HandlerBroadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
+                        session.CurrentMap?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
                         session.Character.Hp = (int)session.Character.HPLoad();
                         session.Character.Mp = (int)session.Character.MPLoad();
                     }

@@ -13,28 +13,31 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Core.Collections;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public abstract class BroadcastableBase
     {
+        #region Members
+
+        /// <summary>
+        /// List of all connected clients.
+        /// </summary>
+        private readonly ThreadSafeSortedList<long, ClientSession> _sessions;
+
+        #endregion
+
         #region Instantiation
 
         public BroadcastableBase()
         {
-            Sessions = new List<ClientSession>();
             LastUnregister = DateTime.Now.AddMinutes(-1);
+            _sessions = new ThreadSafeSortedList<long, ClientSession>();
         }
-
-        #endregion
-
-        #region Events
-
-        private event EventHandler HandlerBroadcastEvent;
-
-        private event EventHandler GeneralBroadcastEvent;
 
         #endregion
 
@@ -42,67 +45,67 @@ namespace OpenNos.GameObject
 
         public DateTime LastUnregister { get; set; }
 
-        public List<ClientSession> Sessions { get; set; }
+        public List<ClientSession> Sessions
+        {
+            get
+            {
+                return _sessions.GetAllItems();
+            }
+        }
 
         #endregion
 
         #region Methods
 
-        public void HandlerBroadcast(string content)
+        public void Broadcast(string content)
         {
-            HandlerBroadcast(null, content);
+            Broadcast(null, content);
         }
 
-        public void HandlerBroadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
         {
-            try
-            {
-                HandlerBroadcastEvent?.Invoke(new BroadcastPacket(client, content, receiver, characterName, characterId), new EventArgs());
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-            }
-        }
-
-        public void GeneralBroadcast(string content)
-        {
-            GeneralBroadcast(null, content);
-        }
-
-        public void GeneralBroadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
-        {
-            try
-            {
-                GeneralBroadcastEvent?.Invoke(new BroadcastPacket(client, content, receiver, characterName, characterId), new EventArgs());
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-            }
+            //Send message to all online users
+            Task.Factory.StartNew(
+                () =>
+                {
+                    foreach (var session in _sessions.GetAllItems())
+                    {
+                        try
+                        {
+                            session.ReceiveBroadcast(new BroadcastPacket(client, content, receiver, characterName, characterId));
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(ex);
+                        }
+                    }
+                });
         }
 
         public virtual void RegisterSession(ClientSession session)
         {
-            if (session != null && !Sessions.Contains(session))
+            if (session != null)
             {
-                HandlerBroadcastEvent += session.OnSessionBroadcast;
-                GeneralBroadcastEvent += session.OnSessionBroadcast;
-                Sessions.Add(session);
+                //Create a ChatClient and store it in a collection
+                _sessions[session.ClientId] = session;
             }
         }
 
-        public virtual void UnregisterSession(ClientSession session)
+        public virtual void UnregisterSession(long clientId)
         {
-            if (session != null && Sessions.Contains(session))
+            //Get client from client list, if not in list do not continue
+            var session = _sessions[clientId];
+            if (session == null)
             {
-                HandlerBroadcastEvent -= session.OnSessionBroadcast;
-                GeneralBroadcastEvent -= session.OnSessionBroadcast;
-                LastUnregister = DateTime.Now;
-                Sessions.Remove(session);
+                return;
             }
 
-            #endregion
+            //Remove client from online clients list
+            _sessions.Remove(clientId);
+
+            LastUnregister = DateTime.Now;
         }
+
+        #endregion
     }
 }
