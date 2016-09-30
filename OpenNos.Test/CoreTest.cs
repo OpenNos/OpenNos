@@ -59,9 +59,11 @@ namespace OpenNos.Test
             PacketFactory.Initialize<WalkPacket>();
 
             // initialize new manager
-            SessionManager manager = new SessionManager(typeof(CharacterScreenPacketHandler), true);
+            SessionManager manager = new NetworkManager<TestEncryption>("127.0.0.1", 1234, typeof(CharacterScreenPacketHandler), typeof(TestEncryption), true);
             FakeNetworkClient client = new FakeNetworkClient();
             manager.AddSession(client);
+            client.ReceivePacket("test 12345");
+
         }
 
         #endregion
