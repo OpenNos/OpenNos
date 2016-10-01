@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
         private InventoryList _equipmentlist;
         private InventoryList _inventorylist;
         private bool _invisible;
-        private int _isDancing;
+        private bool _isDancing;
         private bool _issitting;
         private double _lastPortal;
         private int _lastPulse;
@@ -203,7 +203,7 @@ namespace OpenNos.GameObject
 
         public bool IsCustomSpeed { get; set; }
 
-        public int IsDancing
+        public bool IsDancing
         {
             get
             {
@@ -523,10 +523,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string Dance()
+        public void Dance()
         {
-            IsDancing = IsDancing == 0 ? 1 : 0;
-            return String.Empty;
+            IsDancing = IsDancing ? false : true;
         }
 
         public Character DeepCopy()

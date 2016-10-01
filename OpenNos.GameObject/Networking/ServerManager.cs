@@ -491,14 +491,14 @@ namespace OpenNos.GameObject
                 {
                     session.SendPacket(session.Character.GenerateScal());
                 }
-                if (session.CurrentMap.IsDancing == 2 && session.Character.IsDancing == 0)
+                if (session.CurrentMap.IsDancing && !session.Character.IsDancing)
                 {
                     session.CurrentMap?.HandlerBroadcast("dance 2");
                 }
-                else if (session.CurrentMap.IsDancing == 0 && session.Character.IsDancing == 1)
+                else if (!session.CurrentMap.IsDancing && session.Character.IsDancing)
                 {
-                    session.Character.IsDancing = 0;
-                    session.CurrentMap?.HandlerBroadcast("dance");
+                    session.Character.IsDancing = false;
+                    session.CurrentMap?.HandlerBroadcast("dance 0");
                 }
                 foreach (Group g in Groups)
                 {

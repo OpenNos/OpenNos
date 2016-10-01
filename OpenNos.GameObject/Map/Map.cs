@@ -113,7 +113,7 @@ namespace OpenNos.GameObject
 
         public ConcurrentDictionary<long, MapItem> DroppedList { get; set; }
 
-        public int IsDancing { get; set; }
+        public bool IsDancing { get; set; }
 
         public JumpPointParam JumpPointParameters { get; set; }
 
