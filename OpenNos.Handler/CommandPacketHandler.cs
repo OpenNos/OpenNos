@@ -769,17 +769,15 @@ namespace OpenNos.Handler
         public void MapDance(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.CurrentMap.IsDancing = Session.CurrentMap.IsDancing == 0 ? 2 : 0;
-            if (Session.CurrentMap.IsDancing == 2)
+            Session.CurrentMap.IsDancing = Session.CurrentMap.IsDancing ? false : true;
+            if (Session.CurrentMap.IsDancing)
             {
                 Session.Character.Dance();
-                ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ServerManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "Dance"));
                 Session.CurrentMap?.Broadcast("dance 2");
             }
             else
             {
                 Session.Character.Dance();
-                ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ServerManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
                 Session.CurrentMap?.Broadcast("dance");
             }
         }
