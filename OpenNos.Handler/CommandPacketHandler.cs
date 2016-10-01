@@ -408,7 +408,17 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME(*) VNUM AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$backpack", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
+        }
+
+        [Packet("$backpack")]
+        public void BackPack(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            Session.Character.BackPack = Session.Character.BackPack == 0 ? 1 : 0;
+            Session.CurrentMap?.Broadcast(Session.Character.GenerateExts());
+            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
         [Packet("$CreateItem")]
