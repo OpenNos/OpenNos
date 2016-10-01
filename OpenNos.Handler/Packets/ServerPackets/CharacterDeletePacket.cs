@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
+    [Header("Char_DEL")]
     public class CharacterDeletePacket : PacketBase
     {
         #region Properties

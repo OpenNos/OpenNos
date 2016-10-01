@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
             SessionId = 0;
 
             // register for NetworkClient events
-            _client.MessageReceived += NetworkClient_MessageReceived;
+            _client.MessageReceived += OnNetworkClientMessageReceived;
 
             // start queue
             _queue = new SequentialItemProcessor<byte[]>(HandlePacket);
@@ -208,7 +208,7 @@ namespace OpenNos.GameObject
                 // unregister from map if registered
                 if (CurrentMap != null)
                 {
-                    CurrentMap.UnregisterSession(this);
+                    CurrentMap.UnregisterSession(this.ClientId);
                     CurrentMap = null;
                 }
             }
@@ -217,7 +217,7 @@ namespace OpenNos.GameObject
             {
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }
-            ServerManager.Instance.UnregisterSession(this);
+            ServerManager.Instance.UnregisterSession(this.ClientId);
             _queue.ClearQueue();
         }
 
@@ -244,13 +244,9 @@ namespace OpenNos.GameObject
         /// <summary>
         /// Handle Broadcast from Broadcastable
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void OnSessionBroadcast(object sender, EventArgs e)
+        public void ReceiveBroadcast(BroadcastPacket sentPacket)
         {
-            BroadcastPacket sentPacket = sender as BroadcastPacket;
-
-            if (!IsDisposing)
+            if (!IsDisposing && sentPacket != null)
             {
                 switch (sentPacket.Receiver)
                 {
@@ -267,7 +263,9 @@ namespace OpenNos.GameObject
 
                     case ReceiverType.OnlySomeone:
                         {
-                            if (this.Character.CharacterId == sentPacket.SomeonesCharacterId || this.Character.Name == sentPacket.SomeonesCharacterName)
+                            if ((sentPacket.SomeonesCharacterId > 0 || !String.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
+                                && (this.Character != null && (this.Character.CharacterId == sentPacket.SomeonesCharacterId
+                                || this.Character.Name == sentPacket.SomeonesCharacterName)))
                             {
                                 SendPacket(sentPacket.Content);
                             }
@@ -410,7 +408,7 @@ namespace OpenNos.GameObject
                 {
                     if (packetsplit[1] == "$.*")
                     {
-                        ServerManager.Instance.HandlerBroadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
+                        ServerManager.Instance.Broadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
                         return;
                     }
                 }
@@ -509,7 +507,7 @@ namespace OpenNos.GameObject
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NetworkClient_MessageReceived(object sender, MessageEventArgs e)
+        private void OnNetworkClientMessageReceived(object sender, MessageEventArgs e)
         {
             var message = e.Message as ScsRawDataMessage;
             if (message == null)

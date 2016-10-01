@@ -3,6 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
+    [Header("withdraw")]
     public class WithDrawPacket : PacketBase
     {
         #region Properties

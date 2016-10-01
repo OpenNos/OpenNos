@@ -3,6 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
+    [Header("remove")]
     public class RemovePacket : PacketBase
     {
         #region Properties

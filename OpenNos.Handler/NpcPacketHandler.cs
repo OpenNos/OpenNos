@@ -431,8 +431,8 @@ namespace OpenNos.Handler
 
                         Session.Character.HasShopOpened = true;
 
-                        Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
-                        Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateShop(shopname));
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateShop(shopname));
                         Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
 
                         Session.Character.IsSitting = true;
@@ -440,7 +440,7 @@ namespace OpenNos.Handler
 
                         Session.Character.LoadSpeed();
                         Session.SendPacket(Session.Character.GenerateCond());
-                        Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateRest());
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                     }
                     else
                     {
@@ -452,15 +452,15 @@ namespace OpenNos.Handler
                 {
                     KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
                     Session.CurrentMap.UserShops.Remove(shop.Key);
-                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateShopEnd());
-                    Session.CurrentMap?.HandlerBroadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateShopEnd());
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
 
                     Session.Character.IsShopping = false;
                     Session.Character.IsSitting = false;
 
                     Session.Character.LoadSpeed();
                     Session.SendPacket(Session.Character.GenerateCond());
-                    Session.CurrentMap?.HandlerBroadcast(Session.Character.GenerateRest());
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                 }
             }
         }
@@ -807,17 +807,17 @@ namespace OpenNos.Handler
                         return;
                     }
                     MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
-                    NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
-
-                    if (mapobject.Drops.Any(s => s.MonsterVNum != null) && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5))
+                    if (npc == null)
+                        return;
+                    if (npc.Npc.Drops.Any(s => s.MonsterVNum != null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                     {
                         Session.SendPacket(Session.Character.GenerateDelay(5000, 4, $"#guri^400^{npc.MapNpcId}"));
                     }
-                    else if (mapobject.VNumRequired > 0 && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5))
+                    else if (npc.Npc.VNumRequired > 0 && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                     {
                         Session.SendPacket(Session.Character.GenerateDelay(6000, 4, $"#guri^400^{npc.MapNpcId}"));
                     }
-                    else if (mapobject.MaxHP == 0 && !mapobject.Drops.Any(s => s.MonsterVNum != null) && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5))
+                    else if (npc.Npc.MaxHP == 0 && !npc.Npc.Drops.Any(s => s.MonsterVNum != null) && npc.Npc.Race == 8 && (npc.Npc.RaceType == 7 || npc.Npc.RaceType == 5))
                     {
                         // #guri^710^X^Y^MapNpcId
                         Session.SendPacket(Session.Character.GenerateDelay(5000, 1, $"#guri^710^162^85^{npc.MapNpcId}"));

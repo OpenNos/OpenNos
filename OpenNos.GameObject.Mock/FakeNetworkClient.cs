@@ -2,11 +2,34 @@
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace OpenNos.GameObject.Mock
 {
     public class FakeNetworkClient : INetworkClient
     {
+        #region Members
+
+        private long _clientId;
+        private bool _isConnected;
+        private Queue<string> _receivedPackets;
+        private Queue<string> _sentPackets;
+        private long lastKeepAliveIdentitiy;
+
+        #endregion
+
+        #region Instantiation
+
+        public FakeNetworkClient()
+        {
+            _clientId = 0;
+            _sentPackets = new Queue<string>();
+            _receivedPackets = new Queue<string>();
+            lastKeepAliveIdentitiy = 1;
+        }
+
+        #endregion
+
         #region Events
 
         public event EventHandler<MessageEventArgs> MessageReceived;
@@ -19,12 +42,19 @@ namespace OpenNos.GameObject.Mock
         {
             get
             {
-                throw new NotImplementedException();
-            }
+                if (_clientId == 0)
+                {
+                    _clientId = GameObjectMockHelper.Instance.GetNextClientId();
+                }
 
+                return _clientId;
+            }
             set
             {
-                throw new NotImplementedException();
+                if (value != _clientId)
+                {
+                    _clientId = value;
+                }
             }
         }
 
@@ -32,7 +62,7 @@ namespace OpenNos.GameObject.Mock
         {
             get
             {
-                throw new NotImplementedException();
+                return "127.0.0.1";
             }
         }
 
@@ -40,22 +70,11 @@ namespace OpenNos.GameObject.Mock
         {
             get
             {
-                throw new NotImplementedException();
+                return _isConnected;
             }
         }
 
-        public bool IsDisposing
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool IsDisposing { get; set; }
 
         #endregion
 
@@ -63,27 +82,42 @@ namespace OpenNos.GameObject.Mock
 
         public void Disconnect()
         {
-            throw new NotImplementedException();
+            _isConnected = false;
         }
 
         public void Initialize(EncryptionBase encryptor)
         {
-            throw new NotImplementedException();
+            //NOTHING TO DO HERE
+        }
+
+        /// <summary>
+        /// Send a Packet to the Server as the Fake client receives it and triggers a Handler method.
+        /// </summary>
+        /// <param name="packet"></param>
+        public void ReceivePacket(string packet)
+        {
+            UTF8Encoding encoding = new UTF8Encoding();
+            byte[] buf = encoding.GetBytes(String.Format("{0} {1}", packet));
+            MessageReceived?.Invoke(this, new MessageEventArgs(new ScsRawDataMessage(buf)));
+            lastKeepAliveIdentitiy = lastKeepAliveIdentitiy + 1;
         }
 
         public void SendPacket(string packet)
         {
-            throw new NotImplementedException();
+            _sentPackets.Enqueue(packet);
         }
 
         public void SendPacketFormat(string packet, params object[] param)
         {
-            throw new NotImplementedException();
+            _sentPackets.Enqueue(String.Format(packet, param));
         }
 
         public void SendPackets(IEnumerable<string> packets)
         {
-            throw new NotImplementedException();
+            foreach (string packet in packets)
+            {
+                SendPacket(packet);
+            }
         }
 
         #endregion

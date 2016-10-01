@@ -3,6 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.Handler.Packets.ServerPackets
 {
+    [Header("put")]
     public class PutPacket : PacketBase
     {
         #region Properties
