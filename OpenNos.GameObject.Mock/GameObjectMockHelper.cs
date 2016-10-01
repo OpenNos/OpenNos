@@ -30,6 +30,5 @@
             nextClientId = nextClientId + 1;
             return nextClientId;
         }
-
     }
 }

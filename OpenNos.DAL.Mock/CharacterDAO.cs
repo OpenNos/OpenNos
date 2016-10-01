@@ -3,61 +3,74 @@ using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
-    public class CharacterDAO : ICharacterDAO
+    public class CharacterDAO : BaseDAO<CharacterDTO>, ICharacterDAO
     {
         #region Methods
 
         public DeleteResult DeleteByPrimaryKey(long accountId, byte characterSlot)
         {
-            throw new NotImplementedException();
+            CharacterDTO dto = LoadBySlot(accountId, characterSlot);
+            Container.Remove(dto);
+            return DeleteResult.Deleted;
         }
 
         public IEnumerable<CharacterDTO> GetTopComplimented()
         {
-            throw new NotImplementedException();
+            return Enumerable.Empty<CharacterDTO>();
         }
 
         public IEnumerable<CharacterDTO> GetTopPoints()
         {
-            throw new NotImplementedException();
+            return Enumerable.Empty<CharacterDTO>();
         }
 
         public IEnumerable<CharacterDTO> GetTopReputation()
         {
-            throw new NotImplementedException();
+            return Enumerable.Empty<CharacterDTO>();
         }
 
         public SaveResult InsertOrUpdate(ref CharacterDTO character)
         {
-            throw new NotImplementedException();
+            CharacterDTO dto = LoadById(character.CharacterId);
+            if (dto != null)
+            {
+                dto = character;
+                return SaveResult.Updated;
+            }
+            else
+            {
+                Insert(character);
+                return SaveResult.Inserted;
+            }
         }
 
         public int IsReputHero(long characterId)
         {
-            throw new NotImplementedException();
+            return 10000;
         }
 
         public IEnumerable<CharacterDTO> LoadByAccount(long accountId)
         {
-            throw new NotImplementedException();
+            return Container.Where(c => c.AccountId == accountId);
         }
 
         public CharacterDTO LoadById(long characterId)
         {
-            throw new NotImplementedException();
+            return Container.SingleOrDefault(c => c.CharacterId == characterId);
         }
 
         public CharacterDTO LoadByName(string name)
         {
-            throw new NotImplementedException();
+            return Container.SingleOrDefault(c => c.Name == name);
         }
 
         public CharacterDTO LoadBySlot(long accountId, byte slot)
         {
-            throw new NotImplementedException();
+            return Container.SingleOrDefault(c => c.AccountId == accountId && c.Slot == slot);
         }
 
         #endregion

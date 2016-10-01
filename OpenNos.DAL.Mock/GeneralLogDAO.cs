@@ -2,31 +2,27 @@
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
-    public class GeneralLogDAO : IGeneralLogDAO
+    public class GeneralLogDAO : BaseDAO<GeneralLogDTO>, IGeneralLogDAO
     {
         #region Methods
 
         public bool IdAlreadySet(long id)
         {
-            throw new NotImplementedException();
-        }
-
-        public GeneralLogDTO Insert(GeneralLogDTO generallog)
-        {
-            throw new NotImplementedException();
+            return Container.Any(gl => gl.LogId == id);
         }
 
         public IEnumerable<GeneralLogDTO> LoadByAccount(long accountId)
         {
-            throw new NotImplementedException();
+            return Container.Where(c => c.AccountId == accountId);
         }
 
         public IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, long? CharacterId)
         {
-            throw new NotImplementedException();
+            return Enumerable.Empty<GeneralLogDTO>();
         }
 
         public void SetCharIdNull(long? CharacterId)

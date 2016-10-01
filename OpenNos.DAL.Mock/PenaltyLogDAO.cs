@@ -1,43 +1,41 @@
 ﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
-    public class PenaltyLogDAO : IPenaltyLogDAO
+    public class PenaltyLogDAO : BaseDAO<PenaltyLogDTO>, IPenaltyLogDAO
     {
         #region Methods
 
         public DeleteResult Delete(int penaltylogId)
         {
-            throw new NotImplementedException();
+            PenaltyLogDTO dto = LoadById(penaltylogId);
+            Container.Remove(dto);
+            return DeleteResult.Deleted;
         }
 
         public bool IdAlreadySet(long id)
         {
-            throw new NotImplementedException();
-        }
-
-        public PenaltyLogDTO Insert(PenaltyLogDTO penaltylog)
-        {
-            throw new NotImplementedException();
+            return Container.Any(pl => pl.PenaltyLogId == id);
         }
 
         public IEnumerable<PenaltyLogDTO> LoadByAccount(long accountId)
         {
-            throw new NotImplementedException();
+            return Container.Where(pl => pl.AccountId == accountId);
         }
 
         public PenaltyLogDTO LoadById(int penaltylogId)
         {
-            throw new NotImplementedException();
+            return Container.SingleOrDefault(p => p.PenaltyLogId == penaltylogId);
         }
 
         public void Update(PenaltyLogDTO penaltylog)
         {
-            throw new NotImplementedException();
+            PenaltyLogDTO dto = LoadById(penaltylog.PenaltyLogId);
+            dto = penaltylog;
         }
 
         #endregion

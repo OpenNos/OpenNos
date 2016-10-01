@@ -56,7 +56,7 @@ namespace OpenNos.Login
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));
                     try
                     {
-                        ServiceFactory.Instance.CommunicationService.Open();
+                        ServiceFactory.Instance.Initialize();
                         NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>("127.0.0.1", port, typeof(LoginPacketHandler), typeof(LoginEncryption), false);
 
                         // refresh WCF

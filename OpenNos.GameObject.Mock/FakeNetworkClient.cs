@@ -49,6 +49,7 @@ namespace OpenNos.GameObject.Mock
 
                 return _clientId;
             }
+
             set
             {
                 if (value != _clientId)
@@ -76,6 +77,22 @@ namespace OpenNos.GameObject.Mock
 
         public bool IsDisposing { get; set; }
 
+        public Queue<string> ReceivedPackets
+        {
+            get
+            {
+                return _receivedPackets;
+            }
+        }
+
+        public Queue<string> SentPackets
+        {
+            get
+            {
+                return _sentPackets;
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -97,7 +114,7 @@ namespace OpenNos.GameObject.Mock
         public void ReceivePacket(string packet)
         {
             UTF8Encoding encoding = new UTF8Encoding();
-            byte[] buf = encoding.GetBytes(String.Format("{0} {1}", packet));
+            byte[] buf = encoding.GetBytes(String.Format("{0} {1}", lastKeepAliveIdentitiy, packet));
             MessageReceived?.Invoke(this, new MessageEventArgs(new ScsRawDataMessage(buf)));
             lastKeepAliveIdentitiy = lastKeepAliveIdentitiy + 1;
         }

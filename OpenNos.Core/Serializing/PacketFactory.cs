@@ -225,7 +225,17 @@ namespace OpenNos.Core
             // enum should be casted to number
             if (packetPropertyType.BaseType != null && packetPropertyType.BaseType.Equals(typeof(Enum)))
             {
-                return Enum.Parse(packetPropertyType, currentValue);
+                object convertedValue = null;
+                try
+                {
+                    convertedValue =  Enum.Parse(packetPropertyType, currentValue);
+                }
+                catch(Exception)
+                {
+                    Logger.Log.Warn($"Could not convert value {currentValue} to type {packetPropertyType.Name}");
+                }
+
+                return convertedValue;
             }
             else if (packetPropertyType.Equals(typeof(bool)))
             {
