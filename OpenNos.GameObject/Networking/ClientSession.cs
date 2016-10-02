@@ -525,8 +525,8 @@ namespace OpenNos.GameObject
 
             long currentPacketReceive = DateTime.Now.Ticks;
 
-            // ignore a packet which has been sent 10ms after the last one
-            if (currentPacketReceive - lastPacketReceive < 300000 && !IsLocalhost)
+            // ignore a packet which has been sent 40ms after the last one
+            if (currentPacketReceive - lastPacketReceive < 400000 && !IsLocalhost)
             {
                 Logger.Log.Warn($"[AntiSpam]: Packet has been ignored, access was too fast. Last: {lastPacketReceive}, Current: {currentPacketReceive}, Difference: {currentPacketReceive - lastPacketReceive}, SessionId: {SessionId}");
                 Disconnect();

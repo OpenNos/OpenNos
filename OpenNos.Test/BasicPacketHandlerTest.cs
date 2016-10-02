@@ -31,8 +31,7 @@ namespace OpenNos.Test
             Assert.AreEqual(walkPacket.YCoordinate, movePacket.MapY);
             Assert.AreEqual(walkPacket.Speed, movePacket.Speed);
 
-            Assert.IsTrue(true);
-            Environment.Exit(0);
+            return;
         }
 
         #endregion
