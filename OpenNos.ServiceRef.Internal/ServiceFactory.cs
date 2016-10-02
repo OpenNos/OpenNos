@@ -12,7 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.ServiceRef.Internal.CommunicationServiceReference;
+using System;
 using System.ServiceModel;
+using System.ServiceModel.Description;
 
 namespace OpenNos.ServiceRef.Internal
 {
@@ -21,9 +24,10 @@ namespace OpenNos.ServiceRef.Internal
         #region Members
 
         private static ServiceFactory _instance;
-        private CommunicationServiceReference.CommunicationServiceClient _communicationServiceClient;
+        private ICommunicationService _communicationServiceClient;
         private CommunicationCallback _instanceCallback;
         private InstanceContext _instanceContext;
+        private bool _useMock;
 
         #endregion
 
@@ -34,6 +38,7 @@ namespace OpenNos.ServiceRef.Internal
             // callback instance will be instantiated once per process
             _instanceCallback = new CommunicationCallback();
             _instanceContext = new InstanceContext(_instanceCallback);
+            _useMock = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["UseMock"]);
         }
 
         #endregion
@@ -61,16 +66,38 @@ namespace OpenNos.ServiceRef.Internal
             }
         }
 
-        public CommunicationServiceReference.CommunicationServiceClient CommunicationService
+        public ICommunicationService CommunicationService
         {
             get
             {
-                if (_communicationServiceClient == null || _communicationServiceClient.State == CommunicationState.Faulted)
+                // reinitialize faulted communicationservice (maybe we should find the cause of the faulted state)
+                if (!_useMock && _communicationServiceClient != null && _communicationServiceClient is CommunicationServiceClient 
+                    && ((CommunicationServiceClient)_communicationServiceClient).State == CommunicationState.Faulted)
                 {
-                    _communicationServiceClient = new CommunicationServiceReference.CommunicationServiceClient(_instanceContext);
+                     _communicationServiceClient = new CommunicationServiceClient(_instanceContext);
+                }
+
+                if (_communicationServiceClient == null)
+                {
+                    if (!_useMock)
+                    {
+                        _communicationServiceClient = new CommunicationServiceClient(_instanceContext);
+                    }
+                    else
+                    {
+                        _communicationServiceClient = new FakeCommunicationService();
+                    }
                 }
 
                 return _communicationServiceClient;
+            }
+        }
+
+        public void Initialize()
+        {
+            if (!_useMock)
+            {
+                ((CommunicationServiceClient)CommunicationService).Open();
             }
         }
 

@@ -40,6 +40,7 @@
       <HintPath>..\OpenNos.WCF\bin\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -61,6 +62,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="TestEncryption.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
@@ -75,6 +77,14 @@
       <Project>{D8C8A266-3D46-42C5-A492-28C75DB85BA8}</Project>
       <Name>OpenNos.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
+      <Project>{F1071DED-3D92-4416-9B9C-8664441ADE64}</Project>
+      <Name>OpenNos.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.Domain\OpenNos.Domain.csproj">
+      <Project>{20ADDDDD-DAD9-44F3-9BEB-026C73090660}</Project>
+      <Name>OpenNos.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenNos.GameObject.Mock\OpenNos.GameObject.Mock.csproj">
       <Project>{DC71A6A7-AD0E-4CB0-A2DC-3A79B49BF867}</Project>
       <Name>OpenNos.GameObject.Mock</Name>
@@ -86,6 +96,10 @@
     <ProjectReference Include="..\OpenNos.Handler\OpenNos.Handler.csproj">
       <Project>{A6748A8D-0D96-41B9-A110-DBF692AFC56D}</Project>
       <Name>OpenNos.Handler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.ServiceRef.Internal\OpenNos.ServiceRef.Internal.csproj">
+      <Project>{C4D62DCF-483B-4B8A-9BB6-651D07FF467B}</Project>
+      <Name>OpenNos.ServiceRef.Internal</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

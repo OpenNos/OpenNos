@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AccountDAO.cs" />
     <Compile Include="Base\BaseDAO.cs" />
+    <Compile Include="Base\SynchronizableBaseDAO.cs" />
     <Compile Include="CellonOptionDAO.cs" />
     <Compile Include="CharacterDAO.cs" />
     <Compile Include="CharacterSkillDAO.cs" />

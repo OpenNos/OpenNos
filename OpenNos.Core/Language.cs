@@ -23,7 +23,6 @@ namespace OpenNos.Core
     {
         #region Members
 
-        private static readonly object MyLock = new object();
         private static Language instance = null;
         private ResourceManager _manager;
         private CultureInfo _resourceCulture;

@@ -2,10 +2,11 @@
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
-    public class AccountDAO : IAccountDAO
+    public class AccountDAO : BaseDAO<AccountDTO>, IAccountDAO
     {
         #region Methods
 
@@ -16,22 +17,32 @@ namespace OpenNos.DAL.Mock
 
         public SaveResult InsertOrUpdate(ref AccountDTO account)
         {
-            throw new NotImplementedException();
+            AccountDTO dto = LoadById(account.AccountId);
+            if (dto != null)
+            {
+                dto = account;
+                return SaveResult.Updated;
+            }
+            else
+            {
+                Insert(account);
+                return SaveResult.Inserted;
+            }
         }
 
         public AccountDTO LoadById(long accountId)
         {
-            throw new NotImplementedException();
+            return Container.SingleOrDefault(a => a.AccountId == accountId);
         }
 
-        public AccountDTO LoadByName(string Name)
+        public AccountDTO LoadByName(string name)
         {
-            throw new NotImplementedException();
+            return Container.SingleOrDefault(a => a.Name == name);
         }
 
         public AccountDTO LoadBySessionId(int sessionId)
         {
-            throw new NotImplementedException();
+            return Container.SingleOrDefault(a => a.LastSession == sessionId);
         }
 
         public void LogIn(string name)
@@ -41,7 +52,8 @@ namespace OpenNos.DAL.Mock
 
         public void UpdateLastSessionAndIp(string name, int session, string ip)
         {
-            throw new NotImplementedException();
+            AccountDTO account = Container.SingleOrDefault(a => a.Name == name);
+            account.LastSession = session;
         }
 
         public void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData)

@@ -95,7 +95,7 @@ namespace OpenNos.World
 
             try
             {
-                ServiceFactory.Instance.CommunicationService.Open();
+                ServiceFactory.Instance.Initialize();
                 exitHandler += new EventHandler(ExitHandler);
                 SetConsoleCtrlHandler(exitHandler, true);
                 NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>("127.0.0.1", port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);

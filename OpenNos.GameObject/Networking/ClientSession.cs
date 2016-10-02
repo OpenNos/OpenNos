@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
             SessionId = 0;
 
             // register for NetworkClient events
-            _client.MessageReceived += NetworkClient_MessageReceived;
+            _client.MessageReceived += OnNetworkClientMessageReceived;
 
             // start queue
             _queue = new SequentialItemProcessor<byte[]>(HandlePacket);
@@ -180,6 +180,14 @@ namespace OpenNos.GameObject
             get
             {
                 return IpAddress.Contains("127.0.0.1");
+            }
+        }
+
+        public bool IsOnMap
+        {
+            get
+            {
+                return CurrentMap != null;
             }
         }
 
@@ -507,7 +515,7 @@ namespace OpenNos.GameObject
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NetworkClient_MessageReceived(object sender, MessageEventArgs e)
+        private void OnNetworkClientMessageReceived(object sender, MessageEventArgs e)
         {
             var message = e.Message as ScsRawDataMessage;
             if (message == null)
