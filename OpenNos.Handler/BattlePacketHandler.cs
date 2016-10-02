@@ -431,23 +431,17 @@ namespace OpenNos.Handler
                 }
             }
         }
-        [SuppressMessage("Microsoft.StyleCop.CSharp.NamingRules", "*", Justification = "W.I.P")]
-        [SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "*", Justification = "W.I.P")]
-        [SuppressMessage("Microsoft.StyleCop.CSharp.MaintainabilityRules", "*", Justification = "W.I.P")]
-        [SuppressMessage("Microsoft.StyleCop.CSharp.OrderingRules", "*", Justification = "W.I.P")]
-        [SuppressMessage("Microsoft.StyleCop.CSharp.ReadabilityRules", "*", Justification = "W.I.P")]
-        [SuppressMessage("Microsoft.StyleCop.CSharp.SpacingRules", "*", Justification = "W.I.P")]
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "*", Justification = "W.I.P")]
+
         private void GenerateKillBonus(int monsterid)
         {
-            MapMonster monsterToAttack = Session.CurrentMap.GetMonster( monsterid);
+            MapMonster monsterToAttack = Session.CurrentMap.GetMonster(monsterid);
             if (monsterToAttack == null || monsterToAttack.CurrentHp > 0)
+            {
                 return;
-
+            }
             Random random = new Random();
-          
 
-            //owner set
+            // owner set
             long? Owner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?)null;
             Group gr = null;
             if (Owner != null)
@@ -455,13 +449,14 @@ namespace OpenNos.Handler
                 gr = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)Owner));
             }
 
-            //end owner set
+            // end owner set
             int i = 1;
             List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMap.MapTypes.FirstOrDefault(m => m.MapTypeId == s.MapTypeId) != null || (s.MapTypeId == null)).ToList();
             if (monsterToAttack.Monster.MonsterType != MonsterType.Special)
             {
                 int RateDrop = ServerManager.DropRate;
                 int x = 0;
+
                 foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
                 {
                     if (x < 4)
@@ -549,6 +544,7 @@ namespace OpenNos.Handler
                 }
             }
         }
+
         [SuppressMessage("Microsoft.StyleCop.CSharp.NamingRules", "*", Justification = "W.I.P")]
         [SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "*", Justification = "W.I.P")]
         [SuppressMessage("Microsoft.StyleCop.CSharp.MaintainabilityRules", "*", Justification = "W.I.P")]

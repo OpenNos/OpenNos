@@ -157,9 +157,9 @@ namespace OpenNos.Test
                     }
                 }
 
-                if (startTime.AddSeconds(timeout) <= DateTime.Now) //timing out
+                if (startTime.AddSeconds(timeout) <= DateTime.Now)
                 {
-                    return packets;
+                    return packets; // timing out
                 }
             }
         }

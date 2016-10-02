@@ -317,7 +317,7 @@ namespace OpenNos.Core
             {
                 string header = packetBaseType.GetCustomAttribute<HeaderAttribute>()?.Identification;
 
-                if(String.IsNullOrEmpty(header))
+                if (String.IsNullOrEmpty(header))
                 {
                     throw new Exception($"Packet header cannot be empty. PacketType: {packetBaseType.Name}");
                 }

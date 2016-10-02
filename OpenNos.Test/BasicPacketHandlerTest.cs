@@ -16,12 +16,12 @@ namespace OpenNos.Test
         [TestMethod]
         public void TestWalkMove()
         {
-            //login, create character, start game
+            // login, create character, start game
             FakeNetworkClient client = HandlerTestHelper.InitializeTestEnvironment();
 
             WalkPacket walkPacket = new WalkPacket() { Speed = 11, XCoordinate = 89, YCoordinate = 126 };
 
-            //send walkpacket to client
+            // send walkpacket to client
             client.ReceivePacket(walkPacket);
 
             string mvPacket = HandlerTestHelper.WaitForPacket(client, "mv");
