@@ -526,7 +526,7 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            long currentPacketReceive = DateTime.Now.Ticks;
+            long currentPacketReceive = e.ReceivedTimestamp.Ticks;
 
             // ignore a packet which has been sent after the last one
             if (IsAuthenticated && currentPacketReceive - lastPacketReceive < 250000 && !IsLocalhost)
@@ -537,7 +537,7 @@ namespace OpenNos.GameObject
             }
 
             _queue.EnqueueMessage(message.MessageData);
-            lastPacketReceive = DateTime.Now.Ticks;
+            lastPacketReceive = e.ReceivedTimestamp.Ticks;
         }
 
         private void TriggerHandler(string packetHeader, string packet, bool force)

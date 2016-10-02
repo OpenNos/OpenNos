@@ -294,11 +294,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// <param name="message">Received message</param>
         protected virtual void OnMessageReceived(IScsMessage message)
         {
-            var handler = MessageReceived;
-            if (handler != null)
-            {
-                handler(this, new MessageEventArgs(message));
-            }
+            MessageReceived?.Invoke(this, new MessageEventArgs(message, DateTime.Now));
         }
 
         /// <summary>
@@ -310,7 +306,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             var handler = MessageSent;
             if (handler != null)
             {
-                handler(this, new MessageEventArgs(message));
+                handler(this, new MessageEventArgs(message, DateTime.Now));
             }
         }
 

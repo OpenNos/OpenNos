@@ -205,7 +205,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                     // Raise MessageReceived event for all received messages
                     foreach (var message in messages)
                     {
-                        OnMessageReceived(message);
+                        OnMessageReceived(message, DateTime.Now);
                     }
                 }
                 else

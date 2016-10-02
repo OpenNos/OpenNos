@@ -115,7 +115,7 @@ namespace OpenNos.GameObject.Mock
         {
             UTF8Encoding encoding = new UTF8Encoding();
             byte[] buf = encoding.GetBytes(String.Format("{0} {1}", lastKeepAliveIdentitiy, packet));
-            MessageReceived?.Invoke(this, new MessageEventArgs(new ScsRawDataMessage(buf)));
+            MessageReceived?.Invoke(this, new MessageEventArgs(new ScsRawDataMessage(buf), DateTime.Now));
             lastKeepAliveIdentitiy = lastKeepAliveIdentitiy + 1;
         }
 

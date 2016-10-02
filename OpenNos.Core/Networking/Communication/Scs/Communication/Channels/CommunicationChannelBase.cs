@@ -124,24 +124,16 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         /// </summary>
         protected virtual void OnDisconnected()
         {
-            var handler = Disconnected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            Disconnected?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
         /// Raises MessageReceived event.
         /// </summary>
         /// <param name="message">Received message</param>
-        protected virtual void OnMessageReceived(IScsMessage message)
+        protected virtual void OnMessageReceived(IScsMessage message, DateTime receivedTimestamp)
         {
-            var handler = MessageReceived;
-            if (handler != null)
-            {
-                handler(this, new MessageEventArgs(message));
-            }
+            MessageReceived?.Invoke(this, new MessageEventArgs(message, receivedTimestamp));
         }
 
         /// <summary>
@@ -150,11 +142,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         /// <param name="message">Received message</param>
         protected virtual void OnMessageSent(IScsMessage message)
         {
-            var handler = MessageSent;
-            if (handler != null)
-            {
-                handler(this, new MessageEventArgs(message));
-            }
+            MessageSent?.Invoke(this, new MessageEventArgs(message, DateTime.Now));
         }
 
         /// <summary>

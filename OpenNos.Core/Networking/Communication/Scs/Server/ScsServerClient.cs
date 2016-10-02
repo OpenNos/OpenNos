@@ -158,7 +158,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
             var handler = MessageSent;
             if (handler != null)
             {
-                handler(this, new MessageEventArgs(message));
+                handler(this, new MessageEventArgs(message, DateTime.Now));
             }
         }
 
@@ -220,7 +220,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
             var handler = MessageReceived;
             if (handler != null)
             {
-                handler(this, new MessageEventArgs(message));
+                handler(this, new MessageEventArgs(message, DateTime.Now));
             }
         }
 
