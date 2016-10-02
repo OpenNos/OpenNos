@@ -1332,53 +1332,56 @@ namespace OpenNos.Handler
         [Packet("$Summon")]
         public void Summon(string packet)
         {
-            Random random = new Random();
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            short vnum = 0;
-            byte qty = 1, move = 0;
-            if (packetsplit.Length == 5 && short.TryParse(packetsplit[2], out vnum) && byte.TryParse(packetsplit[3], out qty) && byte.TryParse(packetsplit[4], out move))
+            if (Session.IsOnMap)
             {
-                NpcMonster npcmonster = ServerManager.GetNpc(vnum);
-                if (npcmonster == null)
+                Random random = new Random();
+                Logger.Debug(packet, Session.SessionId);
+                string[] packetsplit = packet.Split(' ');
+                short vnum = 0;
+                byte qty = 1, move = 0;
+                if (packetsplit.Length == 5 && short.TryParse(packetsplit[2], out vnum) && byte.TryParse(packetsplit[3], out qty) && byte.TryParse(packetsplit[4], out move))
                 {
-                    return;
-                }
-                Map map = Session.CurrentMap;
-                for (int i = 0; i < qty; i++)
-                {
-                    short mapx;
-                    short mapy;
-                    List<MapCell> Possibilities = new List<MapCell>();
-                    for (short x = -4; x < 5; x++)
+                    NpcMonster npcmonster = ServerManager.GetNpc(vnum);
+                    if (npcmonster == null)
                     {
-                        for (short y = -4; y < 5; y++)
-                        {
-                            Possibilities.Add(new MapCell() { X = x, Y = y });
-                        }
+                        return;
                     }
-                    foreach (MapCell possibilitie in Possibilities.OrderBy(s => random.Next()))
+                    Map map = Session.CurrentMap;
+                    for (int i = 0; i < qty; i++)
                     {
-                        mapx = (short)(Session.Character.MapX + possibilitie.X);
-                        mapy = (short)(Session.Character.MapY + possibilitie.Y);
-                        if (!Session.CurrentMap.IsBlockedZone(mapx, mapy))
+                        short mapx;
+                        short mapy;
+                        List<MapCell> Possibilities = new List<MapCell>();
+                        for (short x = -4; x < 5; x++)
                         {
-                            break;
+                            for (short y = -4; y < 5; y++)
+                            {
+                                Possibilities.Add(new MapCell() { X = x, Y = y });
+                            }
                         }
-                    }
+                        foreach (MapCell possibilitie in Possibilities.OrderBy(s => random.Next()))
+                        {
+                            mapx = (short)(Session.Character.MapX + possibilitie.X);
+                            mapy = (short)(Session.Character.MapY + possibilitie.Y);
+                            if (!Session.CurrentMap.IsBlockedZone(mapx, mapy))
+                            {
+                                break;
+                            }
+                        }
 
-                    // Replace by MAPPING
-                    MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
-                    MapMonster monst = new MapMonster(monster, map) { Respawn = false };
-                    ///////////////////
-                    Session.CurrentMap.AddMonster(monst);
-                    ServerManager.Monsters.Add(monst);
-                    Session.CurrentMap?.Broadcast(monst.GenerateIn3());
+                        // Replace by MAPPING
+                        MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
+                        MapMonster monst = new MapMonster(monster, map) { Respawn = false };
+                        ///////////////////
+                        Session.CurrentMap.AddMonster(monst);
+                        ServerManager.Monsters.Add(monst);
+                        Session.CurrentMap?.Broadcast(monst.GenerateIn3());
+                    }
                 }
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
+                }
             }
         }
 

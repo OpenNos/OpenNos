@@ -183,6 +183,14 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool IsOnMap
+        {
+            get
+            {
+                return CurrentMap != null;
+            }
+        }
+
         public int LastKeepAliveIdentity { get; set; }
 
         public int SessionId { get; set; }
