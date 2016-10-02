@@ -64,7 +64,7 @@ namespace OpenNos.GameObject
 
         public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
         {
-            //Send message to all online users
+            // Send message to all online users
             Task.Factory.StartNew(
                 () =>
                 {
@@ -86,21 +86,21 @@ namespace OpenNos.GameObject
         {
             if (session != null)
             {
-                //Create a ChatClient and store it in a collection
+                // Create a ChatClient and store it in a collection
                 _sessions[session.ClientId] = session;
             }
         }
 
         public virtual void UnregisterSession(long clientId)
         {
-            //Get client from client list, if not in list do not continue
+            // Get client from client list, if not in list do not continue
             var session = _sessions[clientId];
             if (session == null)
             {
                 return;
             }
 
-            //Remove client from online clients list
+            // Remove client from online clients list
             _sessions.Remove(clientId);
 
             LastUnregister = DateTime.Now;

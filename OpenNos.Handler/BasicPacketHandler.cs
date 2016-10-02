@@ -958,7 +958,7 @@ namespace OpenNos.Handler
                 Assembly assembly = Assembly.GetEntryAssembly();
                 FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
                 Session.SendPacket(Session.Character.GenerateSay("----------[World Information]----------", 10));
-                Session.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion : v{fileVersionInfo.ProductVersion} c01" , 11));
+                Session.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion : v{fileVersionInfo.ProductVersion}", 11));
                 Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
             }
             Session.Character.LoadSpeed();
@@ -1117,7 +1117,8 @@ namespace OpenNos.Handler
         public void Walk(string packet)
         {
             WalkPacket walkPacket = PacketFactory.Serialize<WalkPacket>(packet);
-            if(walkPacket != null)
+
+            if (walkPacket != null)
             {
                 double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
                 double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;

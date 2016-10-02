@@ -52,7 +52,7 @@ namespace OpenNos.DAL.Mock
 
         public void UpdateLastSessionAndIp(string name, int session, string ip)
         {
-            AccountDTO account =  Container.SingleOrDefault(a => a.Name == name);
+            AccountDTO account = Container.SingleOrDefault(a => a.Name == name);
             account.LastSession = session;
         }
 

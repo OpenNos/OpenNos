@@ -51,13 +51,13 @@ namespace OpenNos.Test
             // initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(CoreTest)));
 
-            //create server items
+            // create server items
             CreateServerItems();
 
             // initialize servermanager
             ServerManager.Initialize();
 
-            //initialize WCF
+            // initialize WCF
             ServiceFactory.Instance.Initialize();
 
             // register mappings for items
@@ -74,14 +74,17 @@ namespace OpenNos.Test
             FakeNetworkClient client = new FakeNetworkClient();
             manager.AddSession(client);
 
-            AccountDTO account = new AccountDTO() { AccountId = 1, Authority = AuthorityType.Admin, LastSession = 12345, Name = "test",
-                Password = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff" };
+            AccountDTO account = new AccountDTO()
+            {
+                AccountId = 1, Authority = AuthorityType.Admin, LastSession = 12345, Name = "test",
+                Password = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff"
+            };
             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
 
-            //register for account login
+            // register for account login
             ServiceFactory.Instance.CommunicationService.RegisterAccountLogin("test", 12345);
 
-            //OpenNosEntryPoint -> LoadCharacterList
+            // OpenNosEntryPoint -> LoadCharacterList
             client.ReceivePacket("12345");
             client.ReceivePacket("test");
             client.ReceivePacket("test");
@@ -100,7 +103,7 @@ namespace OpenNos.Test
 
         public string WaitForPacket(FakeNetworkClient client)
         {
-            while(true)
+            while (true)
             {
                 if (client.SentPackets.Count > 0)
                 {

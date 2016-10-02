@@ -228,9 +228,9 @@ namespace OpenNos.Core
                 object convertedValue = null;
                 try
                 {
-                    convertedValue =  Enum.Parse(packetPropertyType, currentValue);
+                    convertedValue = Enum.Parse(packetPropertyType, currentValue);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     Logger.Log.Warn($"Could not convert value {currentValue} to type {packetPropertyType.Name}");
                 }
