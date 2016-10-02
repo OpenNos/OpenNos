@@ -14,21 +14,6 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public void Insert(List<NpcMonsterDTO> npc)
-        {
-            throw new NotImplementedException();
-        }
-
-        public NpcMonsterDTO Insert(NpcMonsterDTO npc)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<NpcMonsterDTO> LoadAll()
-        {
-            return Container;
-        }
-
         public NpcMonsterDTO LoadByVnum(short MapId)
         {
             throw new NotImplementedException();

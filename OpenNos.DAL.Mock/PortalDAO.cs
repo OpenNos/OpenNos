@@ -1,27 +1,17 @@
 ﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
-    public class PortalDAO : IPortalDAO
+    public class PortalDAO : BaseDAO<PortalDTO>, IPortalDAO
     {
         #region Methods
 
-        public void Insert(List<PortalDTO> portals)
+        public IEnumerable<PortalDTO> LoadByMap(short mapId)
         {
-            throw new NotImplementedException();
-        }
-
-        public PortalDTO Insert(PortalDTO portal)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<PortalDTO> LoadByMap(short MapId)
-        {
-            throw new NotImplementedException();
+            return Container.Where(p => p.SourceMapId == mapId);
         }
 
         #endregion

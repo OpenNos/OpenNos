@@ -944,10 +944,11 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public void StartGame(string packet)
         {
-            if (Session.CurrentMap != null || Session.Character == null)
+            if (Session.IsOnMap || Session.Character == null)
             {
                 return;
             }
+
             Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
             if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & DAOFactory.GeneralLogDAO.LoadByLogType("Connection", Session.Character.CharacterId).Count() == 1)
             {
@@ -956,9 +957,9 @@ namespace OpenNos.Handler
             if (System.Configuration.ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
             {
                 Assembly assembly = Assembly.GetEntryAssembly();
-                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+                string productVersion = assembly != null ? FileVersionInfo.GetVersionInfo(assembly.Location).ProductVersion : "1337";
                 Session.SendPacket(Session.Character.GenerateSay("----------[World Information]----------", 10));
-                Session.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion : v{fileVersionInfo.ProductVersion}", 11));
+                Session.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion : v{productVersion}", 11));
                 Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
             }
             Session.Character.LoadSpeed();
@@ -1116,7 +1117,7 @@ namespace OpenNos.Handler
         [Packet("walk")]
         public void Walk(string packet)
         {
-            WalkPacket walkPacket = PacketFactory.Serialize<WalkPacket>(packet);
+            WalkPacket walkPacket = PacketFactory.Serialize<WalkPacket>(packet, true);
 
             if (walkPacket != null)
             {

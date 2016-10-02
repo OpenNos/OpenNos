@@ -7,7 +7,7 @@ using OpenNos.Domain;
 namespace OpenNos.Handler
 {
     [Header("clist")]
-    public class ClistPacket : PacketBase
+    public class CListPacket : PacketBase
     {
         #region Properties
 
@@ -54,7 +54,7 @@ namespace OpenNos.Handler
         public byte QuestPart { get; set; }
 
         [PacketIndex(14)]
-        public short? Pets { get; set; }
+        public List<short?> Pets { get; set; }
 
         [PacketIndex(15)]
         public byte Unknown2 { get; set; }
