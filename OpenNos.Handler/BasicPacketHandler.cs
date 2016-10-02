@@ -379,7 +379,8 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            // make it like official, more than 6 seconds propably multiplied by amount of tries
+                            // make it like official, more than 6 seconds propably multiplied by
+                            // amount of tries
                             Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"), (int)(Session.Character.LastMapObject.AddSeconds(6) - DateTime.Now).TotalSeconds), 0));
                         }
                     }
@@ -388,9 +389,9 @@ namespace OpenNos.Handler
                 case "710":
                     if (packetsplit.Length > 5)
                     {
-                        // MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5])));
-                        // NpcMonster mapObject = ServerManager.GetNpc(npc.NpcVNum);
-                        // teleport free
+                        // MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n =>
+                        // n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5]))); NpcMonster mapObject
+                        // = ServerManager.GetNpc(npc.NpcVNum); teleport free
                     }
                     break;
             }
@@ -900,8 +901,7 @@ namespace OpenNos.Handler
 
                     case 2:
 
-                        // DragDrop / Reorder
-                        // qset type to1 to2 from1 from2 vars -> q1 q2 data1 data2
+                        // DragDrop / Reorder qset type to1 to2 from1 from2 vars -> q1 q2 data1 data2
                         QuicklistEntryDTO qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
                         QuicklistEntryDTO qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
@@ -989,9 +989,7 @@ namespace OpenNos.Handler
             Session.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}"); // 0 before 10 = visitors
             Session.SendPacket("p_clear");
 
-            // sc_p pet
-            // sc_n nospartner
-            // Session.SendPacket("sc_p_stc 0"); // end pet and partner
+            // sc_p pet sc_n nospartner Session.SendPacket("sc_p_stc 0"); // end pet and partner
             Session.SendPacket("pinit 0"); // clean party list
             Session.Character.DeleteTimeout();
 

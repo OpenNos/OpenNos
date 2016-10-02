@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenNos.Handler
+namespace OpenNos.GameObject
 {
     [Header("equip")]
     public class EquipPacket : PacketBase
@@ -25,6 +25,7 @@ namespace OpenNos.Handler
         #endregion
     }
 
+    [Header("sub_equipment")] // actually no header rendered, avoid error
     public class EquipSubPacket : PacketBase
     {
         #region Properties

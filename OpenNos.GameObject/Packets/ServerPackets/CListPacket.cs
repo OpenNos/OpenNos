@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using OpenNos.Domain;
 
-namespace OpenNos.Handler
+namespace OpenNos.GameObject
 {
     [Header("clist")]
     public class CListPacket : PacketBase

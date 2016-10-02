@@ -4,7 +4,7 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 
-namespace OpenNos.Handler
+namespace OpenNos.GameObject
 {
     [Header("in")]
     public class InPacket : PacketBase

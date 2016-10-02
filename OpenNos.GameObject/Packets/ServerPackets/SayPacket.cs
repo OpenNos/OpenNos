@@ -4,7 +4,7 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 
-namespace OpenNos.Handler.Packets.ServerPackets
+namespace OpenNos.GameObject.Packets.ServerPackets
 {
     [Header("say")]
     public class SayPacket : PacketBase

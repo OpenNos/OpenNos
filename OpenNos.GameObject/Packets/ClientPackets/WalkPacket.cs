@@ -1,6 +1,6 @@
 ﻿using OpenNos.Core;
 
-namespace OpenNos.Handler
+namespace OpenNos.GameObject
 {
     [Header("walk")]
     public class WalkPacket : PacketBase

@@ -119,6 +119,15 @@ namespace OpenNos.GameObject.Mock
             lastKeepAliveIdentitiy = lastKeepAliveIdentitiy + 1;
         }
 
+        /// <summary>
+        /// Send a packet to the Server as the Fake client receives it and triggers a Handler method.
+        /// </summary>
+        /// <param name="packet">Packet created thru PacketFactory.</param>
+        public void ReceivePacket(PacketBase packet)
+        {
+            ReceivePacket(PacketFactory.Deserialize(packet));
+        }
+
         public void SendPacket(string packet)
         {
             _sentPackets.Enqueue(packet);

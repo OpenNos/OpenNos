@@ -18,6 +18,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using OpenNos.Domain;
+using OpenNos.GameObject.Packets.ServerPackets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace OpenNos.GameObject
     public class Character : CharacterDTO
     {
         #region Members
-        private Random _random;
+
         private readonly ClientSession _session;
         private AuthorityType _authority;
         private int _backpack;
@@ -43,6 +44,7 @@ namespace OpenNos.GameObject
         private int _morph;
         private int _morphUpgrade;
         private int _morphUpgrade2;
+        private Random _random;
         private int _size = 10;
         private byte _speed;
 
@@ -716,7 +718,8 @@ namespace OpenNos.GameObject
                 case (byte)ItemType.Box:
                     SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
 
-                    // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl 5=fairy pearl
+                    // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl
+                    // 5=fairy pearl
                     switch (subtype)
                     {
                         case 2:
@@ -966,9 +969,16 @@ namespace OpenNos.GameObject
             return $"msg {type} {message}";
         }
 
-        public string GenerateMv()
+        public MovePacket GenerateMv()
         {
-            return $"mv 1 {CharacterId} {MapX} {MapY} {Speed}";
+            return new MovePacket()
+            {
+                CharacterId = CharacterId,
+                MapX = MapX,
+                MapY = MapY,
+                Speed = Speed,
+                MoveType = 1
+            };
         }
 
         public List<string> GenerateNPCShopOnMap()
@@ -1086,7 +1096,9 @@ namespace OpenNos.GameObject
             WearableInstance weapon2 = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Equipment);
             WearableInstance weapon = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Equipment);
 
-            // tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary ispvparmor herolvl desc
+            // tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph
+            // talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary
+            // ispvparmor herolvl desc
             return $"tc_info {Level} {Name} {(fairy != null ? fairy.Item.Element : 0)} {ElementRate} {Class} {Gender} -1 - {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 0 0 0 {HeroLevel} {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
         }
 
@@ -1183,7 +1195,8 @@ namespace OpenNos.GameObject
                 }
             }
 
-            // 10 9 8 '0 0 0 0'<- bonusdamage bonusarmor bonuselement bonushpmp its after upgrade and 3 first values are not important
+            // 10 9 8 '0 0 0 0'<- bonusdamage bonusarmor bonuselement bonushpmp its after upgrade and
+            // 3 first values are not important
             skill = skill.TrimEnd('.');
             return $"slinfo {type} {inventoryItem.ItemVNum} {inventoryItem.Item.Morph} {inventoryItem.SpLevel} {inventoryItem.Item.LevelJobMinimum} {inventoryItem.Item.ReputationMinimum} 0 0 0 0 0 0 0 {inventoryItem.Item.SpType} {inventoryItem.Item.FireResistance} {inventoryItem.Item.WaterResistance} {inventoryItem.Item.LightResistance} {inventoryItem.Item.DarkResistance} {inventoryItem.XP} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.TransportId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
         }

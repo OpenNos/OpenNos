@@ -62,6 +62,16 @@ namespace OpenNos.GameObject
             Broadcast(null, content);
         }
 
+        public void Broadcast(PacketBase content)
+        {
+            Broadcast(null, content);
+        }
+
+        public void Broadcast(ClientSession client, PacketBase content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        {
+            Broadcast(client, PacketFactory.Deserialize(content), receiver, characterName, characterId);
+        }
+
         public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
         {
             // Send message to all online users

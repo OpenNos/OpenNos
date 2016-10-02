@@ -29,7 +29,7 @@ namespace OpenNos.Core
             try
             {
                 // load pregenerated serialization information
-                var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(typeof(TPacket)));
+                var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(packet.GetType()));
 
                 string deserializedPacket = serializationInformation.Key.Item2; // set header
 
@@ -316,7 +316,13 @@ namespace OpenNos.Core
             foreach (Type packetBaseType in typeof(TPacketBase).Assembly.GetTypes().Where(p => !p.IsInterface && typeof(TPacketBase).BaseType.IsAssignableFrom(p)))
             {
                 string header = packetBaseType.GetCustomAttribute<HeaderAttribute>()?.Identification;
-                Dictionary<PacketIndexAttribute, PropertyInfo> PacketsForPacketDefinition = new Dictionary<PacketIndexAttribute, PropertyInfo>();
+
+                if(String.IsNullOrEmpty(header))
+                {
+                    throw new Exception($"Packet header cannot be empty. PacketType: {packetBaseType.Name}");
+                }
+
+                Dictionary<PacketIndexAttribute, PropertyInfo> packetsForPacketDefinition = new Dictionary<PacketIndexAttribute, PropertyInfo>();
 
                 foreach (PropertyInfo packetBasePropertyInfo in packetBaseType.GetProperties().Where(x => x.GetCustomAttributes(false).OfType<PacketIndexAttribute>().Any()))
                 {
@@ -324,15 +330,15 @@ namespace OpenNos.Core
 
                     if (indexAttribute != null)
                     {
-                        PacketsForPacketDefinition.Add(indexAttribute, packetBasePropertyInfo);
+                        packetsForPacketDefinition.Add(indexAttribute, packetBasePropertyInfo);
                     }
                 }
 
                 // order by index
-                PacketsForPacketDefinition.OrderBy(p => p.Key.Index);
+                packetsForPacketDefinition.OrderBy(p => p.Key.Index);
 
                 // add to serialization informations
-                _packetSerializationInformations.Add(new Tuple<Type, String>(packetBaseType, header), PacketsForPacketDefinition);
+                _packetSerializationInformations.Add(new Tuple<Type, String>(packetBaseType, header), packetsForPacketDefinition);
             }
         }
 
