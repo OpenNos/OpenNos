@@ -2,6 +2,7 @@
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
@@ -9,24 +10,9 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
-        public void Insert(List<SkillDTO> skills)
+        public SkillDTO LoadById(short skillId)
         {
-            throw new NotImplementedException();
-        }
-
-        public SkillDTO Insert(SkillDTO skill)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<SkillDTO> LoadAll()
-        {
-            return Container;
-        }
-
-        public SkillDTO LoadById(short SkillId)
-        {
-            throw new NotImplementedException();
+            return Container.SingleOrDefault(s => s.SkillVNum == skillId);
         }
 
         #endregion

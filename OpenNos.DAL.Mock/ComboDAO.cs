@@ -1,42 +1,27 @@
 ﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
-    public class ComboDAO : IComboDAO
+    public class ComboDAO : BaseDAO<ComboDTO>, IComboDAO
     {
         #region Methods
 
-        public void Insert(List<ComboDTO> combos)
+        public ComboDTO LoadById(short comboId)
         {
-            throw new NotImplementedException();
-        }
-
-        public ComboDTO Insert(ComboDTO combo)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<ComboDTO> LoadAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ComboDTO LoadById(short ComboId)
-        {
-            throw new NotImplementedException();
+            return Container.SingleOrDefault(c => c.ComboId == comboId);
         }
 
         public IEnumerable<ComboDTO> LoadBySkillVnum(short skillVNum)
         {
-            throw new NotImplementedException();
+            return Container.Where(c => c.SkillVNum == skillVNum);
         }
 
         public IEnumerable<ComboDTO> LoadByVNumHitAndEffect(short skillVNum, short hit, short effect)
         {
-            throw new NotImplementedException();
+            return Container.Where(c => c.SkillVNum == skillVNum && c.Hit == hit && c.Effect == effect);
         }
 
         #endregion

@@ -73,7 +73,7 @@ namespace OpenNos.Core
             }
         }
 
-        public static TPacket Serialize<TPacket>(string packetContent)
+        public static TPacket Serialize<TPacket>(string packetContent, bool includesKeepAliveIdentity = false)
             where TPacket : PacketBase
         {
             try
@@ -87,7 +87,7 @@ namespace OpenNos.Core
                 {
                     foreach (var packetBasePropertyInfo in serializationInformation.Value)
                     {
-                        int currentIndex = packetBasePropertyInfo.Key.Index + 2; // adding 2 because we need to skip incrementing number and packet header
+                        int currentIndex = packetBasePropertyInfo.Key.Index + (includesKeepAliveIdentity ? 2 : 1); // adding 2 because we need to skip incrementing number and packet header
                         string currentValue = matches[currentIndex].Value;
 
                         // set the value & convert currentValue

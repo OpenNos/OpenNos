@@ -1,32 +1,22 @@
 ﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
-    public class MapMonsterDAO : IMapMonsterDAO
+    public class MapMonsterDAO : BaseDAO<MapMonsterDTO>, IMapMonsterDAO
     {
         #region Methods
 
-        public void Insert(List<MapMonsterDTO> monsters)
+        public MapMonsterDTO LoadById(int monsterId)
         {
-            throw new NotImplementedException();
+            return Container.SingleOrDefault(m => m.MapMonsterId == monsterId);
         }
 
-        public MapMonsterDTO Insert(MapMonsterDTO mapmonster)
+        public IEnumerable<MapMonsterDTO> LoadFromMap(short mapId)
         {
-            throw new NotImplementedException();
-        }
-
-        public MapMonsterDTO LoadById(int MonsterId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<MapMonsterDTO> LoadFromMap(short MapId)
-        {
-            throw new NotImplementedException();
+            return Container.Where(m => m.MapId == mapId);
         }
 
         #endregion

@@ -58,7 +58,7 @@ namespace OpenNos.DAL.Mock
 
         public void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData)
         {
-            throw new NotImplementedException();
+            // we dont care about general log in test now
         }
 
         #endregion

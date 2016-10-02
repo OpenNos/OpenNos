@@ -29,6 +29,7 @@ namespace OpenNos.GameObject
         private IDictionary<string, DateTime> _connectionLog;
         private EncryptorT _encryptor;
         private EncryptionBase _fallbackEncryptor;
+        private IScsServer _server;
 
         #endregion
 
@@ -43,15 +44,15 @@ namespace OpenNos.GameObject
                 _fallbackEncryptor = (EncryptionBase)Activator.CreateInstance(fallbackEncryptor);
             }
 
-            var server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
+            _server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
 
             // Register events of the server to be informed about clients
-            server.ClientConnected += Server_ClientConnected;
-            server.ClientDisconnected += Server_ClientDisconnected;
-            server.WireProtocolFactory = new WireProtocolFactory<EncryptorT>();
+            _server.ClientConnected += OnServerClientDisconnected;
+            _server.ClientDisconnected += OnServerClientConnected;
+            _server.WireProtocolFactory = new WireProtocolFactory<EncryptorT>();
 
             // Start the server
-            server.Start();
+            _server.Start();
 
             Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
         }
@@ -84,6 +85,13 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public void StopServer()
+        {
+            _server.Stop();
+            _server.ClientConnected -= OnServerClientDisconnected;
+            _server.ClientDisconnected -= OnServerClientConnected;
+        }
 
         protected override ClientSession IntializeNewSession(INetworkClient client)
         {
@@ -124,14 +132,14 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void Server_ClientConnected(object sender, ServerClientEventArgs e)
-        {
-            AddSession(e.Client as NetworkClient);
-        }
-
-        private void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
+        private void OnServerClientConnected(object sender, ServerClientEventArgs e)
         {
             RemoveSession(e.Client as NetworkClient);
+        }
+
+        private void OnServerClientDisconnected(object sender, ServerClientEventArgs e)
+        {
+            AddSession(e.Client as NetworkClient);
         }
 
         #endregion
