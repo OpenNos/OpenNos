@@ -90,6 +90,11 @@ namespace OpenNos.GameObject
             return new ClientSession(client);
         }
 
+        public virtual void StopServer()
+        {
+            _sessions.Clear();
+        }
+
         #endregion
     }
 }

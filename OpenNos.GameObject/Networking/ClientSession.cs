@@ -154,6 +154,8 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool IsAuthenticated { get; set; }
+
         public bool IsConnected
         {
             get
@@ -247,6 +249,7 @@ namespace OpenNos.GameObject
         {
             Account = account;
             ServiceFactory.Instance.CommunicationService.ConnectAccount(account.Name, SessionId);
+            IsAuthenticated = true;
         }
 
         /// <summary>
@@ -525,8 +528,8 @@ namespace OpenNos.GameObject
 
             long currentPacketReceive = DateTime.Now.Ticks;
 
-            // ignore a packet which has been sent 40ms after the last one
-            if (currentPacketReceive - lastPacketReceive < 400000 && !IsLocalhost)
+            // ignore a packet which has been sent after the last one
+            if (IsAuthenticated && currentPacketReceive - lastPacketReceive < 250000 && !IsLocalhost)
             {
                 Logger.Log.Warn($"[AntiSpam]: Packet has been ignored, access was too fast. Last: {lastPacketReceive}, Current: {currentPacketReceive}, Difference: {currentPacketReceive - lastPacketReceive}, SessionId: {SessionId}");
                 Disconnect();

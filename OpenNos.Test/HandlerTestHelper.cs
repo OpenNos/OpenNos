@@ -16,6 +16,8 @@ namespace OpenNos.Test
     {
         #region Methods
 
+        private static SessionManager _sessionManager;
+
         public static FakeNetworkClient InitializeTestEnvironment()
         {
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
@@ -44,9 +46,9 @@ namespace OpenNos.Test
             PacketFactory.Initialize<WalkPacket>();
 
             // initialize new manager
-            SessionManager sessionManager = new NetworkManager<TestEncryption>("127.0.0.1", 1234, typeof(CharacterScreenPacketHandler), typeof(TestEncryption), true);
+            _sessionManager = new NetworkManager<TestEncryption>("127.0.0.1", 1234, typeof(CharacterScreenPacketHandler), typeof(TestEncryption), true);
             FakeNetworkClient client = new FakeNetworkClient();
-            sessionManager.AddSession(client);
+            _sessionManager.AddSession(client);
 
             AccountDTO account = new AccountDTO()
             {
@@ -86,6 +88,11 @@ namespace OpenNos.Test
             List<string> gameStartPacketsSecondPart = WaitForPackets(client, "p_clear");
 
             return client;
+        }
+
+        public static void ShutdownTestingEnvironment()
+        {
+            _sessionManager.StopServer();
         }
 
         public static string WaitForPacket(FakeNetworkClient client)
