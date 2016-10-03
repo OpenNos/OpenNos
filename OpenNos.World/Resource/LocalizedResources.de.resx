@@ -814,7 +814,7 @@
     <value>Du wurdest bestraft! Grund: {0} für {1} Stunden</value>
   </data>
   <data name="MUTED_SINGULAR" xml:space="preserve">
-    <value>Du wurdest bestraft! Grund: {0} für {1} Stunde</value>
+    <value>Du wurdest bestraft! Grund: {0} für 1 Stunde</value>
   </data>
   <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
     <value />
