@@ -450,70 +450,77 @@ namespace OpenNos.GameObject
             ClientSession session = Sessions.SingleOrDefault(s => s.Character != null && s.Character.CharacterId == id);
             if (session != null)
             {
-                session.CurrentMap.UnregisterSession(session.ClientId);
-                session.CurrentMap = GetMap(session.Character.MapId);
-                session.CurrentMap.RegisterSession(session);
-                session.SendPacket(session.Character.GenerateCInfo());
-                session.SendPacket(session.Character.GenerateCMode());
-                session.SendPacket(session.Character.GenerateEq());
-                session.SendPacket(session.Character.GenerateEquipment());
-                session.SendPacket(session.Character.GenerateLev());
-                session.SendPacket(session.Character.GenerateStat());
-                session.SendPacket(session.Character.GenerateAt());
-                session.SendPacket(session.Character.GenerateCMap());
-                session.SendPacket(session.Character.GenerateStatChar());
-                session.SendPacket(session.Character.GenerateCond());
-                session.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
-                session.SendPacket("rsfp 0 -1");
+                try
+                {
+                    session.CurrentMap.UnregisterSession(session.ClientId);
+                    session.CurrentMap = GetMap(session.Character.MapId);
+                    session.CurrentMap.RegisterSession(session);
+                    session.SendPacket(session.Character.GenerateCInfo());
+                    session.SendPacket(session.Character.GenerateCMode());
+                    session.SendPacket(session.Character.GenerateEq());
+                    session.SendPacket(session.Character.GenerateEquipment());
+                    session.SendPacket(session.Character.GenerateLev());
+                    session.SendPacket(session.Character.GenerateStat());
+                    session.SendPacket(session.Character.GenerateAt());
+                    session.SendPacket(session.Character.GenerateCMap());
+                    session.SendPacket(session.Character.GenerateStatChar());
+                    session.SendPacket(session.Character.GenerateCond());
+                    session.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
+                    session.SendPacket("rsfp 0 -1");
 
-                // in 2 // send only when partner present cond 2 // send only when partner present
-                session.SendPacket("pinit 0"); // clear party list
-                session.SendPacket(session.Character.GeneratePairy());
-                session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
+                    // in 2 // send only when partner present cond 2 // send only when partner present
+                    session.SendPacket("pinit 0"); // clear party list
+                    session.SendPacket(session.Character.GeneratePairy());
+                    session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
-                Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
+                    Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
 
-                session.SendPackets(session.Character.GenerateGp());
+                    session.SendPackets(session.Character.GenerateGp());
 
-                // wp 23 124 4 4 12 99
-                session.SendPackets(session.Character.GenerateIn3());
-                session.SendPackets(session.Character.GenerateIn2());
-                session.SendPackets(session.Character.GenerateNPCShopOnMap());
-                session.SendPackets(session.Character.GenerateDroppedItem());
-                session.SendPackets(session.Character.GenerateShopOnMap());
-                session.SendPackets(session.Character.GeneratePlayerShopOnMap());
-                if (!session.Character.InvisibleGm)
-                {
-                    session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                }
-                if (session.Character.Size != 10)
-                {
-                    session.SendPacket(session.Character.GenerateScal());
-                }
-                if (session.CurrentMap.IsDancing && !session.Character.IsDancing)
-                {
-                    session.CurrentMap?.Broadcast("dance 2");
-                }
-                else if (!session.CurrentMap.IsDancing && session.Character.IsDancing)
-                {
-                    session.Character.IsDancing = false;
-                    session.CurrentMap?.Broadcast("dance");
-                }
-                foreach (Group g in Groups)
-                {
-                    foreach (ClientSession groupSession in g.Characters)
+                    // wp 23 124 4 4 12 99
+                    session.SendPackets(session.Character.GenerateIn3());
+                    session.SendPackets(session.Character.GenerateIn2());
+                    session.SendPackets(session.Character.GenerateNPCShopOnMap());
+                    session.SendPackets(session.Character.GenerateDroppedItem());
+                    session.SendPackets(session.Character.GenerateShopOnMap());
+                    session.SendPackets(session.Character.GeneratePlayerShopOnMap());
+                    if (!session.Character.InvisibleGm)
                     {
-                        ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMap.MapId == groupSession.CurrentMap.MapId);
-                        if (chara != null)
+                        session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    }
+                    if (session.Character.Size != 10)
+                    {
+                        session.SendPacket(session.Character.GenerateScal());
+                    }
+                    if (session.CurrentMap.IsDancing && !session.Character.IsDancing)
+                    {
+                        session.CurrentMap?.Broadcast("dance 2");
+                    }
+                    else if (!session.CurrentMap.IsDancing && session.Character.IsDancing)
+                    {
+                        session.Character.IsDancing = false;
+                        session.CurrentMap?.Broadcast("dance");
+                    }
+                    foreach (Group g in Groups)
+                    {
+                        foreach (ClientSession groupSession in g.Characters)
                         {
-                            groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                        }
-                        if (groupSession.Character.CharacterId == groupSession.Character.CharacterId)
-                        {
-                            session.CurrentMap?.Broadcast(groupSession, groupSession.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                            ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMap.MapId == groupSession.CurrentMap.MapId);
+                            if (chara != null)
+                            {
+                                groupSession.SendPacket(groupSession.Character.GeneratePinit());
+                            }
+                            if (groupSession.Character.CharacterId == groupSession.Character.CharacterId)
+                            {
+                                session.CurrentMap?.Broadcast(groupSession, groupSession.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                            }
                         }
                     }
                 }
+                catch(Exception e)
+                {
+                    Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
+                }               
             }
         }
 
