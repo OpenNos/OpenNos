@@ -57,19 +57,92 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void Broadcast(string content)
+        public void Broadcast(string packet)
         {
-            Broadcast(null, content);
+            Broadcast(null, packet);
         }
 
-        public void Broadcast(PacketBase content)
+        public void Broadcast(string[] packets, int delay = 0)
         {
-            Broadcast(null, content);
+            Broadcast(null, packets, delay: delay);
         }
 
-        public void Broadcast(ClientSession client, PacketBase content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        public void Broadcast(PacketBase packet)
         {
-            Broadcast(client, PacketFactory.Deserialize(content), receiver, characterName, characterId);
+            Broadcast(null, packet);
+        }
+
+        public void Broadcast(ClientSession client, PacketBase packet, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        {
+            Broadcast(client, PacketFactory.Deserialize(packet), receiver, characterName, characterId);
+        }
+
+        public void Broadcast(ClientSession client, string[] packets, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
+        {
+            // Send message to all online users
+            Task.Factory.StartNew(
+                async () =>
+                {
+                    await Task.Delay(delay);
+
+                    foreach (var session in _sessions.GetAllItems())
+                    {
+                        try
+                        {
+                            foreach (string packet in packets)
+                            {
+                                session.ReceiveBroadcast(new BroadcastPacket(client, packet, receiver, characterName, characterId));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(ex);
+                        }
+                    }
+                });
+        }
+
+        public void Broadcast(IEnumerable<BroadcastPacket> packets)
+        {
+            // Send message to all online users
+            Task.Factory.StartNew(
+                () =>
+                {
+                    foreach (var session in _sessions.GetAllItems())
+                    {
+                        try
+                        {
+                            foreach (BroadcastPacket packet in packets)
+                            {
+                                session.ReceiveBroadcast(packet);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(ex);
+                        }
+                    }
+                });
+        }
+
+        public void Broadcast(BroadcastPacket packet)
+        {
+            // Send message to all online users
+            Task.Factory.StartNew(
+                () =>
+                {
+                    foreach (var session in _sessions.GetAllItems())
+                    {
+                        try
+                        {
+                            session.ReceiveBroadcast(packet);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(ex);
+                        }
+                    }
+                });
         }
 
         public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)

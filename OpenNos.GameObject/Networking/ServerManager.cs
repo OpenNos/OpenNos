@@ -103,6 +103,12 @@ namespace OpenNos.GameObject
             _mapper = config.CreateMapper();
         }
 
+        internal void StopServer()
+        {
+            ServerManager.Instance.ShutdownStop = true;
+            ServerManager.Instance.TaskShutdown = null;
+        }
+
         #endregion
 
         #region Properties

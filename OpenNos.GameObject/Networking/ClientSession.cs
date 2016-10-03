@@ -262,13 +262,13 @@ namespace OpenNos.GameObject
                 switch (sentPacket.Receiver)
                 {
                     case ReceiverType.All:
-                        SendPacket(sentPacket.Content);
+                        SendPacket(sentPacket.Packet);
                         break;
 
                     case ReceiverType.AllExceptMe:
                         if (sentPacket.Sender != this)
                         {
-                            SendPacket(sentPacket.Content);
+                            SendPacket(sentPacket.Packet);
                         }
                         break;
 
@@ -278,31 +278,39 @@ namespace OpenNos.GameObject
                                 && (this.Character != null && (this.Character.CharacterId == sentPacket.SomeonesCharacterId
                                 || this.Character.Name == sentPacket.SomeonesCharacterName)))
                             {
-                                SendPacket(sentPacket.Content);
+                                SendPacket(sentPacket.Packet);
                             }
                             break;
                         }
                     case ReceiverType.AllNoEmoBlocked:
                         if (!this.Character.EmoticonsBlocked)
                         {
-                            SendPacket(sentPacket.Content);
+                            SendPacket(sentPacket.Packet);
                         }
                         break;
 
                     case ReceiverType.AllNoHeroBlocked:
                         if (!this.Character.HeroChatBlocked)
                         {
-                            SendPacket(sentPacket.Content);
+                            SendPacket(sentPacket.Packet);
                         }
                         break;
 
                     case ReceiverType.Group:
                         if (sentPacket.Sender.Character.Group != null && Character.Group != null && Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId)
                         {
-                            SendPacket(sentPacket.Content);
+                            SendPacket(sentPacket.Packet);
                         }
                         break;
                 }
+            }
+        }
+
+        public void ReceiveBroadcasts(IEnumerable<BroadcastPacket> sentpackets)
+        {
+            foreach (BroadcastPacket broadcastPacket in sentpackets)
+            {
+                ReceiveBroadcast(broadcastPacket);
             }
         }
 

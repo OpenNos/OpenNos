@@ -18,10 +18,10 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public BroadcastPacket(ClientSession session, string content, ReceiverType receiver, string someonesCharacterName = "", long someonesCharacterId = -1)
+        public BroadcastPacket(ClientSession session, string packet, ReceiverType receiver, string someonesCharacterName = "", long someonesCharacterId = -1)
         {
             Sender = session;
-            Content = content;
+            Packet = packet;
             Receiver = receiver;
 
             SomeonesCharacterName = someonesCharacterName;
@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public string Content { get; set; }
+        public string Packet { get; set; }
 
         public ReceiverType Receiver { get; set; }
 
