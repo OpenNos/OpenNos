@@ -950,7 +950,7 @@
     <value />
   </data>
   <data name="MAILED" xml:space="preserve">
-    <value>You sent a mail!</value>
+    <value>You've sent a mail!</value>
   </data>
   <data name="MAIL_DELETED" xml:space="preserve">
     <value>The mail has been removed!</value>
@@ -965,19 +965,19 @@
     <value>Dignity Changed!</value>
   </data>
   <data name="NEAREST_PORTAL" xml:space="preserve">
-    <value>Nearest Portal(MapID: {0},MapX: {1},MapY: {2}) has been removed</value>
+    <value>Nearest Portal(MapID: {0}, MapX: {1}, MapY: {2})  has been removed!</value>
   </data>
   <data name="NO_PORTAL_FOUND" xml:space="preserve">
     <value>No portal has been found</value>
   </data>
   <data name="GIFTED" xml:space="preserve">
-    <value>You received {0} gift !</value>
+    <value>You received {0} gift/s!</value>
   </data>
   <data name="ITEM_GIFTED" xml:space="preserve">
     <value>You get an item &gt;&gt;</value>
   </data>
   <data name="GIFT_SENDED" xml:space="preserve">
-    <value>The gift has been sended !</value>
+    <value>The gift has been sent!</value>
   </data>
   <data name="ITEM_ACQUIRED_BY_THE_GIANT_MONSTER" xml:space="preserve">
     <value>You get the item from the giant monster !</value>
