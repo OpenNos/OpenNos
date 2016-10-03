@@ -466,8 +466,7 @@ namespace OpenNos.GameObject
                 session.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
                 session.SendPacket("rsfp 0 -1");
 
-                // in 2 // send only when partner present 
-                // cond 2 // send only when partner present
+                // in 2 // send only when partner present cond 2 // send only when partner present
                 session.SendPacket("pinit 0"); // clear party list
                 session.SendPacket(session.Character.GeneratePairy());
                 session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
@@ -521,48 +520,47 @@ namespace OpenNos.GameObject
         // PacketHandler
         public void ExchangeValidate(ClientSession c1Session, long charId)
         {
-            ClientSession c2Session = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
+            ClientSession c2Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
+
+            if (c2Session == null || c2Session.Character == null || c2Session.Character.ExchangeInfo == null)
             {
-                if (c2Session == null)
-                {
-                    return;
-                }
-                foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
-                {
-                    Inventory invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.Id == item.Id);
-                    short slot = invtemp.Slot;
-                    InventoryType type = invtemp.Type;
+                return;
+            }
+            foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
+            {
+                Inventory invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.Id == item.Id);
+                short slot = invtemp.Slot;
+                InventoryType type = invtemp.Type;
 
-                    Inventory inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
-                    if (inv != null)
-                    {
-                        // Send reduced-amount to owners inventory
-                        c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
-                    }
-                    else
-                    {
-                        // Send empty slot to owners inventory
-                        c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
-                    }
-                }
-
-                foreach (ItemInstance item in c1Session.Character.ExchangeInfo.ExchangeList)
+                Inventory inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
+                if (inv != null)
                 {
-                    ItemInstance item2 = item.DeepCopy();
-                    item2.Id = Guid.NewGuid();
-                    Inventory inv = c2Session.Character.InventoryList.AddToInventory(item2);
-                    if (inv == null || inv.Slot == -1)
-                    {
-                        continue;
-                    }
+                    // Send reduced-amount to owners inventory
                     c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                 }
-
-                c2Session.Character.Gold = c2Session.Character.Gold - c2Session.Character.ExchangeInfo.Gold + c1Session.Character.ExchangeInfo.Gold;
-                c2Session.SendPacket(c2Session.Character.GenerateGold());
-                c1Session.Character.ExchangeInfo = null;
-                c2Session.Character.ExchangeInfo = null;
+                else
+                {
+                    // Send empty slot to owners inventory
+                    c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
+                }
             }
+
+            foreach (ItemInstance item in c1Session.Character.ExchangeInfo.ExchangeList)
+            {
+                ItemInstance item2 = item.DeepCopy();
+                item2.Id = Guid.NewGuid();
+                Inventory inv = c2Session.Character.InventoryList.AddToInventory(item2);
+                if (inv == null || inv.Slot == -1)
+                {
+                    continue;
+                }
+                c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+            }
+
+            c2Session.Character.Gold = c2Session.Character.Gold - c2Session.Character.ExchangeInfo.Gold + c1Session.Character.ExchangeInfo.Gold;
+            c2Session.SendPacket(c2Session.Character.GenerateGold());
+            c1Session.Character.ExchangeInfo = null;
+            c2Session.Character.ExchangeInfo = null;
         }
 
         public long GetNextGroupId()
