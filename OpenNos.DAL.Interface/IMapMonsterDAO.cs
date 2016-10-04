@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
@@ -25,9 +26,11 @@ namespace OpenNos.DAL.Interface
 
         void Insert(List<MapMonsterDTO> monsters);
 
-        MapMonsterDTO LoadById(int MonsterId);
+        MapMonsterDTO LoadById(int mapMonsterId);
 
         IEnumerable<MapMonsterDTO> LoadFromMap(short MapId);
+
+        DeleteResult DeleteById(int mapMonsterId);
 
         #endregion
     }
