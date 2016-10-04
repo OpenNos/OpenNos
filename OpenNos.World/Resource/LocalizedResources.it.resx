@@ -946,30 +946,45 @@
     <value>L'item non ti appartiene!</value>
   </data>
   <data name="MAILED" xml:space="preserve">
-    <value />
+    <value>Hai spedito una nota.</value>
   </data>
   <data name="MAIL_DELETED" xml:space="preserve">
-    <value />
+    <value>La nota è stata cancellata.</value>
   </data>
   <data name="NEW_MAIL" xml:space="preserve">
-    <value />
+    <value>E' arrivata una nuova nota!</value>
   </data>
   <data name="GIFTED" xml:space="preserve">
-    <value />
+    <value>Hai ricevuto {0} regalo/i</value>
   </data>
   <data name="ITEM_GIFTED" xml:space="preserve">
-    <value />
+    <value>Hai ricevuto un oggetto &gt;&gt; </value>
   </data>
   <data name="NEAREST_PORTAL" xml:space="preserve">
-    <value />
+    <value>Il più vicino teletrasporto (MapID: {0}, MapX: {1}, MapY: {2})  è stato rimosso!</value>
   </data>
   <data name="NO_PORTAL_FOUND" xml:space="preserve">
-    <value />
+    <value>Non è stato trovato nessun teletrasporto</value>
   </data>
   <data name="GIFT_SENDED" xml:space="preserve">
-    <value />
+    <value>Il regalo è stato inviato!</value>
   </data>
   <data name="ITEM_ACQUIRED_BY_THE_GIANT_MONSTER" xml:space="preserve">
-    <value />
+    <value>Hai ricevuto un oggetto dal mostro!</value>
+  </data>
+  <data name="BAD_DIGNITY" xml:space="preserve">
+    <value>Valore dignità errato</value>
+  </data>
+  <data name="DIGNITY_CHANGED" xml:space="preserve">
+    <value>Dignità cambiata!</value>
+  </data>
+  <data name="MOB_DONT_FIND" xml:space="preserve">
+    <value>Non è stato trovato il mostro</value>
+  </data>
+  <data name="MOB_MUST_BE_ALIVE" xml:space="preserve">
+    <value>Se vuoi rimuovere il mostro, assicurati che sia vivo.</value>
+  </data>
+  <data name="MOB_REMOVED" xml:space="preserve">
+    <value>Mostro rimosso. (MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
   </data>
 </root>
