@@ -185,17 +185,6 @@ namespace OpenNos.GameObject
             }
 
             int rnd = _random.Next(0, 100);
-            /*
-            if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
-            {
-                if (mode != RarifyMode.Drop)
-                {
-                    Session.Character.NotifyRarifyResult(8);
-                }
-                this.Rare = 8;
-                SetRarityPoint();
-            }
-            */
             if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
             {
                 if (mode != RarifyMode.Drop)
@@ -308,14 +297,15 @@ namespace OpenNos.GameObject
                         ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3004));
                     }
                 }
+            }
 
-                if (mode != RarifyMode.Drop)
+            // don't place under else.
+            if (mode != RarifyMode.Drop)
+            {
+                Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
+                if (inventory != null)
                 {
-                    Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
-                    if (inventory != null)
-                    {
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.ItemInstance.Rare, 0, inventory.ItemInstance.Upgrade, 0));
-                    }
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.ItemInstance.Rare, 0, inventory.ItemInstance.Upgrade, 0));
                 }
             }
         }

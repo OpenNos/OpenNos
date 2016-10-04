@@ -94,7 +94,6 @@ namespace OpenNos.GameObject
         {
             _sessions.Clear();
             ServerManager.Instance.StopServer();
-            
         }
 
         #endregion

@@ -311,6 +311,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 11));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 0));
             }
+
             Session.Character.Gold = Session.Character.Gold - goldprice[upmode - 1];
             Session.SendPacket(Session.Character.GenerateGold());
             Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode - 1]);

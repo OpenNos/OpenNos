@@ -1254,7 +1254,7 @@ namespace OpenNos.Handler
                                 if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
                                 {
                                     specialist.PerfectSP(Session, UpgradeProtection.None);
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, inventoryType, slot, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, inventoryType, slot, specialist.Rare, specialist.Design, specialist.Upgrade, specialist.SpStoneUpgrade));
                                 }
                             }
                             else
