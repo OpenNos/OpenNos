@@ -354,6 +354,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$ChangeDignity AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 12));
