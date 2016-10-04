@@ -225,7 +225,6 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.props'))" />
     <Error Condition="!Exists('..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.targets'))" />
-    <Error Condition="!Exists('..\packages\StyleCop.MSBuild.4.7.54.0\build\StyleCop.MSBuild.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StyleCop.MSBuild.4.7.54.0\build\StyleCop.MSBuild.Targets'))" />
   </Target>
   <Import Project="..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.targets" Condition="Exists('..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -256,5 +255,4 @@
     <Copy Condition="Exists('$(DeployedConfig)')" SourceFiles="$(IntermediateOutputPath)$(TargetFileName).config" DestinationFiles="$(DeployedConfig)" />
   </Target>
   <Import Project="$(ProgramFiles)\MSBuild\StyleCop\v4.7\StyleCop.targets" />
-  <Import Project="..\packages\StyleCop.MSBuild.4.7.54.0\build\StyleCop.MSBuild.Targets" Condition="Exists('..\packages\StyleCop.MSBuild.4.7.54.0\build\StyleCop.MSBuild.Targets')" />
 </Project>

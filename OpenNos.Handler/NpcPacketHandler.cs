@@ -337,7 +337,9 @@ namespace OpenNos.Handler
             {
                 short.TryParse(packetsplit[2], out typePacket);
                 if (Session.Character.InExchangeOrTrade && typePacket != 1)
+                {
                     return;
+                }
                 foreach (PortalDTO por in Session.CurrentMap.Portals)
                 {
                     if (Session.Character.MapX < por.SourceX + 6 && Session.Character.MapX > por.SourceX - 6 && Session.Character.MapY < por.SourceY + 6 && Session.Character.MapY > por.SourceY - 6)
@@ -364,6 +366,7 @@ namespace OpenNos.Handler
                     MapShop myShop = new MapShop();
 
                     if (packetsplit.Length > 82)
+                    {
                         for (short j = 3, i = 0; j < 82; j += 4, i++)
                         {
                             Enum.TryParse<InventoryType>(packetsplit[j], out type[i]);
@@ -372,13 +375,16 @@ namespace OpenNos.Handler
 
                             long.TryParse(packetsplit[j + 3], out gold[i]);
                             if (gold[i] < 0)
+                            {
                                 return;
+                            }
                             if (qty[i] > 0)
                             {
                                 Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
                                 if (inv.ItemInstance.Amount < qty[i])
+                                {
                                     return;
-
+                                }
                                 if (!((ItemInstance)inv.ItemInstance).Item.IsTradable || ((ItemInstance)inv.ItemInstance).IsBound)
                                 {
                                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
@@ -399,21 +405,24 @@ namespace OpenNos.Handler
                                 myShop.Items.Add(personalshopitem);
                             }
                         }
+                    }
                     if (myShop.Items.Count != 0)
                     {
                         for (int i = 83; i < packetsplit.Length; i++)
+                        {
                             shopname += $"{packetsplit[i]} ";
+                        }
 
-                        //trim shopname
+                        // trim shopname
                         shopname.TrimEnd(' ');
 
-                        //create default shopname if it's empty
+                        // create default shopname if it's empty
                         if (String.IsNullOrWhiteSpace(shopname) || String.IsNullOrEmpty(shopname))
                         {
                             shopname = Language.Instance.GetMessageFromKey("SHOP_PRIVATE_SHOP");
                         }
 
-                        //truncate the string to a max-length of 20
+                        // truncate the string to a max-length of 20
                         shopname = StringHelper.Truncate(shopname, 20);
                         myShop.OwnerId = Session.Character.CharacterId;
                         myShop.Name = shopname;

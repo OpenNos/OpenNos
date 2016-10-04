@@ -740,7 +740,6 @@ namespace OpenNos.GameObject
                     return;
                 }
                 string str = $"pinit { myGroup.Characters.Count()}";
-
                 int i = 0;
                 IList<ClientSession> groupMembers = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters.ToList();
                 foreach (ClientSession session in groupMembers)
@@ -759,7 +758,6 @@ namespace OpenNos.GameObject
                 Logger.Error(e);
             }
         }
-        
 
         internal void StopServer()
         {
