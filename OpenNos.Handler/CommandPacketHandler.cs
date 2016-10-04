@@ -1066,6 +1066,10 @@ namespace OpenNos.Handler
                     Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
                     Session.CurrentMap.RemoveMonster(monst);
+                    if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) != null)
+                    {
+                        DAOFactory.MapMonsterDAO.DeleteById(monst.MapMonsterId);
+                    }
                 }
                 else
                 {
