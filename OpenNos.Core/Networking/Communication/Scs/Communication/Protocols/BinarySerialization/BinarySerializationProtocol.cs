@@ -35,7 +35,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
     /// This class can be derived to change serializer (default: BinaryFormatter). To do this,
     /// SerializeMessage and DeserializeMessage methods must be overrided.
     /// </summary>
-    public class BinarySerializationProtocol : IScsWireProtocol
+    public class BinarySerializationProtocol : IScsWireProtocol, IDisposable
     {
         #region Members
 
@@ -48,6 +48,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// This MemoryStream object is used to collect receiving bytes to build messages.
         /// </summary>
         private MemoryStream _receiveMemoryStream;
+
+        private bool _disposed;
 
         #endregion
 
@@ -294,6 +296,24 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
 
             // Return true to re-call this method to try to read next message
             return (_receiveMemoryStream.Length > 0);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _receiveMemoryStream.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
         }
 
         #endregion

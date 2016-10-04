@@ -21,7 +21,7 @@ using System.Text;
 
 namespace OpenNos.Core
 {
-    public class WireProtocol : IScsWireProtocol
+    public class WireProtocol : IScsWireProtocol, IDisposable
     {
         #region Members
 
@@ -36,6 +36,8 @@ namespace OpenNos.Core
         /// This MemoryStream object is used to collect receiving bytes to build messages.
         /// </summary>
         private MemoryStream _receiveMemoryStream;
+
+        private bool _disposed;
 
         #endregion
 
@@ -155,6 +157,24 @@ namespace OpenNos.Core
 
             // Return true to re-call this method to try to read next message
             return (_receiveMemoryStream.Length > 0);
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _receiveMemoryStream.Dispose();
+            }
         }
 
         #endregion

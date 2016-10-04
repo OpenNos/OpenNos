@@ -130,6 +130,8 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
             set { _requestReplyMessenger.Timeout = value; }
         }
 
+        private bool _disposed;
+
         #endregion
 
         #region Methods
@@ -156,7 +158,20 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// </summary>
         public void Dispose()
         {
-            Disconnect();
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Disconnect();
+            }
         }
 
         /// <summary>

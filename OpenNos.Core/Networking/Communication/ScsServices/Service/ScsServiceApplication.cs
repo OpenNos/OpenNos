@@ -26,7 +26,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     /// <summary>
     /// Implements IScsServiceApplication and provides all functionallity.
     /// </summary>
-    public class ScsServiceApplication : IScsServiceApplication
+    public class ScsServiceApplication : IScsServiceApplication, IDisposable
     {
         #region Members
 
@@ -48,6 +48,8 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// Value: Service object.
         /// </summary>
         private readonly ThreadSafeSortedList<string, ServiceObject> _serviceObjects;
+
+        private bool _disposed;
 
         #endregion
 
@@ -301,6 +303,25 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             e.Client.Disconnect();
             _serviceClients.Remove(e.Client.ClientId);
             OnClientDisconnected(serviceClient);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _serviceClients.Dispose();
+                _serviceObjects.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
         }
 
         #endregion

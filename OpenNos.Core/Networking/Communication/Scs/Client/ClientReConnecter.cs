@@ -90,14 +90,23 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </summary>
         public void Dispose()
         {
-            if (_disposed)
+            if (!_disposed)
             {
-                return;
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
             }
+        }
 
-            _disposed = true;
-            _client.Disconnected -= Client_Disconnected;
-            _reconnectTimer.Stop();
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _client.Disconnected -= Client_Disconnected;
+                _reconnectTimer.Stop();
+                _client.Dispose();
+                _reconnectTimer.Dispose();
+            }
         }
 
         /// <summary>

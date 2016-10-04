@@ -46,17 +46,28 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         {
             get
             {
-                if (_currentClient == null)
-                {
-                    throw new Exception("Client channel can not be obtained. CurrentClient property must be called by the thread which runs the service method.");
-                }
-
-                return _currentClient;
+                return GetCurrentClient();
             }
 
             set
             {
                 _currentClient = value;
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
+        private IScsServiceClient GetCurrentClient()
+        {
+            if (_currentClient != null)
+            {
+                return _currentClient;
+            }
+            else
+            {
+                throw new ArgumentNullException("Client channel can not be obtained. CurrentClient property must be called by the thread which runs the service method.");
             }
         }
 

@@ -45,6 +45,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         private IScsWireProtocol _wireProtocol;
 
+        private bool _disposed;
+
         #endregion
 
         #region Instantiation
@@ -189,12 +191,26 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
             _communicationChannel.Disconnect();
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Disconnect();
+                _pingTimer.Dispose();
+            }
+        }
+
         /// <summary>
         /// Disposes this object and closes underlying connection.
         /// </summary>
         public void Dispose()
         {
-            Disconnect();
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
         }
 
         /// <summary>
