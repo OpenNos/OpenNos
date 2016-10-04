@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
             CurrentMp = Monster.MaxMP;
             Skills = Monster.Skills.ToList();
             DamageList = new Dictionary<long, long>();
-            _movetime = _random.Next(500, 3000);
+            _movetime = _random.Next(400, 3200);
         }
 
         #endregion
@@ -191,7 +191,7 @@ namespace OpenNos.GameObject
                     }
                     else if (time > _movetime)
                     {
-                        _movetime = _random.Next(450, 3100);
+                        _movetime = _random.Next(400, 3200);
                         byte point = (byte)_random.Next(2, 4);
                         byte fpoint = (byte)_random.Next(0, 2);
 
