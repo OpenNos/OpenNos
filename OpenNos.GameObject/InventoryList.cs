@@ -414,6 +414,7 @@ namespace OpenNos.GameObject
             {
                 if (remainingAmount > 0)
                 {
+                    Logger.Debug($"Remaining {remainingAmount}/{amount}, removing item {inventory.ItemInstance.ItemVNum} from Slot {inventory.Slot} with amount {inventory.ItemInstance.Amount}");
                     if (inventory.ItemInstance.Amount > remainingAmount)
                     {
                         //amount completely removed

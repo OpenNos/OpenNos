@@ -434,6 +434,11 @@ namespace OpenNos.GameObject
                     return;
                 }
             }
+
+            //remove feather and fullmoon before upgrading
+            Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[this.Upgrade]));
+            Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.Upgrade]));
+
             WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
             Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
             int rnd = _random.Next(100);
@@ -477,8 +482,6 @@ namespace OpenNos.GameObject
             Session.Character.Gold = Session.Character.Gold - goldprice[this.Upgrade];
             Session.SendPacket(Session.Character.GenerateGold());
             Session.SendPacket(Session.Character.GenerateEq());
-            Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[this.Upgrade]));
-            Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.Upgrade]));
             Session.SendPacket("shop_end 1");
         }
 
