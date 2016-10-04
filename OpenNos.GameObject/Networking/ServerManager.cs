@@ -523,7 +523,7 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
                 }

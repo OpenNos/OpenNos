@@ -86,7 +86,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void StopServer()
+        public override void StopServer()
         {
             _server.Stop();
             _server.ClientConnected -= OnServerClientDisconnected;

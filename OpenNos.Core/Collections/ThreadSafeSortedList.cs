@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -23,7 +24,7 @@ namespace OpenNos.Core.Collections
     /// </summary>
     /// <typeparam name="TK">Key type</typeparam>
     /// <typeparam name="TV">Value type</typeparam>
-    public class ThreadSafeSortedList<TK, TV>
+    public class ThreadSafeSortedList<TK, TV> : IDisposable
     {
         #region Members
 
@@ -36,6 +37,8 @@ namespace OpenNos.Core.Collections
         /// Used to synchronize access to _items list.
         /// </summary>
         protected readonly ReaderWriterLockSlim Lock;
+
+        private bool _disposed;
 
         #endregion
 
@@ -128,6 +131,25 @@ namespace OpenNos.Core.Collections
             finally
             {
                 Lock.ExitWriteLock();
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ClearAll();
+                Lock.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
             }
         }
 

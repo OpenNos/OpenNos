@@ -54,6 +54,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// </summary>
         private readonly SortedList<string, WaitingMessage> _waitingMessages;
 
+        private bool _disposed;
+
         #endregion
 
         #region Instantiation
@@ -168,7 +170,20 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// </summary>
         public void Dispose()
         {
-            Stop();
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Stop();
+            }
         }
 
         /// <summary>

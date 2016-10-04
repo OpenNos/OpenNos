@@ -20,7 +20,7 @@ namespace OpenNos.Core.Threading
     /// <summary>
     /// This class is a timer that performs some tasks periodically.
     /// </summary>
-    public class Timer
+    public class Timer : IDisposable
     {
         #region Members
 
@@ -40,6 +40,10 @@ namespace OpenNos.Core.Threading
         /// </summary>
         private volatile bool _running;
 
+        private bool _disposed;
+
+        private object lockObject = new object();
+
         #endregion
 
         #region Instantiation
@@ -48,8 +52,7 @@ namespace OpenNos.Core.Threading
         /// Creates a new Timer.
         /// </summary>
         /// <param name="period">Task period of timer (as milliseconds)</param>
-        public Timer(int period)
-            : this(period, false)
+        public Timer(int period) : this(period, false)
         {
         }
 
@@ -107,7 +110,7 @@ namespace OpenNos.Core.Threading
         /// </summary>
         public void Stop()
         {
-            lock (_taskTimer)
+            lock (lockObject)
             {
                 _running = false;
                 _taskTimer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -119,7 +122,7 @@ namespace OpenNos.Core.Threading
         /// </summary>
         public void WaitToStop()
         {
-            lock (_taskTimer)
+            lock (lockObject)
             {
                 while (_performingTasks)
                 {
@@ -134,7 +137,7 @@ namespace OpenNos.Core.Threading
         /// <param name="state">Not used argument</param>
         private void TimerCallBack(object state)
         {
-            lock (_taskTimer)
+            lock (lockObject)
             {
                 if (!_running || _performingTasks)
                 {
@@ -157,7 +160,7 @@ namespace OpenNos.Core.Threading
             }
             finally
             {
-                lock (_taskTimer)
+                lock (lockObject)
                 {
                     _performingTasks = false;
                     if (_running)
@@ -167,6 +170,25 @@ namespace OpenNos.Core.Threading
 
                     Monitor.Pulse(_taskTimer);
                 }
+            }
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Stop();
+                _taskTimer.Dispose();
             }
         }
 
