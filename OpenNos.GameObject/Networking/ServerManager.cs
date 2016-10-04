@@ -103,12 +103,6 @@ namespace OpenNos.GameObject
             _mapper = config.CreateMapper();
         }
 
-        internal void StopServer()
-        {
-            ServerManager.Instance.ShutdownStop = true;
-            ServerManager.Instance.TaskShutdown = null;
-        }
-
         #endregion
 
         #region Properties
@@ -738,24 +732,38 @@ namespace OpenNos.GameObject
         // Server
         public void UpdateGroup(long charId)
         {
-            Group myGroup = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId));
-            if (myGroup == null)
+            try
             {
-                return;
-            }
-            string str = $"pinit { myGroup.Characters.Count()}";
+                Group myGroup = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId));
+                if (myGroup == null)
+                {
+                    return;
+                }
+                string str = $"pinit { myGroup.Characters.Count()}";
 
-            int i = 0;
-            foreach (ClientSession session in Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters)
-            {
-                i++;
-                str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{session.Character.Gender}|{session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{session.Character.HeroLevel}";
-            }
+                int i = 0;
+                IList<ClientSession> groupMembers = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters.ToList();
+                foreach (ClientSession session in groupMembers)
+                {
+                    i++;
+                    str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{session.Character.Gender}|{session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{session.Character.HeroLevel}";
+                }
 
-            foreach (ClientSession session in myGroup.Characters)
-            {
-                session.SendPacket(str);
+                foreach (ClientSession session in myGroup.Characters.ToList())
+                {
+                    session.SendPacket(str);
+                }
             }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        
+
+        internal void StopServer()
+        {
+            ServerManager.Instance.ShutdownStop = true;
+            ServerManager.Instance.TaskShutdown = null;
         }
 
         // Server
