@@ -14,6 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <StyleCopTreatErrorsAsWarnings>True</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -155,6 +156,7 @@
   </Target>
   <Import Project="..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.targets" Condition="Exists('..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.targets')" />
   <Import Project="..\packages\AppConfigTransforms.0.9.26\build\AppConfigTransforms.targets" Condition="Exists('..\packages\AppConfigTransforms.0.9.26\build\AppConfigTransforms.targets')" />
+  <Import Project="$(ProgramFiles)\MSBuild\StyleCop\v4.7\StyleCop.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

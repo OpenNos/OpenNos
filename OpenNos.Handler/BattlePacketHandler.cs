@@ -191,7 +191,7 @@ namespace OpenNos.Handler
                             foreach (MapMonster mon in Session.CurrentMap.GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange))
                             {
                                 mmon = Session.CurrentMap.GetMonster(mon.MapMonsterId);
-                                if(mmon != null)
+                                if (mmon != null)
                                 {
                                     damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
                                     broadcastPackets.Add($"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
@@ -280,7 +280,7 @@ namespace OpenNos.Handler
                         }
                     }
 
-                    //send su packets
+                    // send su packets
                     Session.CurrentMap.Broadcast(broadcastPackets.ToArray(), 10);
 
                     Task t = Task.Factory.StartNew((Func<Task>)(async () =>
