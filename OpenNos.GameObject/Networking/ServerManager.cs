@@ -758,6 +758,7 @@ namespace OpenNos.GameObject
             {
                 Logger.Error(e);
             }
+        }
         
 
         internal void StopServer()
