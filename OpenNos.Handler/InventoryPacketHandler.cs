@@ -1169,7 +1169,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("up_gr")]
-        public void UpgradeCommand(string packet)
+        public void Upgrade(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');

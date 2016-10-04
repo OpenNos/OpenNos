@@ -23,9 +23,13 @@ namespace OpenNos.GameObject
 {
     public class InventoryList
     {
-        #region Instantiation
+        #region Members
 
         private Random _random;
+
+        #endregion
+
+        #region Instantiation
 
         public InventoryList(Character Character)
         {
@@ -404,20 +408,34 @@ namespace OpenNos.GameObject
         public void RemoveItemAmount(int vnum, int amount)
         {
             Logger.Debug($"vnum: {vnum} amount: {amount}", Owner.Session.SessionId);
-            for (int i = 0; i < Inventory.Where(s => s.ItemInstance.ItemVNum == vnum).OrderBy(s => s.Slot).Count(); i++)
+            int remainingAmount = amount;
+
+            foreach (Inventory inventory in Inventory.Where(s => s.ItemInstance.ItemVNum == vnum).OrderBy(i => i.Slot))
             {
-                Inventory inv = Inventory.Where(s => s.ItemInstance.ItemVNum == vnum).OrderBy(s => s.Slot).ElementAt(i);
-                if (inv.ItemInstance.Amount > amount)
+                if (remainingAmount > 0)
                 {
-                    inv.ItemInstance.Amount -= (byte)amount;
-                    amount = 0;
-                    Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                    Logger.Debug($"Remaining {remainingAmount}/{amount}, removing item {inventory.ItemInstance.ItemVNum} from Slot {inventory.Slot} with amount {inventory.ItemInstance.Amount}");
+                    if (inventory.ItemInstance.Amount > remainingAmount)
+                    {
+                        //amount completely removed
+                        inventory.ItemInstance.Amount -= (byte)remainingAmount;
+                        remainingAmount = 0;
+                        Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum,
+                            inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, inventory.ItemInstance.Rare, inventory.ItemInstance.Design,
+                            inventory.ItemInstance.Upgrade, 0));
+                    }
+                    else
+                    {
+                        //amount partly removed
+                        remainingAmount -= inventory.ItemInstance.Amount;
+                        DeleteByInventoryItemId(inventory.ItemInstance.Id);
+                        Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                    }
                 }
                 else
                 {
-                    amount -= inv.ItemInstance.Amount;
-                    DeleteByInventoryItemId(inv.ItemInstance.Id);
-                    Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0, 0));
+                    //amount to remove reached
+                    break;
                 }
             }
         }

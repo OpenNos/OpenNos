@@ -51,7 +51,11 @@ namespace OpenNos.Login
                     new String('=', Console.WindowWidth) + "\n");
 
                     // initialize DB
-                    DataAccessHelper.Initialize();
+                    if (!DataAccessHelper.Initialize())
+                    {
+                        Console.ReadLine();
+                        return;
+                    }
 
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));
                     try

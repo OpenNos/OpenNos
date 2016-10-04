@@ -81,6 +81,11 @@ namespace OpenNos.World
                 // initialilize maps
                 ServerManager.Initialize();
             }
+            else
+            {
+                Console.ReadLine();
+                return;
+            }
 
             // register mappings for items
             DAOFactory.InventoryDAO.RegisterMapping(typeof(SpecialistInstance));

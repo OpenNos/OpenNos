@@ -22,7 +22,7 @@ If you want to use the Servers you need to Modify the Program.cs of both OpenNos
 - Change "127.0.0.1" to "HamachiIp" (Eg. "12.34.567.89")
 - Dont forget to Modify the app.config of the Login-Server to the correct redirection (<server Name="S1-OpenNos" WorldPort="1337" WorldIp="25.71.84.227" channelAmount="1" />)
 
-###Contribution is only possible with Visual Studio 2015 (Community or other editions) and MySQL.###
+###Contribution is only possible with Visual Studio 2015 (Community or other editions) and MySQL. and [StyleCop extension](https://stylecop.codeplex.com/)###
 #NOTE BEFORE INSTALL#
 - Error listen point : - This is WCF error install it or run opennos on visual studio
 - What're the commands? : $Help

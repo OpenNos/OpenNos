@@ -17,6 +17,7 @@ using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,30 @@ namespace OpenNos.DAL.EF.MySQL
         #endregion
 
         #region Methods
+
+        public DeleteResult DeleteById(int mapMonsterId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    MapMonster monster = context.MapMonster.First(i => i.MapMonsterId.Equals(mapMonsterId));
+
+                    if (monster != null)
+                    {
+                        context.MapMonster.Remove(monster);
+                        context.SaveChanges();
+                    }
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return DeleteResult.Error;
+            }
+        }
 
         public void Insert(List<MapMonsterDTO> monsters)
         {
@@ -89,13 +114,13 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public MapMonsterDTO LoadById(int monsterId)
+        public MapMonsterDTO LoadById(int mapMonsterId)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(monsterId)));
+                    return _mapper.Map<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(mapMonsterId)));
                 }
             }
             catch (Exception e)

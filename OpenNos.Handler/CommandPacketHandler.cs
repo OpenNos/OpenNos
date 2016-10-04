@@ -1066,6 +1066,10 @@ namespace OpenNos.Handler
                     Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
                     Session.CurrentMap.RemoveMonster(monst);
+                    if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) != null)
+                    {
+                        DAOFactory.MapMonsterDAO.DeleteById(monst.MapMonsterId);
+                    }
                 }
                 else
                 {
@@ -1452,19 +1456,19 @@ namespace OpenNos.Handler
                     {
                         ServerManager.Instance.MapOut(session.Character.CharacterId);
 
-                        List<MapCell> Possibilities = new List<MapCell>();
+                        List<MapCell> possibilities = new List<MapCell>();
                         for (short x = -6; x < 6; x++)
                         {
                             for (short y = -6; y < 6; y++)
                             {
-                                Possibilities.Add(new MapCell() { X = x, Y = y });
+                                possibilities.Add(new MapCell() { X = x, Y = y });
                             }
                         }
 
-                        foreach (MapCell possibilitie in Possibilities.OrderBy(s => random.Next()))
+                        foreach (MapCell possibility in possibilities.OrderBy(s => random.Next()))
                         {
-                            session.Character.MapX = (short)(Session.Character.MapX + possibilitie.X);
-                            session.Character.MapY = (short)(Session.Character.MapY + possibilitie.Y);
+                            session.Character.MapX = (short)(Session.Character.MapX + possibility.X);
+                            session.Character.MapY = (short)(Session.Character.MapY + possibility.Y);
                             if (!Session.CurrentMap.IsBlockedZone(session.Character.MapX, session.Character.MapY))
                             {
                                 break;

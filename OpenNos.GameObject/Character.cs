@@ -580,7 +580,8 @@ namespace OpenNos.GameObject
 
         public string GenerateAt()
         {
-            return $"at {CharacterId} {MapId} {MapX} {MapY} 2 0 {ServerManager.GetMap(MapId).Music} -1";
+            Map mapForMusic = ServerManager.GetMap(MapId);
+            return $"at {CharacterId} {MapId} {MapX} {MapY} 2 0 {(mapForMusic != null ? mapForMusic.Music : 0)} -1";
         }
 
         public string GenerateCInfo()
