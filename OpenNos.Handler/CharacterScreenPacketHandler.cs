@@ -367,13 +367,13 @@ namespace OpenNos.Handler
             try
             {
                 Logger.Debug(packet, Session.SessionId);
-                if (Session != null && Session.Account != null && Session.Character == null)
+                if (Session != null && Session.Account != null && !Session.HasSelectedCharacter)
                 {
                     string[] packetsplit = packet.Split(' ');
                     CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2]));
                     if (characterDTO != null)
                     {
-                        Session.Character = new Character(Session)
+                        Session.SetCharacter(new Character(Session)
                         {
                             AccountId = characterDTO.AccountId,
                             CharacterId = characterDTO.CharacterId,
@@ -433,12 +433,11 @@ namespace OpenNos.Handler
                             MaxSnack = 0,
                             HeroLevel = characterDTO.HeroLevel,
                             HeroXp = characterDTO.HeroXp
-                        };
+                        });
                         Session.Character.Update();
                         Session.Character.LoadInventory();
                         Session.Character.LoadQuicklists();
                         DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.IpAddress, Session.Character.CharacterId, "Connection", "World");
-                        Session.HasSelectedCharacter = true;
                         Session.SendPacket("OK");
 
                         // Inform everyone about connected character

@@ -64,7 +64,7 @@ namespace OpenNos.GameObject
 
                 if (IsWorldServer)
                 {
-                    if (session.Character != null)
+                    if (session.HasSelectedCharacter)
                     {
                         if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(session.Character.CharacterId)))
                         {

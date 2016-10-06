@@ -65,10 +65,6 @@ namespace OpenNos.GameObject
             // start queue
             _queue = new SequentialItemProcessor<byte[]>(HandlePacket);
             _queue.Start();
-
-            // register WCF events
-            ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent += CommunicationCallback_CharacterConnectedEvent;
-            ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent += CommunicationCallback_CharacterDisconnectedEvent;
         }
 
         #endregion
@@ -92,10 +88,16 @@ namespace OpenNos.GameObject
         {
             get
             {
+                if (_character == null || !HasSelectedCharacter)
+                {
+                    //cant access an 
+                    Logger.Log.Warn("Uninitialized Character cannot be accessed.");
+                    Disconnect();
+                }
+
                 return _character;
             }
-
-            set
+            private set
             {
                 _character = value;
             }
@@ -338,12 +340,22 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void SetCharacter(Character character)
+        {
+            Character = character;
+            // register WCF events
+            ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent += CommunicationCallback_CharacterConnectedEvent;
+            ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent += CommunicationCallback_CharacterDisconnectedEvent;
+
+            HasSelectedCharacter = true;
+        }
+
         private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)
         {
             // TODO: filter for friendlist
             string characterNameWhichHasBeenLoggedIn = (string)sender;
 
-            if (Character != null && !Character.Name.Equals(characterNameWhichHasBeenLoggedIn))
+            if (Character != null && Character.Name != characterNameWhichHasBeenLoggedIn)
             {
                 _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), characterNameWhichHasBeenLoggedIn), 10));
             }
@@ -354,7 +366,7 @@ namespace OpenNos.GameObject
             // TODO: filter for friendlist
             string characterNameWhichHasBeenLoggedIn = (string)sender;
 
-            if (Character != null && !Character.Name.Equals(characterNameWhichHasBeenLoggedIn))
+            if (Character != null && Character.Name != characterNameWhichHasBeenLoggedIn)
             {
                 _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), characterNameWhichHasBeenLoggedIn), 10));
             }
@@ -536,12 +548,13 @@ namespace OpenNos.GameObject
 
             long currentPacketReceive = e.ReceivedTimestamp.Ticks;
 
-            // ignore a packet which has been sent after the last one, in waiting to an better way to prevent spam packets (Disable now because cause a lot of troubles)
+            // ignore a packet which has been sent after the last one, in waiting to an better way to
+            // prevent spam packets (Disable now because cause a lot of troubles)
             ///if (IsAuthenticated && currentPacketReceive - lastPacketReceive < 120000 && !IsLocalhost)
             //{
-             //   Logger.Log.Warn($"[AntiSpam]: Packet has been ignored, access was too fast. Last: {lastPacketReceive}, Current: {currentPacketReceive}, Difference: {currentPacketReceive - lastPacketReceive}, SessionId: {SessionId}");
-               // Disconnect();
-               // return;
+            //   Logger.Log.Warn($"[AntiSpam]: Packet has been ignored, access was too fast. Last: {lastPacketReceive}, Current: {currentPacketReceive}, Difference: {currentPacketReceive - lastPacketReceive}, SessionId: {SessionId}");
+            // Disconnect();
+            // return;
             //}
 
             _queue.EnqueueMessage(message.MessageData);

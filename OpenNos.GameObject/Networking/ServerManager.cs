@@ -114,9 +114,7 @@ namespace OpenNos.GameObject
         public static int GoldRate { get; set; }
 
         public static List<MapMonster> Monsters { get; set; }
-
-        public static EventHandler NotifyChildren { get; set; }
-
+        
         public static int XPRate { get; set; }
 
         public List<Group> Groups { get; set; }
@@ -347,16 +345,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static void OnBroadCast(BroadcastPacket mapPacket)
-        {
-            NotifyChildren?.Invoke(mapPacket, new EventArgs());
-        }
-
         // PacketHandler -> with Callback?
         public void AskRevive(long characterId)
         {
             ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == characterId);
-            if (Session != null && Session.Character != null)
+            if (Session != null && Session.HasSelectedCharacter)
             {
                 if (Session.Character.IsVehicled)
                 {
@@ -529,7 +522,7 @@ namespace OpenNos.GameObject
         {
             ClientSession c2Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
 
-            if (c2Session == null || c2Session.Character == null || c2Session.Character.ExchangeInfo == null)
+            if (c2Session == null || c2Session.Character.ExchangeInfo == null)
             {
                 return;
             }

@@ -944,7 +944,7 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public void StartGame(string packet)
         {
-            if (Session.IsOnMap || Session.Character == null)
+            if (Session.IsOnMap || !Session.HasSelectedCharacter) //character should have been selected in SelectCharacter
             {
                 return;
             }
@@ -1098,7 +1098,11 @@ namespace OpenNos.Handler
 
                         // set back reference to group
                         Session.Character.Group = group;
-                        ServerManager.Instance.Sessions.SingleOrDefault(c => c.Character.CharacterId.Equals(charId)).Character.Group = group;
+                        ClientSession session = ServerManager.Instance.Sessions.SingleOrDefault(c => c.Character.CharacterId.Equals(charId));
+                        if(session != null && session.Character != null)
+                        {
+                            ServerManager.Instance.Sessions.SingleOrDefault(c => c.Character.CharacterId.Equals(charId)).Character.Group = group;
+                        }
                     }
 
                     // player join group
