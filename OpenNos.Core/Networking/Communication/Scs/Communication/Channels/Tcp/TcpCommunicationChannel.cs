@@ -18,7 +18,6 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 {
@@ -65,8 +64,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// <summary>
         /// Creates a new TcpCommunicationChannel object.
         /// </summary>
-        /// <param name="clientSocket">A connected Socket object that is
-        /// used to communicate over network</param>
+        /// <param name="clientSocket">
+        /// A connected Socket object that is used to communicate over network
+        /// </param>
         public TcpCommunicationChannel(Socket clientSocket)
         {
             _clientSocket = clientSocket;
@@ -133,19 +133,20 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         protected override void SendMessagepublic(IScsMessage message)
         {
             try
-            { 
-                if(_clientSocket.Connected)
+            {
+                if (_clientSocket.Connected)
                 {
                     // Create a byte array from message according to current protocol
                     var messageBytes = WireProtocol.GetBytes(message);
+
                     // Begin sending the data to the remote device.
                     _clientSocket.BeginSend(messageBytes, 0, messageBytes.Length, SocketFlags.None,
                         new AsyncCallback(SendCallback), _clientSocket);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Logger.Error(e);
+                //disconnect
             }
         }
 
@@ -158,9 +159,27 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _clientSocket.BeginReceive(_buffer, 0, _buffer.Length, 0, new AsyncCallback(ReceiveCallback), null);
         }
 
+        private static void SendCallback(IAsyncResult ar)
+        {
+            try
+            {
+                // Retrieve the socket from the state object.
+                Socket client = (Socket)ar.AsyncState;
+
+                if (!client.Connected) return;
+
+                // Complete sending the data to the remote device.
+                int bytesSent = client.EndSend(ar);
+            }
+            catch (Exception)
+            {
+                //disconnect
+            }
+        }
+
         /// <summary>
-        /// This method is used as callback method in _clientSocket's BeginReceive method.
-        /// It reveives bytes from socker.
+        /// This method is used as callback method in _clientSocket's BeginReceive method. It
+        /// reveives bytes from socker.
         /// </summary>
         /// <param name="ar">Asyncronous call result</param>
         private void ReceiveCallback(IAsyncResult ar)
@@ -209,22 +228,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             catch
             {
                 Disconnect();
-            }
-        }
-
-        private static void SendCallback(IAsyncResult ar)
-        {
-            try
-            {
-                // Retrieve the socket from the state object.
-                Socket client = (Socket)ar.AsyncState;
-
-                // Complete sending the data to the remote device.
-                int bytesSent = client.EndSend(ar);
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
             }
         }
 

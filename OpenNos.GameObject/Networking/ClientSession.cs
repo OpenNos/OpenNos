@@ -259,7 +259,7 @@ namespace OpenNos.GameObject
         /// </summary>
         public void ReceiveBroadcast(BroadcastPacket sentPacket)
         {
-            if (!IsDisposing && sentPacket != null)
+            if (!IsDisposing && _client.IsConnected && sentPacket != null)
             {
                 switch (sentPacket.Receiver)
                 {
