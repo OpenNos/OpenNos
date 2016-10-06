@@ -92,7 +92,6 @@ namespace OpenNos.GameObject
                 {
                     //cant access an 
                     Logger.Log.Warn("Uninitialized Character cannot be accessed.");
-                    Disconnect();
                 }
 
                 return _character;
