@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -257,7 +258,7 @@ namespace OpenNos.GameObject
         /// <summary>
         /// Handle Broadcast from Broadcastable
         /// </summary>
-        public void ReceiveBroadcast(BroadcastPacket sentPacket)
+        public async Task ReceiveBroadcast(BroadcastPacket sentPacket)
         {
             if (!IsDisposing && _client.IsConnected && sentPacket != null)
             {
@@ -308,11 +309,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void ReceiveBroadcasts(IEnumerable<BroadcastPacket> sentpackets)
+        public async Task ReceiveBroadcasts(IEnumerable<BroadcastPacket> sentpackets)
         {
             foreach (BroadcastPacket broadcastPacket in sentpackets)
             {
-                ReceiveBroadcast(broadcastPacket);
+                await ReceiveBroadcast(broadcastPacket);
             }
         }
 

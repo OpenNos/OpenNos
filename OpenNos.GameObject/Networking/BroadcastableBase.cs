@@ -151,22 +151,15 @@ namespace OpenNos.GameObject
 
         public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
         {
-            // Send message to all online users
             Task.Factory.StartNew(
                 async () =>
                 {
                     await Task.Delay(delay);
 
+                    // Send message to all online users
                     foreach (var session in _sessions.GetAllItems())
                     {
-                        try
-                        {
-                            session.ReceiveBroadcast(new BroadcastPacket(client, content, receiver, characterName, characterId));
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Error(ex);
-                        }
+                        session.ReceiveBroadcast(new BroadcastPacket(client, content, receiver, characterName, characterId));
                     }
                 });
         }
