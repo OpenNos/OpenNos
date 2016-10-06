@@ -1991,6 +1991,24 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 7 && currentLine[1] == "INDEX")
                     {
                         item.Type = (InventoryType)(Convert.ToByte(currentLine[2]) != 4 ? Convert.ToByte(currentLine[2]) : (byte)0);
+                        switch (Convert.ToByte(currentLine[2]))
+                        {
+                            case 4:
+                                item.Type = (InventoryType)0; 
+                                break;
+                            case 8:
+                                item.Type = (InventoryType)0;
+                                break;
+                            case 9:
+                                item.Type = (InventoryType)1;
+                                break;
+                            case 10:
+                                item.Type = (InventoryType)2;
+                                break;
+                            default:
+                                item.Type = (InventoryType)Convert.ToByte(currentLine[2]);
+                                break;
+                    }
                         item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{(byte)item.Type}{currentLine[3]}") : (byte)0;
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
