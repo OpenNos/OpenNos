@@ -535,7 +535,7 @@ namespace OpenNos.Handler
                 }
                 foreach (Group group in ServerManager.Instance.Groups)
                 {
-                    if ((group.IsMemberOfGroup(charId) || group.IsMemberOfGroup(Session.Character.CharacterId)) && group.Characters.Count == 3)
+                    if ((group.IsMemberOfGroup(charId) || group.IsMemberOfGroup(Session.Character.CharacterId)) && group.CharacterCount == 3)
                     {
                         Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
                         return;
@@ -1064,7 +1064,7 @@ namespace OpenNos.Handler
                     }
                     foreach (Group group in ServerManager.Instance.Groups)
                     {
-                        if (group.Characters.Count == 3)
+                        if (group.CharacterCount == 3)
                         {
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
 

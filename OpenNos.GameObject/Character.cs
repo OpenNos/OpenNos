@@ -1013,10 +1013,10 @@ namespace OpenNos.GameObject
             return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.ItemVNum} {mail.Amount} {ServerManager.GetItem((short)mail.ItemVNum).Type}";
         }
 
-        public string GeneratePidx()
+        public string GeneratePidx(bool isLeaveGroup = false)
         {
             string str = String.Empty;
-            if (Group != null)
+            if (!isLeaveGroup && Group != null)
             {
                 str = $"pidx {Group.GroupId}";
                 foreach (ClientSession c in Group.Characters.Where(s => s.Character != null))
@@ -1031,7 +1031,7 @@ namespace OpenNos.GameObject
         public string GeneratePinit()
         {
             Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId));
-            string str = $"pinit {grp.Characters.Count()}";
+            string str = $"pinit {grp.CharacterCount}";
             int i = 0;
             foreach (ClientSession groupSessionForId in grp.Characters)
             {
@@ -1533,7 +1533,7 @@ namespace OpenNos.GameObject
 
             if (grp != null)
             {
-                partySize = grp.Characters.Count;
+                partySize = grp.CharacterCount;
             }
             if ((int)(LevelXp / (XPLoad() / 10)) < (int)((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
             {

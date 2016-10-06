@@ -57,9 +57,9 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void Broadcast(string packet)
+        public void Broadcast(string packet, int delay = 0)
         {
-            Broadcast(null, packet);
+            Broadcast(null, packet, delay: delay);
         }
 
         public void Broadcast(string[] packets, int delay = 0)
@@ -67,14 +67,14 @@ namespace OpenNos.GameObject
             Broadcast(null, packets, delay: delay);
         }
 
-        public void Broadcast(PacketBase packet)
+        public void Broadcast(PacketBase packet, int delay = 0)
         {
-            Broadcast(null, packet);
+            Broadcast(null, packet, delay: delay);
         }
 
-        public void Broadcast(ClientSession client, PacketBase packet, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        public void Broadcast(ClientSession client, PacketBase packet, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
         {
-            Broadcast(client, PacketFactory.Deserialize(packet), receiver, characterName, characterId);
+            Broadcast(client, PacketFactory.Deserialize(packet), receiver, characterName, characterId, delay);
         }
 
         public void Broadcast(ClientSession client, string[] packets, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
@@ -102,12 +102,14 @@ namespace OpenNos.GameObject
                 });
         }
 
-        public void Broadcast(IEnumerable<BroadcastPacket> packets)
+        public void Broadcast(IEnumerable<BroadcastPacket> packets, int delay = 0)
         {
             // Send message to all online users
             Task.Factory.StartNew(
-                () =>
+                async () =>
                 {
+                    await Task.Delay(delay);
+
                     foreach (var session in _sessions.GetAllItems())
                     {
                         try
@@ -125,12 +127,14 @@ namespace OpenNos.GameObject
                 });
         }
 
-        public void Broadcast(BroadcastPacket packet)
+        public void Broadcast(BroadcastPacket packet, int delay = 0)
         {
             // Send message to all online users
             Task.Factory.StartNew(
-                () =>
+                async () =>
                 {
+                    await Task.Delay(delay);
+
                     foreach (var session in _sessions.GetAllItems())
                     {
                         try
@@ -145,12 +149,14 @@ namespace OpenNos.GameObject
                 });
         }
 
-        public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
         {
             // Send message to all online users
             Task.Factory.StartNew(
-                () =>
+                async () =>
                 {
+                    await Task.Delay(delay);
+
                     foreach (var session in _sessions.GetAllItems())
                     {
                         try

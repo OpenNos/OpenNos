@@ -756,7 +756,8 @@ namespace OpenNos.Handler
                 intdamage -= ushort.MaxValue;
             }
 
-            damage = Convert.ToUInt16(intdamage);
+            //int is bigger than UINT16, avoid conversion errors
+            damage = intdamage > UInt16.MaxValue ? UInt16.MaxValue : Convert.ToUInt16(intdamage);
             if (monsterToAttack.IsMoving)
             {
                 monsterToAttack.Target = Session.Character.CharacterId;

@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,6 +23,7 @@ namespace OpenNos.GameObject
         #region Members
 
         private int order;
+        private ThreadSafeSortedList<long, ClientSession> _characters;
 
         #endregion
 
@@ -29,16 +31,30 @@ namespace OpenNos.GameObject
 
         public Group()
         {
-            Characters = new List<ClientSession>();
+            _characters = new ThreadSafeSortedList<long, ClientSession>();
             GroupId = ServerManager.Instance.GetNextGroupId();
             order = 0;
+        }
+
+        public int CharacterCount
+        {
+            get
+            {
+                return _characters.Count;
+            }
         }
 
         #endregion
 
         #region Properties
 
-        public List<ClientSession> Characters { get; set; }
+        public List<ClientSession> Characters
+        {
+            get
+            {
+                return _characters.GetAllItems();
+            }
+        }
 
         public long GroupId { get; set; }
 
@@ -61,12 +77,12 @@ namespace OpenNos.GameObject
 
         public bool IsMemberOfGroup(long characterId)
         {
-            return Characters.Any(c => c.Character.CharacterId.Equals(characterId));
+            return _characters.ContainsKey(characterId);
         }
 
         public bool IsMemberOfGroup(ClientSession session)
         {
-            return Characters.Any(c => c.Character.CharacterId.Equals(session.Character.CharacterId));
+            return _characters.ContainsKey(session.Character.CharacterId);
         }
 
         public void JoinGroup(long characterId)
@@ -81,13 +97,13 @@ namespace OpenNos.GameObject
         public void JoinGroup(ClientSession session)
         {
             session.Character.Group = this;
-            Characters.Add(session);
+            _characters[session.Character.CharacterId] = session;
         }
 
         public void LeaveGroup(ClientSession session)
         {
             session.Character.Group = null;
-            Characters.Remove(session);
+            _characters.Remove(session.Character.CharacterId);
         }
 
         public long OrderedCharacterId(Character Character)

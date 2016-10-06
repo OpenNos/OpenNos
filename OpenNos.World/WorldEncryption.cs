@@ -102,8 +102,8 @@ namespace OpenNos.World
                 case 0:
                     for (int i = 0; i < length; i++)
                     {
-                        int firstbyte = (session_key + 0x40);
-                        int highbyte = (str[i] - firstbyte);
+                        int firstbyte = (int)(byte)(session_key + 0x40);
+                        int highbyte = (int)(byte)(str[i] - firstbyte);
                         encrypted_string += Convert.ToChar(highbyte);
                     }
                     break;
@@ -111,8 +111,8 @@ namespace OpenNos.World
                 case 1:
                     for (int i = 0; i < length; i++)
                     {
-                        int firstbyte =(session_key + 0x40);
-                        int highbyte = (str[i] + firstbyte);
+                        int firstbyte = (int)(byte)(session_key + 0x40);
+                        int highbyte = (int)(byte)(str[i] + firstbyte);
                         encrypted_string += Convert.ToChar(highbyte);
                     }
                     break;
@@ -120,8 +120,8 @@ namespace OpenNos.World
                 case 2:
                     for (int i = 0; i < length; i++)
                     {
-                        int firstbyte = (session_key + 0x40);
-                        int highbyte = (str[i] - firstbyte ^ 0xC3);
+                        int firstbyte = (int)(byte)(session_key + 0x40);
+                        int highbyte = (int)(byte)(str[i] - firstbyte ^ 0xC3);
                         encrypted_string += Convert.ToChar(highbyte);
                     }
                     break;
@@ -129,8 +129,8 @@ namespace OpenNos.World
                 case 3:
                     for (int i = 0; i < length; i++)
                     {
-                        int firstbyte = (session_key + 0x40);
-                        int highbyte = (str[i] + firstbyte ^ 0xC3);
+                        int firstbyte = (int)(byte)(session_key + 0x40);
+                        int highbyte = (int)(byte)(str[i] + firstbyte ^ 0xC3);
                         encrypted_string += Convert.ToChar(highbyte);
                     }
                     break;

@@ -154,7 +154,7 @@ namespace OpenNos.GameObject
                     MapY = FirstY;
                     Path = new List<MapCell>();
                     Map.Broadcast(GenerateIn3());
-                    Map.Broadcast(GenerateEff(7));
+                    Map.Broadcast(GenerateEff(7), 10);
                 }
                 return;
             }
