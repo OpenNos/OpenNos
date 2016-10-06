@@ -18,6 +18,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 {
@@ -131,35 +132,20 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// <param name="message">Message to be sent</param>
         protected override void SendMessagepublic(IScsMessage message)
         {
-            // Send message
-            var totalSent = 0;
-            lock (_syncLock)
+            try
+            { 
+                if(_clientSocket.Connected)
+                {
+                    // Create a byte array from message according to current protocol
+                    var messageBytes = WireProtocol.GetBytes(message);
+                    // Begin sending the data to the remote device.
+                    _clientSocket.BeginSend(messageBytes, 0, messageBytes.Length, SocketFlags.None,
+                        new AsyncCallback(SendCallback), _clientSocket);
+                }
+            }
+            catch(Exception e)
             {
-                // Create a byte array from message according to current protocol
-                var messageBytes = WireProtocol.GetBytes(message);
-                try
-                {
-                    // Send all bytes to the remote application
-                    while (totalSent < messageBytes.Length && _clientSocket.Connected)
-                    {
-                        var sent = 0;
-
-                        sent = _clientSocket.Send(messageBytes, totalSent, messageBytes.Length - totalSent, SocketFlags.None);
-
-                        if (sent <= 0)
-                        {
-                            throw new CommunicationException("Message could not be sent via TCP socket. Only " + totalSent + " bytes of " + messageBytes.Length + " bytes are sent.");
-                        }
-
-                        totalSent += sent;
-                    }
-                    LastSentMessageTime = DateTime.Now;
-                    OnMessageSent(message);
-                }
-                catch (Exception)
-                {
-                    Logger.Log.Warn("A packet would have been sent to a disconnected client. IGNORE THIS.");
-                }
+                Logger.Error(e);
             }
         }
 
@@ -223,6 +209,22 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             catch
             {
                 Disconnect();
+            }
+        }
+
+        private static void SendCallback(IAsyncResult ar)
+        {
+            try
+            {
+                // Retrieve the socket from the state object.
+                Socket client = (Socket)ar.AsyncState;
+
+                // Complete sending the data to the remote device.
+                int bytesSent = client.EndSend(ar);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 

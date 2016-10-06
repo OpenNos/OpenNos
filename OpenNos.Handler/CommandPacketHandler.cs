@@ -1334,6 +1334,7 @@ namespace OpenNos.Handler
         {
             if (Session.IsOnMap)
             {
+                Map currentMap = Session.CurrentMap;
                 Random random = new Random();
                 Logger.Debug(packet, Session.SessionId);
                 string[] packetsplit = packet.Split(' ');
@@ -1373,9 +1374,9 @@ namespace OpenNos.Handler
                         MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
                         MapMonster monst = new MapMonster(monster, map) { Respawn = false };
                         ///////////////////
-                        Session.CurrentMap.AddMonster(monst);
+                        currentMap?.AddMonster(monst);
                         ServerManager.Monsters.Add(monst);
-                        Session.CurrentMap?.Broadcast(monst.GenerateIn3());
+                        currentMap?.Broadcast(monst.GenerateIn3());
                     }
                 }
                 else
