@@ -751,7 +751,7 @@ namespace OpenNos.Handler
             }
             ushort damage = 0;
 
-            while (intdamage > ushort.MaxValue)
+            while (intdamage >= ushort.MaxValue)
             {
                 intdamage -= ushort.MaxValue;
             }
