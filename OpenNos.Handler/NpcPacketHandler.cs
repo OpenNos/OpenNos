@@ -408,38 +408,46 @@ namespace OpenNos.Handler
                     }
                     if (myShop.Items.Count != 0)
                     {
-                        for (int i = 83; i < packetsplit.Length; i++)
+                        if (!myShop.Items.Any(s => !(s.ItemInstance as ItemInstance).Item.IsSoldable))
                         {
-                            shopname += $"{packetsplit[i]} ";
+                            for (int i = 83; i < packetsplit.Length; i++)
+                            {
+                                shopname += $"{packetsplit[i]} ";
+                            }
+
+                            // trim shopname
+                            shopname.TrimEnd(' ');
+
+                            // create default shopname if it's empty
+                            if (String.IsNullOrWhiteSpace(shopname) || String.IsNullOrEmpty(shopname))
+                            {
+                                shopname = Language.Instance.GetMessageFromKey("SHOP_PRIVATE_SHOP");
+                            }
+
+                            // truncate the string to a max-length of 20
+                            shopname = StringHelper.Truncate(shopname, 20);
+                            myShop.OwnerId = Session.Character.CharacterId;
+                            myShop.Name = shopname;
+                            Session.CurrentMap.UserShops.Add(Session.CurrentMap.UserShops.Count(), myShop);
+
+                            Session.Character.HasShopOpened = true;
+
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateShop(shopname));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
+
+                            Session.Character.IsSitting = true;
+                            Session.Character.IsShopping = true;
+
+                            Session.Character.LoadSpeed();
+                            Session.SendPacket(Session.Character.GenerateCond());
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                         }
-
-                        // trim shopname
-                        shopname.TrimEnd(' ');
-
-                        // create default shopname if it's empty
-                        if (String.IsNullOrWhiteSpace(shopname) || String.IsNullOrEmpty(shopname))
+                        else
                         {
-                            shopname = Language.Instance.GetMessageFromKey("SHOP_PRIVATE_SHOP");
+                            Session.SendPacket("shop_end 0");
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"), 10));
                         }
-
-                        // truncate the string to a max-length of 20
-                        shopname = StringHelper.Truncate(shopname, 20);
-                        myShop.OwnerId = Session.Character.CharacterId;
-                        myShop.Name = shopname;
-                        Session.CurrentMap.UserShops.Add(Session.CurrentMap.UserShops.Count(), myShop);
-
-                        Session.Character.HasShopOpened = true;
-
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateShop(shopname));
-                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
-
-                        Session.Character.IsSitting = true;
-                        Session.Character.IsShopping = true;
-
-                        Session.Character.LoadSpeed();
-                        Session.SendPacket(Session.Character.GenerateCond());
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                     }
                     else
                     {
