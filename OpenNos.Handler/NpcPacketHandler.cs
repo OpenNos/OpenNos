@@ -593,6 +593,7 @@ namespace OpenNos.Handler
             {
                 InventoryType type;
                 byte amount, slot;
+               
                 if (!Enum.TryParse<InventoryType>(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount))
                 {
                     return;
@@ -607,14 +608,15 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateShopMemo(2, string.Format(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"))));
                     return;
                 }
+                long price = (inv.ItemInstance as ItemInstance).Item.Type == InventoryType.Wear ? (inv.ItemInstance as ItemInstance).Item.Price / 20 : (inv.ItemInstance as ItemInstance).Item.Price;
 
-                if (Session.Character.Gold + (inv.ItemInstance as ItemInstance).Item.Price * amount > 1000000000)
+                if (Session.Character.Gold + price * amount > 1000000000)
                 {
                     string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
                     Session.SendPacket(message);
                     return;
                 }
-                Session.Character.Gold += ((inv.ItemInstance as ItemInstance).Item.Price / 20) * amount;
+                Session.Character.Gold += price * amount;
                 Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), (inv.ItemInstance as ItemInstance).Item.Name, amount)));
 
                 inv = Session.Character.InventoryList.RemoveItemAmountFromInventory(amount, inv.Id);
