@@ -14,6 +14,8 @@
 
 using OpenNos.Core;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace OpenNos.World
 {
@@ -29,125 +31,140 @@ namespace OpenNos.World
 
         #region Methods
 
-        public static string Decrypt2(char[] str)
+        public static string Decrypt2(string str)
         {
-            string decrypted_string = String.Empty;
+            List<byte> receiveData = new List<byte>();
             char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'n' };
             int count = 0;
-
-            for (count = 0; count < str.Length - 1;)
+            for (count = 0; count < str.Length; count++)
             {
-                if (str[count] <= 0x7A)
+                if ((int)str[count] <= 0x7A)
                 {
-                    int len = str[count];
+                    int len = (int)str[count];
+
+                    for (int i = 0; i < len; i++)
+                    {
+                        count++;
+
+                        try
+                        {
+                            receiveData.Add(unchecked((byte)(str[count] ^ 0xFF)));
+                        }
+                        catch
+                        {
+                            receiveData.Add(255);
+                        }
+                    }
+                }
+                else
+                {
+                    int len = (int)str[count];
+                    len &= (int)0x7F;
 
                     for (int i = 0; i < (int)len; i++)
                     {
                         count++;
-
-                        decrypted_string += Convert.ToChar((count < str.Length ? str[count] : 0) ^ 0xFF);
-                    }
-                    count++;
-                }
-                else
-                {
-                    int len = str[count];
-                    len &= 0x7F;
-
-                    for (int i = 0; i < (int)len;)
-                    {
-                        count++;
-                        int highbyte = 0xF;
-                        int lowbyte = 0xF;
-                        if (count > 0 && count <= str.Length - 1)
+                        int highbyte = 0;
+                        try
                         {
-                            highbyte = str[count];
-                            lowbyte = str[count];
+                            highbyte = (int)str[count];
+                        }
+                        catch
+                        {
+                            highbyte = 0;
                         }
                         highbyte &= 0xF0;
                         highbyte >>= 0x4;
 
+                        int lowbyte = 0;
+                        try
+                        {
+                            lowbyte = (int)str[count];
+                        }
+                        catch
+                        {
+                            lowbyte = 0;
+                        }
                         lowbyte &= 0x0F;
 
                         if (highbyte != 0x0 && highbyte != 0xF)
                         {
-                            decrypted_string += table[highbyte - 1];
+                            receiveData.Add(unchecked((byte)table[highbyte - 1]));
                             i++;
                         }
 
                         if (lowbyte != 0x0 && lowbyte != 0xF)
                         {
-                            decrypted_string += table[lowbyte - 1];
-                            i++;
+                            receiveData.Add(unchecked((byte)table[lowbyte - 1]));
                         }
                     }
-                    count++;
                 }
             }
-
-            return decrypted_string;
+            return Encoding.UTF8.GetString(receiveData.ToArray());
         }
 
         public override string Decrypt(byte[] str, int session_id)
         {
-            int length = str.Length;
-            string encrypted_string = String.Empty;
-            byte session_key = (byte)(session_id & 0xFF);
-            byte session_number = (byte)(session_id >> 6);
-            session_number &= (byte)0xFF;
+            string encrypted_string = "";
+            int session_key = session_id & 0xFF;
+            byte session_number = unchecked((byte)(session_id >> 6));
+            session_number &= unchecked((byte)0xFF);
             session_number &= unchecked((byte)0x80000003);
 
             switch (session_number)
             {
                 case 0:
-                    for (int i = 0; i < length; i++)
+                    for (int i = 0; i < str.Length; i++)
                     {
-                        int firstbyte = (int)(byte)(session_key + 0x40);
-                        int highbyte = (int)(byte)(str[i] - firstbyte);
-                        encrypted_string += Convert.ToChar(highbyte);
+                        byte firstbyte = unchecked((byte)(session_key + 0x40));
+                        byte highbyte = unchecked((byte)(str[i] - firstbyte));
+                        encrypted_string += (char)highbyte;
                     }
                     break;
 
                 case 1:
-                    for (int i = 0; i < length; i++)
+                    for (int i = 0; i < str.Length; i++)
                     {
-                        int firstbyte = (int)(byte)(session_key + 0x40);
-                        int highbyte = (int)(byte)(str[i] + firstbyte);
-                        encrypted_string += Convert.ToChar(highbyte);
+                        byte firstbyte = unchecked((byte)(session_key + 0x40));
+                        byte highbyte = unchecked((byte)(str[i] + firstbyte));
+                        encrypted_string += (char)highbyte;
                     }
                     break;
 
                 case 2:
-                    for (int i = 0; i < length; i++)
+                    for (int i = 0; i < str.Length; i++)
                     {
-                        int firstbyte = (int)(byte)(session_key + 0x40);
-                        int highbyte = (int)(byte)(str[i] - firstbyte ^ 0xC3);
-                        encrypted_string += Convert.ToChar(highbyte);
+                        byte firstbyte = unchecked((byte)(session_key + 0x40));
+                        byte highbyte = unchecked((byte)(str[i] - firstbyte ^ 0xC3));
+                        encrypted_string += (char)highbyte;
                     }
                     break;
 
                 case 3:
-                    for (int i = 0; i < length; i++)
+                    for (int i = 0; i < str.Length; i++)
                     {
-                        int firstbyte = (int)(byte)(session_key + 0x40);
-                        int highbyte = (int)(byte)(str[i] + firstbyte ^ 0xC3);
-                        encrypted_string += Convert.ToChar(highbyte);
+                        byte firstbyte = unchecked((byte)(session_key + 0x40));
+                        byte highbyte = unchecked((byte)(str[i] + firstbyte ^ 0xC3));
+                        encrypted_string += (char)highbyte;
                     }
                     break;
 
                 default:
+                    encrypted_string += (char)0xF;
                     break;
             }
 
-            // return string less 255 (2 strings)
-            string[] bytes = encrypted_string.Split(Convert.ToChar(0xFF));
 
-            string save = String.Empty;
-            for (int i = 0; i < bytes.Length; i++)
+            string[] temp = encrypted_string.Split((char)0xFF);
+            string save = "";
+
+            for (int i = 0; i < temp.Length; i++)
             {
-                save += Decrypt2(bytes[i].ToCharArray());
-                save += Convert.ToChar(0xFF);
+                save += Decrypt2(temp[i]);
+                if (i < temp.Length - 2)
+                    save += (char)0xFF;
             }
+
             return save;
         }
 
