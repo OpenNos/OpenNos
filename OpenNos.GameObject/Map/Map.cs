@@ -40,6 +40,8 @@ namespace OpenNos.GameObject
         private BaseGrid _tempgrid;
         private Guid _uniqueIdentifier;
 
+        private List<int> _mapMonsterIds;
+
         #endregion
 
         #region Instantiation
@@ -60,14 +62,15 @@ namespace OpenNos.GameObject
             MapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
+            _mapMonsterIds = new List<int>();
             Data = data;
             LoadZone();
-            IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId);
+            IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId).ToList();
             _portals = new List<PortalDTO>();
             DroppedList = new ConcurrentDictionary<long, MapItem>();
 
             MapTypes = new List<MapTypeDTO>();
-            foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId))
+            foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId).ToList())
             {
                 MapTypeDTO MT = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
 
@@ -104,6 +107,7 @@ namespace OpenNos.GameObject
             foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
             {
                 _monsters[monster.MapMonsterId] = new MapMonster(monster, this);
+                _mapMonsterIds.Add(monster.MapMonsterId);
             }
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
 
@@ -203,6 +207,13 @@ namespace OpenNos.GameObject
         public static int GetDistance(Character character1, Character character2)
         {
             return GetDistance(new MapCell() { MapId = character1.MapId, X = character1.MapX, Y = character1.MapY }, new MapCell() { MapId = character2.MapId, X = character2.MapX, Y = character2.MapY });
+        }
+
+        public int GetNextMonsterId()
+        {
+            int nextId = _mapMonsterIds.Max() + 1;
+            _mapMonsterIds.Add(nextId);
+            return nextId;
         }
 
         public static int GetDistance(MapCell p, MapCell q)

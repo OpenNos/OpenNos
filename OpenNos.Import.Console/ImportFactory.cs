@@ -30,7 +30,7 @@ namespace OpenNos.Import.Console
 
         private readonly string _folder;
         private readonly List<string[]> _packetList = new List<string[]>();
-        private IEnumerable<MapDTO> _maps;
+        private List<MapDTO> _maps;
 
         #endregion
 
@@ -237,7 +237,7 @@ namespace OpenNos.Import.Console
 
         public void ImportMapType()
         {
-            IEnumerable<MapTypeDTO> list = DAOFactory.MapTypeDAO.LoadAll();
+            List<MapTypeDTO> list = DAOFactory.MapTypeDAO.LoadAll().ToList();
             MapTypeDTO mt1 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act1,
@@ -1928,7 +1928,7 @@ namespace OpenNos.Import.Console
 
         public void LoadMaps()
         {
-            _maps = DAOFactory.MapDAO.LoadAll();
+            _maps = DAOFactory.MapDAO.LoadAll().ToList();
         }
 
         internal void ImportItems()

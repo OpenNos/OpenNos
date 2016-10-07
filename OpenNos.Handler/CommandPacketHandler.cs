@@ -70,14 +70,13 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
+                MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving == 1 ? true : false, MapMonsterId = Session.CurrentMap.GetNextMonsterId() };
                 MapMonster monster = null;
                 Map map = ServerManager.GetMap(monst.MapId);
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
                     monster = new MapMonster(monst, map);
-                    ServerManager.Monsters.Add(monster);
                     Session.CurrentMap.AddMonster(monster);
                     Session.CurrentMap?.Broadcast(monster.GenerateIn3());
                 }
@@ -1364,18 +1363,17 @@ namespace OpenNos.Handler
                         {
                             mapx = (short)(Session.Character.MapX + possibilitie.X);
                             mapy = (short)(Session.Character.MapY + possibilitie.Y);
-                            if (!Session.CurrentMap.IsBlockedZone(mapx, mapy))
+                            if (!Session.CurrentMap?.IsBlockedZone(mapx, mapy) ?? false)
                             {
                                 break;
                             }
                         }
 
                         // Replace by MAPPING
-                        MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
+                        MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = Session.CurrentMap.GetNextMonsterId()};
                         MapMonster monst = new MapMonster(monster, map) { Respawn = false };
                         ///////////////////
                         currentMap?.AddMonster(monst);
-                        ServerManager.Monsters.Add(monst);
                         currentMap?.Broadcast(monst.GenerateIn3());
                     }
                 }

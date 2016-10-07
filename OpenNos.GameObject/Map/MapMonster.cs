@@ -101,25 +101,6 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static int GenerateMapMonsterId()
-        {
-            List<int> monsterIds = new List<int>();
-
-            for (int i = ServerManager.Monsters.Count - 1; i >= 0; i--)
-            {
-                monsterIds.Add(ServerManager.Monsters[i].MapMonsterId);
-            }
-
-            for (int i = 20000; i < int.MaxValue; i++)
-            {
-                if (!monsterIds.Contains(i))
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
         public string GenerateEff(int effect)
         {
             return $"eff 3 {MapMonsterId} {effect}";

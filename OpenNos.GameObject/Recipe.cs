@@ -15,6 +15,7 @@
 using OpenNos.DAL;
 using OpenNos.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -25,7 +26,7 @@ namespace OpenNos.GameObject
         public Recipe(short RecipeId)
         {
             Items = new List<RecipeItemDTO>();
-            foreach (RecipeItemDTO rec in DAOFactory.RecipeItemDAO.LoadByRecipe(RecipeId))
+            foreach (RecipeItemDTO rec in DAOFactory.RecipeItemDAO.LoadByRecipe(RecipeId).ToList())
             {
                 // Replace by MAPPING
                 Items.Add(new RecipeItemDTO()

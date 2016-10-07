@@ -113,8 +113,6 @@ namespace OpenNos.GameObject
 
         public static int GoldRate { get; set; }
 
-        public static List<MapMonster> Monsters { get; set; }
-
         public static int XPRate { get; set; }
 
         public List<Group> Groups { get; set; }
@@ -276,7 +274,7 @@ namespace OpenNos.GameObject
             foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
             {
                 Skill skill = _mapper.Map<Skill>(skillDTO);
-                foreach (ComboDTO com in DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum))
+                foreach (ComboDTO com in DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList())
                 {
                     skill.Combos.Add(_mapper.Map<ComboDTO>(com));
                 }
@@ -295,7 +293,6 @@ namespace OpenNos.GameObject
                 int recipescount = 0;
                 int shopcount = 0;
                 int monstercount = 0;
-                Monsters = new List<MapMonster>();
                 foreach (MapDTO map in DAOFactory.MapDAO.LoadAll())
                 {
                     Guid guid = Guid.NewGuid();

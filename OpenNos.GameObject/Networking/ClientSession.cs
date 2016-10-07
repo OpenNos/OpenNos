@@ -255,68 +255,6 @@ namespace OpenNos.GameObject
             IsAuthenticated = true;
         }
 
-        /// <summary>
-        /// Handle Broadcast from Broadcastable
-        /// </summary>
-        public async Task ReceiveBroadcast(BroadcastPacket sentPacket)
-        {
-            if (!IsDisposing && _client.IsConnected && sentPacket != null)
-            {
-                switch (sentPacket.Receiver)
-                {
-                    case ReceiverType.All:
-                        SendPacket(sentPacket.Packet);
-                        break;
-
-                    case ReceiverType.AllExceptMe:
-                        if (sentPacket.Sender != this)
-                        {
-                            SendPacket(sentPacket.Packet);
-                        }
-                        break;
-
-                    case ReceiverType.OnlySomeone:
-                        {
-                            if ((sentPacket.SomeonesCharacterId > 0 || !String.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
-                                && (this.Character != null && (this.Character.CharacterId == sentPacket.SomeonesCharacterId
-                                || this.Character.Name == sentPacket.SomeonesCharacterName)))
-                            {
-                                SendPacket(sentPacket.Packet);
-                            }
-                            break;
-                        }
-                    case ReceiverType.AllNoEmoBlocked:
-                        if (!this.Character.EmoticonsBlocked)
-                        {
-                            SendPacket(sentPacket.Packet);
-                        }
-                        break;
-
-                    case ReceiverType.AllNoHeroBlocked:
-                        if (!this.Character.HeroChatBlocked)
-                        {
-                            SendPacket(sentPacket.Packet);
-                        }
-                        break;
-
-                    case ReceiverType.Group:
-                        if (sentPacket.Sender.Character.Group != null && Character.Group != null && Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId)
-                        {
-                            SendPacket(sentPacket.Packet);
-                        }
-                        break;
-                }
-            }
-        }
-
-        public async Task ReceiveBroadcasts(IEnumerable<BroadcastPacket> sentpackets)
-        {
-            foreach (BroadcastPacket broadcastPacket in sentpackets)
-            {
-                await ReceiveBroadcast(broadcastPacket);
-            }
-        }
-
         public void SendPacket(string packet)
         {
             if (!IsDisposing)

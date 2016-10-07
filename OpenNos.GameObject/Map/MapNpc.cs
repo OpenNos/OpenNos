@@ -16,6 +16,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -55,7 +56,7 @@ namespace OpenNos.GameObject
             LastEffect = LastMove = DateTime.Now;
             Map = parent;
             _movetime = _random.Next(300, 3000);
-            IEnumerable<RecipeDTO> recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId);
+            IEnumerable<RecipeDTO> recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId).ToList();
             if (recipe != null)
             {
                 Recipes = new List<Recipe>();
@@ -67,7 +68,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            IEnumerable<TeleporterDTO> teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
+            IEnumerable<TeleporterDTO> teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId).ToList();
             if (teleporters != null)
             {
                 Teleporters = new List<TeleporterDTO>();

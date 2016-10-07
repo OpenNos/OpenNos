@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return _sessions.GetAllItems().Where(s => s.HasSelectedCharacter);
+                return _sessions.GetAllItems().Where(s => s.HasSelectedCharacter && !s.IsDisposing && s.IsConnected);
             }
         }
 
@@ -94,44 +94,33 @@ namespace OpenNos.GameObject
                 {
                     await Task.Delay(delay);
 
-                    foreach (var session in _sessions.GetAllItems())
+                    try
                     {
-                        try
+                        foreach (string packet in packets)
                         {
-                            foreach (string packet in packets)
-                            {
-                                session.ReceiveBroadcast(new BroadcastPacket(client, packet, receiver, characterName, characterId));
-                            }
+                            await SpreadBroadcastpacket(new BroadcastPacket(client, packet, receiver, characterName, characterId));
                         }
-                        catch (Exception ex)
-                        {
-                            Logger.Error(ex);
-                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex);
                     }
                 });
         }
 
         public void Broadcast(IEnumerable<BroadcastPacket> packets, int delay = 0)
         {
-            // Send message to all online users
             Task.Factory.StartNew(
                 async () =>
                 {
                     await Task.Delay(delay);
-
-                    foreach (var session in _sessions.GetAllItems())
+                    try
                     {
-                        try
-                        {
-                            foreach (BroadcastPacket packet in packets)
-                            {
-                                session.ReceiveBroadcast(packet);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Error(ex);
-                        }
+                        await SpreadBroadcasts(packets);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex);
                     }
                 });
         }
@@ -143,17 +132,13 @@ namespace OpenNos.GameObject
                 async () =>
                 {
                     await Task.Delay(delay);
-
-                    foreach (var session in _sessions.GetAllItems())
+                    try
                     {
-                        try
-                        {
-                            session.ReceiveBroadcast(packet);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Error(ex);
-                        }
+                        await SpreadBroadcastpacket(packet);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex);
                     }
                 });
         }
@@ -164,11 +149,13 @@ namespace OpenNos.GameObject
                 async () =>
                 {
                     await Task.Delay(delay);
-
-                    // Send message to all online users
-                    foreach (var session in _sessions.GetAllItems())
+                    try
                     {
-                        session.ReceiveBroadcast(new BroadcastPacket(client, content, receiver, characterName, characterId));
+                        await SpreadBroadcastpacket(new BroadcastPacket(client, content, receiver, characterName, characterId));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex);
                     }
                 });
         }
@@ -194,6 +181,73 @@ namespace OpenNos.GameObject
             {
                 // Create a ChatClient and store it in a collection
                 _sessions[session.Character.CharacterId] = session;
+            }
+        }
+
+        public async Task SpreadBroadcastpacket(BroadcastPacket sentPacket)
+        {
+            if (sentPacket != null)
+            {
+                switch (sentPacket.Receiver)
+                {
+                    case ReceiverType.All: // send packet to everyone
+                        foreach (ClientSession session in Sessions)
+                        {
+                            session.SendPacket(sentPacket.Packet);
+                        }
+                        break;
+
+                    case ReceiverType.AllExceptMe: // send to everyone except the sender
+                        foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId))
+                        {
+                            session.SendPacket(sentPacket.Packet);
+                        }
+                        break;
+
+                    case ReceiverType.OnlySomeone:
+                        {
+                            if (sentPacket.SomeonesCharacterId > 0 || !String.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
+                            {
+                                ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == sentPacket.SomeonesCharacterId || s.Character.Name == sentPacket.SomeonesCharacterName);
+
+                                if (targetSession != null)
+                                {
+                                    targetSession.SendPacket(sentPacket.Packet);
+                                }
+                            }
+
+                            break;
+                        }
+                    case ReceiverType.AllNoEmoBlocked:
+                        foreach (ClientSession session in Sessions.Where(s => !s.Character.EmoticonsBlocked))
+                        {
+                            session.SendPacket(sentPacket.Packet);
+                        }
+                        break;
+
+                    case ReceiverType.AllNoHeroBlocked:
+                        foreach (ClientSession session in Sessions.Where(s => !s.Character.HeroChatBlocked))
+                        {
+                            session.SendPacket(sentPacket.Packet);
+                        }
+                        break;
+
+                    case ReceiverType.Group:
+                        foreach (ClientSession session in Sessions.Where(s => s.Character.Group != null
+                                 && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId))
+                        {
+                            session.SendPacket(sentPacket.Packet);
+                        }
+                        break;
+                }
+            }
+        }
+
+        public async Task SpreadBroadcasts(IEnumerable<BroadcastPacket> sentpackets)
+        {
+            foreach (BroadcastPacket broadcastPacket in sentpackets)
+            {
+                await SpreadBroadcastpacket(broadcastPacket);
             }
         }
 
