@@ -1,14 +1,16 @@
 #Thanks for all contributions!
 
-chucktheripper
-0Lucifer0
-ciapa1
-genyx
-MasterDomino
-Martazza
-KrisYiu
-Uppermost
+#Authors
+chucktheripper  
+0Lucifer0  
+ciapa1  
+genyx  
+MasterDomino  
+Martazza  
+KrisYiu  
+Uppermost  
 
-#Thanks
-juhgiyo for his JPS+ algorithm
-Medhy/Elektrochemie for encryptions algorithm
+#Helpers
+juhgiyo for his JPS+ algorithm  
+Medhy for encryptions algorithm/HP algorithm  
+Elektrochemie for encryptions algorithm
