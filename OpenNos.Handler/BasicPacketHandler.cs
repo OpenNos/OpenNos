@@ -1093,7 +1093,7 @@ namespace OpenNos.Handler
                         group.JoinGroup(charId);
                         Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name))), 10));
                         group.JoinGroup(Session.Character.CharacterId);
-                        ServerManager.Instance.Groups.Add(group);
+                        ServerManager.Instance.AddGroup(group);
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_ADMIN")), ReceiverType.OnlySomeone, String.Empty, charId);
 
                         // set back reference to group

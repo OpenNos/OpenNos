@@ -15,6 +15,7 @@
 using AutoMapper;
 using EpPathFinding.cs;
 using OpenNos.Core;
+using OpenNos.Core.Collections;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -40,6 +41,7 @@ namespace OpenNos.GameObject
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
         private static List<Skill> _skills = new List<Skill>();
+        private ThreadSafeSortedList<long, Group> _groups;
         private long lastGroupId;
 
         #endregion
@@ -70,7 +72,7 @@ namespace OpenNos.GameObject
 
         private ServerManager()
         {
-            Groups = new List<Group>();
+            _groups = new ThreadSafeSortedList<long, Group>();
 
             Task autosave = new Task(SaveAllProcess);
             autosave.Start();
@@ -115,7 +117,13 @@ namespace OpenNos.GameObject
 
         public static int XPRate { get; set; }
 
-        public List<Group> Groups { get; set; }
+        public List<Group> Groups
+        {
+            get
+            {
+                return _groups.GetAllItems();
+            }
+        }
 
         public static ServerManager Instance => _instance ?? (_instance = new ServerManager());
 
@@ -340,6 +348,11 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.Error("General Error", ex);
             }
+        }
+
+        public void AddGroup(Group group)
+        {
+            _groups[group.GroupId] = group;
         }
 
         // PacketHandler -> with Callback?
@@ -628,7 +641,7 @@ namespace OpenNos.GameObject
                         targetSession.SendPacket(targetSession.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
                         Broadcast(targetSession.Character.GeneratePidx(true));
                     }
-                    ServerManager.Instance.Groups.Remove(grp);
+                    RemoveGroup(grp);
                 }
 
                 session.Character.Group = null;
@@ -756,18 +769,28 @@ namespace OpenNos.GameObject
         {
             while (true)
             {
-                foreach (Group grp in Groups)
+                try
                 {
-                    foreach (ClientSession session in grp.Characters)
+                    foreach (Group grp in Groups)
                     {
-                        foreach (string str in grp.GeneratePst())
+                        foreach (ClientSession session in grp.Characters)
                         {
-                            session.SendPacket(str);
+                            foreach (string str in grp.GeneratePst())
+                            {
+                                session.SendPacket(str);
+                            }
                         }
                     }
                 }
+                catch (Exception) { }
+
                 await Task.Delay(2000);
             }
+        }
+
+        private void RemoveGroup(Group grp)
+        {
+            _groups.Remove(grp.GroupId);
         }
 
         // Server
@@ -792,12 +815,10 @@ namespace OpenNos.GameObject
                 {
                     TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
                     map.Value.Disabled = false;
-                    map.Value.Tempgrid = new StaticGrid(0, 0);
                 }
                 foreach (var map in _maps.Where(s => !s.Value.Disabled && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
                 {
                     map.Value.Disabled = true;
-                    map.Value.Tempgrid = null;
                 }
                 TaskMaps.ForEach(s => s.Start());
                 Task.WaitAll(TaskMaps.ToArray());

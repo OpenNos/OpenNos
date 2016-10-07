@@ -34,27 +34,16 @@ namespace OpenNos.GameObject
 
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
         private short[,] _grid;
+        private List<int> _mapMonsterIds;
         private List<MapNpc> _npcs;
         private List<PortalDTO> _portals;
         private Random _random;
         private BaseGrid _tempgrid;
         private Guid _uniqueIdentifier;
 
-        private List<int> _mapMonsterIds;
-
         #endregion
 
         #region Instantiation
-
-        public void AddMonster(MapMonster monster)
-        {
-            _monsters[monster.MapMonsterId] = monster;
-        }
-
-        public void RemoveMonster(MapMonster monsterToRemove)
-        {
-            _monsters.Remove(monsterToRemove.MapMonsterId);
-        }
 
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
@@ -140,7 +129,8 @@ namespace OpenNos.GameObject
         }
 
         /// <summary>
-        /// This list ONLY for READ access to MapMonster, you CANNOT MODIFY them here. Use Add/RemoveMonster instead.
+        /// This list ONLY for READ access to MapMonster, you CANNOT MODIFY them here. Use
+        /// Add/RemoveMonster instead.
         /// </summary>
         public List<MapMonster> Monsters
         {
@@ -176,21 +166,13 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return _tempgrid;
-            }
-
-            set
-            {
-                if (value == null)
-                {
-                    _tempgrid = null;
-                    JumpPointParameters = null;
-                }
-                else
+                if (_tempgrid == null)
                 {
                     _tempgrid = ConvertToGrid(_grid);
                     JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
                 }
+
+                return _tempgrid;
             }
         }
 
@@ -209,16 +191,14 @@ namespace OpenNos.GameObject
             return GetDistance(new MapCell() { MapId = character1.MapId, X = character1.MapX, Y = character1.MapY }, new MapCell() { MapId = character2.MapId, X = character2.MapX, Y = character2.MapY });
         }
 
-        public int GetNextMonsterId()
-        {
-            int nextId = _mapMonsterIds.Max() + 1;
-            _mapMonsterIds.Add(nextId);
-            return nextId;
-        }
-
         public static int GetDistance(MapCell p, MapCell q)
         {
             return Math.Max(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
+        }
+
+        public void AddMonster(MapMonster monster)
+        {
+            _monsters[monster.MapMonsterId] = monster;
         }
 
         public BaseGrid ConvertToGrid(short[,] _grid)
@@ -297,11 +277,25 @@ namespace OpenNos.GameObject
             return _monsters.GetAllItems().Where(s => s.Alive && GetDistance(
                 new MapCell()
                 {
-                    X = mapX, Y = mapY
+                    X = mapX,
+                    Y = mapY
                 }, new MapCell()
                 {
-                    X = s.MapX, Y = s.MapY
+                    X = s.MapX,
+                    Y = s.MapY
                 }) <= distance + 1).ToList();
+        }
+
+        public MapMonster GetMonster(long mapMonsterId)
+        {
+            return _monsters[mapMonsterId];
+        }
+
+        public int GetNextMonsterId()
+        {
+            int nextId = _mapMonsterIds.Max() + 1;
+            _mapMonsterIds.Add(nextId);
+            return nextId;
         }
 
         public bool IsBlockedZone(int x, int y)
@@ -404,19 +398,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public MapMonster GetMonster(long mapMonsterId)
-        {
-            return _monsters[mapMonsterId];
-        }
-
-        private void RemoveDeadMonsters()
-        {
-            foreach (MapMonster monster in _monsters.GetAllItems().Where(s => !s.Alive && !s.Respawn))
-            {
-                RemoveMonster(monster);
-            }
-        }
-
         public void NpcLifeManager()
         {
             try
@@ -430,6 +411,11 @@ namespace OpenNos.GameObject
             {
                 Logger.Error(e);
             }
+        }
+
+        public void RemoveMonster(MapMonster monsterToRemove)
+        {
+            _monsters.Remove(monsterToRemove.MapMonsterId);
         }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
@@ -642,6 +628,14 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Error(e);
+            }
+        }
+
+        private void RemoveDeadMonsters()
+        {
+            foreach (MapMonster monster in _monsters.GetAllItems().Where(s => !s.Alive && !s.Respawn))
+            {
+                RemoveMonster(monster);
             }
         }
 

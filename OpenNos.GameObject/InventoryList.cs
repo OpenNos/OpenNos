@@ -273,9 +273,9 @@ namespace OpenNos.GameObject
 
         public Inventory MoveInventory(Inventory inv, InventoryType desttype, short destslot)
         {
-            Logger.Debug($"Inventory: {inv.Id} Desttype: {desttype} Destslot: {destslot}", Owner.Session.SessionId);
-            if (inv != null)
+            if (Owner.Session != null && inv != null)
             {
+                Logger.Debug($"Inventory: {inv.Id} Desttype: {desttype} Destslot: {destslot}", Owner.Session.SessionId);
                 Item iteminfo = (inv.ItemInstance as ItemInstance).Item;
                 Inventory invdest = LoadInventoryBySlotAndType(destslot, desttype);
 
