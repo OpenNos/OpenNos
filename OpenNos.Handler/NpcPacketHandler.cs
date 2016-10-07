@@ -408,7 +408,7 @@ namespace OpenNos.Handler
                     }
                     if (myShop.Items.Count != 0)
                     {
-                        if (!myShop.Items.Any(s => !(s.ItemInstance as ItemInstance).Item.IsSoldable))
+                        if (!myShop.Items.Any(s => !(s.ItemInstance as ItemInstance).Item.IsSoldable || (s.ItemInstance as ItemInstance).IsBound))
                         {
                             for (int i = 83; i < packetsplit.Length; i++)
                             {
