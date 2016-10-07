@@ -586,7 +586,7 @@ namespace OpenNos.Handler
                     }
                     if (name == "*")
                     {
-                        foreach (ClientSession session in Session.CurrentMap.Sessions.Where(s => s.Character != null))
+                        foreach (ClientSession session in Session.CurrentMap.Sessions)
                         {
                             Session.Character.SendGift((session.Character.CharacterId), vnum, amount, false);
                         }
@@ -1320,7 +1320,7 @@ namespace OpenNos.Handler
         public void Stat(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ServerManager.Instance.Sessions.Count()} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ServerManager.Instance.SessionCount} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("XP_RATE_NOW")}: {ServerManager.XPRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("DROP_RATE_NOW")}: {ServerManager.DropRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_RATE_NOW")}: {ServerManager.GoldRate} ", 13));

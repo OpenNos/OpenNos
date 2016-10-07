@@ -1098,10 +1098,15 @@ namespace OpenNos.Handler
 
                         // set back reference to group
                         Session.Character.Group = group;
-                        ClientSession session = ServerManager.Instance.Sessions.SingleOrDefault(c => c.Character.CharacterId.Equals(charId));
+                        ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
                         if(session != null && session.Character != null)
                         {
-                            ServerManager.Instance.Sessions.SingleOrDefault(c => c.Character.CharacterId.Equals(charId)).Character.Group = group;
+                            ClientSession loadedSession = ServerManager.Instance.GetSessionByCharacterId(charId);
+
+                            if(loadedSession != null)
+                            {
+                                loadedSession.Character.Group = group;
+                            }
                         }
                     }
 

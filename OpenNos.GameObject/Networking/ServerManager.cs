@@ -114,7 +114,7 @@ namespace OpenNos.GameObject
         public static int GoldRate { get; set; }
 
         public static List<MapMonster> Monsters { get; set; }
-        
+
         public static int XPRate { get; set; }
 
         public List<Group> Groups { get; set; }
@@ -348,7 +348,7 @@ namespace OpenNos.GameObject
         // PacketHandler -> with Callback?
         public void AskRevive(long characterId)
         {
-            ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == characterId);
+            ClientSession Session = GetSessionByCharacterId(characterId);
             if (Session != null && Session.HasSelectedCharacter)
             {
                 if (Session.Character.IsVehicled)
@@ -401,7 +401,7 @@ namespace OpenNos.GameObject
                 clientSession.CurrentMap.UserShops[shop.Key].Items.Remove(itemshop);
             }
 
-            ClientSession shopOwnerSession = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(shop.Value.OwnerId));
+            ClientSession shopOwnerSession = GetSessionByCharacterId(shop.Value.OwnerId);
             if (shopOwnerSession == null)
             {
                 return;
@@ -440,12 +440,12 @@ namespace OpenNos.GameObject
         // Both partly
         public void ChangeMap(long id)
         {
-            ClientSession session = Sessions.SingleOrDefault(s => s.Character != null && s.Character.CharacterId == id);
+            ClientSession session = GetSessionByCharacterId(id);
             if (session != null)
             {
                 try
                 {
-                    session.CurrentMap.UnregisterSession(session.ClientId);
+                    session.CurrentMap.UnregisterSession(session.Character.CharacterId);
                     session.CurrentMap = GetMap(session.Character.MapId);
                     session.CurrentMap.RegisterSession(session);
                     session.SendPacket(session.Character.GenerateCInfo());
@@ -520,7 +520,7 @@ namespace OpenNos.GameObject
         // PacketHandler
         public void ExchangeValidate(ClientSession c1Session, long charId)
         {
-            ClientSession c2Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
+            ClientSession c2Session = GetSessionByCharacterId(charId);
 
             if (c2Session == null || c2Session.Character.ExchangeInfo == null)
             {
@@ -581,7 +581,7 @@ namespace OpenNos.GameObject
 
         public T GetProperty<T>(long charId, string property)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
+            ClientSession session = GetSessionByCharacterId(charId);
             if (session == null)
             {
                 return default(T);
@@ -591,7 +591,7 @@ namespace OpenNos.GameObject
 
         public T GetUserMethod<T>(long characterId, string methodName)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(characterId));
+            ClientSession session = GetSessionByCharacterId(characterId);
             if (session == null)
             {
                 return default(T);
@@ -615,12 +615,11 @@ namespace OpenNos.GameObject
                     grp.LeaveGroup(session);
                     foreach (ClientSession groupSession in grp.Characters)
                     {
-                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId))
-                        {
-                            sess.SendPacket(sess.Character.GeneratePinit());
-                            sess.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
-                        }
+                        ClientSession sess = GetSessionByCharacterId(groupSession.Character.CharacterId);
+                        sess.SendPacket(sess.Character.GeneratePinit());
+                        sess.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                     }
+                    session.SendPacket("pinit 0");
                     Broadcast(session.Character.GeneratePidx(true));
                     session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                 }
@@ -654,7 +653,7 @@ namespace OpenNos.GameObject
         // Map
         public void MapOut(long id)
         {
-            ClientSession session = Sessions.SingleOrDefault(s => s.Character != null && s.Character.CharacterId == id);
+            ClientSession session = GetSessionByCharacterId(id);
             if (session == null)
             {
                 return;
@@ -667,7 +666,7 @@ namespace OpenNos.GameObject
 
         public void RequireBroadcastFromUser(ClientSession client, long characterId, string methodName)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(characterId));
+            ClientSession session = GetSessionByCharacterId(characterId);
             if (session == null)
             {
                 return;
@@ -680,19 +679,19 @@ namespace OpenNos.GameObject
         // Map
         public void ReviveFirstPosition(long characterId)
         {
-            ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == characterId && s.Character.Hp <= 0);
-            if (Session != null)
+            ClientSession session = GetSessionByCharacterId(characterId);
+            if (session != null && session.Character.Hp <= 0)
             {
-                MapOut(Session.Character.CharacterId);
-                Session.Character.MapId = 1;
-                Session.Character.MapX = 80;
-                Session.Character.MapY = 116;
-                Session.Character.Hp = 1;
-                Session.Character.Mp = 1;
-                ChangeMap(Session.Character.CharacterId);
-                Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.All);
-                Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.All);
-                Session.SendPacket(Session.Character.GenerateStat());
+                MapOut(session.Character.CharacterId);
+                session.Character.MapId = 1;
+                session.Character.MapX = 80;
+                session.Character.MapY = 116;
+                session.Character.Hp = 1;
+                session.Character.Mp = 1;
+                ChangeMap(session.Character.CharacterId);
+                Broadcast(session, session.Character.GenerateTp(), ReceiverType.All);
+                Broadcast(session, session.Character.GenerateRevive(), ReceiverType.All);
+                session.SendPacket(session.Character.GenerateStat());
             }
         }
 
@@ -704,7 +703,7 @@ namespace OpenNos.GameObject
 
         public void SetProperty(long charId, string property, object value)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
+            ClientSession session = GetSessionByCharacterId(charId);
             if (session == null)
             {
                 return;

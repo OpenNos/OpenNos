@@ -40,13 +40,11 @@ namespace OpenNos.GameObject
 
             if (session != null && IsWorldServer)
             {
-                ServerManager.Instance.RegisterSession(session);
                 if (!_sessions.TryAdd(customClient.ClientId, session))
                 {
                     Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                     customClient.Disconnect();
                     _sessions.TryRemove(customClient.ClientId, out session);
-                    ServerManager.Instance.UnregisterSession(session.ClientId);
                     return;
                 }
             }

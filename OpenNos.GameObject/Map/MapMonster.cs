@@ -230,7 +230,7 @@ namespace OpenNos.GameObject
             }
             else
             {
-                ClientSession targetSession = Map.Sessions.SingleOrDefault(s => s.Character.CharacterId == Target);
+                ClientSession targetSession = Map.GetSessionByCharacterId(Target);
 
                 if (targetSession == null || targetSession.Character.Invisible)
                 {

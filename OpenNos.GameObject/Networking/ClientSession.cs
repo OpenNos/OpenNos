@@ -91,7 +91,7 @@ namespace OpenNos.GameObject
             {
                 if (_character == null || !HasSelectedCharacter)
                 {
-                    //cant access an 
+                    //cant access an
                     Logger.Log.Warn("Uninitialized Character cannot be accessed.");
                 }
 
@@ -210,7 +210,7 @@ namespace OpenNos.GameObject
             ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent -= CommunicationCallback_CharacterDisconnectedEvent;
 
             // do everything necessary before removing client, DB save, Whatever
-            if (Character != null)
+            if (HasSelectedCharacter)
             {
                 Character.CloseShop();
 
@@ -220,8 +220,9 @@ namespace OpenNos.GameObject
                 // unregister from map if registered
                 if (CurrentMap != null)
                 {
-                    CurrentMap.UnregisterSession(this.ClientId);
+                    CurrentMap.UnregisterSession(this.Character.CharacterId);
                     CurrentMap = null;
+                    ServerManager.Instance.UnregisterSession(this.Character.CharacterId);
                 }
             }
 
@@ -229,7 +230,7 @@ namespace OpenNos.GameObject
             {
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }
-            ServerManager.Instance.UnregisterSession(this.ClientId);
+
             _queue.ClearQueue();
         }
 
@@ -343,11 +344,15 @@ namespace OpenNos.GameObject
         public void SetCharacter(Character character)
         {
             Character = character;
+
             // register WCF events
             ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent += CommunicationCallback_CharacterConnectedEvent;
             ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent += CommunicationCallback_CharacterDisconnectedEvent;
 
             HasSelectedCharacter = true;
+
+            //register for servermanager
+            ServerManager.Instance.RegisterSession(this);
         }
 
         private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)

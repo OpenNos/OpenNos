@@ -457,7 +457,7 @@ namespace OpenNos.GameObject
         internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
         {
             List<Character> characters = new List<Character>();
-            IEnumerable<ClientSession> cl = Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
+            IEnumerable<ClientSession> cl = Sessions.Where(s => s.HasSelectedCharacter && s.Character.Hp > 0);
             for (int i = cl.Count() - 1; i >= 0; i--)
             {
                 if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)
@@ -543,7 +543,7 @@ namespace OpenNos.GameObject
             try
             {
                 List<Task> NpcLifeTask = new List<Task>();
-                for (int i = Sessions.Where(s => s?.Character != null).Count() - 1; i >= 0; i--)
+                for (int i = Sessions.Where(s => s.HasSelectedCharacter).Count() - 1; i >= 0; i--)
                 {
                     ClientSession Session = Sessions.Where(s => s?.Character != null).ElementAt(i);
                     if (Session.Character.LastMailRefresh.AddSeconds(30) < DateTime.Now)

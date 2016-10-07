@@ -87,7 +87,7 @@ namespace OpenNos.GameObject
 
         public void JoinGroup(long characterId)
         {
-            ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character.CharacterId == characterId);
+            ClientSession session = ServerManager.Instance.GetSessionByCharacterId(characterId);
             if (session != null)
             {
                 JoinGroup(session);

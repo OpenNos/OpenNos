@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Core.Collections;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -45,11 +46,19 @@ namespace OpenNos.GameObject
 
         public DateTime LastUnregister { get; set; }
 
-        public List<ClientSession> Sessions
+        public int SessionCount
         {
             get
             {
-                return _sessions.GetAllItems();
+                return _sessions.Count;
+            }
+        }
+
+        public IEnumerable<ClientSession> Sessions
+        {
+            get
+            {
+                return _sessions.GetAllItems().Where(s => s.HasSelectedCharacter);
             }
         }
 
@@ -164,26 +173,41 @@ namespace OpenNos.GameObject
                 });
         }
 
+        public ClientSession GetSessionByCharacterId(long characterId)
+        {
+            if (_sessions.ContainsKey(characterId))
+            {
+                return _sessions[characterId];
+            }
+
+            return null;
+        }
+
         public virtual void RegisterSession(ClientSession session)
         {
+            if (!session.HasSelectedCharacter)
+            {
+                return;
+            }
+
             if (session != null)
             {
                 // Create a ChatClient and store it in a collection
-                _sessions[session.ClientId] = session;
+                _sessions[session.Character.CharacterId] = session;
             }
         }
 
-        public virtual void UnregisterSession(long clientId)
+        public virtual void UnregisterSession(long characterId)
         {
             // Get client from client list, if not in list do not continue
-            var session = _sessions[clientId];
+            var session = _sessions[characterId];
             if (session == null)
             {
                 return;
             }
 
             // Remove client from online clients list
-            _sessions.Remove(clientId);
+            _sessions.Remove(characterId);
 
             LastUnregister = DateTime.Now;
         }
