@@ -88,16 +88,24 @@ namespace OpenNos.Core
                     foreach (var packetBasePropertyInfo in serializationInformation.Value)
                     {
                         int currentIndex = packetBasePropertyInfo.Key.Index + (includesKeepAliveIdentity ? 2 : 1); // adding 2 because we need to skip incrementing number and packet header
-                        string currentValue = matches[currentIndex].Value;
 
-                        // set the value & convert currentValue
-                        if (currentValue != null)
+                        if (currentIndex < matches.Count)
                         {
-                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, ConvertValue(packetBasePropertyInfo.Value.PropertyType, currentValue));
+                            string currentValue = matches[currentIndex].Value;
+
+                            // set the value & convert currentValue
+                            if (currentValue != null)
+                            {
+                                packetBasePropertyInfo.Value.SetValue(deserializedPacket, ConvertValue(packetBasePropertyInfo.Value.PropertyType, currentValue));
+                            }
+                            else
+                            {
+                                packetBasePropertyInfo.Value.SetValue(deserializedPacket, Activator.CreateInstance(packetBasePropertyInfo.Value.PropertyType));
+                            }
                         }
                         else
                         {
-                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, Activator.CreateInstance(packetBasePropertyInfo.Value.PropertyType));
+                            break;
                         }
                     }
                 }
@@ -111,12 +119,9 @@ namespace OpenNos.Core
             }
         }
 
-        /// <summary>
-        /// Converts for instance -1.12.1.8.-1.-1.-1.-1.-1 to eg. List<byte?>
-        /// </summary>
-        /// <param name="currentValues">String to convert</param>
-        /// <param name="genericListType">Type of the property to convert</param>
-        /// <returns>The string as converted List</returns>
+        /// <summary> Converts for instance -1.12.1.8.-1.-1.-1.-1.-1 to eg. List<byte?> </summary>
+        /// <param name="currentValues">String to convert</param> <param name="genericListType">Type
+        /// of the property to convert</param> <returns>The string as converted List</returns>
         private static IList ConvertSimpleList(string currentValues, Type genericListType)
         {
             IList subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(genericListType), genericListType);
@@ -131,12 +136,9 @@ namespace OpenNos.Core
             return subpackets;
         }
 
-        /// <summary>
-        /// Converts for instance List<byte?> to -1.12.1.8.-1.-1.-1.-1.-1
-        /// </summary>
-        /// <param name="listValues">Values in List of simple type.</param>
-        /// <param name="propertyType">The simple type.</param>
-        /// <returns></returns>
+        /// <summary> Converts for instance List<byte?> to -1.12.1.8.-1.-1.-1.-1.-1 </summary> <param
+        /// name="listValues">Values in List of simple type.</param> <param name="propertyType">The
+        /// simple type.</param> <returns></returns>
         private static string ConvertSimpleListBack(IList listValues, Type propertyType)
         {
             string resultListPacket = String.Empty;
@@ -154,12 +156,10 @@ namespace OpenNos.Core
             return resultListPacket;
         }
 
-        /// <summary>
-        /// Converts a Sublist of Packets, For instance 0.4903.5.0.0 2.340.0.0.0 3.720.0.0.0 5.4912.6.0.0 9.227.0.0.0 10.803.0.0.0 to List<EquipSubPacket>
-        /// </summary>
-        /// <param name="currentValue">The value as String</param>
-        /// <param name="packetBasePropertyType">Type of the Property to convert to</param>
-        /// <returns></returns>
+        /// <summary> Converts a Sublist of Packets, For instance 0.4903.5.0.0 2.340.0.0.0
+        /// 3.720.0.0.0 5.4912.6.0.0 9.227.0.0.0 10.803.0.0.0 to List<EquipSubPacket> </summary>
+        /// <param name="currentValue">The value as String</param> <param
+        /// name="packetBasePropertyType">Type of the Property to convert to</param> <returns></returns>
         private static IList ConvertSubList(string currentValue, Type packetBasePropertyType)
         {
             IList subpackets = (IList)Convert.ChangeType(Activator.CreateInstance(packetBasePropertyType), packetBasePropertyType);

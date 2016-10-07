@@ -90,6 +90,8 @@
     <Compile Include="NpcMonsterSkill.cs" />
     <Compile Include="Map\MapNpc.cs" />
     <Compile Include="Networking\Npc\NRunHandler.cs" />
+    <Compile Include="Packets\ClientPackets\ExchangeListPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ExchangeRequestPacket.cs" />
     <Compile Include="Packets\ClientPackets\WalkPacket.cs" />
     <Compile Include="Packets\ServerPackets\Buy.cs" />
     <Compile Include="Packets\ServerPackets\CharacterCreatePacket.cs" />

@@ -83,11 +83,11 @@ namespace OpenNos.Handler
                             Session.SendPacket($"exc_list 1 {characterId} -1");
                             ExchangeInfo exc = new ExchangeInfo
                             {
-                                CharacterId = characterId,
+                                TargetCharacterId = characterId,
                                 Confirm = false
                             };
                             Session.Character.ExchangeInfo = exc;
-                            ServerManager.Instance.SetProperty(characterId, nameof(Character.ExchangeInfo), new ExchangeInfo { CharacterId = Session.Character.CharacterId, Confirm = false });
+                            ServerManager.Instance.SetProperty(characterId, nameof(Character.ExchangeInfo), new ExchangeInfo { TargetCharacterId = Session.Character.CharacterId, Confirm = false });
                             Session.CurrentMap?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, String.Empty, characterId);
                         }
                         else
@@ -183,13 +183,13 @@ namespace OpenNos.Handler
                         {
                             if (short.TryParse(packetsplit[3], out slot))
                             {
-                                ExchangeInfo exch = ServerManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.ExchangeInfo));
+                                ExchangeInfo exch = ServerManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.TargetCharacterId, nameof(Character.ExchangeInfo));
                                 Guid id;
                                 if (exch?.ExchangeList?.ElementAtOrDefault(slot) != null)
                                 {
                                     id = exch.ExchangeList.ElementAt(slot).Id;
 
-                                    InventoryList inv = ServerManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.InventoryList));
+                                    InventoryList inv = ServerManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.TargetCharacterId, nameof(Character.InventoryList));
                                     inventory = inv.LoadByItemInstance<WearableInstance>(id);
                                     if (inventory == null)
                                     {
@@ -217,209 +217,6 @@ namespace OpenNos.Handler
                     Session.SendPacket(inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp ?
                         Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ?
                         Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
-                }
-            }
-        }
-
-        [Packet("req_exc")]
-        public void Exchange(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            short mode;
-            long charId = -1;
-            string charName;
-            bool Blocked, otherBlocked;
-            if (short.TryParse(packetsplit[2], out mode))
-            {
-                if (mode == 1)
-                {
-                    if (long.TryParse(packetsplit[3], out charId))
-                    {
-                        charName = ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name));
-                        otherBlocked = ServerManager.Instance.GetProperty<bool>(charId, nameof(Character.ExchangeBlocked));
-                        Blocked = Session.Character.ExchangeBlocked;
-
-                        if (Session.Character.Speed == 0 || ServerManager.Instance.GetProperty<byte>(charId, nameof(Character.Speed)) == 0)
-                        {
-                            Blocked = true;
-                        }
-                        if (ServerManager.Instance.GetProperty<DateTime>(charId, nameof(Character.LastSkill)).AddSeconds(20) > DateTime.Now || ServerManager.Instance.GetProperty<DateTime>(charId, nameof(Character.LastDefence)).AddSeconds(20) > DateTime.Now)
-                        {
-                            Session.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("PLAYER_IN_BATTLE"), charName)));
-                            return;
-                        }
-
-                        if (Session.Character.LastSkill.AddSeconds(20) > DateTime.Now || Session.Character.LastDefence.AddSeconds(20) > DateTime.Now)
-                        {
-                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("IN_BATTLE")));
-                            return;
-                        }
-
-                        if (otherBlocked || Blocked)
-                        {
-                            if (Session.Character.HasShopOpened || ServerManager.Instance.GetProperty<bool>(charId, nameof(Character.HasShopOpened)))
-                            {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
-                            }
-                            else
-                            {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
-                            }
-                        }
-                        else
-                        {
-                            bool InExchangeOrTrade = Session.Character.InExchangeOrTrade, otherInExchangeOrTrade = ServerManager.Instance.GetProperty<bool>(charId, nameof(Character.InExchangeOrTrade));
-                            if (InExchangeOrTrade || otherInExchangeOrTrade)
-                            {
-                                Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE"), 0));
-                            }
-                            else
-                            {
-                                if (Session.Character.Speed == 0)
-                                {
-                                    return;
-                                }
-                                Session.SendPacket(Session.Character.GenerateModal(String.Format(Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE"), charName), 0));
-                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INCOMING_EXCHANGE"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
-                            }
-                        }
-                    }
-                }
-                else if (mode == 3)
-                {
-                    if (Session.Character.ExchangeInfo.CharacterId != Session.Character.CharacterId)
-                    {
-                        ExchangeInfo exchange = ServerManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.ExchangeInfo));
-                        InventoryList inventory = ServerManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.InventoryList));
-
-                        charName = ServerManager.Instance.GetProperty<string>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.Name));
-                        long gold = ServerManager.Instance.GetProperty<long>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.Gold));
-                        int backpack = ServerManager.Instance.GetProperty<int>(Session.Character.ExchangeInfo.CharacterId, nameof(Character.BackPack));
-
-                        if (Session.Character.ExchangeInfo.Validate && exchange.Validate)
-                        {
-                            Session.Character.ExchangeInfo.Confirm = true;
-                            if (exchange.Confirm && Session.Character.ExchangeInfo.Confirm)
-                            {
-                                Session.SendPacket("exc_close 1");
-                                Session.CurrentMap?.Broadcast(Session, "exc_close 1", ReceiverType.OnlySomeone, String.Empty, Session.Character.ExchangeInfo.CharacterId);
-
-                                bool continu = true;
-                                bool goldmax = false;
-                                bool notsold = false;
-                                if (!Session.Character.InventoryList.GetFreePlaceAmount(exchange.ExchangeList, Session.Character.BackPack))
-                                {
-                                    continu = false;
-                                }
-                                if (!inventory.GetFreePlaceAmount(Session.Character.ExchangeInfo.ExchangeList, backpack))
-                                {
-                                    continu = false;
-                                }
-                                if (Session.Character.ExchangeInfo.Gold + gold > 1000000000)
-                                {
-                                    goldmax = true;
-                                }
-                                if (Session.Character.ExchangeInfo.Gold > Session.Character.Gold)
-                                {
-                                    return;
-                                }
-                                if (exchange.Gold + Session.Character.Gold > 1000000000)
-                                {
-                                    goldmax = true;
-                                }
-                                if (!continu)
-                                {
-                                    string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0);
-                                    Session.SendPacket(message);
-                                    Session.CurrentMap?.Broadcast(Session, message, ReceiverType.OnlySomeone, String.Empty, Session.Character.ExchangeInfo.CharacterId);
-
-                                    Session.SendPacket("exc_close 0");
-                                    Session.CurrentMap?.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, String.Empty, Session.Character.ExchangeInfo.CharacterId);
-
-                                    ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharacterId, nameof(Character.ExchangeInfo), null);
-                                    Session.Character.ExchangeInfo = null;
-                                }
-                                else if (goldmax)
-                                {
-                                    string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
-                                    Session.SendPacket(message);
-                                    Session.CurrentMap?.Broadcast(Session, message, ReceiverType.OnlySomeone, String.Empty, Session.Character.ExchangeInfo.CharacterId);
-
-                                    Session.SendPacket("exc_close 0");
-                                    Session.CurrentMap?.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, String.Empty, Session.Character.ExchangeInfo.CharacterId);
-
-                                    ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharacterId, nameof(Character.ExchangeInfo), null);
-                                    Session.Character.ExchangeInfo = null;
-                                }
-                                else
-                                {
-                                    foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
-                                    {
-                                        Inventory inv = Session.Character.InventoryList.GetInventoryByItemInstanceId(item.Id);
-                                        if (inv != null && (!((ItemInstance)inv.ItemInstance).Item.IsTradable || ((ItemInstance)inv.ItemInstance).IsBound))
-                                        {
-                                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
-                                            Session.SendPacket("exc_close 0");
-                                            Session.CurrentMap?.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, String.Empty, Session.Character.ExchangeInfo.CharacterId);
-
-                                            ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharacterId, nameof(Character.ExchangeInfo), null);
-                                            Session.Character.ExchangeInfo = null;
-                                            notsold = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!notsold)
-                                    {
-                                        foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
-                                        {
-                                            // Delete items from their owners
-                                            Inventory invtemp = Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.Id == item.Id);
-                                            short slot = invtemp.Slot;
-                                            InventoryType type = invtemp.Type;
-                                            Inventory inv = Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
-                                            if (inv != null)
-                                            {
-                                                // Send reduced-amount to owners inventory
-                                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
-                                            }
-                                            else
-                                            {
-                                                // Send empty slot to owners inventory
-                                                Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
-                                            }
-                                        }
-
-                                        foreach (ItemInstance item in exchange.ExchangeList)
-                                        {
-                                            // Add items to their new owners
-                                            Inventory inv = Session.Character.InventoryList.AddToInventory(item);
-                                            if (inv != null && inv.Slot != -1)
-                                            {
-                                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
-                                            }
-                                        }
-
-                                        Session.Character.Gold = Session.Character.Gold - Session.Character.ExchangeInfo.Gold + exchange.Gold;
-                                        Session.SendPacket(Session.Character.GenerateGold());
-                                        ServerManager.Instance.ExchangeValidate(Session, Session.Character.ExchangeInfo.CharacterId);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Session.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("IN_WAITING_FOR"), charName)));
-                            }
-                        }
-                    }
-                }
-                else if (mode == 4)
-                {
-                    Session.SendPacket("exc_close 0");
-                    Session.CurrentMap?.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, String.Empty, Session.Character.ExchangeInfo.CharacterId);
-
-                    ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharacterId, nameof(Character.ExchangeInfo), null);
-                    Session.Character.ExchangeInfo = null;
                 }
             }
         }
@@ -466,16 +263,226 @@ namespace OpenNos.Handler
                 else if (it.IsBound)
                 {
                     Session.SendPacket("exc_close 0");
-                    Session.CurrentMap?.Broadcast(Session, $"exc_close 0", ReceiverType.OnlySomeone, String.Empty, Session.Character.ExchangeInfo.CharacterId);
+                    Session.CurrentMap?.Broadcast(Session, $"exc_close 0", ReceiverType.OnlySomeone, String.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
 
-                    ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharacterId, nameof(Character.ExchangeInfo), null);
+                    ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.TargetCharacterId, nameof(Character.ExchangeInfo), null);
                     Session.Character.ExchangeInfo = null;
                     return;
                 }
             }
             Session.Character.ExchangeInfo.Gold = gold;
-            Session.CurrentMap?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {gold} {packetList}", ReceiverType.OnlySomeone, String.Empty, Session.Character.ExchangeInfo.CharacterId);
+            Session.CurrentMap?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {gold} {packetList}", ReceiverType.OnlySomeone, String.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
             Session.Character.ExchangeInfo.Validate = true;
+        }
+
+        [Packet("req_exc")]
+        public void ExchangeRequest(string deserializedPacket)
+        {
+            Logger.Debug(deserializedPacket, Session.SessionId);
+            ExchangeRequestPacket packet = PacketFactory.Serialize<ExchangeRequestPacket>(deserializedPacket, true);
+            if (packet != null)
+            {
+                switch (packet.RequestType)
+                {
+                    case RequestExchangeType.Accepted:
+                        {
+                            ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(packet.CharacterId);
+
+                            if (targetSession == null)
+                            {
+                                return;
+                            }
+
+                            if (Session.Character.Speed == 0 || targetSession.Character.Speed == 0)
+                            {
+                                Session.Character.ExchangeBlocked = true;
+                            }
+                            if (targetSession.Character.LastSkill.AddSeconds(20) > DateTime.Now || targetSession.Character.LastDefence.AddSeconds(20) > DateTime.Now)
+                            {
+                                Session.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("PLAYER_IN_BATTLE"), targetSession.Character.Name)));
+                                return;
+                            }
+
+                            if (Session.Character.LastSkill.AddSeconds(20) > DateTime.Now || Session.Character.LastDefence.AddSeconds(20) > DateTime.Now)
+                            {
+                                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("IN_BATTLE")));
+                                return;
+                            }
+
+                            if (targetSession.Character.ExchangeBlocked || Session.Character.ExchangeBlocked)
+                            {
+                                if (Session.Character.HasShopOpened || targetSession.Character.HasShopOpened)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
+                                }
+                                else
+                                {
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
+                                }
+                            }
+                            else
+                            {
+                                if (Session.Character.InExchangeOrTrade || targetSession.Character.InExchangeOrTrade)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE"), 0));
+                                }
+                                else
+                                {
+                                    if (Session.Character.Speed == 0)
+                                    {
+                                        return;
+                                    }
+                                    Session.SendPacket(Session.Character.GenerateModal(String.Format(Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE"), targetSession.Character.Name), 0));
+                                    targetSession.SendPacket(Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INCOMING_EXCHANGE"), Session.Character.Name)}"));
+                                }
+                            }
+                            break;
+                        }
+                    case RequestExchangeType.Confirmed:
+                        {
+                            if (Session.Character.ExchangeInfo.TargetCharacterId != Session.Character.CharacterId)
+                            {
+                                ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
+
+                                if (targetSession == null)
+                                {
+                                    return;
+                                }
+
+                                ExchangeInfo targetExchange = targetSession.Character.ExchangeInfo;
+                                InventoryList inventory = targetSession.Character.InventoryList;
+
+                                long gold = targetSession.Character.Gold;
+                                int backpack = targetSession.Character.BackPack;
+
+                                if (Session.Character.ExchangeInfo.Validate && targetExchange.Validate)
+                                {
+                                    Session.Character.ExchangeInfo.Confirm = true;
+                                    if (targetExchange.Confirm && Session.Character.ExchangeInfo.Confirm)
+                                    {
+                                        Session.SendPacket("exc_close 1");
+                                        targetSession.SendPacket("exc_close 1");
+
+                                        bool @continue = true;
+                                        bool goldmax = false;
+                                        bool notsold = false;
+                                        if (!Session.Character.InventoryList.GetFreePlaceAmount(targetExchange.ExchangeList, Session.Character.BackPack))
+                                        {
+                                            @continue = false;
+                                        }
+                                        if (!inventory.GetFreePlaceAmount(Session.Character.ExchangeInfo.ExchangeList, backpack))
+                                        {
+                                            @continue = false;
+                                        }
+                                        if (Session.Character.ExchangeInfo.Gold + gold > 1000000000)
+                                        {
+                                            goldmax = true;
+                                        }
+                                        if (Session.Character.ExchangeInfo.Gold > Session.Character.Gold)
+                                        {
+                                            return;
+                                        }
+                                        if (targetExchange.Gold + Session.Character.Gold > 1000000000)
+                                        {
+                                            goldmax = true;
+                                        }
+                                        if (!@continue || goldmax)
+                                        {
+                                            string message = !@continue ? Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0)
+                                                : Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
+                                            Session.SendPacket(message);
+                                            targetSession.SendPacket(message);
+
+                                            Session.SendPacket("exc_close 0");
+                                            targetSession.SendPacket("exc_close 0");
+
+                                            targetSession.Character.ExchangeInfo = null;
+                                            Session.Character.ExchangeInfo = null;
+                                        }
+                                        else
+                                        {
+                                            foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
+                                            {
+                                                Inventory inv = Session.Character.InventoryList.GetInventoryByItemInstanceId(item.Id);
+                                                if (inv != null && (!((ItemInstance)inv.ItemInstance).Item.IsTradable || ((ItemInstance)inv.ItemInstance).IsBound))
+                                                {
+                                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
+                                                    Session.SendPacket("exc_close 0");
+                                                    targetSession.SendPacket("exc_close 0");
+
+                                                    targetSession.Character.ExchangeInfo = null;
+                                                    Session.Character.ExchangeInfo = null;
+                                                    notsold = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!notsold)
+                                            {
+                                                foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
+                                                {
+                                                    // Delete items from their owners
+                                                    Inventory invtemp = Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.Id == item.Id);
+                                                    short slot = invtemp.Slot;
+                                                    InventoryType type = invtemp.Type;
+                                                    Inventory inv = Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
+                                                    if (inv != null)
+                                                    {
+                                                        // Send reduced-amount to owners inventory
+                                                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                                                    }
+                                                    else
+                                                    {
+                                                        // Send empty slot to owners inventory
+                                                        Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
+                                                    }
+                                                }
+
+                                                foreach (ItemInstance item in targetExchange.ExchangeList)
+                                                {
+                                                    // Add items to their new owners
+                                                    Inventory inv = Session.Character.InventoryList.AddToInventory(item);
+                                                    if (inv != null && inv.Slot != -1)
+                                                    {
+                                                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                                                    }
+                                                }
+
+                                                Session.Character.Gold = Session.Character.Gold - Session.Character.ExchangeInfo.Gold + targetExchange.Gold;
+                                                Session.SendPacket(Session.Character.GenerateGold());
+                                                ServerManager.Instance.ExchangeValidate(Session, Session.Character.ExchangeInfo.TargetCharacterId);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Session.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("IN_WAITING_FOR"), targetSession.Character.Name)));
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                    case RequestExchangeType.Cancelled:
+                        {
+                            ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
+
+                            if (targetSession == null)
+                            {
+                                return;
+                            }
+
+                            Session.SendPacket("exc_close 0");
+                            targetSession.SendPacket("exc_close 0");
+
+                            targetSession.Character.ExchangeInfo = null;
+                            Session.Character.ExchangeInfo = null;
+                            break;
+                        }
+                    default:
+                        Logger.Log.Warn($"Exchange-Request-Type not implemented. RequestType: {packet.RequestType})");
+                        break;
+                }
+            }
         }
 
         [Packet("get")]

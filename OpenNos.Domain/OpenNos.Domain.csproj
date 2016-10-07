@@ -65,6 +65,7 @@
     <Compile Include="MonsterType.cs" />
     <Compile Include="PenaltyType.cs" />
     <Compile Include="PortalType.cs" />
+    <Compile Include="RequestExchangeType.cs" />
     <Compile Include="UpgradeProtection.cs" />
     <Compile Include="RarifyProtection.cs" />
     <Compile Include="RarifyMode.cs" />
