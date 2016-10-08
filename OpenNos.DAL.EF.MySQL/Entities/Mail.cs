@@ -21,7 +21,7 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Properties
 
-        public byte Amount { get; set; }
+        public byte AttachmentAmount { get; set; }
 
         public DateTime Date { get; set; }
 
@@ -32,9 +32,13 @@ namespace OpenNos.DAL.EF.MySQL
 
         public bool IsSenderCopy { get; set; }
 
-        public virtual Inventory Inventory { get; set; }
+        public virtual Item Item { get; set; }
 
-        public Guid? AttachmentId { get; set; }
+        public short? AttachmentVnum { get; set; }
+
+        public byte AttachmentRarity { get; set; }
+
+        public byte AttachmentUpgrade { get; set; }
 
         [Key]
         public long MailId { get; set; }

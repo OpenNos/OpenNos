@@ -101,7 +101,7 @@ namespace OpenNos.World
                     }
                 }
             }
-            receiveData.ForEach(s=>returnedstring+= Convert.ToChar(s));
+            receiveData.ForEach(s => returnedstring += Convert.ToChar(s));
             return returnedstring;
         }
 

@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Artemis : DbMigration
+    public partial class Athena : DbMigration
     {
         public override void Up()
         {
@@ -306,6 +306,37 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         WaterResistance = c.Byte(nullable: false),
                     })
                 .PrimaryKey(t => t.VNum);
+            
+            CreateTable(
+                "dbo.Mail",
+                c => new
+                    {
+                        MailId = c.Long(nullable: false, identity: true),
+                        AttachmentAmount = c.Byte(nullable: false),
+                        Date = c.DateTime(nullable: false, precision: 0),
+                        EqPacket = c.String(maxLength: 255, storeType: "nvarchar"),
+                        IsOpened = c.Boolean(nullable: false),
+                        IsSenderCopy = c.Boolean(nullable: false),
+                        AttachmentVnum = c.Short(),
+                        AttachmentRarity = c.Byte(nullable: false),
+                        AttachmentUpgrade = c.Byte(nullable: false),
+                        Message = c.String(maxLength: 255, storeType: "nvarchar"),
+                        ReceiverId = c.Long(nullable: false),
+                        SenderClass = c.Byte(nullable: false),
+                        SenderGender = c.Byte(nullable: false),
+                        SenderHairColor = c.Byte(nullable: false),
+                        SenderHairStyle = c.Byte(nullable: false),
+                        SenderId = c.Long(nullable: false),
+                        SenderMorphId = c.Short(nullable: false),
+                        Title = c.String(maxLength: 255, storeType: "nvarchar"),
+                    })
+                .PrimaryKey(t => t.MailId)
+                .ForeignKey("dbo.Item", t => t.AttachmentVnum)
+                .ForeignKey("dbo.Character", t => t.SenderId)
+                .ForeignKey("dbo.Character", t => t.ReceiverId)
+                .Index(t => t.AttachmentVnum)
+                .Index(t => t.ReceiverId)
+                .Index(t => t.SenderId);
             
             CreateTable(
                 "dbo.Recipe",
@@ -615,35 +646,6 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 .Index(t => t.WearableInstanceId);
             
             CreateTable(
-                "dbo.Mail",
-                c => new
-                    {
-                        MailId = c.Long(nullable: false, identity: true),
-                        Amount = c.Byte(nullable: false),
-                        Date = c.DateTime(nullable: false, precision: 0),
-                        EqPacket = c.String(maxLength: 255, storeType: "nvarchar"),
-                        IsOpened = c.Boolean(nullable: false),
-                        IsSenderCopy = c.Boolean(nullable: false),
-                        AttachmentId = c.Guid(),
-                        Message = c.String(maxLength: 255, storeType: "nvarchar"),
-                        ReceiverId = c.Long(nullable: false),
-                        SenderClass = c.Byte(nullable: false),
-                        SenderGender = c.Byte(nullable: false),
-                        SenderHairColor = c.Byte(nullable: false),
-                        SenderHairStyle = c.Byte(nullable: false),
-                        SenderId = c.Long(nullable: false),
-                        SenderMorphId = c.Short(nullable: false),
-                        Title = c.String(maxLength: 255, storeType: "nvarchar"),
-                    })
-                .PrimaryKey(t => t.MailId)
-                .ForeignKey("dbo.Inventory", t => t.AttachmentId)
-                .ForeignKey("dbo.Character", t => t.SenderId)
-                .ForeignKey("dbo.Character", t => t.ReceiverId)
-                .Index(t => t.AttachmentId)
-                .Index(t => t.ReceiverId)
-                .Index(t => t.SenderId);
-            
-            CreateTable(
                 "dbo.QuicklistEntry",
                 c => new
                     {
@@ -702,7 +704,6 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.Mail", "ReceiverId", "dbo.Character");
             DropForeignKey("dbo.Mail", "SenderId", "dbo.Character");
             DropForeignKey("dbo.Inventory", "CharacterId", "dbo.Character");
-            DropForeignKey("dbo.Mail", "AttachmentId", "dbo.Inventory");
             DropForeignKey("dbo.CellonOption", "WearableInstanceId", "dbo.ItemInstance");
             DropForeignKey("dbo.ItemInstance", "ItemVNum", "dbo.Item");
             DropForeignKey("dbo.Inventory", "Id", "dbo.ItemInstance");
@@ -733,15 +734,13 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.MapNpc", "MapId", "dbo.Map");
             DropForeignKey("dbo.MapMonster", "MapId", "dbo.Map");
             DropForeignKey("dbo.Character", "MapId", "dbo.Map");
+            DropForeignKey("dbo.Mail", "AttachmentVnum", "dbo.Item");
             DropForeignKey("dbo.Drop", "ItemVNum", "dbo.Item");
             DropForeignKey("dbo.Combo", "SkillVNum", "dbo.Skill");
             DropForeignKey("dbo.CharacterSkill", "SkillVNum", "dbo.Skill");
             DropIndex("dbo.PenaltyLog", new[] { "AccountId" });
             DropIndex("dbo.Respawn", new[] { "CharacterId" });
             DropIndex("dbo.QuicklistEntry", new[] { "CharacterId" });
-            DropIndex("dbo.Mail", new[] { "SenderId" });
-            DropIndex("dbo.Mail", new[] { "ReceiverId" });
-            DropIndex("dbo.Mail", new[] { "AttachmentId" });
             DropIndex("dbo.CellonOption", new[] { "WearableInstanceId" });
             DropIndex("dbo.ItemInstance", new[] { "ItemVNum" });
             DropIndex("dbo.ItemInstance", new[] { "BoundCharacterId" });
@@ -768,6 +767,9 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.MapNpc", new[] { "MapId" });
             DropIndex("dbo.Recipe", new[] { "MapNpcId" });
             DropIndex("dbo.Recipe", new[] { "ItemVNum" });
+            DropIndex("dbo.Mail", new[] { "SenderId" });
+            DropIndex("dbo.Mail", new[] { "ReceiverId" });
+            DropIndex("dbo.Mail", new[] { "AttachmentVnum" });
             DropIndex("dbo.Drop", new[] { "MonsterVNum" });
             DropIndex("dbo.Drop", new[] { "MapTypeId" });
             DropIndex("dbo.Drop", new[] { "ItemVNum" });
@@ -781,7 +783,6 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropTable("dbo.PenaltyLog");
             DropTable("dbo.Respawn");
             DropTable("dbo.QuicklistEntry");
-            DropTable("dbo.Mail");
             DropTable("dbo.CellonOption");
             DropTable("dbo.ItemInstance");
             DropTable("dbo.Inventory");
@@ -798,6 +799,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropTable("dbo.Map");
             DropTable("dbo.MapNpc");
             DropTable("dbo.Recipe");
+            DropTable("dbo.Mail");
             DropTable("dbo.Item");
             DropTable("dbo.Drop");
             DropTable("dbo.NpcMonster");
