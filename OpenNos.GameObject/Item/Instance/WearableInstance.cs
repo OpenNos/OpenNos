@@ -66,7 +66,7 @@ namespace OpenNos.GameObject
 
         public byte DarkElement { get; set; }
 
-        public byte DarkResistance { get; set; }
+        public short DarkResistance { get; set; }
 
         public short DefenceDodge { get; set; }
 
@@ -78,7 +78,7 @@ namespace OpenNos.GameObject
 
         public byte FireElement { get; set; }
 
-        public byte FireResistance { get; set; }
+        public short FireResistance { get; set; }
 
         public short HitRate { get; set; }
 
@@ -90,7 +90,7 @@ namespace OpenNos.GameObject
 
         public byte LightElement { get; set; }
 
-        public byte LightResistance { get; set; }
+        public short LightResistance { get; set; }
 
         public short MagicDefence { get; set; }
 
@@ -100,7 +100,7 @@ namespace OpenNos.GameObject
 
         public byte WaterElement { get; set; }
 
-        public byte WaterResistance { get; set; }
+        public short WaterResistance { get; set; }
 
         public long XP { get; set; }
 
@@ -383,10 +383,10 @@ namespace OpenNos.GameObject
                 if (rnd <= upsuccess[this.Upgrade + itemToSum.Upgrade])
                 {
                     this.Upgrade += (byte)(itemToSum.Upgrade + 1);
-                    this.DarkResistance += (byte)(itemToSum.DarkResistance + itemToSum.Item.DarkResistance);
-                    this.LightResistance += (byte)(itemToSum.LightResistance + itemToSum.Item.LightResistance);
-                    this.WaterResistance += (byte)(itemToSum.WaterResistance + itemToSum.Item.WaterResistance);
-                    this.FireResistance += (byte)(itemToSum.FireResistance + itemToSum.Item.FireResistance);
+                    this.DarkResistance += (short)(itemToSum.DarkResistance + itemToSum.Item.DarkResistance);
+                    this.LightResistance += (short)(itemToSum.LightResistance + itemToSum.Item.LightResistance);
+                    this.WaterResistance += (short)(itemToSum.WaterResistance + itemToSum.Item.WaterResistance);
+                    this.FireResistance += (short)(itemToSum.FireResistance + itemToSum.Item.FireResistance);
                     Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
                     Session.SendPacket($"pdti 10 {this.ItemVNum} 1 27 {this.Upgrade} 0");
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
