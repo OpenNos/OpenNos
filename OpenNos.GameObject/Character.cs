@@ -1021,7 +1021,7 @@ namespace OpenNos.GameObject
 
         public string GenerateParcel(MailDTO mail)
         {
-            return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.ItemVNum} {mail.Amount} {ServerManager.GetItem((short)mail.ItemVNum).Type}";
+            return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.AttachmentVNum} {mail.AttachmentAmount} {ServerManager.GetItem((short)mail.AttachmentVNum).Type}";
         }
 
         public string GeneratePidx(bool isLeaveGroup = false)
@@ -2042,7 +2042,7 @@ namespace OpenNos.GameObject
             {
                 MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
 
-                if (mail.ItemVNum != null)
+                if (mail.AttachmentVNum != null)
                 {
                     i++;
                     Session.SendPacket(GenerateParcel(mail));
@@ -2205,14 +2205,14 @@ namespace OpenNos.GameObject
 
             MailDTO mail = new MailDTO()
             {
-                Amount = (it.Type == InventoryType.Etc || it.Type == InventoryType.Main) ? amount : (byte)1,
+                AttachmentAmount = (it.Type == InventoryType.Etc || it.Type == InventoryType.Main) ? amount : (byte)1,
                 IsOpened = false,
                 Date = DateTime.Now,
                 ReceiverId = id,
                 SenderId = id,
                 IsSenderCopy = false,
                 Title = isNosmall ? "NOSMALL" : "NOSTALE",
-                ItemVNum = vnum,
+                AttachmentVNum = vnum,
                 SenderClass = Session.Character.Class,
                 SenderGender = Session.Character.Gender,
                 SenderHairColor = Session.Character.HairColor,
@@ -2225,7 +2225,7 @@ namespace OpenNos.GameObject
             {
                 Session.Character.MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
                 Session.SendPacket(GenerateParcel(mail));
-                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")} {mail.Amount}", 12));
+                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")} {mail.AttachmentAmount}", 12));
             }
         }
 

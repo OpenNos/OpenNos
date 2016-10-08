@@ -317,7 +317,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         EqPacket = c.String(maxLength: 255, storeType: "nvarchar"),
                         IsOpened = c.Boolean(nullable: false),
                         IsSenderCopy = c.Boolean(nullable: false),
-                        AttachmentVnum = c.Short(),
+                        AttachmentVNum = c.Short(),
                         AttachmentRarity = c.Byte(nullable: false),
                         AttachmentUpgrade = c.Byte(nullable: false),
                         Message = c.String(maxLength: 255, storeType: "nvarchar"),
@@ -331,10 +331,10 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Title = c.String(maxLength: 255, storeType: "nvarchar"),
                     })
                 .PrimaryKey(t => t.MailId)
-                .ForeignKey("dbo.Item", t => t.AttachmentVnum)
+                .ForeignKey("dbo.Item", t => t.AttachmentVNum)
                 .ForeignKey("dbo.Character", t => t.SenderId)
                 .ForeignKey("dbo.Character", t => t.ReceiverId)
-                .Index(t => t.AttachmentVnum)
+                .Index(t => t.AttachmentVNum)
                 .Index(t => t.ReceiverId)
                 .Index(t => t.SenderId);
             
@@ -734,7 +734,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.MapNpc", "MapId", "dbo.Map");
             DropForeignKey("dbo.MapMonster", "MapId", "dbo.Map");
             DropForeignKey("dbo.Character", "MapId", "dbo.Map");
-            DropForeignKey("dbo.Mail", "AttachmentVnum", "dbo.Item");
+            DropForeignKey("dbo.Mail", "AttachmentVNum", "dbo.Item");
             DropForeignKey("dbo.Drop", "ItemVNum", "dbo.Item");
             DropForeignKey("dbo.Combo", "SkillVNum", "dbo.Skill");
             DropForeignKey("dbo.CharacterSkill", "SkillVNum", "dbo.Skill");
@@ -769,7 +769,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.Recipe", new[] { "ItemVNum" });
             DropIndex("dbo.Mail", new[] { "SenderId" });
             DropIndex("dbo.Mail", new[] { "ReceiverId" });
-            DropIndex("dbo.Mail", new[] { "AttachmentVnum" });
+            DropIndex("dbo.Mail", new[] { "AttachmentVNum" });
             DropIndex("dbo.Drop", new[] { "MonsterVNum" });
             DropIndex("dbo.Drop", new[] { "MapTypeId" });
             DropIndex("dbo.Drop", new[] { "ItemVNum" });

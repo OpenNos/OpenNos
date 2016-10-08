@@ -194,7 +194,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
             modelBuilder.Entity<Mail>()
                  .HasOptional(e => e.Item)
                  .WithMany(e => e.Mail)
-                 .HasForeignKey(e => e.AttachmentVnum)
+                 .HasForeignKey(e => e.AttachmentVNum)
                  .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Map>()
