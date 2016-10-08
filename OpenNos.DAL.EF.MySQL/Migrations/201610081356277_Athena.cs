@@ -312,12 +312,14 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 c => new
                     {
                         MailId = c.Long(nullable: false, identity: true),
-                        Amount = c.Byte(nullable: false),
+                        AttachmentAmount = c.Byte(nullable: false),
                         Date = c.DateTime(nullable: false, precision: 0),
                         EqPacket = c.String(maxLength: 255, storeType: "nvarchar"),
                         IsOpened = c.Boolean(nullable: false),
                         IsSenderCopy = c.Boolean(nullable: false),
-                        ItemVNum = c.Short(),
+                        AttachmentVnum = c.Short(),
+                        AttachmentRarity = c.Byte(nullable: false),
+                        AttachmentUpgrade = c.Byte(nullable: false),
                         Message = c.String(maxLength: 255, storeType: "nvarchar"),
                         ReceiverId = c.Long(nullable: false),
                         SenderClass = c.Byte(nullable: false),
@@ -329,10 +331,10 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Title = c.String(maxLength: 255, storeType: "nvarchar"),
                     })
                 .PrimaryKey(t => t.MailId)
-                .ForeignKey("dbo.Item", t => t.ItemVNum)
+                .ForeignKey("dbo.Item", t => t.AttachmentVnum)
                 .ForeignKey("dbo.Character", t => t.SenderId)
                 .ForeignKey("dbo.Character", t => t.ReceiverId)
-                .Index(t => t.ItemVNum)
+                .Index(t => t.AttachmentVnum)
                 .Index(t => t.ReceiverId)
                 .Index(t => t.SenderId);
             
@@ -688,7 +690,8 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                     })
                 .PrimaryKey(t => t.PenaltyLogId)
                 .ForeignKey("dbo.Account", t => t.AccountId)
-                .Index(t => t.AccountId);          
+                .Index(t => t.AccountId);
+            
         }
         
         public override void Down()
@@ -731,7 +734,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.MapNpc", "MapId", "dbo.Map");
             DropForeignKey("dbo.MapMonster", "MapId", "dbo.Map");
             DropForeignKey("dbo.Character", "MapId", "dbo.Map");
-            DropForeignKey("dbo.Mail", "ItemVNum", "dbo.Item");
+            DropForeignKey("dbo.Mail", "AttachmentVnum", "dbo.Item");
             DropForeignKey("dbo.Drop", "ItemVNum", "dbo.Item");
             DropForeignKey("dbo.Combo", "SkillVNum", "dbo.Skill");
             DropForeignKey("dbo.CharacterSkill", "SkillVNum", "dbo.Skill");
@@ -766,7 +769,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.Recipe", new[] { "ItemVNum" });
             DropIndex("dbo.Mail", new[] { "SenderId" });
             DropIndex("dbo.Mail", new[] { "ReceiverId" });
-            DropIndex("dbo.Mail", new[] { "ItemVNum" });
+            DropIndex("dbo.Mail", new[] { "AttachmentVnum" });
             DropIndex("dbo.Drop", new[] { "MonsterVNum" });
             DropIndex("dbo.Drop", new[] { "MapTypeId" });
             DropIndex("dbo.Drop", new[] { "ItemVNum" });
