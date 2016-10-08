@@ -77,7 +77,7 @@ namespace OpenNos.Handler
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
                     monster = new MapMonster(monst, map);
-                    Session.CurrentMap?.AddMonster(monster);
+                    Session.CurrentMap.AddMonster(monster);
                     Session.CurrentMap?.Broadcast(monster.GenerateIn3());
                 }
             }

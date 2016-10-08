@@ -1021,7 +1021,7 @@ namespace OpenNos.GameObject
 
         public string GenerateParcel(MailDTO mail)
         {
-            return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.AttachmentId} {mail.Amount} {ServerManager.GetItem(1).Type}";
+            return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.ItemVNum} {mail.Amount} {ServerManager.GetItem((short)mail.ItemVNum).Type}";
         }
 
         public string GeneratePidx(bool isLeaveGroup = false)
@@ -2042,7 +2042,7 @@ namespace OpenNos.GameObject
             {
                 MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
 
-                if (mail.AttachmentId != null)
+                if (mail.ItemVNum != null)
                 {
                     i++;
                     Session.SendPacket(GenerateParcel(mail));
@@ -2209,7 +2209,7 @@ namespace OpenNos.GameObject
                 SenderId = id,
                 IsSenderCopy = false,
                 Title = isNosmall ? "NOSMALL" : "NOSTALE",
-                AttachmentId = null,
+                ItemVNum = vnum,
                 SenderClass = Session.Character.Class,
                 SenderGender = Session.Character.Gender,
                 SenderHairColor = Session.Character.HairColor,
