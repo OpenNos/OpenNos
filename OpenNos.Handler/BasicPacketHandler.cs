@@ -126,9 +126,12 @@ namespace OpenNos.Handler
                     MailDTO mail = Session.Character.MailList[id];
                     if (packetsplit[2] == "4")
                     {
-                        Inventory newInv = Session.Character.InventoryList.AddNewItemToInventory(1, mail.Amount);
+                        Inventory newInv = Session.Character.InventoryList.MoveToBaseInventory(Session.Character.InventoryList.LoadInventory((Guid)mail.AttachmentId));
                         if (newInv != null)
                         {
+                            newInv.Type = (newInv.ItemInstance as ItemInstance).Item.Type;
+                            
+
                             if ((newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Armor || (newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Weapon || (newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Shell)
                             {
                                 (newInv.ItemInstance as WearableInstance).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
@@ -143,6 +146,7 @@ namespace OpenNos.Handler
                             Session.SendPacket($"parcel 2 1 {packetsplit[3]}");
                             if (Session.Character.MailList.ContainsKey(id))
                             {
+                                Session.Character.InventoryList.DeleteByInventoryItemId((Guid)mail.AttachmentId);
                                 Session.Character.MailList.Remove(id);
                             }
                         }
@@ -155,7 +159,7 @@ namespace OpenNos.Handler
                     else if (packetsplit[2] == "5")
                     {
                         Session.SendPacket($"parcel 7 1 {packetsplit[3]}");
-                        Session.Character.InventoryList.DeleteByInventoryItemId((Guid)mail.AttachmentId);
+  
 
                         if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                         {
@@ -163,6 +167,7 @@ namespace OpenNos.Handler
                         }
                         if (Session.Character.MailList.ContainsKey(id))
                         {
+                            Session.Character.InventoryList.DeleteByInventoryItemId((Guid)mail.AttachmentId);
                             Session.Character.MailList.Remove(id);
                            
                         }
