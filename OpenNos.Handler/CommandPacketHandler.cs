@@ -559,7 +559,7 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$Gift")]
+        //[Packet("$Gift")]
         public void Gift(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
