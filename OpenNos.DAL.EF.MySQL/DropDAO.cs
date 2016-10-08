@@ -89,6 +89,14 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public List<DropDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return context.Drop.ToList().Select(d => _mapper.Map<DropDTO>(d)).ToList();
+            }
+        }
+
         public IEnumerable<DropDTO> LoadByMonster(short monsterVNum)
         {
             using (var context = DataAccessHelper.CreateContext())

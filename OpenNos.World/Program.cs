@@ -79,7 +79,7 @@ namespace OpenNos.World
             if (DataAccessHelper.Initialize())
             {
                 // initialilize maps
-                ServerManager.Initialize();
+                ServerManager.Instance.Initialize();
             }
             else
             {

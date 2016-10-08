@@ -27,6 +27,8 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<DropDTO> LoadByMonster(short monsterVNum);
 
+        List<DropDTO> LoadAll();
+
         #endregion
     }
 }

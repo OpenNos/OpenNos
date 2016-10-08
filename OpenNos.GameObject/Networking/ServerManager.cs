@@ -13,7 +13,6 @@
  */
 
 using AutoMapper;
-using EpPathFinding.cs;
 using OpenNos.Core;
 using OpenNos.Core.Collections;
 using OpenNos.DAL;
@@ -41,8 +40,10 @@ namespace OpenNos.GameObject
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
         private static List<Skill> _skills = new List<Skill>();
+        private ThreadSafeSortedList<short, List<DropDTO>> _dropsByMonster;
         private ThreadSafeSortedList<long, Group> _groups;
         private long lastGroupId;
+        private List<DropDTO> _generalDrops;
 
         #endregion
 
@@ -161,193 +162,6 @@ namespace OpenNos.GameObject
         public static Skill GetSkill(short skillVNum)
         {
             return _skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
-        }
-
-        public static void Initialize()
-        {
-            XPRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXp"]);
-
-            DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
-
-            GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
-
-            FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
-
-            foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
-            {
-                Item ItemGO = null;
-
-                switch (itemDTO.ItemType)
-                {
-                    case (byte)Domain.ItemType.Ammo:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Armor:
-                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Box:
-                        ItemGO = _mapper.Map<BoxItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Event:
-                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Fashion:
-                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Food:
-                        ItemGO = _mapper.Map<FoodItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Jewelery:
-                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Magical:
-                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Main:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Map:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Part:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Potion:
-                        ItemGO = _mapper.Map<PotionItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Production:
-                        ItemGO = _mapper.Map<ProduceItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Quest1:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Quest2:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Sell:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Shell:
-                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Snack:
-                        ItemGO = _mapper.Map<SnackItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Special:
-                        ItemGO = _mapper.Map<SpecialItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Specialist:
-                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Teacher:
-                        ItemGO = _mapper.Map<TeacherItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Upgrade:
-                        ItemGO = _mapper.Map<UpgradeItem>(itemDTO);
-                        break;
-
-                    case (byte)Domain.ItemType.Weapon:
-                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
-                        break;
-
-                    default:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
-                        break;
-                }
-                _items.Add(ItemGO);
-            }
-
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
-            foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
-            {
-                Skill skill = _mapper.Map<Skill>(skillDTO);
-                foreach (ComboDTO com in DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList())
-                {
-                    skill.Combos.Add(_mapper.Map<ComboDTO>(com));
-                }
-                _skills.Add(skill);
-            }
-            foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
-            {
-                _npcs.Add(_mapper.Map<NpcMonster>(npcmonsterDTO));
-            }
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
-
-            try
-            {
-                int i = 0;
-                int npccount = 0;
-                int recipescount = 0;
-                int shopcount = 0;
-                int monstercount = 0;
-                foreach (MapDTO map in DAOFactory.MapDAO.LoadAll())
-                {
-                    Guid guid = Guid.NewGuid();
-                    Map newMap = new Map(Convert.ToInt16(map.MapId), guid, map.Data);
-                    newMap.Music = map.Music;
-                    newMap.ShopAllowed = map.ShopAllowed;
-
-                    // register for broadcast
-                    _maps.TryAdd(guid, newMap);
-                    i++;
-                    npccount += newMap.Npcs.Count();
-
-                    foreach (MapMonster n in newMap.Monsters)
-                    {
-                        newMap.AddMonster(n);
-                    }
-                    monstercount += newMap.Monsters.Count();
-                    foreach (MapNpc n in newMap.Npcs.Where(n => n.Shop != null))
-                    {
-                        shopcount++;
-                    }
-                    foreach (MapNpc npcs in newMap.Npcs)
-                    {
-                        foreach (Recipe recipies in npcs.Recipes)
-                        {
-                            recipescount++;
-                        }
-                    }
-                }
-                if (i != 0)
-                {
-                    Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));
-                }
-                else
-                {
-                    Logger.Log.Error(Language.Instance.GetMessageFromKey("NO_MAP"));
-                }
-                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count()));
-                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERS_LOADED"), monstercount));
-                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCS_LOADED"), npccount));
-                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_LOADED"), shopcount));
-                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), recipescount));
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.Error("General Error", ex);
-            }
         }
 
         public void AddGroup(Group group)
@@ -573,6 +387,16 @@ namespace OpenNos.GameObject
             c2Session.Character.ExchangeInfo = null;
         }
 
+        public List<DropDTO> GetDropsByMonsterVNum(short monsterVNum)
+        {
+            if (_dropsByMonster.ContainsKey(monsterVNum))
+            {
+                return _generalDrops.Concat(_dropsByMonster[monsterVNum]).ToList();
+            }
+
+            return new List<DropDTO>();
+        }
+
         public long GetNextGroupId()
         {
             lastGroupId++;
@@ -645,6 +469,207 @@ namespace OpenNos.GameObject
                 }
 
                 session.Character.Group = null;
+            }
+        }
+
+        public void Initialize()
+        {
+            XPRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXp"]);
+
+            DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
+
+            GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
+
+            FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
+
+            foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
+            {
+                Item ItemGO = null;
+
+                switch (itemDTO.ItemType)
+                {
+                    case (byte)Domain.ItemType.Ammo:
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Armor:
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Box:
+                        ItemGO = _mapper.Map<BoxItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Event:
+                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Fashion:
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Food:
+                        ItemGO = _mapper.Map<FoodItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Jewelery:
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Magical:
+                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Main:
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Map:
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Part:
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Potion:
+                        ItemGO = _mapper.Map<PotionItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Production:
+                        ItemGO = _mapper.Map<ProduceItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Quest1:
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Quest2:
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Sell:
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Shell:
+                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Snack:
+                        ItemGO = _mapper.Map<SnackItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Special:
+                        ItemGO = _mapper.Map<SpecialItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Specialist:
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Teacher:
+                        ItemGO = _mapper.Map<TeacherItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Upgrade:
+                        ItemGO = _mapper.Map<UpgradeItem>(itemDTO);
+                        break;
+
+                    case (byte)Domain.ItemType.Weapon:
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
+                        break;
+
+                    default:
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        break;
+                }
+                _items.Add(ItemGO);
+            }
+
+            // intialize monster drops
+            _dropsByMonster = new ThreadSafeSortedList<short, List<DropDTO>>();
+            foreach (var monsterDropGrouping in DAOFactory.DropDAO.LoadAll().GroupBy(d => d.MonsterVNum))
+            {
+                if(monsterDropGrouping.Key.HasValue)
+                {
+                    _dropsByMonster[monsterDropGrouping.Key.Value] = monsterDropGrouping.ToList();
+                }
+                else
+                {
+                    _generalDrops = monsterDropGrouping.ToList();
+                }
+            }
+
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
+            foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
+            {
+                Skill skill = _mapper.Map<Skill>(skillDTO);
+                foreach (ComboDTO com in DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList())
+                {
+                    skill.Combos.Add(_mapper.Map<ComboDTO>(com));
+                }
+                _skills.Add(skill);
+            }
+            foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
+            {
+                _npcs.Add(_mapper.Map<NpcMonster>(npcmonsterDTO));
+            }
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
+
+            try
+            {
+                int i = 0;
+                int npccount = 0;
+                int recipescount = 0;
+                int shopcount = 0;
+                int monstercount = 0;
+                foreach (MapDTO map in DAOFactory.MapDAO.LoadAll())
+                {
+                    Guid guid = Guid.NewGuid();
+                    Map newMap = new Map(Convert.ToInt16(map.MapId), guid, map.Data);
+                    newMap.Music = map.Music;
+                    newMap.ShopAllowed = map.ShopAllowed;
+
+                    // register for broadcast
+                    _maps.TryAdd(guid, newMap);
+                    i++;
+                    npccount += newMap.Npcs.Count();
+
+                    foreach (MapMonster n in newMap.Monsters)
+                    {
+                        newMap.AddMonster(n);
+                    }
+                    monstercount += newMap.Monsters.Count();
+                    foreach (MapNpc n in newMap.Npcs.Where(n => n.Shop != null))
+                    {
+                        shopcount++;
+                    }
+                    foreach (MapNpc npcs in newMap.Npcs)
+                    {
+                        foreach (Recipe recipies in npcs.Recipes)
+                        {
+                            recipescount++;
+                        }
+                    }
+                }
+                if (i != 0)
+                {
+                    Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));
+                }
+                else
+                {
+                    Logger.Log.Error(Language.Instance.GetMessageFromKey("NO_MAP"));
+                }
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count()));
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERS_LOADED"), monstercount));
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCS_LOADED"), npccount));
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_LOADED"), shopcount));
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), recipescount));
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error("General Error", ex);
             }
         }
 

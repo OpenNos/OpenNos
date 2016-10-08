@@ -116,9 +116,9 @@
     <Compile Include="Entities\NpcMonsterSkill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201610081356277_Athena.cs" />
-    <Compile Include="Migrations\201610081356277_Athena.Designer.cs">
-      <DependentUpon>201610081356277_Athena.cs</DependentUpon>
+    <Compile Include="Migrations\201610081510034_Aphrodite.cs" />
+    <Compile Include="Migrations\201610081510034_Aphrodite.Designer.cs">
+      <DependentUpon>201610081510034_Aphrodite.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -198,8 +198,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201610081356277_Athena.resx">
-      <DependentUpon>201610081356277_Athena.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201610081510034_Aphrodite.resx">
+      <DependentUpon>201610081510034_Aphrodite.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Athena : DbMigration
+    public partial class Aphrodite : DbMigration
     {
         public override void Up()
         {

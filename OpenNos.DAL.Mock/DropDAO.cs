@@ -19,6 +19,11 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
+        public List<DropDTO> LoadAll()
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<DropDTO> LoadByMonster(short monsterVNum)
         {
             throw new NotImplementedException();

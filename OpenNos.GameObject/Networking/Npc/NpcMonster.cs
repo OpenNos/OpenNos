@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
             IMapper _mapper = config.CreateMapper();
 
             Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(npcMonsterVNum).ToList();
-            Drops = DAOFactory.DropDAO.LoadByMonster(npcMonsterVNum).ToList();
+            Drops = ServerManager.Instance.GetDropsByMonsterVNum(npcMonsterVNum);
             LastEffect = LastMove = DateTime.Now;
             Skills = DAOFactory.NpcMonsterSkillDAO.LoadByNpcMonster(npcMonsterVNum).Select(n => _mapper.Map<NpcMonsterSkill>(n)).ToList();
         }

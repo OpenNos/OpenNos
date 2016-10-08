@@ -32,7 +32,7 @@ namespace OpenNos.Test
             CreateServerSkills();
 
             // initialize servermanager
-            ServerManager.Initialize();
+            ServerManager.Instance.Initialize();
 
             // initialize WCF
             ServiceFactory.Instance.Initialize();
