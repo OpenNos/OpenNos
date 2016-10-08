@@ -38,7 +38,7 @@ namespace OpenNos.Data
 
         byte DarkElement { get; set; }
 
-        byte DarkResistance { get; set; }
+        sbyte DarkResistance { get; set; }
 
         short DefenceDodge { get; set; }
 
@@ -50,7 +50,7 @@ namespace OpenNos.Data
 
         byte FireElement { get; set; }
 
-        byte FireResistance { get; set; }
+        sbyte FireResistance { get; set; }
 
         short HitRate { get; set; }
 
@@ -62,7 +62,7 @@ namespace OpenNos.Data
 
         byte LightElement { get; set; }
 
-        byte LightResistance { get; set; }
+        sbyte LightResistance { get; set; }
 
         short MagicDefence { get; set; }
 
@@ -70,7 +70,7 @@ namespace OpenNos.Data
 
         byte WaterElement { get; set; }
 
-        byte WaterResistance { get; set; }
+        sbyte WaterResistance { get; set; }
 
         long XP { get; set; }
 
