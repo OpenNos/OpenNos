@@ -10,6 +10,9 @@
 3. Connection issues
   * 'There was no endpoint listening at ... see more details'
   * Can login but cant join channel
+  
+4. Projects not loading
+  * cannot load project
  
 #Fixes#
 1. Database issues
@@ -23,6 +26,9 @@
 3. Connection issues
   1. This issue is often caused by occupied ports 80 or 443, make sure all programs that use this ports are disabled (eg. Skype).
   2. Often caused by wrong client crypto make sure that you use latest version of client
+
+4. Projects not loading
+  * Its caused because of missing stylecop please install it from [here](https://stylecop.codeplex.com/)
 
 #Unexpected behavior#
 - If project behaves unstable/improperly or something is off try to open a new issue explaining in details your problem with server
