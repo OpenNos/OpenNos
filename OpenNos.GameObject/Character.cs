@@ -1021,7 +1021,8 @@ namespace OpenNos.GameObject
 
         public string GenerateParcel(MailDTO mail)
         {
-            return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.AttachmentId} {mail.Amount} {ServerManager.GetItem(1).Type}";
+            ItemInstance item = InventoryList.LoadByItemInstance<ItemInstance>((Guid)mail.AttachmentId);
+            return $"parcel 1 1 {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {item.ItemVNum} {mail.Amount} {ServerManager.GetItem(1).Type}";
         }
 
         public string GeneratePidx(bool isLeaveGroup = false)
@@ -2044,6 +2045,10 @@ namespace OpenNos.GameObject
 
                 if (mail.AttachmentId != null)
                 {
+                    InventoryDTO inventory = DAOFactory.InventoryDAO.LoadById((Guid)mail.AttachmentId);
+                    if (!InventoryList.Inventory.Any(s => s.Id == inventory.Id));
+                    InventoryList.Inventory.Add(new Inventory(inventory));
+
                     i++;
                     Session.SendPacket(GenerateParcel(mail));
                 }
@@ -2197,19 +2202,30 @@ namespace OpenNos.GameObject
 
         public void SendGift(long id, short vnum, byte amount, bool isNosmall)
         {
-            Item it = ServerManager.GetItem((short)vnum);
             int color = HairColor;
+
+            ItemInstance it = InventoryList.CreateItemInstance(vnum);
+
+            InventoryDTO inv = new InventoryDTO()
+            {
+                ItemInstance = it,
+                CharacterId = id,
+                Id = it.Id,
+                Type = InventoryType.Mail,
+                Slot = 0
+            };
+            inv = DAOFactory.InventoryDAO.InsertOrUpdate(inv);
 
             MailDTO mail = new MailDTO()
             {
-                Amount = (it.Type == InventoryType.Etc || it.Type == InventoryType.Main) ? amount : (byte)1,
+                Amount = ((inv.ItemInstance as ItemInstance).Item.Type == InventoryType.Etc || (inv.ItemInstance as ItemInstance).Item.Type == InventoryType.Main) ? amount : (byte)1,
                 IsOpened = false,
                 Date = DateTime.Now,
                 ReceiverId = id,
                 SenderId = id,
                 IsSenderCopy = false,
                 Title = isNosmall ? "NOSMALL" : "NOSTALE",
-                AttachmentId = null,
+                AttachmentId = inv.Id,
                 SenderClass = Session.Character.Class,
                 SenderGender = Session.Character.Gender,
                 SenderHairColor = Session.Character.HairColor,
@@ -2220,6 +2236,7 @@ namespace OpenNos.GameObject
             DAOFactory.MailDAO.InsertOrUpdate(ref mail);
             if (id == CharacterId)
             {
+                Session.Character.InventoryList.AddToInventoryWithSlotAndType(inv.ItemInstance as ItemInstance, InventoryType.Mail, 0);
                 Session.Character.MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
                 Session.SendPacket(GenerateParcel(mail));
                 Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")} {mail.Amount}", 12));
