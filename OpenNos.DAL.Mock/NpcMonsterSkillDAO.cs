@@ -19,6 +19,11 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
+        public List<NpcMonsterSkillDTO> LoadAll()
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<NpcMonsterSkillDTO> LoadByNpcMonster(short npcId)
         {
             throw new NotImplementedException();

@@ -89,6 +89,14 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public List<NpcMonsterSkillDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return context.NpcMonsterSkill.ToList().Select(n => _mapper.Map<NpcMonsterSkillDTO>(n)).ToList();
+            }
+        }
+
         public IEnumerable<NpcMonsterSkillDTO> LoadByNpcMonster(short npcId)
         {
             using (var context = DataAccessHelper.CreateContext())

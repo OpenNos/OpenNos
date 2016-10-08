@@ -25,6 +25,8 @@ namespace OpenNos.DAL.Interface
 
         void Insert(List<NpcMonsterSkillDTO> skills);
 
+        List<NpcMonsterSkillDTO> LoadAll();
+
         IEnumerable<NpcMonsterSkillDTO> LoadByNpcMonster(short npcId);
 
         #endregion

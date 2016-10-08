@@ -36,14 +36,24 @@ namespace OpenNos.GameObject
 
         private static ServerManager _instance;
         private static List<Item> _items = new List<Item>();
+
         private static IMapper _mapper;
+
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
+
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
+
         private static List<Skill> _skills = new List<Skill>();
+
         private ThreadSafeSortedList<short, List<DropDTO>> _dropsByMonster;
-        private ThreadSafeSortedList<long, Group> _groups;
-        private long lastGroupId;
+
         private List<DropDTO> _generalDrops;
+
+        private ThreadSafeSortedList<long, Group> _groups;
+
+        private ThreadSafeSortedList<short, List<NpcMonsterSkill>> _monsterSkills;
+
+        private long lastGroupId;
 
         #endregion
 
@@ -66,6 +76,7 @@ namespace OpenNos.GameObject
                 cfg.CreateMap<ItemDTO, UpgradeItem>();
                 cfg.CreateMap<SkillDTO, Skill>();
                 cfg.CreateMap<NpcMonsterDTO, NpcMonster>();
+                cfg.CreateMap<NpcMonsterSkillDTO, NpcMonsterSkill>();
             });
 
             _mapper = config.CreateMapper();
@@ -101,6 +112,7 @@ namespace OpenNos.GameObject
                 cfg.CreateMap<ItemDTO, UpgradeItem>();
                 cfg.CreateMap<SkillDTO, Skill>();
                 cfg.CreateMap<NpcMonsterDTO, NpcMonster>();
+                cfg.CreateMap<NpcMonsterSkillDTO, NpcMonsterSkill>();
             });
 
             _mapper = config.CreateMapper();
@@ -591,14 +603,21 @@ namespace OpenNos.GameObject
             _dropsByMonster = new ThreadSafeSortedList<short, List<DropDTO>>();
             foreach (var monsterDropGrouping in DAOFactory.DropDAO.LoadAll().GroupBy(d => d.MonsterVNum))
             {
-                if(monsterDropGrouping.Key.HasValue)
+                if (monsterDropGrouping.Key.HasValue)
                 {
-                    _dropsByMonster[monsterDropGrouping.Key.Value] = monsterDropGrouping.ToList();
+                    _dropsByMonster[monsterDropGrouping.Key.Value] = monsterDropGrouping.OrderBy(d => d.DropChance).ToList();
                 }
                 else
                 {
                     _generalDrops = monsterDropGrouping.ToList();
                 }
+            }
+
+            //initialiize monster skills
+            _monsterSkills = new ThreadSafeSortedList<short, List<NpcMonsterSkill>>();
+            foreach (var monsterSkillGrouping in DAOFactory.NpcMonsterSkillDAO.LoadAll().GroupBy(n => n.NpcMonsterVNum))
+            {
+                _monsterSkills[monsterSkillGrouping.Key] = monsterSkillGrouping.Select(n => _mapper.Map<NpcMonsterSkill>(n)).ToList();
             }
 
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
@@ -781,6 +800,16 @@ namespace OpenNos.GameObject
             {
                 Logger.Error(e);
             }
+        }
+
+        internal List<NpcMonsterSkill> GetNpcMonsterSkillsByMonsterVNum(short npcMonsterVNum)
+        {
+            if (_monsterSkills.ContainsKey(npcMonsterVNum))
+            {
+                return _monsterSkills[npcMonsterVNum];
+            }
+
+            return new List<NpcMonsterSkill>();
         }
 
         internal void StopServer()

@@ -784,7 +784,7 @@ namespace OpenNos.Handler
 
             // end owner set
             int i = 1;
-            List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMap.MapTypes.FirstOrDefault(m => m.MapTypeId == s.MapTypeId) != null || (s.MapTypeId == null)).ToList();
+            List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMap.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || (s.MapTypeId == null)).ToList();
             if (monsterToAttack.Monster.MonsterType != MonsterType.Special)
             {
                 int RateDrop = ServerManager.DropRate;
