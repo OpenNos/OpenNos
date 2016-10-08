@@ -150,7 +150,7 @@ namespace OpenNos.GameObject
                 {
                     double time = (DateTime.Now - LastMove).TotalMilliseconds;
 
-                    if (Path.Where(s => s != null).ToList().Count > 0)
+                    if (Path.Where(s => s != null).Any())
                     {
                         int timetowalk = 1000 / (2 * Monster.Speed);
                         if (time > timetowalk)
@@ -216,10 +216,10 @@ namespace OpenNos.GameObject
                 if (targetSession == null || targetSession.Character.Invisible)
                 {
                     Target = -1;
-                    Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                    Path = Map.StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
                     if (!Path.Any())
                     {
-                        Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                        Path = Map.JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
                     }
                 }
                 NpcMonsterSkill npcMonsterSkill = null;
@@ -275,15 +275,15 @@ namespace OpenNos.GameObject
                         {
                             Thread.Sleep(1000);
                             ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
-                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                            Path = Map.StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
                             if (!Path.Any())
                             {
-                                Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                                Path = Map.JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
                             }
                         }
                         if (npcMonsterSkill != null && (npcMonsterSkill.Skill.Range > 0 || npcMonsterSkill.Skill.TargetRange > 0))
                         {
-                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(npcMonsterSkill.Skill.TargetRange == 0 ? this.MapX : targetSession.Character.MapX, npcMonsterSkill.Skill.TargetRange == 0 ? this.MapY : targetSession.Character.MapY, (byte)(npcMonsterSkill.Skill.TargetRange + npcMonsterSkill.Skill.Range)).Where(s => s.CharacterId != Target && s.Hp > 0))
+                            foreach (Character chara in Map.GetListPeopleInRange(npcMonsterSkill.Skill.TargetRange == 0 ? this.MapX : targetSession.Character.MapX, npcMonsterSkill.Skill.TargetRange == 0 ? this.MapY : targetSession.Character.MapY, (byte)(npcMonsterSkill.Skill.TargetRange + npcMonsterSkill.Skill.Range)).Where(s => s.CharacterId != Target && s.Hp > 0))
                             {
                                 if (chara.IsSitting)
                                 {
@@ -321,13 +321,13 @@ namespace OpenNos.GameObject
                             short xoffset = (short)_random.Next(-1, 1);
                             short yoffset = (short)_random.Next(-1, 1);
 
-                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
+                            Path = Map.StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
                             if (!Path.Any())
                             {
-                                Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
+                                Path = Map.JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
                             }
                         }
-                        if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Count > 0)
+                        if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
                         {
                             short mapX;
                             short mapY;
@@ -351,10 +351,10 @@ namespace OpenNos.GameObject
                         }
                         if (Path.Count() == 0 && (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance))
                         {
-                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                            Path = Map.StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
                             if (!Path.Any())
                             {
-                                Path = ServerManager.GetMap(MapId).JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                                Path = Map.JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
                             }
                             Target = -1;
                         }

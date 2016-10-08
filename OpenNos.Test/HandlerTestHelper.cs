@@ -9,6 +9,7 @@ using OpenNos.Handler;
 using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.Test
 {
@@ -99,7 +100,7 @@ namespace OpenNos.Test
         {
             while (true)
             {
-                if (client.SentPackets.Count > 0)
+                if (client.SentPackets.Any())
                 {
                     return client.SentPackets.Dequeue();
                 }
@@ -110,7 +111,7 @@ namespace OpenNos.Test
         {
             while (true)
             {
-                if (client.SentPackets.Count > 0)
+                if (client.SentPackets.Any())
                 {
                     string packet = client.SentPackets.Dequeue();
                     if (packet != null && packet.StartsWith(packetHeader))
@@ -127,7 +128,7 @@ namespace OpenNos.Test
             List<string> packets = new List<string>();
             while (receivedPackets < amount)
             {
-                if (client.SentPackets.Count > 0)
+                if (client.SentPackets.Any())
                 {
                     packets.Add(client.SentPackets.Dequeue());
                     receivedPackets++;
@@ -144,7 +145,7 @@ namespace OpenNos.Test
 
             while (true)
             {
-                if (client.SentPackets.Count > 0)
+                if (client.SentPackets.Any())
                 {
                     string packet = client.SentPackets.Dequeue();
                     if (packet != null)

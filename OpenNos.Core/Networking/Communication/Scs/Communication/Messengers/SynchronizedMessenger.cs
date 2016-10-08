@@ -15,6 +15,7 @@
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
@@ -123,7 +124,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                     }
 
                     // Get a message immediately if any message does exists
-                    if (_receivingMessageQueue.Count > 0)
+                    if (_receivingMessageQueue.Any())
                     {
                         return _receivingMessageQueue.Dequeue();
                     }

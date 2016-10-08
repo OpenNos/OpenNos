@@ -1184,7 +1184,7 @@ namespace OpenNos.GameObject
             {
                 spdestroyed = 1;
             }
-            if (skillsSp.Count == 0)
+            if (!skillsSp.Any())
             {
                 skill = "-1";
             }

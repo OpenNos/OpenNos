@@ -28,6 +28,7 @@ namespace OpenNos.GameObject
         public NpcMonster Npc;
         private int _movetime;
         private Random _random;
+
         #endregion
 
         #region Instantiation
@@ -166,7 +167,7 @@ namespace OpenNos.GameObject
                 short mapX = FirstX;
                 short mapY = FirstY;
 
-                if (ServerManager.GetMap(MapId).GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
+                if (Map.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                 {
                     Task.Factory.StartNew(async () =>
                     {

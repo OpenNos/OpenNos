@@ -434,7 +434,7 @@ namespace OpenNos.GameObject
             {
                 // Send empty slot to owners inventory
                 shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, itemshop.Type, itemshop.Slot, 0, 0, 0, 0));
-                if (clientSession.CurrentMap.UserShops[shop.Key].Items.Where(s => s.Amount > 0).ToList().Count == 0)
+                if (!clientSession.CurrentMap.UserShops[shop.Key].Items.Any(s => s.Amount > 0))
                 {
                     clientSession.SendPacket("shop_end 0");
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);

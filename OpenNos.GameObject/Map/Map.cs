@@ -339,9 +339,10 @@ namespace OpenNos.GameObject
             List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
             lpath = JumpPointFinder.GetFullPath(resultPathList);
             Debug.WriteLine($"From X: {cell1.X} Y: {cell1.Y}, To X: {cell2.X} Y: {cell2.Y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
-            if (lpath.Count > 0)
+            if (lpath.Any())
             {
-                foreach (GridPos item in lpath)
+                List<GridPos> gridPositions = lpath.ToList();
+                foreach (GridPos item in gridPositions)
                 {
                     path.Add(new MapCell { X = Convert.ToInt16(item.x), Y = Convert.ToInt16(item.y), MapId = cell1.MapId });
                 }
@@ -526,7 +527,7 @@ namespace OpenNos.GameObject
             while ((Path.Last().X != mapCell2.X || Path.Last().Y != mapCell2.Y) && (!IsBlockedZone(Path.Last().X, Path.Last().Y)));
             if (IsBlockedZone(Path.Last().X, Path.Last().Y))
             {
-                if (Path.Count > 0)
+                if (Path.Any())
                 {
                     Path.Remove(Path.Last());
                 }
