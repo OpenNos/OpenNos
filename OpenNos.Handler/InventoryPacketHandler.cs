@@ -1339,7 +1339,7 @@ namespace OpenNos.Handler
                 Session.Character.MorphUpgrade2 = sp.Design;
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                 Session.SendPacket(Session.Character.GenerateLev());
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.All);
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196), Session.Character.MapX, Session.Character.MapY);
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                 Session.SendPacket(Session.Character.GenerateSpPoint());
                 Session.Character.LoadSpeed();

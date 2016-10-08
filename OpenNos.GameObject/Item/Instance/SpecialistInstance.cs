@@ -254,7 +254,7 @@ namespace OpenNos.GameObject
                     count = (byte)_random.Next(3, 6);
                 }
 
-                ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3005), ReceiverType.All);
+                ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
 
                 if (type < 3)
                 {
@@ -446,7 +446,7 @@ namespace OpenNos.GameObject
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 11));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 0));
@@ -455,9 +455,9 @@ namespace OpenNos.GameObject
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
                 }
-                ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3005), ReceiverType.All);
+                Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
                 wearable.Upgrade++;
@@ -467,7 +467,7 @@ namespace OpenNos.GameObject
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 11));
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 0));
                 }

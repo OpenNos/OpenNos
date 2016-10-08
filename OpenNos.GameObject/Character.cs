@@ -299,6 +299,17 @@ namespace OpenNos.GameObject
 
         public int MaxSnack { get; set; }
 
+        /// <summary>
+        /// Checks if the current character is in range of the given position
+        /// </summary>
+        /// <param name="xCoordinate">The x coordinate of the object to check.</param>
+        /// <param name="yCoordinate">The y coordinate of the object to check.</param>
+        /// <returns>True if the object is in Range, False if not.</returns>
+        internal bool IsInRange(int xCoordinate, int yCoordinate)
+        {
+            return Math.Abs(MapX - xCoordinate) <= 50 && Math.Abs(MapY - yCoordinate) <= 50;
+        }
+
         public int MinDistance { get; set; }
 
         public int MinHit { get; set; }
@@ -432,9 +443,9 @@ namespace OpenNos.GameObject
                 // Session.SendPacket(GenerateEquipment());
                 Session.SendPacket(GenerateStat());
                 Session.CurrentMap?.Broadcast(Session, GenerateEq(), ReceiverType.All);
-                Session.CurrentMap?.Broadcast(Session, GenerateEff(8), ReceiverType.All);
+                Session.CurrentMap?.Broadcast(GenerateEff(8), MapX, MapY);
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
-                Session.CurrentMap?.Broadcast(Session, GenerateEff(196), ReceiverType.All);
+                Session.CurrentMap?.Broadcast(GenerateEff(196), MapX, MapY);
 
                 int faction = 1 + (int)_random.Next(0, 2);
                 Faction = faction;
@@ -448,8 +459,8 @@ namespace OpenNos.GameObject
                 Session.SendPacket(GenerateLev());
                 Session.CurrentMap?.Broadcast(Session, GenerateCMode(), ReceiverType.All);
                 Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
-                Session.CurrentMap?.Broadcast(Session, GenerateEff(6), ReceiverType.All);
-                Session.CurrentMap?.Broadcast(Session, GenerateEff(198), ReceiverType.All);
+                Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
+                Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
 
                 for (int i = Skills.Count - 1; i >= 0; i--)
                 {
@@ -502,7 +513,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateGender());
             Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
             Session.CurrentMap?.Broadcast(GenerateCMode());
-            Session.CurrentMap?.Broadcast(GenerateEff(196));
+            Session.CurrentMap?.Broadcast(GenerateEff(196), MapX, MapY);
         }
 
         public void CloseShop()
@@ -1580,8 +1591,8 @@ namespace OpenNos.GameObject
                 Session.SendPacket(GenerateStat());
                 Session.SendPacket($"levelup {CharacterId}");
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
-                Session.CurrentMap?.Broadcast(GenerateEff(6));
-                Session.CurrentMap?.Broadcast(GenerateEff(198));
+                Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
+                Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
                 ServerManager.Instance.UpdateGroup(CharacterId);
             }
 
@@ -1632,8 +1643,8 @@ namespace OpenNos.GameObject
                 Session.SendPacket($"levelup {CharacterId}");
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
                 LearnAdventurerSkill();
-                Session.CurrentMap?.Broadcast(GenerateEff(6));
-                Session.CurrentMap?.Broadcast(GenerateEff(198));
+                Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
+                Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
             }
             if (specialist != null)
             {
@@ -1654,8 +1665,8 @@ namespace OpenNos.GameObject
                 LearnSPSkill();
 
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
-                Session.CurrentMap?.Broadcast(GenerateEff(6));
-                Session.CurrentMap?.Broadcast(GenerateEff(198));
+                Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
+                Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
             }
             Session.SendPacket(GenerateLev());
         }
@@ -2020,7 +2031,7 @@ namespace OpenNos.GameObject
         {
             Session.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
             Session.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
-            ServerManager.Instance.Broadcast(Session, GenerateEff(3005), ReceiverType.All);
+            ServerManager.GetMap(MapId).Broadcast(GenerateEff(3005), MapX, MapY);
         }
 
         public void RefreshMail()
