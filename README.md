@@ -2,7 +2,6 @@
 
 #Instructions to contribute#
 
-
 ##Disclaimer##
 This project is a community project not for commercial use. The emulator itself is proof of concept of our idea to try out anything what's not possible on original servers. The result is to learn and program together for prove the study. 
 
@@ -12,33 +11,21 @@ This Website and Project is in no way affiliated with, authorized, maintained, s
 
 #Attention!#
 This emulation software is not open source to host any private servers. It is open source to work together community-based.
-
 We do not provide any modified client files. The alorithms are based on our logic.
-
-##Before creating issue, you can contact us on Discord.##
 
 ##Special Information for Hamachii and VPN Users##
 If you want to use the Servers you need to Modify the Program.cs of both OpenNos.Login and OpenNos.World and rebuild the code.
-- Change "127.0.0.1" to "HamachiIp" (Eg. "12.34.567.89")
-- Dont forget to Modify the app.config of the Login-Server to the correct redirection (<server Name="S1-OpenNos" WorldPort="1337" WorldIp="25.71.84.227" channelAmount="1" />)
+- Change "127.0.0.1" to ip found in hamachi (Eg. "12.34.56.789")
+- Dont forget to Modify the app.config of the Login-Server to the correct redirection (<server Name="S1-OpenNos" WorldPort="1337" WorldIp="12.34.56.789" channelAmount="1" />)
 
-###Contribution is only possible with Visual Studio 2015 (Community or other editions) and MySQL. and [StyleCop extension](https://stylecop.codeplex.com/)###
-#NOTE BEFORE INSTALL#
-- Error listen point : - This is WCF error install it or run opennos on visual studio
-- What're the commands? : $Help
-- Can we have your packet.txt : No! parse them yourself just sniff them!
-- Can we have other files for parser? : Yes, simply by extracting them from your client : nslangdata.dat, nsgtddata.dat, nstcdata.dat
-- On login nothing happen : verify you can connect with telnet on the correct port "telnet 127.0.0.1 80". if yes you're not on the correct port of your client. If not, you installed something wrong, check if you have disabled any programs working on port 80(eg.skype).
-- If issue still hasnt been fixed look inside our troubleshooting file.
-- Password is not recognized : verify that your password is hash in sha512 and that your launcher(made it yourself) is done with the most recent nostaleX.dat
-- Monsters don't move : parse mv packets.
-- Recipe don't work : parse each recipe by click on them for packets.
-- The emulator closes after a few seconds : Please check if port 80 is not already in use (eg.skype...)
+###Contribution is only possible with Visual Studio 2015 (Community or other editions), MySQL and [StyleCop extension](https://stylecop.codeplex.com/)###
+#BEFORE CREATING ISSUE#
+- Troubleshooting can be found [here](Troubleshooting.md)
 
-##1 Install SSDT For VS##
+##1 Install SSDT For Visual Studio##
 http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409
 
-##2 Install MySQL Installer (Just navigate thru Installer)##
+##2 Install MySQL##
 http://dev.mysql.com/downloads/windows/installer/
 
 Installer Packages:
@@ -53,9 +40,7 @@ Installer Packages:
 - User: test
 - Password: test
 
-##3 Install MYSQL for Visual Studio##
-
-##4 Use the NuGet Package Manager to Update the Database##
+##3 Use the NuGet Package Manager to Update the Database##
 
 - Go to Tools -> NuGet Package Manager -> Package Manager Console
 - Choose Project OpenNos.DAL.EF.MySQL
