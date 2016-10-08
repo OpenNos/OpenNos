@@ -155,7 +155,6 @@ namespace OpenNos.Handler
                     else if (packetsplit[2] == "5")
                     {
                         Session.SendPacket($"parcel 7 1 {packetsplit[3]}");
-                        Session.Character.InventoryList.DeleteByInventoryItemId((Guid)mail.AttachmentId);
 
                         if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                         {
@@ -164,7 +163,6 @@ namespace OpenNos.Handler
                         if (Session.Character.MailList.ContainsKey(id))
                         {
                             Session.Character.MailList.Remove(id);
-                           
                         }
                     }
                 }
