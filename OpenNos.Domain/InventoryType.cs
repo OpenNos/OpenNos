@@ -22,6 +22,7 @@ namespace OpenNos.Domain
         Miniland = 3,
         Sp = 6,
         Costume = 7,
-        Equipment = 8
+        Equipment = 8,
+        Mail = 9
     }
 }
