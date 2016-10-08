@@ -380,6 +380,10 @@ namespace OpenNos.GameObject
                     _grid[t, i] = Convert.ToInt16(bytes[0]);
                 }
             }
+
+            //initialize JPS
+            _tempgrid = ConvertToGrid(_grid);
+            JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
 
         public void MonsterLifeManager()
@@ -563,11 +567,11 @@ namespace OpenNos.GameObject
                         {
                             if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
                             {
-                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
+                                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), Session.Character.MapX, Session.Character.MapY);
                             }
                             else
                             {
-                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
+                                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue), Session.Character.MapX, Session.Character.MapY);
                             }
                             Session.Character.LastEffect = DateTime.Now;
                         }

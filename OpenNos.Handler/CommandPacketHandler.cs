@@ -227,8 +227,8 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateStatInfo());
                     Session.SendPacket(Session.Character.GenerateStatChar());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6), Session.Character.MapX, Session.Character.MapY);
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198), Session.Character.MapX, Session.Character.MapY);
                 }
             }
             else
@@ -252,7 +252,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateLev());
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(8));
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(8), Session.Character.MapX, Session.Character.MapY);
                     Session.SendPacket(Session.Character.GenerateSki());
                     Session.Character.LearnAdventurerSkill();
                 }
@@ -283,8 +283,8 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
                     Session.SendPacket(Session.Character.GenerateLev());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6), Session.Character.MapX, Session.Character.MapY);
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198), Session.Character.MapX, Session.Character.MapY);
                     ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
                 }
             }
@@ -332,7 +332,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSki());
                     Session.Character.LearnSPSkill();
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(8));
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(8), Session.Character.MapX, Session.Character.MapY);
                 }
             }
             else
@@ -551,7 +551,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 2)
             {
                 short.TryParse(packetsplit[2], out arg);
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(arg));
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(arg), Session.Character.MapX, Session.Character.MapY);
             }
             else
             {

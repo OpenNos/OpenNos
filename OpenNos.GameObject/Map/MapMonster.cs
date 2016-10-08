@@ -27,6 +27,7 @@ namespace OpenNos.GameObject
 
         private int _movetime;
         private Random _random;
+
         #endregion
 
         #region Instantiation
@@ -135,7 +136,7 @@ namespace OpenNos.GameObject
                     MapY = FirstY;
                     Path = new List<MapCell>();
                     Map.Broadcast(GenerateIn3());
-                    Map.Broadcast(GenerateEff(7), 10);
+                    Map.Broadcast(GenerateEff(7), MapX, MapY, 10);
                 }
                 return;
             }
@@ -159,7 +160,7 @@ namespace OpenNos.GameObject
                             short mapY = Path.ElementAt(0).Y;
                             Path.RemoveAt(0);
                             LastMove = DateTime.Now;
-                            Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
+                            Map.Broadcast(new BroadcastPacket(null, $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
 
                             Task.Factory.StartNew(async () =>
                             {
@@ -191,8 +192,7 @@ namespace OpenNos.GameObject
                             });
                             LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Monster.Speed));
 
-                            string movePacket = $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}";
-                            Map.Broadcast(movePacket);
+                            Map.Broadcast(new BroadcastPacket(null, $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                         }
                     }
                 }
@@ -252,7 +252,7 @@ namespace OpenNos.GameObject
                         }
                         if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                         {
-                            Map.Broadcast(GenerateEff(npcMonsterSkill.Skill.CastEffect));
+                            Map.Broadcast(GenerateEff(npcMonsterSkill.Skill.CastEffect), MapX, MapY, 10);
                             Thread.Sleep(npcMonsterSkill.Skill.CastTime * 100);
                         }
                         Path = new List<MapCell>();
@@ -335,7 +335,7 @@ namespace OpenNos.GameObject
                             mapX = Path.ElementAt(maxindex - 1).X;
                             mapY = Path.ElementAt(maxindex - 1).Y;
                             double waitingtime = (double)(Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId })) / (double)(Monster.Speed);
-                            Map.Broadcast($"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}");
+                            Map.Broadcast(new BroadcastPacket(null, $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                             LastMove = DateTime.Now.AddSeconds((waitingtime > 1 ? 1 : waitingtime));
                             Task.Factory.StartNew(async () =>
                             {

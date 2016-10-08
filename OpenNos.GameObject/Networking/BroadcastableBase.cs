@@ -71,9 +71,19 @@ namespace OpenNos.GameObject
             Broadcast(null, packet, delay: delay);
         }
 
+        public void Broadcast(string packet, int xRangeCoordinate, int yRangeCoordinate, int delay = 0)
+        {
+            Broadcast(new BroadcastPacket(null, packet, ReceiverType.AllInRange, xCoordinate:xRangeCoordinate, yCoordinate:yRangeCoordinate), delay);
+        }
+
         public void Broadcast(string[] packets, int delay = 0)
         {
             Broadcast(null, packets, delay: delay);
+        }
+
+        public void Broadcast(string[] packets, int xRangeCoordinate, int yRangeCoordinate, int delay = 0)
+        {
+            Broadcast(packets.Select(p => new BroadcastPacket(null, p, ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate)), delay: delay);
         }
 
         public void Broadcast(PacketBase packet, int delay = 0)
@@ -203,7 +213,15 @@ namespace OpenNos.GameObject
                             session.SendPacket(sentPacket.Packet);
                         }
                         break;
-
+                    case ReceiverType.AllInRange: // send to everyone which is in a range of 50x50
+                        if(sentPacket.XCoordinate != 0 && sentPacket.YCoordinate != 0)
+                        {
+                            foreach (ClientSession session in Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)))
+                            {
+                                session.SendPacket(sentPacket.Packet);
+                            }
+                        }
+                        break;
                     case ReceiverType.OnlySomeone:
                         {
                             if (sentPacket.SomeonesCharacterId > 0 || !String.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
