@@ -192,9 +192,9 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Mail>()
-                 .HasOptional(e => e.Item)
+                 .HasOptional(e => e.Inventory)
                  .WithMany(e => e.Mail)
-                 .HasForeignKey(e => e.ItemVNum)
+                 .HasForeignKey(e => e.AttachmentId)
                  .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Map>()

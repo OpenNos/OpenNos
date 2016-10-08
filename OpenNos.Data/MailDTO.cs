@@ -30,7 +30,7 @@ namespace OpenNos.Data
 
         public bool IsSenderCopy { get; set; }
 
-        public short? ItemVNum { get; set; }
+        public Guid? AttachmentId { get; set; }
 
         public long MailId { get; set; }
 

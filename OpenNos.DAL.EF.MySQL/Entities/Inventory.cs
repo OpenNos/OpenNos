@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Domain;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenNos.DAL.EF.MySQL
@@ -20,6 +21,11 @@ namespace OpenNos.DAL.EF.MySQL
     public class Inventory : SynchronizableBaseEntity
     {
         #region Properties
+        public Inventory()
+        {
+
+            Mail = new HashSet<Mail>();
+        }
 
         public virtual Character Character { get; set; }
 
@@ -33,6 +39,9 @@ namespace OpenNos.DAL.EF.MySQL
 
         [Index("IX_SlotAndType", 3, IsUnique = false, Order = 2)]
         public InventoryType Type { get; set; }
+
+        public virtual ICollection<Mail> Mail { get; set; }
+
 
         #endregion
     }

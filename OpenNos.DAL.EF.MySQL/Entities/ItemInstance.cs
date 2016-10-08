@@ -15,6 +15,7 @@
 namespace OpenNos.DAL.EF.MySQL
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
 
     public class ItemInstance : SynchronizableBaseEntity

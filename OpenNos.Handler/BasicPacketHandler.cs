@@ -126,7 +126,7 @@ namespace OpenNos.Handler
                     MailDTO mail = Session.Character.MailList[id];
                     if (packetsplit[2] == "4")
                     {
-                        Inventory newInv = Session.Character.InventoryList.AddNewItemToInventory((short)mail.ItemVNum, mail.Amount);
+                        Inventory newInv = Session.Character.InventoryList.AddNewItemToInventory(1, mail.Amount);
                         if (newInv != null)
                         {
                             if ((newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Armor || (newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Weapon || (newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Shell)

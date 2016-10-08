@@ -32,9 +32,9 @@ namespace OpenNos.DAL.EF.MySQL
 
         public bool IsSenderCopy { get; set; }
 
-        public virtual Item Item { get; set; }
+        public virtual Inventory Inventory { get; set; }
 
-        public short? ItemVNum { get; set; }
+        public Guid? AttachmentId { get; set; }
 
         [Key]
         public long MailId { get; set; }
