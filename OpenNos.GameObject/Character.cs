@@ -2070,17 +2070,13 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"), j), 10));
             }
 
-          
-            LastMailRefresh = DateTime.Now;
-        }
-        public void LoadSendedMail()
-        {
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
                 MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
 
                 Session.SendPacket(Session.Character.GeneratePost(mail, 2));
             }
+            LastMailRefresh = DateTime.Now;
         }
 
         public void RemoveVehicle()
