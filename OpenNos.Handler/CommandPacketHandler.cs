@@ -559,7 +559,7 @@ namespace OpenNos.Handler
             }
         }
 
-        //[Packet("$Gift")]
+        [Packet("$Gift")]
         public void Gift(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
@@ -1370,7 +1370,7 @@ namespace OpenNos.Handler
                         }
 
                         // Replace by MAPPING
-                        MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = Session.CurrentMap.GetNextMonsterId()};
+                        MapMonsterDTO monster = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = Session.CurrentMap.GetNextMonsterId() };
                         MapMonster monst = new MapMonster(monster, map) { Respawn = false };
                         ///////////////////
                         currentMap?.AddMonster(monst);
