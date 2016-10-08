@@ -1033,6 +1033,7 @@ namespace OpenNos.Handler
             // finfo - friends info
             Session.SendPacket("p_clear");
             Session.Character.RefreshMail();
+            Session.Character.LoadSendedMail();
         }
 
         [Packet("#pjoin")]
