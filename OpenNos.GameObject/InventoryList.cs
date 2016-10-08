@@ -150,38 +150,6 @@ namespace OpenNos.GameObject
             return inv;
         }
 
-        public Inventory MoveToBaseInventory(Inventory inventory)
-        {
-            Logger.Debug(inventory.ItemInstance.ItemVNum.ToString(), Owner.Session.SessionId);
-            short Slot = -1;
-            IEnumerable<ItemInstance> slotfree = null;
-            Inventory inv = null;
-            if ((inventory.ItemInstance as ItemInstance).Item.Type != 0)
-            {
-                slotfree = Owner.LoadBySlotAllowed(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount);
-                inv = GetFirstSlot(slotfree);
-            }
-            if (inv != null)
-            {
-                inv.ItemInstance.Amount = (byte)(inventory.ItemInstance.Amount + inv.ItemInstance.Amount);
-            }
-            else
-            {
-                Slot = GetFirstPlace((inventory.ItemInstance as ItemInstance).Item.Type, Owner.BackPack);
-                if (Slot != -1)
-                {
-                    MoveInventory(inventory, (inventory.ItemInstance as ItemInstance).Item.Type, Slot);
-                }
-            }
-
-            return inv;
-        }
-
-        public Inventory LoadInventory(Guid inventoryId)
-        {
-            return Inventory.SingleOrDefault(i => i.Id.Equals(inventoryId));
-        }
-
         public int CountItem(int v)
         {
             int count = 0;
@@ -317,12 +285,6 @@ namespace OpenNos.GameObject
                     inv.Type = desttype;
                     return inv;
                 }
-                else
-                {
-                    Inventory invs = inv;
-                    MoveItem(desttype,inv.Slot,(byte)inv.ItemInstance.Amount, destslot,out invs, out inv);
-                }
-                
             }
             return null;
         }
