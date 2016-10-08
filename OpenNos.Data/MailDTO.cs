@@ -20,7 +20,9 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public byte Amount { get; set; }
+        public byte AttachmentAmount { get; set; }
+        public byte AttachmentRarity { get; set; }
+        public byte AttachmentUpgrade { get; set; }
 
         public DateTime Date { get; set; }
 
@@ -30,7 +32,7 @@ namespace OpenNos.Data
 
         public bool IsSenderCopy { get; set; }
 
-        public short? ItemVNum { get; set; }
+        public short? AttachmentVnum { get; set; }
 
         public long MailId { get; set; }
 
