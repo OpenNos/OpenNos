@@ -116,9 +116,9 @@
     <Compile Include="Entities\NpcMonsterSkill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201610081023246_Artemis.cs" />
-    <Compile Include="Migrations\201610081023246_Artemis.Designer.cs">
-      <DependentUpon>201610081023246_Artemis.cs</DependentUpon>
+    <Compile Include="Migrations\201609281814524_Athena.cs" />
+    <Compile Include="Migrations\201609281814524_Athena.Designer.cs">
+      <DependentUpon>201609281814524_Athena.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -198,8 +198,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201610081023246_Artemis.resx">
-      <DependentUpon>201610081023246_Artemis.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609281814524_Athena.resx">
+      <DependentUpon>201609281814524_Athena.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
