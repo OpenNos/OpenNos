@@ -120,6 +120,10 @@
     <Compile Include="Migrations\201609281814524_Athena.Designer.cs">
       <DependentUpon>201609281814524_Athena.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610081351535_Artemis.cs" />
+    <Compile Include="Migrations\201610081351535_Artemis.Designer.cs">
+      <DependentUpon>201610081351535_Artemis.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
     <Compile Include="DB\OpenNosContext.cs" />
@@ -200,6 +204,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201609281814524_Athena.resx">
       <DependentUpon>201609281814524_Athena.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610081351535_Artemis.resx">
+      <DependentUpon>201610081351535_Artemis.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
