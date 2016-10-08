@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public virtual Item Item { get; set; }
 
-        public short? AttachmentVnum { get; set; }
+        public short? AttachmentVNum { get; set; }
 
         public byte AttachmentRarity { get; set; }
 
