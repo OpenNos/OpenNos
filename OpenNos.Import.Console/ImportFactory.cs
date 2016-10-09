@@ -2367,7 +2367,7 @@ namespace OpenNos.Import.Console
                                 }
                                 break;
 
-                           /*case (byte)ItemType.Event:
+                           case (byte)ItemType.Event:
                                 switch (item.VNum)
                                 {
                                     case 1332:
@@ -2430,8 +2430,7 @@ namespace OpenNos.Import.Console
                                         item.EffectValue = Convert.ToInt16(currentLine[7]);
                                         break;
                                 }
-                                item.EffectValue = Convert.ToInt16(currentLine[7]);
-                                break;*/
+                                break;
 
                             case (byte)ItemType.Special:
                                 switch (item.VNum)
