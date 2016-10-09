@@ -293,7 +293,7 @@ namespace OpenNos.GameObject
 
         public int GetNextMonsterId()
         {
-            int nextId = _mapMonsterIds.Max() + 1;
+            int nextId = _mapMonsterIds != null ? _mapMonsterIds.Max() + 1:1;
             _mapMonsterIds.Add(nextId);
             return nextId;
         }
