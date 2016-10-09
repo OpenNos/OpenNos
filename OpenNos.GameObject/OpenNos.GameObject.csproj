@@ -69,7 +69,6 @@
     <Compile Include="Account.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="ExchangeInfo.cs" />
-    <Compile Include="Item\EventItem.cs" />
     <Compile Include="Item\FoodItem.cs" />
     <Compile Include="Item\MagicalItem.cs" />
     <Compile Include="Item\ProduceItem.cs" />
