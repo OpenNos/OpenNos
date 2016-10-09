@@ -991,7 +991,7 @@ namespace OpenNos.Handler
 
             // sc_p pet sc_n nospartner Session.SendPacket("sc_p_stc 0"); // end pet and partner
             Session.SendPacket("pinit 0"); // clean party list
-            Session.Character.DeleteTimeout();
+      
 
             // blinit
             Session.SendPacket("zzim");
@@ -1034,6 +1034,7 @@ namespace OpenNos.Handler
             Session.SendPacket("p_clear");
             Session.Character.RefreshMail();
             Session.Character.LoadSendedMail();
+            Session.Character.DeleteTimeout();
         }
 
         [Packet("#pjoin")]
