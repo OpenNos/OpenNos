@@ -97,6 +97,7 @@ namespace OpenNos.GameObject
 
                 return _character;
             }
+
             private set
             {
                 _character = value;

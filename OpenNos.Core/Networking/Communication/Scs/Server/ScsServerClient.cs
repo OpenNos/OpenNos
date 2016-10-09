@@ -215,8 +215,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         {
             MessageReceived?.Invoke(this, new MessageEventArgs(message, DateTime.Now));
         }
-
-
         #endregion
     }
 }

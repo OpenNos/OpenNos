@@ -2367,6 +2367,72 @@ namespace OpenNos.Import.Console
                                 }
                                 break;
 
+                           /*case (byte)ItemType.Event:
+                                switch (item.VNum)
+                                {
+                                    case 1332:
+                                        item.EffectValue = 5108;
+                                        break;
+
+                                    case 1333:
+                                        item.EffectValue = 5109;
+                                            break;
+
+                                    case 1334:
+                                        item.EffectValue = 5111;
+                                            break;
+
+                                    case 1335:
+                                        item.EffectValue = 5107;
+                                        break;
+
+                                    case 1336:
+                                        item.EffectValue = 5106;
+                                        break;
+
+                                    case 1337:
+                                        item.EffectValue = 5110;
+                                        break;
+
+                                    case 1339:
+                                        item.EffectValue = 5114;
+                                        break;
+
+                                    case 9031:
+                                        item.EffectValue = 5108;
+                                        break;
+
+                                    case 9032:
+                                        item.EffectValue = 5109;
+                                        break;
+
+                                    case 9033:
+                                        item.EffectValue = 5011;
+                                        break;
+
+                                    case 9034:
+                                        item.EffectValue = 5107;
+                                        break;
+
+                                    case 9035:
+                                        item.EffectValue = 5106;
+                                        break;
+
+                                    case 9036:
+                                        item.EffectValue = 5110;
+                                        break;
+
+                                    case 9038:
+                                        item.EffectValue = 5114;
+                                        break;
+
+                                    default:
+                                        item.EffectValue = Convert.ToInt16(currentLine[7]);
+                                        break;
+                                }
+                                item.EffectValue = Convert.ToInt16(currentLine[7]);
+                                break;*/
+
                             case (byte)ItemType.Special:
                                 switch (item.VNum)
                                 {
@@ -2527,11 +2593,6 @@ namespace OpenNos.Import.Console
                             case (byte)ItemType.Ammo:
 
                                 // nothing to parse
-                                break;
-
-                            case (byte)ItemType.Event:
-                                item.Effect = Convert.ToInt16(currentLine[2]);
-                                item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
                         }
                         if ((item.EquipmentSlot == (byte)EquipmentType.Boots || item.EquipmentSlot == (byte)EquipmentType.Gloves) && item.Type == 0)

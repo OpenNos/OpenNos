@@ -12,7 +12,5 @@ namespace OpenNos.GameObject
         public long Gold { get; set; }
 
         public long CharacterId { get; set; }
-
-
     }
 }
