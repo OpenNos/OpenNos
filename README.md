@@ -13,14 +13,10 @@ This Website and Project is in no way affiliated with, authorized, maintained, s
 This emulation software is not open source to host any private servers. It is open source to work together community-based.
 We do not provide any modified client files. The alorithms are based on our logic.
 
-##Special Information for Hamachii and VPN Users##
-If you want to use the Servers you need to Modify the Program.cs of both OpenNos.Login and OpenNos.World and rebuild the code.
-- Change "127.0.0.1" to ip found in hamachi (Eg. "12.34.56.789")
-- Dont forget to Modify the app.config of the Login-Server to the correct redirection (\<server Name="S1-OpenNos" WorldPort="1337" WorldIp="12.34.56.789" channelAmount="1" />\)
+###Before opening new issues troubleshooting can be found [here](Troubleshooting.md)###
+###Read our [faq](FAQ.md) before asking questions###
 
 ###Contribution is only possible with Visual Studio 2015 (Community or other editions), MySQL and [StyleCop extension](https://stylecop.codeplex.com/)###
-#BEFORE CREATING ISSUE#
-- Troubleshooting can be found [here](Troubleshooting.md)
 
 ##1 Install SSDT For Visual Studio##
 http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409
