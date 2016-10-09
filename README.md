@@ -15,13 +15,13 @@ We do not provide any modified client files. The alorithms are based on our logi
 
 ###Before opening new issues troubleshooting can be found [here](Troubleshooting.md)###
 ###Read our [faq](FAQ.md) before asking questions###
-
 ###Contribution is only possible with Visual Studio 2015 (Community or other editions), MySQL and [StyleCop extension](https://stylecop.codeplex.com/)###
 
-##1 Install SSDT For Visual Studio##
+#Building the code#
+##1. Install SSDT For Visual Studio##
 http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409
 
-##2 Install MySQL##
+##2. Install MySQL##
 http://dev.mysql.com/downloads/windows/installer/
 
 Installer Packages:
@@ -36,7 +36,7 @@ Installer Packages:
 - User: test
 - Password: test
 
-##3 Use the NuGet Package Manager to Update the Database##
+##3. Use the NuGet Package Manager to Update the Database##
 
 - Go to Tools -> NuGet Package Manager -> Package Manager Console
 - Choose Project OpenNos.DAL.EF.MySQL
