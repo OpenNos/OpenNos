@@ -129,10 +129,6 @@ namespace OpenNos.Handler
                         Inventory newInv = Session.Character.InventoryList.AddNewItemToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
                         if (newInv != null)
                         {
-                            if ((newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Armor || (newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Weapon || (newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Shell)
-                            {
-                                (newInv.ItemInstance as WearableInstance).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
-                            }
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newInv.ItemInstance.Rare, newInv.ItemInstance.Design, newInv.ItemInstance.Upgrade, 0));
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {mail.AttachmentAmount}", 12));
 
