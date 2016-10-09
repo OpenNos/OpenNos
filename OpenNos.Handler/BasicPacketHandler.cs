@@ -127,8 +127,11 @@ namespace OpenNos.Handler
                     if (packetsplit[2] == "4")
                     {
                         Inventory newInv = Session.Character.InventoryList.AddNewItemToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
+
                         if (newInv != null)
                         {
+                            newInv.ItemInstance.Upgrade = mail.AttachmentUpgrade;
+                            newInv.ItemInstance.Rare = (sbyte)mail.AttachmentRarity;
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newInv.ItemInstance.Rare, newInv.ItemInstance.Design, newInv.ItemInstance.Upgrade, 0));
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {mail.AttachmentAmount}", 12));
 
