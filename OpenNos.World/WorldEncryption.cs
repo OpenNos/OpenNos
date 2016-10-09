@@ -33,7 +33,7 @@ namespace OpenNos.World
 
         public static string Decrypt2(string str)
         {
-            List<byte> receiveData = new List<byte>();
+            List<int> receiveData = new List<int>();
             char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'n' };
             int count = 0;
             string returnedstring = string.Empty;
@@ -49,7 +49,7 @@ namespace OpenNos.World
 
                         try
                         {
-                            receiveData.Add(unchecked((byte)(str[count] ^ 0xFF)));
+                            receiveData.Add((int)(str[count] ^ 0xFF));
                         }
                         catch
                         {
@@ -90,13 +90,13 @@ namespace OpenNos.World
 
                         if (highbyte != 0x0 && highbyte != 0xF)
                         {
-                            receiveData.Add(unchecked((byte)table[highbyte - 1]));
+                            receiveData.Add((int)table[highbyte - 1]);
                             i++;
                         }
 
                         if (lowbyte != 0x0 && lowbyte != 0xF)
                         {
-                            receiveData.Add(unchecked((byte)table[lowbyte - 1]));
+                            receiveData.Add((int)table[lowbyte - 1]);
                         }
                     }
                 }
@@ -109,8 +109,8 @@ namespace OpenNos.World
         {
             string encrypted_string = "";
             int session_key = session_id & 0xFF;
-            byte session_number = unchecked((byte)(session_id >> 6));
-            session_number &= unchecked((byte)0xFF);
+            int session_number = (session_id >> 6);
+            session_number &= 0xFF;
             session_number &= unchecked((byte)0x80000003);
 
             switch (session_number)
@@ -118,8 +118,8 @@ namespace OpenNos.World
                 case 0:
                     for (int i = 0; i < str.Length; i++)
                     {
-                        byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(str[i] - firstbyte));
+                        int firstbyte = (session_key + 0x40);
+                        int highbyte = (str[i] - firstbyte);
                         encrypted_string += (char)highbyte;
                     }
                     break;
@@ -127,8 +127,8 @@ namespace OpenNos.World
                 case 1:
                     for (int i = 0; i < str.Length; i++)
                     {
-                        byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(str[i] + firstbyte));
+                        int firstbyte = (session_key + 0x40);
+                        int highbyte = (str[i] + firstbyte);
                         encrypted_string += (char)highbyte;
                     }
                     break;
@@ -136,8 +136,8 @@ namespace OpenNos.World
                 case 2:
                     for (int i = 0; i < str.Length; i++)
                     {
-                        byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(str[i] - firstbyte ^ 0xC3));
+                        int firstbyte = (session_key + 0x40);
+                        int highbyte = (str[i] - firstbyte ^ 0xC3);
                         encrypted_string += (char)highbyte;
                     }
                     break;
@@ -145,8 +145,8 @@ namespace OpenNos.World
                 case 3:
                     for (int i = 0; i < str.Length; i++)
                     {
-                        byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(str[i] + firstbyte ^ 0xC3));
+                        int firstbyte = (session_key + 0x40);
+                        int highbyte = (str[i] + firstbyte ^ 0xC3);
                         encrypted_string += (char)highbyte;
                     }
                     break;
