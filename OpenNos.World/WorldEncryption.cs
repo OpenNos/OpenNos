@@ -101,9 +101,7 @@ namespace OpenNos.World
                     }
                 }
             }
-            // receiveData.ForEach(s => returnedstring += Encoding.UTF8.GetChars(s));
-
-            returnedstring = Encoding.UTF8.GetString(receiveData.ToArray());
+           // receiveData.ForEach(s => returnedstring += Encoding.UTF8.GetChars(s));
             return returnedstring;
         }
 
