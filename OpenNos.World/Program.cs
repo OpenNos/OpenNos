@@ -23,6 +23,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 
 namespace OpenNos.World
@@ -60,7 +61,7 @@ namespace OpenNos.World
         public static void Main(string[] args)
         {
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
-
+            Console.OutputEncoding = Encoding.UTF8;
             // initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
