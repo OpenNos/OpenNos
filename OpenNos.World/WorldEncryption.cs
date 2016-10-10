@@ -241,7 +241,7 @@ namespace OpenNos.World
 
         public override byte[] Encrypt(string str)
         {
-            byte[] StrBytes = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Default, System.Text.Encoding.UTF8.GetBytes(str));
+            byte[] StrBytes = Encoding.Default.GetBytes(str);
             int BytesLength = StrBytes.Length;
 
             byte[] encryptedData = new byte[BytesLength + (int)Math.Ceiling((decimal)BytesLength / 0x7E) + 1];
