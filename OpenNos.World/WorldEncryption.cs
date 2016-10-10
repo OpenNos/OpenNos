@@ -36,7 +36,6 @@ namespace OpenNos.World
             List<byte> receiveData = new List<byte>();
             char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'n' };
             int count = 0;
-            List<char> returnedchars = new List<char>();
             for (count = 0; count < str.Length; count++)
             {
                 if ((int)str[count] <= 0x7A)
@@ -101,10 +100,9 @@ namespace OpenNos.World
                     }
                 }
             }
-           
-                 receiveData.ForEach(s => returnedchars.Add((char)s));
-            //  receiveData.ForEach(s => returnedstring += Encoding.UTF8.GetChars(s));
-            return new string(returnedchars.ToArray());
+
+
+            return Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, receiveData.ToArray()));
         }
 
         public override string Decrypt(byte[] str, int session_id)
