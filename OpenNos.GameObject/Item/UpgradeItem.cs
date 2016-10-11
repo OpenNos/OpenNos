@@ -25,6 +25,11 @@ namespace OpenNos.GameObject
         {
             if (MappingHelper.GuriItemEffects.ContainsKey(VNum))
             {
+                if (Session.Character.IsSitting)
+                {
+                    Session.Character.IsSitting = false;
+                    Session.SendPacket(Session.Character.GenerateRest());
+                }
                 Session.SendPacket(Session.Character.GenerateGuri(12, 1, MappingHelper.GuriItemEffects[VNum]));
             }
             else
