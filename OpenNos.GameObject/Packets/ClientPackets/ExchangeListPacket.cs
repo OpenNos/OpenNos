@@ -7,7 +7,7 @@ namespace OpenNos.GameObject
     [Header("exc_list")]
     public class ExchangeListPacket
     {
-        //exc_list 1 626114 0 0.2.2296.1.0
+        // exc_list 1 626114 0 0.2.2296.1.0
 
         public long Gold { get; set; }
 

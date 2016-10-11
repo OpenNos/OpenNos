@@ -102,7 +102,6 @@ namespace OpenNos.GameObject
                 case 14:
                     if ((EffectValue == 100 || EffectValue == 200) && Session.Character.Dignity < 100 && !Session.Character.IsVehicled)
                     {
-
                         Session.Character.Dignity += EffectValue;
                         if (Session.Character.Dignity > 100)
                         {

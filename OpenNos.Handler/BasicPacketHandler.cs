@@ -990,7 +990,6 @@ namespace OpenNos.Handler
 
             // sc_p pet sc_n nospartner Session.SendPacket("sc_p_stc 0"); // end pet and partner
             Session.SendPacket("pinit 0"); // clean party list
-      
 
             // blinit
             Session.SendPacket("zzim");

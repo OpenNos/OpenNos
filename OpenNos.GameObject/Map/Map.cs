@@ -381,7 +381,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            //initialize JPS
+            // initialize JPS
             _tempgrid = ConvertToGrid(_grid);
             JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }

@@ -417,7 +417,7 @@ namespace OpenNos.GameObject
                     Logger.Debug($"Remaining {remainingAmount}/{amount}, removing item {inventory.ItemInstance.ItemVNum} from Slot {inventory.Slot} with amount {inventory.ItemInstance.Amount}");
                     if (inventory.ItemInstance.Amount > remainingAmount)
                     {
-                        //amount completely removed
+                        // amount completely removed
                         inventory.ItemInstance.Amount -= (byte)remainingAmount;
                         remainingAmount = 0;
                         Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum,
@@ -426,7 +426,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        //amount partly removed
+                        // amount partly removed
                         remainingAmount -= inventory.ItemInstance.Amount;
                         DeleteByInventoryItemId(inventory.ItemInstance.Id);
                         Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
@@ -434,7 +434,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    //amount to remove reached
+                    // amount to remove reached
                     break;
                 }
             }

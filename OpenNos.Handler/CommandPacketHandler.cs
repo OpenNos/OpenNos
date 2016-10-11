@@ -1629,7 +1629,7 @@ namespace OpenNos.Handler
                     WearableInstance wearableInstance = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(itemslot, 0);
                     if (wearableInstance != null)
                     {
-                        wearableInstance.UpgradeItem(Session, (UpgradeMode)mode, (UpgradeProtection)protection);
+                        wearableInstance.UpgradeItem(Session, (UpgradeMode)mode, (UpgradeProtection)protection, true);
                     }
                 }
             }

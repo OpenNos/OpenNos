@@ -560,7 +560,7 @@ namespace OpenNos.Handler
             // TODO: Add skill uprade effect on damage
             int AEq = Convert.ToInt32(random.Next(MainMinDmg, MainMaxDmg) * (1 + (MainUpgrade > monsterToAttack.Monster.DefenceUpgrade ? Bonus[MainUpgrade - monsterToAttack.Monster.DefenceUpgrade - 1] : 0)));
             int DEq = Convert.ToInt32(monsterDefence * (1 + (MainUpgrade < monsterToAttack.Monster.DefenceUpgrade ? Bonus[monsterToAttack.Monster.DefenceUpgrade - MainUpgrade - 1] : 0)));
-            int ABase = Convert.ToInt32(random.Next(ServersData.MinHit(Session.Character.Class, Session.Character.Level), ServersData.MaxHit(Session.Character.Class, Session.Character.Level)));
+            int ABase = Convert.ToInt32(random.Next(CharacterHelper.MinHit(Session.Character.Class, Session.Character.Level), CharacterHelper.MaxHit(Session.Character.Class, Session.Character.Level)));
             int Aeff = 0;            // Attack of equip given by effects like weapons, jewelry, masks, hats, res, etc .. (eg. X mask: +13 attack // Crossbow
             int Bsp6 = 0;            // Attack power increased (IMPORTANT) This already Added when SP Point has been set
             int Bsp7 = 0;            // Attack power increased (IMPORTANT) This already Added when SP Point has been set

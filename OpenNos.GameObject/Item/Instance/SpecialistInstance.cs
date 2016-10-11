@@ -335,6 +335,8 @@ namespace OpenNos.GameObject
             short dragonSkinVnum = 2511;
             short dragonBloodVnum = 2512;
             short dragonHeartVnum = 2513;
+            short blueScrollVnum = 1363;
+            short redScrollVnum = 1364;
 
             if (this.IsFixed)
             {
@@ -373,6 +375,14 @@ namespace OpenNos.GameObject
                         }
                         Session.Character.InventoryList.RemoveItemAmount(dragonSkinVnum, (soul[this.Upgrade]));
                     }
+                    if (protect == UpgradeProtection.Protected)
+                    {
+                        if (Session.Character.InventoryList.CountItem(blueScrollVnum) < soul[this.Upgrade])
+                        {
+                            return;
+                        }
+                        Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                    }
                 }
                 else
                 {
@@ -399,6 +409,14 @@ namespace OpenNos.GameObject
                             return;
                         }
                         Session.Character.InventoryList.RemoveItemAmount(dragonBloodVnum, (soul[this.Upgrade]));
+                    }
+                    if (protect == UpgradeProtection.Protected)
+                    {
+                        if (Session.Character.InventoryList.CountItem(redScrollVnum) < soul[this.Upgrade])
+                        {
+                            return;
+                        }
+                        Session.Character.InventoryList.RemoveItemAmount(redScrollVnum);
                     }
                 }
                 else
@@ -427,6 +445,14 @@ namespace OpenNos.GameObject
                         }
                         Session.Character.InventoryList.RemoveItemAmount(dragonHeartVnum, (soul[this.Upgrade]));
                     }
+                    if (protect == UpgradeProtection.Protected)
+                    {
+                        if (Session.Character.InventoryList.CountItem(redScrollVnum) < soul[this.Upgrade])
+                        {
+                            return;
+                        }
+                        Session.Character.InventoryList.RemoveItemAmount(redScrollVnum);
+                    }
                 }
                 else
                 {
@@ -435,7 +461,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            //remove feather and fullmoon before upgrading
+            // remove feather and fullmoon before upgrading
             Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[this.Upgrade]));
             Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.Upgrade]));
 

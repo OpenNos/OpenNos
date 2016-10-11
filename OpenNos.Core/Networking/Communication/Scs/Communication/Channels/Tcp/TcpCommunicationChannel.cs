@@ -146,7 +146,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             }
             catch (Exception e)
             {
-                //disconnect
+                // disconnect
             }
         }
 
@@ -166,14 +166,17 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 // Retrieve the socket from the state object.
                 Socket client = (Socket)ar.AsyncState;
 
-                if (!client.Connected) return;
+                if (!client.Connected)
+                {
+                    return;
+                }
 
                 // Complete sending the data to the remote device.
                 int bytesSent = client.EndSend(ar);
             }
             catch (Exception)
             {
-                //disconnect
+                // disconnect
             }
         }
 

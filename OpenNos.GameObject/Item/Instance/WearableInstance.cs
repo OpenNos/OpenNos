@@ -108,7 +108,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void RarifyItem(ClientSession Session, RarifyMode mode, RarifyProtection protection)
+        public void RarifyItem(ClientSession Session, RarifyMode mode, RarifyProtection protection, bool isCommand = false)
         {
             double raren2 = 80;
             double raren1 = 70;
@@ -181,7 +181,7 @@ namespace OpenNos.GameObject
                         return;
                     }
                     Session.Character.InventoryList.RemoveItemAmount(cellaVnum, cella);
-                    if (protection == RarifyProtection.Scroll)
+                    if (protection == RarifyProtection.Scroll && !isCommand)
                     {
                         if (Session.Character.InventoryList.CountItem(scrollVnum) < 1)
                         {
@@ -324,7 +324,7 @@ namespace OpenNos.GameObject
         {
             if (this.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || this.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
             {
-                int point = ServersData.RarityPoint(this.Rare, (this.Item.IsHeroic ? (short)(95 + this.Item.LevelMinimum) : this.Item.LevelMinimum));
+                int point = CharacterHelper.RarityPoint(this.Rare, (this.Item.IsHeroic ? (short)(95 + this.Item.LevelMinimum) : this.Item.LevelMinimum));
                 this.Concentrate = 0;
                 this.HitRate = 0;
                 this.DamageMinimum = 0;
@@ -346,7 +346,7 @@ namespace OpenNos.GameObject
             }
             else if (this.Item.EquipmentSlot == (byte)EquipmentType.Armor)
             {
-                int point = ServersData.RarityPoint(this.Rare, this.Item.LevelMinimum);
+                int point = CharacterHelper.RarityPoint(this.Rare, this.Item.LevelMinimum);
                 this.DefenceDodge = 0;
                 this.DistanceDefenceDodge = 0;
                 this.DistanceDefence = 0;
@@ -420,7 +420,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void UpgradeItem(ClientSession Session, UpgradeMode mode, UpgradeProtection protection)
+        public void UpgradeItem(ClientSession Session, UpgradeMode mode, UpgradeProtection protection, bool isCommand = false)
         {
             if (this.Upgrade < 10)
             {
@@ -433,12 +433,12 @@ namespace OpenNos.GameObject
                 short[] cella = { 20, 50, 80, 120, 160, 220, 280, 380, 480, 600 };
                 short[] gem = { 1, 1, 2, 2, 3, 3, 1, 2, 2, 3 };
 
-                int cellaVnum = 1014;
-                int gemVnum = 1015;
-                int gemFullVnum = 1016;
+                short cellaVnum = 1014;
+                short gemVnum = 1015;
+                short gemFullVnum = 1016;
                 double reducedpricefactor = 0.5;
-                int normalScrollVnum = 1218;
-                int goldScrollVnum = 5369;
+                short normalScrollVnum = 1218;
+                short goldScrollVnum = 5369;
 
                 if (this.IsFixed)
                 {
@@ -480,7 +480,7 @@ namespace OpenNos.GameObject
                             }
                             Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (int)(gem[this.Upgrade] * reducedpricefactor));
                         }
-                        if (protection == UpgradeProtection.Protected)
+                        if (protection == UpgradeProtection.Protected && !isCommand)
                         {
                             if (Session.Character.InventoryList.CountItem(goldScrollVnum) < 1)
                             {
@@ -521,7 +521,7 @@ namespace OpenNos.GameObject
                             }
                             Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (gem[this.Upgrade]));
                         }
-                        if (protection == UpgradeProtection.Protected)
+                        if (protection == UpgradeProtection.Protected && !isCommand)
                         {
                             if (Session.Character.InventoryList.CountItem(normalScrollVnum) < 1)
                             {

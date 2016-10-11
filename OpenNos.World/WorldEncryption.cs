@@ -100,8 +100,6 @@ namespace OpenNos.World
                     }
                 }
             }
-
-
             return Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, receiveData.ToArray()));
         }
 
@@ -156,7 +154,6 @@ namespace OpenNos.World
                     break;
             }
 
-
             string[] temp = encrypted_string.Split((char)0xFF);
             string save = "";
 
@@ -164,7 +161,9 @@ namespace OpenNos.World
             {
                 save += Decrypt2(temp[i]);
                 if (i < temp.Length - 2)
+                {
                     save += (char)0xFF;
+                }
             }
 
             return save;
