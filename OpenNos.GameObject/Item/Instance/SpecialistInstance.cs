@@ -377,11 +377,12 @@ namespace OpenNos.GameObject
                     }
                     if (protect == UpgradeProtection.Protected)
                     {
-                        if (Session.Character.InventoryList.CountItem(blueScrollVnum) < soul[this.Upgrade])
+                        if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
                         {
                             return;
                         }
                         Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                        Session.SendPacket("shop_end 2");
                     }
                 }
                 else
@@ -412,11 +413,12 @@ namespace OpenNos.GameObject
                     }
                     if (protect == UpgradeProtection.Protected)
                     {
-                        if (Session.Character.InventoryList.CountItem(redScrollVnum) < soul[this.Upgrade])
+                        if (Session.Character.InventoryList.CountItem(redScrollVnum) < 1)
                         {
                             return;
                         }
                         Session.Character.InventoryList.RemoveItemAmount(redScrollVnum);
+                        Session.SendPacket("shop_end 2");
                     }
                 }
                 else
@@ -447,11 +449,12 @@ namespace OpenNos.GameObject
                     }
                     if (protect == UpgradeProtection.Protected)
                     {
-                        if (Session.Character.InventoryList.CountItem(redScrollVnum) < soul[this.Upgrade])
+                        if (Session.Character.InventoryList.CountItem(redScrollVnum) < 1)
                         {
                             return;
                         }
                         Session.Character.InventoryList.RemoveItemAmount(redScrollVnum);
+                        Session.SendPacket("shop_end 2");
                     }
                 }
                 else
