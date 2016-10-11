@@ -263,7 +263,7 @@ namespace OpenNos.Handler
                         }
                         message.Trim();
 
-                        Session.Character.InventoryList.RemoveItemAmount(speakerVNum, 1);
+                        Session.Character.InventoryList.RemoveItemAmount(speakerVNum);
                         ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }
                 }
@@ -309,7 +309,7 @@ namespace OpenNos.Handler
                             specialistInstance.HP = 0;
                             specialistInstance.MP = 0;
 
-                            Session.Character.InventoryList.RemoveItemAmount(vnumToUse, 1);
+                            Session.Character.InventoryList.RemoveItemAmount(vnumToUse);
                             Session.Character.EquipmentList.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Equipment);
                             Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Equipment, (byte)EquipmentType.Sp);
                             Session.SendPacket(Session.Character.GenerateCond());

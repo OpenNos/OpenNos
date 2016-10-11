@@ -2032,6 +2032,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
             Session.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
             ServerManager.GetMap(MapId).Broadcast(GenerateEff(3005), MapX, MapY);
+            Session.SendPacket("shop_end 1");
         }
 
         public void RefreshMail()
@@ -2280,7 +2281,7 @@ namespace OpenNos.GameObject
                                         return false;
                                     }
 
-                                    InventoryList.RemoveItemAmount(2081, 1);
+                                    InventoryList.RemoveItemAmount(2081);
                                     inv.Ammo = 100;
                                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ADVENTURER"), 10));
                                     return true;
@@ -2312,7 +2313,7 @@ namespace OpenNos.GameObject
                                         return false;
                                     }
 
-                                    InventoryList.RemoveItemAmount(2082, 1);
+                                    InventoryList.RemoveItemAmount(2082);
                                     inv.Ammo = 100;
                                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_SWORDSMAN"), 10));
                                     return true;
@@ -2344,7 +2345,7 @@ namespace OpenNos.GameObject
                                         return false;
                                     }
 
-                                    InventoryList.RemoveItemAmount(2083, 1);
+                                    InventoryList.RemoveItemAmount(2083);
                                     inv.Ammo = 100;
                                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ARCHER"), 10));
                                     return true;

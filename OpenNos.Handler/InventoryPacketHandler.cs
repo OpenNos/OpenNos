@@ -1252,6 +1252,47 @@ namespace OpenNos.Handler
                         }
                         break;
 
+                    case 20:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
+                        if (inventory != null)
+                        {
+                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            {
+                                inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.Protected);
+                            }
+                        }
+                        break;
+
+                    case 21:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
+                        if (inventory != null)
+                        {
+                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            {
+                                inventory.RarifyItem(Session, RarifyMode.Normal, RarifyProtection.Scroll);
+                            }
+                        }
+                        break;
+
+                    //case 25:
+                    //    specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, inventoryType);
+                    //    if (specialist != null)
+                    //    {
+                    //        if (specialist.Rare != -2)
+                    //        {
+                    //            if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
+                    //            {
+                    //                specialist.UpgradeSp(Session, UpgradeProtection.Protected);
+                    //                Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, inventoryType, slot, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                    //            }
+                    //        }
+                    //        else
+                    //        {
+                    //            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                    //        }
+                    //    }
+                    //    break;
+
                     case 41:
                         specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, inventoryType);
                         if (specialist != null)
@@ -1267,6 +1308,17 @@ namespace OpenNos.Handler
                             else
                             {
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                            }
+                        }
+                        break;
+
+                    case 43:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
+                        if (inventory != null)
+                        {
+                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            {
+                                inventory.UpgradeItem(Session, UpgradeMode.Reduced, UpgradeProtection.Protected);
                             }
                         }
                         break;

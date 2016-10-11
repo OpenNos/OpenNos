@@ -25,6 +25,39 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
+                case 0:
+                    switch (VNum)
+                    {
+                        case 1218:
+                            Session.SendPacket(Session.Character.GenerateGuri(12, 1, 26));
+                            break;
+
+                        case 1363:
+                            Session.SendPacket(Session.Character.GenerateGuri(12, 1, 27));
+                            break;
+
+                        case 1364:
+                            Session.SendPacket(Session.Character.GenerateGuri(12, 1, 28));
+                            break;
+
+                        case 5107:
+                            Session.SendPacket(Session.Character.GenerateGuri(12, 1, 47));
+                            break;
+
+                        case 5207:
+                            Session.SendPacket(Session.Character.GenerateGuri(12, 1, 50));
+                            break;
+
+                        case 5519:
+                            Session.SendPacket(Session.Character.GenerateGuri(12, 1, 60));
+                            break;
+
+                        case 5369:
+                            Session.SendPacket(Session.Character.GenerateGuri(12, 1, 61));
+                            break;
+                    }
+                    break;
+
                 default:
                     Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
                     break;

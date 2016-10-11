@@ -129,7 +129,8 @@ namespace OpenNos.GameObject
             double reducedpricefactor = 0.5;
 
             byte cella = 5;
-            int cellavnum = 1014;
+            int cellaVnum = 1014;
+            int scrollVnum = 1218;
 
             if (protection == RarifyProtection.RedAmulet)
             {
@@ -159,11 +160,11 @@ namespace OpenNos.GameObject
                         return;
                     }
                     Session.Character.Gold = Session.Character.Gold - (long)(goldprice * reducedpricefactor);
-                    if (Session.Character.InventoryList.CountItem(cellavnum) < cella * reducedpricefactor)
+                    if (Session.Character.InventoryList.CountItem(cellaVnum) < cella * reducedpricefactor)
                     {
                         return;
                     }
-                    Session.Character.InventoryList.RemoveItemAmount(cellavnum, (int)(cella * reducedpricefactor));
+                    Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (int)(cella * reducedpricefactor));
                     Session.SendPacket(Session.Character.GenerateGold());
                     break;
 
@@ -175,11 +176,20 @@ namespace OpenNos.GameObject
                         return;
                     }
                     Session.Character.Gold = Session.Character.Gold - goldprice;
-                    if (Session.Character.InventoryList.CountItem(cellavnum) < cella)
+                    if (Session.Character.InventoryList.CountItem(cellaVnum) < cella)
                     {
                         return;
                     }
-                    Session.Character.InventoryList.RemoveItemAmount(cellavnum, cella);
+                    Session.Character.InventoryList.RemoveItemAmount(cellaVnum, cella);
+                    if (protection == RarifyProtection.Scroll)
+                    {
+                        if (Session.Character.InventoryList.CountItem(scrollVnum) < 1)
+                        {
+                            return;
+                        }
+                        Session.Character.InventoryList.RemoveItemAmount(scrollVnum);
+                        Session.SendPacket("shop_end 2");
+                    }
                     Session.SendPacket(Session.Character.GenerateGold());
                     break;
             }
@@ -427,6 +437,8 @@ namespace OpenNos.GameObject
                 int gemVnum = 1015;
                 int gemFullVnum = 1016;
                 double reducedpricefactor = 0.5;
+                int normalScrollVnum = 1218;
+                int goldScrollVnum = 5369;
 
                 if (this.IsFixed)
                 {
@@ -468,6 +480,15 @@ namespace OpenNos.GameObject
                             }
                             Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (int)(gem[this.Upgrade] * reducedpricefactor));
                         }
+                        if (protection == UpgradeProtection.Protected)
+                        {
+                            if (Session.Character.InventoryList.CountItem(goldScrollVnum) < 1)
+                            {
+                                return;
+                            }
+                            Session.Character.InventoryList.RemoveItemAmount(goldScrollVnum);
+                            Session.SendPacket("shop_end 2");
+                        }
                         Session.SendPacket(Session.Character.GenerateGold());
                         break;
 
@@ -499,6 +520,15 @@ namespace OpenNos.GameObject
                                 return;
                             }
                             Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (gem[this.Upgrade]));
+                        }
+                        if (protection == UpgradeProtection.Protected)
+                        {
+                            if (Session.Character.InventoryList.CountItem(normalScrollVnum) < 1)
+                            {
+                                return;
+                            }
+                            Session.Character.InventoryList.RemoveItemAmount(normalScrollVnum);
+                            Session.SendPacket("shop_end 2");
                         }
                         Session.SendPacket(Session.Character.GenerateGold());
                         break;

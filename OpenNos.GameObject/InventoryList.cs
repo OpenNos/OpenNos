@@ -405,7 +405,7 @@ namespace OpenNos.GameObject
             return droppedItem;
         }
 
-        public void RemoveItemAmount(int vnum, int amount)
+        public void RemoveItemAmount(int vnum, int amount = 1)
         {
             Logger.Debug($"vnum: {vnum} amount: {amount}", Owner.Session.SessionId);
             int remainingAmount = amount;
