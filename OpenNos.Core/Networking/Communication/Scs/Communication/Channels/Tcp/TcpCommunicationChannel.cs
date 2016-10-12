@@ -16,8 +16,12 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 {
@@ -38,13 +42,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// </summary>
         private readonly byte[] _buffer;
 
-        // 4KB
-
         /// <summary>
         /// Socket object to send/reveice messages.
         /// </summary>
         private readonly Socket _clientSocket;
 
+        // 4KB
         private readonly ScsTcpEndPoint _remoteEndPoint;
 
         /// <summary>
@@ -56,6 +59,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// A flag to control thread's running
         /// </summary>
         private volatile bool _running;
+
+        private ConcurrentQueue<byte[]> _sendBuffer;
+
+        private Task _sendTask;
 
         #endregion
 
@@ -77,6 +84,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
             _buffer = new byte[ReceiveBufferSize];
             _syncLock = new object();
+
+            _sendBuffer = new ConcurrentQueue<byte[]>();
+            _sendTask = Task.Factory.StartNew(SendInterval);
         }
 
         #endregion
@@ -117,6 +127,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 }
 
                 _clientSocket.Dispose();
+                _sendTask.Dispose();
             }
             catch
             {
@@ -126,28 +137,53 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             OnDisconnected();
         }
 
+        public void SendInterval()
+        {
+            while (true)
+            {
+                try
+                {
+                    if (WireProtocol != null && _sendBuffer.Count > 0)
+                    {
+                        IEnumerable<byte> outgoingPacket = new List<byte>();
+                        int packetCount = 0;
+                        for (int i = 0; i < 30; i++)
+                        {
+                            byte[] message;
+                            if (_sendBuffer.TryDequeue(out message) && message != null)
+                            {
+                                outgoingPacket = outgoingPacket.Concat(message);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                            packetCount++;
+                        }
+
+                        _clientSocket.BeginSend(outgoingPacket.ToArray(), 0, outgoingPacket.Count(), SocketFlags.None,
+                        new AsyncCallback(SendCallback), _clientSocket);
+                    }
+                }
+                catch (Exception e)
+                {
+                    //disconnect
+                }
+
+                if (!_clientSocket.Connected)
+                {
+                    return;
+                }
+            }
+        }
+
         /// <summary>
         /// Sends a message to the remote application.
         /// </summary>
         /// <param name="message">Message to be sent</param>
         protected override void SendMessagepublic(IScsMessage message)
         {
-            try
-            {
-                if (_clientSocket.Connected)
-                {
-                    // Create a byte array from message according to current protocol
-                    var messageBytes = WireProtocol.GetBytes(message);
-
-                    // Begin sending the data to the remote device.
-                    _clientSocket.BeginSend(messageBytes, 0, messageBytes.Length, SocketFlags.None,
-                        new AsyncCallback(SendCallback), _clientSocket);
-                }
-            }
-            catch (Exception e)
-            {
-                //disconnect
-            }
+            _sendBuffer.Enqueue(WireProtocol.GetBytes(message));
         }
 
         /// <summary>
