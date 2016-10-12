@@ -744,7 +744,7 @@ namespace OpenNos.GameObject
                 session.Character.Mp = 1;
                 ChangeMap(session.Character.CharacterId);
                 session.CurrentMap?.Broadcast(session, session.Character.GenerateTp(), ReceiverType.All);
-                session.CurrentMap?.Broadcast(session, session.Character.GenerateRevive(), ReceiverType.All);
+                session.CurrentMap?.Broadcast(session.Character.GenerateRevive(), 200);
                 session.SendPacket(session.Character.GenerateStat());
             }
         }
