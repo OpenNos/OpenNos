@@ -293,7 +293,7 @@ namespace OpenNos.GameObject
 
         public int GetNextMonsterId()
         {
-            int nextId = _mapMonsterIds.Max() + 1;
+            int nextId = _mapMonsterIds.DefaultIfEmpty().Max() + 1;
             _mapMonsterIds.Add(nextId);
             return nextId;
         }
@@ -381,7 +381,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            //initialize JPS
+            // initialize JPS
             _tempgrid = ConvertToGrid(_grid);
             JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }

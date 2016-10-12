@@ -23,14 +23,21 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false)
         {
-            switch (Effect)
+            if (EffectValue != 0)
             {
-                default:
-                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
-                    break;
+                if (Session.Character.IsSitting)
+                {
+                    Session.Character.IsSitting = false;
+                    Session.SendPacket(Session.Character.GenerateRest());
+                }
+                Session.SendPacket(Session.Character.GenerateGuri(12, 1, EffectValue));
+            }
+            else
+            {
+                Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
             }
         }
-
-        #endregion
     }
+
+    #endregion
 }

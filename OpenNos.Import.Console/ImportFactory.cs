@@ -720,7 +720,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EXP")
                     {
-                        npc.XP = Convert.ToInt32(currentLine[2]) + basicXp[npc.Level];
+                        npc.XP = Math.Abs(Convert.ToInt32(currentLine[2]) + basicXp[npc.Level]);
                         npc.JobXP = Convert.ToInt32(currentLine[3]) + basicJXp[npc.Level];
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "PREATT")
@@ -1036,13 +1036,15 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2806, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 2807, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = (short)MapTypeEnum.Act61 });
 
-            // drops.Add(new DropDTO { ItemVNum = 2815, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 9 }); //Only for angel camp need group act6.1 angel
+            // drops.Add(new DropDTO { ItemVNum = 2815, Amount = 1, MonsterVNum = null, DropChance =
+            // 450, MapTypeId = 9 }); //Only for angel camp need group act6.1 angel
             drops.Add(new DropDTO { ItemVNum = 2816, Amount = 1, MonsterVNum = null, DropChance = 350, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 2818, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 2819, Amount = 1, MonsterVNum = null, DropChance = 350, MapTypeId = (short)MapTypeEnum.Act61 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act61 });
 
-            // drops.Add(new DropDTO { ItemVNum = 5881, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 10 }); //Only for demon camp need group act6.1 demon
+            // drops.Add(new DropDTO { ItemVNum = 5881, Amount = 1, MonsterVNum = null, DropChance =
+            // 450, MapTypeId = 10 }); //Only for demon camp need group act6.1 demon
 
             // Act6.2 (need some information) > soon )
 
@@ -1259,8 +1261,7 @@ namespace OpenNos.Import.Console
                 listPortals2.Add(portal);
             }
 
-            // foreach portal in the new list of Portals
-            // where none (=> !Any()) are found in the existing
+            // foreach portal in the new list of Portals where none (=> !Any()) are found in the existing
             int portalCounter = listPortals2.Count(portal => !DAOFactory.PortalDAO.LoadByMap(portal.SourceMapId).Any(
                 s => s.DestinationMapId == portal.DestinationMapId && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY));
 
@@ -1691,8 +1692,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "TARGET")
                     {
-                        // 1&2 used as type
-                        // third unknown
+                        // 1&2 used as type third unknown
                         skill.TargetType = byte.Parse(currentLine[2]);
                         skill.HitType = byte.Parse(currentLine[3]);
                         skill.TargetRange = byte.Parse(currentLine[5]);
@@ -1792,10 +1792,10 @@ namespace OpenNos.Import.Console
                             case "1":
                                 skill.ElementalDamage = short.Parse(currentLine[5]); // Divide by 4(?)
 
-                                // skill.Unknown = short.Parse(currentLine[2]);
-                                // skill.Unknown = short.Parse(currentLine[3]);
+                                // skill.Unknown =cskill.Unknown = short.Parse(currentLine[2]);
+                                // skill.Unknown = short.Parse(currentLine[3]); 
                                 // skill.Unknown = short.Parse(currentLine[4]);
-                                // skill.Unknown = short.Parse(currentLine[6]);
+                                // skill.Unknown = short.Parse(currentLine[6]); 
                                 // skill.Unknown = short.Parse(currentLine[7]);
                                 break;
 
@@ -1993,21 +1993,25 @@ namespace OpenNos.Import.Console
                         switch (Convert.ToByte(currentLine[2]))
                         {
                             case 4:
-                                item.Type = (InventoryType)0; 
+                                item.Type = (InventoryType)0;
                                 break;
+
                             case 8:
                                 item.Type = (InventoryType)0;
                                 break;
+
                             case 9:
                                 item.Type = (InventoryType)1;
                                 break;
+
                             case 10:
                                 item.Type = (InventoryType)2;
                                 break;
+
                             default:
                                 item.Type = (InventoryType)Convert.ToByte(currentLine[2]);
                                 break;
-                    }
+                        }
                         item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{(byte)item.Type}{currentLine[3]}") : (byte)0;
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
@@ -2303,9 +2307,10 @@ namespace OpenNos.Import.Console
                                     {
                                         item.ItemValidTime = 10800;
                                     }
-                                    else if ((item.VNum > 4045 && item.VNum < 4056) || item.VNum == 967 || item.VNum == 968) 
+                                    else if ((item.VNum > 4045 && item.VNum < 4056) || item.VNum == 967 || item.VNum == 968)
                                     {
-                                        // (item.VNum > 8104 && item.VNum < 8115) <= disaled for now because doesn't work!
+                                        // (item.VNum > 8104 && item.VNum < 8115) <= disaled for now
+                                        // because doesn't work!
                                         item.ItemValidTime = 3600;
                                     }
                                     else
@@ -2367,6 +2372,136 @@ namespace OpenNos.Import.Console
                                 }
                                 break;
 
+                            case (byte)ItemType.Event:
+                                switch (item.VNum)
+                                {
+                                    case 1332:
+                                        item.EffectValue = 5108;
+                                        break;
+
+                                    case 1333:
+                                        item.EffectValue = 5109;
+                                        break;
+
+                                    case 1334:
+                                        item.EffectValue = 5111;
+                                        break;
+
+                                    case 1335:
+                                        item.EffectValue = 5107;
+                                        break;
+
+                                    case 1336:
+                                        item.EffectValue = 5106;
+                                        break;
+
+                                    case 1337:
+                                        item.EffectValue = 5110;
+                                        break;
+
+                                    case 1339:
+                                        item.EffectValue = 5114;
+                                        break;
+
+                                    case 9031:
+                                        item.EffectValue = 5108;
+                                        break;
+
+                                    case 9032:
+                                        item.EffectValue = 5109;
+                                        break;
+
+                                    case 9033:
+                                        item.EffectValue = 5011;
+                                        break;
+
+                                    case 9034:
+                                        item.EffectValue = 5107;
+                                        break;
+
+                                    case 9035:
+                                        item.EffectValue = 5106;
+                                        break;
+
+                                    case 9036:
+                                        item.EffectValue = 5110;
+                                        break;
+
+                                    case 9038:
+                                        item.EffectValue = 5114;
+                                        break;
+
+                                    // EffectItems aka. fireworks
+                                    case 1581:
+                                        item.EffectValue = 860;
+                                        break;
+
+                                    case 1582:
+                                        item.EffectValue = 861;
+                                        break;
+
+                                    case 1585:
+                                        item.EffectValue = 859;
+                                        break;
+
+                                    case 1983:
+                                        item.EffectValue = 875;
+                                        break;
+
+                                    case 1984:
+                                        item.EffectValue = 876;
+                                        break;
+
+                                    case 1985:
+                                        item.EffectValue = 877;
+                                        break;
+
+                                    case 1986:
+                                        item.EffectValue = 878;
+                                        break;
+
+                                    case 1987:
+                                        item.EffectValue = 879;
+                                        break;
+
+                                    case 1988:
+                                        item.EffectValue = 880;
+                                        break;
+
+                                    case 9044:
+                                        item.EffectValue = 859;
+                                        break;
+
+                                    case 9059:
+                                        item.EffectValue = 875;
+                                        break;
+
+                                    case 9060:
+                                        item.EffectValue = 876;
+                                        break;
+
+                                    case 9061:
+                                        item.EffectValue = 877;
+                                        break;
+
+                                    case 9062:
+                                        item.EffectValue = 878;
+                                        break;
+
+                                    case 9063:
+                                        item.EffectValue = 879;
+                                        break;
+
+                                    case 9064:
+                                        item.EffectValue = 880;
+                                        break;
+
+                                    default:
+                                        item.EffectValue = Convert.ToInt16(currentLine[7]);
+                                        break;
+                                }
+                                break;
+
                             case (byte)ItemType.Special:
                                 switch (item.VNum)
                                 {
@@ -2406,7 +2541,7 @@ namespace OpenNos.Import.Console
                                 item.Speed = Convert.ToByte(currentLine[5]);
                                 item.SpType = Convert.ToByte(currentLine[13]);
 
-                                // item.Morph = Convert.ToInt16(currentLine[14]) + 1; // idk whats that, its useless
+                                // item.Morph = Convert.ToInt16(currentLine[14]) + 1;
                                 item.FireResistance = Convert.ToByte(currentLine[15]);
                                 item.WaterResistance = Convert.ToByte(currentLine[16]);
                                 item.LightResistance = Convert.ToByte(currentLine[17]);
@@ -2473,7 +2608,41 @@ namespace OpenNos.Import.Console
 
                             case (byte)ItemType.Upgrade:
                                 item.Effect = Convert.ToInt16(currentLine[2]);
-                                item.EffectValue = Convert.ToInt32(currentLine[4]);
+                                switch (item.VNum)
+                                {
+                                    // UpgradeItems (needed to be hardcoded)
+                                    case 1218:
+                                        item.EffectValue = 26;
+                                        break;
+
+                                    case 1363:
+                                        item.EffectValue = 27;
+                                        break;
+
+                                    case 1364:
+                                        item.EffectValue = 28;
+                                        break;
+
+                                    case 5107:
+                                        item.EffectValue = 47;
+                                        break;
+
+                                    case 5207:
+                                        item.EffectValue = 50;
+                                        break;
+
+                                    case 5369:
+                                        item.EffectValue = 61;
+                                        break;
+
+                                    case 5519:
+                                        item.EffectValue = 60;
+                                        break;
+
+                                    default:
+                                        item.EffectValue = Convert.ToInt32(currentLine[4]);
+                                        break;
+                                }
                                 break;
 
                             case (byte)ItemType.Production:
@@ -2500,8 +2669,7 @@ namespace OpenNos.Import.Console
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
 
-                                // item.PetLoyality = Convert.ToInt16(linesave[4]);
-                                // item.PetFood = Convert.ToInt16(linesave[7]);
+                                // item.PetLoyality = Convert.ToInt16(linesave[4]); item.PetFood = Convert.ToInt16(linesave[7]);
                                 break;
 
                             case (byte)ItemType.Part:
@@ -2527,11 +2695,6 @@ namespace OpenNos.Import.Console
                             case (byte)ItemType.Ammo:
 
                                 // nothing to parse
-                                break;
-
-                            case (byte)ItemType.Event:
-                                item.Effect = Convert.ToInt16(currentLine[2]);
-                                item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
                         }
                         if ((item.EquipmentSlot == (byte)EquipmentType.Boots || item.EquipmentSlot == (byte)EquipmentType.Gloves) && item.Type == 0)

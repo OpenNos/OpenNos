@@ -36,7 +36,6 @@ namespace OpenNos.World
             List<byte> receiveData = new List<byte>();
             char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'n' };
             int count = 0;
-            string returnedstring = string.Empty;
             for (count = 0; count < str.Length; count++)
             {
                 if ((int)str[count] <= 0x7A)
@@ -101,8 +100,7 @@ namespace OpenNos.World
                     }
                 }
             }
-            receiveData.ForEach(s => returnedstring += Convert.ToChar(s));
-            return returnedstring;
+            return Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, receiveData.ToArray()));
         }
 
         public override string Decrypt(byte[] str, int session_id)
@@ -156,7 +154,6 @@ namespace OpenNos.World
                     break;
             }
 
-
             string[] temp = encrypted_string.Split((char)0xFF);
             string save = "";
 
@@ -164,7 +161,9 @@ namespace OpenNos.World
             {
                 save += Decrypt2(temp[i]);
                 if (i < temp.Length - 2)
+                {
                     save += (char)0xFF;
+                }
             }
 
             return save;
@@ -241,7 +240,7 @@ namespace OpenNos.World
 
         public override byte[] Encrypt(string str)
         {
-            byte[] StrBytes = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Default, System.Text.Encoding.UTF8.GetBytes(str));
+            byte[] StrBytes = Encoding.Default.GetBytes(str);
             int BytesLength = StrBytes.Length;
 
             byte[] encryptedData = new byte[BytesLength + (int)Math.Ceiling((decimal)BytesLength / 0x7E) + 1];

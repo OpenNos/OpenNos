@@ -127,12 +127,11 @@ namespace OpenNos.Handler
                     if (packetsplit[2] == "4")
                     {
                         Inventory newInv = Session.Character.InventoryList.AddNewItemToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
+
                         if (newInv != null)
                         {
-                            if ((newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Armor || (newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Weapon || (newInv.ItemInstance as ItemInstance).Item.ItemType == (byte)ItemType.Shell)
-                            {
-                                (newInv.ItemInstance as WearableInstance).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
-                            }
+                            newInv.ItemInstance.Upgrade = mail.AttachmentUpgrade;
+                            newInv.ItemInstance.Rare = (sbyte)mail.AttachmentRarity;
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newInv.ItemInstance.Rare, newInv.ItemInstance.Design, newInv.ItemInstance.Upgrade, 0));
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {mail.AttachmentAmount}", 12));
 
@@ -264,7 +263,7 @@ namespace OpenNos.Handler
                         }
                         message.Trim();
 
-                        Session.Character.InventoryList.RemoveItemAmount(speakerVNum, 1);
+                        Session.Character.InventoryList.RemoveItemAmount(speakerVNum);
                         ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }
                 }
@@ -310,7 +309,7 @@ namespace OpenNos.Handler
                             specialistInstance.HP = 0;
                             specialistInstance.MP = 0;
 
-                            Session.Character.InventoryList.RemoveItemAmount(vnumToUse, 1);
+                            Session.Character.InventoryList.RemoveItemAmount(vnumToUse);
                             Session.Character.EquipmentList.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Equipment);
                             Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Equipment, (byte)EquipmentType.Sp);
                             Session.SendPacket(Session.Character.GenerateCond());
@@ -991,7 +990,6 @@ namespace OpenNos.Handler
 
             // sc_p pet sc_n nospartner Session.SendPacket("sc_p_stc 0"); // end pet and partner
             Session.SendPacket("pinit 0"); // clean party list
-            Session.Character.DeleteTimeout();
 
             // blinit
             Session.SendPacket("zzim");
@@ -1034,6 +1032,7 @@ namespace OpenNos.Handler
             Session.SendPacket("p_clear");
             Session.Character.RefreshMail();
             Session.Character.LoadSendedMail();
+            Session.Character.DeleteTimeout();
         }
 
         [Packet("#pjoin")]
@@ -1100,11 +1099,11 @@ namespace OpenNos.Handler
                         // set back reference to group
                         Session.Character.Group = group;
                         ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
-                        if(session != null && session.Character != null)
+                        if (session != null && session.Character != null)
                         {
                             ClientSession loadedSession = ServerManager.Instance.GetSessionByCharacterId(charId);
 
-                            if(loadedSession != null)
+                            if (loadedSession != null)
                             {
                                 loadedSession.Character.Group = group;
                             }

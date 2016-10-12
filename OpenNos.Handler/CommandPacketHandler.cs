@@ -404,8 +404,8 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Gift VNUM AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME(*) VNUM AMOUNT", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Gift VNUM AMOUNT RARE UPGRADE", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME(*) VNUM AMOUNT RARE UPGRADE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
@@ -565,21 +565,23 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte amount;
-            short vnum;
-            if (packetsplit.Length > 3)
+            short vnum = -1;
+            sbyte Rare = 0;
+            byte Upgrade =0;
+            if (packetsplit.Length > 5)
             {
-                if (packetsplit.Length == 4)
+                if (packetsplit.Length == 6)
                 {
-                    if (!(byte.TryParse(packetsplit[3], out amount) && short.TryParse(packetsplit[2], out vnum)))
+                    if (!(byte.TryParse(packetsplit[3], out amount) && short.TryParse(packetsplit[2], out vnum) && sbyte.TryParse(packetsplit[4], out Rare) && byte.TryParse(packetsplit[5], out Upgrade)))
                     {
                         return;
                     }
-                    Session.Character.SendGift(Session.Character.CharacterId, vnum, amount, false);
+                    Session.Character.SendGift(Session.Character.CharacterId, vnum, amount,Rare,Upgrade, false);
                 }
-                else
+                else if (packetsplit.Length == 7)
                 {
                     string name = packetsplit[2];
-                    if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum)))
+                    if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum)) && sbyte.TryParse(packetsplit[5], out Rare) && byte.TryParse(packetsplit[6], out Upgrade))
                     {
                         return;
                     }
@@ -587,7 +589,7 @@ namespace OpenNos.Handler
                     {
                         foreach (ClientSession session in Session.CurrentMap.Sessions)
                         {
-                            Session.Character.SendGift((session.Character.CharacterId), vnum, amount, false);
+                            Session.Character.SendGift((session.Character.CharacterId), vnum, amount, Rare, Upgrade, false);
                         }
                     }
                     else
@@ -596,7 +598,7 @@ namespace OpenNos.Handler
 
                         if (chara != null)
                         {
-                            Session.Character.SendGift((chara.CharacterId), vnum, amount, false);
+                            Session.Character.SendGift((chara.CharacterId), vnum, amount, Rare, Upgrade, false);
                         }
                         else
                         {
@@ -609,7 +611,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME VNUM AMOUNT", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME VNUM AMOUNT RARE UPGRADE", 10));
             }
         }
 
@@ -1627,7 +1629,7 @@ namespace OpenNos.Handler
                     WearableInstance wearableInstance = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(itemslot, 0);
                     if (wearableInstance != null)
                     {
-                        wearableInstance.UpgradeItem(Session, (UpgradeMode)mode, (UpgradeProtection)protection);
+                        wearableInstance.UpgradeItem(Session, (UpgradeMode)mode, (UpgradeProtection)protection, true);
                     }
                 }
             }

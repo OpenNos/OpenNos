@@ -17,7 +17,7 @@ using System;
 
 namespace OpenNos.GameObject
 {
-    public class ServersData
+    public class CharacterHelper
     {
         #region Members
 
@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        private ServersData()
+        private CharacterHelper()
         {
             LoadSpeedData();
             LoadJobXpData();
@@ -85,7 +85,7 @@ namespace OpenNos.GameObject
             {
                 if (firstjobxpData == null)
                 {
-                    new ServersData();
+                    new CharacterHelper();
                 }
                 return firstjobxpData;
             }
@@ -97,7 +97,7 @@ namespace OpenNos.GameObject
             {
                 if (HP == null)
                 {
-                    new ServersData();
+                    new CharacterHelper();
                 }
                 return HP;
             }
@@ -109,7 +109,7 @@ namespace OpenNos.GameObject
             {
                 if (hpHealth == null)
                 {
-                    new ServersData();
+                    new CharacterHelper();
                 }
                 return hpHealth;
             }
@@ -121,7 +121,7 @@ namespace OpenNos.GameObject
             {
                 if (hpHealthStand == null)
                 {
-                    new ServersData();
+                    new CharacterHelper();
                 }
                 return hpHealthStand;
             }
@@ -133,7 +133,7 @@ namespace OpenNos.GameObject
             {
                 if (MP == null)
                 {
-                    new ServersData();
+                    new CharacterHelper();
                 }
                 return MP;
             }
@@ -145,7 +145,7 @@ namespace OpenNos.GameObject
             {
                 if (mpHealth == null)
                 {
-                    new ServersData();
+                    new CharacterHelper();
                 }
                 return mpHealth;
             }
@@ -157,7 +157,7 @@ namespace OpenNos.GameObject
             {
                 if (mpHealthStand == null)
                 {
-                    new ServersData();
+                    new CharacterHelper();
                 }
                 return mpHealthStand;
             }
@@ -169,7 +169,7 @@ namespace OpenNos.GameObject
             {
                 if (secondjobxpData == null)
                 {
-                    new ServersData();
+                    new CharacterHelper();
                 }
                 return secondjobxpData;
             }
@@ -181,7 +181,7 @@ namespace OpenNos.GameObject
             {
                 if (speedData == null)
                 {
-                    new ServersData();
+                    new CharacterHelper();
                 }
                 return speedData;
             }
@@ -193,7 +193,7 @@ namespace OpenNos.GameObject
             {
                 if (spxpData == null)
                 {
-                    new ServersData();
+                    new CharacterHelper();
                 }
                 return spxpData;
             }
@@ -205,7 +205,7 @@ namespace OpenNos.GameObject
             {
                 if (xpData == null)
                 {
-                    new ServersData();
+                    new CharacterHelper();
                 }
                 return xpData;
             }

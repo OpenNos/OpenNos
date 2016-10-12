@@ -26,6 +26,29 @@ namespace OpenNos.GameObject
             Random random = new Random();
             switch (Effect)
             {
+                // airwaves - eventitems
+                case 0:
+                    if (this != null && this.ItemType == (byte)Domain.ItemType.Event)
+                    {
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(EffectValue));
+                        if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))
+                        {
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(19, 1, MappingHelper.GuriItemEffects[EffectValue]));
+                        }
+
+                        Inv.ItemInstance.Amount--;
+                        if (Inv.ItemInstance.Amount > 0)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        }
+                        else
+                        {
+                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        }
+                    }
+                    break;
+
                 // dyes
                 case 10:
                     if (this != null && !Session.Character.IsVehicled)
@@ -80,33 +103,45 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                // dignity restoration
                 case 14:
-                    switch (this.VNum)
+                    if ((EffectValue == 100 || EffectValue == 200) && Session.Character.Dignity < 100 && !Session.Character.IsVehicled)
                     {
-                        // It's not good we need to parse it. Asap
-                        case 2156:
-                            if (Session.Character.Dignity < 100 && !Session.Character.IsVehicled)
-                            {
-                                Session.Character.Dignity += 100;
-                                if (Session.Character.Dignity > 100)
-                                {
-                                    Session.Character.Dignity = 100;
-                                }
-                                Session.SendPacket(Session.Character.GenerateFd());
-                                Session.SendPacket(Session.Character.GenerateEff(48));
-                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                                Inv.ItemInstance.Amount--;
-                                if (Inv.ItemInstance.Amount > 0)
-                                {
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                                }
-                                else
-                                {
-                                    Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                                }
-                            }
-                            break;
+                        Session.Character.Dignity += EffectValue;
+                        if (Session.Character.Dignity > 100)
+                        {
+                            Session.Character.Dignity = 100;
+                        }
+                        Session.SendPacket(Session.Character.GenerateFd());
+                        Session.SendPacket(Session.Character.GenerateEff(48));
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        Inv.ItemInstance.Amount--;
+                        if (Inv.ItemInstance.Amount > 0)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        }
+                        else
+                        {
+                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        }
+                    }
+                    else if (EffectValue == 2000 && Session.Character.Dignity < 100 && !Session.Character.IsVehicled)
+                    {
+                        Session.Character.Dignity = 100;
+                        Session.SendPacket(Session.Character.GenerateFd());
+                        Session.SendPacket(Session.Character.GenerateEff(48));
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        Inv.ItemInstance.Amount--;
+                        if (Inv.ItemInstance.Amount > 0)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        }
+                        else
+                        {
+                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        }
                     }
                     break;
 
@@ -173,33 +208,8 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                // somethings
-                case 2168:
-                    if (this != null && !Session.Character.IsVehicled)
-                    {
-                        Session.Character.Dignity = 100;
-                        Session.SendPacket(Session.Character.GenerateFd());
-                        Session.SendPacket(Session.Character.GenerateEff(48));
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                        Session.Character.InventoryList.RemoveItemAmount(this.VNum, 1);
-                        if (Inv.ItemInstance.Amount - 1 > 0)
-                        {
-                            Inv.ItemInstance.Amount--;
-                        }
-                        if (Inv.ItemInstance.Amount > 0)
-                        {
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
-                        else
-                        {
-                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
-                    }
-                    break;
-
                 default:
-                    Logger.Debug("NO_HANDLER_ITEM");
+                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
                     break;
             }
         }

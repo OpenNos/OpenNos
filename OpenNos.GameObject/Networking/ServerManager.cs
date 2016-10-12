@@ -263,12 +263,12 @@ namespace OpenNos.GameObject
                 if (!clientSession.CurrentMap.UserShops[shop.Key].Items.Any(s => s.Amount > 0))
                 {
                     clientSession.SendPacket("shop_end 0");
-                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
-                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    shopOwnerSession.CurrentMap?.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
+                    shopOwnerSession.CurrentMap?.Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     shopOwnerSession.Character.LoadSpeed();
                     shopOwnerSession.Character.IsSitting = false;
                     shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateCond());
-                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
+                    shopOwnerSession.CurrentMap?.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
                 }
             }
         }
@@ -743,8 +743,8 @@ namespace OpenNos.GameObject
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
                 ChangeMap(session.Character.CharacterId);
-                Broadcast(session, session.Character.GenerateTp(), ReceiverType.All);
-                Broadcast(session, session.Character.GenerateRevive(), ReceiverType.All);
+                session.CurrentMap?.Broadcast(session, session.Character.GenerateTp(), ReceiverType.All);
+                session.CurrentMap?.Broadcast(session.Character.GenerateRevive(), 200);
                 session.SendPacket(session.Character.GenerateStat());
             }
         }

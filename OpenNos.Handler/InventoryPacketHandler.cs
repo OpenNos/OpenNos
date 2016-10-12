@@ -801,7 +801,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
                 }
-                if (ServersData.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
+                if (CharacterHelper.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
                 {
                     return;
                 }
@@ -814,10 +814,10 @@ namespace OpenNos.Handler
                 specialistInstance.SlElement += specialistElement;
                 specialistInstance.SlHP += specialistHealpoints;
 
-                int slElement = ServersData.SlPoint(specialistInstance.SlElement, 2);
-                int slHp = ServersData.SlPoint(specialistInstance.SlHP, 3);
-                int slDefence = ServersData.SlPoint(specialistInstance.SlDefence, 1);
-                int slHit = ServersData.SlPoint(specialistInstance.SlDamage, 0);
+                int slElement = CharacterHelper.SlPoint(specialistInstance.SlElement, 2);
+                int slHp = CharacterHelper.SlPoint(specialistInstance.SlHP, 3);
+                int slDefence = CharacterHelper.SlPoint(specialistInstance.SlDefence, 1);
+                int slHit = CharacterHelper.SlPoint(specialistInstance.SlDamage, 0);
 
                 // slhit
                 specialistInstance.DamageMinimum = 0;
@@ -1252,6 +1252,66 @@ namespace OpenNos.Handler
                         }
                         break;
 
+                    case 20:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
+                        if (inventory != null)
+                        {
+                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            {
+                                inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.Protected);
+                            }
+                        }
+                        break;
+
+                    case 21:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
+                        if (inventory != null)
+                        {
+                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            {
+                                inventory.RarifyItem(Session, RarifyMode.Normal, RarifyProtection.Scroll);
+                            }
+                        }
+                        break;
+
+                    case 25:
+                        specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, inventoryType);
+                        if (specialist != null)
+                        {
+                            if (specialist.Rare != -2)
+                            {
+                                if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
+                                {
+                                    specialist.UpgradeSp(Session, UpgradeProtection.Protected);
+                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, inventoryType, slot, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                }
+                            }
+                            else
+                            {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                            }
+                        }
+                        break;
+
+                    case 26:
+                        specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, inventoryType);
+                        if (specialist != null)
+                        {
+                            if (specialist.Rare != -2)
+                            {
+                                if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
+                                {
+                                    specialist.UpgradeSp(Session, UpgradeProtection.Protected);
+                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, inventoryType, slot, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                }
+                            }
+                            else
+                            {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                            }
+                        }
+                        break;
+
                     case 41:
                         specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, inventoryType);
                         if (specialist != null)
@@ -1267,6 +1327,17 @@ namespace OpenNos.Handler
                             else
                             {
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                            }
+                        }
+                        break;
+
+                    case 43:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
+                        if (inventory != null)
+                        {
+                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            {
+                                inventory.UpgradeItem(Session, UpgradeMode.Reduced, UpgradeProtection.Protected);
                             }
                         }
                         break;
