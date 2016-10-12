@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
@@ -62,6 +63,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         private ConcurrentQueue<byte[]> _sendBuffer;
 
+        private CancellationToken _sendCancellationToken;
         private Task _sendTask;
 
         #endregion
@@ -86,7 +88,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _syncLock = new object();
 
             _sendBuffer = new ConcurrentQueue<byte[]>();
-            _sendTask = Task.Factory.StartNew(SendInterval);
+            _sendTask = Run(SendInterval, new TimeSpan(0, 0, 0, 0, 10), _sendCancellationToken);
         }
 
         #endregion
@@ -108,6 +110,17 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         #region Methods
 
+        public static async Task Run(Action action, TimeSpan period, CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(period, cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                    action();
+            }
+        }
+
         /// <summary>
         /// Disconnects from remote application and closes channel.
         /// </summary>
@@ -127,10 +140,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 }
 
                 _clientSocket.Dispose();
-                if(_sendTask.Status == TaskStatus.Running)
-                {
-                    _sendTask.Dispose();
-                }
             }
             catch
             {
@@ -142,42 +151,40 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         public void SendInterval()
         {
-            while (true)
+            try
             {
-                try
+                if (WireProtocol != null)
                 {
-                    //delay between broadcasts
-                    Task.Delay(5);
-
-                    if (WireProtocol != null && _sendBuffer.Count > 0)
+                    IEnumerable<byte> outgoingPacket = new List<byte>();
+                    for (int i = 0; i < 30; i++) //send maximal 30 packets at once
                     {
-                        IEnumerable<byte> outgoingPacket = new List<byte>();
-                        for (int i = 0; i < 30; i++)
+                        byte[] message;
+                        if (_sendBuffer.TryDequeue(out message) && message != null)
                         {
-                            byte[] message;
-                            if (_sendBuffer.TryDequeue(out message) && message != null)
-                            {
-                                outgoingPacket = outgoingPacket.Concat(message);
-                            }
-                            else
-                            {
-                                break;
-                            }
+                            outgoingPacket = outgoingPacket.Concat(message);
                         }
-                        
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    if (outgoingPacket.Any())
+                    {
                         _clientSocket.BeginSend(outgoingPacket.ToArray(), 0, outgoingPacket.Count(), SocketFlags.None,
                         new AsyncCallback(SendCallback), _clientSocket);
                     }
                 }
-                catch (Exception e)
-                {
-                    //disconnect
-                }
+            }
+            catch (Exception e)
+            {
+                //disconnect
+            }
 
-                if (!_clientSocket.Connected)
-                {
-                    return;
-                }
+            if (!_clientSocket.Connected)
+            {
+                _sendCancellationToken = new CancellationToken(true);
+                return;
             }
         }
 
