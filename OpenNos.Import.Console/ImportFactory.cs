@@ -2398,6 +2398,41 @@ namespace OpenNos.Import.Console
                                         item.EffectValue = 5114;
                                         break;
 
+                                    case 1581:
+                                        item.EffectValue = 860;
+                                            break;
+                                    case 1582:
+                                        item.EffectValue = 861;
+                                        break;
+
+                                    case 1585:
+                                        item.EffectValue = 859;
+                                        break;
+
+                                    case 1983:
+                                        item.EffectValue = 875;
+                                        break;
+
+                                    case 1984:
+                                        item.EffectValue = 876;
+                                        break;
+
+                                    case 1985:
+                                        item.EffectValue = 877;
+                                        break;
+
+                                    case 1986:
+                                        item.EffectValue = 878;
+                                        break;
+
+                                    case 1987:
+                                        item.EffectValue = 879;
+                                        break;
+
+                                    case 1988:
+                                        item.EffectValue = 880;
+                                        break;
+
                                     case 9031:
                                         item.EffectValue = 5108;
                                         break;
@@ -2424,6 +2459,34 @@ namespace OpenNos.Import.Console
 
                                     case 9038:
                                         item.EffectValue = 5114;
+                                        break;
+
+                                    case 9044:
+                                        item.EffectValue = 859;
+                                        break;
+
+                                    case 9059:
+                                        item.EffectValue = 875;
+                                        break;
+
+                                    case 9060:
+                                        item.EffectValue = 876;
+                                        break;
+
+                                    case 9061:
+                                        item.EffectValue = 877;
+                                        break;
+
+                                    case 9062:
+                                        item.EffectValue = 878;
+                                        break;
+
+                                    case 9063:
+                                        item.EffectValue = 879;
+                                        break;
+
+                                    case 9064:
+                                        item.EffectValue = 880;
                                         break;
 
                                     default:

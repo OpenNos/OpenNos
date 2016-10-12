@@ -26,7 +26,7 @@ namespace OpenNos.GameObject
             Random random = new Random();
             switch (Effect)
             {
-                // airwaves
+                // airwaves - eventitems
                 case 0:
                     if (this != null && this.ItemType == (byte)Domain.ItemType.Event)
                     {
@@ -35,6 +35,30 @@ namespace OpenNos.GameObject
                         if (Inv.ItemInstance.Amount > 0)
                         {
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        }
+                        if (EffectValue == 859)
+                        {
+                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1343");
+                        }
+                        else if (EffectValue == 860 || EffectValue == 861)
+                        {
+                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1344");
+                        }
+                        else if (EffectValue == 875)
+                        {
+                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1558");
+                        }
+                        else if (EffectValue == 876)
+                        {
+                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1559");
+                        }
+                        else if (EffectValue == 877 || EffectValue == 878)
+                        {
+                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1560");
+                        }
+                        else if (EffectValue == 879 || EffectValue == 880)
+                        {
+                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1561");
                         }
                         else
                         {
