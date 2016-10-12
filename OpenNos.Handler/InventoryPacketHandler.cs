@@ -1360,7 +1360,7 @@ namespace OpenNos.Handler
                 Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, (InventoryType)type);
                 if (inv != null)
                 {
-                    (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#');
+                    (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#', packetsplit);
                 }
             }
         }

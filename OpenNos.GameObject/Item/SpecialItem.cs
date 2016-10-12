@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory inventory, bool DelayUsed = false)
+        public override void Use(ClientSession Session, ref Inventory inventory, bool DelayUsed = false, string[] packetsplit = null)
         {
             switch (Effect)
             {

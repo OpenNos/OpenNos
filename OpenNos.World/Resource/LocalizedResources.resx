@@ -991,4 +991,7 @@
   <data name="MOB_REMOVED" xml:space="preserve">
     <value>Mob removed(MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
   </data>
+  <data name="QNA_ITEM" xml:space="preserve">
+    <value>Do you want to use this item?</value>
+  </data>
 </root>

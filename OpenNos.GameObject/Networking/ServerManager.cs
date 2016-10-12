@@ -614,7 +614,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            //initialiize monster skills
+            // initialiize monster skills
             _monsterSkills = new ThreadSafeSortedList<short, List<NpcMonsterSkill>>();
             foreach (var monsterSkillGrouping in DAOFactory.NpcMonsterSkillDAO.LoadAll().GroupBy(n => n.NpcMonsterVNum))
             {
@@ -837,7 +837,10 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+
+                }
 
                 await Task.Delay(2000);
             }

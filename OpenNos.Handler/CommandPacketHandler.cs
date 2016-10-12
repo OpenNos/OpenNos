@@ -567,7 +567,7 @@ namespace OpenNos.Handler
             byte amount;
             short vnum = -1;
             sbyte Rare = 0;
-            byte Upgrade =0;
+            byte Upgrade = 0;
             if (packetsplit.Length > 5)
             {
                 if (packetsplit.Length == 6)
@@ -576,7 +576,7 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    Session.Character.SendGift(Session.Character.CharacterId, vnum, amount,Rare,Upgrade, false);
+                    Session.Character.SendGift(Session.Character.CharacterId, vnum, amount, Rare, Upgrade, false);
                 }
                 else if (packetsplit.Length == 7)
                 {

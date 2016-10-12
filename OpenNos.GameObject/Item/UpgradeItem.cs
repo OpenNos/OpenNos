@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false)
+        public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false, string[] packetsplit = null)
         {
             if (EffectValue != 0)
             {
@@ -31,6 +31,42 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateRest());
                 }
                 Session.SendPacket(Session.Character.GenerateGuri(12, 1, EffectValue));
+            }
+            else if (EffectValue == 0)
+            {
+                if (packetsplit != null)
+                {
+                    byte TypeEquip = 0;
+                    short SlotEquip = -1;
+
+                    if (byte.TryParse(packetsplit[8], out TypeEquip) && short.TryParse(packetsplit[9], out SlotEquip))
+                    {
+                        if (Session.Character.IsSitting)
+                        {
+                            Session.Character.IsSitting = false;
+                            Session.SendPacket(Session.Character.GenerateRest());
+                        }
+                        if (DelayUsed)
+                        {
+                            WearableInstance Equip = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
+                            if (Equip != null && Equip.IsFixed)
+                            {
+                                Equip.IsFixed = false;
+                                Session.SendPacket(Session.Character.GenerateEff(3003));
+                                Session.SendPacket(Session.Character.GenerateGuri(17, 1, 19));
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
+                            }
+                            else
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_NOT_FIXED") , 11));
+                            }
+                        }
+                        else
+                        {
+                            Session.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{(byte)Inv.Type}^{Inv.Slot}^0^1^{TypeEquip}^{SlotEquip} {Language.Instance.GetMessageFromKey("QNA_ITEM")}");
+                        }
+                    }
+                }
             }
             else
             {
