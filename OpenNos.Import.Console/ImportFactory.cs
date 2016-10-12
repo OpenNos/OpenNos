@@ -720,7 +720,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EXP")
                     {
-                        npc.XP = Convert.ToInt32(currentLine[2]) + basicXp[npc.Level];
+                        npc.XP = Math.Abs(Convert.ToInt32(currentLine[2]) + basicXp[npc.Level]);
                         npc.JobXP = Convert.ToInt32(currentLine[3]) + basicJXp[npc.Level];
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "PREATT")
