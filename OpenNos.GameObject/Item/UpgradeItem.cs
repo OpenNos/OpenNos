@@ -55,6 +55,17 @@ namespace OpenNos.GameObject
                                 Session.SendPacket(Session.Character.GenerateEff(3003));
                                 Session.SendPacket(Session.Character.GenerateGuri(17, 1, 19));
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
+
+                                Inv.ItemInstance.Amount--;
+                                if (Inv.ItemInstance.Amount > 0)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                }
+                                else
+                                {
+                                    Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                }
                             }
                             else
                             {
