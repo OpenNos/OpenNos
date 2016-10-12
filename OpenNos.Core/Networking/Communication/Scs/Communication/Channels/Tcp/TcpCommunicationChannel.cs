@@ -143,10 +143,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             {
                 try
                 {
+                    //delay between broadcasts
+                    Task.Delay(5);
+
                     if (WireProtocol != null && _sendBuffer.Count > 0)
                     {
                         IEnumerable<byte> outgoingPacket = new List<byte>();
-                        int packetCount = 0;
+                        int packetcount = 0;
                         for (int i = 0; i < 30; i++)
                         {
                             byte[] message;
@@ -158,9 +161,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                             {
                                 break;
                             }
-                            packetCount++;
+                            packetcount++;
                         }
 
+                        if(packetcount > 0)
+                        {
+                            Logger.Log.Error(packetcount);
+                        }
+                        
                         _clientSocket.BeginSend(outgoingPacket.ToArray(), 0, outgoingPacket.Count(), SocketFlags.None,
                         new AsyncCallback(SendCallback), _clientSocket);
                     }
