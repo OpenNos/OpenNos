@@ -63,7 +63,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         private ConcurrentQueue<byte[]> _sendBuffer;
 
-        private CancellationToken _sendCancellationToken;
+        private CancellationTokenSource _sendCancellationToken = new CancellationTokenSource();
         private Task _sendTask;
 
         #endregion
@@ -88,7 +88,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _syncLock = new object();
 
             _sendBuffer = new ConcurrentQueue<byte[]>();
-            _sendTask = Run(SendInterval, new TimeSpan(0, 0, 0, 0, 10), _sendCancellationToken);
+            CancellationToken cancellationToken = _sendCancellationToken.Token;
+            _sendTask = StartSending(SendInterval, new TimeSpan(0, 0, 0, 0, 10), cancellationToken);
         }
 
         #endregion
@@ -110,13 +111,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         #region Methods
 
-        public static async Task Run(Action action, TimeSpan period, CancellationToken cancellationToken)
+        public static async Task StartSending(Action action, TimeSpan period, CancellationToken _sendCancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            while (!_sendCancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(period, cancellationToken);
+                await Task.Delay(period, _sendCancellationToken);
 
-                if (!cancellationToken.IsCancellationRequested)
+                if (!_sendCancellationToken.IsCancellationRequested)
                     action();
             }
         }
@@ -134,6 +135,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _running = false;
             try
             {
+                _sendCancellationToken.Cancel();
                 if (_clientSocket.Connected)
                 {
                     _clientSocket.Close();
@@ -143,6 +145,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             }
             catch
             {
+            }
+            finally
+            {
+                _sendCancellationToken.Dispose();
             }
 
             CommunicationState = CommunicationStates.Disconnected;
@@ -183,7 +189,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
             if (!_clientSocket.Connected)
             {
-                _sendCancellationToken = new CancellationToken(true);
                 return;
             }
         }
