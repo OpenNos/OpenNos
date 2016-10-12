@@ -476,6 +476,7 @@ namespace OpenNos.GameObject
                         targetSession.SendPacket("pinit 0");
                         targetSession.SendPacket(targetSession.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
                         Broadcast(targetSession.Character.GeneratePidx(true));
+                        grp.LeaveGroup(targetSession);
                     }
                     RemoveGroup(grp);
                 }
