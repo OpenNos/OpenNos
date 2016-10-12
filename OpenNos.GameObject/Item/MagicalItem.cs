@@ -31,34 +31,15 @@ namespace OpenNos.GameObject
                     if (this != null && this.ItemType == (byte)Domain.ItemType.Event)
                     {
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(EffectValue));
+                        if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))
+                        {
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(19, 1, MappingHelper.GuriItemEffects[EffectValue]));
+                        }
+
                         Inv.ItemInstance.Amount--;
                         if (Inv.ItemInstance.Amount > 0)
                         {
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
-                        if (EffectValue == 859)
-                        {
-                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1343");
-                        }
-                        else if (EffectValue == 860 || EffectValue == 861)
-                        {
-                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1344");
-                        }
-                        else if (EffectValue == 875)
-                        {
-                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1558");
-                        }
-                        else if (EffectValue == 876)
-                        {
-                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1559");
-                        }
-                        else if (EffectValue == 877 || EffectValue == 878)
-                        {
-                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1560");
-                        }
-                        else if (EffectValue == 879 || EffectValue == 880)
-                        {
-                            Session.CurrentMap?.Broadcast($"guri 19 1 {Session.Character.CharacterId} 1561");
                         }
                         else
                         {

@@ -31,13 +31,17 @@ namespace OpenNos.GameObject
             // intialize
             // hardcode in waiting for better solution
             _guriItemEffects = new Dictionary<int, int>();
-            _guriItemEffects.Add(1218, 26);
-            _guriItemEffects.Add(1363, 27);
-            _guriItemEffects.Add(1364, 28);
-            _guriItemEffects.Add(5107, 47);
-            _guriItemEffects.Add(5207, 50);
-            _guriItemEffects.Add(5369, 61);
-            _guriItemEffects.Add(5519, 60);
+
+            // effect items aka. fireworks
+            _guriItemEffects.Add(859, 1343);
+            _guriItemEffects.Add(860, 1344);
+            _guriItemEffects.Add(861, 1344);
+            _guriItemEffects.Add(875, 1558);
+            _guriItemEffects.Add(876, 1559);
+            _guriItemEffects.Add(877, 1560);
+            _guriItemEffects.Add(878, 1560);
+            _guriItemEffects.Add(879, 1561);
+            _guriItemEffects.Add(880, 1561);
         }
 
         #endregion

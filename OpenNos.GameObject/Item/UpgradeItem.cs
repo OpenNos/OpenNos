@@ -23,14 +23,14 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false)
         {
-            if (MappingHelper.GuriItemEffects.ContainsKey(VNum))
+            if (EffectValue != 0)
             {
                 if (Session.Character.IsSitting)
                 {
                     Session.Character.IsSitting = false;
                     Session.SendPacket(Session.Character.GenerateRest());
                 }
-                Session.SendPacket(Session.Character.GenerateGuri(12, 1, MappingHelper.GuriItemEffects[VNum]));
+                Session.SendPacket(Session.Character.GenerateGuri(12, 1, EffectValue));
             }
             else
             {
