@@ -127,7 +127,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 }
 
                 _clientSocket.Dispose();
-                _sendTask.Dispose();
+                if(_sendTask.Status == TaskStatus.Running)
+                {
+                    _sendTask.Dispose();
+                }
             }
             catch
             {
@@ -149,7 +152,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                     if (WireProtocol != null && _sendBuffer.Count > 0)
                     {
                         IEnumerable<byte> outgoingPacket = new List<byte>();
-                        int packetcount = 0;
                         for (int i = 0; i < 30; i++)
                         {
                             byte[] message;
@@ -161,12 +163,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                             {
                                 break;
                             }
-                            packetcount++;
-                        }
-
-                        if(packetcount > 0)
-                        {
-                            Logger.Log.Error(packetcount);
                         }
                         
                         _clientSocket.BeginSend(outgoingPacket.ToArray(), 0, outgoingPacket.Count(), SocketFlags.None,
