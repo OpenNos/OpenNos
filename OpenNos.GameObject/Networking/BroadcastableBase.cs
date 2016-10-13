@@ -213,6 +213,7 @@ namespace OpenNos.GameObject
                             session.SendPacket(sentPacket.Packet);
                         }
                         break;
+
                     case ReceiverType.AllInRange: // send to everyone which is in a range of 50x50
                         if (sentPacket.XCoordinate != 0 && sentPacket.YCoordinate != 0)
                         {
@@ -222,6 +223,7 @@ namespace OpenNos.GameObject
                             }
                         }
                         break;
+
                     case ReceiverType.OnlySomeone:
                         {
                             if (sentPacket.SomeonesCharacterId > 0 || !String.IsNullOrEmpty(sentPacket.SomeonesCharacterName))

@@ -47,7 +47,7 @@ namespace OpenNos.GameObject
                             Session.SendPacket(Session.Character.GenerateRest());
                         }
                         if (DelayUsed)
-                        {                            
+                        {
                             bool isUsed = false;
                             switch (Inv.ItemInstance.ItemVNum)
                             {
@@ -62,6 +62,7 @@ namespace OpenNos.GameObject
                                         isUsed = true;
                                     }
                                     break;
+
                                 case 1365:
                                     SpecialistInstance specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
                                     if (specialist != null && specialist.Rare == -2)
@@ -76,7 +77,7 @@ namespace OpenNos.GameObject
                                     }
                                     break;
                             }
-                            
+
                             if (!isUsed)
                             {
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_NOT_FIXED"), 11));

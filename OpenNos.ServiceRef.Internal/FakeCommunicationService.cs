@@ -1,6 +1,4 @@
 ﻿using OpenNos.Core;
-using OpenNos.ServiceRef.Internal.CommunicationServiceReference;
-using OpenNos.WCF.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;

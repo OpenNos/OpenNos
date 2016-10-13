@@ -103,7 +103,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         }
 
         /// <summary>
-        /// This method is implemented by derived Classs to create appropriate connection listener to listen incoming connection requets.
+        /// This method is implemented by derived Classs to create appropriate connection listener to
+        /// listen incoming connection requets.
         /// </summary>
         /// <returns></returns>
         protected abstract IConnectionListener CreateConnectionListener();

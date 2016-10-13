@@ -21,9 +21,10 @@ namespace OpenNos.GameObject
     {
         #region Members
 
+        private Random _random;
         private long _transportId;
         private Item item;
-        private Random _random;
+
         #endregion
 
         #region Instantiation
@@ -38,12 +39,13 @@ namespace OpenNos.GameObject
             Id = inventoryItem.Id;
             Amount = inventoryItem.Amount;
             ItemVNum = inventoryItem.ItemVNum;
-           _random = new Random();
+            _random = new Random();
         }
 
         #endregion
 
         #region Properties
+
         public bool IsBound
         {
             get

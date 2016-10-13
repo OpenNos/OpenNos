@@ -25,10 +25,14 @@
 
         #endregion
 
+        #region Methods
+
         public long GetNextClientId()
         {
             nextClientId = nextClientId + 1;
             return nextClientId;
         }
+
+        #endregion
     }
 }

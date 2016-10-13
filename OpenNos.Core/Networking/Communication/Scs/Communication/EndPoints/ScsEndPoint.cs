@@ -27,10 +27,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints
         #region Methods
 
         /// <summary>
-        /// Create a Scs End Point from a string.
-        /// Address must be formatted as: protocol://address
-        /// For example: tcp://89.43.104.179:10048 for a TCP endpoint with
-        /// IP 89.43.104.179 and port 10048.
+        /// Create a Scs End Point from a string. Address must be formatted as: protocol://address
+        /// For example: tcp://89.43.104.179:10048 for a TCP endpoint with IP 89.43.104.179 and port 10048.
         /// </summary>
         /// <param name="endPointAddress">Address to create endpoint</param>
         /// <returns>Created end point</returns>

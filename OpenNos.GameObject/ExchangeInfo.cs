@@ -33,13 +33,13 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public long TargetCharacterId { get; set; }
-
         public bool Confirm { get; set; }
 
         public List<ItemInstance> ExchangeList { get; set; }
 
         public long Gold { get; set; }
+
+        public long TargetCharacterId { get; set; }
 
         public bool Validate { get; set; }
 

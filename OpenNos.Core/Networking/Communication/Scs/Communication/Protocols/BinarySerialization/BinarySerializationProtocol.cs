@@ -23,14 +23,13 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.BinarySerialization
 {
     /// <summary>
-    /// Default communication protocol between server and clients to send and receive a message.
-    /// It uses .NET binary serialization to write and read messages.
+    /// Default communication protocol between server and clients to send and receive a message. It
+    /// uses .NET binary serialization to write and read messages.
     ///
-    /// A Message format:
-    /// [Message Length (4 bytes)][Serialized Message Content]
+    /// A Message format: [Message Length (4 bytes)][Serialized Message Content]
     ///
-    /// If a message is serialized to byte array as N bytes, this protocol
-    /// adds 4 bytes size information to head of the message bytes, so total length is (4 + N) bytes.
+    /// If a message is serialized to byte array as N bytes, this protocol adds 4 bytes size
+    /// information to head of the message bytes, so total length is (4 + N) bytes.
     ///
     /// This class can be derived to change serializer (default: BinaryFormatter). To do this,
     /// SerializeMessage and DeserializeMessage methods must be overrided.
@@ -44,12 +43,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// </summary>
         private const int MaxMessageLength = 128 * 1024 * 1024; // 128 Megabytes.
 
+        private bool _disposed;
+
         /// <summary>
         /// This MemoryStream object is used to collect receiving bytes to build messages.
         /// </summary>
         private MemoryStream _receiveMemoryStream;
-
-        private bool _disposed;
 
         #endregion
 
@@ -68,17 +67,15 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         #region Methods
 
         /// <summary>
-        /// Builds messages from a byte array that is received from remote application.
-        /// The Byte array may contain just a part of a message, the protocol must
-        /// cumulate bytes to build messages.
-        /// This method is synchronized. So, only one thread can call it concurrently.
+        /// Builds messages from a byte array that is received from remote application. The Byte
+        /// array may contain just a part of a message, the protocol must cumulate bytes to build
+        /// messages. This method is synchronized. So, only one thread can call it concurrently.
         /// </summary>
         /// <param name="receivedBytes">Received bytes from remote application</param>
         /// <returns>
-        /// List of messages.
-        /// Protocol can generate more than one message from a byte array.
-        /// Also, if received bytes are not sufficient to build a message, the protocol
-        /// may return an empty list (and save bytes to combine with next method call).
+        /// List of messages. Protocol can generate more than one message from a byte array. Also, if
+        /// received bytes are not sufficient to build a message, the protocol may return an empty
+        /// list (and save bytes to combine with next method call).
         /// </returns>
         public IEnumerable<IScsMessage> CreateMessages(byte[] receivedBytes)
         {
@@ -97,12 +94,24 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
             return messages;
         }
 
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
         /// <summary>
-        /// Serializes a message to a byte array to send to remote application.
-        /// This method is synchronized. So, only one thread can call it concurrently.
+        /// Serializes a message to a byte array to send to remote application. This method is
+        /// synchronized. So, only one thread can call it concurrently.
         /// </summary>
         /// <param name="message">Message to be serialized</param>
-        /// <exception cref="CommunicationException">Throws CommunicationException if message is bigger than maximum allowed message length.</exception>
+        /// <exception cref="CommunicationException">
+        /// Throws CommunicationException if message is bigger than maximum allowed message length.
+        /// </exception>
         public byte[] GetBytes(IScsMessage message)
         {
             // Serialize the message to a byte array
@@ -115,7 +124,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
                 throw new CommunicationException("Message is too big (" + messageLength + " bytes). Max allowed length is " + MaxMessageLength + " bytes.");
             }
 
-            // Create a byte array including the length of the message (4 bytes) and serialized message content
+            // Create a byte array including the length of the message (4 bytes) and serialized
+            // message content
             var bytes = new byte[messageLength + 4];
             WriteInt32(bytes, 0, messageLength);
             Array.Copy(serializedMessage, 0, bytes, 4, messageLength);
@@ -125,8 +135,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         }
 
         /// <summary>
-        /// This method is called when connection with remote application is reset (connection is renewing or first connecting).
-        /// So, wire protocol must reset itself.
+        /// This method is called when connection with remote application is reset (connection is
+        /// renewing or first connecting). So, wire protocol must reset itself.
         /// </summary>
         public void Reset()
         {
@@ -137,13 +147,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         }
 
         /// <summary>
-        /// This method is used to deserialize a IScsMessage from it's bytes.
-        /// This method can be overrided by derived Classs to change deserialization strategy.
-        /// It is a couple with SerializeMessage method and must be overrided together.
+        /// This method is used to deserialize a IScsMessage from it's bytes. This method can be
+        /// overrided by derived Classs to change deserialization strategy. It is a couple with
+        /// SerializeMessage method and must be overrided together.
         /// </summary>
         /// <param name="bytes">
-        /// Bytes of message to be deserialized (does not include message length. It consist
-        /// of a single whole message)
+        /// Bytes of message to be deserialized (does not include message length. It consist of a
+        /// single whole message)
         /// </param>
         /// <returns>Deserialized message</returns>
         protected virtual IScsMessage DeserializeMessage(byte[] bytes)
@@ -166,16 +176,21 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
             }
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _receiveMemoryStream.Dispose();
+            }
+        }
+
         /// <summary>
-        /// This method is used to serialize a IScsMessage to a byte array.
-        /// This method can be overrided by derived Classs to change serialization strategy.
-        /// It is a couple with DeserializeMessage method and must be overrided together.
+        /// This method is used to serialize a IScsMessage to a byte array. This method can be
+        /// overrided by derived Classs to change serialization strategy. It is a couple with
+        /// DeserializeMessage method and must be overrided together.
         /// </summary>
         /// <param name="message">Message to be serialized</param>
-        /// <returns>
-        /// Serialized message bytes.
-        /// Does not include length of the message.
-        /// </returns>
+        /// <returns>Serialized message bytes. Does not include length of the message.</returns>
         protected virtual byte[] SerializeMessage(IScsMessage message)
         {
             using (var memoryStream = new MemoryStream())
@@ -191,7 +206,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// <param name="stream">Stream to read from</param>
         /// <param name="length">Length of the byte array to read</param>
         /// <returns>Read byte array</returns>
-        /// <exception cref="EndOfStreamException">Throws EndOfStreamException if can not read from stream.</exception>
+        /// <exception cref="EndOfStreamException">
+        /// Throws EndOfStreamException if can not read from stream.
+        /// </exception>
         private static byte[] ReadByteArray(Stream stream, int length)
         {
             var buffer = new byte[length];
@@ -231,7 +248,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// <returns>
         /// Returns a boolean value indicates that if there is a need to re-call this method.
         /// </returns>
-        /// <exception cref="CommunicationException">Throws CommunicationException if message is bigger than maximum allowed message length.</exception>
+        /// <exception cref="CommunicationException">
+        /// Throws CommunicationException if message is bigger than maximum allowed message length.
+        /// </exception>
         private bool ReadSingleMessage(ICollection<IScsMessage> messages)
         {
             // Go to the begining of the stream
@@ -298,31 +317,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
             return (_receiveMemoryStream.Length > 0);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _receiveMemoryStream.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
-            }
-        }
-
         #endregion
 
         #region Classes
 
         /// <summary>
-        /// This class is used in deserializing to allow deserializing objects that are defined
-        /// in assemlies that are load in runtime (like PlugIns).
+        /// This class is used in deserializing to allow deserializing objects that are defined in
+        /// assemlies that are load in runtime (like PlugIns).
         /// </summary>
         protected sealed class DeserializationAppDomainBinder : SerializationBinder
         {

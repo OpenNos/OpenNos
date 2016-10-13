@@ -21,9 +21,13 @@ namespace OpenNos.GameObject
 {
     public class WearableInstance : ItemInstance, IWearableInstance
     {
-        #region Instantiation
+        #region Members
 
         private Random _random;
+
+        #endregion
+
+        #region Instantiation
 
         public WearableInstance()
         {
@@ -427,8 +431,7 @@ namespace OpenNos.GameObject
                 short[] upsuccess = { 100, 100, 100, 95, 80, 60, 40, 30, 20, 11 };
                 short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
 
-                // short itempricevnum1 = 0;
-                // short itempricevnum2 = 0;
+                // short itempricevnum1 = 0; short itempricevnum2 = 0;
                 int[] goldprice = { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
                 short[] cella = { 20, 50, 80, 120, 160, 220, 280, 380, 480, 600 };
                 short[] gem = { 1, 1, 2, 2, 3, 3, 1, 2, 2, 3 };

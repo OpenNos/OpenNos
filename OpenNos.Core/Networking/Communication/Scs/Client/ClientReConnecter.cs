@@ -19,8 +19,8 @@ using System;
 namespace OpenNos.Core.Networking.Communication.Scs.Client
 {
     /// <summary>
-    /// This class is used to automatically re-connect to server if disconnected.
-    /// It attempts to reconnect to server periodically until connection established.
+    /// This class is used to automatically re-connect to server if disconnected. It attempts to
+    /// reconnect to server periodically until connection established.
     /// </summary>
     public class ClientReConnecter : IDisposable
     {
@@ -32,7 +32,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         private readonly IConnectableClient _client;
 
         /// <summary>
-        /// Timer to  attempt ro reconnect periodically.
+        /// Timer to attempt ro reconnect periodically.
         /// </summary>
         private readonly Timer _reconnectTimer;
 
@@ -46,12 +46,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         #region Instantiation
 
         /// <summary>
-        /// Creates a new ClientReConnecter object.
-        /// It is not needed to start ClientReConnecter since it automatically
-        /// starts when the client disconnected.
+        /// Creates a new ClientReConnecter object. It is not needed to start ClientReConnecter since
+        /// it automatically starts when the client disconnected.
         /// </summary>
         /// <param name="client">Reference to client object</param>
-        /// <exception cref="ArgumentNullException">Throws ArgumentNullException if client is null.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Throws ArgumentNullException if client is null.
+        /// </exception>
         public ClientReConnecter(IConnectableClient client)
         {
             if (client == null)
@@ -85,8 +86,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         #region Methods
 
         /// <summary>
-        /// Disposes this object.
-        /// Does nothing if already disposed.
+        /// Disposes this object. Does nothing if already disposed.
         /// </summary>
         public void Dispose()
         {

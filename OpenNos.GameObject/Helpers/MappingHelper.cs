@@ -28,8 +28,7 @@ namespace OpenNos.GameObject
 
         static MappingHelper()
         {
-            // intialize
-            // hardcode in waiting for better solution
+            // intialize hardcode in waiting for better solution
             _guriItemEffects = new Dictionary<int, int>();
 
             // effect items aka. fireworks

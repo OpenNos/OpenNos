@@ -120,13 +120,13 @@ namespace OpenNos.DAL.EF.MySQL
                     long CharacterId = character.CharacterId;
                     Character entity = context.Character.FirstOrDefault(c => c.CharacterId.Equals(CharacterId));
 
-                    if (entity == null) 
+                    if (entity == null)
                     {
                         character = Insert(character, context);
                         return SaveResult.Inserted;
                     }
-                    else 
-                    { 
+                    else
+                    {
                         character = Update(entity, character, context);
                         return SaveResult.Updated;
                     }

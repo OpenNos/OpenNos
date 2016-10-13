@@ -1793,10 +1793,9 @@ namespace OpenNos.Import.Console
                                 skill.ElementalDamage = short.Parse(currentLine[5]); // Divide by 4(?)
 
                                 // skill.Unknown =cskill.Unknown = short.Parse(currentLine[2]);
-                                // skill.Unknown = short.Parse(currentLine[3]); 
-                                // skill.Unknown = short.Parse(currentLine[4]);
-                                // skill.Unknown = short.Parse(currentLine[6]); 
-                                // skill.Unknown = short.Parse(currentLine[7]);
+                                // skill.Unknown = short.Parse(currentLine[3]); skill.Unknown =
+                                // short.Parse(currentLine[4]); skill.Unknown =
+                                // short.Parse(currentLine[6]); skill.Unknown = short.Parse(currentLine[7]);
                                 break;
 
                             case "2":
@@ -2535,8 +2534,7 @@ namespace OpenNos.Import.Console
 
                             case (byte)ItemType.Specialist:
 
-                                // item.isSpecialist = Convert.ToByte(currentLine[2]);
-                                // item.Unknown = Convert.ToInt16(currentLine[3]);
+                                // item.isSpecialist = Convert.ToByte(currentLine[2]); item.Unknown = Convert.ToInt16(currentLine[3]);
                                 item.ElementRate = Convert.ToInt16(currentLine[4]);
                                 item.Speed = Convert.ToByte(currentLine[5]);
                                 item.SpType = Convert.ToByte(currentLine[13]);

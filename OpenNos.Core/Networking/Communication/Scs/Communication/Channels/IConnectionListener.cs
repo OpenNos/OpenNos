@@ -17,8 +17,8 @@ using System;
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 {
     /// <summary>
-    /// Represents a communication listener.
-    /// A connection listener is used to accept incoming client connection requests.
+    /// Represents a communication listener. A connection listener is used to accept incoming client
+    /// connection requests.
     /// </summary>
     public interface IConnectionListener
     {

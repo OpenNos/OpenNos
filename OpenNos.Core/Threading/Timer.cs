@@ -29,9 +29,11 @@ namespace OpenNos.Core.Threading
         /// </summary>
         private readonly System.Threading.Timer _taskTimer;
 
+        private bool _disposed;
+
         /// <summary>
-        /// Indicates that whether performing the task or _taskTimer is in sleep mode.
-        /// This field is used to wait executing tasks when stopping Timer.
+        /// Indicates that whether performing the task or _taskTimer is in sleep mode. This field is
+        /// used to wait executing tasks when stopping Timer.
         /// </summary>
         private volatile bool _performingTasks;
 
@@ -39,8 +41,6 @@ namespace OpenNos.Core.Threading
         /// Indicates that whether timer is running or stopped.
         /// </summary>
         private volatile bool _running;
-
-        private bool _disposed;
 
         private object lockObject = new object();
 
@@ -60,7 +60,9 @@ namespace OpenNos.Core.Threading
         /// Creates a new Timer.
         /// </summary>
         /// <param name="period">Task period of timer (as milliseconds)</param>
-        /// <param name="runOnStart">Indicates whether timer raises Elapsed event on Start method of Timer for once</param>
+        /// <param name="runOnStart">
+        /// Indicates whether timer raises Elapsed event on Start method of Timer for once
+        /// </param>
         public Timer(int period, bool runOnStart)
         {
             Period = period;
@@ -96,6 +98,16 @@ namespace OpenNos.Core.Threading
 
         #region Methods
 
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
         /// <summary>
         /// Starts the timer.
         /// </summary>
@@ -128,6 +140,15 @@ namespace OpenNos.Core.Threading
                 {
                     Monitor.Wait(_taskTimer);
                 }
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Stop();
+                _taskTimer.Dispose();
             }
         }
 
@@ -170,25 +191,6 @@ namespace OpenNos.Core.Threading
 
                     Monitor.Pulse(_taskTimer);
                 }
-            }
-        }
-
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Stop();
-                _taskTimer.Dispose();
             }
         }
 

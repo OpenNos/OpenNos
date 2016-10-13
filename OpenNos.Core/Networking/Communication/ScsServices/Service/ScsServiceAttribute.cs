@@ -37,9 +37,9 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         #region Properties
 
         /// <summary>
-        /// Service Version. This property can be used to indicate the code version.
-        /// This value is sent to client application on an exception, so, client application can know that service version is changed.
-        /// Default value: NO_VERSION.
+        /// Service Version. This property can be used to indicate the code version. This value is
+        /// sent to client application on an exception, so, client application can know that service
+        /// version is changed. Default value: NO_VERSION.
         /// </summary>
         public string Version { get; set; }
 

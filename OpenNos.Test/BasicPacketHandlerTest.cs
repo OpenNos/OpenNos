@@ -3,8 +3,6 @@ using OpenNos.Core;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Mock;
 using OpenNos.GameObject.Packets.ServerPackets;
-using System;
-using System.Collections.Generic;
 
 namespace OpenNos.Test
 {

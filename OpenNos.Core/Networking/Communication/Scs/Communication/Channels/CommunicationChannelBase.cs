@@ -51,8 +51,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         public event EventHandler<MessageEventArgs> MessageReceived;
 
         /// <summary>
-        /// This event is raised when a new message is sent without any error.
-        /// It does not guaranties that message is properly handled and processed by remote application.
+        /// This event is raised when a new message is sent without any error. It does not guaranties
+        /// that message is properly handled and processed by remote application.
         /// </summary>
         public event EventHandler<MessageEventArgs> MessageSent;
 
@@ -81,8 +81,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         public abstract ScsEndPoint RemoteEndPoint { get; }
 
         /// <summary>
-        /// Gets/sets wire protocol that the channel uses.
-        /// This property must set before first communication.
+        /// Gets/sets wire protocol that the channel uses. This property must set before first communication.
         /// </summary>
         public IScsWireProtocol WireProtocol { get; set; }
 
@@ -99,7 +98,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         /// Sends a message to the remote application.
         /// </summary>
         /// <param name="message">Message to be sent</param>
-        /// <exception cref="ArgumentNullException">Throws ArgumentNullException if message is null</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Throws ArgumentNullException if message is null
+        /// </exception>
         public void SendMessage(IScsMessage message)
         {
             if (message == null)
@@ -146,8 +147,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         }
 
         /// <summary>
-        /// Sends a message to the remote application.
-        /// This method is overrided by derived Classs to really send to message.
+        /// Sends a message to the remote application. This method is overrided by derived Classs to
+        /// really send to message.
         /// </summary>
         /// <param name="message">Message to be sent</param>
         protected abstract void SendMessagepublic(IScsMessage message);

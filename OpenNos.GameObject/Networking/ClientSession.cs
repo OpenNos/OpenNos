@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -494,7 +493,7 @@ namespace OpenNos.GameObject
 
             // ignore a packet which has been sent after the last one, in waiting to an better way to
             // prevent spam packets(Disable now because cause a lot of troubles)
-            /* 
+            /*
              if (IsAuthenticated && currentPacketReceive - lastPacketReceive < 120000 && !IsLocalhost)
              {
                  Logger.Log.Warn($"[AntiSpam]: Packet has been ignored, access was too fast. Last: {lastPacketReceive}, Current: {currentPacketReceive}, Difference: {currentPacketReceive - lastPacketReceive}, SessionId: {SessionId}");

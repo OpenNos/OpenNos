@@ -22,8 +22,8 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private int order;
         private ThreadSafeSortedList<long, ClientSession> _characters;
+        private int order;
 
         #endregion
 
@@ -36,6 +36,10 @@ namespace OpenNos.GameObject
             order = 0;
         }
 
+        #endregion
+
+        #region Properties
+
         public int CharacterCount
         {
             get
@@ -43,10 +47,6 @@ namespace OpenNos.GameObject
                 return _characters.Count;
             }
         }
-
-        #endregion
-
-        #region Properties
 
         public List<ClientSession> Characters
         {

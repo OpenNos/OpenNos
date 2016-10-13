@@ -36,8 +36,9 @@ namespace OpenNos.Core.Threading
             _action = triggeredMethod;
             var cancellationTokenSource = new CancellationTokenSource();
 
-            // this will cost a lot of resource
-            // _task = Repeat.Interval(TimeSpan.FromMilliseconds(milliseconds), () => triggeredMethod((TValue)Activator.CreateInstance(typeof(TValue))), cancellationTokenSource.Token);
+            // this will cost a lot of resource _task =
+            // Repeat.Interval(TimeSpan.FromMilliseconds(milliseconds), () =>
+            // triggeredMethod((TValue)Activator.CreateInstance(typeof(TValue))), cancellationTokenSource.Token);
             Queue.Start();
         }
 
@@ -89,8 +90,8 @@ namespace OpenNos.Core.Threading
             Action action,
             CancellationToken token)
         {
-            // We don't use Observable.Interval:
-            // If we block, the values start bunching up behind each other.
+            // We don't use Observable.Interval: If we block, the values start bunching up behind
+            // each other.
             return Task.Factory.StartNew(
                 () =>
                 {

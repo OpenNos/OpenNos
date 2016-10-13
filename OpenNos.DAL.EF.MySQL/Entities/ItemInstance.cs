@@ -30,6 +30,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         public short Design { get; set; }
 
+        public int DurabilityPoint { get; set; }
+
         public virtual Inventory Inventory { get; set; }
 
         public virtual Item Item { get; set; }
@@ -37,8 +39,6 @@ namespace OpenNos.DAL.EF.MySQL
         public DateTime? ItemDeleteTime { get; set; }
 
         public short ItemVNum { get; set; }
-
-        public int DurabilityPoint { get; set; }
 
         public sbyte Rare { get; set; }
 

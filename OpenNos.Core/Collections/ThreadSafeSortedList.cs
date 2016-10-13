@@ -19,8 +19,8 @@ using System.Threading;
 namespace OpenNos.Core.Collections
 {
     /// <summary>
-    /// This class is used to store key-value based items in a thread safe manner.
-    /// It uses System.Collections.Generic.SortedList publicly.
+    /// This class is used to store key-value based items in a thread safe manner. It uses
+    /// System.Collections.Generic.SortedList publicly.
     /// </summary>
     /// <typeparam name="TK">Key type</typeparam>
     /// <typeparam name="TV">Value type</typeparam>
@@ -134,25 +134,6 @@ namespace OpenNos.Core.Collections
             }
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                ClearAll();
-                Lock.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
-            }
-        }
-
         /// <summary>
         /// Checks if collection contains spesified key.
         /// </summary>
@@ -186,6 +167,16 @@ namespace OpenNos.Core.Collections
             finally
             {
                 Lock.ExitReadLock();
+            }
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
             }
         }
 
@@ -245,6 +236,15 @@ namespace OpenNos.Core.Collections
             finally
             {
                 Lock.ExitWriteLock();
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ClearAll();
+                Lock.Dispose();
             }
         }
 

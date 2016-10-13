@@ -23,8 +23,7 @@ using System.Runtime.Remoting.Proxies;
 namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 {
     /// <summary>
-    /// Implements IScsServiceClient.
-    /// It is used to manage and monitor a service client.
+    /// Implements IScsServiceClient. It is used to manage and monitor a service client.
     /// </summary>
     public class ScsServiceClient : IScsServiceClient
     {

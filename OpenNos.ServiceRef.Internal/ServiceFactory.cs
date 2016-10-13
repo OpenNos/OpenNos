@@ -15,7 +15,6 @@
 using OpenNos.ServiceRef.Internal.CommunicationServiceReference;
 using System;
 using System.ServiceModel;
-using System.ServiceModel.Description;
 
 namespace OpenNos.ServiceRef.Internal
 {
@@ -70,11 +69,12 @@ namespace OpenNos.ServiceRef.Internal
         {
             get
             {
-                // reinitialize faulted communicationservice (maybe we should find the cause of the faulted state)
-                if (!_useMock && _communicationServiceClient != null && _communicationServiceClient is CommunicationServiceClient 
+                // reinitialize faulted communicationservice (maybe we should find the cause of the
+                // faulted state)
+                if (!_useMock && _communicationServiceClient != null && _communicationServiceClient is CommunicationServiceClient
                     && ((CommunicationServiceClient)_communicationServiceClient).State == CommunicationState.Faulted)
                 {
-                     _communicationServiceClient = new CommunicationServiceClient(_instanceContext);
+                    _communicationServiceClient = new CommunicationServiceClient(_instanceContext);
                 }
 
                 if (_communicationServiceClient == null)
@@ -92,6 +92,10 @@ namespace OpenNos.ServiceRef.Internal
                 return _communicationServiceClient;
             }
         }
+
+        #endregion
+
+        #region Methods
 
         public void Initialize()
         {

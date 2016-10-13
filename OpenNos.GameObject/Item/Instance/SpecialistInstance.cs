@@ -21,9 +21,13 @@ namespace OpenNos.GameObject
 {
     public class SpecialistInstance : WearableInstance, ISpecialistInstance
     {
-        #region Instantiation
+        #region Members
 
         private Random _random;
+
+        #endregion
+
+        #region Instantiation
 
         public SpecialistInstance()
         {

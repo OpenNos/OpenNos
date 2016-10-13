@@ -409,15 +409,15 @@ namespace OpenNos.GameObject
             return new List<DropDTO>();
         }
 
+        public Group GetGroupByCharacterId(long characterId)
+        {
+            return Groups.SingleOrDefault(g => g.IsMemberOfGroup(characterId));
+        }
+
         public long GetNextGroupId()
         {
             lastGroupId++;
             return lastGroupId;
-        }
-
-        public Group GetGroupByCharacterId(long characterId)
-        {
-            return Groups.SingleOrDefault(g => g.IsMemberOfGroup(characterId));
         }
 
         public T GetProperty<T>(string charName, string property)
