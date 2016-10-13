@@ -47,15 +47,42 @@ namespace OpenNos.GameObject
                             Session.SendPacket(Session.Character.GenerateRest());
                         }
                         if (DelayUsed)
-                        {
-                            WearableInstance Equip = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
-                            if (Equip != null && Equip.IsFixed)
+                        {                            
+                            bool isUsed = false;
+                            switch (Inv.ItemInstance.ItemVNum)
                             {
-                                Equip.IsFixed = false;
-                                Session.SendPacket(Session.Character.GenerateEff(3003));
-                                Session.SendPacket(Session.Character.GenerateGuri(17, 1, 19));
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
-
+                                case 1219:
+                                    WearableInstance equip = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
+                                    if (equip != null && equip.IsFixed)
+                                    {
+                                        equip.IsFixed = false;
+                                        Session.SendPacket(Session.Character.GenerateEff(3003));
+                                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(17, 1, 19));
+                                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
+                                        isUsed = true;
+                                    }
+                                    break;
+                                case 1365:
+                                    SpecialistInstance specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
+                                    if (specialist != null && specialist.Rare == -2)
+                                    {
+                                        specialist.Rare = 0;
+                                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
+                                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(13, 1, 1));
+                                        Session.Character.SpPoint = 10000;
+                                        Session.SendPacket(Session.Character.GenerateSpPoint());
+                                        Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (Domain.InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                        isUsed = true;
+                                    }
+                                    break;
+                            }
+                            
+                            if (!isUsed)
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_NOT_FIXED"), 11));
+                            }
+                            else
+                            {
                                 Inv.ItemInstance.Amount--;
                                 if (Inv.ItemInstance.Amount > 0)
                                 {
@@ -66,10 +93,6 @@ namespace OpenNos.GameObject
                                     Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
                                     Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                                 }
-                            }
-                            else
-                            {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_NOT_FIXED") , 11));
                             }
                         }
                         else

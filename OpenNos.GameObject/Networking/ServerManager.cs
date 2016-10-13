@@ -839,7 +839,6 @@ namespace OpenNos.GameObject
                 }
                 catch (Exception)
                 {
-
                 }
 
                 await Task.Delay(2000);

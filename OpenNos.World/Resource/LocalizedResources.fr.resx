@@ -985,4 +985,7 @@ Veux-tu le porter ?</value>
   <data name="QNA_ITEM" xml:space="preserve">
     <value>Souhaites-tu utiliser cet objet ?</value>
   </data>
+  <data name="SP_RESURRECTED" xml:space="preserve">
+    <value>L'âme reprend vie.</value>
+  </data>
 </root>
