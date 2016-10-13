@@ -988,4 +988,7 @@ Veux-tu le porter ?</value>
   <data name="SP_RESURRECTED" xml:space="preserve">
     <value>L'âme reprend vie.</value>
   </data>
+  <data name="ITEM_IS_NOT_FIXED" xml:space="preserve">
+    <value>Tu ne peux pas l'utiliser. Ton objet ne remplis pas les conditions</value>
+  </data>
 </root>
