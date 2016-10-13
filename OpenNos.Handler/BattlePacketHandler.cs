@@ -772,7 +772,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Random random = new Random();
+            Random random = new Random(monsterid);
 
             // owner set
             long? Owner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?)null;
