@@ -415,6 +415,11 @@ namespace OpenNos.GameObject
             return lastGroupId;
         }
 
+        public Group GetGroupByCharacterId(long characterId)
+        {
+            return Groups.SingleOrDefault(g => g.IsMemberOfGroup(characterId));
+        }
+
         public T GetProperty<T>(string charName, string property)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
@@ -693,6 +698,16 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool IsCharacterMemberOfGroup(long characterId)
+        {
+            return Groups.Any(g => g.IsMemberOfGroup(characterId));
+        }
+
+        public bool IsCharactersGroupFull(long characterId)
+        {
+            return (Groups.Any(g => g.IsMemberOfGroup(characterId) && g.CharacterCount == 3));
+        }
+
         // Server
         public bool Kick(string characterName)
         {
@@ -839,7 +854,6 @@ namespace OpenNos.GameObject
                 }
                 catch (Exception)
                 {
-
                 }
 
                 await Task.Delay(2000);

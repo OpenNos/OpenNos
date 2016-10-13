@@ -299,17 +299,6 @@ namespace OpenNos.GameObject
 
         public int MaxSnack { get; set; }
 
-        /// <summary>
-        /// Checks if the current character is in range of the given position
-        /// </summary>
-        /// <param name="xCoordinate">The x coordinate of the object to check.</param>
-        /// <param name="yCoordinate">The y coordinate of the object to check.</param>
-        /// <returns>True if the object is in Range, False if not.</returns>
-        internal bool IsInRange(int xCoordinate, int yCoordinate)
-        {
-            return Math.Abs(MapX - xCoordinate) <= 50 && Math.Abs(MapY - yCoordinate) <= 50;
-        }
-
         public int MinDistance { get; set; }
 
         public int MinHit { get; set; }
@@ -1279,18 +1268,18 @@ namespace OpenNos.GameObject
         public string GenerateStat()
         {
             double option =
-                (WhisperBlocked ? Math.Pow(2, (int)ConfigType.WhisperBlocked - 1) : 0)
-                + (FamilyRequestBlocked ? Math.Pow(2, (int)ConfigType.FamilyRequestBlocked - 1) : 0)
-                + (!MouseAimLock ? Math.Pow(2, (int)ConfigType.MouseAimLock - 1) : 0)
-                + (MinilandInviteBlocked ? Math.Pow(2, (int)ConfigType.MinilandInviteBlocked - 1) : 0)
-                + (ExchangeBlocked ? Math.Pow(2, (int)ConfigType.ExchangeBlocked - 1) : 0)
-                + (FriendRequestBlocked ? Math.Pow(2, (int)ConfigType.FriendRequestBlocked - 1) : 0)
-                + (EmoticonsBlocked ? Math.Pow(2, (int)ConfigType.EmoticonsBlocked - 1) : 0)
-                + (HpBlocked ? Math.Pow(2, (int)ConfigType.HpBlocked - 1) : 0)
-                + (BuffBlocked ? Math.Pow(2, (int)ConfigType.BuffBlocked - 1) : 0)
-                + (GroupRequestBlocked ? Math.Pow(2, (int)ConfigType.GroupRequestBlocked - 1) : 0)
-                + (HeroChatBlocked ? Math.Pow(2, (int)ConfigType.HeroChatBlocked - 1) : 0)
-                + (QuickGetUp ? Math.Pow(2, (int)ConfigType.QuickGetUp - 1) : 0);
+                (WhisperBlocked ? Math.Pow(2, (int)CharacterOption.WhisperBlocked - 1) : 0)
+                + (FamilyRequestBlocked ? Math.Pow(2, (int)CharacterOption.FamilyRequestBlocked - 1) : 0)
+                + (!MouseAimLock ? Math.Pow(2, (int)CharacterOption.MouseAimLock - 1) : 0)
+                + (MinilandInviteBlocked ? Math.Pow(2, (int)CharacterOption.MinilandInviteBlocked - 1) : 0)
+                + (ExchangeBlocked ? Math.Pow(2, (int)CharacterOption.ExchangeBlocked - 1) : 0)
+                + (FriendRequestBlocked ? Math.Pow(2, (int)CharacterOption.FriendRequestBlocked - 1) : 0)
+                + (EmoticonsBlocked ? Math.Pow(2, (int)CharacterOption.EmoticonsBlocked - 1) : 0)
+                + (HpBlocked ? Math.Pow(2, (int)CharacterOption.HpBlocked - 1) : 0)
+                + (BuffBlocked ? Math.Pow(2, (int)CharacterOption.BuffBlocked - 1) : 0)
+                + (GroupRequestBlocked ? Math.Pow(2, (int)CharacterOption.GroupRequestBlocked - 1) : 0)
+                + (HeroChatBlocked ? Math.Pow(2, (int)CharacterOption.HeroChatBlocked - 1) : 0)
+                + (QuickGetUp ? Math.Pow(2, (int)CharacterOption.QuickGetUp - 1) : 0);
             return $"stat {Hp} {HPLoad()} {Mp} {MPLoad()} 0 {option}";
         }
 
@@ -1964,6 +1953,16 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void LoadSendedMail()
+        {
+            foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
+            {
+                MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
+
+                Session.SendPacket(Session.Character.GeneratePost(mail, 2));
+            }
+        }
+
         public void LoadSkills()
         {
             Skills = new List<CharacterSkill>();
@@ -2067,16 +2066,6 @@ namespace OpenNos.GameObject
             }
 
             LastMailRefresh = DateTime.Now;
-        }
-
-        public void LoadSendedMail()
-        {
-            foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
-            {
-                MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
-
-                Session.SendPacket(Session.Character.GeneratePost(mail, 2));
-            }
         }
 
         public void RemoveVehicle()
@@ -2370,6 +2359,17 @@ namespace OpenNos.GameObject
         public double XPLoad()
         {
             return CharacterHelper.XPData[Level - 1];
+        }
+
+        /// <summary>
+        /// Checks if the current character is in range of the given position
+        /// </summary>
+        /// <param name="xCoordinate">The x coordinate of the object to check.</param>
+        /// <param name="yCoordinate">The y coordinate of the object to check.</param>
+        /// <returns>True if the object is in Range, False if not.</returns>
+        internal bool IsInRange(int xCoordinate, int yCoordinate)
+        {
+            return Math.Abs(MapX - xCoordinate) <= 50 && Math.Abs(MapY - yCoordinate) <= 50;
         }
 
         private object HeroXPLoad()
