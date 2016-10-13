@@ -553,7 +553,7 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
                     wearable.Upgrade++;
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, this.Rare, 0, this.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, wearable.Upgrade, 0));
                 }
                 else
                 {

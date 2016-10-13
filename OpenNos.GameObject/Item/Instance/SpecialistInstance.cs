@@ -494,7 +494,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
                 wearable.Upgrade++;
-                Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, 0, 0));
+                Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, this.SpStoneUpgrade));
             }
             else
             {
@@ -509,7 +509,7 @@ namespace OpenNos.GameObject
                     wearable.Rare = (sbyte)-2;
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 11));
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 0));
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, this.Rare, 0, this.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, this.SpStoneUpgrade));
                 }
             }
             Session.Character.Gold = Session.Character.Gold - goldprice[this.Upgrade];
