@@ -33,6 +33,7 @@ namespace OpenNos.GameObject
         #region Members
 
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
+        private bool _disposed;
         private short[,] _grid;
         private List<int> _mapMonsterIds;
         private List<MapNpc> _npcs;
@@ -212,6 +213,16 @@ namespace OpenNos.GameObject
                 }
             }
             return grid;
+        }
+
+        public new void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
         }
 
         public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY)
@@ -538,6 +549,14 @@ namespace OpenNos.GameObject
             }
             Path.RemoveAt(0);
             return Path;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _monsters.Dispose();
+            }
         }
 
         private void CharacterLifeManager()

@@ -270,7 +270,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
 
-            //serialization hack -> dialog answer packet isnt supported by PacketFactory atm
+            // serialization hack -> dialog answer packet isnt supported by PacketFactory atm
             PJoinPacket pjoinPacket = PacketFactory.Serialize<PJoinPacket>(packet.Replace('^', ' ').Replace('#', ' '), true);
             bool createNewGroup = true;
 
@@ -285,17 +285,17 @@ namespace OpenNos.Handler
 
                 if (targetSession == null)
                 {
-                    //target session with character id does not exist
+                    // target session with character id does not exist
                     return;
                 }
 
-                //accepted, join the group
+                // accepted, join the group
                 if (pjoinPacket.RequestType.Equals(GroupRequestType.Accepted))
                 {
                     if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId) &&
                         ServerManager.Instance.IsCharacterMemberOfGroup(pjoinPacket.CharacterId))
                     {
-                        //everyone is in group, return
+                        // everyone is in group, return
                         return;
                     }
 
@@ -305,10 +305,10 @@ namespace OpenNos.Handler
                         return;
                     }
 
-                    //get group and add to group
+                    // get group and add to group
                     if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId))
                     {
-                        //target joins source
+                        // target joins source
                         Group currentGroup = ServerManager.Instance.GetGroupByCharacterId(Session.Character.CharacterId);
 
                         if (currentGroup != null)
@@ -320,7 +320,7 @@ namespace OpenNos.Handler
                     }
                     else if (ServerManager.Instance.IsCharacterMemberOfGroup(pjoinPacket.CharacterId))
                     {
-                        //source joins target
+                        // source joins target
                         Group currentGroup = ServerManager.Instance.GetGroupByCharacterId(pjoinPacket.CharacterId);
 
                         if (currentGroup != null)
@@ -1018,8 +1018,9 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public void StartGame(string packet)
         {
-            if (Session.IsOnMap || !Session.HasSelectedCharacter) // character should have been selected in SelectCharacter
+            if (Session.IsOnMap || !Session.HasSelectedCharacter)
             {
+                // character should have been selected in SelectCharacter
                 return;
             }
 

@@ -64,7 +64,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         private ConcurrentQueue<byte[]> _sendBuffer;
 
         private CancellationTokenSource _sendCancellationToken = new CancellationTokenSource();
+
         private Task _sendTask;
+
+        private bool _disposed;
 
         #endregion
 
@@ -118,7 +121,31 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 await Task.Delay(period, _sendCancellationToken);
 
                 if (!_sendCancellationToken.IsCancellationRequested)
+                {
                     action();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calls Disconnect method.
+        /// </summary>
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Disconnect();
+                _sendCancellationToken.Dispose();   
             }
         }
 
@@ -162,7 +189,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 if (WireProtocol != null)
                 {
                     IEnumerable<byte> outgoingPacket = new List<byte>();
-                    for (int i = 0; i < 30; i++) //send maximal 30 packets at once
+
+                    // send maximal 30 packets at once
+                    for (int i = 0; i < 30; i++) 
                     {
                         byte[] message;
                         if (_sendBuffer.TryDequeue(out message) && message != null)
@@ -182,9 +211,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                //disconnect
+                // disconnect
             }
 
             if (!_clientSocket.Connected)

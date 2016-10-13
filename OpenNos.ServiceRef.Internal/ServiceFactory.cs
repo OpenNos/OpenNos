@@ -24,6 +24,7 @@ namespace OpenNos.ServiceRef.Internal
 
         private static ServiceFactory _instance;
         private ICommunicationService _communicationServiceClient;
+        private bool _disposed;
         private CommunicationCallback _instanceCallback;
         private InstanceContext _instanceContext;
         private bool _useMock;
@@ -97,11 +98,29 @@ namespace OpenNos.ServiceRef.Internal
 
         #region Methods
 
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
         public void Initialize()
         {
             if (!_useMock)
             {
                 ((CommunicationServiceClient)CommunicationService).Open();
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose servicefactory
             }
         }
 

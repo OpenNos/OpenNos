@@ -29,6 +29,7 @@ namespace OpenNos.GameObject
         /// List of all connected clients.
         /// </summary>
         private readonly ThreadSafeSortedList<long, ClientSession> _sessions;
+        private bool _disposed;
 
         #endregion
 
@@ -65,6 +66,24 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _sessions.Dispose();
+            }
+        }
 
         public void Broadcast(string packet, int delay = 0)
         {
