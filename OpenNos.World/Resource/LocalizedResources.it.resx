@@ -990,4 +990,7 @@
   <data name="QNA_ITEM" xml:space="preserve">
     <value>Vuoi utilizzare davvero quest'oggetto?</value>
   </data>
+  <data name="SP_RESURRECTED" xml:space="preserve">
+    <value>L'anima della SP ha ripreso vita!</value>
+  </data>
 </root>
