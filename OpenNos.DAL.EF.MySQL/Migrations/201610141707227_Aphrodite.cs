@@ -612,10 +612,11 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         SpStoneUpgrade = c.Byte(),
                         SpWater = c.Byte(),
                         Discriminator = c.String(nullable: false, maxLength: 128, storeType: "nvarchar"),
-                        Character_CharacterId = c.Long(nullable: false),
+                        Character_CharacterId = c.Long(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Character", t => t.BoundCharacterId)
+                .ForeignKey("dbo.Character", t => t.CharacterId, cascadeDelete: true)
                 .ForeignKey("dbo.Item", t => t.ItemVNum, cascadeDelete: true)
                 .ForeignKey("dbo.Character", t => t.Character_CharacterId)
                 .Index(t => t.BoundCharacterId)
@@ -698,6 +699,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.ItemInstance", "Character_CharacterId", "dbo.Character");
             DropForeignKey("dbo.CellonOption", "WearableInstanceId", "dbo.ItemInstance");
             DropForeignKey("dbo.ItemInstance", "ItemVNum", "dbo.Item");
+            DropForeignKey("dbo.ItemInstance", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.ItemInstance", "BoundCharacterId", "dbo.Character");
             DropForeignKey("dbo.GeneralLog", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.CharacterSkill", "CharacterId", "dbo.Character");

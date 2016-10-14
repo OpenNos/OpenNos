@@ -138,11 +138,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
-                .HasMany(e => e.ItemInstance)
-                .WithRequired(e => e.Character)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Character>()
                 .HasMany(e => e.QuicklistEntry)
                 .WithRequired(e => e.Character)
                 .WillCascadeOnDelete(false);

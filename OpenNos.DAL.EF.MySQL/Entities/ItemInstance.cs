@@ -29,6 +29,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public long? BoundCharacterId { get; set; }
 
+        [ForeignKey(nameof(CharacterId))]
         public virtual Character Character { get; set; }
 
         [Index("IX_SlotAndType", 1, IsUnique = false, Order = 0)]
