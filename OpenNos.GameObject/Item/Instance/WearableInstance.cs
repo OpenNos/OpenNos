@@ -164,11 +164,11 @@ namespace OpenNos.GameObject
                         return;
                     }
                     Session.Character.Gold = Session.Character.Gold - (long)(goldprice * reducedpricefactor);
-                    if (Session.Character.InventoryList.CountItem(cellaVnum) < cella * reducedpricefactor)
+                    if (Session.Character.Inventory.CountItem(cellaVnum) < cella * reducedpricefactor)
                     {
                         return;
                     }
-                    Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (int)(cella * reducedpricefactor));
+                    Session.Character.Inventory.RemoveItemAmount(cellaVnum, (int)(cella * reducedpricefactor));
                     Session.SendPacket(Session.Character.GenerateGold());
                     break;
 
@@ -180,18 +180,18 @@ namespace OpenNos.GameObject
                         return;
                     }
                     Session.Character.Gold = Session.Character.Gold - goldprice;
-                    if (Session.Character.InventoryList.CountItem(cellaVnum) < cella)
+                    if (Session.Character.Inventory.CountItem(cellaVnum) < cella)
                     {
                         return;
                     }
-                    Session.Character.InventoryList.RemoveItemAmount(cellaVnum, cella);
+                    Session.Character.Inventory.RemoveItemAmount(cellaVnum, cella);
                     if (protection == RarifyProtection.Scroll && !isCommand)
                     {
-                        if (Session.Character.InventoryList.CountItem(scrollVnum) < 1)
+                        if (Session.Character.Inventory.CountItem(scrollVnum) < 1)
                         {
                             return;
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(scrollVnum);
+                        Session.Character.Inventory.RemoveItemAmount(scrollVnum);
                         Session.SendPacket("shop_end 2");
                     }
                     Session.SendPacket(Session.Character.GenerateGold());
@@ -316,7 +316,7 @@ namespace OpenNos.GameObject
             // don't place under else.
             if (mode != RarifyMode.Drop)
             {
-                ItemInstance inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
+                ItemInstance inventory = Session.Character.Inventory.GetInventoryByItemInstanceId(this.Id);
                 if (inventory != null)
                 {
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.Rare, 0, inventory.Upgrade, 0));
@@ -387,11 +387,11 @@ namespace OpenNos.GameObject
                     return;
                 }
                 Session.Character.Gold = Session.Character.Gold - (goldprice[this.Upgrade]);
-                if (Session.Character.InventoryList.CountItem(sandVnum) < sand[this.Upgrade])
+                if (Session.Character.Inventory.CountItem(sandVnum) < sand[this.Upgrade])
                 {
                     return;
                 }
-                Session.Character.InventoryList.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
+                Session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
 
                 int rnd = _random.Next(100);
                 if (rnd <= upsuccess[this.Upgrade + itemToSum.Upgrade])
@@ -407,7 +407,7 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                     Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
-                    ItemInstance inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
+                    ItemInstance inventory = Session.Character.Inventory.GetInventoryByItemInstanceId(this.Id);
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, 1, inventory.Type, inventory.Slot, 0, 0, this.Upgrade, 0));
                     Session.SendPacket(Session.Character.GenerateGold());
                 }
@@ -462,34 +462,34 @@ namespace OpenNos.GameObject
                             return;
                         }
                         Session.Character.Gold = Session.Character.Gold - (long)(goldprice[this.Upgrade] * reducedpricefactor);
-                        if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[this.Upgrade] * reducedpricefactor)
+                        if (Session.Character.Inventory.CountItem(cellaVnum) < cella[this.Upgrade] * reducedpricefactor)
                         {
                             return;
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (int)(cella[this.Upgrade] * reducedpricefactor));
+                        Session.Character.Inventory.RemoveItemAmount(cellaVnum, (int)(cella[this.Upgrade] * reducedpricefactor));
                         if (this.Upgrade <= 5)
                         {
-                            if (Session.Character.InventoryList.CountItem(gemVnum) < gem[this.Upgrade] * reducedpricefactor)
+                            if (Session.Character.Inventory.CountItem(gemVnum) < gem[this.Upgrade] * reducedpricefactor)
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (int)(gem[this.Upgrade] * reducedpricefactor));
+                            Session.Character.Inventory.RemoveItemAmount(gemVnum, (int)(gem[this.Upgrade] * reducedpricefactor));
                         }
                         else
                         {
-                            if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[this.Upgrade] * reducedpricefactor)
+                            if (Session.Character.Inventory.CountItem(gemFullVnum) < gem[this.Upgrade] * reducedpricefactor)
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (int)(gem[this.Upgrade] * reducedpricefactor));
+                            Session.Character.Inventory.RemoveItemAmount(gemFullVnum, (int)(gem[this.Upgrade] * reducedpricefactor));
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand)
                         {
-                            if (Session.Character.InventoryList.CountItem(goldScrollVnum) < 1)
+                            if (Session.Character.Inventory.CountItem(goldScrollVnum) < 1)
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(goldScrollVnum);
+                            Session.Character.Inventory.RemoveItemAmount(goldScrollVnum);
                             Session.SendPacket("shop_end 2");
                         }
                         Session.SendPacket(Session.Character.GenerateGold());
@@ -503,41 +503,41 @@ namespace OpenNos.GameObject
                             return;
                         }
                         Session.Character.Gold = Session.Character.Gold - goldprice[this.Upgrade];
-                        if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[this.Upgrade])
+                        if (Session.Character.Inventory.CountItem(cellaVnum) < cella[this.Upgrade])
                         {
                             return;
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (cella[this.Upgrade]));
+                        Session.Character.Inventory.RemoveItemAmount(cellaVnum, (cella[this.Upgrade]));
                         if (this.Upgrade < 5)
                         {
-                            if (Session.Character.InventoryList.CountItem(gemVnum) < gem[this.Upgrade])
+                            if (Session.Character.Inventory.CountItem(gemVnum) < gem[this.Upgrade])
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (gem[this.Upgrade]));
+                            Session.Character.Inventory.RemoveItemAmount(gemVnum, (gem[this.Upgrade]));
                         }
                         else
                         {
-                            if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[this.Upgrade])
+                            if (Session.Character.Inventory.CountItem(gemFullVnum) < gem[this.Upgrade])
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (gem[this.Upgrade]));
+                            Session.Character.Inventory.RemoveItemAmount(gemFullVnum, (gem[this.Upgrade]));
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand)
                         {
-                            if (Session.Character.InventoryList.CountItem(normalScrollVnum) < 1)
+                            if (Session.Character.Inventory.CountItem(normalScrollVnum) < 1)
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(normalScrollVnum);
+                            Session.Character.Inventory.RemoveItemAmount(normalScrollVnum);
                             Session.SendPacket("shop_end 2");
                         }
                         Session.SendPacket(Session.Character.GenerateGold());
                         break;
                 }
-                WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
-                ItemInstance inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
+                WearableInstance wearable = Session.Character.Inventory.LoadByItemInstance<WearableInstance>(this.Id);
+                ItemInstance inventory = Session.Character.Inventory.GetInventoryByItemInstanceId(this.Id);
 
                 int rnd = _random.Next(100);
                 if (rnd <= upfix[this.Upgrade])

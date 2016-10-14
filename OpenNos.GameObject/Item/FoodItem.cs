@@ -101,7 +101,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
                             session.SendPacket(session.Character.GenerateInventoryAdd(1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         }
                     }

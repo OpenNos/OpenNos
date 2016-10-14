@@ -44,7 +44,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         }
                     }
@@ -71,7 +71,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         }
                     }
@@ -97,7 +97,7 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                                Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
                                 Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                             }
                         }
@@ -123,7 +123,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         }
                     }
@@ -140,7 +140,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         }
                     }
@@ -172,7 +172,7 @@ namespace OpenNos.GameObject
                 case 30:
                     if (this != null && !Session.Character.IsVehicled)
                     {
-                        WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
+                        WearableInstance wig = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
                         if (wig != null)
                         {
                             wig.Design = (byte)random.Next(0, 15);
@@ -186,7 +186,7 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                                Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
                                 Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                             }
                         }

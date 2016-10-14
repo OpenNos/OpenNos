@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    if (EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown && session.Character.EquipmentList.LoadInventoryBySlotAndType((byte)EquipmentType.Sp, InventoryType.Sp) != null)
+                    if (EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown && session.Character.Equipments.LoadInventoryBySlotAndType((byte)EquipmentType.Sp, InventoryType.Sp) != null)
                     {
                         session.SendPacket(session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage)), 0));
                         return;
@@ -79,7 +79,7 @@ namespace OpenNos.GameObject
 
                     if (session.Character.UseSp)
                     {
-                        SpecialistInstance sp = session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(
+                        SpecialistInstance sp = session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>(
                                 (byte)EquipmentType.Sp,
                                 InventoryType.Equipment);
 
@@ -102,7 +102,7 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    ItemInstance equip = session.Character.EquipmentList.LoadInventoryBySlotAndType(EquipmentSlot, InventoryType.Equipment);
+                    ItemInstance equip = session.Character.Equipments.LoadInventoryBySlotAndType(EquipmentSlot, InventoryType.Equipment);
                     if (EquipmentSlot == (byte)EquipmentType.Amulet)
                     {
                         session.SendPacket(session.Character.GenerateEff(39));
@@ -111,9 +111,9 @@ namespace OpenNos.GameObject
 
                     if (equip == null)
                     {
-                        session.Character.EquipmentList.AddToInventoryWithSlotAndType(inventory, InventoryType.Equipment, EquipmentSlot);
+                        session.Character.Equipments.AddToInventoryWithSlotAndType(inventory, InventoryType.Equipment, EquipmentSlot);
                         session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
-                        session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
+                        session.Character.Inventory.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
                         session.SendPacket(session.Character.GenerateStatChar());
                         session.CurrentMap?.Broadcast(session.Character.GenerateEq());
                         session.SendPacket(session.Character.GenerateEquipment());
@@ -121,11 +121,11 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
-                        session.Character.EquipmentList.DeleteFromSlotAndType(equip.Slot, equip.Type);
+                        session.Character.Inventory.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
+                        session.Character.Equipments.DeleteFromSlotAndType(equip.Slot, equip.Type);
                         session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
-                        session.Character.EquipmentList.AddToInventoryWithSlotAndType(inventory, InventoryType.Equipment, EquipmentSlot);
-                        session.Character.InventoryList.AddToInventoryWithSlotAndType(equip, type, slot);
+                        session.Character.Equipments.AddToInventoryWithSlotAndType(inventory, InventoryType.Equipment, EquipmentSlot);
+                        session.Character.Inventory.AddToInventoryWithSlotAndType(equip, type, slot);
                         session.SendPacket(session.Character.GenerateInventoryAdd(equip.ItemVNum, equip.Amount, type, slot, equip.Rare, equip.Design, equip.Upgrade, 0));
                         session.SendPacket(session.Character.GenerateStatChar());
                         session.CurrentMap?.Broadcast(session.Character.GenerateEq());
@@ -135,7 +135,7 @@ namespace OpenNos.GameObject
 
                     if (EquipmentSlot == (byte)EquipmentType.Fairy)
                     {
-                        WearableInstance fairy = session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Equipment);
+                        WearableInstance fairy = session.Character.Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Equipment);
                         session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXpData((fairy.ElementRate + fairy.Item.ElementRate))), 10));
                     }
                     break;

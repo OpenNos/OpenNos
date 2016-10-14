@@ -38,42 +38,12 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Methods
 
-        public override DeleteResult Delete(Guid id)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    ItemInstance entity = context.Set<ItemInstance>().FirstOrDefault(i => i.Id.Equals(id));
-                    if (entity != null)
-                    {
-                        context.Set<ItemInstance>().Remove(entity);
-                        context.SaveChanges();
-                    }
-                    return DeleteResult.Deleted;
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return DeleteResult.Error;
-            }
-        }
-
         public DeleteResult DeleteFromSlotAndType(long characterId, short slot, InventoryType type)
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    ItemInstance itemInstance = context.ItemInstance.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId));
-                    if (itemInstance != null)
-                    {
-                        context.ItemInstance.Remove(itemInstance);
-                        context.SaveChanges();
-                    }
-                    return DeleteResult.Deleted;
-                }
+                ItemInstanceDTO dto = LoadBySlotAndType(characterId, slot, type);
+                return Delete(dto.Id);
             }
             catch (Exception e)
             {
@@ -117,26 +87,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (ItemInstance itemInstance in context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)))
+                foreach (var itemInstance in context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)))
                 {
                     yield return _mapper.Map<ItemInstanceDTO>(itemInstance);
                 }
-            }
-        }
-
-        public ItemInstanceDTO LoadById(long inventoryId)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    return _mapper.Map<ItemInstanceDTO>(context.ItemInstance.Single(i => i.Id.Equals(inventoryId)));
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return null;
             }
         }
 
@@ -160,7 +114,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (ItemInstance itemInstance in context.ItemInstance.Where(i => i.Type == type && i.CharacterId.Equals(characterId)))
+                foreach (var itemInstance in context.ItemInstance.Where(i => i.Type == type && i.CharacterId.Equals(characterId)))
                 {
                     yield return _mapper.Map<ItemInstanceDTO>(itemInstance);
                 }
@@ -202,7 +156,7 @@ namespace OpenNos.DAL.EF.MySQL
             try
             {
                 Guid primaryKey = itemInstance.Id;
-                ItemInstance entity = context.ItemInstance.SingleOrDefault(c => c.Id == primaryKey);
+                var entity = context.ItemInstance.SingleOrDefault(c => c.Id == primaryKey);
 
                 if (entity == null)
                 {
@@ -225,7 +179,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             try
             {
-                ItemInstance entity = _mapper.Map<ItemInstance>(dto);
+                var entity = _mapper.Map<ItemInstance>(dto);
                 KeyValuePair<Type, Type> targetMapping = itemInstanceMappings.FirstOrDefault(k => k.Key.Equals(dto.GetType()));
                 if (targetMapping.Key != null)
                 {

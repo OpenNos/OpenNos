@@ -272,7 +272,7 @@ namespace OpenNos.GameObject
             clientSession.CurrentMap.UserShops[shop.Key].Sell += shopitem.Price * amount;
             shopOwnerSession.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{shopitem.Amount}");
 
-            ItemInstance inv = shopOwnerSession.Character.InventoryList.RemoveItemAmountFromInventory(amount, id);
+            ItemInstance inv = shopOwnerSession.Character.Inventory.RemoveItemAmountFromInventory(amount, id);
 
             if (inv != null)
             {
@@ -387,11 +387,11 @@ namespace OpenNos.GameObject
             }
             foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
             {
-                ItemInstance invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.Id == item.Id);
+                ItemInstance invtemp = c2Session.Character.Inventory.FirstOrDefault(s => s.Id == item.Id);
                 short slot = invtemp.Slot;
                 InventoryType type = invtemp.Type;
 
-                ItemInstance inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
+                ItemInstance inv = c2Session.Character.Inventory.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
                 if (inv != null)
                 {
                     // Send reduced-amount to owners inventory
@@ -408,7 +408,7 @@ namespace OpenNos.GameObject
             {
                 ItemInstance item2 = item.DeepCopy();
                 item2.Id = Guid.NewGuid();
-                ItemInstance inv = c2Session.Character.InventoryList.AddToInventory(item2);
+                ItemInstance inv = c2Session.Character.Inventory.AddToInventory(item2);
                 if (inv == null || inv.Slot == -1)
                 {
                     continue;

@@ -252,7 +252,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum);
+                ItemInstance newInstance = new ItemInstance() { Amount = 1, ItemVNum = drop.ItemVNum };
                 newInstance.Amount = drop.Amount;
 
                 droppedItem = new MapItem(localMapX, localMapY)
@@ -581,7 +581,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        WearableInstance amulet = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Equipment);
+                        WearableInstance amulet = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Equipment);
                         if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
                         {
                             if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
