@@ -473,7 +473,7 @@ namespace OpenNos.GameObject
             Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.Upgrade]));
 
             WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
-            Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
+            ItemInstance inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
             int rnd = _random.Next(100);
             if (rnd <= upfail[this.Upgrade])
             {

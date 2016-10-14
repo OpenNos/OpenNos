@@ -12,11 +12,12 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
 using System;
 
 namespace OpenNos.Data
 {
-    public class ItemInstanceDTO : IItemInstance
+    public class ItemInstanceDTO : SynchronizableBaseDTO, IItemInstance
     {
         #region Properties
 
@@ -24,17 +25,21 @@ namespace OpenNos.Data
 
         public long? BoundCharacterId { get; set; }
 
+        public long CharacterId { get; set; }
+
         public byte Design { get; set; }
 
         public int DurabilityPoint { get; set; }
-
-        public Guid Id { get; set; }
 
         public DateTime? ItemDeleteTime { get; set; }
 
         public short ItemVNum { get; set; }
 
         public sbyte Rare { get; set; }
+
+        public short Slot { get; set; }
+
+        public InventoryType Type { get; set; }
 
         public byte Upgrade { get; set; }
 

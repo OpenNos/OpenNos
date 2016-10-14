@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
-    public class InventoryDAO : SynchronizableBaseDAO<InventoryDTO>, IInventoryDAO
+    public class ItemInstanceDAO : SynchronizableBaseDAO<ItemInstanceDTO>, IItemInstanceDAO
     {
         #region Members
 
@@ -37,17 +37,17 @@ namespace OpenNos.DAL.Mock
             _mapper = config.CreateMapper();
         }
 
-        public IEnumerable<InventoryDTO> LoadByCharacterId(long characterId)
+        public IEnumerable<ItemInstanceDTO> LoadByCharacterId(long characterId)
         {
-            return Enumerable.Empty<InventoryDTO>();
+            return Enumerable.Empty<ItemInstanceDTO>();
         }
 
-        public InventoryDTO LoadBySlotAndType(long characterId, short slot, Domain.InventoryType type)
+        public ItemInstanceDTO LoadBySlotAndType(long characterId, short slot, Domain.InventoryType type)
         {
             return Container.SingleOrDefault(i => i.CharacterId == characterId && i.Slot == slot && i.Type == type);
         }
 
-        public IEnumerable<InventoryDTO> LoadByType(long characterId, Domain.InventoryType type)
+        public IEnumerable<ItemInstanceDTO> LoadByType(long characterId, Domain.InventoryType type)
         {
             return Container.Where(i => i.CharacterId == characterId && i.Type == type);
         }

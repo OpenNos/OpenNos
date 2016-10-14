@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false, string[] packetsplit = null)
+        public override void Use(ClientSession Session, ref ItemInstance Inv, bool DelayUsed = false, string[] packetsplit = null)
         {
             if (EffectValue != 0)
             {
@@ -49,7 +49,7 @@ namespace OpenNos.GameObject
                         if (DelayUsed)
                         {                            
                             bool isUsed = false;
-                            switch (Inv.ItemInstance.ItemVNum)
+                            switch (Inv.ItemVNum)
                             {
                                 case 1219:
                                     WearableInstance equip = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
@@ -83,10 +83,10 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                Inv.ItemInstance.Amount--;
-                                if (Inv.ItemInstance.Amount > 0)
+                                Inv.Amount--;
+                                if (Inv.Amount > 0)
                                 {
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                                 }
                                 else
                                 {

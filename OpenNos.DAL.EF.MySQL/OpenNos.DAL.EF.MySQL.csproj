@@ -94,7 +94,6 @@
     <Compile Include="Entities\Drop.cs" />
     <Compile Include="DropDAO.cs" />
     <Compile Include="Entities\GeneralLog.cs" />
-    <Compile Include="Entities\Inventory.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\ItemInstance.cs" />
     <Compile Include="Entities\Mail.cs" />
@@ -116,9 +115,9 @@
     <Compile Include="Entities\NpcMonsterSkill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201610081510034_Aphrodite.cs" />
-    <Compile Include="Migrations\201610081510034_Aphrodite.Designer.cs">
-      <DependentUpon>201610081510034_Aphrodite.cs</DependentUpon>
+    <Compile Include="Migrations\201610141651596_Aphrodite.cs" />
+    <Compile Include="Migrations\201610141651596_Aphrodite.Designer.cs">
+      <DependentUpon>201610141651596_Aphrodite.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -134,7 +133,7 @@
     <Compile Include="Entities\Respawn.cs" />
     <Compile Include="RespawnDAO.cs" />
     <Compile Include="GeneralLogDAO.cs" />
-    <Compile Include="InventoryDAO.cs" />
+    <Compile Include="ItemInstanceDAO.cs" />
     <Compile Include="Entities\Shop.cs" />
     <Compile Include="ShopDAO.cs" />
     <Compile Include="Entities\ShopItem.cs" />
@@ -198,8 +197,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201610081510034_Aphrodite.resx">
-      <DependentUpon>201610081510034_Aphrodite.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201610141651596_Aphrodite.resx">
+      <DependentUpon>201610141651596_Aphrodite.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

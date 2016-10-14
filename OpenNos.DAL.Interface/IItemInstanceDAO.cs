@@ -13,34 +13,27 @@
  */
 
 using OpenNos.Data;
+using OpenNos.Domain;
+using System;
+using System.Collections.Generic;
 
-namespace OpenNos.GameObject
+namespace OpenNos.DAL.Interface
 {
-    public class Inventory : InventoryDTO
+    public interface IItemInstanceDAO : ISynchronizableBaseDAO<ItemInstanceDTO>
     {
-        #region Instantiation
-
-        public Inventory()
-        {
-        }
-
-        public Inventory(InventoryDTO inventory)
-        {
-            this.CharacterId = inventory.CharacterId;
-            this.Slot = inventory.Slot;
-            this.Type = inventory.Type;
-            this.ItemInstance = inventory.ItemInstance;
-            this.Id = inventory.Id;
-        }
-
-        #endregion
-
         #region Methods
 
-        internal Inventory DeepCopy()
-        {
-            return (Inventory)this.MemberwiseClone();
-        }
+        void InitializeMapper(Type baseType);
+
+        IEnumerable<ItemInstanceDTO> LoadByCharacterId(long characterId);
+
+        ItemInstanceDTO LoadBySlotAndType(long characterId, short slot, InventoryType type);
+
+        IEnumerable<ItemInstanceDTO> LoadByType(long characterId, InventoryType type);
+
+        IEnumerable<Guid> LoadKeysByCharacterId(long characterId);
+
+        void RegisterMapping(Type gameObjectType);
 
         #endregion
     }

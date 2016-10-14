@@ -50,8 +50,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
 
         public virtual DbSet<GeneralLog> GeneralLog { get; set; }
 
-        public virtual DbSet<Inventory> Inventory { get; set; }
-
         public virtual DbSet<Item> Item { get; set; }
 
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
@@ -109,10 +107,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
                  .Map<SpecialistInstance>(m => m.Requires("SpecialistInstance"))
                  .Map<UsableInstance>(m => m.Requires("UsableInstance"));
 
-            modelBuilder.Entity<ItemInstance>()
-               .HasOptional(ii => ii.Inventory)
-               .WithRequired(inv => inv.ItemInstance);
-
             modelBuilder.Entity<Account>()
                 .Property(e => e.Password)
                 .IsUnicode(false);
@@ -144,7 +138,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
-                .HasMany(e => e.Inventory)
+                .HasMany(e => e.ItemInstance)
                 .WithRequired(e => e.Character)
                 .WillCascadeOnDelete(false);
 

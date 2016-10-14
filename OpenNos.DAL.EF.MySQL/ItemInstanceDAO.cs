@@ -27,7 +27,7 @@ using System.Reflection;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class InventoryDAO : SynchronizableBaseDAO<Inventory, InventoryDTO>, IInventoryDAO
+    public class ItemInstanceDAO : SynchronizableBaseDAO<ItemInstance, ItemInstanceDTO>, IItemInstanceDAO
     {
         #region Members
 
@@ -44,12 +44,10 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Inventory entity = context.Set<Inventory>().FirstOrDefault(i => i.Id.Equals(id));
-                    ItemInstance instance = context.Set<ItemInstance>().FirstOrDefault(i => i.Id.Equals(id));
+                    ItemInstance entity = context.Set<ItemInstance>().FirstOrDefault(i => i.Id.Equals(id));
                     if (entity != null)
                     {
-                        context.Set<Inventory>().Remove(entity);
-                        context.Set<ItemInstance>().Remove(instance);
+                        context.Set<ItemInstance>().Remove(entity);
                         context.SaveChanges();
                     }
                     return DeleteResult.Deleted;
@@ -68,12 +66,10 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Inventory inv = context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId));
-                    ItemInstance invItem = context.ItemInstance.FirstOrDefault(i => i.Inventory.Id == inv.Id);
-                    if (inv != null)
+                    ItemInstance itemInstance = context.ItemInstance.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId));
+                    if (itemInstance != null)
                     {
-                        context.Inventory.Remove(inv);
-                        context.ItemInstance.Remove(invItem);
+                        context.ItemInstance.Remove(itemInstance);
                         context.SaveChanges();
                     }
                     return DeleteResult.Deleted;
@@ -112,33 +108,29 @@ namespace OpenNos.DAL.EF.MySQL
                     // Entity -> DTO
                     cfg.CreateMap(entry.Value, typeof(ItemInstanceDTO)).As(entry.Key);
                 }
-
-                // Inventory Mappings
-                cfg.CreateMap<InventoryDTO, Inventory>();
-                cfg.CreateMap<Inventory, InventoryDTO>();
             });
 
             _mapper = config.CreateMapper();
         }
 
-        public IEnumerable<InventoryDTO> LoadByCharacterId(long characterId)
+        public IEnumerable<ItemInstanceDTO> LoadByCharacterId(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Inventory inventory in context.Inventory.Include(nameof(ItemInstance)).Where(i => i.CharacterId.Equals(characterId)))
+                foreach (ItemInstance itemInstance in context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)))
                 {
-                    yield return _mapper.Map<InventoryDTO>(inventory);
+                    yield return _mapper.Map<ItemInstanceDTO>(itemInstance);
                 }
             }
         }
 
-        public InventoryDTO LoadById(long inventoryId)
+        public ItemInstanceDTO LoadById(long inventoryId)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<InventoryDTO>(context.Inventory.Include(nameof(ItemInstance)).FirstOrDefault(i => i.Id.Equals(inventoryId)));
+                    return _mapper.Map<ItemInstanceDTO>(context.ItemInstance.Single(i => i.Id.Equals(inventoryId)));
                 }
             }
             catch (Exception e)
@@ -148,13 +140,13 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public InventoryDTO LoadBySlotAndType(long characterId, short slot, InventoryType type)
+        public ItemInstanceDTO LoadBySlotAndType(long characterId, short slot, InventoryType type)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<InventoryDTO>(context.Inventory.Include(nameof(ItemInstance)).FirstOrDefault(i => i.Slot.Equals(slot) && i.Type == type && i.CharacterId.Equals(characterId)));
+                    return _mapper.Map<ItemInstanceDTO>(context.ItemInstance.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type == type && i.CharacterId.Equals(characterId)));
                 }
             }
             catch (Exception e)
@@ -164,13 +156,13 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<InventoryDTO> LoadByType(long characterId, InventoryType type)
+        public IEnumerable<ItemInstanceDTO> LoadByType(long characterId, InventoryType type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Inventory inventoryEntry in context.Inventory.Include(nameof(ItemInstance)).Where(i => i.Type == type && i.CharacterId.Equals(characterId)))
+                foreach (ItemInstance itemInstance in context.ItemInstance.Where(i => i.Type == type && i.CharacterId.Equals(characterId)))
                 {
-                    yield return _mapper.Map<InventoryDTO>(inventoryEntry);
+                    yield return _mapper.Map<ItemInstanceDTO>(itemInstance);
                 }
             }
         }
@@ -181,7 +173,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return context.Inventory.Where(i => i.CharacterId.Equals(characterId)).Select(c => c.Id).ToList();
+                    return context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)).Select(c => c.Id).ToList();
                 }
             }
             catch (Exception e)
@@ -205,34 +197,22 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        protected override InventoryDTO InsertOrUpdate(OpenNosContext context, InventoryDTO inventory)
+        protected override ItemInstanceDTO InsertOrUpdate(OpenNosContext context, ItemInstanceDTO itemInstance)
         {
             try
             {
-                Guid primaryKey = inventory.Id;
-                InventoryType Type = inventory.Type;
-                short Slot = inventory.Slot;
-                long CharacterId = inventory.CharacterId;
-                Inventory entity = context.Inventory.FirstOrDefault(c => c.Id == primaryKey);
+                Guid primaryKey = itemInstance.Id;
+                ItemInstance entity = context.ItemInstance.SingleOrDefault(c => c.Id == primaryKey);
 
                 if (entity == null)
                 {
-                    Inventory delete = context.Inventory.FirstOrDefault(s => s.CharacterId == CharacterId && s.Slot == Slot && s.Type == Type);
-                    if (delete != null)
-                    {
-                        ItemInstance deleteItem = context.ItemInstance.FirstOrDefault(s => s.Inventory.Id == delete.Id);
-                        context.ItemInstance.Remove(deleteItem);
-                        context.Inventory.Remove(delete);
-                        context.SaveChanges();
-                    }
-                    inventory = Insert(inventory, context);
+                    itemInstance = Insert(itemInstance, context);
                 }
                 else
                 {
-                    entity.ItemInstance = context.ItemInstance.FirstOrDefault(c => c.Inventory.Id == entity.Id);
-                    inventory = Update(entity, inventory, context);
+                    itemInstance = Update(entity, itemInstance, context);
                 }
-                return inventory;
+                return itemInstance;
             }
             catch (Exception e)
             {
@@ -241,19 +221,16 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        protected override Inventory MapEntity(InventoryDTO dto)
+        protected override ItemInstance MapEntity(ItemInstanceDTO dto)
         {
             try
             {
-                Inventory entity = _mapper.Map<Inventory>(dto);
-                KeyValuePair<Type, Type> targetMapping = itemInstanceMappings.FirstOrDefault(k => k.Key.Equals(dto.ItemInstance.GetType()));
+                ItemInstance entity = _mapper.Map<ItemInstance>(dto);
+                KeyValuePair<Type, Type> targetMapping = itemInstanceMappings.FirstOrDefault(k => k.Key.Equals(dto.GetType()));
                 if (targetMapping.Key != null)
                 {
-                    entity.ItemInstance = _mapper.Map(dto.ItemInstance, targetMapping.Key, targetMapping.Value) as ItemInstance;
+                    entity = _mapper.Map(dto, targetMapping.Key, targetMapping.Value) as ItemInstance;
                 }
-
-                // stupid references -> maybe using mapper to ignore property?
-                entity.ItemInstance.Item = null;
 
                 return entity;
             }

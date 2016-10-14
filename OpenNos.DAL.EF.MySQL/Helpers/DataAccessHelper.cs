@@ -114,7 +114,6 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                     context.NpcMonster.Any();
                     context.MapNpc.Any();
                     context.MapMonster.Any();
-                    context.Inventory.Any();
                     context.ItemInstance.Any();
                     context.Teleporter.Any();
                     context.Mail.Any();

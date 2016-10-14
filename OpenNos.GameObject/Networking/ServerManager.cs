@@ -248,16 +248,16 @@ namespace OpenNos.GameObject
         // PacketHandler
         public void BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, byte amount)
         {
-            PersonalShopItem itemshop = clientSession.CurrentMap.UserShops[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
-            if (itemshop == null)
+            PersonalShopItem shopitem = clientSession.CurrentMap.UserShops[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
+            if (shopitem == null)
             {
                 return;
             }
-            Guid id = itemshop.Id;
-            itemshop.Amount -= amount;
-            if (itemshop.Amount <= 0)
+            Guid id = shopitem.Id;
+            shopitem.Amount -= amount;
+            if (shopitem.Amount <= 0)
             {
-                clientSession.CurrentMap.UserShops[shop.Key].Items.Remove(itemshop);
+                clientSession.CurrentMap.UserShops[shop.Key].Items.Remove(shopitem);
             }
 
             ClientSession shopOwnerSession = GetSessionByCharacterId(shop.Value.OwnerId);
@@ -266,23 +266,23 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            shopOwnerSession.Character.Gold += itemshop.Price * amount;
+            shopOwnerSession.Character.Gold += shopitem.Price * amount;
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateGold());
-            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, (itemshop.ItemInstance as ItemInstance).Item.Name, amount)));
-            clientSession.CurrentMap.UserShops[shop.Key].Sell += itemshop.Price * amount;
-            shopOwnerSession.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{itemshop.Amount}");
+            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, shopitem.Item.Name, amount)));
+            clientSession.CurrentMap.UserShops[shop.Key].Sell += shopitem.Price * amount;
+            shopOwnerSession.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{shopitem.Amount}");
 
-            Inventory inv = shopOwnerSession.Character.InventoryList.RemoveItemAmountFromInventory(amount, id);
+            ItemInstance inv = shopOwnerSession.Character.InventoryList.RemoveItemAmountFromInventory(amount, id);
 
             if (inv != null)
             {
                 // Send reduced-amount to owners inventory
-                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
             }
             else
             {
                 // Send empty slot to owners inventory
-                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, itemshop.Type, itemshop.Slot, 0, 0, 0, 0));
+                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, shopitem.Type, shopitem.Slot, 0, 0, 0, 0));
                 if (!clientSession.CurrentMap.UserShops[shop.Key].Items.Any(s => s.Amount > 0))
                 {
                     clientSession.SendPacket("shop_end 0");
@@ -387,15 +387,15 @@ namespace OpenNos.GameObject
             }
             foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
             {
-                Inventory invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.Id == item.Id);
+                ItemInstance invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.Id == item.Id);
                 short slot = invtemp.Slot;
                 InventoryType type = invtemp.Type;
 
-                Inventory inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
+                ItemInstance inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
                 if (inv != null)
                 {
                     // Send reduced-amount to owners inventory
-                    c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                    c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
                 }
                 else
                 {
@@ -408,12 +408,12 @@ namespace OpenNos.GameObject
             {
                 ItemInstance item2 = item.DeepCopy();
                 item2.Id = Guid.NewGuid();
-                Inventory inv = c2Session.Character.InventoryList.AddToInventory(item2);
+                ItemInstance inv = c2Session.Character.InventoryList.AddToInventory(item2);
                 if (inv == null || inv.Slot == -1)
                 {
                     continue;
                 }
-                c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
             }
 
             c2Session.Character.Gold = c2Session.Character.Gold - c2Session.Character.ExchangeInfo.Gold + c1Session.Character.ExchangeInfo.Gold;

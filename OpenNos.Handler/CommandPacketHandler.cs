@@ -479,12 +479,12 @@ namespace OpenNos.Handler
                         }
                     }
                     amount = amount > 99 ? (byte)99 : amount;
-                    Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(vnum, amount);
+                    ItemInstance inv = Session.Character.InventoryList.AddNewItemToInventory(vnum, amount);
                     if (inv != null)
                     {
-                        inv.ItemInstance.Rare = rare;
-                        inv.ItemInstance.Upgrade = upgrade;
-                        inv.ItemInstance.Design = design;
+                        inv.Rare = rare;
+                        inv.Upgrade = upgrade;
+                        inv.Design = design;
 
                         WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
 
@@ -497,7 +497,7 @@ namespace OpenNos.Handler
                         if (Slot != -1)
                         {
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, iteminfo.Type, Slot, rare, design, upgrade, 0));
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.Amount, iteminfo.Type, Slot, rare, design, upgrade, 0));
                         }
                     }
                     else

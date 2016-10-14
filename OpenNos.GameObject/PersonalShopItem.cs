@@ -14,11 +14,9 @@
 
 namespace OpenNos.GameObject
 {
-    public class PersonalShopItem : Inventory
+    public class PersonalShopItem : ItemInstance
     {
         #region Properties
-
-        public byte Amount { get; set; }
 
         public long Price { get; set; }
 

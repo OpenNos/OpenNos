@@ -22,7 +22,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false, string[] packetsplit = null)
+        public override void Use(ClientSession Session, ref ItemInstance Inv, bool DelayUsed = false, string[] packetsplit = null)
         {
             Random random = new Random();
             switch (Effect)
@@ -37,10 +37,10 @@ namespace OpenNos.GameObject
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(19, 1, MappingHelper.GuriItemEffects[EffectValue]));
                         }
 
-                        Inv.ItemInstance.Amount--;
-                        if (Inv.ItemInstance.Amount > 0)
+                        Inv.Amount--;
+                        if (Inv.Amount > 0)
                         {
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         }
                         else
                         {
@@ -64,10 +64,10 @@ namespace OpenNos.GameObject
                         }
                         Session.SendPacket(Session.Character.GenerateEq());
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
-                        Inv.ItemInstance.Amount--;
-                        if (Inv.ItemInstance.Amount > 0)
+                        Inv.Amount--;
+                        if (Inv.Amount > 0)
                         {
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         }
                         else
                         {
@@ -90,10 +90,10 @@ namespace OpenNos.GameObject
                             Session.Character.HairStyle = Session.Character.HairStyle != (byte)EffectValue ? (byte)EffectValue : (byte)1;
                             Session.SendPacket(Session.Character.GenerateEq());
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
-                            Inv.ItemInstance.Amount--;
-                            if (Inv.ItemInstance.Amount > 0)
+                            Inv.Amount--;
+                            if (Inv.Amount > 0)
                             {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                             }
                             else
                             {
@@ -116,10 +116,10 @@ namespace OpenNos.GameObject
                         Session.SendPacket(Session.Character.GenerateFd());
                         Session.SendPacket(Session.Character.GenerateEff(48));
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                        Inv.ItemInstance.Amount--;
-                        if (Inv.ItemInstance.Amount > 0)
+                        Inv.Amount--;
+                        if (Inv.Amount > 0)
                         {
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         }
                         else
                         {
@@ -133,10 +133,10 @@ namespace OpenNos.GameObject
                         Session.SendPacket(Session.Character.GenerateFd());
                         Session.SendPacket(Session.Character.GenerateEff(48));
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                        Inv.ItemInstance.Amount--;
-                        if (Inv.ItemInstance.Amount > 0)
+                        Inv.Amount--;
+                        if (Inv.Amount > 0)
                         {
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         }
                         else
                         {
@@ -179,10 +179,10 @@ namespace OpenNos.GameObject
                             Session.SendPacket(Session.Character.GenerateEq());
                             Session.SendPacket(Session.Character.GenerateEquipment());
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
-                            Inv.ItemInstance.Amount--;
-                            if (Inv.ItemInstance.Amount > 0)
+                            Inv.Amount--;
+                            if (Inv.Amount > 0)
                             {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                             }
                             else
                             {

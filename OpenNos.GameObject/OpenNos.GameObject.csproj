@@ -126,7 +126,6 @@
     <Compile Include="Map\MapShop.cs" />
     <Compile Include="Map\MapItem.cs" />
     <Compile Include="Item\Instance\ItemInstance.cs" />
-    <Compile Include="Inventory.cs" />
     <Compile Include="Networking\ClientSession.cs" />
     <Compile Include="Networking\ServerManager.cs" />
     <Compile Include="Networking\BroadcastPacket.cs" />

@@ -79,7 +79,7 @@
     <Compile Include="IRespawnDAO.cs" />
     <Compile Include="IShopDAO.cs" />
     <Compile Include="IShopItemDAO.cs" />
-    <Compile Include="IInventoryDAO.cs" />
+    <Compile Include="IItemInstanceDAO.cs" />
     <Compile Include="IItemDAO.cs" />
     <Compile Include="IMapDAO.cs" />
     <Compile Include="INpcMonsterDAO.cs" />

@@ -74,7 +74,6 @@
     <Compile Include="RespawnDTO.cs" />
     <Compile Include="ShopItemDTO.cs" />
     <Compile Include="ShopDTO.cs" />
-    <Compile Include="InventoryDTO.cs" />
     <Compile Include="ItemInstanceDTO.cs" />
     <Compile Include="ItemDTO.cs" />
     <Compile Include="MapDTO.cs" />

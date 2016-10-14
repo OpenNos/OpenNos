@@ -552,12 +552,12 @@ namespace OpenNos.GameObject
         {
             for (int i = InventoryList.Inventory.Count() - 1; i >= 0; i--)
             {
-                Inventory item = InventoryList.Inventory[i];
+                ItemInstance item = InventoryList.Inventory[i];
                 if (item != null)
                 {
-                    if (((ItemInstance)item.ItemInstance).IsBound && item.ItemInstance.ItemDeleteTime != null && item.ItemInstance.ItemDeleteTime < DateTime.Now)
+                    if (((ItemInstance)item).IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                     {
-                        InventoryList.DeleteByInventoryItemId(item.ItemInstance.Id);
+                        InventoryList.DeleteByInventoryItemId(item.Id);
                         Session.SendPacket(GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0, 0));
                         Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                     }
@@ -565,12 +565,12 @@ namespace OpenNos.GameObject
             }
             for (int i = EquipmentList.Inventory.Count() - 1; i >= 0; i--)
             {
-                Inventory item = EquipmentList.Inventory[i];
+                ItemInstance item = EquipmentList.Inventory[i];
                 if (item != null)
                 {
-                    if (((ItemInstance)item.ItemInstance).IsBound && item.ItemInstance.ItemDeleteTime != null && item.ItemInstance.ItemDeleteTime < DateTime.Now)
+                    if (((ItemInstance)item).IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                     {
-                        EquipmentList.DeleteByInventoryItemId(item.ItemInstance.Id);
+                        EquipmentList.DeleteByInventoryItemId(item.Id);
                         Session.SendPacket(GenerateEquipment());
                         Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                     }
@@ -754,10 +754,10 @@ namespace OpenNos.GameObject
             string[] invarray = new string[16];
             for (short i = 0; i < 16; i++)
             {
-                Inventory inv = EquipmentList.LoadInventoryBySlotAndType(i, InventoryType.Equipment);
+                ItemInstance inv = EquipmentList.LoadInventoryBySlotAndType(i, InventoryType.Equipment);
                 if (inv != null)
                 {
-                    invarray[i] = inv.ItemInstance.ItemVNum.ToString();
+                    invarray[i] = inv.ItemVNum.ToString();
                 }
                 else
                 {
@@ -898,9 +898,9 @@ namespace OpenNos.GameObject
             {
                 color = headWearable.Design;
             }
-            Inventory fairy = EquipmentList.LoadInventoryBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Equipment);
+            ItemInstance fairy = EquipmentList.LoadInventoryBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Equipment);
 
-            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Element : 0)} 0 {(fairy != null ? ((ItemInstance)fairy.ItemInstance).Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
+            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? fairy.Item.Element : 0)} 0 {(fairy != null ? fairy.Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
         public List<string> GenerateIn2()
@@ -1215,43 +1215,43 @@ namespace OpenNos.GameObject
         public void GenerateStartupInventory()
         {
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
-            foreach (Inventory inv in InventoryList.Inventory)
+            foreach (ItemInstance inv in InventoryList.Inventory)
             {
                 switch (inv.Type)
                 {
                     case (byte)InventoryType.Wear:
-                        if (((ItemInstance)inv.ItemInstance).Item.EquipmentSlot == (byte)EquipmentType.Sp)
+                        if (inv.Item.EquipmentSlot == (byte)EquipmentType.Sp)
                         {
-                            var specialistInstance = inv.ItemInstance as SpecialistInstance;
-                            inv0 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
+                            var specialistInstance = inv as SpecialistInstance;
+                            inv0 += $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
                         }
                         else
                         {
-                            var wearableInstance = inv.ItemInstance as WearableInstance;
-                            inv0 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{wearableInstance.Rare}.{(((ItemInstance)inv.ItemInstance).Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
+                            var wearableInstance = inv as WearableInstance;
+                            inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
                         }
                         break;
 
                     case InventoryType.Main:
-                        inv1 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{inv.ItemInstance.Amount}.0";
+                        inv1 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
                         break;
 
                     case InventoryType.Etc:
-                        inv2 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{inv.ItemInstance.Amount}.0";
+                        inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
                         break;
 
                     case InventoryType.Miniland:
-                        inv3 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{inv.ItemInstance.Amount}";
+                        inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
                         break;
 
                     case InventoryType.Sp:
-                        var specialist = inv.ItemInstance as SpecialistInstance;
-                        inv6 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
+                        var specialist = inv as SpecialistInstance;
+                        inv6 += $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
                         break;
 
                     case InventoryType.Costume:
-                        var costumeInstance = inv.ItemInstance as WearableInstance;
-                        inv7 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
+                        var costumeInstance = inv as WearableInstance;
+                        inv7 += $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
                         break;
 
                     case InventoryType.Equipment:
@@ -1772,10 +1772,10 @@ namespace OpenNos.GameObject
                 ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
             }
             newItem.Amount = amount;
-            Inventory newInv = InventoryList.AddToInventory(newItem);
+            ItemInstance newInv = InventoryList.AddToInventory(newItem);
             if (newInv != null)
             {
-                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
+                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
                 Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
             }
             else
@@ -1918,27 +1918,27 @@ namespace OpenNos.GameObject
 
         public IEnumerable<ItemInstance> LoadBySlotAllowed(short itemVNum, int amount)
         {
-            return InventoryList.Inventory.Where(i => i.ItemInstance.ItemVNum.Equals(itemVNum) && i.ItemInstance.Amount + amount < 100).Select(inventoryitemobject => new ItemInstance(inventoryitemobject.ItemInstance));
+            return InventoryList.Inventory.Where(i => i.ItemVNum.Equals(itemVNum) && i.Amount + amount < 100);
         }
 
         public void LoadInventory()
         {
-            IEnumerable<InventoryDTO> inventories = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId).ToList();
+            IEnumerable<ItemInstanceDTO> inventories = DAOFactory.ItemInstanceDAO.LoadByCharacterId(CharacterId).ToList();
 
             InventoryList = new InventoryList(this);
             EquipmentList = new InventoryList(this);
-            foreach (InventoryDTO inventory in inventories)
+            foreach (ItemInstanceDTO inventory in inventories)
             {
                 inventory.CharacterId = CharacterId;
 
                 // Replace by MAPPING
                 if (inventory.Type != InventoryType.Equipment)
                 {
-                    InventoryList.Inventory.Add(new Inventory(inventory));
+                    InventoryList.Inventory.Add(new ItemInstance(inventory));
                 }
                 else
                 {
-                    EquipmentList.Inventory.Add(new Inventory(inventory));
+                    EquipmentList.Inventory.Add(new ItemInstance(inventory));
                 }
                 ///////////////////
             }
@@ -2118,19 +2118,19 @@ namespace OpenNos.GameObject
 
                 // load and concat inventory with equipment
                 InventoryList copiedInventoryList = InventoryList.DeepCopy();
-                IEnumerable<InventoryDTO> inventories = copiedInventoryList.Inventory.Concat(EquipmentList.Inventory);
-                IEnumerable<Guid> currentlySavedInventories = DAOFactory.InventoryDAO.LoadKeysByCharacterId(CharacterId).ToList();
+                IEnumerable<ItemInstanceDTO> inventories = copiedInventoryList.Inventory.Concat(EquipmentList.Inventory);
+                IEnumerable<Guid> currentlySavedInventories = DAOFactory.ItemInstanceDAO.LoadKeysByCharacterId(CharacterId).ToList();
 
                 // remove all which are saved but not in our current enumerable
                 foreach (Guid inventoryToDeleteId in currentlySavedInventories.Except(inventories.Select(i => i.Id)))
                 {
-                    DAOFactory.InventoryDAO.Delete(inventoryToDeleteId);
+                    DAOFactory.ItemInstanceDAO.Delete(inventoryToDeleteId);
                 }
 
                 // create or update all which are new or do still exist
-                foreach (InventoryDTO inventory in inventories)
+                foreach (ItemInstanceDTO inventory in inventories)
                 {
-                    DAOFactory.InventoryDAO.InsertOrUpdate(inventory);
+                    DAOFactory.ItemInstanceDAO.InsertOrUpdate(inventory);
                 }
 
                 if (Skills != null)

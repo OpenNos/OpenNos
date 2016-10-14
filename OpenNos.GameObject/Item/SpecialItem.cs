@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory inventory, bool DelayUsed = false, string[] packetsplit = null)
+        public override void Use(ClientSession Session, ref ItemInstance inventory, bool DelayUsed = false, string[] packetsplit = null)
         {
             switch (Effect)
             {
@@ -44,10 +44,10 @@ namespace OpenNos.GameObject
                             Session.SendPacket(Session.Character.GenerateStat());
                             Session.SendPacket(Session.Character.GenerateStatChar());
 
-                            inventory.ItemInstance.Amount--;
-                            if (inventory.ItemInstance.Amount > 0)
+                            inventory.Amount--;
+                            if (inventory.Amount > 0)
                             {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inventory.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                             else
                             {
@@ -73,10 +73,10 @@ namespace OpenNos.GameObject
                         else
                         {
                             Session.Character.ChangeSex();
-                            inventory.ItemInstance.Amount--;
-                            if (inventory.ItemInstance.Amount > 0)
+                            inventory.Amount--;
+                            if (inventory.Amount > 0)
                             {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inventory.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                             else
                             {

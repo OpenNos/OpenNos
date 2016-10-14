@@ -56,7 +56,7 @@
     <Compile Include="ComboDAO.cs" />
     <Compile Include="DropDAO.cs" />
     <Compile Include="GeneralLogDAO.cs" />
-    <Compile Include="InventoryDAO.cs" />
+    <Compile Include="ItemInstanceDAO.cs" />
     <Compile Include="ItemDAO.cs" />
     <Compile Include="MailDAO.cs" />
     <Compile Include="MapDAO.cs" />
