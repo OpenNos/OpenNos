@@ -498,23 +498,25 @@ namespace OpenNos.Handler
             if (weapon != null)
             {
                 mainUpgrade = weapon.Upgrade;
-                mainMinDmg += weapon.DamageMinimum + weapon.Item.DamageMinimum;
-                mainMaxDmg += weapon.DamageMaximum + weapon.Item.DamageMaximum;
-                mainHitRate += weapon.HitRate + weapon.Item.HitRate;
-                mainCritChance += weapon.CriticalLuckRate + weapon.Item.CriticalLuckRate;
-                mainCritHit += weapon.CriticalRate + weapon.Item.CriticalRate;
             }
+
+            mainMinDmg += Session.Character.MinHit;
+            mainMaxDmg += Session.Character.MaxHit;
+            mainHitRate += Session.Character.HitRate;
+            mainCritChance += Session.Character.HitCriticalRate;
+            mainCritHit += Session.Character.HitCritical;
 
             WearableInstance weapon2 = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Equipment);
             if (weapon2 != null)
             {
                 secUpgrade = weapon2.Upgrade;
-                secMinDmg += weapon2.DamageMinimum + weapon2.Item.DamageMinimum;
-                secMaxDmg += weapon2.DamageMaximum + weapon2.Item.DamageMaximum;
-                secHitRate += weapon2.HitRate + weapon2.Item.HitRate;
-                secCritChance += weapon2.CriticalLuckRate + weapon2.Item.CriticalLuckRate;
-                secCritHit += weapon2.CriticalRate + weapon2.Item.CriticalRate;
             }
+
+            secMinDmg += Session.Character.MinDistance;
+            secMaxDmg += Session.Character.MaxDistance;
+            secHitRate += Session.Character.DistanceRate;
+            secCritChance += Session.Character.DistanceCriticalRate;
+            secCritHit += Session.Character.DistanceCritical;
 
             #endregion
 
