@@ -8,8 +8,10 @@ namespace OpenNos.GameObject
     public class ExchangeListPacket
     {
         // exc_list 1 626114 0 0.2.2296.1.0
-        public long Gold { get; set; }
-
+        [PacketIndex(1)]
         public long CharacterId { get; set; }
+
+        [PacketIndex(2)]
+        public long Gold { get; set; }
     }
 }

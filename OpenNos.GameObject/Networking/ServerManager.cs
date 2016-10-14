@@ -142,9 +142,31 @@ namespace OpenNos.GameObject
 
         public Task TaskShutdown { get; set; }
 
+        private bool _disposed;
+
         #endregion
 
         #region Methods
+
+        public override void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _dropsByMonster.Dispose();
+                _groups.Dispose();
+                _monsterSkills.Dispose();
+            }
+        }
 
         public static ConcurrentDictionary<Guid, Map> GetAllMap()
         {

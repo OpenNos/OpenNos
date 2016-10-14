@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (!_disposed)
             {

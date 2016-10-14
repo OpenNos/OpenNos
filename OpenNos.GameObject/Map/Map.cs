@@ -215,7 +215,7 @@ namespace OpenNos.GameObject
             return grid;
         }
 
-        public new void Dispose()
+        public override void Dispose()
         {
             if (!_disposed)
             {

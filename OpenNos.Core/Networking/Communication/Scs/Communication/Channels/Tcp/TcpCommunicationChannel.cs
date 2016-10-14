@@ -145,6 +145,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             if (disposing)
             {
                 Disconnect();
+                _sendCancellationToken.Dispose();
             }
         }
 

@@ -120,7 +120,7 @@ namespace OpenNos.ServiceRef.Internal
         {
             if (disposing)
             {
-                // dispose servicefactory
+                _instanceCallback.Dispose();
             }
         }
 
