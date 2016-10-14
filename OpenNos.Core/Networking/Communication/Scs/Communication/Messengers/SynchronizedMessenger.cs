@@ -21,12 +21,9 @@ using System.Threading;
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 {
     /// <summary>
-    /// This class is a wrapper for IMessenger and is used
-    /// to synchronize message receiving operation.
-    /// It extends RequestReplyMessenger.
-    /// It is suitable to use in applications those want to receive
-    /// messages by synchronized method calls instead of asynchronous
-    /// MessageReceived event.
+    /// This class is a wrapper for IMessenger and is used to synchronize message receiving
+    /// operation. It extends RequestReplyMessenger. It is suitable to use in applications those want
+    /// to receive messages by synchronized method calls instead of asynchronous MessageReceived event.
     /// </summary>
     public class SynchronizedMessenger<T> : RequestReplyMessenger<T> where T : IMessenger
     {
@@ -38,8 +35,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         private readonly ManualResetEventSlim _receiveWaiter;
 
         /// <summary>
-        /// A queue that is used to store receiving messages until Receive(...)
-        /// method is called to get them.
+        /// A queue that is used to store receiving messages until Receive(...) method is called to
+        /// get them.
         /// </summary>
         private readonly Queue<IScsMessage> _receivingMessageQueue;
 
@@ -79,10 +76,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         #region Properties
 
         /// <summary>
-        /// Gets/sets capacity of the incoming message queue.
-        /// No message is received from remote application if
-        /// number of messages in public queue exceeds this value.
-        /// Default value: int.MaxValue (2147483647).
+        /// Gets/sets capacity of the incoming message queue. No message is received from remote
+        /// application if number of messages in public queue exceeds this value. Default value:
+        /// int.MaxValue (2147483647).
         /// </summary>
         public int IncomingMessageQueueCapacity { get; set; }
 
@@ -91,8 +87,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         #region Methods
 
         /// <summary>
-        /// This method is used to receive a message from remote application.
-        /// It waits until a message is received.
+        /// This method is used to receive a message from remote application. It waits until a
+        /// message is received.
         /// </summary>
         /// <returns>Received message</returns>
         public IScsMessage ReceiveMessage()
@@ -101,16 +97,17 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         }
 
         /// <summary>
-        /// This method is used to receive a message from remote application.
-        /// It waits until a message is received or timeout occurs.
+        /// This method is used to receive a message from remote application. It waits until a
+        /// message is received or timeout occurs.
         /// </summary>
         /// <param name="timeout">
-        /// Timeout value to wait if no message is received.
-        /// Use -1 to wait indefinitely.
+        /// Timeout value to wait if no message is received. Use -1 to wait indefinitely.
         /// </param>
         /// <returns>Received message</returns>
         /// <exception cref="TimeoutException">Throws TimeoutException if timeout occurs</exception>
-        /// <exception cref="Exception">Throws Exception if SynchronizedMessenger stops before a message is received</exception>
+        /// <exception cref="Exception">
+        /// Throws Exception if SynchronizedMessenger stops before a message is received
+        /// </exception>
         public IScsMessage ReceiveMessage(int timeout)
         {
             while (_running)
@@ -146,8 +143,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         }
 
         /// <summary>
-        /// This method is used to receive a specific type of message from remote application.
-        /// It waits until a message is received.
+        /// This method is used to receive a specific type of message from remote application. It
+        /// waits until a message is received.
         /// </summary>
         /// <returns>Received message</returns>
         public TMessage ReceiveMessage<TMessage>() where TMessage : IScsMessage
@@ -156,12 +153,11 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         }
 
         /// <summary>
-        /// This method is used to receive a specific type of message from remote application.
-        /// It waits until a message is received or timeout occurs.
+        /// This method is used to receive a specific type of message from remote application. It
+        /// waits until a message is received or timeout occurs.
         /// </summary>
         /// <param name="timeout">
-        /// Timeout value to wait if no message is received.
-        /// Use -1 to wait indefinitely.
+        /// Timeout value to wait if no message is received. Use -1 to wait indefinitely.
         /// </param>
         /// <returns>Received message</returns>
         public TMessage ReceiveMessage<TMessage>(int timeout) where TMessage : IScsMessage

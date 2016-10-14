@@ -947,7 +947,7 @@
     <value>The item is not yours!</value>
   </data>
   <data name="ADVENTURERS_CANT_USE" xml:space="preserve">
-    <value />
+    <value>Adventurers can't use that item!</value>
   </data>
   <data name="MAILED" xml:space="preserve">
     <value>You've sent a mail!</value>
@@ -995,6 +995,9 @@
     <value>Do you want to use this item?</value>
   </data>
   <data name="SP_RESURRECTED" xml:space="preserve">
-    <value></value>
+    <value>Your specialist's soul has been resurrected!</value>
+  </data>
+  <data name="ITEM_UNFIXED" xml:space="preserve">
+    <value>You've removed blockade of upgrade level from your item!</value>
   </data>
 </root>

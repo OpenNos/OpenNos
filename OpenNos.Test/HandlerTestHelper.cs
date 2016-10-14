@@ -15,9 +15,13 @@ namespace OpenNos.Test
 {
     public static class HandlerTestHelper
     {
-        #region Methods
+        #region Members
 
         private static SessionManager _sessionManager;
+
+        #endregion
+
+        #region Methods
 
         public static FakeNetworkClient InitializeTestEnvironment()
         {

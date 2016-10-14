@@ -1,7 +1,5 @@
 ﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.DAL.Mock

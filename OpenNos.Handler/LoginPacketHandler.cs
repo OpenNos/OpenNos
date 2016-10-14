@@ -109,7 +109,8 @@ namespace OpenNos.Handler
                                             DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, newSessionId, _session.IpAddress);
                                             Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
-                                            // inform communication service about new player from login server
+                                            // inform communication service about new player from
+                                            // login server
                                             try
                                             {
                                                 ServiceFactory.Instance.CommunicationService.RegisterAccountLogin(user.Name, newSessionId);

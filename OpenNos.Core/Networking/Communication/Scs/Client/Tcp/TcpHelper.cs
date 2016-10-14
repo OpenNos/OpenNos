@@ -32,7 +32,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
         /// <param name="timeoutMs">Timeout to wait until connect</param>
         /// <returns>Socket object connected to server</returns>
         /// <exception cref="SocketException">Throws SocketException if can not connect.</exception>
-        /// <exception cref="TimeoutException">Throws TimeoutException if can not connect within specified timeoutMs</exception>
+        /// <exception cref="TimeoutException">
+        /// Throws TimeoutException if can not connect within specified timeoutMs
+        /// </exception>
         public static Socket ConnectToServer(EndPoint endPoint, int timeoutMs)
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

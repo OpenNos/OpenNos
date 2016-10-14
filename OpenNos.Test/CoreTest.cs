@@ -1,15 +1,7 @@
 ﻿using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.Domain;
 using OpenNos.GameObject;
-using OpenNos.GameObject.Mock;
-using OpenNos.Handler;
-using OpenNos.ServiceRef.Internal;
-using System;
-using System.Collections.Generic;
 
 namespace OpenNos.Test
 {

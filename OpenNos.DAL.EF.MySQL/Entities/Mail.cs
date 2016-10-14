@@ -23,6 +23,12 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte AttachmentAmount { get; set; }
 
+        public byte AttachmentRarity { get; set; }
+
+        public byte AttachmentUpgrade { get; set; }
+
+        public short? AttachmentVNum { get; set; }
+
         public DateTime Date { get; set; }
 
         [MaxLength(255)]
@@ -33,12 +39,6 @@ namespace OpenNos.DAL.EF.MySQL
         public bool IsSenderCopy { get; set; }
 
         public virtual Item Item { get; set; }
-
-        public short? AttachmentVNum { get; set; }
-
-        public byte AttachmentRarity { get; set; }
-
-        public byte AttachmentUpgrade { get; set; }
 
         [Key]
         public long MailId { get; set; }

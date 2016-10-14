@@ -20,10 +20,10 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Properties
 
+        public virtual NpcMonster NpcMonster { get; set; }
+
         [Key]
         public long NpcMonsterSkillId { get; set; }
-
-        public virtual NpcMonster NpcMonster { get; set; }
 
         public short NpcMonsterVNum { get; set; }
 

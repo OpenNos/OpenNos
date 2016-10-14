@@ -20,11 +20,13 @@ using System.Runtime.Remoting.Proxies;
 namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
 {
     /// <summary>
-    /// This class is used to generate a dynamic proxy to invoke remote methods.
-    /// It translates method invocations to messaging.
+    /// This class is used to generate a dynamic proxy to invoke remote methods. It translates method
+    /// invocations to messaging.
     /// </summary>
     /// <typeparam name="TProxy">Type of the proxy class/interface</typeparam>
-    /// <typeparam name="TMessenger">Type of the messenger object that is used to send/receive messages</typeparam>
+    /// <typeparam name="TMessenger">
+    /// Type of the messenger object that is used to send/receive messages
+    /// </typeparam>
     public class RemoteInvokeProxy<TProxy, TMessenger> : RealProxy where TMessenger : IMessenger
     {
         #region Members

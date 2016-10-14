@@ -15,7 +15,6 @@
 using OpenNos.ServiceRef.Internal.CommunicationServiceReference;
 using System;
 using System.ServiceModel;
-using System.ServiceModel.Description;
 
 namespace OpenNos.ServiceRef.Internal
 {
@@ -25,6 +24,7 @@ namespace OpenNos.ServiceRef.Internal
 
         private static ServiceFactory _instance;
         private ICommunicationService _communicationServiceClient;
+        private bool _disposed;
         private CommunicationCallback _instanceCallback;
         private InstanceContext _instanceContext;
         private bool _useMock;
@@ -70,11 +70,12 @@ namespace OpenNos.ServiceRef.Internal
         {
             get
             {
-                // reinitialize faulted communicationservice (maybe we should find the cause of the faulted state)
-                if (!_useMock && _communicationServiceClient != null && _communicationServiceClient is CommunicationServiceClient 
+                // reinitialize faulted communicationservice (maybe we should find the cause of the
+                // faulted state)
+                if (!_useMock && _communicationServiceClient != null && _communicationServiceClient is CommunicationServiceClient
                     && ((CommunicationServiceClient)_communicationServiceClient).State == CommunicationState.Faulted)
                 {
-                     _communicationServiceClient = new CommunicationServiceClient(_instanceContext);
+                    _communicationServiceClient = new CommunicationServiceClient(_instanceContext);
                 }
 
                 if (_communicationServiceClient == null)
@@ -93,11 +94,33 @@ namespace OpenNos.ServiceRef.Internal
             }
         }
 
+        #endregion
+
+        #region Methods
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
         public void Initialize()
         {
             if (!_useMock)
             {
                 ((CommunicationServiceClient)CommunicationService).Open();
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose servicefactory
             }
         }
 

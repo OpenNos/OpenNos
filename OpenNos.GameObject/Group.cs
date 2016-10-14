@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,8 +23,9 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private int order;
         private ThreadSafeSortedList<long, ClientSession> _characters;
+        private bool _disposed;
+        private int order;
 
         #endregion
 
@@ -36,6 +38,10 @@ namespace OpenNos.GameObject
             order = 0;
         }
 
+        #endregion
+
+        #region Properties
+
         public int CharacterCount
         {
             get
@@ -43,10 +49,6 @@ namespace OpenNos.GameObject
                 return _characters.Count;
             }
         }
-
-        #endregion
-
-        #region Properties
 
         public List<ClientSession> Characters
         {
@@ -63,6 +65,16 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
 
         public List<string> GeneratePst()
         {
@@ -116,6 +128,14 @@ namespace OpenNos.GameObject
             }
 
             return lst.ElementAt(order).Character.CharacterId;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _characters.Dispose();
+            }
         }
 
         #endregion

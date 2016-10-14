@@ -29,6 +29,7 @@ namespace OpenNos.GameObject
         /// List of all connected clients.
         /// </summary>
         private readonly ThreadSafeSortedList<long, ClientSession> _sessions;
+        private bool _disposed;
 
         #endregion
 
@@ -65,6 +66,24 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _sessions.Dispose();
+            }
+        }
 
         public void Broadcast(string packet, int delay = 0)
         {
@@ -213,6 +232,7 @@ namespace OpenNos.GameObject
                             session.SendPacket(sentPacket.Packet);
                         }
                         break;
+
                     case ReceiverType.AllInRange: // send to everyone which is in a range of 50x50
                         if (sentPacket.XCoordinate != 0 && sentPacket.YCoordinate != 0)
                         {
@@ -222,6 +242,7 @@ namespace OpenNos.GameObject
                             }
                         }
                         break;
+
                     case ReceiverType.OnlySomeone:
                         {
                             if (sentPacket.SomeonesCharacterId > 0 || !String.IsNullOrEmpty(sentPacket.SomeonesCharacterName))

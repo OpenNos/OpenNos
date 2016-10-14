@@ -40,7 +40,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// <summary>
         /// Creates a new ScsClient object.
         /// </summary>
-        /// <param name="communicationChannel">The communication channel that is used by client to send and receive messages</param>
+        /// <param name="communicationChannel">
+        /// The communication channel that is used by client to send and receive messages
+        /// </param>
         public ScsServerClient(ICommunicationChannel communicationChannel)
         {
             _communicationChannel = communicationChannel;
@@ -64,8 +66,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         public event EventHandler<MessageEventArgs> MessageReceived;
 
         /// <summary>
-        /// This event is raised when a new message is sent without any error.
-        /// It does not guaranties that message is properly handled and processed by remote application.
+        /// This event is raised when a new message is sent without any error. It does not guaranties
+        /// that message is properly handled and processed by remote application.
         /// </summary>
         public event EventHandler<MessageEventArgs> MessageSent;
 
@@ -215,6 +217,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         {
             MessageReceived?.Invoke(this, new MessageEventArgs(message, DateTime.Now));
         }
+
         #endregion
     }
 }

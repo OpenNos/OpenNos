@@ -43,9 +43,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </summary>
         private ICommunicationChannel _communicationChannel;
 
-        private IScsWireProtocol _wireProtocol;
-
         private bool _disposed;
+        private IScsWireProtocol _wireProtocol;
 
         #endregion
 
@@ -82,8 +81,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         public event EventHandler<MessageEventArgs> MessageReceived;
 
         /// <summary>
-        /// This event is raised when a new message is sent without any error.
-        /// It does not guaranties that message is properly handled and processed by remote application.
+        /// This event is raised when a new message is sent without any error. It does not guaranties
+        /// that message is properly handled and processed by remote application.
         /// </summary>
         public event EventHandler<MessageEventArgs> MessageSent;
 
@@ -105,8 +104,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         }
 
         /// <summary>
-        /// Timeout for connecting to a server (as milliseconds).
-        /// Default value: 15 seconds (15000 ms).
+        /// Timeout for connecting to a server (as milliseconds). Default value: 15 seconds (15000 ms).
         /// </summary>
         public int ConnectTimeout { get; set; }
 
@@ -178,8 +176,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         }
 
         /// <summary>
-        /// Disconnects from server.
-        /// Does nothing if already disconnected.
+        /// Disconnects from server. Does nothing if already disconnected.
         /// </summary>
         public void Disconnect()
         {
@@ -189,15 +186,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
             }
 
             _communicationChannel.Disconnect();
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Disconnect();
-                _pingTimer.Dispose();
-            }
         }
 
         /// <summary>
@@ -217,7 +205,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// Sends a message to the server.
         /// </summary>
         /// <param name="message">Message to be sent</param>
-        /// <exception cref="CommunicationStateException">Throws a CommunicationStateException if client is not connected to the server.</exception>
+        /// <exception cref="CommunicationStateException">
+        /// Throws a CommunicationStateException if client is not connected to the server.
+        /// </exception>
         public void SendMessage(IScsMessage message)
         {
             if (CommunicationState != CommunicationStates.Connected)
@@ -233,6 +223,15 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// </summary>
         /// <returns>Ready communication channel to communicate</returns>
         protected abstract ICommunicationChannel CreateCommunicationChannel();
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Disconnect();
+                _pingTimer.Dispose();
+            }
+        }
 
         /// <summary>
         /// Raises Connected event.

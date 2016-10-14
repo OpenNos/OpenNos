@@ -37,8 +37,8 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         private readonly IScsClient _client;
 
         /// <summary>
-        /// The client object that is used to call method invokes in client side.
-        /// May be null if client has no methods to be invoked by server.
+        /// The client object that is used to call method invokes in client side. May be null if
+        /// client has no methods to be invoked by server.
         /// </summary>
         private readonly object _clientObject;
 
@@ -52,6 +52,8 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// </summary>
         private readonly RequestReplyMessenger<IScsClient> _requestReplyMessenger;
 
+        private bool _disposed;
+
         #endregion
 
         #region Instantiation
@@ -60,8 +62,10 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// Creates a new ScsServiceClient object.
         /// </summary>
         /// <param name="client">Underlying IScsClient object to communicate with server</param>
-        /// <param name="clientObject">The client object that is used to call method invokes in client side.
-        /// May be null if client has no methods to be invoked by server.</param>
+        /// <param name="clientObject">
+        /// The client object that is used to call method invokes in client side. May be null if
+        /// client has no methods to be invoked by server.
+        /// </param>
         public ScsServiceClient(IScsClient client, object clientObject)
         {
             _client = client;
@@ -104,8 +108,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         }
 
         /// <summary>
-        /// Timeout for connecting to a server (as milliseconds).
-        /// Default value: 15 seconds (15000 ms).
+        /// Timeout for connecting to a server (as milliseconds). Default value: 15 seconds (15000 ms).
         /// </summary>
         public int ConnectTimeout
         {
@@ -119,18 +122,15 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         public T ServiceProxy { get; private set; }
 
         /// <summary>
-        /// Timeout value when invoking a service method.
-        /// If timeout occurs before end of remote method call, an exception is thrown.
-        /// Use -1 for no timeout (wait indefinite).
-        /// Default value: 60000 (1 minute).
+        /// Timeout value when invoking a service method. If timeout occurs before end of remote
+        /// method call, an exception is thrown. Use -1 for no timeout (wait indefinite). Default
+        /// value: 60000 (1 minute).
         /// </summary>
         public int Timeout
         {
             get { return _requestReplyMessenger.Timeout; }
             set { _requestReplyMessenger.Timeout = value; }
         }
-
-        private bool _disposed;
 
         #endregion
 
@@ -145,8 +145,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         }
 
         /// <summary>
-        /// Disconnects from server.
-        /// Does nothing if already disconnected.
+        /// Disconnects from server. Does nothing if already disconnected.
         /// </summary>
         public void Disconnect()
         {
@@ -221,8 +220,8 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         }
 
         /// <summary>
-        /// Handles MessageReceived event of messenger.
-        /// It gets messages from server and invokes appropriate method.
+        /// Handles MessageReceived event of messenger. It gets messages from server and invokes
+        /// appropriate method.
         /// </summary>
         /// <param name="sender">Source of event</param>
         /// <param name="e">Event arguments</param>

@@ -21,6 +21,7 @@ namespace OpenNos.GameObject
     public class MagicalItem : Item
     {
         #region Methods
+
         public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false, string[] packetsplit = null)
         {
             Random random = new Random();

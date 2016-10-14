@@ -27,8 +27,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         {
             this.Configuration.LazyLoadingEnabled = true;
 
-            // --DO NOT DISABLE, otherwise the mapping will fail
-            // only one time access to database so no proxy generation needed, its just slowing down in our case
+            // --DO NOT DISABLE, otherwise the mapping will fail only one time access to database so
+            // no proxy generation needed, its just slowing down in our case
             this.Configuration.ProxyCreationEnabled = false;
         }
 

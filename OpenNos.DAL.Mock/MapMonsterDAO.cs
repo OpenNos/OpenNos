@@ -11,6 +11,11 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
+        public DeleteResult DeleteById(int mapMonsterId)
+        {
+            throw new NotImplementedException();
+        }
+
         public MapMonsterDTO LoadById(int monsterId)
         {
             return Container.SingleOrDefault(m => m.MapMonsterId == monsterId);
@@ -19,11 +24,6 @@ namespace OpenNos.DAL.Mock
         public IEnumerable<MapMonsterDTO> LoadFromMap(short mapId)
         {
             return Container.Where(m => m.MapId == mapId);
-        }
-
-        public DeleteResult DeleteById(int mapMonsterId)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

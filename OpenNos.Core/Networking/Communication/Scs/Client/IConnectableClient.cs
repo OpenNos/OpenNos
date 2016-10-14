@@ -44,8 +44,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         CommunicationStates CommunicationState { get; }
 
         /// <summary>
-        /// Timeout for connecting to a server (as milliseconds).
-        /// Default value: 15 seconds (15000 ms).
+        /// Timeout for connecting to a server (as milliseconds). Default value: 15 seconds (15000 ms).
         /// </summary>
         int ConnectTimeout { get; set; }
 
@@ -59,8 +58,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         void Connect();
 
         /// <summary>
-        /// Disconnects from server.
-        /// Does nothing if already disconnected.
+        /// Disconnects from server. Does nothing if already disconnected.
         /// </summary>
         void Disconnect();
 

@@ -95,8 +95,7 @@ namespace OpenNos.World
             DAOFactory.InventoryDAO.RegisterMapping(typeof(UsableInstance));
             DAOFactory.InventoryDAO.InitializeMapper(typeof(ItemInstance));
 
-            // TODO: initialize ClientLinkManager
-            // initialize PacketSerialization
+            // TODO: initialize ClientLinkManager initialize PacketSerialization
             PacketFactory.Initialize<WalkPacket>();
 
             try

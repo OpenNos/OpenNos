@@ -42,8 +42,7 @@ namespace OpenNos.Core.Threading
         private readonly object _syncObj = new object();
 
         /// <summary>
-        /// A reference to the current Task that is processing an item in
-        /// ProcessItem method.
+        /// A reference to the current Task that is processing an item in ProcessItem method.
         /// </summary>
         private Task _currentProcessTask;
 
@@ -64,7 +63,9 @@ namespace OpenNos.Core.Threading
         /// <summary>
         /// Creates a new SequentialItemProcessor object.
         /// </summary>
-        /// <param name="processMethod">The method delegate that is called to actually process items</param>
+        /// <param name="processMethod">
+        /// The method delegate that is called to actually process items
+        /// </param>
         public SequentialItemProcessor(Action<TItem> processMethod)
         {
             _processMethod = processMethod;
@@ -141,8 +142,7 @@ namespace OpenNos.Core.Threading
         }
 
         /// <summary>
-        /// This method runs on a new seperated Task (thread) to process
-        /// items on the queue.
+        /// This method runs on a new seperated Task (thread) to process items on the queue.
         /// </summary>
         private void ProcessItem()
         {
