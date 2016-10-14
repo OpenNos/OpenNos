@@ -22,9 +22,9 @@ using System.Threading;
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 {
     /// <summary>
-    /// This class adds SendMessageAndWaitForResponse(...) and SendAndReceiveMessage methods
-    /// to a IMessenger for synchronous request/response style messaging.
-    /// It also adds queued processing of incoming messages.
+    /// This class adds SendMessageAndWaitForResponse(...) and SendAndReceiveMessage methods to a
+    /// IMessenger for synchronous request/response style messaging. It also adds queued processing
+    /// of incoming messages.
     /// </summary>
     /// <typeparam name="T">Type of IMessenger object to use as underlying communication</typeparam>
     public class RequestReplyMessenger<T> : IMessenger, IDisposable where T : IMessenger
@@ -84,8 +84,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         public event EventHandler<MessageEventArgs> MessageReceived;
 
         /// <summary>
-        /// This event is raised when a new message is sent without any error.
-        /// It does not guaranties that message is properly handled and processed by remote application.
+        /// This event is raised when a new message is sent without any error. It does not guaranties
+        /// that message is properly handled and processed by remote application.
         /// </summary>
         public event EventHandler<MessageEventArgs> MessageSent;
 
@@ -147,8 +147,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         /// <summary>
         /// Timeout value as milliseconds to wait for a receiving message on
-        /// SendMessageAndWaitForResponse and SendAndReceiveMessage methods.
-        /// Default value: 60000 (1 minute).
+        /// SendMessageAndWaitForResponse and SendAndReceiveMessage methods. Default value: 60000 (1 minute).
         /// </summary>
         public int Timeout { get; set; }
 
@@ -178,14 +177,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             }
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Stop();
-            }
-        }
-
         /// <summary>
         /// Sends a message.
         /// </summary>
@@ -199,10 +190,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// Sends a message and waits a response for that message.
         /// </summary>
         /// <remarks>
-        /// Response message is matched with RepliedMessageId property, so if
-        /// any other message (that is not reply for sent message) is received
-        /// from remote application, it is not considered as a reply and is not
-        /// returned as return value of this method.
+        /// Response message is matched with RepliedMessageId property, so if any other message (that
+        /// is not reply for sent message) is received from remote application, it is not considered
+        /// as a reply and is not returned as return value of this method.
         ///
         /// MessageReceived event is not raised for response messages.
         /// </remarks>
@@ -217,18 +207,21 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// Sends a message and waits a response for that message.
         /// </summary>
         /// <remarks>
-        /// Response message is matched with RepliedMessageId property, so if
-        /// any other message (that is not reply for sent message) is received
-        /// from remote application, it is not considered as a reply and is not
-        /// returned as return value of this method.
+        /// Response message is matched with RepliedMessageId property, so if any other message (that
+        /// is not reply for sent message) is received from remote application, it is not considered
+        /// as a reply and is not returned as return value of this method.
         ///
         /// MessageReceived event is not raised for response messages.
         /// </remarks>
         /// <param name="message">message to send</param>
         /// <param name="timeoutMilliseconds">Timeout duration as milliseconds.</param>
         /// <returns>Response message</returns>
-        /// <exception cref="TimeoutException">Throws TimeoutException if can not receive reply message in timeout value</exception>
-        /// <exception cref="CommunicationException">Throws CommunicationException if communication fails before reply message.</exception>
+        /// <exception cref="TimeoutException">
+        /// Throws TimeoutException if can not receive reply message in timeout value
+        /// </exception>
+        /// <exception cref="CommunicationException">
+        /// Throws CommunicationException if communication fails before reply message.
+        /// </exception>
         public IScsMessage SendMessageAndWaitForResponse(IScsMessage message, int timeoutMilliseconds)
         {
             // Create a waiting message record and add to list
@@ -280,17 +273,17 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         }
 
         /// <summary>
-        /// Stops the messenger.
-        /// Cancels all waiting threads in SendMessageAndWaitForResponse method and stops message queue.
-        /// SendMessageAndWaitForResponse method throws exception if there is a thread that is waiting for response message.
-        /// Also stops incoming message processing and deletes all messages in incoming message queue.
+        /// Stops the messenger. Cancels all waiting threads in SendMessageAndWaitForResponse method
+        /// and stops message queue. SendMessageAndWaitForResponse method throws exception if there
+        /// is a thread that is waiting for response message. Also stops incoming message processing
+        /// and deletes all messages in incoming message queue.
         /// </summary>
         public virtual void Stop()
         {
             _incomingMessageProcessor.Stop();
 
-            // Pulse waiting threads for incoming messages, since underlying messenger is disconnected
-            // and can not receive messages anymore.
+            // Pulse waiting threads for incoming messages, since underlying messenger is
+            // disconnected and can not receive messages anymore.
             lock (_syncObj)
             {
                 foreach (var waitingMessage in _waitingMessages.Values)
@@ -300,6 +293,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                 }
 
                 _waitingMessages.Clear();
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Stop();
             }
         }
 
@@ -372,8 +373,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         #region Classes
 
         /// <summary>
-        /// This class is used to store messaging context for a request message
-        /// until response is received.
+        /// This class is used to store messaging context for a request message until response is received.
         /// </summary>
         private sealed class WaitingMessage
         {
@@ -393,8 +393,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             #region Properties
 
             /// <summary>
-            /// Response message for request message
-            /// (null if response is not received yet).
+            /// Response message for request message (null if response is not received yet).
             /// </summary>
             public IScsMessage ResponseMessage { get; set; }
 

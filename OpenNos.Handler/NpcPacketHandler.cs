@@ -601,7 +601,7 @@ namespace OpenNos.Handler
             {
                 InventoryType type;
                 byte amount, slot;
-               
+
                 if (!Enum.TryParse<InventoryType>(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount))
                 {
                     return;
@@ -683,6 +683,10 @@ namespace OpenNos.Handler
                 return;
             }
             MapNpc mapnpc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(NpcId));
+            if (mapnpc == null)
+            {
+                return;
+            }
             NpcMonster npc = ServerManager.GetNpc(mapnpc.NpcVNum);
             if (mapnpc?.Shop == null)
             {

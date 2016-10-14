@@ -14,7 +14,7 @@
 
 namespace OpenNos.Domain
 {
-    public enum ConfigType : byte
+    public enum CharacterOption
     {
         ExchangeBlocked = 1,
         FriendRequestBlocked = 2,

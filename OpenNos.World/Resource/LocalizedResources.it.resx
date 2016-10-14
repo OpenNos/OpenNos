@@ -987,4 +987,10 @@
   <data name="MOB_REMOVED" xml:space="preserve">
     <value>Mostro rimosso. (MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
   </data>
+  <data name="QNA_ITEM" xml:space="preserve">
+    <value>Vuoi utilizzare davvero quest'oggetto?</value>
+  </data>
+  <data name="SP_RESURRECTED" xml:space="preserve">
+    <value>L'anima della SP ha ripreso vita!</value>
+  </data>
 </root>

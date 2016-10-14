@@ -19,6 +19,12 @@ namespace OpenNos.ServiceRef.Internal
 {
     public class CommunicationCallback : ICommunicationServiceCallback, IDisposable
     {
+        #region Members
+
+        private bool _disposed;
+
+        #endregion
+
         #region Events
 
         public event EventHandler AccountConnectedEvent;
@@ -57,7 +63,12 @@ namespace OpenNos.ServiceRef.Internal
 
         public void Dispose()
         {
-            // dispose communication callback service
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
         }
 
         public void OnAccountDisconnected(string accountName)
@@ -73,6 +84,14 @@ namespace OpenNos.ServiceRef.Internal
             if (CharacterDisconnectedEvent != null && !String.IsNullOrEmpty(characterName))
             {
                 CharacterDisconnectedEvent(characterName, new EventArgs());
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose communication callback service
             }
         }
 

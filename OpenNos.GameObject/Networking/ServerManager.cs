@@ -142,9 +142,31 @@ namespace OpenNos.GameObject
 
         public Task TaskShutdown { get; set; }
 
+        private bool _disposed;
+
         #endregion
 
         #region Methods
+
+        public override void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _dropsByMonster.Dispose();
+                _groups.Dispose();
+                _monsterSkills.Dispose();
+            }
+        }
 
         public static ConcurrentDictionary<Guid, Map> GetAllMap()
         {
@@ -263,12 +285,12 @@ namespace OpenNos.GameObject
                 if (!clientSession.CurrentMap.UserShops[shop.Key].Items.Any(s => s.Amount > 0))
                 {
                     clientSession.SendPacket("shop_end 0");
-                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
-                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    shopOwnerSession.CurrentMap?.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
+                    shopOwnerSession.CurrentMap?.Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     shopOwnerSession.Character.LoadSpeed();
                     shopOwnerSession.Character.IsSitting = false;
                     shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateCond());
-                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
+                    shopOwnerSession.CurrentMap?.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
                 }
             }
         }
@@ -409,6 +431,11 @@ namespace OpenNos.GameObject
             return new List<DropDTO>();
         }
 
+        public Group GetGroupByCharacterId(long characterId)
+        {
+            return Groups.SingleOrDefault(g => g.IsMemberOfGroup(characterId));
+        }
+
         public long GetNextGroupId()
         {
             lastGroupId++;
@@ -476,6 +503,7 @@ namespace OpenNos.GameObject
                         targetSession.SendPacket("pinit 0");
                         targetSession.SendPacket(targetSession.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
                         Broadcast(targetSession.Character.GeneratePidx(true));
+                        grp.LeaveGroup(targetSession);
                     }
                     RemoveGroup(grp);
                 }
@@ -613,7 +641,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            //initialiize monster skills
+            // initialiize monster skills
             _monsterSkills = new ThreadSafeSortedList<short, List<NpcMonsterSkill>>();
             foreach (var monsterSkillGrouping in DAOFactory.NpcMonsterSkillDAO.LoadAll().GroupBy(n => n.NpcMonsterVNum))
             {
@@ -692,6 +720,16 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool IsCharacterMemberOfGroup(long characterId)
+        {
+            return Groups.Any(g => g.IsMemberOfGroup(characterId));
+        }
+
+        public bool IsCharactersGroupFull(long characterId)
+        {
+            return (Groups.Any(g => g.IsMemberOfGroup(characterId) && g.CharacterCount == 3));
+        }
+
         // Server
         public bool Kick(string characterName)
         {
@@ -743,8 +781,8 @@ namespace OpenNos.GameObject
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
                 ChangeMap(session.Character.CharacterId);
-                Broadcast(session, session.Character.GenerateTp(), ReceiverType.All);
-                Broadcast(session, session.Character.GenerateRevive(), ReceiverType.All);
+                session.CurrentMap?.Broadcast(session, session.Character.GenerateTp(), ReceiverType.All);
+                session.CurrentMap?.Broadcast(session.Character.GenerateRevive(), 200);
                 session.SendPacket(session.Character.GenerateStat());
             }
         }
@@ -836,7 +874,9 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                }
 
                 await Task.Delay(2000);
             }

@@ -15,7 +15,6 @@
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
-using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 {
@@ -32,8 +31,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         event EventHandler<MessageEventArgs> MessageReceived;
 
         /// <summary>
-        /// This event is raised when a new message is sent without any error.
-        /// It does not guaranties that message is properly handled and processed by remote application.
+        /// This event is raised when a new message is sent without any error. It does not guaranties
+        /// that message is properly handled and processed by remote application.
         /// </summary>
         event EventHandler<MessageEventArgs> MessageSent;
 

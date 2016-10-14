@@ -132,8 +132,9 @@ namespace OpenNos.WCF
                 }
                 else
                 {
-                    // TODO: move in own method, cannot do this here because it needs to be called by a client who wants to know if the
-                    // Account is allowed to connect without doing it actually
+                    // TODO: move in own method, cannot do this here because it needs to be called by
+                    //       a client who wants to know if the Account is allowed to connect without
+                    // doing it actually
                     Logger.Log.DebugFormat($"[WCF] Account {accountName} has connected.");
                     ConnectedAccounts.Add(accountName, sessionId);
 
@@ -167,8 +168,9 @@ namespace OpenNos.WCF
                 }
                 else
                 {
-                    // TODO: move in own method, cannot do this here because it needs to be called by a client who wants to know if the
-                    // character is allowed to connect without doing it actually
+                    // TODO: move in own method, cannot do this here because it needs to be called by
+                    //       a client who wants to know if the character is allowed to connect
+                    // without doing it actually
                     Logger.Log.DebugFormat($"[WCF] Character {characterName} has connected.");
                     ConnectedCharacters.Add(characterName, accountName);
 

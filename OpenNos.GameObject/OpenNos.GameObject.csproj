@@ -69,6 +69,7 @@
     <Compile Include="Account.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="ExchangeInfo.cs" />
+    <Compile Include="Helpers\MappingHelper.cs" />
     <Compile Include="Item\FoodItem.cs" />
     <Compile Include="Item\MagicalItem.cs" />
     <Compile Include="Item\ProduceItem.cs" />
@@ -90,8 +91,10 @@
     <Compile Include="NpcMonsterSkill.cs" />
     <Compile Include="Map\MapNpc.cs" />
     <Compile Include="Networking\Npc\NRunHandler.cs" />
+    <Compile Include="Packets\ClientPackets\CharacterOptionPacket.cs" />
     <Compile Include="Packets\ClientPackets\ExchangeListPacket.cs" />
     <Compile Include="Packets\ClientPackets\ExchangeRequestPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PJoinPacket.cs" />
     <Compile Include="Packets\ClientPackets\WalkPacket.cs" />
     <Compile Include="Packets\ServerPackets\Buy.cs" />
     <Compile Include="Packets\ServerPackets\CharacterCreatePacket.cs" />
@@ -131,7 +134,7 @@
     <Compile Include="Networking\ReceiverType.cs" />
     <Compile Include="Networking\Npc\NpcMonster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServersData.cs" />
+    <Compile Include="Helpers\CharacterHelper.cs" />
     <Compile Include="Skill.cs" />
     <Compile Include="CharacterSkill.cs" />
     <Compile Include="Item\Instance\SpecialistInstance.cs" />

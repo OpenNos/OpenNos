@@ -17,8 +17,8 @@ using System;
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 {
     /// <summary>
-    /// This message is used to send/receive ping messages.
-    /// Ping messages is used to keep connection alive between server and client.
+    /// This message is used to send/receive ping messages. Ping messages is used to keep connection
+    /// alive between server and client.
     /// </summary>
     [Serializable]
     public sealed class ScsPingMessage : ScsMessage
@@ -35,10 +35,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
         /// <summary>
         /// Creates a new reply PingMessage object.
         /// </summary>
-        /// <param name="repliedMessageId">
-        /// Replied message id if this is a reply for
-        /// a message.
-        /// </param>
+        /// <param name="repliedMessageId">Replied message id if this is a reply for a message.</param>
         public ScsPingMessage(string repliedMessageId)
             : this()
         {

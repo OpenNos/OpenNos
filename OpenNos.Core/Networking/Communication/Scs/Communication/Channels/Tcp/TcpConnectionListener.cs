@@ -19,8 +19,7 @@ using System.Threading;
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 {
     /// <summary>
-    /// This class is used to listen and accept incoming TCP
-    /// connection requests on a TCP port.
+    /// This class is used to listen and accept incoming TCP connection requests on a TCP port.
     /// </summary>
     public class TcpConnectionListener : ConnectionListenerBase
     {
@@ -84,8 +83,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         }
 
         /// <summary>
-        /// Entrance point of the thread.
-        /// This method is used by the thread to listen incoming requests.
+        /// Entrance point of the thread. This method is used by the thread to listen incoming requests.
         /// </summary>
         private void DoListenAsThread()
         {

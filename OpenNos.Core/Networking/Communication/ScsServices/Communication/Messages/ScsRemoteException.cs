@@ -18,8 +18,8 @@ using System.Runtime.Serialization;
 namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messages
 {
     /// <summary>
-    /// Represents a SCS Remote Exception.
-    /// This exception is used to send an exception from an application to another application.
+    /// Represents a SCS Remote Exception. This exception is used to send an exception from an
+    /// application to another application.
     /// </summary>
     [Serializable]
     public class ScsRemoteException : Exception

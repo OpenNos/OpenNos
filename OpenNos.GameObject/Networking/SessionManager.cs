@@ -83,15 +83,15 @@ namespace OpenNos.GameObject
             }
         }
 
-        protected virtual ClientSession IntializeNewSession(INetworkClient client)
-        {
-            return new ClientSession(client);
-        }
-
         public virtual void StopServer()
         {
             _sessions.Clear();
             ServerManager.Instance.StopServer();
+        }
+
+        protected virtual ClientSession IntializeNewSession(INetworkClient client)
+        {
+            return new ClientSession(client);
         }
 
         #endregion

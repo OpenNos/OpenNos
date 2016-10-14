@@ -20,11 +20,13 @@ using System.Runtime.Remoting.Messaging;
 namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
 {
     /// <summary>
-    /// This class extends RemoteInvokeProxy to provide auto connect/disconnect mechanism
-    /// if client is not connected to the server when a service method is called.
+    /// This class extends RemoteInvokeProxy to provide auto connect/disconnect mechanism if client
+    /// is not connected to the server when a service method is called.
     /// </summary>
     /// <typeparam name="TProxy">Type of the proxy class/interface</typeparam>
-    /// <typeparam name="TMessenger">Type of the messenger object that is used to send/receive messages</typeparam>
+    /// <typeparam name="TMessenger">
+    /// Type of the messenger object that is used to send/receive messages
+    /// </typeparam>
     public class AutoConnectRemoteInvokeProxy<TProxy, TMessenger> : RemoteInvokeProxy<TProxy, TMessenger> where TMessenger : IMessenger
     {
         #region Members

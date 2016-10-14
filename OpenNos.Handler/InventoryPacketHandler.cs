@@ -634,38 +634,41 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             byte type, amount;
             short slot;
-            if (byte.TryParse(packetsplit[4], out amount) && byte.TryParse(packetsplit[2], out type) && short.TryParse(packetsplit[3], out slot))
+            if (packetsplit.Count() > 4)
             {
-                Inventory invitem = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, (InventoryType)type);
-                if (invitem != null && (invitem.ItemInstance as ItemInstance).Item.IsDroppable && (invitem.ItemInstance as ItemInstance).Item.IsTradable && !Session.Character.InExchangeOrTrade)
+                if (byte.TryParse(packetsplit[4], out amount) && byte.TryParse(packetsplit[2], out type) && short.TryParse(packetsplit[3], out slot))
                 {
-                    if (amount > 0 && amount < 100)
+                    Inventory invitem = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, (InventoryType)type);
+                    if (invitem != null && (invitem.ItemInstance as ItemInstance).Item.IsDroppable && (invitem.ItemInstance as ItemInstance).Item.IsTradable && !Session.Character.InExchangeOrTrade)
                     {
-                        MapItem DroppedItem = Session.Character.InventoryList.PutItem(type, slot, amount, ref invitem);
-                        if (DroppedItem == null)
+                        if (amount > 0 && amount < 100)
                         {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
-                            return;
-                        }
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemInstance.ItemVNum, invitem.ItemInstance.Amount, (InventoryType)type, invitem.Slot, invitem.ItemInstance.Rare, invitem.ItemInstance.Design, invitem.ItemInstance.Upgrade, 0));
+                            MapItem DroppedItem = Session.Character.InventoryList.PutItem(type, slot, amount, ref invitem);
+                            if (DroppedItem == null)
+                            {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
+                                return;
+                            }
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemInstance.ItemVNum, invitem.ItemInstance.Amount, (InventoryType)type, invitem.Slot, invitem.ItemInstance.Rare, invitem.ItemInstance.Design, invitem.ItemInstance.Upgrade, 0));
 
-                        if (invitem.ItemInstance.Amount == 0)
-                        {
-                            Session.Character.DeleteItem(invitem.Type, invitem.Slot);
+                            if (invitem.ItemInstance.Amount == 0)
+                            {
+                                Session.Character.DeleteItem(invitem.Type, invitem.Slot);
+                            }
+                            if (DroppedItem != null)
+                            {
+                                Session.CurrentMap?.Broadcast($"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.TransportId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1");
+                            }
                         }
-                        if (DroppedItem != null)
+                        else
                         {
-                            Session.CurrentMap?.Broadcast($"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.TransportId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1");
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DROP_AMOUNT"), 0));
                         }
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DROP_AMOUNT"), 0));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE"), 0));
                     }
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE"), 0));
                 }
             }
         }
@@ -801,7 +804,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
                 }
-                if (ServersData.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
+                if (CharacterHelper.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
                 {
                     return;
                 }
@@ -814,10 +817,10 @@ namespace OpenNos.Handler
                 specialistInstance.SlElement += specialistElement;
                 specialistInstance.SlHP += specialistHealpoints;
 
-                int slElement = ServersData.SlPoint(specialistInstance.SlElement, 2);
-                int slHp = ServersData.SlPoint(specialistInstance.SlHP, 3);
-                int slDefence = ServersData.SlPoint(specialistInstance.SlDefence, 1);
-                int slHit = ServersData.SlPoint(specialistInstance.SlDamage, 0);
+                int slElement = CharacterHelper.SlPoint(specialistInstance.SlElement, 2);
+                int slHp = CharacterHelper.SlPoint(specialistInstance.SlHP, 3);
+                int slDefence = CharacterHelper.SlPoint(specialistInstance.SlDefence, 1);
+                int slHit = CharacterHelper.SlPoint(specialistInstance.SlDamage, 0);
 
                 // slhit
                 specialistInstance.DamageMinimum = 0;
@@ -1242,7 +1245,64 @@ namespace OpenNos.Handler
                                 if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
                                 {
                                     specialist.UpgradeSp(Session, UpgradeProtection.None);
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, inventoryType, slot, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                }
+                            }
+                            else
+                            {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                            }
+                        }
+                        break;
+
+                    case 20:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
+                        if (inventory != null)
+                        {
+                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            {
+                                inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.Protected);
+                            }
+                        }
+                        break;
+
+                    case 21:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
+                        if (inventory != null)
+                        {
+                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            {
+                                inventory.RarifyItem(Session, RarifyMode.Normal, RarifyProtection.Scroll);
+                            }
+                        }
+                        break;
+
+                    case 25:
+                        specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, inventoryType);
+                        if (specialist != null)
+                        {
+                            if (specialist.Rare != -2)
+                            {
+                                if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
+                                {
+                                    specialist.UpgradeSp(Session, UpgradeProtection.Protected);
+                                }
+                            }
+                            else
+                            {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                            }
+                        }
+                        break;
+
+                    case 26:
+                        specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, inventoryType);
+                        if (specialist != null)
+                        {
+                            if (specialist.Rare != -2)
+                            {
+                                if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
+                                {
+                                    specialist.UpgradeSp(Session, UpgradeProtection.Protected);
                                 }
                             }
                             else
@@ -1261,12 +1321,22 @@ namespace OpenNos.Handler
                                 if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
                                 {
                                     specialist.PerfectSP(Session, UpgradeProtection.None);
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, inventoryType, slot, specialist.Rare, specialist.Design, specialist.Upgrade, specialist.SpStoneUpgrade));
                                 }
                             }
                             else
                             {
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                            }
+                        }
+                        break;
+
+                    case 43:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
+                        if (inventory != null)
+                        {
+                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            {
+                                inventory.UpgradeItem(Session, UpgradeMode.Reduced, UpgradeProtection.Protected);
                             }
                         }
                         break;
@@ -1286,7 +1356,7 @@ namespace OpenNos.Handler
                 Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, (InventoryType)type);
                 if (inv != null)
                 {
-                    (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#');
+                    (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#', packetsplit);
                 }
             }
         }

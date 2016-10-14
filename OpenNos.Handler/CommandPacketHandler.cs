@@ -218,7 +218,7 @@ namespace OpenNos.Handler
             byte hlevel;
             if (packetsplit.Length > 2)
             {
-                if (Byte.TryParse(packetsplit[2], out hlevel) && hlevel < 51 && hlevel > 0)
+                if (Byte.TryParse(packetsplit[2], out hlevel) && hlevel < 51 && hlevel >= 0)
                 {
                     Session.Character.HeroLevel = hlevel;
                     Session.Character.HeroXp = 0;
@@ -567,7 +567,7 @@ namespace OpenNos.Handler
             byte amount;
             short vnum = -1;
             sbyte Rare = 0;
-            byte Upgrade =0;
+            byte Upgrade = 0;
             if (packetsplit.Length > 5)
             {
                 if (packetsplit.Length == 6)
@@ -576,7 +576,7 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    Session.Character.SendGift(Session.Character.CharacterId, vnum, amount,Rare,Upgrade, false);
+                    Session.Character.SendGift(Session.Character.CharacterId, vnum, amount, Rare, Upgrade, false);
                 }
                 else if (packetsplit.Length == 7)
                 {
@@ -1629,7 +1629,7 @@ namespace OpenNos.Handler
                     WearableInstance wearableInstance = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(itemslot, 0);
                     if (wearableInstance != null)
                     {
-                        wearableInstance.UpgradeItem(Session, (UpgradeMode)mode, (UpgradeProtection)protection);
+                        wearableInstance.UpgradeItem(Session, (UpgradeMode)mode, (UpgradeProtection)protection, true);
                     }
                 }
             }

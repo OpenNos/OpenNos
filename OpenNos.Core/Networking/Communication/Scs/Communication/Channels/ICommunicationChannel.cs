@@ -19,8 +19,8 @@ using System;
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 {
     /// <summary>
-    /// Represents a communication channel.
-    /// A communication channel is used to communicate (send/receive messages) with a remote application.
+    /// Represents a communication channel. A communication channel is used to communicate
+    /// (send/receive messages) with a remote application.
     /// </summary>
     public interface ICommunicationChannel : IMessenger
     {

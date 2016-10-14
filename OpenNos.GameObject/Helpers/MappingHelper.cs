@@ -12,47 +12,46 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using System;
+using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
-    public class NpcMonsterSkill : NpcMonsterSkillDTO
+    public static class MappingHelper
     {
         #region Members
 
-        private Skill skill;
+        private static Dictionary<int, int> _guriItemEffects;
 
         #endregion
 
         #region Instantiation
 
-        public NpcMonsterSkill()
+        static MappingHelper()
         {
-            LastUse = DateTime.Now.AddHours(-1);
-            Hit = 0;
+            // intialize hardcode in waiting for better solution
+            _guriItemEffects = new Dictionary<int, int>();
+
+            // effect items aka. fireworks
+            _guriItemEffects.Add(859, 1343);
+            _guriItemEffects.Add(860, 1344);
+            _guriItemEffects.Add(861, 1344);
+            _guriItemEffects.Add(875, 1558);
+            _guriItemEffects.Add(876, 1559);
+            _guriItemEffects.Add(877, 1560);
+            _guriItemEffects.Add(878, 1560);
+            _guriItemEffects.Add(879, 1561);
+            _guriItemEffects.Add(880, 1561);
         }
 
         #endregion
 
         #region Properties
 
-        public short Hit { get; set; }
-
-        public DateTime LastUse
-        {
-            get; set;
-        }
-
-        public Skill Skill
+        public static Dictionary<int, int> GuriItemEffects
         {
             get
             {
-                if (skill == null)
-                {
-                    skill = ServerManager.GetSkill(this.SkillVNum);
-                }
-                return skill;
+                return _guriItemEffects;
             }
         }
 

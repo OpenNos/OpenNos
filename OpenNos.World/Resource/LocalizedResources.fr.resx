@@ -982,4 +982,13 @@ Veux-tu le porter ?</value>
   <data name="ITEM_ACQUIRED_BY_THE_GIANT_MONSTER" xml:space="preserve">
     <value>Tu as obtenu l'objet du monstre géant !</value>
   </data>
+  <data name="QNA_ITEM" xml:space="preserve">
+    <value>Souhaites-tu utiliser cet objet ?</value>
+  </data>
+  <data name="SP_RESURRECTED" xml:space="preserve">
+    <value>L'âme reprend vie.</value>
+  </data>
+  <data name="ITEM_IS_NOT_FIXED" xml:space="preserve">
+    <value>Tu ne peux pas l'utiliser. Ton objet ne remplis pas les conditions</value>
+  </data>
 </root>

@@ -21,9 +21,13 @@ namespace OpenNos.GameObject
 {
     public class SpecialistInstance : WearableInstance, ISpecialistInstance
     {
-        #region Instantiation
+        #region Members
 
         private Random _random;
+
+        #endregion
+
+        #region Instantiation
 
         public SpecialistInstance()
         {
@@ -335,6 +339,8 @@ namespace OpenNos.GameObject
             short dragonSkinVnum = 2511;
             short dragonBloodVnum = 2512;
             short dragonHeartVnum = 2513;
+            short blueScrollVnum = 1363;
+            short redScrollVnum = 1364;
 
             if (this.IsFixed)
             {
@@ -373,6 +379,15 @@ namespace OpenNos.GameObject
                         }
                         Session.Character.InventoryList.RemoveItemAmount(dragonSkinVnum, (soul[this.Upgrade]));
                     }
+                    if (protect == UpgradeProtection.Protected)
+                    {
+                        if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                        {
+                            return;
+                        }
+                        Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                        Session.SendPacket("shop_end 2");
+                    }
                 }
                 else
                 {
@@ -399,6 +414,15 @@ namespace OpenNos.GameObject
                             return;
                         }
                         Session.Character.InventoryList.RemoveItemAmount(dragonBloodVnum, (soul[this.Upgrade]));
+                    }
+                    if (protect == UpgradeProtection.Protected)
+                    {
+                        if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                        {
+                            return;
+                        }
+                        Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                        Session.SendPacket("shop_end 2");
                     }
                 }
                 else
@@ -427,6 +451,15 @@ namespace OpenNos.GameObject
                         }
                         Session.Character.InventoryList.RemoveItemAmount(dragonHeartVnum, (soul[this.Upgrade]));
                     }
+                    if (protect == UpgradeProtection.Protected && this.Upgrade > 9)
+                    {
+                        if (Session.Character.InventoryList.CountItem(redScrollVnum) < 1)
+                        {
+                            return;
+                        }
+                        Session.Character.InventoryList.RemoveItemAmount(redScrollVnum);
+                        Session.SendPacket("shop_end 2");
+                    }
                 }
                 else
                 {
@@ -435,7 +468,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            //remove feather and fullmoon before upgrading
+            // remove feather and fullmoon before upgrading
             Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[this.Upgrade]));
             Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.Upgrade]));
 
@@ -461,7 +494,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
                 wearable.Upgrade++;
-                Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, 0, 0));
+                Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, this.SpStoneUpgrade));
             }
             else
             {
@@ -476,7 +509,7 @@ namespace OpenNos.GameObject
                     wearable.Rare = (sbyte)-2;
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 11));
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 0));
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, this.Rare, 0, this.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, this.SpStoneUpgrade));
                 }
             }
             Session.Character.Gold = Session.Character.Gold - goldprice[this.Upgrade];

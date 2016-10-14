@@ -13,14 +13,13 @@
  */
 
 using OpenNos.Data;
-using System;
 
 namespace OpenNos.GameObject
 {
     public abstract class Item : ItemDTO
     {
         #region Instantiation
-       
+
         public Item()
         {
         }
@@ -29,7 +28,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public abstract void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false);
+        public abstract void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false, string[] packetsplit = null);
 
         #endregion
     }

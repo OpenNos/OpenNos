@@ -220,6 +220,249 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateStatChar());
         }
 
+        [Packet("pjoin")]
+        public void GroupJoin(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+
+            PJoinPacket pjoinPacket = PacketFactory.Serialize<PJoinPacket>(packet, true);
+
+            if (pjoinPacket != null)
+            {
+                if (pjoinPacket.RequestType.Equals(GroupRequestType.Requested) || pjoinPacket.RequestType.Equals(GroupRequestType.Invited))
+                {
+                    if (pjoinPacket.CharacterId == 0)
+                    {
+                        return;
+                    }
+
+                    if (ServerManager.Instance.IsCharactersGroupFull(pjoinPacket.CharacterId))
+                    {
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
+                        return;
+                    }
+
+                    if (ServerManager.Instance.IsCharacterMemberOfGroup(pjoinPacket.CharacterId) &&
+                        ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId))
+                    {
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("ALREADY_IN_GROUP")));
+                        return;
+                    }
+
+                    if (Session.Character.CharacterId != pjoinPacket.CharacterId)
+                    {
+                        ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(pjoinPacket.CharacterId);
+                        if (targetSession != null)
+                        {
+                            if (targetSession.Character.GroupRequestBlocked)
+                            {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_BLOCKED"), 0));
+                            }
+                            else
+                            {
+                                Session.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), targetSession.Character.Name)));
+                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, targetSession.Character.Name);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        [Packet("#pjoin")]
+        public void GroupJoinValid(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+
+            // serialization hack -> dialog answer packet isnt supported by PacketFactory atm
+            PJoinPacket pjoinPacket = PacketFactory.Serialize<PJoinPacket>(packet.Replace('^', ' ').Replace('#', ' '), true);
+            bool createNewGroup = true;
+
+            if (pjoinPacket != null)
+            {
+                if (pjoinPacket.CharacterId == 0)
+                {
+                    return;
+                }
+
+                ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(pjoinPacket.CharacterId);
+
+                if (targetSession == null)
+                {
+                    // target session with character id does not exist
+                    return;
+                }
+
+                // accepted, join the group
+                if (pjoinPacket.RequestType.Equals(GroupRequestType.Accepted))
+                {
+                    if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId) &&
+                        ServerManager.Instance.IsCharacterMemberOfGroup(pjoinPacket.CharacterId))
+                    {
+                        // everyone is in group, return
+                        return;
+                    }
+
+                    if (ServerManager.Instance.IsCharactersGroupFull(pjoinPacket.CharacterId))
+                    {
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
+                        return;
+                    }
+
+                    // get group and add to group
+                    if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId))
+                    {
+                        // target joins source
+                        Group currentGroup = ServerManager.Instance.GetGroupByCharacterId(Session.Character.CharacterId);
+
+                        if (currentGroup != null)
+                        {
+                            currentGroup.JoinGroup(targetSession);
+                            targetSession.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOINED_GROUP"), 10));
+                            createNewGroup = false;
+                        }
+                    }
+                    else if (ServerManager.Instance.IsCharacterMemberOfGroup(pjoinPacket.CharacterId))
+                    {
+                        // source joins target
+                        Group currentGroup = ServerManager.Instance.GetGroupByCharacterId(pjoinPacket.CharacterId);
+
+                        if (currentGroup != null)
+                        {
+                            currentGroup.JoinGroup(Session);
+                            createNewGroup = false;
+                        }
+                    }
+
+                    if (createNewGroup)
+                    {
+                        Group group = new Group();
+                        group.JoinGroup(pjoinPacket.CharacterId);
+                        Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), targetSession.Character.Name), 10));
+                        group.JoinGroup(Session.Character.CharacterId);
+                        ServerManager.Instance.AddGroup(group);
+                        targetSession.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_ADMIN")));
+
+                        // set back reference to group
+                        Session.Character.Group = group;
+                        targetSession.Character.Group = group;
+                    }
+
+                    // player join group
+                    ServerManager.Instance.UpdateGroup(pjoinPacket.CharacterId);
+                    Session.CurrentMap?.Broadcast(Session.Character.GeneratePidx());
+                }
+                else if (pjoinPacket.RequestType == GroupRequestType.Declined)
+                {
+                    targetSession.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10));
+                }
+            }
+        }
+
+        [Packet("pleave")]
+        public void GroupLeave(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            ServerManager.Instance.GroupLeave(Session);
+        }
+
+        [Packet("gop")]
+        public void CharacterOptionChange(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+
+            CharacterOptionPacket characteroptionpacket = PacketFactory.Serialize<CharacterOptionPacket>(packet, true);
+            if (characteroptionpacket != null)
+            {
+                switch (characteroptionpacket.Option)
+                {
+                    case CharacterOption.BuffBlocked:
+                        Session.Character.BuffBlocked = characteroptionpacket.IsActive == true;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.BuffBlocked ? "BUFF_BLOCKED" : "BUFF_UNLOCKED"), 0));
+                        break;
+
+                    case CharacterOption.EmoticonsBlocked:
+                        Session.Character.EmoticonsBlocked = characteroptionpacket.IsActive == true;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.EmoticonsBlocked ? "EMO_BLOCKED" : "EMO_UNLOCKED"), 0));
+                        break;
+
+                    case CharacterOption.ExchangeBlocked:
+                        Session.Character.ExchangeBlocked = characteroptionpacket.IsActive == false;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.ExchangeBlocked ? "EXCHANGE_BLOCKED" : "EXCHANGE_UNLOCKED"), 0));
+                        break;
+
+                    case CharacterOption.FriendRequestBlocked:
+                        Session.Character.FriendRequestBlocked = characteroptionpacket.IsActive == false;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.FriendRequestBlocked ? "FRIEND_REQ_BLOCKED" : "FRIEND_REQ_UNLOCKED"), 0));
+                        break;
+
+                    case CharacterOption.GroupRequestBlocked:
+                        Session.Character.GroupRequestBlocked = characteroptionpacket.IsActive == false;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.GroupRequestBlocked ? "GROUP_REQ_BLOCKED" : "GROUP_REQ_UNLOCKED"), 0));
+                        break;
+
+                    case CharacterOption.HeroChatBlocked:
+                        Session.Character.HeroChatBlocked = characteroptionpacket.IsActive == true;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.HeroChatBlocked ? "HERO_CHAT_BLOCKED" : "HERO_CHAT_UNLOCKED"), 0));
+                        break;
+
+                    case CharacterOption.HpBlocked:
+                        Session.Character.HpBlocked = characteroptionpacket.IsActive == true;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.HpBlocked ? "HP_BLOCKED" : "HP_UNLOCKED"), 0));
+                        break;
+
+                    case CharacterOption.MinilandInviteBlocked:
+                        Session.Character.MinilandInviteBlocked = characteroptionpacket.IsActive == true;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.MinilandInviteBlocked ? "MINI_INV_BLOCKED" : "MINI_INV_UNLOCKED"), 0));
+                        break;
+
+                    case CharacterOption.MouseAimLock:
+                        Session.Character.MouseAimLock = characteroptionpacket.IsActive == true;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.MouseAimLock ? "MOUSE_LOCKED" : "MOUSE_UNLOCKED"), 0));
+                        break;
+
+                    case CharacterOption.QuickGetUp:
+                        Session.Character.QuickGetUp = characteroptionpacket.IsActive == true;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.QuickGetUp ? "QUICK_GET_UP_ENABLED" : "QUICK_GET_UP_DISABLED"), 0));
+                        break;
+
+                    case CharacterOption.WhisperBlocked:
+                        Session.Character.WhisperBlocked = characteroptionpacket.IsActive == false;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.WhisperBlocked ? "WHISPER_BLOCKED" : "WHISPER_UNLOCKED"), 0));
+                        break;
+
+                    case CharacterOption.FamilyRequestBlocked:
+                        Session.Character.FamilyRequestBlocked = characteroptionpacket.IsActive == false;
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.FamilyRequestBlocked ? "FAMILY_REQ_LOCKED" : "FAMILY_REQ_UNLOCKED"), 0));
+                        break;
+
+                    case CharacterOption.GroupSharing:
+                        Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
+                        if (grp == null)
+                        {
+                            return;
+                        }
+                        if (grp.Characters.ElementAt(0) != Session)
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_MASTER"), 0));
+                            return;
+                        }
+                        if (characteroptionpacket.IsActive == false)
+                        {
+                            ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 1;
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0), ReceiverType.Group);
+                        }
+                        else
+                        {
+                            ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 0;
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_BY_ORDER"), 0), ReceiverType.Group);
+                        }
+                        break;
+                }
+            }
+            Session.SendPacket(Session.Character.GenerateStat());
+        }
+
         [Packet(";")]
         public void GroupTalk(string packet)
         {
@@ -263,7 +506,7 @@ namespace OpenNos.Handler
                         }
                         message.Trim();
 
-                        Session.Character.InventoryList.RemoveItemAmount(speakerVNum, 1);
+                        Session.Character.InventoryList.RemoveItemAmount(speakerVNum);
                         ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }
                 }
@@ -309,7 +552,7 @@ namespace OpenNos.Handler
                             specialistInstance.HP = 0;
                             specialistInstance.MP = 0;
 
-                            Session.Character.InventoryList.RemoveItemAmount(vnumToUse, 1);
+                            Session.Character.InventoryList.RemoveItemAmount(vnumToUse);
                             Session.Character.EquipmentList.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Equipment);
                             Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Equipment, (byte)EquipmentType.Sp);
                             Session.SendPacket(Session.Character.GenerateCond());
@@ -415,174 +658,6 @@ namespace OpenNos.Handler
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_HERO"), 11));
             }
-        }
-
-        [Packet("gop")]
-        public void Option(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length == 4)
-            {
-                int TypeOption = -1;
-                int OptionValue = -1;
-
-                if (int.TryParse(packetsplit[2], out TypeOption) && int.TryParse(packetsplit[3], out OptionValue))
-                {
-                    switch (TypeOption)
-                    {
-                        case (int)ConfigType.BuffBlocked:
-                            Session.Character.BuffBlocked = OptionValue == 1;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.BuffBlocked ? "BUFF_BLOCKED" : "BUFF_UNLOCKED"), 0));
-                            break;
-
-                        case (int)ConfigType.EmoticonsBlocked:
-                            Session.Character.EmoticonsBlocked = OptionValue == 1;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.EmoticonsBlocked ? "EMO_BLOCKED" : "EMO_UNLOCKED"), 0));
-                            break;
-
-                        case (int)ConfigType.ExchangeBlocked:
-                            Session.Character.ExchangeBlocked = OptionValue == 0;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.ExchangeBlocked ? "EXCHANGE_BLOCKED" : "EXCHANGE_UNLOCKED"), 0));
-                            break;
-
-                        case (int)ConfigType.FriendRequestBlocked:
-                            Session.Character.FriendRequestBlocked = OptionValue == 0;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.FriendRequestBlocked ? "FRIEND_REQ_BLOCKED" : "FRIEND_REQ_UNLOCKED"), 0));
-                            break;
-
-                        case (int)ConfigType.GroupRequestBlocked:
-                            Session.Character.GroupRequestBlocked = OptionValue == 0;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.GroupRequestBlocked ? "GROUP_REQ_BLOCKED" : "GROUP_REQ_UNLOCKED"), 0));
-                            break;
-
-                        case (int)ConfigType.HeroChatBlocked:
-                            Session.Character.HeroChatBlocked = OptionValue == 1;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.HeroChatBlocked ? "HERO_CHAT_BLOCKED" : "HERO_CHAT_UNLOCKED"), 0));
-                            break;
-
-                        case (int)ConfigType.HpBlocked:
-                            Session.Character.HpBlocked = OptionValue == 1;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.HpBlocked ? "HP_BLOCKED" : "HP_UNLOCKED"), 0));
-                            break;
-
-                        case (int)ConfigType.MinilandInviteBlocked:
-                            Session.Character.MinilandInviteBlocked = OptionValue == 1;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.MinilandInviteBlocked ? "MINI_INV_BLOCKED" : "MINI_INV_UNLOCKED"), 0));
-                            break;
-
-                        case (int)ConfigType.MouseAimLock:
-                            Session.Character.MouseAimLock = OptionValue == 1;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.MouseAimLock ? "MOUSE_LOCKED" : "MOUSE_UNLOCKED"), 0));
-                            break;
-
-                        case (int)ConfigType.QuickGetUp:
-                            Session.Character.QuickGetUp = OptionValue == 1;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.QuickGetUp ? "QUICK_GET_UP_ENABLED" : "QUICK_GET_UP_DISABLED"), 0));
-                            break;
-
-                        case (int)ConfigType.WhisperBlocked:
-                            Session.Character.WhisperBlocked = OptionValue == 0;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.WhisperBlocked ? "WHISPER_BLOCKED" : "WHISPER_UNLOCKED"), 0));
-                            break;
-
-                        case (int)ConfigType.FamilyRequestBlocked:
-                            Session.Character.FamilyRequestBlocked = OptionValue == 0;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.FamilyRequestBlocked ? "FAMILY_REQ_LOCKED" : "FAMILY_REQ_UNLOCKED"), 0));
-                            break;
-
-                        case (int)ConfigType.GroupSharing:
-                            Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
-                            if (grp == null)
-                            {
-                                return;
-                            }
-                            if (grp.Characters.ElementAt(0) != Session)
-                            {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_MASTER"), 0));
-                                return;
-                            }
-                            if (OptionValue == 0)
-                            {
-                                ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 1;
-                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0), ReceiverType.Group);
-                            }
-                            else
-                            {
-                                ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 0;
-                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_BY_ORDER"), 0), ReceiverType.Group);
-                            }
-                            break;
-                    }
-                }
-            }
-            Session.SendPacket(Session.Character.GenerateStat());
-        }
-
-        [Packet("pjoin")]
-        public void PlayerJoin(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3)
-            {
-                string charName;
-                long charId = -1;
-                bool grouped1 = false, grouped2 = false, isBlocked = false;
-                if (!long.TryParse(packetsplit[3], out charId))
-                {
-                    return;
-                }
-                foreach (Group group in ServerManager.Instance.Groups)
-                {
-                    if ((group.IsMemberOfGroup(charId) || group.IsMemberOfGroup(Session.Character.CharacterId)) && group.CharacterCount == 3)
-                    {
-                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
-                        return;
-                    }
-                    if (group.IsMemberOfGroup(charId))
-                    {
-                        grouped1 = true;
-                    }
-                    if (group.IsMemberOfGroup(Session.Character.CharacterId))
-                    {
-                        grouped2 = true;
-                    }
-                }
-
-                if (grouped1 && grouped2)
-                {
-                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("ALREADY_IN_GROUP")));
-                    return;
-                }
-                if (Convert.ToInt32(packetsplit[2]) == 0 || Convert.ToInt32(packetsplit[2]) == 1)
-                {
-                    if (Session.Character.CharacterId != charId)
-                    {
-                        if (!long.TryParse(packetsplit[3], out charId))
-                        {
-                            return;
-                        }
-                        isBlocked = ServerManager.Instance.GetProperty<bool>(charId, nameof(Character.GroupRequestBlocked));
-                        if (isBlocked)
-                        {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_BLOCKED"), 0));
-                        }
-                        else
-                        {
-                            charName = ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name));
-                            Session.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), charName)));
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
-                        }
-                    }
-                }
-            }
-        }
-
-        [Packet("pleave")]
-        public void PlayerLeave(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            ServerManager.Instance.GroupLeave(Session);
         }
 
         [Packet("preq")]
@@ -739,13 +814,13 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Gender == 1)
                 {
-                    ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1), ReceiverType.All);
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
                 else
                 {
-                    ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1), ReceiverType.All);
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
@@ -943,8 +1018,9 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public void StartGame(string packet)
         {
-            if (Session.IsOnMap || !Session.HasSelectedCharacter) //character should have been selected in SelectCharacter
+            if (Session.IsOnMap || !Session.HasSelectedCharacter)
             {
+                // character should have been selected in SelectCharacter
                 return;
             }
 
@@ -990,7 +1066,6 @@ namespace OpenNos.Handler
 
             // sc_p pet sc_n nospartner Session.SendPacket("sc_p_stc 0"); // end pet and partner
             Session.SendPacket("pinit 0"); // clean party list
-      
 
             // blinit
             Session.SendPacket("zzim");
@@ -1034,92 +1109,6 @@ namespace OpenNos.Handler
             Session.Character.RefreshMail();
             Session.Character.LoadSendedMail();
             Session.Character.DeleteTimeout();
-        }
-
-        [Packet("#pjoin")]
-        public void ValidPJoin(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ', '^');
-            int type = -1, newgroup = 1;
-            long charId = -1;
-            bool blocked1 = false, blocked2 = false;
-            if (packetsplit.Length > 3)
-            {
-                if (!(int.TryParse(packetsplit[2], out type) && long.TryParse(packetsplit[3], out charId)))
-                {
-                    return;
-                }
-                if (type == 3 && ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name)) != null)
-                {
-                    foreach (Group group in ServerManager.Instance.Groups)
-                    {
-                        if (group.IsMemberOfGroup(Session))
-                        {
-                            blocked1 = true;
-                        }
-                        if (group.IsMemberOfGroup(charId))
-                        {
-                            blocked2 = true;
-                        }
-                    }
-                    foreach (Group group in ServerManager.Instance.Groups)
-                    {
-                        if (group.CharacterCount == 3)
-                        {
-                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
-
-                            return;
-                        }
-                        else if (blocked2 && blocked1)
-                        {
-                            return;
-                        }
-                        else if (group.IsMemberOfGroup(charId))
-                        {
-                            group.JoinGroup(Session);
-                            newgroup = 0;
-                        }
-                        else if (group.IsMemberOfGroup(Session.Character.CharacterId))
-                        {
-                            group.JoinGroup(charId);
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOINED_GROUP"), 10), ReceiverType.OnlySomeone, String.Empty, charId);
-                            newgroup = 0;
-                        }
-                    }
-
-                    if (newgroup == 1)
-                    {
-                        Group group = new Group();
-                        group.JoinGroup(charId);
-                        Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name))), 10));
-                        group.JoinGroup(Session.Character.CharacterId);
-                        ServerManager.Instance.AddGroup(group);
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_ADMIN")), ReceiverType.OnlySomeone, String.Empty, charId);
-
-                        // set back reference to group
-                        Session.Character.Group = group;
-                        ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
-                        if (session != null && session.Character != null)
-                        {
-                            ClientSession loadedSession = ServerManager.Instance.GetSessionByCharacterId(charId);
-
-                            if (loadedSession != null)
-                            {
-                                loadedSession.Character.Group = group;
-                            }
-                        }
-                    }
-
-                    // player join group
-                    ServerManager.Instance.UpdateGroup(charId);
-                    Session.CurrentMap?.Broadcast(Session.Character.GeneratePidx());
-                }
-                else if (type == 4)
-                {
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10), ReceiverType.OnlySomeone, String.Empty, charId);
-                }
-            }
         }
 
         [Packet("walk")]

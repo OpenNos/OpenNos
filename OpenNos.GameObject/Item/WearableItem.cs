@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession session, ref Inventory inventory, bool DelayUsed = false)
+        public override void Use(ClientSession session, ref Inventory inventory, bool DelayUsed = false, string[] packetsplit = null)
         {
             switch (Effect)
             {
@@ -136,7 +136,7 @@ namespace OpenNos.GameObject
                     if (EquipmentSlot == (byte)EquipmentType.Fairy)
                     {
                         WearableInstance fairy = session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Equipment);
-                        session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, ServersData.LoadFairyXpData((fairy.ElementRate + fairy.Item.ElementRate))), 10));
+                        session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXpData((fairy.ElementRate + fairy.Item.ElementRate))), 10));
                     }
                     break;
             }

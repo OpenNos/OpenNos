@@ -18,8 +18,8 @@ using System;
 namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messages
 {
     /// <summary>
-    /// This message is sent as response message to a ScsRemoteInvokeMessage.
-    /// It is used to send return value of method invocation.
+    /// This message is sent as response message to a ScsRemoteInvokeMessage. It is used to send
+    /// return value of method invocation.
     /// </summary>
     [Serializable]
     public class ScsRemoteInvokeReturnMessage : ScsMessage

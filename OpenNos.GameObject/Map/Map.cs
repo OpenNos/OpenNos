@@ -33,6 +33,7 @@ namespace OpenNos.GameObject
         #region Members
 
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
+        private bool _disposed;
         private short[,] _grid;
         private List<int> _mapMonsterIds;
         private List<MapNpc> _npcs;
@@ -214,6 +215,16 @@ namespace OpenNos.GameObject
             return grid;
         }
 
+        public override void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
         public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY)
         {
             try
@@ -381,7 +392,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            //initialize JPS
+            // initialize JPS
             _tempgrid = ConvertToGrid(_grid);
             JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
@@ -538,6 +549,14 @@ namespace OpenNos.GameObject
             }
             Path.RemoveAt(0);
             return Path;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _monsters.Dispose();
+            }
         }
 
         private void CharacterLifeManager()

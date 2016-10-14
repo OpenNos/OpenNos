@@ -62,6 +62,7 @@ namespace OpenNos.World
         {
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
             Console.OutputEncoding = Encoding.UTF8;
+
             // initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -94,9 +95,7 @@ namespace OpenNos.World
             DAOFactory.InventoryDAO.RegisterMapping(typeof(UsableInstance));
             DAOFactory.InventoryDAO.InitializeMapper(typeof(ItemInstance));
 
-            // TODO: initialize ClientLinkManager
-
-            // initialize PacketSerialization
+            // TODO: initialize ClientLinkManager initialize PacketSerialization
             PacketFactory.Initialize<WalkPacket>();
 
             try

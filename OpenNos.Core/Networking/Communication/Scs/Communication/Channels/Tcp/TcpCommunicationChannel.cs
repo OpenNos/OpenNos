@@ -16,8 +16,13 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 {
@@ -38,13 +43,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// </summary>
         private readonly byte[] _buffer;
 
-        // 4KB
-
         /// <summary>
         /// Socket object to send/reveice messages.
         /// </summary>
         private readonly Socket _clientSocket;
 
+        // 4KB
         private readonly ScsTcpEndPoint _remoteEndPoint;
 
         /// <summary>
@@ -56,6 +60,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// A flag to control thread's running
         /// </summary>
         private volatile bool _running;
+
+        private ConcurrentQueue<byte[]> _sendBuffer;
+
+        private CancellationTokenSource _sendCancellationToken = new CancellationTokenSource();
+
+        private Task _sendTask;
+
+        private bool _disposed;
 
         #endregion
 
@@ -77,6 +89,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
             _buffer = new byte[ReceiveBufferSize];
             _syncLock = new object();
+
+            _sendBuffer = new ConcurrentQueue<byte[]>();
+            CancellationToken cancellationToken = _sendCancellationToken.Token;
+            _sendTask = StartSending(SendInterval, new TimeSpan(0, 0, 0, 0, 10), cancellationToken);
         }
 
         #endregion
@@ -98,6 +114,41 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         #region Methods
 
+        public static async Task StartSending(Action action, TimeSpan period, CancellationToken _sendCancellationToken)
+        {
+            while (!_sendCancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(period, _sendCancellationToken);
+
+                if (!_sendCancellationToken.IsCancellationRequested)
+                {
+                    action();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calls Disconnect method.
+        /// </summary>
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Disconnect();
+                _sendCancellationToken.Dispose();
+            }
+        }
+
         /// <summary>
         /// Disconnects from remote application and closes channel.
         /// </summary>
@@ -111,6 +162,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _running = false;
             try
             {
+                _sendCancellationToken.Cancel();
                 if (_clientSocket.Connected)
                 {
                     _clientSocket.Close();
@@ -121,9 +173,53 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             catch
             {
             }
+            finally
+            {
+                _sendCancellationToken.Dispose();
+            }
 
             CommunicationState = CommunicationStates.Disconnected;
             OnDisconnected();
+        }
+
+        public void SendInterval()
+        {
+            try
+            {
+                if (WireProtocol != null)
+                {
+                    IEnumerable<byte> outgoingPacket = new List<byte>();
+
+                    // send maximal 30 packets at once
+                    for (int i = 0; i < 30; i++) 
+                    {
+                        byte[] message;
+                        if (_sendBuffer.TryDequeue(out message) && message != null)
+                        {
+                            outgoingPacket = outgoingPacket.Concat(message);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    if (outgoingPacket.Any())
+                    {
+                        _clientSocket.BeginSend(outgoingPacket.ToArray(), 0, outgoingPacket.Count(), SocketFlags.None,
+                        new AsyncCallback(SendCallback), _clientSocket);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // disconnect
+            }
+
+            if (!_clientSocket.Connected)
+            {
+                return;
+            }
         }
 
         /// <summary>
@@ -132,22 +228,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// <param name="message">Message to be sent</param>
         protected override void SendMessagepublic(IScsMessage message)
         {
-            try
-            {
-                if (_clientSocket.Connected)
-                {
-                    // Create a byte array from message according to current protocol
-                    var messageBytes = WireProtocol.GetBytes(message);
-
-                    // Begin sending the data to the remote device.
-                    _clientSocket.BeginSend(messageBytes, 0, messageBytes.Length, SocketFlags.None,
-                        new AsyncCallback(SendCallback), _clientSocket);
-                }
-            }
-            catch (Exception e)
-            {
-                //disconnect
-            }
+            _sendBuffer.Enqueue(WireProtocol.GetBytes(message));
         }
 
         /// <summary>
@@ -166,14 +247,17 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 // Retrieve the socket from the state object.
                 Socket client = (Socket)ar.AsyncState;
 
-                if (!client.Connected) return;
+                if (!client.Connected)
+                {
+                    return;
+                }
 
                 // Complete sending the data to the remote device.
                 int bytesSent = client.EndSend(ar);
             }
             catch (Exception)
             {
-                //disconnect
+                // disconnect
             }
         }
 

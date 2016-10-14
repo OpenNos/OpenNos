@@ -48,8 +48,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp
         }
 
         /// <summary>
-        /// Creates a new ScsTcpEndPoint from a string address.
-        /// Address format must be like IPAddress:Port (For example: 127.0.0.1:10085).
+        /// Creates a new ScsTcpEndPoint from a string address. Address format must be like
+        /// IPAddress:Port (For example: 127.0.0.1:10085).
         /// </summary>
         /// <param name="address">TCP end point Address</param>
         /// <returns>Created ScsTcpEndpoint object</returns>

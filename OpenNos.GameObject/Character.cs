@@ -299,17 +299,6 @@ namespace OpenNos.GameObject
 
         public int MaxSnack { get; set; }
 
-        /// <summary>
-        /// Checks if the current character is in range of the given position
-        /// </summary>
-        /// <param name="xCoordinate">The x coordinate of the object to check.</param>
-        /// <param name="yCoordinate">The y coordinate of the object to check.</param>
-        /// <returns>True if the object is in Range, False if not.</returns>
-        internal bool IsInRange(int xCoordinate, int yCoordinate)
-        {
-            return Math.Abs(MapX - xCoordinate) <= 50 && Math.Abs(MapY - yCoordinate) <= 50;
-        }
-
         public int MinDistance { get; set; }
 
         public int MinHit { get; set; }
@@ -735,7 +724,7 @@ namespace OpenNos.GameObject
                     switch (subtype)
                     {
                         case 2:
-                            return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {specialist.SpLevel} {ServersData.SpXPData[JobLevelXp]} {ServersData.SpXPData[JobLevel - 1]} {item.Upgrade} {specialist.SlDamage} {specialist.SlDefence} {specialist.SlElement} {specialist.SlHP} {(specialist != null ? (ServersData.SpPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence) : 0)} {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} {specialist.SpStoneUpgrade} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
+                            return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {specialist.SpLevel} {CharacterHelper.SpXPData[JobLevelXp]} {CharacterHelper.SpXPData[JobLevel - 1]} {item.Upgrade} {specialist.SlDamage} {specialist.SlDefence} {specialist.SlElement} {specialist.SlHP} {(specialist != null ? (CharacterHelper.SpPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence) : 0)} {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} {specialist.SpStoneUpgrade} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
 
                         default:
                             return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";
@@ -1177,12 +1166,12 @@ namespace OpenNos.GameObject
 
         public string GenerateSlInfo(SpecialistInstance inventoryItem, int type)
         {
-            int freepoint = ServersData.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade) - inventoryItem.SlDamage - inventoryItem.SlHP - inventoryItem.SlElement - inventoryItem.SlDefence;
+            int freepoint = CharacterHelper.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade) - inventoryItem.SlDamage - inventoryItem.SlHP - inventoryItem.SlElement - inventoryItem.SlDefence;
 
-            int slElement = ServersData.SlPoint(inventoryItem.SlElement, 2);
-            int slHp = ServersData.SlPoint(inventoryItem.SlHP, 3);
-            int slDefence = ServersData.SlPoint(inventoryItem.SlDefence, 1);
-            int slHit = ServersData.SlPoint(inventoryItem.SlDamage, 0);
+            int slElement = CharacterHelper.SlPoint(inventoryItem.SlElement, 2);
+            int slHp = CharacterHelper.SlPoint(inventoryItem.SlHP, 3);
+            int slDefence = CharacterHelper.SlPoint(inventoryItem.SlDefence, 1);
+            int slHit = CharacterHelper.SlPoint(inventoryItem.SlDamage, 0);
 
             string skill = String.Empty;
             List<CharacterSkill> skillsSp = new List<CharacterSkill>();
@@ -1210,7 +1199,7 @@ namespace OpenNos.GameObject
             // 10 9 8 '0 0 0 0'<- bonusdamage bonusarmor bonuselement bonushpmp its after upgrade and
             // 3 first values are not important
             skill = skill.TrimEnd('.');
-            return $"slinfo {type} {inventoryItem.ItemVNum} {inventoryItem.Item.Morph} {inventoryItem.SpLevel} {inventoryItem.Item.LevelJobMinimum} {inventoryItem.Item.ReputationMinimum} 0 0 0 0 0 0 0 {inventoryItem.Item.SpType} {inventoryItem.Item.FireResistance} {inventoryItem.Item.WaterResistance} {inventoryItem.Item.LightResistance} {inventoryItem.Item.DarkResistance} {inventoryItem.XP} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.TransportId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
+            return $"slinfo {type} {inventoryItem.ItemVNum} {inventoryItem.Item.Morph} {inventoryItem.SpLevel} {inventoryItem.Item.LevelJobMinimum} {inventoryItem.Item.ReputationMinimum} 0 0 0 0 0 0 0 {inventoryItem.Item.SpType} {inventoryItem.Item.FireResistance} {inventoryItem.Item.WaterResistance} {inventoryItem.Item.LightResistance} {inventoryItem.Item.DarkResistance} {inventoryItem.XP} {CharacterHelper.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.TransportId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
         }
 
         public string GenerateSpk(object message, int v)
@@ -1279,18 +1268,18 @@ namespace OpenNos.GameObject
         public string GenerateStat()
         {
             double option =
-                (WhisperBlocked ? Math.Pow(2, (int)ConfigType.WhisperBlocked - 1) : 0)
-                + (FamilyRequestBlocked ? Math.Pow(2, (int)ConfigType.FamilyRequestBlocked - 1) : 0)
-                + (!MouseAimLock ? Math.Pow(2, (int)ConfigType.MouseAimLock - 1) : 0)
-                + (MinilandInviteBlocked ? Math.Pow(2, (int)ConfigType.MinilandInviteBlocked - 1) : 0)
-                + (ExchangeBlocked ? Math.Pow(2, (int)ConfigType.ExchangeBlocked - 1) : 0)
-                + (FriendRequestBlocked ? Math.Pow(2, (int)ConfigType.FriendRequestBlocked - 1) : 0)
-                + (EmoticonsBlocked ? Math.Pow(2, (int)ConfigType.EmoticonsBlocked - 1) : 0)
-                + (HpBlocked ? Math.Pow(2, (int)ConfigType.HpBlocked - 1) : 0)
-                + (BuffBlocked ? Math.Pow(2, (int)ConfigType.BuffBlocked - 1) : 0)
-                + (GroupRequestBlocked ? Math.Pow(2, (int)ConfigType.GroupRequestBlocked - 1) : 0)
-                + (HeroChatBlocked ? Math.Pow(2, (int)ConfigType.HeroChatBlocked - 1) : 0)
-                + (QuickGetUp ? Math.Pow(2, (int)ConfigType.QuickGetUp - 1) : 0);
+                (WhisperBlocked ? Math.Pow(2, (int)CharacterOption.WhisperBlocked - 1) : 0)
+                + (FamilyRequestBlocked ? Math.Pow(2, (int)CharacterOption.FamilyRequestBlocked - 1) : 0)
+                + (!MouseAimLock ? Math.Pow(2, (int)CharacterOption.MouseAimLock - 1) : 0)
+                + (MinilandInviteBlocked ? Math.Pow(2, (int)CharacterOption.MinilandInviteBlocked - 1) : 0)
+                + (ExchangeBlocked ? Math.Pow(2, (int)CharacterOption.ExchangeBlocked - 1) : 0)
+                + (FriendRequestBlocked ? Math.Pow(2, (int)CharacterOption.FriendRequestBlocked - 1) : 0)
+                + (EmoticonsBlocked ? Math.Pow(2, (int)CharacterOption.EmoticonsBlocked - 1) : 0)
+                + (HpBlocked ? Math.Pow(2, (int)CharacterOption.HpBlocked - 1) : 0)
+                + (BuffBlocked ? Math.Pow(2, (int)CharacterOption.BuffBlocked - 1) : 0)
+                + (GroupRequestBlocked ? Math.Pow(2, (int)CharacterOption.GroupRequestBlocked - 1) : 0)
+                + (HeroChatBlocked ? Math.Pow(2, (int)CharacterOption.HeroChatBlocked - 1) : 0)
+                + (QuickGetUp ? Math.Pow(2, (int)CharacterOption.QuickGetUp - 1) : 0);
             return $"stat {Hp} {HPLoad()} {Mp} {MPLoad()} 0 {option}";
         }
 
@@ -1326,32 +1315,32 @@ namespace OpenNos.GameObject
             int secondaryUpgrade = 0;
             int armorUpgrade = 0;
 
-            MinHit = ServersData.MinHit(Class, Level);
-            MaxHit = ServersData.MaxHit(Class, Level);
-            HitRate = ServersData.HitRate(Class, Level);
-            HitCriticalRate = ServersData.HitCriticalRate(Class, Level);
-            HitCritical = ServersData.HitCritical(Class, Level);
-            MinDistance = ServersData.MinDistance(Class, Level);
-            MaxDistance = ServersData.MaxDistance(Class, Level);
-            DistanceRate = ServersData.DistanceRate(Class, Level);
-            DistanceCriticalRate = ServersData.DistCriticalRate(Class, Level);
-            DistanceCritical = ServersData.DistCritical(Class, Level);
-            FireResistance = ServersData.FireResistance(Class, Level);
-            LightResistance = ServersData.LightResistance(Class, Level);
-            WaterResistance = ServersData.WaterResistance(Class, Level);
-            DarkResistance = ServersData.DarkResistance(Class, Level);
-            Defence = ServersData.Defence(Class, Level);
-            DefenceRate = ServersData.DefenceRate(Class, Level);
-            Element = ServersData.Element(Class, Level);
-            DistanceDefence = ServersData.DistanceDefence(Class, Level);
-            DistanceDefenceRate = ServersData.DistanceDefenceRate(Class, Level);
-            MagicalDefence = ServersData.MagicalDefence(Class, Level);
+            MinHit = CharacterHelper.MinHit(Class, Level);
+            MaxHit = CharacterHelper.MaxHit(Class, Level);
+            HitRate = CharacterHelper.HitRate(Class, Level);
+            HitCriticalRate = CharacterHelper.HitCriticalRate(Class, Level);
+            HitCritical = CharacterHelper.HitCritical(Class, Level);
+            MinDistance = CharacterHelper.MinDistance(Class, Level);
+            MaxDistance = CharacterHelper.MaxDistance(Class, Level);
+            DistanceRate = CharacterHelper.DistanceRate(Class, Level);
+            DistanceCriticalRate = CharacterHelper.DistCriticalRate(Class, Level);
+            DistanceCritical = CharacterHelper.DistCritical(Class, Level);
+            FireResistance = CharacterHelper.FireResistance(Class, Level);
+            LightResistance = CharacterHelper.LightResistance(Class, Level);
+            WaterResistance = CharacterHelper.WaterResistance(Class, Level);
+            DarkResistance = CharacterHelper.DarkResistance(Class, Level);
+            Defence = CharacterHelper.Defence(Class, Level);
+            DefenceRate = CharacterHelper.DefenceRate(Class, Level);
+            Element = CharacterHelper.Element(Class, Level);
+            DistanceDefence = CharacterHelper.DistanceDefence(Class, Level);
+            DistanceDefenceRate = CharacterHelper.DistanceDefenceRate(Class, Level);
+            MagicalDefence = CharacterHelper.MagicalDefence(Class, Level);
             if (UseSp)
             {
                 SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
                 if (specialist != null)
                 {
-                    int point = ServersData.SlPoint(specialist.SlDamage, 0);
+                    int point = CharacterHelper.SlPoint(specialist.SlDamage, 0);
 
                     int p = 0;
                     if (point <= 10)
@@ -1407,7 +1396,7 @@ namespace OpenNos.GameObject
                     MinDistance += p;
                     MaxDistance += p;
 
-                    point = ServersData.SlPoint(specialist.SlDefence, 1);
+                    point = CharacterHelper.SlPoint(specialist.SlDefence, 1);
                     p = 0;
                     if (point <= 50)
                     {
@@ -1421,7 +1410,7 @@ namespace OpenNos.GameObject
                     MagicalDefence += p;
                     DistanceDefence += p;
 
-                    point = ServersData.SlPoint(specialist.SlElement, 2);
+                    point = CharacterHelper.SlPoint(specialist.SlElement, 2);
                     p = 0;
                     if (point <= 50)
                     {
@@ -1603,7 +1592,7 @@ namespace OpenNos.GameObject
                 {
                     fairy.XP += ServerManager.FairyXpRate;
                 }
-                t = ServersData.LoadFairyXpData(fairy.ElementRate);
+                t = CharacterHelper.LoadFairyXpData(fairy.ElementRate);
                 while (fairy.XP >= t)
                 {
                     fairy.XP -= (int)t;
@@ -1800,11 +1789,11 @@ namespace OpenNos.GameObject
         {
             if (IsSitting)
             {
-                return ServersData.HpHealth[Class];
+                return CharacterHelper.HpHealth[Class];
             }
             else if ((DateTime.Now - LastDefence).TotalSeconds > 2)
             {
-                return ServersData.HpHealthStand[Class];
+                return CharacterHelper.HpHealthStand[Class];
             }
             else
             {
@@ -1816,11 +1805,11 @@ namespace OpenNos.GameObject
         {
             if (IsSitting)
             {
-                return ServersData.MpHealth[Class];
+                return CharacterHelper.MpHealth[Class];
             }
             else if ((DateTime.Now - LastDefence).TotalSeconds > 2)
             {
-                return ServersData.MpHealthStand[Class];
+                return CharacterHelper.MpHealthStand[Class];
             }
             else
             {
@@ -1837,7 +1826,7 @@ namespace OpenNos.GameObject
                 SpecialistInstance inventory = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
                 if (inventory != null)
                 {
-                    int point = ServersData.SlPoint(inventory.SlHP, 3);
+                    int point = CharacterHelper.SlPoint(inventory.SlHP, 3);
 
                     if (point <= 50)
                     {
@@ -1850,7 +1839,7 @@ namespace OpenNos.GameObject
                     hp = inventory.HP + inventory.SpHP * 100;
                 }
             }
-            return (int)((ServersData.HPData[Class, Level] + hp) * multiplicator);
+            return (int)((CharacterHelper.HPData[Class, Level] + hp) * multiplicator);
         }
 
         public bool IsMuted()
@@ -1862,9 +1851,9 @@ namespace OpenNos.GameObject
         {
             if (Class == (byte)ClassType.Adventurer)
             {
-                return ServersData.FirstJobXPData[JobLevel - 1];
+                return CharacterHelper.FirstJobXPData[JobLevel - 1];
             }
-            return ServersData.SecondJobXPData[JobLevel - 1];
+            return CharacterHelper.SecondJobXPData[JobLevel - 1];
         }
 
         public void LearnAdventurerSkill()
@@ -1965,6 +1954,16 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void LoadSendedMail()
+        {
+            foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
+            {
+                MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
+
+                Session.SendPacket(Session.Character.GeneratePost(mail, 2));
+            }
+        }
+
         public void LoadSkills()
         {
             Skills = new List<CharacterSkill>();
@@ -1983,7 +1982,7 @@ namespace OpenNos.GameObject
             // only load speed if you dont use custom speed
             if (!IsVehicled && !IsCustomSpeed)
             {
-                Speed = ServersData.SpeedData[Class];
+                Speed = CharacterHelper.SpeedData[Class];
 
                 if (UseSp)
                 {
@@ -2011,7 +2010,7 @@ namespace OpenNos.GameObject
                 SpecialistInstance inventory = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
                 if (inventory != null)
                 {
-                    int point = ServersData.SlPoint(inventory.SlHP, 3);
+                    int point = CharacterHelper.SlPoint(inventory.SlHP, 3);
 
                     if (point <= 50)
                     {
@@ -2025,7 +2024,7 @@ namespace OpenNos.GameObject
                     mp = inventory.MP + inventory.SpHP * 100;
                 }
             }
-            return (int)((ServersData.MPData[Class, Level] + mp) * multiplicator);
+            return (int)((CharacterHelper.MPData[Class, Level] + mp) * multiplicator);
         }
 
         public void NotifyRarifyResult(sbyte rare)
@@ -2033,6 +2032,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
             Session.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
             ServerManager.GetMap(MapId).Broadcast(GenerateEff(3005), MapX, MapY);
+            Session.SendPacket("shop_end 1");
         }
 
         public void RefreshMail()
@@ -2067,15 +2067,6 @@ namespace OpenNos.GameObject
             }
 
             LastMailRefresh = DateTime.Now;
-        }
-        public void LoadSendedMail()
-        {
-            foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
-            {
-                MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
-
-                Session.SendPacket(Session.Character.GeneratePost(mail, 2));
-            }
         }
 
         public void RemoveVehicle()
@@ -2236,7 +2227,7 @@ namespace OpenNos.GameObject
         {
             SpecialistInstance sp2 = EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Equipment);
 
-            return ServersData.SpXPData[sp2.SpLevel - 1];
+            return CharacterHelper.SpXPData[sp2.SpLevel - 1];
         }
 
         public bool Update()
@@ -2281,7 +2272,7 @@ namespace OpenNos.GameObject
                                         return false;
                                     }
 
-                                    InventoryList.RemoveItemAmount(2081, 1);
+                                    InventoryList.RemoveItemAmount(2081);
                                     inv.Ammo = 100;
                                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ADVENTURER"), 10));
                                     return true;
@@ -2313,7 +2304,7 @@ namespace OpenNos.GameObject
                                         return false;
                                     }
 
-                                    InventoryList.RemoveItemAmount(2082, 1);
+                                    InventoryList.RemoveItemAmount(2082);
                                     inv.Ammo = 100;
                                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_SWORDSMAN"), 10));
                                     return true;
@@ -2345,7 +2336,7 @@ namespace OpenNos.GameObject
                                         return false;
                                     }
 
-                                    InventoryList.RemoveItemAmount(2083, 1);
+                                    InventoryList.RemoveItemAmount(2083);
                                     inv.Ammo = 100;
                                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ARCHER"), 10));
                                     return true;
@@ -2368,7 +2359,18 @@ namespace OpenNos.GameObject
 
         public double XPLoad()
         {
-            return ServersData.XPData[Level - 1];
+            return CharacterHelper.XPData[Level - 1];
+        }
+
+        /// <summary>
+        /// Checks if the current character is in range of the given position
+        /// </summary>
+        /// <param name="xCoordinate">The x coordinate of the object to check.</param>
+        /// <param name="yCoordinate">The y coordinate of the object to check.</param>
+        /// <returns>True if the object is in Range, False if not.</returns>
+        internal bool IsInRange(int xCoordinate, int yCoordinate)
+        {
+            return Math.Abs(MapX - xCoordinate) <= 50 && Math.Abs(MapY - yCoordinate) <= 50;
         }
 
         private object HeroXPLoad()

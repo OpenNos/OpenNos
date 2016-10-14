@@ -59,7 +59,9 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// Creates a new ScsServiceApplication object.
         /// </summary>
         /// <param name="scsServer">Underlying IScsServer object to accept and manage client connections</param>
-        /// <exception cref="ArgumentNullException">Throws ArgumentNullException if scsServer argument is null</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Throws ArgumentNullException if scsServer argument is null
+        /// </exception>
         public ScsServiceApplication(IScsServer scsServer)
         {
             if (scsServer == null)
@@ -93,13 +95,17 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         #region Methods
 
         /// <summary>
-        /// Adds a service object to this service application.
-        /// Only single service object can be added for a service interface type.
+        /// Adds a service object to this service application. Only single service object can be
+        /// added for a service interface type.
         /// </summary>
         /// <typeparam name="TServiceInterface">Service interface type</typeparam>
-        /// <typeparam name="TServiceClass">Service class type. Must be delivered from ScsService and must implement TServiceInterface.</typeparam>
+        /// <typeparam name="TServiceClass">
+        /// Service class type. Must be delivered from ScsService and must implement TServiceInterface.
+        /// </typeparam>
         /// <param name="service">An instance of TServiceClass.</param>
-        /// <exception cref="ArgumentNullException">Throws ArgumentNullException if service argument is null</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Throws ArgumentNullException if service argument is null
+        /// </exception>
         /// <exception cref="Exception">Throws Exception if service is already added before</exception>
         public void AddService<TServiceInterface, TServiceClass>(TServiceClass service)
             where TServiceClass : ScsService, TServiceInterface
@@ -119,9 +125,19 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             _serviceObjects[type.Name] = new ServiceObject(type, service);
         }
 
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
         /// <summary>
-        /// Removes a previously added service object from this service application.
-        /// It removes object according to interface type.
+        /// Removes a previously added service object from this service application. It removes
+        /// object according to interface type.
         /// </summary>
         /// <typeparam name="TServiceInterface">Service interface type</typeparam>
         /// <returns>True: removed. False: no service object with this interface</returns>
@@ -145,6 +161,15 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         public void Stop()
         {
             _scsServer.Stop();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _serviceClients.Dispose();
+                _serviceObjects.Dispose();
+            }
         }
 
         /// <summary>
@@ -172,8 +197,8 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         }
 
         /// <summary>
-        /// Handles MessageReceived events of all clients, evaluates each message,
-        /// finds appropriate service object and invokes appropriate method.
+        /// Handles MessageReceived events of all clients, evaluates each message, finds appropriate
+        /// service object and invokes appropriate method.
         /// </summary>
         /// <param name="sender">Source of event</param>
         /// <param name="e">Event arguments</param>
@@ -210,8 +235,8 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                 // Invoke method
                 try
                 {
-                    // Set client to service, so user service can get client
-                    // in service method using CurrentClient property.
+                    // Set client to service, so user service can get client in service method using
+                    // CurrentClient property.
                     object returnValue;
                     serviceObject.Service.CurrentClient = client;
                     try
@@ -305,32 +330,12 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             OnClientDisconnected(serviceClient);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _serviceClients.Dispose();
-                _serviceObjects.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
-            }
-        }
-
         #endregion
 
         #region Classes
 
         /// <summary>
-        /// Represents a user service object.
-        /// It is used to invoke methods on a ScsService object.
+        /// Represents a user service object. It is used to invoke methods on a ScsService object.
         /// </summary>
         private sealed class ServiceObject
         {

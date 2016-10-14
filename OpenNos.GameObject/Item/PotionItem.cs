@@ -20,7 +20,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession session, ref Inventory inv, bool DelayUsed = false)
+        public override void Use(ClientSession session, ref Inventory inv, bool DelayUsed = false, string[] packetsplit = null)
         {
             if ((DateTime.Now - session.Character.LastPotion).TotalMilliseconds < 750)
             {

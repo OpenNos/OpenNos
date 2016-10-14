@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="BCardType.cs" />
     <Compile Include="CharacterState.cs" />
+    <Compile Include="GroupRequestType.cs" />
     <Compile Include="InType.cs" />
     <Compile Include="MapTypeEnum.cs" />
     <Compile Include="GroupSharingType.cs" />
@@ -71,7 +72,7 @@
     <Compile Include="RarifyMode.cs" />
     <Compile Include="UpgradeMode.cs" />
     <Compile Include="RespawnType.cs" />
-    <Compile Include="ConfigType.cs" />
+    <Compile Include="CharacterOption.cs" />
     <Compile Include="ItemType.cs" />
     <Compile Include="ClassType.cs" />
     <Compile Include="AuthorityType.cs" />

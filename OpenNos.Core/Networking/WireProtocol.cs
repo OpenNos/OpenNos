@@ -32,12 +32,12 @@ namespace OpenNos.Core
 
         private IDictionary<String, DateTime> _connectionHistory;
 
+        private bool _disposed;
+
         /// <summary>
         /// This MemoryStream object is used to collect receiving bytes to build messages.
         /// </summary>
         private MemoryStream _receiveMemoryStream;
-
-        private bool _disposed;
 
         #endregion
 
@@ -70,6 +70,16 @@ namespace OpenNos.Core
             return messages;
         }
 
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
         public byte[] GetBytes(IScsMessage message)
         {
             // Serialize the message to a byte array
@@ -88,13 +98,23 @@ namespace OpenNos.Core
             }
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _receiveMemoryStream.Dispose();
+            }
+        }
+
         /// <summary>
         /// Reads a byte array with specified length.
         /// </summary>
         /// <param name="stream">Stream to read from</param>
         /// <param name="length">Length of the byte array to read</param>
         /// <returns>Read byte array</returns>
-        /// <exception cref="EndOfStreamException">Throws EndOfStreamException if can not read from stream.</exception>
+        /// <exception cref="EndOfStreamException">
+        /// Throws EndOfStreamException if can not read from stream.
+        /// </exception>
         private static byte[] ReadByteArray(Stream stream, short length)
         {
             var buffer = new byte[length];
@@ -115,7 +135,9 @@ namespace OpenNos.Core
         /// <returns>
         /// Returns a boolean value indicates that if there is a need to re-call this method.
         /// </returns>
-        /// <exception cref="CommunicationException">Throws CommunicationException if message is bigger than maximum allowed message length.</exception>
+        /// <exception cref="CommunicationException">
+        /// Throws CommunicationException if message is bigger than maximum allowed message length.
+        /// </exception>
         private bool ReadSingleMessage(ICollection<IScsMessage> messages)
         {
             // Go to the beginning of the stream
@@ -157,24 +179,6 @@ namespace OpenNos.Core
 
             // Return true to re-call this method to try to read next message
             return (_receiveMemoryStream.Length > 0);
-        }
-
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _receiveMemoryStream.Dispose();
-            }
         }
 
         #endregion
