@@ -1649,24 +1649,25 @@ namespace OpenNos.GameObject
             if (specialist != null)
             {
                 t = SPXPLoad();
-            }
-            while (specialist != null && specialist.XP >= t)
-            {
-                specialist.XP -= (long)t;
-                specialist.SpLevel++;
-                t = SPXPLoad();
-                Session.SendPacket(GenerateStat());
-                Session.SendPacket($"levelup {CharacterId}");
-                if (specialist.SpLevel >= 99)
-                {
-                    specialist.SpLevel = 99;
-                    specialist.XP = 0;
-                }
-                LearnSPSkill();
 
-                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
-                Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
-                Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
+                while (UseSp && specialist.XP >= t)
+                {
+                    specialist.XP -= (long)t;
+                    specialist.SpLevel++;
+                    t = SPXPLoad();
+                    Session.SendPacket(GenerateStat());
+                    Session.SendPacket($"levelup {CharacterId}");
+                    if (specialist.SpLevel >= 99)
+                    {
+                        specialist.SpLevel = 99;
+                        specialist.XP = 0;
+                    }
+                    LearnSPSkill();
+
+                    Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
+                    Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
+                    Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
+                }
             }
             Session.SendPacket(GenerateLev());
         }
@@ -2198,7 +2199,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SendGift(long id, short vnum, byte amount,sbyte Rare,byte Upgrade, bool isNosmall)
+        public void SendGift(long id, short vnum, byte amount, sbyte Rare, byte Upgrade, bool isNosmall)
         {
             Item it = ServerManager.GetItem((short)vnum);
             int color = HairColor;
