@@ -477,7 +477,7 @@ namespace OpenNos.Handler
             int secMaxDmg = 0;
             int secHitRate = 0;
 
-            int CritChance = 4;
+            //int CritChance = 4;
             //int CritHit = 70;
             //int MinDmg = 0;
             //int MaxDmg = 0;
@@ -676,6 +676,7 @@ namespace OpenNos.Handler
             if(random.Next(100) <= mainCritChance)
             {
                 baseDamage = (int)baseDamage * ((mainCritHit / 100)+1);
+                hitmode = 3;
 #warning TODO: Set Crit Anim
             }
             #endregion
