@@ -452,7 +452,7 @@ namespace OpenNos.Handler
         {
             #region Definitions
 
-            MapMonster monsterInfo = Session.CurrentMap.GetMonster(monsterid);
+            MapMonster monsterToAttack = Session.CurrentMap.GetMonster(monsterid);
             if (monsterToAttack == null)
                 return 0;
 
@@ -536,7 +536,7 @@ namespace OpenNos.Handler
                     break;
 
                 case 1:
-                    monsterDefence = monsterInfo.DistanceDefence;
+                    monsterDefence = monsterToAttack.Monster.DistanceDefence;
                     if (Session.Character.Class == 1 || Session.Character.Class == 0)
                     {
                         mainCritHit = secCritHit;
@@ -549,7 +549,7 @@ namespace OpenNos.Handler
                     break;
 
                 case 2:
-                    monsterDefence = monsterInfo.MagicDefence;
+                    monsterDefence = monsterToAttack.Monster.MagicDefence;
                     break;
             }
             #endregion
@@ -566,7 +566,7 @@ namespace OpenNos.Handler
 
 #warning TODO: Implement BCard damage boosts, see Issue 
 
-            mainUpgrade -= monsterInfo.DefenceUpgrade;
+            mainUpgrade -= monsterToAttack.Monster.DefenceUpgrade;
             if(mainUpgrade < -10)
             {
                 mainUpgrade = -10;
@@ -686,8 +686,8 @@ namespace OpenNos.Handler
                 case 0:
                     break;
                 case 1:
-                    monsterResistance = monsterInfo.FireResistance;
-                    switch (monsterInfo.Element)
+                    monsterResistance = monsterToAttack.Monster.FireResistance;
+                    switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
                             elementalBoost = 1.3;
@@ -707,8 +707,8 @@ namespace OpenNos.Handler
                     }
                     break;
                 case 2:
-                    monsterResistance = monsterInfo.WaterResistance;
-                    switch (monsterInfo.Element)
+                    monsterResistance = monsterToAttack.Monster.WaterResistance;
+                    switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
                             elementalBoost = 1.3;
@@ -728,8 +728,8 @@ namespace OpenNos.Handler
                     }
                     break;
                 case 3:
-                    monsterResistance = monsterInfo.LightResistance;
-                    switch (monsterInfo.Element)
+                    monsterResistance = monsterToAttack.Monster.LightResistance;
+                    switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
                             elementalBoost = 1.3;
@@ -749,8 +749,8 @@ namespace OpenNos.Handler
                     }
                     break;
                 case 4:
-                    monsterResistance = monsterInfo.DarkResistance;
-                    switch (monsterInfo.Element)
+                    monsterResistance = monsterToAttack.Monster.DarkResistance;
+                    switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
                             elementalBoost = 1.3;
@@ -947,104 +947,7 @@ namespace OpenNos.Handler
                 monsterToAttack.Alive = false;
                 monsterToAttack.CurrentHp = 0;
                 monsterToAttack.CurrentMp = 0;
-                monsterToAttack.Death = DateTime.Now;
-                //owner set
-                long? Owner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?)null;
-                Group gr = null;
-                if (Owner != null)
-                {
-                    gr = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)Owner));
-                }
-                //end owner set
-                Random rnd = new Random();
-                int i = 1;
-                List<DropDTO> droplist = monsterInfo.Drops.Where(s => Session.CurrentMap.MapTypes.FirstOrDefault(m => m.MapTypeId == s.MapTypeId) != null || (s.MapTypeId == null)).ToList();
-                if (monsterToAttack.Monster.MonsterType != MonsterType.Special)
-                {
-                    int RateDrop = ServerManager.DropRate;
-                    int x = 0;
-                    foreach (DropDTO drop in droplist.OrderBy(s => rnd.Next()))
-                    {
-                        if (x < 4)
-                        {
-                            i++;
-                            rnd = new Random(i * (int)DateTime.Now.Ticks & 0x0000FFFF);
-                            double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
-                            if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
-                            {
-                                x++;
-                                if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterInfo.MonsterType == MonsterType.Elite)
-                                {
-                                    Session.Character.GiftAdd(drop.ItemVNum, drop.Amount);
-                                }
-                                else
-                                {
-                                    if (gr != null)
-                                    {
-                                        if (gr.SharingMode == (byte)GroupSharingType.ByOrder)
-                                        {
-                                            Owner = gr.OrderedCharacterId(Session.Character);
-                                            gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop.ItemVNum).Name, gr.Characters.Single(c => c.Character.CharacterId == (long)Owner).Character.Name, drop.Amount), 10)));
-                                        }
-                                        else
-                                            gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop.ItemVNum).Name, drop.Amount), 10)));
-                                    }
-                                    Session.CurrentMap.DropItemByMonster(Owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
-                                }
-                            }
-                        }
-                    }
-
-                    rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                    int RateGold = ServerManager.GoldRate;
-                    int gold = Convert.ToInt32((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterInfo.Level, 12 * monsterInfo.Level) * RateGold * (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1));
-                    gold = gold > 1000000000 ? 1000000000 : gold;
-                    if (gold != 0)
-                    {
-                        DropDTO drop2 = new DropDTO()
-                        {
-                            Amount = gold,
-                            ItemVNum = 1046
-                        };
-
-                        if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterInfo.MonsterType == MonsterType.Elite)
-                        {
-                            Session.Character.Gold += drop2.Amount;
-                            if (Session.Character.Gold > 1000000000)
-                            {
-                                Session.Character.Gold = 1000000000;
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
-                            }
-                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
-                            Session.SendPacket(Session.Character.GenerateGold());
-                        }
-                        else
-                        {
-                            if (gr != null)
-                            {
-                                if (gr.SharingMode == (byte)GroupSharingType.ByOrder)
-                                {
-                                    Owner = gr.OrderedCharacterId(Session.Character);
-                                    gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop2.ItemVNum).Name, gr.Characters.Single(c => c.Character.CharacterId == (long)Owner).Character.Name, drop2.Amount), 10)));
-                                }
-                                else
-                                    gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop2.ItemVNum).Name, drop2.Amount), 10)));
-                            }
-                            Session.CurrentMap.DropItemByMonster(Owner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
-                        }
-                    }
-                    if (Session.Character.Hp > 0)
-                    {
-                        Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
-                        if (grp != null)
-                        {
-                            grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId).ToList().ForEach(g => g.Character.GenerateXp(monsterInfo));
-                        }
-                        else
-                            Session.Character.GenerateXp(monsterInfo);
-                        Session.Character.GenerateDignity(monsterInfo);
-                    }
-                }
+                monsterToAttack.Death = DateTime.Now;                           
             }
             else
             {
@@ -1061,6 +964,118 @@ namespace OpenNos.Handler
             if (monsterToAttack.IsMoving)
                 monsterToAttack.Target = Session.Character.CharacterId;
             return damage;
+        }
+        private void GenerateKillBonus(int monsterid)
+        {
+            MapMonster monsterToAttack = Session.CurrentMap.GetMonster(monsterid);
+            if (monsterToAttack == null || monsterToAttack.CurrentHp > 0)
+            {
+                return;
+            }
+            Random random = new Random(monsterid);
+
+            // owner set
+            long? Owner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?)null;
+            Group gr = null;
+            if (Owner != null)
+            {
+                gr = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)Owner));
+            }
+
+            // end owner set
+            int i = 1;
+            List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMap.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || (s.MapTypeId == null)).ToList();
+            if (monsterToAttack.Monster.MonsterType != MonsterType.Special)
+            {
+                int RateDrop = ServerManager.DropRate;
+                int x = 0;
+
+                foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
+                {
+                    if (x < 4)
+                    {
+                        i++;
+                        double rndamount = random.Next(0, 100) * random.NextDouble();
+                        if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
+                        {
+                            x++;
+                            if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                            {
+                                Session.Character.GiftAdd(drop.ItemVNum, (byte)drop.Amount);
+                            }
+                            else
+                            {
+                                if (gr != null)
+                                {
+                                    if (gr.SharingMode == (byte)GroupSharingType.ByOrder)
+                                    {
+                                        Owner = gr.OrderedCharacterId(Session.Character);
+                                        gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop.ItemVNum).Name, gr.Characters.Single(c => c.Character.CharacterId == (long)Owner).Character.Name, drop.Amount), 10)));
+                                    }
+                                    else
+                                    {
+                                        gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop.ItemVNum).Name, drop.Amount), 10)));
+                                    }
+                                }
+                                Session.CurrentMap.DropItemByMonster(Owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                            }
+                        }
+                    }
+                }
+
+                int RateGold = ServerManager.GoldRate;
+                int gold = Convert.ToInt32((random.Next(1, 8) >= 7 ? 1 : 0) * random.Next(6 * monsterToAttack.Monster.Level, 12 * monsterToAttack.Monster.Level) * RateGold * (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1));
+                gold = gold > 1000000000 ? 1000000000 : gold;
+                if (gold != 0)
+                {
+                    DropDTO drop2 = new DropDTO()
+                    {
+                        Amount = gold,
+                        ItemVNum = 1046
+                    };
+
+                    if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                    {
+                        Session.Character.Gold += drop2.Amount;
+                        if (Session.Character.Gold > 1000000000)
+                        {
+                            Session.Character.Gold = 1000000000;
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                        }
+                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
+                        Session.SendPacket(Session.Character.GenerateGold());
+                    }
+                    else
+                    {
+                        if (gr != null)
+                        {
+                            if (gr.SharingMode == (byte)GroupSharingType.ByOrder)
+                            {
+                                Owner = gr.OrderedCharacterId(Session.Character);
+                                gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop2.ItemVNum).Name, gr.Characters.Single(c => c.Character.CharacterId == (long)Owner).Character.Name, drop2.Amount), 10)));
+                            }
+                            else
+                            {
+                                gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop2.ItemVNum).Name, drop2.Amount), 10)));
+                            }
+                        }
+                        Session.CurrentMap.DropItemByMonster(Owner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
+                    }
+                }
+                if (Session.Character.Hp > 0)
+                {
+                    Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
+                    if (grp != null)
+                    {
+                        grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId).ToList().ForEach(g => g.Character.GenerateXp(monsterToAttack.Monster));
+                    }
+                    else
+                    {
+                        Session.Character.GenerateXp(monsterToAttack.Monster);
+                    }
+                    Session.Character.GenerateDignity(monsterToAttack.Monster);
+                }
+            }
         }
 
         private void ZoneHit(int Castingid, short x, short y)
