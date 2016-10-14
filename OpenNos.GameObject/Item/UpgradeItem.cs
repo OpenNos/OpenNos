@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
                                     {
                                         equip.IsFixed = false;
                                         Session.SendPacket(Session.Character.GenerateEff(3003));
-                                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(17, 1, 19));
+                                        Session.SendPacket(Session.Character.GenerateGuri(17, 1, 19));
                                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
                                         isUsed = true;
                                     }
