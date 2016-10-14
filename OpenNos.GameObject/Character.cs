@@ -1638,24 +1638,25 @@ namespace OpenNos.GameObject
             if (specialist != null)
             {
                 t = SPXPLoad();
-            }
-            while (specialist != null && specialist.XP >= t)
-            {
-                specialist.XP -= (long)t;
-                specialist.SpLevel++;
-                t = SPXPLoad();
-                Session.SendPacket(GenerateStat());
-                Session.SendPacket($"levelup {CharacterId}");
-                if (specialist.SpLevel >= 99)
-                {
-                    specialist.SpLevel = 99;
-                    specialist.XP = 0;
-                }
-                LearnSPSkill();
 
-                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
-                Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
-                Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
+                while (UseSp && specialist.XP >= t)
+                {
+                    specialist.XP -= (long)t;
+                    specialist.SpLevel++;
+                    t = SPXPLoad();
+                    Session.SendPacket(GenerateStat());
+                    Session.SendPacket($"levelup {CharacterId}");
+                    if (specialist.SpLevel >= 99)
+                    {
+                        specialist.SpLevel = 99;
+                        specialist.XP = 0;
+                    }
+                    LearnSPSkill();
+
+                    Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
+                    Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
+                    Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
+                }
             }
             Session.SendPacket(GenerateLev());
         }
@@ -2038,22 +2039,23 @@ namespace OpenNos.GameObject
         {
             int i = 0;
             int j = 0;
-            foreach (MailDTO mail in DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
+            IEnumerable<MailDTO> mails = DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId));
+            for (int x = mails.Count() - 1; x >= 0; x--)
             {
-                MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
+                MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mails.ElementAt(x));
 
-                if (mail.AttachmentVNum != null)
+                if (mails.ElementAt(x).AttachmentVNum != null)
                 {
                     i++;
-                    Session.SendPacket(GenerateParcel(mail));
+                    Session.SendPacket(GenerateParcel(mails.ElementAt(x)));
                 }
                 else
                 {
-                    if (!mail.IsOpened)
+                    if (!mails.ElementAt(x).IsOpened)
                     {
                         j++;
                     }
-                    Session.SendPacket(Session.Character.GeneratePost(mail, 1));
+                    Session.SendPacket(Session.Character.GeneratePost(mails.ElementAt(x), 1));
                 }
             }
             if (i > 0)
