@@ -516,7 +516,9 @@ namespace OpenNos.Handler
             #region Detailed Calculation
             #region Base Damage 
             int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
+            baseDamage += (skill.Damage / 4);
             int elementalDamage = 0; //placeholder for BCard etc...
+            elementalDamage += (skill.ElementalDamage / 4);
             switch (mainUpgrade)
             {
                 case -10:
@@ -708,7 +710,7 @@ namespace OpenNos.Handler
             {
                 monsterResistance = 0;
             }
-            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * Session.Character.ElementRate)) * elementalBoost);
+            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * (Session.Character.ElementRate /100 + 1))) * elementalBoost);
             elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
 
             #endregion
