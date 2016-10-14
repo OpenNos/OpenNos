@@ -783,6 +783,10 @@ namespace OpenNos.Handler
             #endregion
             #region Total Damage
             int totalDamage = baseDamage + elementalDamage - monsterDefence;
+            if(totalDamage < 5)
+            {
+                totalDamage = random.Next(1, 6);
+            }
             #endregion
             #endregion
 
