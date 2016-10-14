@@ -188,7 +188,7 @@ namespace OpenNos.Handler
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, InventoryType.Equipment);
             if (fairy != null && packetsplit.Length > 2)
             {
-                if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= 25565)
+                if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= Int16.MaxValue)
                 {
                     fairylevel -= fairy.Item.ElementRate;
                     fairy.ElementRate = fairylevel;
