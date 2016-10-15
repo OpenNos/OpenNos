@@ -134,7 +134,7 @@ namespace OpenNos.GameObject
 
         public int DistanceRate { get; set; }
 
-        public int Element { get; set; }
+        public byte Element { get; set; }
 
         public int ElementRate { get; set; }
 
@@ -1331,7 +1331,7 @@ namespace OpenNos.GameObject
             DarkResistance = CharacterHelper.DarkResistance(Class, Level);
             Defence = CharacterHelper.Defence(Class, Level);
             DefenceRate = CharacterHelper.DefenceRate(Class, Level);
-            Element = CharacterHelper.Element(Class, Level);
+            //Element = CharacterHelper.Element(Class, Level);
             DistanceDefence = CharacterHelper.DistanceDefence(Class, Level);
             DistanceDefenceRate = CharacterHelper.DistanceDefenceRate(Class, Level);
             MagicalDefence = CharacterHelper.MagicalDefence(Class, Level);
@@ -1420,7 +1420,7 @@ namespace OpenNos.GameObject
                     {
                         p = 50 + (point - 50) * 2;
                     }
-                    Element += p;
+                    ElementRate += p;
                 }
             }
 
