@@ -138,6 +138,8 @@ namespace OpenNos.GameObject
 
         public int ElementRate { get; set; }
 
+        public int ElementRateSP { get; set; }
+
         public InventoryList EquipmentList
         {
             get
@@ -1332,6 +1334,7 @@ namespace OpenNos.GameObject
             Defence = CharacterHelper.Defence(Class, Level);
             DefenceRate = CharacterHelper.DefenceRate(Class, Level);
             ElementRate = CharacterHelper.ElementRate(Class, Level);
+            ElementRateSP = 0;
             DistanceDefence = CharacterHelper.DistanceDefence(Class, Level);
             DistanceDefenceRate = CharacterHelper.DistanceDefenceRate(Class, Level);
             MagicalDefence = CharacterHelper.MagicalDefence(Class, Level);
@@ -1420,7 +1423,7 @@ namespace OpenNos.GameObject
                     {
                         p = 50 + (point - 50) * 2;
                     }
-                    ElementRate += p;
+                    ElementRateSP += p;
                 }
             }
 
@@ -1463,9 +1466,9 @@ namespace OpenNos.GameObject
             }
 
             WearableInstance fairy = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Equipment);
-            if (armor != null)
+            if (fairy != null)
             {
-                ElementRate = fairy.ElementRate;
+                ElementRate += fairy.ElementRate + fairy.Item.ElementRate;
             }
 
             // handle specialist

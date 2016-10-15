@@ -790,7 +790,7 @@ namespace OpenNos.Handler
             {
                 monsterResistance = 0;
             }
-            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * ((Session.Character.ElementRate / 100D) + 1))) * elementalBoost);
+            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * (((Session.Character.ElementRate + Session.Character.ElementRateSP) / 100D) + 1))) * elementalBoost);
             elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
 
             #endregion
