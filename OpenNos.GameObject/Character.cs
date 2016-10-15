@@ -1462,6 +1462,12 @@ namespace OpenNos.GameObject
                 DistanceDefenceRate += armor.DistanceDefenceDodge + armor.Item.DistanceDefenceDodge;
             }
 
+            WearableInstance fairy = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Equipment);
+            if (armor != null)
+            {
+                ElementRate = fairy.ElementRate;
+            }
+
             // handle specialist
             if (UseSp)
             {
