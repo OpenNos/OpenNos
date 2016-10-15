@@ -14,7 +14,6 @@
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    using Domain;
     using System;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -41,10 +40,10 @@ namespace OpenNos.DAL.EF.MySQL
         public virtual Item Item { get; set; }
 
         public DateTime? ItemDeleteTime { get; set; }
-        
+
         public short ItemVNum { get; set; }
 
-        public byte Rare { get; set; }
+        public sbyte Rare { get; set; }
 
         [Index("IX_SlotAndType", 2, IsUnique = false, Order = 1)]
         public short Slot { get; set; }
