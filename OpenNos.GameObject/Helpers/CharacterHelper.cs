@@ -215,7 +215,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static int LoadFairyXpData(int i)
+        public static long LoadFairyXpData(long i)
         {
             if (i < 40)
             {

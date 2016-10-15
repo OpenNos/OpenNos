@@ -926,7 +926,7 @@ namespace OpenNos.Handler
         public void Position(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapId} - X:{Session.Character.MapX} - Y:{Session.Character.MapY}", 12));
+            Session.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapId} - X:{Session.Character.MapX} - Y:{Session.Character.MapY} - Dir: {Session.Character.Direction}", 12));
         }
 
         [Packet("$Rarify")]
