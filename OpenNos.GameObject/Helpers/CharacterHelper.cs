@@ -516,6 +516,11 @@ namespace OpenNos.GameObject
             return 0;
         }
 
+        internal static int ElementRate(byte @class, byte level)
+        {
+            return 0;
+        }
+
         internal static int FireResistance(byte @class, byte level)
         {
             return 0;

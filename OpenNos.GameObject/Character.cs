@@ -1331,7 +1331,7 @@ namespace OpenNos.GameObject
             DarkResistance = CharacterHelper.DarkResistance(Class, Level);
             Defence = CharacterHelper.Defence(Class, Level);
             DefenceRate = CharacterHelper.DefenceRate(Class, Level);
-            //Element = CharacterHelper.Element(Class, Level);
+            ElementRate = CharacterHelper.ElementRate(Class, Level);
             DistanceDefence = CharacterHelper.DistanceDefence(Class, Level);
             DistanceDefenceRate = CharacterHelper.DistanceDefenceRate(Class, Level);
             MagicalDefence = CharacterHelper.MagicalDefence(Class, Level);
