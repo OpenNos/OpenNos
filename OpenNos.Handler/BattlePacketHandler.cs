@@ -673,11 +673,23 @@ namespace OpenNos.Handler
             }
             #endregion
             #region Critical Damage
-            if(random.Next(100) <= mainCritChance && skill.Type != 2)
+            if(random.Next(100) <= mainCritChance)
             {
-                baseDamage = (int)baseDamage * ((mainCritHit / 100)+1);
-                hitmode = 3;
-#warning TODO: Set Crit Anim
+                if (skill.Type == 2)
+                {
+
+                }
+                else if (skill.Type == 3 && Session.Character.Class != 3)
+                {
+                    baseDamage = (int)(baseDamage * ((mainCritHit / 100D) + 1));
+                    hitmode = 3;
+                }
+                else
+                {
+                    baseDamage = (int)(baseDamage * ((mainCritHit / 100D) + 1));
+                    hitmode = 3;
+                }
+
             }
             #endregion
             #region Elementary Damage
