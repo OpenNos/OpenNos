@@ -673,7 +673,7 @@ namespace OpenNos.Handler
             }
             #endregion
             #region Critical Damage
-            if(random.Next(100) <= mainCritChance)
+            if(random.Next(100) <= mainCritChance && skill.Type != 2)
             {
                 baseDamage = (int)baseDamage * ((mainCritHit / 100)+1);
                 hitmode = 3;
