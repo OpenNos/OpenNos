@@ -68,6 +68,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         public virtual ICollection<Drop> Drop { get; set; }
 
+        public virtual ICollection<ItemInstance> ItemInstances { get; set; }
+
         public short Effect { get; set; }
 
         public int EffectValue { get; set; }

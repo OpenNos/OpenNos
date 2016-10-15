@@ -29,7 +29,6 @@ namespace OpenNos.DAL.EF.MySQL
 
         public long? BoundCharacterId { get; set; }
 
-        [ForeignKey(nameof(CharacterId))]
         public virtual Character Character { get; set; }
 
         [Index("IX_SlotAndType", 1, IsUnique = false, Order = 0)]
@@ -42,16 +41,16 @@ namespace OpenNos.DAL.EF.MySQL
         public virtual Item Item { get; set; }
 
         public DateTime? ItemDeleteTime { get; set; }
-
+        
         public short ItemVNum { get; set; }
 
-        public sbyte Rare { get; set; }
+        public byte Rare { get; set; }
 
         [Index("IX_SlotAndType", 2, IsUnique = false, Order = 1)]
         public short Slot { get; set; }
 
         [Index("IX_SlotAndType", 3, IsUnique = false, Order = 2)]
-        public InventoryType Type { get; set; }
+        public byte Type { get; set; }
 
         public byte Upgrade { get; set; }
 

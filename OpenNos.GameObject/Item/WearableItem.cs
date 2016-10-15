@@ -35,11 +35,11 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (ItemValidTime > 0 && ((ItemInstance)inventory).IsBound)
+                    if (ItemValidTime > 0 && inventory.IsBound)
                     {
                         inventory.ItemDeleteTime = DateTime.Now.AddSeconds(ItemValidTime);
                     }
-                    if (!((ItemInstance)inventory).IsBound)
+                    if (!inventory.IsBound)
                     {
                         if (!DelayUsed && ((EquipmentSlot == (byte)EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80)) || (EquipmentSlot == (byte)EquipmentType.CostumeHat || EquipmentSlot == (byte)EquipmentType.CostumeSuit || EquipmentSlot == (byte)EquipmentType.WeaponSkin)))
                         {
@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    if (EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown && session.Character.Equipments.LoadInventoryBySlotAndType((byte)EquipmentType.Sp, InventoryType.Sp) != null)
+                    if (EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown && session.Character.Equipments.GetItemInstanceBySlotAndType((byte)EquipmentType.Sp, InventoryType.Sp) != null)
                     {
                         session.SendPacket(session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage)), 0));
                         return;
@@ -102,7 +102,7 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    ItemInstance equip = session.Character.Equipments.LoadInventoryBySlotAndType(EquipmentSlot, InventoryType.Equipment);
+                    ItemInstance equip = session.Character.Equipments.GetItemInstanceBySlotAndType(EquipmentSlot, InventoryType.Equipment);
                     if (EquipmentSlot == (byte)EquipmentType.Amulet)
                     {
                         session.SendPacket(session.Character.GenerateEff(39));

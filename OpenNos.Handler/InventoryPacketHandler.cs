@@ -241,7 +241,7 @@ namespace OpenNos.Handler
                 byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
-                ItemInstance item = Session.Character.Inventory.LoadInventoryBySlotAndType(slot[i], (InventoryType)type[i]);
+                ItemInstance item = Session.Character.Inventory.GetItemInstanceBySlotAndType(slot[i], (InventoryType)type[i]);
                 if (qty[i] <= 0 || item.Amount < qty[i])
                 {
                     return;
@@ -403,7 +403,7 @@ namespace OpenNos.Handler
                                         {
                                             foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                                             {
-                                                ItemInstance inv = Session.Character.Inventory.GetInventoryByItemInstanceId(item.Id);
+                                                ItemInstance inv = Session.Character.Inventory.GetItemInstanceById(item.Id);
                                                 if (inv != null && !(inv.Item.IsTradable || inv.IsBound))
                                                 {
                                                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
@@ -575,7 +575,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                ItemInstance inv = Session.Character.Inventory.MoveInventory(Session.Character.Inventory.LoadInventoryBySlotAndType(slot, (InventoryType)type), (InventoryType)destinationType, destinationSlot);
+                ItemInstance inv = Session.Character.Inventory.MoveInventory(Session.Character.Inventory.GetItemInstanceBySlotAndType(slot, (InventoryType)type), (InventoryType)destinationType, destinationSlot);
                 if (inv != null)
                 {
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, (InventoryType)destinationType, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
@@ -638,7 +638,7 @@ namespace OpenNos.Handler
             {
                 if (byte.TryParse(packetsplit[4], out amount) && byte.TryParse(packetsplit[2], out type) && short.TryParse(packetsplit[3], out slot))
                 {
-                    ItemInstance invitem = Session.Character.Inventory.LoadInventoryBySlotAndType(slot, (InventoryType)type);
+                    ItemInstance invitem = Session.Character.Inventory.GetItemInstanceBySlotAndType(slot, (InventoryType)type);
                     if (invitem != null && invitem.Item.IsDroppable && invitem.Item.IsTradable && !Session.Character.InExchangeOrTrade)
                     {
                         if (amount > 0 && amount < 100)
@@ -1353,7 +1353,7 @@ namespace OpenNos.Handler
             byte type;
             if (packetsplit.Length > 5 && short.TryParse(packetsplit[5], out slot) && byte.TryParse(packetsplit[4], out type))
             {
-                ItemInstance inv = Session.Character.Inventory.LoadInventoryBySlotAndType(slot, (InventoryType)type);
+                ItemInstance inv = Session.Character.Inventory.GetItemInstanceBySlotAndType(slot, (InventoryType)type);
                 if (inv != null)
                 {
                     inv.Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#', packetsplit);
@@ -1376,7 +1376,7 @@ namespace OpenNos.Handler
                 short slot;
                 if (Enum.TryParse<InventoryType>(packetsplit[3], out type) && short.TryParse(packetsplit[2], out slot))
                 {
-                    ItemInstance inv = Session.Character.Inventory.LoadInventoryBySlotAndType(slot, type);
+                    ItemInstance inv = Session.Character.Inventory.GetItemInstanceBySlotAndType(slot, type);
                     if (inv != null && inv.Item != null)
                     {
                         inv.Item.Use(Session, ref inv);

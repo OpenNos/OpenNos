@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
@@ -27,11 +28,13 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<ItemInstanceDTO> LoadByCharacterId(long characterId);
 
+        DeleteResult DeleteFromSlotAndType(long characterId, short slot, InventoryType type);
+
         ItemInstanceDTO LoadBySlotAndType(long characterId, short slot, InventoryType type);
 
         IEnumerable<ItemInstanceDTO> LoadByType(long characterId, InventoryType type);
 
-        IEnumerable<Guid> LoadKeysByCharacterId(long characterId);
+        IList<Tuple<short, InventoryType>> LoadSlotAndTypeByCharacterId(long characterId);
 
         void RegisterMapping(Type gameObjectType);
 

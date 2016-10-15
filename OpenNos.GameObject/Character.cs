@@ -754,7 +754,7 @@ namespace OpenNos.GameObject
             string[] invarray = new string[16];
             for (short i = 0; i < 16; i++)
             {
-                ItemInstance inv = Equipments.LoadInventoryBySlotAndType(i, InventoryType.Equipment);
+                ItemInstance inv = Equipments.GetItemInstanceBySlotAndType(i, InventoryType.Equipment);
                 if (inv != null)
                 {
                     invarray[i] = inv.ItemVNum.ToString();
@@ -898,7 +898,7 @@ namespace OpenNos.GameObject
             {
                 color = headWearable.Design;
             }
-            ItemInstance fairy = Equipments.LoadInventoryBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Equipment);
+            ItemInstance fairy = Equipments.GetItemInstanceBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Equipment);
 
             return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? fairy.Item.Element : 0)} 0 {(fairy != null ? fairy.Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
@@ -1931,7 +1931,6 @@ namespace OpenNos.GameObject
             {
                 inventory.CharacterId = CharacterId;
 
-                // Replace by MAPPING
                 if (inventory.Type != InventoryType.Equipment)
                 {
                     Inventory.Add((ItemInstance)inventory);
@@ -1940,7 +1939,6 @@ namespace OpenNos.GameObject
                 {
                     Equipments.Add((ItemInstance)inventory);
                 }
-                ///////////////////
             }
         }
 
@@ -2119,12 +2117,15 @@ namespace OpenNos.GameObject
                 // load and concat inventory with equipment
                 Inventory copiedInventoryList = Inventory.DeepCopy();
                 IEnumerable<ItemInstanceDTO> inventories = copiedInventoryList.Concat(Equipments);
-                IEnumerable<Guid> currentlySavedInventories = DAOFactory.ItemInstanceDAO.LoadKeysByCharacterId(CharacterId).ToList();
+                IList<Tuple<short, InventoryType>> currentlySavedInventories = DAOFactory.ItemInstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
 
                 // remove all which are saved but not in our current enumerable
-                foreach (Guid inventoryToDeleteId in currentlySavedInventories.Except(inventories.Select(i => i.Id)))
+                foreach (var inventoryToDelete in currentlySavedInventories)
                 {
-                    DAOFactory.ItemInstanceDAO.Delete(inventoryToDeleteId);
+                    if (!inventories.Any(i => i.Slot == inventoryToDelete.Item1 && i.Type == inventoryToDelete.Item2))
+                    {
+                        DAOFactory.ItemInstanceDAO.DeleteFromSlotAndType(CharacterId, inventoryToDelete.Item1, inventoryToDelete.Item2);
+                    }
                 }
 
                 // create or update all which are new or do still exist

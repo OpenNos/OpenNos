@@ -100,7 +100,9 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<ItemInstanceDTO>(context.ItemInstance.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type == type && i.CharacterId.Equals(characterId)));
+                    byte inventoryType = (byte)type;
+                    ItemInstance entity = context.ItemInstance.FirstOrDefault(i => i.CharacterId == characterId && i.Slot == slot && i.Type == inventoryType);
+                    return _mapper.Map<ItemInstanceDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -114,20 +116,22 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (var itemInstance in context.ItemInstance.Where(i => i.Type == type && i.CharacterId.Equals(characterId)))
+                byte inventoryType = (byte)type;
+                foreach (var itemInstance in context.ItemInstance.Where(i => i.CharacterId == characterId && i.Type == inventoryType))
                 {
                     yield return _mapper.Map<ItemInstanceDTO>(itemInstance);
                 }
             }
         }
 
-        public IEnumerable<Guid> LoadKeysByCharacterId(long characterId)
+        public IList<Tuple<short, InventoryType>> LoadSlotAndTypeByCharacterId(long characterId)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)).Select(c => c.Id).ToList();
+                    return context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)).Select(c => new { c.Slot, c.Type })
+                        .AsEnumerable().Select(i => new Tuple<short, InventoryType>(i.Slot, (InventoryType)i.Type)).ToList();
                 }
             }
             catch (Exception e)
@@ -155,8 +159,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             try
             {
-                Guid primaryKey = itemInstance.Id;
-                var entity = context.ItemInstance.SingleOrDefault(c => c.Id == primaryKey);
+                short slot = itemInstance.Slot;
+                byte type = (byte)itemInstance.Type;
+                long characterId = itemInstance.CharacterId;
+                var entity = context.ItemInstance.FirstOrDefault(c => c.CharacterId == characterId && c.Slot == slot && c.Type == type);
 
                 if (entity == null)
                 {

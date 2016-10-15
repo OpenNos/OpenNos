@@ -34,17 +34,6 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
-        public ItemInstance(ItemInstanceDTO itemInstance)
-        {
-            Id = itemInstance.Id;
-            Amount = itemInstance.Amount;
-            ItemVNum = itemInstance.ItemVNum;
-            Type = itemInstance.Type;
-            Slot = itemInstance.Slot;
-            CharacterId = itemInstance.CharacterId;
-            _random = new Random();
-        }
-
         #endregion
 
         #region Properties

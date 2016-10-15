@@ -133,13 +133,21 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .IsUnicode(false);
 
             modelBuilder.Entity<Character>()
+            .HasMany(e => e.Inventory)
+            .WithRequired(e => e.Character)
+            .HasForeignKey(e => e.CharacterId)
+            .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Character>()
                 .HasMany(e => e.CharacterSkill)
                 .WithRequired(e => e.Character)
+                .HasForeignKey(e => e.CharacterId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
                 .HasMany(e => e.QuicklistEntry)
                 .WithRequired(e => e.Character)
+                .HasForeignKey(e => e.CharacterId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
@@ -172,6 +180,11 @@ namespace OpenNos.DAL.EF.MySQL.DB
 
             modelBuilder.Entity<Item>()
                 .HasMany(e => e.RecipeItem)
+                .WithRequired(e => e.Item)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Item>()
+                .HasMany(e => e.ItemInstances)
                 .WithRequired(e => e.Item)
                 .WillCascadeOnDelete(false);
 

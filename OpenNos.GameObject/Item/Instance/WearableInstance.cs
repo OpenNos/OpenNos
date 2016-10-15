@@ -316,7 +316,7 @@ namespace OpenNos.GameObject
             // don't place under else.
             if (mode != RarifyMode.Drop)
             {
-                ItemInstance inventory = Session.Character.Inventory.GetInventoryByItemInstanceId(this.Id);
+                ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(this.Id);
                 if (inventory != null)
                 {
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.Rare, 0, inventory.Upgrade, 0));
@@ -407,7 +407,7 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                     Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
-                    ItemInstance inventory = Session.Character.Inventory.GetInventoryByItemInstanceId(this.Id);
+                    ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(this.Id);
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, 1, inventory.Type, inventory.Slot, 0, 0, this.Upgrade, 0));
                     Session.SendPacket(Session.Character.GenerateGold());
                 }
@@ -537,7 +537,7 @@ namespace OpenNos.GameObject
                         break;
                 }
                 WearableInstance wearable = Session.Character.Inventory.LoadByItemInstance<WearableInstance>(this.Id);
-                ItemInstance inventory = Session.Character.Inventory.GetInventoryByItemInstanceId(this.Id);
+                ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(this.Id);
 
                 int rnd = _random.Next(100);
                 if (rnd <= upfix[this.Upgrade])

@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
         {
             Logger.Debug(vnum.ToString(), Owner.Session.SessionId);
 
-            ItemInstance newItem = new ItemInstance() { ItemVNum = vnum, Amount = amount };
+            ItemInstance newItem = new ItemInstance() { ItemVNum = vnum, Amount = amount, CharacterId = Owner.Session.Character.CharacterId};
             if (newItem.Item != null)
             {
                 switch (newItem.Item.Type)
@@ -97,11 +97,20 @@ namespace OpenNos.GameObject
             return inv;
         }
 
+        /// <summary>
+        /// Add iteminstance to inventory with specified slot and type, iteminstance will be overridden.
+        /// </summary>
+        /// <param name="iteminstance"></param>
+        /// <param name="type"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
         public ItemInstance AddToInventoryWithSlotAndType(ItemInstance iteminstance, InventoryType type, short slot)
         {
             Logger.Debug($"Slot: {slot} Type: {type} VNUM: {iteminstance.ItemVNum}", Owner.Session.SessionId);
-            ItemInstance inv = new ItemInstance() { Type = type, Slot = slot, CharacterId = Owner.CharacterId };
-            string inventoryPacket = Owner.Session.Character.GenerateInventoryAdd(iteminstance.ItemVNum, inv.Amount, type, slot, iteminstance.Rare, iteminstance.Design, 0, 0);
+            iteminstance.Slot = slot;
+            iteminstance.Type = type;
+            iteminstance.CharacterId = Owner.Session.Character.CharacterId;
+            string inventoryPacket = Owner.Session.Character.GenerateInventoryAdd(iteminstance.ItemVNum, iteminstance.Amount, type, slot, iteminstance.Rare, iteminstance.Design, 0, 0);
             if (!String.IsNullOrEmpty(inventoryPacket))
             {
                 Owner.Session.SendPacket(inventoryPacket);
@@ -112,8 +121,8 @@ namespace OpenNos.GameObject
                 return null;
             }
 
-            Add(inv);
-            return inv;
+            Add(iteminstance);
+            return iteminstance;
         }
 
         public int CountItem(int v)
@@ -177,7 +186,7 @@ namespace OpenNos.GameObject
                 place[k] = (byte)(48 + (backPack * 12));
                 for (short i = 0; i < 48 + (backPack * 12); i++)
                 {
-                    ItemInstance result = LoadInventoryBySlotAndType(i, (InventoryType)item[k].Item.Type);
+                    ItemInstance result = GetItemInstanceBySlotAndType(i, (InventoryType)item[k].Item.Type);
                     if (result != null && result.Type == 0)
                     {
                         place[k]--;
@@ -209,7 +218,7 @@ namespace OpenNos.GameObject
             return true;
         }
 
-        public ItemInstance GetInventoryByItemInstanceId(Guid id)
+        public ItemInstance GetItemInstanceById(Guid id)
         {
             return this.FirstOrDefault(i => i.Id.Equals(id));
         }
@@ -231,7 +240,7 @@ namespace OpenNos.GameObject
             return (T)this.FirstOrDefault(i => i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type);
         }
 
-        public ItemInstance LoadInventoryBySlotAndType(short slot, InventoryType type)
+        public ItemInstance GetItemInstanceBySlotAndType(short slot, InventoryType type)
         {
             return this.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
         }
@@ -242,7 +251,7 @@ namespace OpenNos.GameObject
             {
                 Logger.Debug($"Inventory: {inv.Id} Desttype: {desttype} Destslot: {destslot}", Owner.Session.SessionId);
                 Item iteminfo = inv.Item;
-                ItemInstance invdest = LoadInventoryBySlotAndType(destslot, desttype);
+                ItemInstance invdest = GetItemInstanceBySlotAndType(destslot, desttype);
 
                 if (invdest == null && ((desttype == InventoryType.Sp && iteminfo.ItemType == 4) || (desttype == InventoryType.Costume && iteminfo.ItemType == 2) || desttype == 0))
                 {
@@ -259,8 +268,8 @@ namespace OpenNos.GameObject
             Logger.Debug($"type: {type} sourceSlot: {sourceSlot} amount: {amount} destinationSlot: {destinationSlot}", Owner.Session.SessionId);
 
             // load source and destination slots
-            sourceInventory = LoadInventoryBySlotAndType(sourceSlot, type);
-            destinationInventory = LoadInventoryBySlotAndType(destinationSlot, type);
+            sourceInventory = GetItemInstanceBySlotAndType(sourceSlot, type);
+            destinationInventory = GetItemInstanceBySlotAndType(destinationSlot, type);
             if (sourceInventory != null && amount <= sourceInventory.Amount)
             {
                 if (destinationInventory == null)
@@ -312,8 +321,8 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-            sourceInventory = LoadInventoryBySlotAndType(sourceSlot, type);
-            destinationInventory = LoadInventoryBySlotAndType(destinationSlot, type);
+            sourceInventory = GetItemInstanceBySlotAndType(sourceSlot, type);
+            destinationInventory = GetItemInstanceBySlotAndType(destinationSlot, type);
         }
 
         /// <summary>

@@ -4,6 +4,8 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Data.Enums;
+using OpenNos.Domain;
 
 namespace OpenNos.DAL.Mock
 {
@@ -52,7 +54,7 @@ namespace OpenNos.DAL.Mock
             return Container.Where(i => i.CharacterId == characterId && i.Type == type);
         }
 
-        public IEnumerable<Guid> LoadKeysByCharacterId(long characterId)
+        public IEnumerable<Guid> LoadSlotAndTypeByCharacterId(long characterId)
         {
             return Container.Where(i => i.CharacterId == characterId).Select(c => c.Id);
         }
@@ -61,6 +63,16 @@ namespace OpenNos.DAL.Mock
         {
             Type itemInstanceType = typeof(ItemInstanceDTO);
             itemInstanceMappings.Add(gameObjectType, itemInstanceType);
+        }
+
+        public DeleteResult DeleteFromSlotAndType(long characterId, short slot, InventoryType type)
+        {
+            throw new NotImplementedException();
+        }
+
+        IList<Tuple<short, InventoryType>> IItemInstanceDAO.LoadSlotAndTypeByCharacterId(long characterId)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
