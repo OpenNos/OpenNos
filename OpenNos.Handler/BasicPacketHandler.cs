@@ -663,7 +663,7 @@ namespace OpenNos.Handler
         [Packet("preq")]
         public void Preq(string packet)
         {
-            Logger.Debug(packet, Session.SessionId);
+             Logger.Debug(packet, Session.SessionId);
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             if (!(timeSpanSinceLastPortal >= 4))

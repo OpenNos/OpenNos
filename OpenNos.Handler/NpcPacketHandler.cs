@@ -399,7 +399,8 @@ namespace OpenNos.Handler
                                     Price = gold[i],
                                     Id = inv.Id,
                                     CharacterId = inv.CharacterId,
-                                    Amount = qty[i]
+                                    Amount = qty[i],
+                                    ItemVNum = inv.ItemVNum
                                 };
                                 myShop.Items.Add(personalshopitem);
                             }
