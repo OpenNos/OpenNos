@@ -315,8 +315,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 11));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 0));
             }
-
-            Session.Character.Gold = Session.Character.Gold - goldprice[upmode - 1];
+            Session.Character.Gold -= goldprice[upmode - 1];
             Session.SendPacket(Session.Character.GenerateGold());
             Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode - 1]);
             Session.SendPacket("shop_end 1");
@@ -346,15 +345,16 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if (Session.Character.Gold < goldprice[this.Upgrade])
-            {
-                return;
-            }
             if (Session.Character.InventoryList.CountItem(fullmoonVnum) < fullmoon[this.Upgrade])
             {
                 return;
             }
             if (Session.Character.InventoryList.CountItem(featherVnum) < feather[this.Upgrade])
+            {
+                return;
+            }
+
+            if (Session.Character.Gold < goldprice[this.Upgrade])
             {
                 return;
             }
@@ -369,6 +369,15 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
+                        if (protect == UpgradeProtection.Protected)
+                        {
+                            if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                            {
+                                return;
+                            }
+                            Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                            Session.SendPacket("shop_end 2");
+                        }
                         Session.Character.InventoryList.RemoveItemAmount(greenSoulVnum, (soul[this.Upgrade]));
                     }
                     else
@@ -377,16 +386,16 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(dragonSkinVnum, (soul[this.Upgrade]));
-                    }
-                    if (protect == UpgradeProtection.Protected)
-                    {
-                        if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                        if (protect == UpgradeProtection.Protected)
                         {
-                            return;
+                            if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                            {
+                                return;
+                            }
+                            Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                            Session.SendPacket("shop_end 2");
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
-                        Session.SendPacket("shop_end 2");
+                        Session.Character.InventoryList.RemoveItemAmount(dragonSkinVnum, (soul[this.Upgrade]));
                     }
                 }
                 else
@@ -405,6 +414,15 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
+                        if (protect == UpgradeProtection.Protected && this.Upgrade < 9)
+                        {
+                            if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                            {
+                                return;
+                            }
+                            Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                            Session.SendPacket("shop_end 2");
+                        }
                         Session.Character.InventoryList.RemoveItemAmount(redSoulVnum, (soul[this.Upgrade]));
                     }
                     else
@@ -413,16 +431,16 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(dragonBloodVnum, (soul[this.Upgrade]));
-                    }
-                    if (protect == UpgradeProtection.Protected)
-                    {
-                        if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                        if (protect == UpgradeProtection.Protected && this.Upgrade < 9)
                         {
-                            return;
+                            if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                            {
+                                return;
+                            }
+                            Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                            Session.SendPacket("shop_end 2");
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
-                        Session.SendPacket("shop_end 2");
+                        Session.Character.InventoryList.RemoveItemAmount(dragonBloodVnum, (soul[this.Upgrade]));
                     }
                 }
                 else
@@ -441,6 +459,15 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
+                        if (protect == UpgradeProtection.Protected && this.Upgrade > 9)
+                        {
+                            if (Session.Character.InventoryList.CountItem(redScrollVnum) < 1)
+                            {
+                                return;
+                            }
+                            Session.Character.InventoryList.RemoveItemAmount(redScrollVnum);
+                            Session.SendPacket("shop_end 2");
+                        }
                         Session.Character.InventoryList.RemoveItemAmount(blueSoulVnum, (soul[this.Upgrade]));
                     }
                     else
@@ -449,16 +476,16 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(dragonHeartVnum, (soul[this.Upgrade]));
-                    }
-                    if (protect == UpgradeProtection.Protected && this.Upgrade > 9)
-                    {
-                        if (Session.Character.InventoryList.CountItem(redScrollVnum) < 1)
+                        if (protect == UpgradeProtection.Protected && this.Upgrade > 9)
                         {
-                            return;
+                            if (Session.Character.InventoryList.CountItem(redScrollVnum) < 1)
+                            {
+                                return;
+                            }
+                            Session.Character.InventoryList.RemoveItemAmount(redScrollVnum);
+                            Session.SendPacket("shop_end 2");
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(redScrollVnum);
-                        Session.SendPacket("shop_end 2");
+                        Session.Character.InventoryList.RemoveItemAmount(dragonHeartVnum, (soul[this.Upgrade]));
                     }
                 }
                 else
@@ -512,7 +539,7 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, this.SpStoneUpgrade));
                 }
             }
-            Session.Character.Gold = Session.Character.Gold - goldprice[this.Upgrade];
+            Session.Character.Gold -= goldprice[this.Upgrade];
             Session.SendPacket(Session.Character.GenerateGold());
             Session.SendPacket(Session.Character.GenerateEq());
             Session.SendPacket("shop_end 1");
