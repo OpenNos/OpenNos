@@ -115,6 +115,7 @@ namespace OpenNos.Handler
                 {
                     reason += packetsplit[i] + " ";
                 }
+                reason = reason.Trim();
 
                 ServerManager.Instance.Kick(packetsplit[2]);
                 if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
