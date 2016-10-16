@@ -652,7 +652,7 @@ namespace OpenNos.Handler
                 }
                 message.Trim();
 
-                Session.CurrentMap?.Broadcast(Session, $"msg 5 [{Session.Character.Name}]:{message}", ReceiverType.AllNoHeroBlocked);
+                ServerManager.Instance.Broadcast(Session, $"msg 5 [{Session.Character.Name}]:{message}", ReceiverType.AllNoHeroBlocked);
             }
             else
             {
