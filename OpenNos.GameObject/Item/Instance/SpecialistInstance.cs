@@ -414,7 +414,7 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
-                        if (protect == UpgradeProtection.Protected && this.Upgrade < 9)
+                        if (protect == UpgradeProtection.Protected)
                         {
                             if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
                             {
@@ -431,7 +431,7 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
-                        if (protect == UpgradeProtection.Protected && this.Upgrade < 9)
+                        if (protect == UpgradeProtection.Protected)
                         {
                             if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
                             {

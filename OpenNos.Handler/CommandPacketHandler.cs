@@ -1691,7 +1691,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 0));
+                Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 10));
             }
         }
 
