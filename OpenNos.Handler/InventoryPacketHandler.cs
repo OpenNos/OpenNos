@@ -128,6 +128,16 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
+
+                    //needs to be reviewed, dirty.
+                    if (Session.Character.IsVehicled)
+                    {
+                        ItemInstance itemInstance = Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(slot, (InventoryType)type);
+                        if (itemInstance.Item.Morph > 0 && itemInstance.Item.ItemType == (byte)ItemType.Special)
+                        {
+                            Session.Character.RemoveVehicle();
+                        }
+                    }
                     Session.Character.DeleteItem((InventoryType)type, slot);
                 }
             }
