@@ -673,6 +673,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                     {
                         PenaltyLogId = c.Int(nullable: false, identity: true),
                         AccountId = c.Long(nullable: false),
+                        AdminName = c.String(unicode: false),
                         DateEnd = c.DateTime(nullable: false, precision: 0),
                         DateStart = c.DateTime(nullable: false, precision: 0),
                         Penalty = c.Byte(nullable: false),

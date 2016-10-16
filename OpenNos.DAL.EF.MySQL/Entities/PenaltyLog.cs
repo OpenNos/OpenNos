@@ -26,6 +26,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         public long AccountId { get; set; }
 
+        public string AdminName { get; set; }
+
         public DateTime DateEnd { get; set; }
 
         public DateTime DateStart { get; set; }
