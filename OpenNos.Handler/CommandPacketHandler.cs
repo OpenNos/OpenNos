@@ -105,11 +105,17 @@ namespace OpenNos.Handler
             if (packetsplit.Length >= 4)
             {
                 string name = packetsplit[2];
-                string reason = packetsplit[3];
-                if (packetsplit.Length > 4)
+                string reason = String.Empty;
+
+                // check if duration can be parsed first
+                duration = Int32.TryParse(packetsplit[3], out duration) ? duration : 0;
+
+                // get data from 3rd or 4th packetsplit depending on if duration was parsed or not
+                for (int i = duration == 0 ? 3 : 4; i < packetsplit.Length; i++)
                 {
-                    Int32.TryParse(packetsplit[4], out duration);
+                    reason += packetsplit[i] + " ";
                 }
+
                 ServerManager.Instance.Kick(packetsplit[2]);
                 if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
                 {
@@ -130,7 +136,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME TIME REASON ", 10));
                 Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 10));
             }
         }
@@ -1127,9 +1133,15 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length == 3)
+            if (packetsplit.Length > 2)
             {
-                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(packetsplit[2]).OrderBy(s => s.VNum).ToList();
+                string name = String.Empty;
+                for (int i = 2; i < packetsplit.Length; i++)
+                {
+                    name += packetsplit[i] + " ";
+                }
+                name = name.Trim();
+                IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(name).OrderBy(s => s.VNum).ToList();
                 if (itemlist.Any())
                 {
                     foreach (ItemDTO item in itemlist)

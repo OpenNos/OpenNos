@@ -650,7 +650,7 @@ namespace OpenNos.Handler
                 {
                     message += packetsplit[i] + " ";
                 }
-                message.Trim();
+                message = message.Trim();
 
                 ServerManager.Instance.Broadcast(Session, $"msg 5 [{Session.Character.Name}]:{message}", ReceiverType.AllNoHeroBlocked);
             }
