@@ -106,12 +106,13 @@ namespace OpenNos.Handler
             {
                 string name = packetsplit[2];
                 string reason = String.Empty;
+                bool isduration = Int32.TryParse(packetsplit[3], out duration);
 
                 // check if duration can be parsed first
-                duration = Int32.TryParse(packetsplit[3], out duration) ? duration : 0;
+                duration = isduration ? duration : 0;
 
                 // get data from 3rd or 4th packetsplit depending on if duration was parsed or not
-                for (int i = duration == 0 ? 3 : 4; i < packetsplit.Length; i++)
+                for (int i = isduration ? 4 : 3; i < packetsplit.Length; i++)
                 {
                     reason += packetsplit[i] + " ";
                 }
@@ -355,7 +356,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
             Session.SendPacket(Session.Character.GenerateSay("$ArenaWinner", 12));
             Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME TIME REASON ", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 12));
@@ -377,12 +378,11 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Invisible", 12));
             Session.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME REASON", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$MapDance", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME TIME REASON ", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 12));
             Session.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 12));
             Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 12));
@@ -846,16 +846,21 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            byte duration = 1;
+            int duration = 1;
             if (packetsplit.Length > 3)
             {
                 string name = packetsplit[2];
-                string reason = packetsplit[3];
+                string reason = String.Empty;
+                bool isduration = Int32.TryParse(packetsplit[3], out duration);
 
-                if (packetsplit.Length > 4)
+                duration = isduration ? duration : 1;
+
+                // get data from 3rd or 4th packetsplit depending on if duration was parsed or not
+                for (int i = isduration ? 4 : 3; i < packetsplit.Length; i++)
                 {
-                    Byte.TryParse(packetsplit[4], out duration);
+                    reason += packetsplit[i] + " ";
                 }
+                reason = reason.Trim();
 
                 ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                 if (duration != 0)
@@ -870,7 +875,6 @@ namespace OpenNos.Handler
                             DateStart = DateTime.Now,
                             DateEnd = DateTime.Now.AddHours(duration)
                         });
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                         if (duration == 1)
                         {
                             ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)), ReceiverType.OnlySomeone, name);
@@ -879,6 +883,7 @@ namespace OpenNos.Handler
                         {
                             ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)), ReceiverType.OnlySomeone, name);
                         }
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
                     else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
@@ -886,7 +891,7 @@ namespace OpenNos.Handler
                         {
                             AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
                             Reason = reason,
-                            Penalty = (byte)PenaltyType.Muted,
+                            Penalty = PenaltyType.Muted,
                             DateStart = DateTime.Now,
                             DateEnd = DateTime.Now.AddHours(duration)
                         });
@@ -900,7 +905,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME TIME REASON ", 10));
                 Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 10));
             }
         }
