@@ -34,6 +34,13 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
+        public ItemInstance(short vNum, int amount)
+        {
+            ItemVNum = vNum;
+            Amount = amount;
+            Type = Item.Type;
+        }
+
         #endregion
 
         #region Properties

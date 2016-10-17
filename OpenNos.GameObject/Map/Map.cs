@@ -252,10 +252,9 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                ItemInstance newInstance = new ItemInstance() { Amount = 1, ItemVNum = drop.ItemVNum };
-                newInstance.Amount = drop.Amount;
+                ItemInstance newInstance = new ItemInstance(drop.ItemVNum, drop.Amount);
 
-                droppedItem = new MapItem(localMapX, localMapY)
+                 droppedItem = new MapItem(localMapX, localMapY)
                 {
                     ItemInstance = newInstance,
                     Owner = Owner
