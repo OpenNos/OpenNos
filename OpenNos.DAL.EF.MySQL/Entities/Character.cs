@@ -24,7 +24,7 @@ namespace OpenNos.DAL.EF.MySQL
         public Character()
         {
             CharacterSkill = new HashSet<CharacterSkill>();
-            Inventory = new HashSet<Inventory>();
+            Inventory = new HashSet<ItemInstance>();
             QuicklistEntry = new HashSet<QuicklistEntry>();
             Respawn = new HashSet<Respawn>();
             GeneralLog = new HashSet<GeneralLog>();
@@ -96,7 +96,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public bool HpBlocked { get; set; }
 
-        public virtual ICollection<Inventory> Inventory { get; set; }
+        public virtual ICollection<ItemInstance> Inventory { get; set; }
 
         public byte JobLevel { get; set; }
 

@@ -30,7 +30,7 @@ namespace OpenNos.DAL
         private static IComboDAO _comboDAO;
         private static IDropDAO _dropDAO;
         private static IGeneralLogDAO _generallogDAO;
-        private static IInventoryDAO _inventoryDAO;
+        private static IItemInstanceDAO _itemInstanceDAO;
         private static IItemDAO _itemDAO;
         private static IMailDAO _mailDAO;
         private static IMapDAO _mapDAO;
@@ -218,23 +218,23 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IInventoryDAO InventoryDAO
+        public static IItemInstanceDAO ItemInstanceDAO
         {
             get
             {
-                if (_inventoryDAO == null)
+                if (_itemInstanceDAO == null)
                 {
                     if (_useMock)
                     {
-                        _inventoryDAO = new Mock.InventoryDAO();
+                        _itemInstanceDAO = new Mock.ItemInstanceDAO();
                     }
                     else
                     {
-                        _inventoryDAO = new MySQL.InventoryDAO();
+                        _itemInstanceDAO = new MySQL.ItemInstanceDAO();
                     }
                 }
 
-                return _inventoryDAO;
+                return _itemInstanceDAO;
             }
         }
 

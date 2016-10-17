@@ -23,13 +23,13 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory inventory, bool DelayUsed = false, string[] packetsplit = null)
+        public override void Use(ClientSession Session, ref ItemInstance inventory, bool DelayUsed = false, string[] packetsplit = null)
         {
             switch (Effect)
             {
                 // wings
                 case 650:
-                    SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
+                    SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                     if (Session.Character.UseSp && specialistInstance != null)
                     {
                         if (!DelayUsed)
@@ -44,14 +44,14 @@ namespace OpenNos.GameObject
                             Session.SendPacket(Session.Character.GenerateStat());
                             Session.SendPacket(Session.Character.GenerateStatChar());
 
-                            inventory.ItemInstance.Amount--;
-                            if (inventory.ItemInstance.Amount > 0)
+                            inventory.Amount--;
+                            if (inventory.Amount > 0)
                             {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inventory.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                             else
                             {
-                                Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
+                                Session.Character.Inventory.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
                                 Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                         }
@@ -64,7 +64,7 @@ namespace OpenNos.GameObject
 
                 // magic lamps
                 case 651:
-                    if (!Session.Character.EquipmentList.Inventory.Any())
+                    if (!Session.Character.Inventory.Any())
                     {
                         if (!DelayUsed)
                         {
@@ -73,14 +73,14 @@ namespace OpenNos.GameObject
                         else
                         {
                             Session.Character.ChangeSex();
-                            inventory.ItemInstance.Amount--;
-                            if (inventory.ItemInstance.Amount > 0)
+                            inventory.Amount--;
+                            if (inventory.Amount > 0)
                             {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inventory.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                             else
                             {
-                                Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
+                                Session.Character.Inventory.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
                                 Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                         }
@@ -93,7 +93,7 @@ namespace OpenNos.GameObject
 
                 // vehicles
                 case 1000:
-                    SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
+                    SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                     if (!DelayUsed && !Session.Character.IsVehicled)
                     {
                         if (Session.Character.IsSitting)

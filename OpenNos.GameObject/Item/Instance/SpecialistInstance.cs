@@ -238,12 +238,12 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if (Session.Character.InventoryList.CountItem(stonevnum) < stoneprice[upmode - 1])
+            if (Session.Character.Inventory.CountItem(stonevnum) < stoneprice[upmode - 1])
             {
                 return;
             }
 
-            SpecialistInstance specialist = Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.Id);
+            SpecialistInstance specialist = Session.Character.Inventory.LoadByItemInstance<SpecialistInstance>(this.Id);
 
             int rnd = _random.Next(100);
             if (rnd <= upsuccess[upmode - 1])
@@ -317,7 +317,7 @@ namespace OpenNos.GameObject
             }
             Session.Character.Gold -= goldprice[upmode - 1];
             Session.SendPacket(Session.Character.GenerateGold());
-            Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode - 1]);
+            Session.Character.Inventory.RemoveItemAmount(stonevnum, stoneprice[upmode - 1]);
             Session.SendPacket("shop_end 1");
         }
 
@@ -345,11 +345,11 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if (Session.Character.InventoryList.CountItem(fullmoonVnum) < fullmoon[this.Upgrade])
+            if (Session.Character.Inventory.CountItem(fullmoonVnum) < fullmoon[this.Upgrade])
             {
                 return;
             }
-            if (Session.Character.InventoryList.CountItem(featherVnum) < feather[this.Upgrade])
+            if (Session.Character.Inventory.CountItem(featherVnum) < feather[this.Upgrade])
             {
                 return;
             }
@@ -365,24 +365,24 @@ namespace OpenNos.GameObject
                 {
                     if (this.Item.Morph <= 15)
                     {
-                        if (Session.Character.InventoryList.CountItem(greenSoulVnum) < soul[this.Upgrade])
+                        if (Session.Character.Inventory.CountItem(greenSoulVnum) < soul[this.Upgrade])
                         {
                             return;
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
-                            if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                            if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                            Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
                             Session.SendPacket("shop_end 2");
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(greenSoulVnum, (soul[this.Upgrade]));
+                        Session.Character.Inventory.RemoveItemAmount(greenSoulVnum, (soul[this.Upgrade]));
                     }
                     else
                     {
-                        if (Session.Character.InventoryList.CountItem(dragonSkinVnum) < soul[this.Upgrade])
+                        if (Session.Character.Inventory.CountItem(dragonSkinVnum) < soul[this.Upgrade])
                         {
                             return;
                         }
@@ -410,7 +410,7 @@ namespace OpenNos.GameObject
                 {
                     if (this.Item.Morph <= 15)
                     {
-                        if (Session.Character.InventoryList.CountItem(redSoulVnum) < soul[this.Upgrade])
+                        if (Session.Character.Inventory.CountItem(redSoulVnum) < soul[this.Upgrade])
                         {
                             return;
                         }
@@ -427,7 +427,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        if (Session.Character.InventoryList.CountItem(dragonBloodVnum) < soul[this.Upgrade])
+                        if (Session.Character.Inventory.CountItem(dragonBloodVnum) < soul[this.Upgrade])
                         {
                             return;
                         }
@@ -455,7 +455,7 @@ namespace OpenNos.GameObject
                 {
                     if (this.Item.Morph <= 15)
                     {
-                        if (Session.Character.InventoryList.CountItem(blueSoulVnum) < soul[this.Upgrade])
+                        if (Session.Character.Inventory.CountItem(blueSoulVnum) < soul[this.Upgrade])
                         {
                             return;
                         }
@@ -472,7 +472,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        if (Session.Character.InventoryList.CountItem(dragonHeartVnum) < soul[this.Upgrade])
+                        if (Session.Character.Inventory.CountItem(dragonHeartVnum) < soul[this.Upgrade])
                         {
                             return;
                         }
@@ -496,11 +496,11 @@ namespace OpenNos.GameObject
             }
 
             // remove feather and fullmoon before upgrading
-            Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[this.Upgrade]));
-            Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.Upgrade]));
+            Session.Character.Inventory.RemoveItemAmount(featherVnum, (feather[this.Upgrade]));
+            Session.Character.Inventory.RemoveItemAmount(fullmoonVnum, (fullmoon[this.Upgrade]));
 
-            WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
-            Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
+            WearableInstance wearable = Session.Character.Inventory.LoadByItemInstance<WearableInstance>(this.Id);
+            ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(this.Id);
             int rnd = _random.Next(100);
             if (rnd <= upfail[this.Upgrade])
             {

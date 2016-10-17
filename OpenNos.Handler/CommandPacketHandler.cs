@@ -193,7 +193,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short fairylevel;
-            WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, InventoryType.Equipment);
+            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, InventoryType.Wear);
             if (fairy != null && packetsplit.Length > 2)
             {
                 if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= Int16.MaxValue)
@@ -328,7 +328,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte splevel;
-            SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
+            SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
             if (sp != null && packetsplit.Length > 2 && Session.Character.UseSp)
             {
                 if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
@@ -486,14 +486,14 @@ namespace OpenNos.Handler
                         }
                     }
                     amount = amount > 99 ? (byte)99 : amount;
-                    Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(vnum, amount);
+                    ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount);
                     if (inv != null)
                     {
-                        inv.ItemInstance.Rare = rare;
-                        inv.ItemInstance.Upgrade = upgrade;
-                        inv.ItemInstance.Design = design;
+                        inv.Rare = rare;
+                        inv.Upgrade = upgrade;
+                        inv.Design = design;
 
-                        WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
+                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
 
                         if (wearable != null && (wearable.Item.EquipmentSlot == (byte)EquipmentType.Armor || wearable.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || wearable.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon))
                         {
@@ -504,7 +504,7 @@ namespace OpenNos.Handler
                         if (Slot != -1)
                         {
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, iteminfo.Type, Slot, rare, design, upgrade, 0));
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.Amount, iteminfo.Type, Slot, rare, design, upgrade, 0));
                         }
                     }
                     else
@@ -961,7 +961,7 @@ namespace OpenNos.Handler
 
                 if (itemslot > -1 && mode > -1 && protection > -1)
                 {
-                    WearableInstance wearableInstance = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(itemslot, 0);
+                    WearableInstance wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(itemslot, 0);
                     if (wearableInstance != null)
                     {
                         wearableInstance.RarifyItem(Session, (RarifyMode)mode, (RarifyProtection)protection);
@@ -1644,7 +1644,7 @@ namespace OpenNos.Handler
 
                 if (itemslot > -1 && mode > -1 && protection > -1)
                 {
-                    WearableInstance wearableInstance = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(itemslot, 0);
+                    WearableInstance wearableInstance = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(itemslot, 0);
                     if (wearableInstance != null)
                     {
                         wearableInstance.UpgradeItem(Session, (UpgradeMode)mode, (UpgradeProtection)protection, true);
@@ -1663,7 +1663,7 @@ namespace OpenNos.Handler
             {
                 if (Byte.TryParse(packetsplit[2], out wigcolor))
                 {
-                    WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
+                    WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                     if (wig != null)
                     {
                         wig.Design = wigcolor;

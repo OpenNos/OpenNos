@@ -50,8 +50,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
 
         public virtual DbSet<GeneralLog> GeneralLog { get; set; }
 
-        public virtual DbSet<Inventory> Inventory { get; set; }
-
         public virtual DbSet<Item> Item { get; set; }
 
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
@@ -109,10 +107,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
                  .Map<SpecialistInstance>(m => m.Requires("SpecialistInstance"))
                  .Map<UsableInstance>(m => m.Requires("UsableInstance"));
 
-            modelBuilder.Entity<ItemInstance>()
-               .HasOptional(ii => ii.Inventory)
-               .WithRequired(inv => inv.ItemInstance);
-
             modelBuilder.Entity<Account>()
                 .Property(e => e.Password)
                 .IsUnicode(false);
@@ -139,18 +133,21 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .IsUnicode(false);
 
             modelBuilder.Entity<Character>()
-                .HasMany(e => e.CharacterSkill)
-                .WithRequired(e => e.Character)
-                .WillCascadeOnDelete(false);
+            .HasMany(e => e.Inventory)
+            .WithRequired(e => e.Character)
+            .HasForeignKey(e => e.CharacterId)
+            .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
-                .HasMany(e => e.Inventory)
+                .HasMany(e => e.CharacterSkill)
                 .WithRequired(e => e.Character)
+                .HasForeignKey(e => e.CharacterId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
                 .HasMany(e => e.QuicklistEntry)
                 .WithRequired(e => e.Character)
+                .HasForeignKey(e => e.CharacterId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
@@ -183,6 +180,11 @@ namespace OpenNos.DAL.EF.MySQL.DB
 
             modelBuilder.Entity<Item>()
                 .HasMany(e => e.RecipeItem)
+                .WithRequired(e => e.Item)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Item>()
+                .HasMany(e => e.ItemInstances)
                 .WithRequired(e => e.Item)
                 .WillCascadeOnDelete(false);
 

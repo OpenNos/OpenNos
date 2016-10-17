@@ -16,12 +16,12 @@ namespace OpenNos.Domain
 {
     public enum InventoryType : byte
     {
-        Wear = 0,
+        Equipment = 0,
         Main = 1,
         Etc = 2,
         Miniland = 3,
-        Sp = 6,
+        Specialist = 6,
         Costume = 7,
-        Equipment = 8
+        Wear = 8
     }
 }

@@ -33,6 +33,8 @@ namespace OpenNos.Data
 
         public string Reason { get; set; }
 
+        public string AdminName { get; set; }
+
         #endregion
     }
 }

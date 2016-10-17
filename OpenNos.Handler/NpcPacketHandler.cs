@@ -82,14 +82,14 @@ namespace OpenNos.Handler
             {
                 // User shop
                 KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
-                PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.Slot.Equals(slot));
+                PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
                 if (item == null || amount <= 0)
                 {
                     return;
                 }
                 if (amount > item.Amount)
                 {
-                    amount = item.Amount;
+                    amount = (byte)item.Amount;
                 }
                 if (item.Price * amount + ServerManager.Instance.GetProperty<long>(shop.Value.OwnerId, nameof(Character.Gold)) > 1000000000)
                 {
@@ -103,14 +103,11 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                ItemInstance item2 = (item.ItemInstance as ItemInstance).DeepCopy();
-                item2.Amount = amount;
-                item2.Id = Guid.NewGuid(); // this is necessary due the deepcopy would cause duplicate GUID
-                Inventory inv = Session.Character.InventoryList.AddToInventory(item2);
+                ItemInstance inv = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount);
 
                 if (inv != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
                     Session.Character.Gold -= item.Price * amount;
                     Session.SendPacket(Session.Character.GenerateGold());
                     ServerManager.Instance.BuyValidate(Session, shop, slot, amount);
@@ -288,19 +285,19 @@ namespace OpenNos.Handler
                     }
                 }
 
-                Inventory newItem = Session.Character.InventoryList.AddNewItemToInventory(item.ItemVNum, amount);
+                ItemInstance newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount);
                 if (newItem == null)
                 {
                     return;
                 }
 
-                newItem.ItemInstance.Rare = rare;
-                newItem.ItemInstance.Upgrade = item.Upgrade;
-                newItem.ItemInstance.Design = item.Color;
+                newItem.Rare = rare;
+                newItem.Upgrade = item.Upgrade;
+                newItem.Design = item.Color;
 
                 if (newItem != null && newItem.Slot != -1)
                 {
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemInstance.ItemVNum, newItem.ItemInstance.Amount, newItem.Type, newItem.Slot, newItem.ItemInstance.Rare, newItem.ItemInstance.Design, newItem.ItemInstance.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum, newItem.Amount, newItem.Type, newItem.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
                     if (iteminfo.ReputPrice == 0)
                     {
                         Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
@@ -367,6 +364,8 @@ namespace OpenNos.Handler
 
                     if (packetsplit.Length > 82)
                     {
+                        short shopSlot = 0;
+
                         for (short j = 3, i = 0; j < 82; j += 4, i++)
                         {
                             Enum.TryParse<InventoryType>(packetsplit[j], out type[i]);
@@ -380,12 +379,12 @@ namespace OpenNos.Handler
                             }
                             if (qty[i] > 0)
                             {
-                                Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
-                                if (inv.ItemInstance.Amount < qty[i])
+                                ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot[i], type[i]);
+                                if (inv.Amount < qty[i])
                                 {
                                     return;
                                 }
-                                if (!((ItemInstance)inv.ItemInstance).Item.IsTradable || ((ItemInstance)inv.ItemInstance).IsBound)
+                                if (!inv.Item.IsTradable || inv.IsBound)
                                 {
                                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
                                     Session.SendPacket("shop_end 0");
@@ -395,20 +394,22 @@ namespace OpenNos.Handler
                                 PersonalShopItem personalshopitem = new PersonalShopItem()
                                 {
                                     Slot = slot[i],
+                                    ShopSlot = shopSlot,
                                     Type = type[i],
                                     Price = gold[i],
                                     Id = inv.Id,
                                     CharacterId = inv.CharacterId,
                                     Amount = qty[i],
-                                    ItemInstance = inv.ItemInstance
+                                    ItemVNum = inv.ItemVNum
                                 };
                                 myShop.Items.Add(personalshopitem);
+                                shopSlot++;
                             }
                         }
                     }
                     if (myShop.Items.Count != 0)
                     {
-                        if (!myShop.Items.Any(s => !(s.ItemInstance as ItemInstance).Item.IsSoldable || (s.ItemInstance as ItemInstance).IsBound))
+                        if (!myShop.Items.Any(s => !s.Item.IsSoldable || s.IsBound))
                         {
                             for (int i = 83; i < packetsplit.Length; i++)
                             {
@@ -546,16 +547,16 @@ namespace OpenNos.Handler
                         }
                         foreach (RecipeItemDTO ite in rec.Items)
                         {
-                            if (Session.Character.InventoryList.CountItem(ite.ItemVNum) < ite.Amount)
+                            if (Session.Character.Inventory.CountItem(ite.ItemVNum) < ite.Amount)
                             {
                                 return;
                             }
                         }
 
-                        Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(rec.ItemVNum, rec.Amount);
-                        if (inv.ItemInstance.GetType().Equals(typeof(WearableInstance)))
+                        ItemInstance inv = Session.Character.Inventory.AddNewToInventory(rec.ItemVNum, rec.Amount);
+                        if (inv.GetType().Equals(typeof(WearableInstance)))
                         {
-                            WearableInstance item = inv.ItemInstance as WearableInstance;
+                            WearableInstance item = inv as WearableInstance;
                             if (item != null && (item.Item.EquipmentSlot == (byte)EquipmentType.Armor || item.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || item.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon))
                             {
                                 item.SetRarityPoint();
@@ -569,14 +570,14 @@ namespace OpenNos.Handler
                             {
                                 foreach (RecipeItemDTO ite in rec.Items)
                                 {
-                                    Session.Character.InventoryList.RemoveItemAmount(ite.ItemVNum, ite.Amount);
+                                    Session.Character.Inventory.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, 0, inv.Rare, inv.Upgrade, 0));
 
-                                Session.SendPacket($"pdti 11 {inv.ItemInstance.ItemVNum} {rec.Amount} 29 {inv.ItemInstance.Upgrade} 0");
+                                Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
                                 Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
 
-                                Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), (inv.ItemInstance as ItemInstance).Item.Name, rec.Amount), 0));
+                                Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
                             }
                         }
                         else
@@ -606,17 +607,17 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
-                if (inv == null || amount > inv.ItemInstance.Amount)
+                ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot, type);
+                if (inv == null || amount > inv.Amount)
                 {
                     return;
                 }
-                if (!(inv.ItemInstance as ItemInstance).Item.IsSoldable)
+                if (!inv.Item.IsSoldable)
                 {
                     Session.SendPacket(Session.Character.GenerateShopMemo(2, string.Format(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"))));
                     return;
                 }
-                long price = (inv.ItemInstance as ItemInstance).Item.Type == InventoryType.Wear ? (inv.ItemInstance as ItemInstance).Item.Price / 20 : (inv.ItemInstance as ItemInstance).Item.Price;
+                long price = inv.Item.Type == InventoryType.Equipment ? inv.Item.Price / 20 : inv.Item.Price;
 
                 if (Session.Character.Gold + price * amount > 1000000000)
                 {
@@ -625,13 +626,13 @@ namespace OpenNos.Handler
                     return;
                 }
                 Session.Character.Gold += price * amount;
-                Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), (inv.ItemInstance as ItemInstance).Item.Name, amount)));
+                Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), inv.Item.Name, amount)));
 
-                inv = Session.Character.InventoryList.RemoveItemAmountFromInventory(amount, inv.Id);
+                inv = Session.Character.Inventory.RemoveItemAmountFromInventory(amount, inv.Id);
                 if (inv != null)
                 {
                     // Send reduced-amount to owners inventory
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
                 }
                 else
                 {
@@ -853,13 +854,13 @@ namespace OpenNos.Handler
                 PersonalShopItem item = shop.Value.Items.Count() > i ? shop.Value.Items.ElementAt(i) : null;
                 if (item != null)
                 {
-                    if ((item.ItemInstance as ItemInstance).Item.Type == 0)
+                    if (item.Item.Type == 0)
                     {
-                        packetToSend += $" 0.{i}.{item.ItemInstance.ItemVNum}.{item.ItemInstance.Rare}.{item.ItemInstance.Upgrade}.{item.Price}.";
+                        packetToSend += $" 0.{i}.{item.ItemVNum}.{item.Rare}.{item.Upgrade}.{item.Price}.";
                     }
                     else
                     {
-                        packetToSend += $" {(byte)(item.ItemInstance as ItemInstance).Item.Type}.{i}.{item.ItemInstance.ItemVNum}.{item.Amount}.{item.Price}.-1.";
+                        packetToSend += $" {(byte)item.Item.Type}.{i}.{item.ItemVNum}.{item.Amount}.{item.Price}.-1.";
                     }
                 }
                 else

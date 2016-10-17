@@ -42,7 +42,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id.Equals(id));
+                TEntity entity = context.Set<TEntity>().FirstOrDefault(i => i.Id == id);
                 if (entity != null)
                 {
                     context.Set<TEntity>().Remove(entity);

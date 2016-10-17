@@ -34,11 +34,11 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
-        public ItemInstance(ItemInstanceDTO inventoryItem)
+        public ItemInstance(short vNum, int amount)
         {
-            Id = inventoryItem.Id;
-            Amount = inventoryItem.Amount;
-            ItemVNum = inventoryItem.ItemVNum;
+            ItemVNum = vNum;
+            Amount = amount;
+            Type = Item.Type;
             _random = new Random();
         }
 

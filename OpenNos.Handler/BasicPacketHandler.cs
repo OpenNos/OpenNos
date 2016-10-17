@@ -126,14 +126,14 @@ namespace OpenNos.Handler
                     MailDTO mail = Session.Character.MailList[id];
                     if (packetsplit[2] == "4")
                     {
-                        Inventory newInv = Session.Character.InventoryList.AddNewItemToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
+                        ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
 
                         if (newInv != null)
                         {
-                            newInv.ItemInstance.Upgrade = mail.AttachmentUpgrade;
-                            newInv.ItemInstance.Rare = (sbyte)mail.AttachmentRarity;
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newInv.ItemInstance.Rare, newInv.ItemInstance.Design, newInv.ItemInstance.Upgrade, 0));
-                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {mail.AttachmentAmount}", 12));
+                            newInv.Upgrade = mail.AttachmentUpgrade;
+                            newInv.Rare = (sbyte)mail.AttachmentRarity;
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
 
                             if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                             {
@@ -496,7 +496,7 @@ namespace OpenNos.Handler
                 // Speaker
                 if (guriPacket[3] == "3")
                 {
-                    if (Session.Character.InventoryList.CountItem(speakerVNum) > 0)
+                    if (Session.Character.Inventory.CountItem(speakerVNum) > 0)
                     {
                         string message = String.Empty;
                         message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
@@ -506,7 +506,7 @@ namespace OpenNos.Handler
                         }
                         message.Trim();
 
-                        Session.Character.InventoryList.RemoveItemAmount(speakerVNum);
+                        Session.Character.Inventory.RemoveItemAmount(speakerVNum);
                         ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }
                 }
@@ -518,7 +518,7 @@ namespace OpenNos.Handler
                 int vnumToUse = -1;
                 foreach (int vnum in listPotionResetVNums)
                 {
-                    if (Session.Character.InventoryList.CountItem(vnum) > 0)
+                    if (Session.Character.Inventory.CountItem(vnum) > 0)
                     {
                         vnumToUse = vnum;
                     }
@@ -527,7 +527,7 @@ namespace OpenNos.Handler
                 {
                     if (Session.Character.UseSp)
                     {
-                        SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
+                        SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                         if (specialistInstance != null)
                         {
                             specialistInstance.SlDamage = 0;
@@ -552,9 +552,9 @@ namespace OpenNos.Handler
                             specialistInstance.HP = 0;
                             specialistInstance.MP = 0;
 
-                            Session.Character.InventoryList.RemoveItemAmount(vnumToUse);
-                            Session.Character.EquipmentList.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Equipment);
-                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Equipment, (byte)EquipmentType.Sp);
+                            Session.Character.Inventory.RemoveItemAmount(vnumToUse);
+                            Session.Character.Inventory.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Wear);
+                            Session.Character.Inventory.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Wear, (byte)EquipmentType.Sp);
                             Session.SendPacket(Session.Character.GenerateCond());
                             Session.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
                             Session.SendPacket(Session.Character.GenerateLev());
@@ -597,7 +597,7 @@ namespace OpenNos.Handler
                         {
                             if (mapobject.Drops.Any(s => s.MonsterVNum != null))
                             {
-                                if (mapobject.VNumRequired > 10 && Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
+                                if (mapobject.VNumRequired > 10 && Session.Character.Inventory.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
                                 {
                                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
                                     return;
@@ -609,7 +609,7 @@ namespace OpenNos.Handler
                             if (randomAmount <= ((double)dropChance * RateDrop) / 5000.000)
                             {
                                 short vnum = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum;
-                                Session.Character.InventoryList.AddNewItemToInventory(vnum);
+                                Session.Character.Inventory.AddNewToInventory(vnum);
                                 Session.Character.LastMapObject = DateTime.Now;
                                 Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 0));
                                 Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 11));
@@ -663,7 +663,7 @@ namespace OpenNos.Handler
         [Packet("preq")]
         public void Preq(string packet)
         {
-            Logger.Debug(packet, Session.SessionId);
+             Logger.Debug(packet, Session.SessionId);
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             if (!(timeSpanSinceLastPortal >= 4))
@@ -767,7 +767,7 @@ namespace OpenNos.Handler
                 {
                     case 0:
                         int seed = 1012;
-                        if (Session.Character.InventoryList.CountItem(seed) < 10 && Session.Character.Level > 20)
+                        if (Session.Character.Inventory.CountItem(seed) < 10 && Session.Character.Level > 20)
                         {
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POWER_SEED"), 0));
                             ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
@@ -778,7 +778,7 @@ namespace OpenNos.Handler
                             if (Session.Character.Level > 20)
                             {
                                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
-                                Session.Character.InventoryList.RemoveItemAmount(seed, 10);
+                                Session.Character.Inventory.RemoveItemAmount(seed, 10);
                                 Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
                                 Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
                             }
@@ -842,7 +842,7 @@ namespace OpenNos.Handler
                     CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(packetsplit[7]);
                     if (Receiver != null)
                     {
-                        WearableInstance headWearable = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
+                        WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                         byte color = (headWearable != null && headWearable.Item.IsColored) ? headWearable.Design : Session.Character.HairColor;
                         MailDTO mailcopy = new MailDTO()
                         {

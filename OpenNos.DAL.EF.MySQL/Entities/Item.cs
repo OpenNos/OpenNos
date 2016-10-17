@@ -58,7 +58,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte DarkElement { get; set; }
 
-        public byte DarkResistance { get; set; }
+        public short DarkResistance { get; set; }
 
         public short DefenceDodge { get; set; }
 
@@ -67,6 +67,8 @@ namespace OpenNos.DAL.EF.MySQL
         public short DistanceDefenceDodge { get; set; }
 
         public virtual ICollection<Drop> Drop { get; set; }
+
+        public virtual ICollection<ItemInstance> ItemInstances { get; set; }
 
         public short Effect { get; set; }
 
@@ -80,7 +82,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte FireElement { get; set; }
 
-        public byte FireResistance { get; set; }
+        public short FireResistance { get; set; }
 
         public short HitRate { get; set; }
 
@@ -118,7 +120,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte LightElement { get; set; }
 
-        public byte LightResistance { get; set; }
+        public short LightResistance { get; set; }
 
         public short MagicDefence { get; set; }
 
@@ -181,7 +183,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte WaterElement { get; set; }
 
-        public byte WaterResistance { get; set; }
+        public short WaterResistance { get; set; }
 
         #endregion
     }

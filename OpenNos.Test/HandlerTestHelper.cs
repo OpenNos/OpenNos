@@ -42,10 +42,10 @@ namespace OpenNos.Test
             ServiceFactory.Instance.Initialize();
 
             // register mappings for items
-            DAOFactory.InventoryDAO.RegisterMapping(typeof(SpecialistInstance));
-            DAOFactory.InventoryDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.InventoryDAO.RegisterMapping(typeof(UsableInstance));
-            DAOFactory.InventoryDAO.InitializeMapper(typeof(ItemInstance));
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(UsableInstance));
+            DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
 
             // initialize PacketSerialization
             PacketFactory.Initialize<WalkPacket>();

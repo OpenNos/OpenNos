@@ -46,6 +46,11 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
+        public WearableInstance(short vNum, int amount) : base(vNum, amount)
+        {
+            _random = new Random();
+        }
+
         #endregion
 
         #region Properties
@@ -199,6 +204,12 @@ namespace OpenNos.GameObject
                     break;
             }
 
+            if (this.Rare == 0 && this.Item.ItemType == (byte)ItemType.Shell)
+            {
+                this.Rare = 1;
+                return;
+            }
+
             int rnd = _random.Next(0, 100);
             if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
             {
@@ -264,7 +275,7 @@ namespace OpenNos.GameObject
                 this.Rare = 1;
                 SetRarityPoint();
             }
-            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
+            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && this.Item.ItemType != (byte)ItemType.Shell)
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -273,7 +284,7 @@ namespace OpenNos.GameObject
                 this.Rare = 0;
                 SetRarityPoint();
             }
-            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
+            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && this.Item.ItemType != (byte)ItemType.Shell)
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -282,7 +293,7 @@ namespace OpenNos.GameObject
                 this.Rare = -1;
                 SetRarityPoint();
             }
-            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
+            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && this.Item.ItemType != (byte)ItemType.Shell)
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -290,10 +301,6 @@ namespace OpenNos.GameObject
                 }
                 this.Rare = -2;
                 SetRarityPoint();
-            }
-            else if (this.Rare == 0 && this.Item.ItemType == (byte)ItemType.Shell)
-            {
-                this.Rare = 1;
             }
             else
             {
@@ -317,10 +324,10 @@ namespace OpenNos.GameObject
             // don't place under else.
             if (mode != RarifyMode.Drop)
             {
-                Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
+                ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(this.Id);
                 if (inventory != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.ItemInstance.Rare, 0, inventory.ItemInstance.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.Rare, 0, inventory.Upgrade, 0));
                 }
             }
         }
@@ -512,19 +519,19 @@ namespace OpenNos.GameObject
                         }
                         if (this.Upgrade < 5)
                         {
-                            if (Session.Character.InventoryList.CountItem(gemVnum) < gem[this.Upgrade])
+                            if (Session.Character.Inventory.CountItem(gemVnum) < gem[this.Upgrade])
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (gem[this.Upgrade]));
+                            Session.Character.Inventory.RemoveItemAmount(gemVnum, (gem[this.Upgrade]));
                         }
                         else
                         {
-                            if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[this.Upgrade])
+                            if (Session.Character.Inventory.CountItem(gemFullVnum) < gem[this.Upgrade])
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (gem[this.Upgrade]));
+                            Session.Character.Inventory.RemoveItemAmount(gemFullVnum, (gem[this.Upgrade]));
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand)
                         {
@@ -536,8 +543,8 @@ namespace OpenNos.GameObject
                         Session.SendPacket(Session.Character.GenerateGold());
                         break;
                 }
-                WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
-                Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
+                WearableInstance wearable = Session.Character.Inventory.LoadByItemInstance<WearableInstance>(this.Id);
+                ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(this.Id);
 
                 int rnd = _random.Next(100);
                 if (rnd <= upfix[this.Upgrade])

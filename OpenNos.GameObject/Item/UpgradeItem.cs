@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false, string[] packetsplit = null)
+        public override void Use(ClientSession Session, ref ItemInstance Inv, bool DelayUsed = false, string[] packetsplit = null)
         {
             if (EffectValue != 0)
             {
@@ -49,10 +49,10 @@ namespace OpenNos.GameObject
                         if (DelayUsed)
                         {                            
                             bool isUsed = false;
-                            switch (Inv.ItemInstance.ItemVNum)
+                            switch (Inv.ItemVNum)
                             {
                                 case 1219:
-                                    WearableInstance equip = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
+                                    WearableInstance equip = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
                                     if (equip != null && equip.IsFixed)
                                     {
                                         equip.IsFixed = false;
@@ -63,7 +63,7 @@ namespace OpenNos.GameObject
                                     }
                                     break;
                                 case 1365:
-                                    SpecialistInstance specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
+                                    SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
                                     if (specialist != null && specialist.Rare == -2)
                                     {
                                         specialist.Rare = 0;
@@ -83,14 +83,14 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                Inv.ItemInstance.Amount--;
-                                if (Inv.ItemInstance.Amount > 0)
+                                Inv.Amount--;
+                                if (Inv.Amount > 0)
                                 {
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                                 }
                                 else
                                 {
-                                    Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                                    Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
                                     Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                                 }
                             }
