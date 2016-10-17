@@ -70,7 +70,7 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        IList<Tuple<short, InventoryType>> IItemInstanceDAO.LoadSlotAndTypeByCharacterId(long characterId)
+        IList<Guid> IItemInstanceDAO.LoadSlotAndTypeByCharacterId(long characterId)
         {
             throw new NotImplementedException();
         }

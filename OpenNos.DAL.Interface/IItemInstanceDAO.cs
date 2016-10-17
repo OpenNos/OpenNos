@@ -34,7 +34,7 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<ItemInstanceDTO> LoadByType(long characterId, InventoryType type);
 
-        IList<Tuple<short, InventoryType>> LoadSlotAndTypeByCharacterId(long characterId);
+        IList<Guid> LoadSlotAndTypeByCharacterId(long characterId);
 
         void RegisterMapping(Type gameObjectType);
 

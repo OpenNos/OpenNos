@@ -124,14 +124,13 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IList<Tuple<short, InventoryType>> LoadSlotAndTypeByCharacterId(long characterId)
+        public IList<Guid> LoadSlotAndTypeByCharacterId(long characterId)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)).Select(c => new { c.Slot, c.Type })
-                        .AsEnumerable().Select(i => new Tuple<short, InventoryType>(i.Slot, (InventoryType)i.Type)).ToList();
+                    return context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)).Select(i => i.Id).ToList();
                 }
             }
             catch (Exception e)
@@ -159,10 +158,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             try
             {
-                short slot = itemInstance.Slot;
-                byte type = (byte)itemInstance.Type;
-                long characterId = itemInstance.CharacterId;
-                var entity = context.ItemInstance.FirstOrDefault(c => c.CharacterId == characterId && c.Slot == slot && c.Type == type);
+                var entity = context.ItemInstance.FirstOrDefault(c => c.Id == itemInstance.Id);
 
                 if (entity == null)
                 {

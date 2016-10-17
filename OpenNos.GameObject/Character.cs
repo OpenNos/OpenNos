@@ -2104,15 +2104,12 @@ namespace OpenNos.GameObject
                 // load and concat inventory with equipment
                 Inventory copiedInventoryList = Inventory.DeepCopy();
                 IEnumerable<ItemInstanceDTO> inventories = copiedInventoryList.Concat(Inventory);
-                IList<Tuple<short, InventoryType>> currentlySavedInventories = DAOFactory.ItemInstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
+                IList<Guid> currentlySavedInventoryIds = DAOFactory.ItemInstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
 
                 // remove all which are saved but not in our current enumerable
-                foreach (var inventoryToDelete in currentlySavedInventories)
+                foreach (var inventoryToDeleteId in currentlySavedInventoryIds.Except(inventories.Select(i => i.Id)))
                 {
-                    if (!inventories.Any(i => i.Slot == inventoryToDelete.Item1 && i.Type == inventoryToDelete.Item2))
-                    {
-                        DAOFactory.ItemInstanceDAO.DeleteFromSlotAndType(CharacterId, inventoryToDelete.Item1, inventoryToDelete.Item2);
-                    }
+                    DAOFactory.ItemInstanceDAO.Delete(inventoryToDeleteId);
                 }
 
                 // create or update all which are new or do still exist
