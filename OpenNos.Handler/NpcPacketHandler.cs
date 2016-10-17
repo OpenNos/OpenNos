@@ -82,7 +82,7 @@ namespace OpenNos.Handler
             {
                 // User shop
                 KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
-                PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.Slot.Equals(slot));
+                PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
                 if (item == null || amount <= 0)
                 {
                     return;
@@ -367,6 +367,8 @@ namespace OpenNos.Handler
 
                     if (packetsplit.Length > 82)
                     {
+                        short shopSlot = 0;
+
                         for (short j = 3, i = 0; j < 82; j += 4, i++)
                         {
                             Enum.TryParse<InventoryType>(packetsplit[j], out type[i]);
@@ -395,6 +397,7 @@ namespace OpenNos.Handler
                                 PersonalShopItem personalshopitem = new PersonalShopItem()
                                 {
                                     Slot = slot[i],
+                                    ShopSlot = shopSlot,
                                     Type = type[i],
                                     Price = gold[i],
                                     Id = inv.Id,
@@ -403,6 +406,7 @@ namespace OpenNos.Handler
                                     ItemVNum = inv.ItemVNum
                                 };
                                 myShop.Items.Add(personalshopitem);
+                                shopSlot++;
                             }
                         }
                     }

@@ -20,6 +20,8 @@ namespace OpenNos.GameObject
 
         public long Price { get; set; }
 
+        public short ShopSlot { get; set; }
+
         #endregion
     }
 }
