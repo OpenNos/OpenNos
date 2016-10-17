@@ -110,23 +110,23 @@ namespace OpenNos.GameObject
         /// <summary>
         /// Add iteminstance to inventory with specified slot and type, iteminstance will be overridden.
         /// </summary>
-        /// <param name="iteminstance"></param>
+        /// <param name="itemInstance"></param>
         /// <param name="type"></param>
         /// <param name="slot"></param>
         /// <returns></returns>
-        public ItemInstance AddToInventoryWithSlotAndType(ItemInstance iteminstance, InventoryType type, short slot)
+        public ItemInstance AddToInventoryWithSlotAndType(ItemInstance itemInstance, InventoryType type, short slot)
         {
-            Logger.Debug($"Slot: {slot} Type: {type} VNUM: {iteminstance.ItemVNum}", Owner.Session.SessionId);
-            iteminstance.Slot = slot;
-            iteminstance.Type = type;
-            iteminstance.CharacterId = Owner.Session.Character.CharacterId;
+            Logger.Debug($"Slot: {slot} Type: {type} VNUM: {itemInstance.ItemVNum}", Owner.Session.SessionId);
+            itemInstance.Slot = slot;
+            itemInstance.Type = type;
+            itemInstance.CharacterId = Owner.Session.Character.CharacterId;
 
-            if (this.Any(i => i.Id == iteminstance.Id))
+            if (this.Any(i => i.Id == itemInstance.Id))
             {
                 throw new InvalidOperationException("Cannot add the same ItemInstance twice to inventory.");
             }
 
-            string inventoryPacket = Owner.Session.Character.GenerateInventoryAdd(iteminstance.ItemVNum, iteminstance.Amount, type, slot, iteminstance.Rare, iteminstance.Design, 0, 0);
+            string inventoryPacket = Owner.Session.Character.GenerateInventoryAdd(itemInstance.ItemVNum, itemInstance.Amount, type, slot, itemInstance.Rare, itemInstance.Design, 0, 0);
             if (!String.IsNullOrEmpty(inventoryPacket))
             {
                 Owner.Session.SendPacket(inventoryPacket);
@@ -136,9 +136,22 @@ namespace OpenNos.GameObject
             {
                 return null;
             }
+            CheckItemInstanceType(itemInstance);
+            Add(itemInstance);
+            return itemInstance;
+        }
 
-            Add(iteminstance);
-            return iteminstance;
+        private void CheckItemInstanceType(ItemInstance itemInstance)
+        {
+            if(itemInstance.Type == InventoryType.Specialist && !(itemInstance is SpecialistInstance))
+            {
+                throw new Exception("Cannot add an item of type Specialist without beeing a SpecialistInstance.");
+            }
+
+            if((itemInstance.Type == InventoryType.Equipment || itemInstance.Type == InventoryType.Wear) && !(itemInstance is WearableInstance))
+            {
+                throw new Exception("Cannot add an item of type Equipment or Wear without beeing a WearableInstance.");
+            }
         }
 
         public int CountItem(int v)
@@ -329,7 +342,7 @@ namespace OpenNos.GameObject
                 Item iteminfo = inv.Item;
                 ItemInstance invdest = LoadBySlotAndType(destslot, desttype);
 
-                if (invdest == null && ((desttype == InventoryType.Sp && iteminfo.ItemType == 4) || (desttype == InventoryType.Costume && iteminfo.ItemType == 2) || desttype == 0))
+                if (invdest == null && ((desttype == InventoryType.Specialist && iteminfo.ItemType == 4) || (desttype == InventoryType.Costume && iteminfo.ItemType == 2) || desttype == 0))
                 {
                     inv.Slot = destslot;
                     inv.Type = desttype;
@@ -517,8 +530,8 @@ namespace OpenNos.GameObject
                     templist = this.Where(s => s.Type == InventoryType.Costume).OrderBy(s => s.ItemVNum).ToList();
                     break;
 
-                case InventoryType.Sp:
-                    templist = this.Where(s => s.Type == InventoryType.Sp).OrderBy(s => ServerManager.GetItem(s.ItemVNum).LevelJobMinimum).ToList();
+                case InventoryType.Specialist:
+                    templist = this.Where(s => s.Type == InventoryType.Specialist).OrderBy(s => ServerManager.GetItem(s.ItemVNum).LevelJobMinimum).ToList();
                     break;
             }
             short i = 0;

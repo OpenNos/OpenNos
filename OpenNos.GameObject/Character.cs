@@ -524,7 +524,7 @@ namespace OpenNos.GameObject
         }
 
         public void DeleteItem(InventoryType type, short slot)
-        {
+        { 
             Inventory.DeleteFromSlotAndType(slot, type);
             Session.SendPacket(GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
         }
@@ -922,7 +922,7 @@ namespace OpenNos.GameObject
                 case InventoryType.Miniland:
                     return $"ivn 3 {slot}.{vnum}.{amount}";
 
-                case InventoryType.Sp:
+                case InventoryType.Specialist:
                     return $"ivn 6 {slot}.{vnum}.{rare}.{upgrade}.{upgrade2}";
 
                 case InventoryType.Costume:
@@ -1231,7 +1231,7 @@ namespace OpenNos.GameObject
                         inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
                         break;
 
-                    case InventoryType.Sp:
+                    case InventoryType.Specialist:
                         var specialist = inv as SpecialistInstance;
                         inv6 += $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
                         break;

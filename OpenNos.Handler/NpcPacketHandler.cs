@@ -103,10 +103,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                ItemInstance item2 = item.DeepCopy();
-                item2.Amount = amount;
-                item2.Id = Guid.NewGuid(); // this is necessary due the deepcopy would cause duplicate GUID
-                ItemInstance inv = Session.Character.Inventory.AddToInventory(item2);
+                ItemInstance inv = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount);
 
                 if (inv != null)
                 {

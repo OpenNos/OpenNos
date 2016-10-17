@@ -39,6 +39,7 @@ namespace OpenNos.GameObject
             ItemVNum = vNum;
             Amount = amount;
             Type = Item.Type;
+            _random = new Random();
         }
 
         #endregion

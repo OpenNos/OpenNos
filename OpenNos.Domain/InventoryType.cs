@@ -20,7 +20,7 @@ namespace OpenNos.Domain
         Main = 1,
         Etc = 2,
         Miniland = 3,
-        Sp = 6,
+        Specialist = 6,
         Costume = 7,
         Wear = 8
     }

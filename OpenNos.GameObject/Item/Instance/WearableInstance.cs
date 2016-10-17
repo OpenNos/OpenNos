@@ -46,6 +46,11 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
+        public WearableInstance(short vNum, int amount) : base(vNum, amount)
+        {
+            _random = new Random();
+        }
+
         #endregion
 
         #region Properties

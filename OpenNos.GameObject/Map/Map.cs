@@ -252,7 +252,13 @@ namespace OpenNos.GameObject
                     }
                 }
 
+                //TODO Instantiate as concrete ItemInstance
                 ItemInstance newInstance = new ItemInstance(drop.ItemVNum, drop.Amount);
+
+                if(newInstance.Type == InventoryType.Equipment)
+                {
+                    newInstance = new WearableInstance(drop.ItemVNum, drop.Amount);
+                }
 
                  droppedItem = new MapItem(localMapX, localMapY)
                 {

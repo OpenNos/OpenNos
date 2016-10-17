@@ -201,11 +201,11 @@ namespace OpenNos.Handler
                         break;
 
                     case 7:
-                        inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Sp); // Partner inv
+                        inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Specialist); // Partner inv
                         break;
 
                     case 10:
-                        inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Sp);
+                        inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Specialist);
                         break;
 
                     case 11:
@@ -622,7 +622,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.Character.DeleteItem((InventoryType)type, slot);
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, (InventoryType)type, slot, 0, 0, 0, 0));
                 }
             }
         }
@@ -757,7 +757,7 @@ namespace OpenNos.Handler
                 {
                     for (short x = 0; x < 44; x++)
                     {
-                        type = (i == 0) ? InventoryType.Sp : InventoryType.Costume;
+                        type = (i == 0) ? InventoryType.Specialist : InventoryType.Costume;
                         if (Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(x, type) == null)
                         {
                             if (Session.Character.Inventory.LoadBySlotAndType<ItemInstance>((short)(x + 1), type) != null)
@@ -772,7 +772,7 @@ namespace OpenNos.Handler
                             }
                         }
                     }
-                    Session.Character.Inventory.Reorder(Session, type = (i == 0) ? InventoryType.Sp : InventoryType.Costume);
+                    Session.Character.Inventory.Reorder(Session, type = (i == 0) ? InventoryType.Specialist : InventoryType.Costume);
                 }
             }
         }
