@@ -198,6 +198,12 @@ namespace OpenNos.GameObject
                     break;
             }
 
+            if (this.Rare == 0 && this.Item.ItemType == (byte)ItemType.Shell)
+            {
+                this.Rare = 1;
+                return;
+            }
+
             int rnd = _random.Next(0, 100);
             if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
             {
@@ -263,7 +269,7 @@ namespace OpenNos.GameObject
                 this.Rare = 1;
                 SetRarityPoint();
             }
-            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
+            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && this.Item.ItemType != (byte)ItemType.Shell)
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -272,7 +278,7 @@ namespace OpenNos.GameObject
                 this.Rare = 0;
                 SetRarityPoint();
             }
-            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
+            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && this.Item.ItemType != (byte)ItemType.Shell)
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -281,7 +287,7 @@ namespace OpenNos.GameObject
                 this.Rare = -1;
                 SetRarityPoint();
             }
-            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
+            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && this.Item.ItemType != (byte)ItemType.Shell)
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -289,10 +295,6 @@ namespace OpenNos.GameObject
                 }
                 this.Rare = -2;
                 SetRarityPoint();
-            }
-            else if (this.Rare == 0 && this.Item.ItemType == (byte)ItemType.Shell)
-            {
-                this.Rare = 1;
             }
             else
             {
