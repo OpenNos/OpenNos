@@ -185,7 +185,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short fairylevel;
-            WearableInstance fairy = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, InventoryType.Wear);
+            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, InventoryType.Wear);
             if (fairy != null && packetsplit.Length > 2)
             {
                 if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= Int16.MaxValue)
@@ -320,7 +320,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte splevel;
-            SpecialistInstance sp = Session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+            SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
             if (sp != null && packetsplit.Length > 2 && Session.Character.UseSp)
             {
                 if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
@@ -1645,7 +1645,7 @@ namespace OpenNos.Handler
             {
                 if (Byte.TryParse(packetsplit[2], out wigcolor))
                 {
-                    WearableInstance wig = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+                    WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                     if (wig != null)
                     {
                         wig.Design = wigcolor;

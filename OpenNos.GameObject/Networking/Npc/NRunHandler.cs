@@ -45,23 +45,23 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (!Session.Character.Equipments.Any())
+                    if (!Session.Character.Inventory.Any())
                     { 
-                        Session.Character.Equipments.AddNewToInventory((short)(81 + type * 13));
+                        Session.Character.Inventory.AddNewToInventory((short)(81 + type * 13));
                         switch (type)
                         {
                             case 1:
-                                Session.Character.Equipments.AddNewToInventory(68);
+                                Session.Character.Inventory.AddNewToInventory(68);
                                 Session.Character.Inventory.AddNewToInventory(2082, 10);
                                 break;
 
                             case 2:
-                                Session.Character.Equipments.AddNewToInventory(78);
+                                Session.Character.Inventory.AddNewToInventory(78);
                                 Session.Character.Inventory.AddNewToInventory(2083, 10);
                                 break;
 
                             case 3:
-                                Session.Character.Equipments.AddNewToInventory(86);
+                                Session.Character.Inventory.AddNewToInventory(86);
                                 break;
                         }
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());

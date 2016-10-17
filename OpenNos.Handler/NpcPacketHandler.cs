@@ -380,7 +380,7 @@ namespace OpenNos.Handler
                             }
                             if (qty[i] > 0)
                             {
-                                ItemInstance inv = Session.Character.Inventory.GetItemInstanceBySlotAndType(slot[i], type[i]);
+                                ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot[i], type[i]);
                                 if (inv.Amount < qty[i])
                                 {
                                     return;
@@ -606,7 +606,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                ItemInstance inv = Session.Character.Inventory.GetItemInstanceBySlotAndType(slot, type);
+                ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot, type);
                 if (inv == null || amount > inv.Amount)
                 {
                     return;

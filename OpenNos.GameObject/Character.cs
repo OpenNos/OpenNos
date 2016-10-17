@@ -138,19 +138,6 @@ namespace OpenNos.GameObject
 
         public int ElementRate { get; set; }
 
-        public Inventory Equipments
-        {
-            get
-            {
-                return _equipmentlist;
-            }
-
-            set
-            {
-                _equipmentlist = value;
-            }
-        }
-
         public ExchangeInfo ExchangeInfo { get; set; }
 
         public int FireResistance { get; set; }
@@ -544,7 +531,7 @@ namespace OpenNos.GameObject
 
         public void DeleteItemByItemInstanceId(Guid id)
         {
-            Tuple<short, InventoryType> result = Inventory.DeleteByInventoryItemId(id);
+            Tuple<short, InventoryType> result = Inventory.DeleteById(id);
             Session.SendPacket(GenerateInventoryAdd(-1, 0, result.Item2, result.Item1, 0, 0, 0, 0));
         }
 
@@ -557,20 +544,20 @@ namespace OpenNos.GameObject
                 {
                     if (((ItemInstance)item).IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                     {
-                        Inventory.DeleteByInventoryItemId(item.Id);
+                        Inventory.DeleteById(item.Id);
                         Session.SendPacket(GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0, 0));
                         Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                     }
                 }
             }
-            for (int i = Equipments.Count() - 1; i >= 0; i--)
+            for (int i = Inventory.Count() - 1; i >= 0; i--)
             {
-                ItemInstance item = Equipments[i];
+                ItemInstance item = Inventory[i];
                 if (item != null)
                 {
                     if (((ItemInstance)item).IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                     {
-                        Equipments.DeleteByInventoryItemId(item.Id);
+                        Inventory.DeleteById(item.Id);
                         Session.SendPacket(GenerateEquipment());
                         Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                     }
@@ -717,7 +704,7 @@ namespace OpenNos.GameObject
                             return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.MaxCellonLvl} {iteminfo.MaxCellon} {item.Cellon} {iteminfo.Price}";
                     }
                 case (byte)ItemType.Box:
-                    SpecialistInstance specialist = Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                    SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
 
                     // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl
                     // 5=fairy pearl
@@ -739,7 +726,7 @@ namespace OpenNos.GameObject
         public string GenerateEq()
         {
             int color = HairColor;
-            WearableInstance head = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+            WearableInstance head = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
 
             if (head != null && head.Item.IsColored)
             {
@@ -754,7 +741,7 @@ namespace OpenNos.GameObject
             string[] invarray = new string[16];
             for (short i = 0; i < 16; i++)
             {
-                ItemInstance inv = Equipments.GetItemInstanceBySlotAndType(i, InventoryType.Wear);
+                ItemInstance inv = Inventory.LoadBySlotAndType(i, InventoryType.Wear);
                 if (inv != null)
                 {
                     invarray[i] = inv.ItemVNum.ToString();
@@ -776,7 +763,7 @@ namespace OpenNos.GameObject
             byte armorUpgrade = 0;
             for (short i = 0; i < 15; i++)
             {
-                WearableInstance wearable = Equipments.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
+                WearableInstance wearable = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
                 if (wearable != null)
                 {
                     if (wearable.Item.EquipmentSlot == (byte)EquipmentType.Armor)
@@ -804,10 +791,10 @@ namespace OpenNos.GameObject
 
             for (short i = 0; i < 16; i++)
             {
-                ItemInstance wearable = Equipments.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
+                ItemInstance wearable = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
                 if (wearable == null)
                 {
-                    wearable = Equipments.LoadBySlotAndType<SpecialistInstance>(i, InventoryType.Wear);
+                    wearable = Inventory.LoadBySlotAndType<SpecialistInstance>(i, InventoryType.Wear);
                 }
                 if (wearable != null)
                 {
@@ -893,12 +880,12 @@ namespace OpenNos.GameObject
         public string GenerateIn()
         {
             int color = HairColor;
-            WearableInstance headWearable = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+            WearableInstance headWearable = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
             if (headWearable != null && headWearable.Item.IsColored)
             {
                 color = headWearable.Design;
             }
-            ItemInstance fairy = Equipments.GetItemInstanceBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
+            ItemInstance fairy = Inventory.LoadBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
 
             return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? fairy.Item.Element : 0)} 0 {(fairy != null ? fairy.Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
@@ -951,7 +938,7 @@ namespace OpenNos.GameObject
 
         public string GenerateLev()
         {
-            SpecialistInstance specialist = Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+            SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
             return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.XP)} {XPLoad()} {(!UseSp || specialist == null ? JobXPLoad() : SPXPLoad())} {Reput} {GetCP()} {HeroXp} {HeroLevel} {HeroXPLoad()}";
         }
 
@@ -994,7 +981,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePairy()
         {
-            WearableInstance fairy = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+            WearableInstance fairy = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             ElementRate = 0;
             Element = 0;
             if (fairy != null)
@@ -1092,10 +1079,10 @@ namespace OpenNos.GameObject
 
         public string GenerateReqInfo()
         {
-            WearableInstance fairy = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
-            WearableInstance armor = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
-            WearableInstance weapon2 = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
-            WearableInstance weapon = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
+            WearableInstance fairy = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+            WearableInstance armor = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
+            WearableInstance weapon2 = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
+            WearableInstance weapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
 
             // tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph
             // talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary
@@ -1337,7 +1324,7 @@ namespace OpenNos.GameObject
             MagicalDefence = CharacterHelper.MagicalDefence(Class, Level);
             if (UseSp)
             {
-                SpecialistInstance specialist = Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (specialist != null)
                 {
                     int point = CharacterHelper.SlPoint(specialist.SlDamage, 0);
@@ -1425,7 +1412,7 @@ namespace OpenNos.GameObject
             }
 
             // TODO: add base stats
-            WearableInstance weapon = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
+            WearableInstance weapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
             if (weapon != null)
             {
                 weaponUpgrade = weapon.Upgrade;
@@ -1438,7 +1425,7 @@ namespace OpenNos.GameObject
                 // maxhp-mp
             }
 
-            WearableInstance weapon2 = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
+            WearableInstance weapon2 = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
             if (weapon2 != null)
             {
                 secondaryUpgrade = weapon2.Upgrade;
@@ -1451,7 +1438,7 @@ namespace OpenNos.GameObject
                 // maxhp-mp
             }
 
-            WearableInstance armor = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
+            WearableInstance armor = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
             if (armor != null)
             {
                 armorUpgrade = armor.Upgrade;
@@ -1465,7 +1452,7 @@ namespace OpenNos.GameObject
             // handle specialist
             if (UseSp)
             {
-                SpecialistInstance specialist = Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (specialist != null)
                 {
                     FireResistance += specialist.SpFire;
@@ -1483,7 +1470,7 @@ namespace OpenNos.GameObject
             WearableInstance item = null;
             for (short i = 1; i < 14; i++)
             {
-                item = Equipments.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
+                item = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
 
                 if (item != null)
                 {
@@ -1543,7 +1530,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(GenerateEff(5));
             }
 
-            SpecialistInstance specialist = Equipments.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
+            SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
 
             if (Level < 99)
             {
@@ -1585,7 +1572,7 @@ namespace OpenNos.GameObject
                 ServerManager.Instance.UpdateGroup(CharacterId);
             }
 
-            WearableInstance fairy = Equipments.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, InventoryType.Wear);
+            WearableInstance fairy = Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, InventoryType.Wear);
             if (fairy != null)
             {
                 if ((fairy.ElementRate + fairy.Item.ElementRate) < fairy.Item.MaxElementRate && Level <= monsterinfo.Level + 15 && Level >= monsterinfo.Level - 15)
@@ -1823,7 +1810,7 @@ namespace OpenNos.GameObject
             int hp = 0;
             if (UseSp)
             {
-                SpecialistInstance inventory = Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                SpecialistInstance inventory = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (inventory != null)
                 {
                     int point = CharacterHelper.SlPoint(inventory.SlHP, 3);
@@ -1898,7 +1885,7 @@ namespace OpenNos.GameObject
 
         public void LearnSPSkill()
         {
-            SpecialistInstance specialist = Equipments.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
+            SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
             byte SkillSpCount = (byte)SkillsSp.Count;
             SkillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.GetAllSkill())
@@ -1926,7 +1913,7 @@ namespace OpenNos.GameObject
             IEnumerable<ItemInstanceDTO> inventories = DAOFactory.ItemInstanceDAO.LoadByCharacterId(CharacterId).ToList();
 
             Inventory = new Inventory(this);
-            Equipments = new Inventory(this);
+            Inventory = new Inventory(this);
             foreach (ItemInstanceDTO inventory in inventories)
             {
                 inventory.CharacterId = CharacterId;
@@ -1937,7 +1924,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    Equipments.Add((ItemInstance)inventory);
+                    Inventory.Add((ItemInstance)inventory);
                 }
             }
         }
@@ -1984,7 +1971,7 @@ namespace OpenNos.GameObject
 
                 if (UseSp)
                 {
-                    SpecialistInstance specialist = Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                    SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                     if (specialist != null)
                     {
                         Speed += specialist.Item.Speed;
@@ -2005,7 +1992,7 @@ namespace OpenNos.GameObject
             double multiplicator = 1.0;
             if (UseSp)
             {
-                SpecialistInstance inventory = Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                SpecialistInstance inventory = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (inventory != null)
                 {
                     int point = CharacterHelper.SlPoint(inventory.SlHP, 3);
@@ -2070,7 +2057,7 @@ namespace OpenNos.GameObject
 
         public void RemoveVehicle()
         {
-            SpecialistInstance sp = Session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+            SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
             IsVehicled = false;
             LoadSpeed();
             if (UseSp)
@@ -2116,7 +2103,7 @@ namespace OpenNos.GameObject
 
                 // load and concat inventory with equipment
                 Inventory copiedInventoryList = Inventory.DeepCopy();
-                IEnumerable<ItemInstanceDTO> inventories = copiedInventoryList.Concat(Equipments);
+                IEnumerable<ItemInstanceDTO> inventories = copiedInventoryList.Concat(Inventory);
                 IList<Tuple<short, InventoryType>> currentlySavedInventories = DAOFactory.ItemInstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
 
                 // remove all which are saved but not in our current enumerable
@@ -2227,7 +2214,7 @@ namespace OpenNos.GameObject
 
         public double SPXPLoad()
         {
-            SpecialistInstance sp2 = Equipments.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
+            SpecialistInstance sp2 = Inventory.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
 
             return CharacterHelper.SpXPData[sp2.SpLevel - 1];
         }
@@ -2258,7 +2245,7 @@ namespace OpenNos.GameObject
                     case 0:
                         if (ski.Skill.Type == 1)
                         {
-                            WearableInstance inv = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
+                            WearableInstance inv = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
                             if (inv != null)
                             {
                                 if (inv.Ammo > 0)
@@ -2290,7 +2277,7 @@ namespace OpenNos.GameObject
                     case 1:
                         if (ski.Skill.Type == 1)
                         {
-                            WearableInstance inv = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
+                            WearableInstance inv = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
                             if (inv != null)
                             {
                                 if (inv.Ammo > 0)
@@ -2322,7 +2309,7 @@ namespace OpenNos.GameObject
                     case 2:
                         if (ski.Skill.Type == 1)
                         {
-                            WearableInstance inv = Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
+                            WearableInstance inv = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
                             if (inv != null)
                             {
                                 if (inv.Ammo > 0)

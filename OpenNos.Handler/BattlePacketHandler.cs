@@ -488,13 +488,13 @@ namespace OpenNos.Handler
 
             #region Sp
             
-            SpecialistInstance specialistInstance = Session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+            SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
 
             #endregion
 
             #region Get Weapon Stats
 
-            WearableInstance weapon = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
+            WearableInstance weapon = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
             if (weapon != null)
             {
                 mainUpgrade = weapon.Upgrade;
@@ -505,7 +505,7 @@ namespace OpenNos.Handler
                 mainCritHit += weapon.CriticalRate + weapon.Item.CriticalRate;
             }
 
-            WearableInstance weapon2 = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
+            WearableInstance weapon2 = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
             if (weapon2 != null)
             {
                 secUpgrade = weapon2.Upgrade;
