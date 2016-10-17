@@ -616,7 +616,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateShopMemo(2, string.Format(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"))));
                     return;
                 }
-                long price = inv.Item.Type == InventoryType.Wear ? inv.Item.Price / 20 : inv.Item.Price;
+                long price = inv.Item.Type == InventoryType.Equipment ? inv.Item.Price / 20 : inv.Item.Price;
 
                 if (Session.Character.Gold + price * amount > 1000000000)
                 {

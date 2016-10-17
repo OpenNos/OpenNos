@@ -923,7 +923,7 @@ namespace OpenNos.GameObject
             Item item = ServerManager.GetItem(vnum);
             switch (type)
             {
-                case InventoryType.Wear:
+                case InventoryType.Equipment:
                     return $"ivn 0 {slot}.{vnum}.{rare}.{(item != null ? (item.IsColored ? color : upgrade) : upgrade)}.{upgrade2}";
 
                 case InventoryType.Main:
@@ -1219,7 +1219,7 @@ namespace OpenNos.GameObject
             {
                 switch (inv.Type)
                 {
-                    case (byte)InventoryType.Wear:
+                    case (byte)InventoryType.Equipment:
                         if (inv.Item.EquipmentSlot == (byte)EquipmentType.Sp)
                         {
                             var specialistInstance = inv as SpecialistInstance;
@@ -1254,7 +1254,7 @@ namespace OpenNos.GameObject
                         inv7 += $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
                         break;
 
-                    case InventoryType.Equipment:
+                    case InventoryType.Wear:
                         break;
                 }
             }
