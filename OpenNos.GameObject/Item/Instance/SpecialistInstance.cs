@@ -388,14 +388,14 @@ namespace OpenNos.GameObject
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
-                            if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                            if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                            Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
                             Session.SendPacket("shop_end 2");
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(dragonSkinVnum, (soul[this.Upgrade]));
+                        Session.Character.Inventory.RemoveItemAmount(dragonSkinVnum, (soul[this.Upgrade]));
                     }
                 }
                 else
@@ -416,14 +416,14 @@ namespace OpenNos.GameObject
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
-                            if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                            if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                            Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
                             Session.SendPacket("shop_end 2");
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(redSoulVnum, (soul[this.Upgrade]));
+                        Session.Character.Inventory.RemoveItemAmount(redSoulVnum, (soul[this.Upgrade]));
                     }
                     else
                     {
@@ -433,14 +433,14 @@ namespace OpenNos.GameObject
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
-                            if (Session.Character.InventoryList.CountItem(blueScrollVnum) < 1)
+                            if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(blueScrollVnum);
+                            Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
                             Session.SendPacket("shop_end 2");
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(dragonBloodVnum, (soul[this.Upgrade]));
+                        Session.Character.Inventory.RemoveItemAmount(dragonBloodVnum, (soul[this.Upgrade]));
                     }
                 }
                 else
@@ -461,14 +461,14 @@ namespace OpenNos.GameObject
                         }
                         if (protect == UpgradeProtection.Protected && this.Upgrade > 9)
                         {
-                            if (Session.Character.InventoryList.CountItem(redScrollVnum) < 1)
+                            if (Session.Character.Inventory.CountItem(redScrollVnum) < 1)
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(redScrollVnum);
+                            Session.Character.Inventory.RemoveItemAmount(redScrollVnum);
                             Session.SendPacket("shop_end 2");
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(blueSoulVnum, (soul[this.Upgrade]));
+                        Session.Character.Inventory.RemoveItemAmount(blueSoulVnum, (soul[this.Upgrade]));
                     }
                     else
                     {
@@ -478,14 +478,14 @@ namespace OpenNos.GameObject
                         }
                         if (protect == UpgradeProtection.Protected && this.Upgrade > 9)
                         {
-                            if (Session.Character.InventoryList.CountItem(redScrollVnum) < 1)
+                            if (Session.Character.Inventory.CountItem(redScrollVnum) < 1)
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(redScrollVnum);
+                            Session.Character.Inventory.RemoveItemAmount(redScrollVnum);
                             Session.SendPacket("shop_end 2");
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(dragonHeartVnum, (soul[this.Upgrade]));
+                        Session.Character.Inventory.RemoveItemAmount(dragonHeartVnum, (soul[this.Upgrade]));
                     }
                 }
                 else

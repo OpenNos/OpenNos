@@ -168,11 +168,11 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (Session.Character.InventoryList.CountItem(cellaVnum) < cella * reducedpricefactor)
+                    if (Session.Character.Inventory.CountItem(cellaVnum) < cella * reducedpricefactor)
                     {
                         return;
                     }
-                    Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (int)(cella * reducedpricefactor));
+                    Session.Character.Inventory.RemoveItemAmount(cellaVnum, (int)(cella * reducedpricefactor));
                     Session.Character.Gold -= (long)(goldprice * reducedpricefactor);
                     Session.SendPacket(Session.Character.GenerateGold());
                     break;
@@ -184,22 +184,22 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (Session.Character.InventoryList.CountItem(cellaVnum) < cella)
+                    if (Session.Character.Inventory.CountItem(cellaVnum) < cella)
                     {
                         return;
                     }
-                    if (protection == RarifyProtection.Scroll && !isCommand && Session.Character.InventoryList.CountItem(scrollVnum) < 1)
+                    if (protection == RarifyProtection.Scroll && !isCommand && Session.Character.Inventory.CountItem(scrollVnum) < 1)
                     {
                         return;
                     }
 
                     if (protection == RarifyProtection.Scroll && !isCommand)
                     {
-                        Session.Character.InventoryList.RemoveItemAmount(scrollVnum);
+                        Session.Character.Inventory.RemoveItemAmount(scrollVnum);
                         Session.SendPacket("shop_end 2");
                     }
                     Session.Character.Gold -= goldprice;
-                    Session.Character.InventoryList.RemoveItemAmount(cellaVnum, cella);
+                    Session.Character.Inventory.RemoveItemAmount(cellaVnum, cella);
                     Session.SendPacket(Session.Character.GenerateGold());
                     break;
             }
@@ -394,7 +394,7 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                if (Session.Character.InventoryList.CountItem(sandVnum) < sand[this.Upgrade])
+                if (Session.Character.Inventory.CountItem(sandVnum) < sand[this.Upgrade])
                 {
                     return;
                 }
@@ -412,8 +412,8 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                     Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
-                    Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, 1, inventory.Type, inventory.Slot, 0, 0, this.Upgrade, 0));
+                    ItemInstance itemInstnace = Session.Character.Inventory.GetItemInstanceById(this.Id);
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(itemInstnace.ItemVNum, 1, itemInstnace.Type, itemInstnace.Slot, 0, 0, this.Upgrade, 0));
                 }
                 else
                 {
@@ -424,7 +424,7 @@ namespace OpenNos.GameObject
                     Session.Character.DeleteItemByItemInstanceId(this.Id);
                 }
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
-                Session.Character.InventoryList.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
+                Session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
                 Session.Character.Gold -= goldprice[this.Upgrade];
                 Session.SendPacket(Session.Character.GenerateGold());
                 Session.SendPacket("shop_end 1");
@@ -468,44 +468,44 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
-                        if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[this.Upgrade] * reducedpricefactor)
+                        if (Session.Character.Inventory.CountItem(cellaVnum) < cella[this.Upgrade] * reducedpricefactor)
                         {
                             return;
                         }
-                        if (protection == UpgradeProtection.Protected && !isCommand && Session.Character.InventoryList.CountItem(goldScrollVnum) < 1)
+                        if (protection == UpgradeProtection.Protected && !isCommand && Session.Character.Inventory.CountItem(goldScrollVnum) < 1)
                         {
                             return;
                         }
                         if (this.Upgrade <= 5)
                         {
-                            if (Session.Character.InventoryList.CountItem(gemVnum) < gem[this.Upgrade])
+                            if (Session.Character.Inventory.CountItem(gemVnum) < gem[this.Upgrade])
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, gem[this.Upgrade]);
+                            Session.Character.Inventory.RemoveItemAmount(gemVnum, gem[this.Upgrade]);
                         }
                         else
                         {
-                            if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[this.Upgrade])
+                            if (Session.Character.Inventory.CountItem(gemFullVnum) < gem[this.Upgrade])
                             {
                                 return;
                             }
-                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, gem[this.Upgrade]);
+                            Session.Character.Inventory.RemoveItemAmount(gemFullVnum, gem[this.Upgrade]);
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand)
                         {
-                            Session.Character.InventoryList.RemoveItemAmount(goldScrollVnum);
+                            Session.Character.Inventory.RemoveItemAmount(goldScrollVnum);
                             Session.SendPacket("shop_end 2");
                         }
                         Session.Character.Gold -= (long)(goldprice[this.Upgrade] * reducedpricefactor);
-                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (int)(cella[this.Upgrade] * reducedpricefactor));
+                        Session.Character.Inventory.RemoveItemAmount(cellaVnum, (int)(cella[this.Upgrade] * reducedpricefactor));
                         Session.SendPacket(Session.Character.GenerateGold());
                         break;
 
                     case UpgradeMode.Normal:
 
                         // TODO: Normal Item Amount
-                        if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[this.Upgrade])
+                        if (Session.Character.Inventory.CountItem(cellaVnum) < cella[this.Upgrade])
                         {
                             return;
                         }
@@ -513,7 +513,7 @@ namespace OpenNos.GameObject
                         {
                             return;
                         }
-                        if (protection == UpgradeProtection.Protected && !isCommand && Session.Character.InventoryList.CountItem(normalScrollVnum) < 1)
+                        if (protection == UpgradeProtection.Protected && !isCommand && Session.Character.Inventory.CountItem(normalScrollVnum) < 1)
                         {
                             return;
                         }
@@ -535,10 +535,10 @@ namespace OpenNos.GameObject
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand)
                         {
-                            Session.Character.InventoryList.RemoveItemAmount(normalScrollVnum);
+                            Session.Character.Inventory.RemoveItemAmount(normalScrollVnum);
                             Session.SendPacket("shop_end 2");
                         }
-                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (cella[this.Upgrade]));
+                        Session.Character.Inventory.RemoveItemAmount(cellaVnum, (cella[this.Upgrade]));
                         Session.Character.Gold -= goldprice[this.Upgrade];
                         Session.SendPacket(Session.Character.GenerateGold());
                         break;

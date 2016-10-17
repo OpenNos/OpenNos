@@ -34,8 +34,8 @@ namespace OpenNos.GameObject
         private int _backpack;
         private byte _cmapcount = 0;
         private int _direction;
-        private Inventory _equipmentlist;
         private Inventory _inventory;
+        private Inventory _Inventory;
         private bool _invisible;
         private bool _isDancing;
         private bool _issitting;
@@ -137,6 +137,8 @@ namespace OpenNos.GameObject
         public byte Element { get; set; }
 
         public int ElementRate { get; set; }
+
+        public int ElementRateSP { get; private set; }
 
         public ExchangeInfo ExchangeInfo { get; set; }
 
@@ -524,7 +526,7 @@ namespace OpenNos.GameObject
         }
 
         public void DeleteItem(InventoryType type, short slot)
-        { 
+        {
             Inventory.DeleteFromSlotAndType(slot, type);
             Session.SendPacket(GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
         }
@@ -1450,7 +1452,7 @@ namespace OpenNos.GameObject
                 DistanceDefenceRate += armor.DistanceDefenceDodge + armor.Item.DistanceDefenceDodge;
             }
 
-            WearableInstance fairy = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Equipment);
+            WearableInstance fairy = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Equipment);
             if (fairy != null)
             {
                 ElementRate += fairy.ElementRate + fairy.Item.ElementRate;
@@ -2109,8 +2111,8 @@ namespace OpenNos.GameObject
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
                 // load and concat inventory with equipment
-                Inventory copiedInventoryList = Inventory.DeepCopy();
-                IEnumerable<ItemInstanceDTO> inventories = copiedInventoryList.Concat(Inventory);
+                Inventory copiedInventory = Inventory.DeepCopy();
+                IEnumerable<ItemInstanceDTO> inventories = copiedInventory.Concat(Inventory);
                 IList<Guid> currentlySavedInventoryIds = DAOFactory.ItemInstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
 
                 // remove all which are saved but not in our current enumerable
