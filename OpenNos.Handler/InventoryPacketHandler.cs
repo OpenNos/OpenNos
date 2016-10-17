@@ -159,10 +159,10 @@ namespace OpenNos.Handler
                 switch (type)
                 {
                     case 0:
-                        inventory = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Wear);
+                        inventory = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Equipment);
                         if (inventory == null)
                         {
-                            inventory = Session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Wear);
+                            inventory = Session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
                         }
                         break;
 
@@ -681,7 +681,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3 && Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0) && short.TryParse(packetsplit[2], out slot))
             {
-                ItemInstance inventory = (slot != (byte)EquipmentType.Sp) ? Session.Character.Equipments.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Equipment) : Session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
+                ItemInstance inventory = (slot != (byte)EquipmentType.Sp) ? Session.Character.Equipments.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Wear) : Session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Wear);
                 if (inventory != null)
                 {
                     double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
@@ -718,7 +718,7 @@ namespace OpenNos.Handler
                     {
                         Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inv.Amount, inv.Type, inv.Slot, inventory.Rare, inventory.Design, inventory.Upgrade, 0));
                     }
-                    Session.Character.Equipments.DeleteFromSlotAndType(slot, InventoryType.Equipment);
+                    Session.Character.Equipments.DeleteFromSlotAndType(slot, InventoryType.Wear);
                     Session.SendPacket(Session.Character.GenerateStatChar());
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
                     Session.SendPacket(Session.Character.GenerateEquipment());
@@ -789,7 +789,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
 
-            SpecialistInstance specialistInstance = Session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
+            SpecialistInstance specialistInstance = Session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
 
             if (packetsplit.Length == 10 && packetsplit[2] == "10")
             {
@@ -1388,8 +1388,8 @@ namespace OpenNos.Handler
 
         private void ChangeSP()
         {
-            SpecialistInstance sp = Session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
-            WearableInstance fairy = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Equipment);
+            SpecialistInstance sp = Session.Character.Equipments.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+            WearableInstance fairy = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             if (sp != null)
             {
                 if (Session.Character.GetReputIco() < sp.Item.ReputationMinimum)

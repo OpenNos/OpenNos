@@ -55,7 +55,7 @@ namespace OpenNos.GameObject
             {
                 switch (newItem.Item.Type)
                 {
-                    case (byte)InventoryType.Equipment:
+                    case InventoryType.Equipment:
                         if (newItem.Item.ItemType == (byte)ItemType.Specialist)
                         {
                             newItem = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = amount };

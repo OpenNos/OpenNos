@@ -161,7 +161,7 @@ namespace OpenNos.Handler
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.MainWeapon,
-                                Type = InventoryType.Equipment,
+                                Type = InventoryType.Wear,
                                 Amount = 1,
                                 ItemVNum = 1,
                             };
@@ -171,7 +171,7 @@ namespace OpenNos.Handler
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.SecondaryWeapon,
-                                Type = InventoryType.Equipment,
+                                Type = InventoryType.Wear,
                                 Amount = 1,
                                 ItemVNum = 8
                             };
@@ -181,7 +181,7 @@ namespace OpenNos.Handler
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.Armor,
-                                Type = InventoryType.Equipment,
+                                Type = InventoryType.Wear,
                                 Amount = 1,
                                 ItemVNum = 12
                             };
@@ -350,7 +350,7 @@ namespace OpenNos.Handler
             Session.SendPacket("clist_start 0");
             foreach (CharacterDTO character in characters)
             {
-                IEnumerable<ItemInstanceDTO> inventory = DAOFactory.ItemInstanceDAO.LoadByType(character.CharacterId, InventoryType.Equipment);
+                IEnumerable<ItemInstanceDTO> inventory = DAOFactory.ItemInstanceDAO.LoadByType(character.CharacterId, InventoryType.Wear);
 
                 WearableInstance[] equipment = new WearableInstance[16];
                 foreach (ItemInstanceDTO equipmentEntry in inventory)

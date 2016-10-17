@@ -172,7 +172,7 @@ namespace OpenNos.GameObject
                 case 30:
                     if (this != null && !Session.Character.IsVehicled)
                     {
-                        WearableInstance wig = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
+                        WearableInstance wig = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                         if (wig != null)
                         {
                             wig.Design = (byte)random.Next(0, 15);

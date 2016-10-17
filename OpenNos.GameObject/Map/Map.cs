@@ -581,7 +581,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        WearableInstance amulet = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Equipment);
+                        WearableInstance amulet = Session.Character.Equipments.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
                         if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
                         {
                             if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
