@@ -167,10 +167,10 @@ namespace OpenNos.Handler
                         break;
 
                     case 1:
-                        inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Wear);
+                        inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Equipment);
                         if (inventory == null)
                         {
-                            inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Wear);
+                            inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
                         }
                         break;
 
