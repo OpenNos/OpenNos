@@ -625,7 +625,7 @@ namespace OpenNos.GameObject
 
         public List<string> GenerateDroppedItem()
         {
-            return ServerManager.GetMap(MapId).DroppedList.Select(item => $"in 9 {item.Value} {item.Key} {item.Value.PositionX} {item.Value.PositionY} {item.Value.ItemInstance.Amount} 0 0 -1").ToList();
+            return ServerManager.GetMap(MapId).DroppedList.Select(item => $"in 9 {item.Value.ItemInstance.ItemVNum} {item.Key} {item.Value.PositionX} {item.Value.PositionY} {item.Value.ItemInstance.Amount} 0 0 -1").ToList();
         }
 
         public string GenerateEff(int effectid)
@@ -2189,6 +2189,19 @@ namespace OpenNos.GameObject
         {
             Item it = ServerManager.GetItem((short)vnum);
             int color = HairColor;
+            if (it.ItemType != (byte)EquipmentType.MainWeapon && it.ItemType != (byte)EquipmentType.SecondaryWeapon && it.ItemType != (byte)EquipmentType.Armor)
+            {
+                Rare = 0;
+                Upgrade = 0;
+            }
+            if (Rare > 8 || Rare < -2)
+            {
+                Rare = 0;
+            }
+            if (Upgrade < 0 || Upgrade > 10)
+            {
+                Upgrade = 0;
+            }
 
             MailDTO mail = new MailDTO()
             {

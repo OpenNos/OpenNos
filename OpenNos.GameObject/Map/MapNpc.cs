@@ -33,7 +33,7 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public MapNpc(MapNpcDTO npc, Map parent)
+        public MapNpc(MapNpcDTO npc)
         {
             _random = new Random(npc.MapNpcId);
 
@@ -55,7 +55,6 @@ namespace OpenNos.GameObject
 
             Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = LastMove = DateTime.Now;
-            Map = parent;
             _movetime = _random.Next(300, 3000);
             IEnumerable<RecipeDTO> recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId).ToList();
             if (recipe != null)
@@ -101,8 +100,6 @@ namespace OpenNos.GameObject
         public DateTime LastEffect { get; private set; }
 
         public DateTime LastMove { get; private set; }
-
-        public Map Map { get; set; }
 
         public List<Recipe> Recipes { get; set; }
 
@@ -150,7 +147,7 @@ namespace OpenNos.GameObject
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
-                Map.Broadcast(GenerateEff(), MapX, MapY, 10);
+                ServerManager.GetMap(MapId).Broadcast(GenerateEff(), MapX, MapY, 10);
                 LastEffect = DateTime.Now;
             }
 
@@ -167,7 +164,7 @@ namespace OpenNos.GameObject
                 short mapX = FirstX;
                 short mapY = FirstY;
 
-                if (Map.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
+                if (ServerManager.GetMap(MapId).GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                 {
                     Task.Factory.StartNew(async () =>
                     {
@@ -178,7 +175,7 @@ namespace OpenNos.GameObject
                     LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Npc.Speed));
 
                     string movePacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {Npc.Speed}";
-                    Map.Broadcast(movePacket);
+                    ServerManager.GetMap(MapId).Broadcast(movePacket);
                 }
             }
         }

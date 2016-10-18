@@ -991,7 +991,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Random random = new Random((int)(DateTime.Now - new DateTime(2010, 1, 1)).TotalSeconds + monsterid);
+            Random random = new Random(DateTime.Now.Millisecond & monsterid);
 
             // owner set
             long? Owner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?)null;
