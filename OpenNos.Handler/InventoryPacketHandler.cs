@@ -159,18 +159,18 @@ namespace OpenNos.Handler
                 switch (type)
                 {
                     case 0:
-                        inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
+                        inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Wear);
                         if (inventory == null)
                         {
-                            inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
+                            inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Wear);
                         }
                         break;
 
                     case 1:
-                        inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
+                        inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Wear);
                         if (inventory == null)
                         {
-                            inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
+                            inventory = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Wear);
                         }
                         break;
 
