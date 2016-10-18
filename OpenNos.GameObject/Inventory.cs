@@ -46,11 +46,9 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public ItemInstance AddNewToInventory(short vnum, byte amount = 1)
+        public static ItemInstance InstantiateItemInstance(short vnum, long ownerId, byte amount = 1)
         {
-            Logger.Debug(vnum.ToString(), Owner.Session.SessionId);
-
-            ItemInstance newItem = new ItemInstance() { ItemVNum = vnum, Amount = amount, CharacterId = Owner.Session.Character.CharacterId };
+            ItemInstance newItem = new ItemInstance() { ItemVNum = vnum, Amount = amount, CharacterId = ownerId };
             if (newItem.Item != null)
             {
                 switch (newItem.Item.Type)
@@ -67,6 +65,15 @@ namespace OpenNos.GameObject
                         break;
                 }
             }
+
+            return newItem;
+        }
+
+        public ItemInstance AddNewToInventory(short vnum, byte amount = 1)
+        {
+            Logger.Debug(vnum.ToString(), Owner.Session.SessionId);
+
+            ItemInstance newItem = InstantiateItemInstance(vnum, Owner.CharacterId, amount);
 
             //set type
             newItem.Type = newItem.Item.Type;
@@ -139,19 +146,6 @@ namespace OpenNos.GameObject
             CheckItemInstanceType(itemInstance);
             Add(itemInstance);
             return itemInstance;
-        }
-
-        private void CheckItemInstanceType(ItemInstance itemInstance)
-        {
-            if(itemInstance.Type == InventoryType.Specialist && !(itemInstance is SpecialistInstance))
-            {
-                throw new Exception("Cannot add an item of type Specialist without beeing a SpecialistInstance.");
-            }
-
-            if((itemInstance.Type == InventoryType.Equipment || itemInstance.Type == InventoryType.Wear) && !(itemInstance is WearableInstance))
-            {
-                throw new Exception("Cannot add an item of type Equipment or Wear without beeing a WearableInstance.");
-            }
         }
 
         public int CountItem(int v)
@@ -565,6 +559,19 @@ namespace OpenNos.GameObject
             ItemInstance inventoryToTake = this.SingleOrDefault(i => i.Slot == slot && i.Type == type);
             this.Remove(inventoryToTake);
             return inventoryToTake;
+        }
+
+        private void CheckItemInstanceType(ItemInstance itemInstance)
+        {
+            if (itemInstance.Type == InventoryType.Specialist && !(itemInstance is SpecialistInstance))
+            {
+                throw new Exception("Cannot add an item of type Specialist without beeing a SpecialistInstance.");
+            }
+
+            if ((itemInstance.Type == InventoryType.Equipment || itemInstance.Type == InventoryType.Wear) && !(itemInstance is WearableInstance))
+            {
+                throw new Exception("Cannot add an item of type Equipment or Wear without beeing a WearableInstance.");
+            }
         }
 
         private short GetFreeSlot(InventoryType type, int backPack, int? excludeSlot = null)
