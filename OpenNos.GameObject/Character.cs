@@ -2189,6 +2189,19 @@ namespace OpenNos.GameObject
         {
             Item it = ServerManager.GetItem((short)vnum);
             int color = HairColor;
+            if (it.ItemType != (byte)EquipmentType.MainWeapon && it.ItemType != (byte)EquipmentType.SecondaryWeapon && it.ItemType != (byte)EquipmentType.Armor)
+            {
+                Rare = 0;
+                Upgrade = 0;
+            }
+            if (Rare > 8 || Rare < -2)
+            {
+                Rare = 0;
+            }
+            if (Upgrade < 0 || Upgrade > 10)
+            {
+                Upgrade = 0;
+            }
 
             MailDTO mail = new MailDTO()
             {
