@@ -66,19 +66,19 @@ namespace OpenNos.GameObject
                 }
             }
 
+            //set default itemType
+            newItem.Type = newItem.Item.Type;
+
             return newItem;
         }
 
-        public ItemInstance AddNewToInventory(short vnum, byte amount = 1)
+        public ItemInstance AddNewToInventory(short vnum, byte amount = 1, InventoryType? type = null)
         {
             Logger.Debug(vnum.ToString(), Owner.Session.SessionId);
 
             ItemInstance newItem = InstantiateItemInstance(vnum, Owner.CharacterId, amount);
 
-            //set type
-            newItem.Type = newItem.Item.Type;
-
-            return AddToInventory(newItem);
+            return AddToInventory(newItem, type);
         }
 
         public ItemInstance AddToInventory(ItemInstance newItem, InventoryType? type = null)
@@ -93,21 +93,28 @@ namespace OpenNos.GameObject
                 newItem.Type = type.Value;
             }
 
-            if (newItem.Item.Type != 0)
+            //check if item can be stapled
+            if (newItem.Type != InventoryType.Equipment && newItem.Type != InventoryType.Wear)
             {
                 slotfree = Owner.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
                 inv = GetFreeSlot(slotfree);
             }
+
             if (inv != null)
             {
+                //add item amount
                 inv.Amount = (byte)(newItem.Amount + inv.Amount);
             }
             else
             {
-                short slot = GetFreeSlot(newItem.Item.Type, Owner.BackPack);
-                if (slot != -1)
+                //create new item
+                short freeSlot = newItem.Type == InventoryType.Wear ? (LoadBySlotAndType(newItem.Item.EquipmentSlot, InventoryType.Wear) == null
+                                                                    ? newItem.Item.EquipmentSlot
+                                                                    : (short)-1)
+                                                                  : GetFreeSlot(newItem.Type, Owner.BackPack);
+                if (freeSlot != -1)
                 {
-                    inv = AddToInventoryWithSlotAndType(newItem, newItem.Type, slot);
+                    inv = AddToInventoryWithSlotAndType(newItem, newItem.Type, freeSlot);
                 }
             }
 
@@ -585,6 +592,7 @@ namespace OpenNos.GameObject
                     return i;
                 }
             }
+
             return -1;
         }
 

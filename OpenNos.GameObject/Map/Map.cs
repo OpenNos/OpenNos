@@ -102,10 +102,7 @@ namespace OpenNos.GameObject
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
 
             _npcs = new List<MapNpc>();
-            foreach (MapNpcDTO npc in npcsDTO)
-            {
-                _npcs.Add(new MapNpc(npc, this));
-            }
+            npcsDTO.ToList().ForEach(s=> _npcs.Add(new MapNpc(s)));
         }
 
         #endregion

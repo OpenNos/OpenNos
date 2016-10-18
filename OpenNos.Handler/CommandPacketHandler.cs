@@ -588,7 +588,7 @@ namespace OpenNos.Handler
                 else if (packetsplit.Length == 7)
                 {
                     string name = packetsplit[2];
-                    if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum)) && sbyte.TryParse(packetsplit[5], out Rare) && byte.TryParse(packetsplit[6], out Upgrade))
+                    if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum) && sbyte.TryParse(packetsplit[5], out Rare) && byte.TryParse(packetsplit[6], out Upgrade)))
                     {
                         return;
                     }

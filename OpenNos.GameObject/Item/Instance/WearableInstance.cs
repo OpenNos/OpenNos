@@ -441,7 +441,7 @@ namespace OpenNos.GameObject
                 // short itempricevnum1 = 0; short itempricevnum2 = 0;
                 int[] goldprice = { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
                 short[] cella = { 20, 50, 80, 120, 160, 220, 280, 380, 480, 600 };
-                short[] gem = { 1, 1, 2, 2, 3, 3, 1, 2, 2, 3 };
+                short[] gem = { 1, 1, 2, 2, 3, 1, 1, 2, 2, 3 };
 
                 short cellaVnum = 1014;
                 short gemVnum = 1015;

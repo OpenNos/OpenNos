@@ -64,7 +64,7 @@ namespace OpenNos.GameObject
 
                 // magic lamps
                 case 651:
-                    if (!Session.Character.Inventory.Any())
+                    if (!Session.Character.Inventory.Where(i => i.Type == InventoryType.Wear).Any())
                     {
                         if (!DelayUsed)
                         {
