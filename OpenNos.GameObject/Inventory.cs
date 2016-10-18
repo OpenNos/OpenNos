@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static ItemInstance InstantiateItemInstance(short vnum, long ownerId, byte amount = 1)
+        public static ItemInstance InstantiateItemInstance(short vnum, long ownerId, int amount = 1)
         {
             ItemInstance newItem = new ItemInstance() { ItemVNum = vnum, Amount = amount, CharacterId = ownerId };
             if (newItem.Item != null)
@@ -66,7 +66,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            //set default itemType
+            // set default itemType
             newItem.Type = newItem.Item.Type;
 
             return newItem;
@@ -87,13 +87,13 @@ namespace OpenNos.GameObject
             IEnumerable<ItemInstance> slotfree = null;
             ItemInstance inv = null;
 
-            //override type if necessary
+            // override type if necessary
             if (type.HasValue)
             {
                 newItem.Type = type.Value;
             }
 
-            //check if item can be stapled
+            // check if item can be stapled
             if (newItem.Type != InventoryType.Equipment && newItem.Type != InventoryType.Wear)
             {
                 slotfree = Owner.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
@@ -102,12 +102,12 @@ namespace OpenNos.GameObject
 
             if (inv != null)
             {
-                //add item amount
+                // add item amount
                 inv.Amount = (byte)(newItem.Amount + inv.Amount);
             }
             else
             {
-                //create new item
+                // create new item
                 short freeSlot = newItem.Type == InventoryType.Wear ? (LoadBySlotAndType(newItem.Item.EquipmentSlot, InventoryType.Wear) == null
                                                                     ? newItem.Item.EquipmentSlot
                                                                     : (short)-1)
@@ -306,7 +306,7 @@ namespace OpenNos.GameObject
                         throw new InvalidOperationException("TargetInstance to move does not exist.");
                     }
 
-                    //swap
+                    // swap
                     sourceInstance.Slot = targetSlot.Value;
                     sourceInstance.Type = targetType;
 
@@ -316,7 +316,7 @@ namespace OpenNos.GameObject
                     return sourceInstance;
                 }
 
-                //check for free target slot
+                // check for free target slot
                 short freeSlot = targetType == InventoryType.Wear ? (LoadBySlotAndType(sourceInstance.Item.EquipmentSlot, InventoryType.Wear) == null
                                                                     ? sourceInstance.Item.EquipmentSlot
                                                                     : (short)-1)

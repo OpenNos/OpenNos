@@ -102,7 +102,7 @@ namespace OpenNos.GameObject
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
 
             _npcs = new List<MapNpc>();
-            npcsDTO.ToList().ForEach(s=> _npcs.Add(new MapNpc(s)));
+            npcsDTO.ToList().ForEach(s => _npcs.Add(new MapNpc(s)));
         }
 
         #endregion
@@ -249,8 +249,8 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                //TODO Instantiate as concrete ItemInstance
-                ItemInstance newInstance = Inventory.InstantiateItemInstance(drop.ItemVNum, -1, (byte)drop.Amount);
+                // TODO Instantiate as concrete ItemInstance
+                ItemInstance newInstance = Inventory.InstantiateItemInstance(drop.ItemVNum, -1, drop.Amount);
 
                 droppedItem = new MapItem(localMapX, localMapY)
                 {

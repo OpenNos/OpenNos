@@ -984,6 +984,7 @@ namespace OpenNos.Handler
                 monsterToAttack.Target = Session.Character.CharacterId;
             return damage;
         }
+
         private void GenerateKillBonus(int monsterid)
         {
             MapMonster monsterToAttack = Session.CurrentMap.GetMonster(monsterid);
@@ -1043,7 +1044,10 @@ namespace OpenNos.Handler
                 }
 
                 int RateGold = ServerManager.GoldRate;
-                int gold = Convert.ToInt32((random.Next(1, 8) >= 7 ? 1 : 0) * random.Next(6 * monsterToAttack.Monster.Level, 12 * monsterToAttack.Monster.Level) * RateGold * (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1));
+                int dropIt = ((random.Next(0, Session.Character.Level) < monsterToAttack.Monster.Level) ? 1 : 0);
+                int lowBaseGold = random.Next(6 * monsterToAttack.Monster.Level, 12 * monsterToAttack.Monster.Level);
+                int isAct52 = (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1);
+                int gold = Convert.ToInt32(dropIt * lowBaseGold * RateGold * isAct52);
                 gold = gold > 1000000000 ? 1000000000 : gold;
                 if (gold != 0)
                 {
