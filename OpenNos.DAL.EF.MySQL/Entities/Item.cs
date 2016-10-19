@@ -78,7 +78,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public short ElementRate { get; set; }
 
-        public byte EquipmentSlot { get; set; }
+        public short EquipmentSlot { get; set; }
 
         public byte FireElement { get; set; }
 
@@ -173,7 +173,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte SpType { get; set; }
 
-        public InventoryType Type { get; set; }
+        public byte Type { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

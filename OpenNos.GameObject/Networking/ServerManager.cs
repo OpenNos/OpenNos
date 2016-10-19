@@ -529,95 +529,95 @@ namespace OpenNos.GameObject
 
                 switch (itemDTO.ItemType)
                 {
-                    case (byte)Domain.ItemType.Ammo:
+                    case Domain.ItemType.Ammo:
                         ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Armor:
+                    case Domain.ItemType.Armor:
                         ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Box:
+                    case Domain.ItemType.Box:
                         ItemGO = _mapper.Map<BoxItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Event:
+                    case Domain.ItemType.Event:
                         ItemGO = _mapper.Map<MagicalItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Fashion:
+                    case Domain.ItemType.Fashion:
                         ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Food:
+                    case Domain.ItemType.Food:
                         ItemGO = _mapper.Map<FoodItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Jewelery:
+                    case Domain.ItemType.Jewelery:
                         ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Magical:
+                    case Domain.ItemType.Magical:
                         ItemGO = _mapper.Map<MagicalItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Main:
+                    case Domain.ItemType.Main:
                         ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Map:
+                    case Domain.ItemType.Map:
                         ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Part:
+                    case Domain.ItemType.Part:
                         ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Potion:
+                    case Domain.ItemType.Potion:
                         ItemGO = _mapper.Map<PotionItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Production:
+                    case Domain.ItemType.Production:
                         ItemGO = _mapper.Map<ProduceItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Quest1:
+                    case Domain.ItemType.Quest1:
                         ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Quest2:
+                    case Domain.ItemType.Quest2:
                         ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Sell:
+                    case Domain.ItemType.Sell:
                         ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Shell:
+                    case Domain.ItemType.Shell:
                         ItemGO = _mapper.Map<MagicalItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Snack:
+                    case Domain.ItemType.Snack:
                         ItemGO = _mapper.Map<SnackItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Special:
+                    case Domain.ItemType.Special:
                         ItemGO = _mapper.Map<SpecialItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Specialist:
+                    case Domain.ItemType.Specialist:
                         ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Teacher:
+                    case Domain.ItemType.Teacher:
                         ItemGO = _mapper.Map<TeacherItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Upgrade:
+                    case Domain.ItemType.Upgrade:
                         ItemGO = _mapper.Map<UpgradeItem>(itemDTO);
                         break;
 
-                    case (byte)Domain.ItemType.Weapon:
+                    case Domain.ItemType.Weapon:
                         ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 

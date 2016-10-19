@@ -259,7 +259,7 @@ namespace OpenNos.GameObject
                 };
 
                 // rarify
-                if (droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                if (droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                 {
                     droppedItem.Rarify(null);
                 }

@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
             {
                 // airwaves - eventitems
                 case 0:
-                    if (this != null && this.ItemType == (byte)Domain.ItemType.Event)
+                    if (this != null && this.ItemType == Domain.ItemType.Event)
                     {
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(EffectValue));
                         if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))
@@ -172,7 +172,7 @@ namespace OpenNos.GameObject
                 case 30:
                     if (this != null && !Session.Character.IsVehicled)
                     {
-                        WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+                        WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Hat, InventoryType.Wear);
                         if (wig != null)
                         {
                             wig.Design = (byte)random.Next(0, 15);

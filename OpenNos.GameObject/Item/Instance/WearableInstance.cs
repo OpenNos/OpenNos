@@ -127,20 +127,27 @@ namespace OpenNos.GameObject
             double rare3 = 15;
             double rare4 = 10;
             double rare5 = 5;
-            double rare6 = 2;
-            double rare7 = 0;
-
-            // double rare8 = 0; //disabled for now
-            double reducedchancefactor = 1.1;
-
-            // short itempricevnum = 0;
+            double rare6 = 3;
+            double rare7 = 1;
             short goldprice = 500;
             double reducedpricefactor = 0.5;
-
+            double reducedchancefactor = 1.1;
             byte cella = 5;
             int cellaVnum = 1014;
             int scrollVnum = 1218;
 
+            int rnd;
+            if (mode != RarifyMode.Drop || this.Item.ItemType == ItemType.Shell)
+            {
+                raren2 = 0;
+                raren1 = 0;
+                rare0 = 0;
+                rnd = _random.Next(0, 80);
+            }
+            else
+            {
+                rnd = _random.Next(0, 100);
+            }
             if (protection == RarifyProtection.RedAmulet)
             {
                 raren2 = raren1 * reducedchancefactor;
@@ -204,13 +211,6 @@ namespace OpenNos.GameObject
                     break;
             }
 
-            if (this.Rare == 0 && this.Item.ItemType == (byte)ItemType.Shell)
-            {
-                this.Rare = 1;
-                return;
-            }
-
-            int rnd = _random.Next(0, 100);
             if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
             {
                 if (mode != RarifyMode.Drop)
@@ -275,7 +275,7 @@ namespace OpenNos.GameObject
                 this.Rare = 1;
                 SetRarityPoint();
             }
-            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && this.Item.ItemType != (byte)ItemType.Shell)
+            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -284,7 +284,7 @@ namespace OpenNos.GameObject
                 this.Rare = 0;
                 SetRarityPoint();
             }
-            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && this.Item.ItemType != (byte)ItemType.Shell)
+            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -293,7 +293,7 @@ namespace OpenNos.GameObject
                 this.Rare = -1;
                 SetRarityPoint();
             }
-            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && this.Item.ItemType != (byte)ItemType.Shell)
+            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -334,7 +334,7 @@ namespace OpenNos.GameObject
 
         public void SetRarityPoint()
         {
-            if (this.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || this.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+            if (this.Item.EquipmentSlot == EquipmentType.MainWeapon || this.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
             {
                 int point = CharacterHelper.RarityPoint(this.Rare, (this.Item.IsHeroic ? (short)(95 + this.Item.LevelMinimum) : this.Item.LevelMinimum));
                 this.Concentrate = 0;
@@ -356,7 +356,7 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-            else if (this.Item.EquipmentSlot == (byte)EquipmentType.Armor)
+            else if (this.Item.EquipmentSlot == EquipmentType.Armor)
             {
                 int point = CharacterHelper.RarityPoint(this.Rare, this.Item.LevelMinimum);
                 this.DefenceDodge = 0;
@@ -388,7 +388,7 @@ namespace OpenNos.GameObject
             int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };
             short[] sand = { 5, 10, 15, 20, 25, 30 };
             int sandVnum = 1027;
-            if ((this.Upgrade + itemToSum.Upgrade) < 6 && ((((itemToSum.Item.EquipmentSlot == (byte)EquipmentType.Gloves) && (this.Item.EquipmentSlot == (byte)EquipmentType.Gloves)) || ((this.Item.EquipmentSlot == (byte)EquipmentType.Boots) && (itemToSum.Item.EquipmentSlot == (byte)EquipmentType.Boots)))))
+            if ((this.Upgrade + itemToSum.Upgrade) < 6 && ((((itemToSum.Item.EquipmentSlot == EquipmentType.Gloves) && (this.Item.EquipmentSlot == EquipmentType.Gloves)) || ((this.Item.EquipmentSlot == EquipmentType.Boots) && (itemToSum.Item.EquipmentSlot == EquipmentType.Boots)))))
             {
                 if (Session.Character.Gold < goldprice[this.Upgrade])
                 {

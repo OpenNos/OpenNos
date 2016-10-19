@@ -328,7 +328,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte splevel;
-            SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+            SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
             if (sp != null && packetsplit.Length > 2 && Session.Character.UseSp)
             {
                 if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
@@ -456,7 +456,7 @@ namespace OpenNos.Handler
                         }
                         else if (packetsplit.Length == 5)
                         {
-                            if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
+                            if (iteminfo.EquipmentSlot == EquipmentType.Sp)
                             {
                                 byte.TryParse(packetsplit[3], out upgrade);
                                 upgrade = upgrade > 15 ? (byte)15 : upgrade;
@@ -495,7 +495,7 @@ namespace OpenNos.Handler
 
                         WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
 
-                        if (wearable != null && (wearable.Item.EquipmentSlot == (byte)EquipmentType.Armor || wearable.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || wearable.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon))
+                        if (wearable != null && (wearable.Item.EquipmentSlot == EquipmentType.Armor || wearable.Item.EquipmentSlot == EquipmentType.MainWeapon || wearable.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
                         {
                             wearable.SetRarityPoint();
                         }
@@ -1663,7 +1663,7 @@ namespace OpenNos.Handler
             {
                 if (Byte.TryParse(packetsplit[2], out wigcolor))
                 {
-                    WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+                    WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Hat, InventoryType.Wear);
                     if (wig != null)
                     {
                         wig.Design = wigcolor;

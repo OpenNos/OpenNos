@@ -1990,28 +1990,28 @@ namespace OpenNos.Import.Console
                         switch (Convert.ToByte(currentLine[2]))
                         {
                             case 4:
-                                item.Type = (InventoryType)0;
+                                item.Type = InventoryType.Equipment;
                                 break;
 
                             case 8:
-                                item.Type = (InventoryType)0;
+                                item.Type = InventoryType.Equipment;
                                 break;
 
                             case 9:
-                                item.Type = (InventoryType)1;
+                                item.Type = InventoryType.Main;
                                 break;
 
                             case 10:
-                                item.Type = (InventoryType)2;
+                                item.Type = InventoryType.Etc;
                                 break;
 
                             default:
-                                item.Type = (InventoryType)Convert.ToByte(currentLine[2]);
+                                item.Type = (InventoryType)Enum.Parse(typeof(InventoryType), currentLine[2]);
                                 break;
                         }
-                        item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{(byte)item.Type}{currentLine[3]}") : (byte)0;
+                        item.ItemType = currentLine[3] != "-1" ? (ItemType)Enum.Parse(typeof(ItemType), $"{(short)item.Type}{currentLine[3]}") : ItemType.Weapon;
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
-                        item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
+                        item.EquipmentSlot = (EquipmentType)Enum.Parse(typeof(EquipmentType), currentLine[5] != "-1" ? currentLine[5] : "0");
 
                         // item.DesignId = Convert.ToInt16(currentLine[6]);
                         switch (item.VNum)
@@ -2068,9 +2068,7 @@ namespace OpenNos.Import.Console
                                      item.Morph = 819;
                                      item.Speed = 20;
                                      item.WaitDelay = 3000;
-                                     break;
-
-                                     */
+                                     break; */
 
                             case 5234:
                                 item.Morph = 2522;
@@ -2187,7 +2185,7 @@ namespace OpenNos.Import.Console
                                 break;
 
                             default:
-                                if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
+                                if (item.EquipmentSlot.Equals(EquipmentType.Amulet))
                                 {
                                     switch (item.VNum)
                                     {
@@ -2212,7 +2210,7 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 3 && currentLine[1] == "TYPE")
                     {
                         // currentLine[2] 0-range 2-range 3-magic
-                        if (item.EquipmentSlot == (byte)EquipmentType.Fairy)
+                        if (item.EquipmentSlot == EquipmentType.Fairy)
                         {
                             item.Class = 15;
                         }
@@ -2253,7 +2251,7 @@ namespace OpenNos.Import.Console
                     {
                         switch (item.ItemType)
                         {
-                            case (byte)ItemType.Weapon:
+                            case ItemType.Weapon:
                                 item.LevelMinimum = Convert.ToByte(currentLine[2]);
                                 item.DamageMinimum = Convert.ToInt16(currentLine[3]);
                                 item.DamageMaximum = Convert.ToInt16(currentLine[4]);
@@ -2264,7 +2262,7 @@ namespace OpenNos.Import.Console
                                 item.MaximumAmmo = (byte)100;
                                 break;
 
-                            case (byte)ItemType.Armor:
+                            case ItemType.Armor:
                                 item.LevelMinimum = Convert.ToByte(currentLine[2]);
                                 item.CloseDefence = Convert.ToInt16(currentLine[3]);
                                 item.DistanceDefence = Convert.ToInt16(currentLine[4]);
@@ -2274,30 +2272,30 @@ namespace OpenNos.Import.Console
                                 item.BasicUpgrade = Convert.ToByte(currentLine[10]);
                                 break;
 
-                            case (byte)ItemType.Box:
+                            case ItemType.Box:
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[3]);
                                 break;
 
-                            case (byte)ItemType.Fashion:
+                            case ItemType.Fashion:
                                 item.LevelMinimum = Convert.ToByte(currentLine[2]);
                                 item.CloseDefence = Convert.ToInt16(currentLine[3]);
                                 item.DistanceDefence = Convert.ToInt16(currentLine[4]);
                                 item.MagicDefence = Convert.ToInt16(currentLine[5]);
                                 item.DefenceDodge = Convert.ToInt16(currentLine[6]);
-                                if (item.EquipmentSlot.Equals((byte)EquipmentType.CostumeHat) || item.EquipmentSlot.Equals((byte)EquipmentType.CostumeSuit))
+                                if (item.EquipmentSlot.Equals(EquipmentType.CostumeHat) || item.EquipmentSlot.Equals(EquipmentType.CostumeSuit))
                                 {
                                     item.ItemValidTime = Convert.ToInt32(currentLine[13]) * 3600;
                                 }
                                 break;
 
-                            case (byte)ItemType.Food:
+                            case ItemType.Food:
                                 item.Hp = Convert.ToInt16(currentLine[2]);
                                 item.Mp = Convert.ToInt16(currentLine[4]);
                                 break;
 
-                            case (byte)ItemType.Jewelery:
-                                if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
+                            case ItemType.Jewelery:
+                                if (item.EquipmentSlot.Equals(EquipmentType.Amulet))
                                 {
                                     item.LevelMinimum = Convert.ToByte(currentLine[2]);
                                     if ((item.VNum > 4055 && item.VNum < 4061) || (item.VNum > 4172 && item.VNum < 4176))
@@ -2315,7 +2313,7 @@ namespace OpenNos.Import.Console
                                         item.ItemValidTime = Convert.ToInt32(currentLine[3]) / 10;
                                     }
                                 }
-                                else if (item.EquipmentSlot.Equals((byte)EquipmentType.Fairy))
+                                else if (item.EquipmentSlot.Equals(EquipmentType.Fairy))
                                 {
                                     item.Element = Convert.ToByte(currentLine[2]);
                                     item.ElementRate = Convert.ToInt16(currentLine[3]);
@@ -2369,7 +2367,7 @@ namespace OpenNos.Import.Console
                                 }
                                 break;
 
-                            case (byte)ItemType.Event:
+                            case ItemType.Event:
                                 switch (item.VNum)
                                 {
                                     case 1332:
@@ -2499,7 +2497,7 @@ namespace OpenNos.Import.Console
                                 }
                                 break;
 
-                            case (byte)ItemType.Special:
+                            case ItemType.Special:
                                 switch (item.VNum)
                                 {
                                     case 5105:
@@ -2518,7 +2516,7 @@ namespace OpenNos.Import.Console
                                 item.WaitDelay = 5000;
                                 break;
 
-                            case (byte)ItemType.Magical:
+                            case ItemType.Magical:
                                 if (item.VNum > 2059 && item.VNum < 2070)
                                 {
                                     item.Effect = 10;
@@ -2530,7 +2528,7 @@ namespace OpenNos.Import.Console
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
-                            case (byte)ItemType.Specialist:
+                            case ItemType.Specialist:
 
                                 // item.isSpecialist = Convert.ToByte(currentLine[2]); item.Unknown = Convert.ToInt16(currentLine[3]);
                                 item.ElementRate = Convert.ToInt16(currentLine[4]);
@@ -2590,19 +2588,19 @@ namespace OpenNos.Import.Console
                                 }
                                 break;
 
-                            case (byte)ItemType.Shell:
+                            case ItemType.Shell:
 
                                 // item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);
                                 // item.ShellMaximumLevel = Convert.ToInt16(linesave[4]);
                                 // item.ShellType = Convert.ToByte(linesave[5]); // 3 shells of each type
                                 break;
 
-                            case (byte)ItemType.Main:
+                            case ItemType.Main:
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
-                            case (byte)ItemType.Upgrade:
+                            case ItemType.Upgrade:
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 switch (item.VNum)
                                 {
@@ -2641,59 +2639,59 @@ namespace OpenNos.Import.Console
                                 }
                                 break;
 
-                            case (byte)ItemType.Production:
+                            case ItemType.Production:
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
-                            case (byte)ItemType.Map:
+                            case ItemType.Map:
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
-                            case (byte)ItemType.Potion:
+                            case ItemType.Potion:
                                 item.Hp = Convert.ToInt16(currentLine[2]);
                                 item.Mp = Convert.ToInt16(currentLine[4]);
                                 break;
 
-                            case (byte)ItemType.Snack:
+                            case ItemType.Snack:
                                 item.Hp = Convert.ToInt16(currentLine[2]);
                                 item.Mp = Convert.ToInt16(currentLine[4]);
                                 break;
 
-                            case (byte)ItemType.Teacher:
+                            case ItemType.Teacher:
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
 
                                 // item.PetLoyality = Convert.ToInt16(linesave[4]); item.PetFood = Convert.ToInt16(linesave[7]);
                                 break;
 
-                            case (byte)ItemType.Part:
+                            case ItemType.Part:
 
                                 // nothing to parse
                                 break;
 
-                            case (byte)ItemType.Sell:
+                            case ItemType.Sell:
 
                                 // nothing to parse
                                 break;
 
-                            case (byte)ItemType.Quest2:
+                            case ItemType.Quest2:
 
                                 // nothing to parse
                                 break;
 
-                            case (byte)ItemType.Quest1:
+                            case ItemType.Quest1:
 
                                 // nothing to parse
                                 break;
 
-                            case (byte)ItemType.Ammo:
+                            case ItemType.Ammo:
 
                                 // nothing to parse
                                 break;
                         }
-                        if ((item.EquipmentSlot == (byte)EquipmentType.Boots || item.EquipmentSlot == (byte)EquipmentType.Gloves) && item.Type == 0)
+                        if ((item.EquipmentSlot == EquipmentType.Boots || item.EquipmentSlot == EquipmentType.Gloves) && item.Type == 0)
                         {
                             item.FireResistance = Convert.ToByte(currentLine[7]);
                             item.WaterResistance = Convert.ToByte(currentLine[8]);
