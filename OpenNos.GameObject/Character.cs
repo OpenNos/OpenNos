@@ -1762,22 +1762,24 @@ namespace OpenNos.GameObject
 
         public void GiftAdd(short itemVNum, byte amount)
         {
-            ItemInstance newItem = Inventory.AddNewToInventory(itemVNum);
-            if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
+            ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, amount);
+            if (newItem != null)
             {
-                ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
-            }
-            newItem.Amount = amount;
-            ItemInstance newInv = Inventory.AddToInventory(newItem);
-            if (newInv != null)
-            {
-                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
-                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
-            }
-            else
-            {
-                SendGift(CharacterId, itemVNum, amount, newItem.Rare, newItem.Upgrade, false);
-                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_BY_THE_GIANT_MONSTER"), 0));
+                if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
+                {
+                    ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+                }
+                ItemInstance newInv = Inventory.AddToInventory(newItem);
+                if (newInv != null)
+                {
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
+                }
+                else
+                {
+                    SendGift(CharacterId, itemVNum, amount, newItem.Rare, newItem.Upgrade, false);
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_BY_THE_GIANT_MONSTER"), 0));
+                }
             }
         }
 
