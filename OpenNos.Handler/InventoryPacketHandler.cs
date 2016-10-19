@@ -681,12 +681,12 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3 && Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0) && short.TryParse(packetsplit[2], out slot))
             {
-                ItemInstance inventory = (slot != (short)EquipmentType.Sp) ? Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Wear) : Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Wear);
+                ItemInstance inventory = (slot != (byte)EquipmentType.Sp) ? Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Wear) : Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Wear);
                 if (inventory != null)
                 {
                     double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
-                    if (slot == (short)EquipmentType.Sp && Session.Character.UseSp)
+                    if (slot == (byte)EquipmentType.Sp && Session.Character.UseSp)
                     {
                         if (Session.Character.IsVehicled)
                         {
@@ -700,29 +700,32 @@ namespace OpenNos.Handler
                         Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
                         new Task(() => RemoveSP(inventory.ItemVNum)).Start();
                     }
-                    else if (slot == (short)EquipmentType.Sp && !Session.Character.UseSp && timeSpanSinceLastSpUsage <= Session.Character.SpCooldown)
+                    else if (slot == (byte)EquipmentType.Sp && !Session.Character.UseSp && timeSpanSinceLastSpUsage <= Session.Character.SpCooldown)
                     {
                         Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                         return;
                     }
 
-                    ItemInstance inv = Session.Character.Inventory.MoveInInventory(slot, InventoryType.Wear, InventoryType.Equipment);
-
-                    if (inv == null)
+                    if (Session.Character.Inventory.IsEmpty())
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
-                        return;
-                    }
+                        ItemInstance inv = Session.Character.Inventory.MoveInInventory(slot, InventoryType.Wear, InventoryType.Equipment);
 
-                    if (inv.Slot != -1)
-                    {
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inv.Amount, inv.Type, inv.Slot, inventory.Rare, inventory.Design, inventory.Upgrade, 0));
-                    }
+                        if (inv == null)
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                            return;
+                        }
 
-                    Session.SendPacket(Session.Character.GenerateStatChar());
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
-                    Session.SendPacket(Session.Character.GenerateEquipment());
-                    Session.CurrentMap?.Broadcast(Session.Character.GeneratePairy());
+                        if (inv.Slot != -1)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inv.Amount, inv.Type, inv.Slot, inventory.Rare, inventory.Design, inventory.Upgrade, 0));
+                        }
+
+                        Session.SendPacket(Session.Character.GenerateStatChar());
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
+                        Session.SendPacket(Session.Character.GenerateEquipment());
+                        Session.CurrentMap?.Broadcast(Session.Character.GeneratePairy());
+                    }
                 }
             }
         }
@@ -789,7 +792,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
 
-            SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
+            SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
 
             if (packetsplit.Length == 10 && packetsplit[2] == "10")
             {
@@ -1388,8 +1391,8 @@ namespace OpenNos.Handler
 
         private void ChangeSP()
         {
-            SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
-            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, InventoryType.Wear);
+            SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             if (sp != null)
             {
                 if (Session.Character.GetReputIco() < sp.Item.ReputationMinimum)

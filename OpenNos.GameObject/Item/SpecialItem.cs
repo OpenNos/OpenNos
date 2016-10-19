@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
             {
                 // wings
                 case 650:
-                    SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
+                    SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                     if (Session.Character.UseSp && specialistInstance != null)
                     {
                         if (!DelayUsed)
@@ -93,7 +93,7 @@ namespace OpenNos.GameObject
 
                 // vehicles
                 case 1000:
-                    SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
+                    SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                     if (!DelayUsed && !Session.Character.IsVehicled)
                     {
                         if (Session.Character.IsSitting)

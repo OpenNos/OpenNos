@@ -160,7 +160,7 @@ namespace OpenNos.Handler
                             ItemInstance inventory = new WearableInstance() // first weapon
                             {
                                 CharacterId = newCharacter.CharacterId,
-                                Slot = (short)EquipmentType.MainWeapon,
+                                Slot = (byte)EquipmentType.MainWeapon,
                                 Type = InventoryType.Wear,
                                 Amount = 1,
                                 ItemVNum = 1,
@@ -170,7 +170,7 @@ namespace OpenNos.Handler
                             inventory = new WearableInstance() // second weapon
                             {
                                 CharacterId = newCharacter.CharacterId,
-                                Slot = (short)EquipmentType.SecondaryWeapon,
+                                Slot = (byte)EquipmentType.SecondaryWeapon,
                                 Type = InventoryType.Wear,
                                 Amount = 1,
                                 ItemVNum = 8
@@ -180,7 +180,7 @@ namespace OpenNos.Handler
                             inventory = new WearableInstance() // armor
                             {
                                 CharacterId = newCharacter.CharacterId,
-                                Slot = (short)EquipmentType.Armor,
+                                Slot = (byte)EquipmentType.Armor,
                                 Type = InventoryType.Wear,
                                 Amount = 1,
                                 ItemVNum = 12
@@ -361,7 +361,7 @@ namespace OpenNos.Handler
                 }
 
                 // 1 1 before long string of -1.-1 = act completion
-                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {character.HeroLevel} {(equipment[(short)EquipmentType.Hat] != null ? equipment[(short)EquipmentType.Hat].ItemVNum : -1)}.{(equipment[(short)EquipmentType.Armor] != null ? equipment[(short)EquipmentType.Armor].ItemVNum : -1)}.{(equipment[(short)EquipmentType.WeaponSkin] != null ? equipment[(short)EquipmentType.WeaponSkin].ItemVNum : equipment[(short)EquipmentType.MainWeapon] != null ? equipment[(short)EquipmentType.MainWeapon].ItemVNum : -1)}.{(equipment[(short)EquipmentType.SecondaryWeapon] != null ? equipment[(short)EquipmentType.SecondaryWeapon].ItemVNum : -1)}.{(equipment[(short)EquipmentType.Mask] != null ? equipment[(short)EquipmentType.Mask].ItemVNum : -1)}.{(equipment[(short)EquipmentType.Fairy] != null ? equipment[(short)EquipmentType.Fairy].ItemVNum : -1)}.{(equipment[(short)EquipmentType.CostumeSuit] != null ? equipment[(short)EquipmentType.CostumeSuit].ItemVNum : -1)}.{(equipment[(short)EquipmentType.CostumeHat] != null ? equipment[(short)EquipmentType.CostumeHat].ItemVNum : -1)} {character.JobLevel}  1 1 -1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1 {(equipment[(short)EquipmentType.Hat] != null && equipment[(short)EquipmentType.Hat].Item.IsColored ? equipment[(short)EquipmentType.Hat].Design : 0)} 0");
+                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {character.HeroLevel} {(equipment[(byte)EquipmentType.Hat] != null ? equipment[(byte)EquipmentType.Hat].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Armor] != null ? equipment[(byte)EquipmentType.Armor].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.WeaponSkin] != null ? equipment[(byte)EquipmentType.WeaponSkin].ItemVNum : equipment[(byte)EquipmentType.MainWeapon] != null ? equipment[(byte)EquipmentType.MainWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.SecondaryWeapon] != null ? equipment[(byte)EquipmentType.SecondaryWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Mask] != null ? equipment[(byte)EquipmentType.Mask].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Fairy] != null ? equipment[(byte)EquipmentType.Fairy].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeSuit] != null ? equipment[(byte)EquipmentType.CostumeSuit].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeHat] != null ? equipment[(byte)EquipmentType.CostumeHat].ItemVNum : -1)} {character.JobLevel}  1 1 -1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1 {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
             }
             Session.SendPacket("clist_end");
         }

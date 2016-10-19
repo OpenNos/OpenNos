@@ -78,7 +78,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public short ElementRate { get; set; }
 
-        public short EquipmentSlot { get; set; }
+        public byte EquipmentSlot { get; set; }
 
         public byte FireElement { get; set; }
 

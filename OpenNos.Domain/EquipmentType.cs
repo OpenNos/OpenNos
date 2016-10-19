@@ -14,7 +14,7 @@
 
 namespace OpenNos.Domain
 {
-    public enum EquipmentType : short
+    public enum EquipmentType : byte
     {
         MainWeapon = 0,
         Armor = 1,

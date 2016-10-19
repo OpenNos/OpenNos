@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    if (EquipmentSlot == EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown && session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Specialist) != null)
+                    if (EquipmentSlot == EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown && session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Specialist) != null)
                     {
                         session.SendPacket(session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage)), 0));
                         return;
@@ -79,7 +79,7 @@ namespace OpenNos.GameObject
 
                     if (session.Character.UseSp)
                     {
-                        SpecialistInstance sp = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp,InventoryType.Wear);
+                        SpecialistInstance sp = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,InventoryType.Wear);
 
                         if (sp.Item.Element != 0 && EquipmentSlot == EquipmentType.Fairy && Element != sp.Item.Element && Element != sp.Item.SecondaryElement)
                         {
@@ -134,7 +134,7 @@ namespace OpenNos.GameObject
 
                     if (EquipmentSlot == EquipmentType.Fairy)
                     {
-                        WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, InventoryType.Wear);
+                        WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
                         session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXpData(fairy.ElementRate + fairy.Item.ElementRate)), 10));
                     }
                     break;

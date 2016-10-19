@@ -527,7 +527,7 @@ namespace OpenNos.Handler
                 {
                     if (Session.Character.UseSp)
                     {
-                        SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Wear);
+                        SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                         if (specialistInstance != null)
                         {
                             specialistInstance.SlDamage = 0;
@@ -553,8 +553,8 @@ namespace OpenNos.Handler
                             specialistInstance.MP = 0;
 
                             Session.Character.Inventory.RemoveItemAmount(vnumToUse);
-                            Session.Character.Inventory.DeleteFromSlotAndType((short)EquipmentType.Sp, InventoryType.Wear);
-                            Session.Character.Inventory.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Wear, (short)EquipmentType.Sp);
+                            Session.Character.Inventory.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Wear);
+                            Session.Character.Inventory.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Wear, (byte)EquipmentType.Sp);
                             Session.SendPacket(Session.Character.GenerateCond());
                             Session.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
                             Session.SendPacket(Session.Character.GenerateLev());
@@ -842,7 +842,7 @@ namespace OpenNos.Handler
                     CharacterDTO Receiver = DAOFactory.CharacterDAO.LoadByName(packetsplit[7]);
                     if (Receiver != null)
                     {
-                        WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Hat, InventoryType.Wear);
+                        WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                         byte color = (headWearable != null && headWearable.Item.IsColored) ? headWearable.Design : Session.Character.HairColor;
                         MailDTO mailcopy = new MailDTO()
                         {
