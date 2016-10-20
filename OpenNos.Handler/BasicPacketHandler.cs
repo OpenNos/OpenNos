@@ -1122,17 +1122,20 @@ namespace OpenNos.Handler
                 double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
                 int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
 
-                if (Session.Character.Speed >= walkPacket.Speed && !(distance > 60 && timeSpanSinceLastPortal > 5))
+                if (!Session.CurrentMap.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate))
                 {
-                    Session.Character.MapX = walkPacket.XCoordinate;
-                    Session.Character.MapY = walkPacket.YCoordinate;
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateMv());
-                    Session.SendPacket(Session.Character.GenerateCond());
-                    Session.Character.LastMove = DateTime.Now;
-                }
-                else
-                {
-                    Session.Disconnect();
+                    if (Session.Character.Speed >= walkPacket.Speed && !(distance > 60 && timeSpanSinceLastPortal > 5))
+                    {
+                        Session.Character.MapX = walkPacket.XCoordinate;
+                        Session.Character.MapY = walkPacket.YCoordinate;
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateMv());
+                        Session.SendPacket(Session.Character.GenerateCond());
+                        Session.Character.LastMove = DateTime.Now;
+                    }
+                    else
+                    {
+                        Session.Disconnect();
+                    }
                 }
             }
         }
