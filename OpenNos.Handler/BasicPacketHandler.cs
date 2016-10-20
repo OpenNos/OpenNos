@@ -132,6 +132,8 @@ namespace OpenNos.Handler
                         {
                             newInv.Upgrade = mail.AttachmentUpgrade;
                             newInv.Rare = (sbyte)mail.AttachmentRarity;
+                            if (newInv.Rare != 0)
+                                (newInv as WearableInstance).SetRarityPoint();
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
 
@@ -663,7 +665,7 @@ namespace OpenNos.Handler
         [Packet("preq")]
         public void Preq(string packet)
         {
-             Logger.Debug(packet, Session.SessionId);
+            Logger.Debug(packet, Session.SessionId);
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             if (!(timeSpanSinceLastPortal >= 4))
