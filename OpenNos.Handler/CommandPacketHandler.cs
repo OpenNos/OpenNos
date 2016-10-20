@@ -193,7 +193,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short fairylevel;
-            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, InventoryType.Wear);
+            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             if (fairy != null && packetsplit.Length > 2)
             {
                 if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= Int16.MaxValue)
@@ -456,7 +456,7 @@ namespace OpenNos.Handler
                         }
                         else if (packetsplit.Length == 5)
                         {
-                            if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
+                            if (iteminfo.EquipmentSlot == EquipmentType.Sp)
                             {
                                 byte.TryParse(packetsplit[3], out upgrade);
                                 upgrade = upgrade > 15 ? (byte)15 : upgrade;
@@ -495,7 +495,7 @@ namespace OpenNos.Handler
 
                         WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
 
-                        if (wearable != null && (wearable.Item.EquipmentSlot == (byte)EquipmentType.Armor || wearable.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || wearable.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon))
+                        if (wearable != null && (wearable.Item.EquipmentSlot == EquipmentType.Armor || wearable.Item.EquipmentSlot == EquipmentType.MainWeapon || wearable.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
                         {
                             wearable.SetRarityPoint();
                         }

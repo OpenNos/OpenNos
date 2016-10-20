@@ -58,7 +58,7 @@ namespace OpenNos.Data
 
         public short ElementRate { get; set; }
 
-        public byte EquipmentSlot { get; set; }
+        public EquipmentType EquipmentSlot { get; set; }
 
         public byte FireElement { get; set; }
 
@@ -90,7 +90,7 @@ namespace OpenNos.Data
 
         public byte ItemSubType { get; set; }
 
-        public byte ItemType { get; set; }
+        public ItemType ItemType { get; set; }
 
         public long ItemValidTime { get; set; }
 

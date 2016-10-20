@@ -557,7 +557,7 @@ namespace OpenNos.Handler
                         if (inv.GetType().Equals(typeof(WearableInstance)))
                         {
                             WearableInstance item = inv as WearableInstance;
-                            if (item != null && (item.Item.EquipmentSlot == (byte)EquipmentType.Armor || item.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || item.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon))
+                            if (item != null && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
                             {
                                 item.SetRarityPoint();
                             }

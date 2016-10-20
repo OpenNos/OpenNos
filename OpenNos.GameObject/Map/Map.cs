@@ -259,7 +259,7 @@ namespace OpenNos.GameObject
                 };
 
                 // rarify
-                if (droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                if (droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                 {
                     droppedItem.Rarify(null);
                 }
@@ -578,7 +578,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                        WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
                         if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
                         {
                             if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)

@@ -191,12 +191,12 @@ namespace OpenNos.Test
             DAOFactory.ItemDAO.Insert(new ItemDTO()
             {
                 VNum = 8,
-                EquipmentSlot = 5
+                EquipmentSlot = EquipmentType.SecondaryWeapon
             });
             DAOFactory.ItemDAO.Insert(new ItemDTO()
             {
                 VNum = 12,
-                EquipmentSlot = 1
+                EquipmentSlot = EquipmentType.Armor
             });
         }
 

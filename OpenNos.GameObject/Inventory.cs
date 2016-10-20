@@ -54,7 +54,7 @@ namespace OpenNos.GameObject
                 switch (newItem.Item.Type)
                 {
                     case InventoryType.Equipment:
-                        if (newItem.Item.ItemType == (byte)ItemType.Specialist)
+                        if (newItem.Item.ItemType == ItemType.Specialist)
                         {
                             newItem = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = amount };
                         }
@@ -108,8 +108,8 @@ namespace OpenNos.GameObject
             else
             {
                 // create new item
-                short freeSlot = newItem.Type == InventoryType.Wear ? (LoadBySlotAndType(newItem.Item.EquipmentSlot, InventoryType.Wear) == null
-                                                                    ? newItem.Item.EquipmentSlot
+                short freeSlot = newItem.Type == InventoryType.Wear ? (LoadBySlotAndType((short)newItem.Item.EquipmentSlot, InventoryType.Wear) == null
+                                                                    ? (short)newItem.Item.EquipmentSlot
                                                                     : (short)-1)
                                                                   : GetFreeSlot(newItem.Type, Owner.BackPack);
                 if (freeSlot != -1)
@@ -317,8 +317,8 @@ namespace OpenNos.GameObject
                 }
 
                 // check for free target slot
-                short freeSlot = targetType == InventoryType.Wear ? (LoadBySlotAndType(sourceInstance.Item.EquipmentSlot, InventoryType.Wear) == null
-                                                                    ? sourceInstance.Item.EquipmentSlot
+                short freeSlot = targetType == InventoryType.Wear ? (LoadBySlotAndType((short)sourceInstance.Item.EquipmentSlot, InventoryType.Wear) == null
+                                                                    ? (short)sourceInstance.Item.EquipmentSlot
                                                                     : (short)-1)
                                                                   : GetFreeSlot(targetType, Owner.BackPack);
                 if (freeSlot != -1)
@@ -343,7 +343,7 @@ namespace OpenNos.GameObject
                 Item iteminfo = inv.Item;
                 ItemInstance invdest = LoadBySlotAndType(destslot, desttype);
 
-                if (invdest == null && ((desttype == InventoryType.Specialist && iteminfo.ItemType == 4) || (desttype == InventoryType.Costume && iteminfo.ItemType == 2) || desttype == 0))
+                if (invdest == null && ((desttype == InventoryType.Specialist && iteminfo.ItemType == ItemType.Specialist) || (desttype == InventoryType.Costume && iteminfo.ItemType == ItemType.Fashion) || desttype == InventoryType.Equipment))
                 {
                     inv.Slot = destslot;
                     inv.Type = desttype;
@@ -581,7 +581,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private short GetFreeSlot(InventoryType type, int backPack, int? excludeSlot = null)
+        private short GetFreeSlot(InventoryType type, int backPack, short? excludeSlot = null)
         {
             ItemInstance result;
             for (short i = 0; i < 48 + (backPack * 12); i++)

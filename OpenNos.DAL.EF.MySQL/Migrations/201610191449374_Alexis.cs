@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Aphrodite : DbMigration
+    public partial class Alexis : DbMigration
     {
         public override void Up()
         {
@@ -257,7 +257,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         EffectValue = c.Int(nullable: false),
                         Element = c.Byte(nullable: false),
                         ElementRate = c.Short(nullable: false),
-                        EquipmentSlot = c.Byte(nullable: false),
+                        EquipmentSlot = c.Short(nullable: false),
                         FireElement = c.Byte(nullable: false),
                         FireResistance = c.Short(nullable: false),
                         HitRate = c.Short(nullable: false),

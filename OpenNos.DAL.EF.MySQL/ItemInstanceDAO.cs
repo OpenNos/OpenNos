@@ -101,7 +101,8 @@ namespace OpenNos.DAL.EF.MySQL
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     byte inventoryType = (byte)type;
-                    ItemInstance entity = context.ItemInstance.FirstOrDefault(i => i.CharacterId == characterId && i.Slot == slot && i.Type == inventoryType);
+                    byte equipmentType = (byte)slot;
+                    ItemInstance entity = context.ItemInstance.FirstOrDefault(i => i.CharacterId == characterId && i.Slot == equipmentType && i.Type == inventoryType);
                     return _mapper.Map<ItemInstanceDTO>(entity);
                 }
             }

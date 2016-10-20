@@ -7,13 +7,13 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Aphrodite : IMigrationMetadata
+    public sealed partial class Zephyr : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Aphrodite));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Zephyr));
         
         string IMigrationMetadata.Id
         {
-            get { return "201610161230485_Aphrodite"; }
+            get { return "201610192000016_Zephyr"; }
         }
         
         string IMigrationMetadata.Source

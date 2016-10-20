@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
                     }
                     if (!itemToWear.IsBound)
                     {
-                        if (!DelayUsed && ((EquipmentSlot == (byte)EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80)) || (EquipmentSlot == (byte)EquipmentType.CostumeHat || EquipmentSlot == (byte)EquipmentType.CostumeSuit || EquipmentSlot == (byte)EquipmentType.WeaponSkin)))
+                        if (!DelayUsed && ((EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80)) || (EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit || EquipmentSlot == EquipmentType.WeaponSkin)))
                         {
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)type}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                             return;
@@ -54,24 +54,24 @@ namespace OpenNos.GameObject
 
                     double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds - session.Character.LastSp;
 
-                    if (EquipmentSlot == (byte)EquipmentType.Sp && itemToWear.Rare == -2)
+                    if (EquipmentSlot == EquipmentType.Sp && itemToWear.Rare == -2)
                     {
                         session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_EQUIP_DESTROYED_SP"), 0));
                         return;
                     }
 
-                    if (EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown && session.Character.Inventory.LoadBySlotAndType((byte)EquipmentType.Sp, InventoryType.Specialist) != null)
+                    if (EquipmentSlot == EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown && session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Specialist) != null)
                     {
                         session.SendPacket(session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage)), 0));
                         return;
                     }
-                    if ((ItemType != (byte)Domain.ItemType.Weapon
-                         && ItemType != (byte)Domain.ItemType.Armor
-                         && ItemType != (byte)Domain.ItemType.Fashion
-                         && ItemType != (byte)Domain.ItemType.Jewelery
-                         && ItemType != (byte)Domain.ItemType.Specialist)
+                    if ((ItemType != Domain.ItemType.Weapon
+                         && ItemType != Domain.ItemType.Armor
+                         && ItemType != Domain.ItemType.Fashion
+                         && ItemType != Domain.ItemType.Jewelery
+                         && ItemType != Domain.ItemType.Specialist)
                         || LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) || (Sex != 0 && Sex != session.Character.Gender + 1)
-                        || ((ItemType != (byte)Domain.ItemType.Jewelery && EquipmentSlot != (byte)EquipmentType.Boots && EquipmentSlot != (byte)EquipmentType.Gloves) && ((Class >> session.Character.Class) & 1) != 1))
+                        || ((ItemType != Domain.ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves) && ((Class >> session.Character.Class) & 1) != 1))
                     {
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                         return;
@@ -79,18 +79,16 @@ namespace OpenNos.GameObject
 
                     if (session.Character.UseSp)
                     {
-                        SpecialistInstance sp = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(
-                                (byte)EquipmentType.Sp,
-                                InventoryType.Wear);
+                        SpecialistInstance sp = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,InventoryType.Wear);
 
-                        if (sp.Item.Element != 0 && EquipmentSlot == (byte)EquipmentType.Fairy && Element != sp.Item.Element && Element != sp.Item.SecondaryElement)
+                        if (sp.Item.Element != 0 && EquipmentSlot == EquipmentType.Fairy && Element != sp.Item.Element && Element != sp.Item.SecondaryElement)
                         {
                             session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                             return;
                         }
                     }
 
-                    if (session.Character.UseSp && EquipmentSlot == (byte)EquipmentType.Sp)
+                    if (session.Character.UseSp && EquipmentSlot == EquipmentType.Sp)
                     {
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SP_BLOCKED"), 10));
                         return;
@@ -102,8 +100,8 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    ItemInstance currentlyEquippedItem = session.Character.Inventory.LoadBySlotAndType(EquipmentSlot, InventoryType.Wear);
-                    if (EquipmentSlot == (byte)EquipmentType.Amulet)
+                    ItemInstance currentlyEquippedItem = session.Character.Inventory.LoadBySlotAndType((short)EquipmentSlot, InventoryType.Wear);
+                    if (EquipmentSlot == EquipmentType.Amulet)
                     {
                         session.SendPacket(session.Character.GenerateEff(39));
                         itemToWear.BoundCharacterId = session.Character.CharacterId;
@@ -134,7 +132,7 @@ namespace OpenNos.GameObject
                         session.CurrentMap?.Broadcast(session.Character.GeneratePairy());
                     }
 
-                    if (EquipmentSlot == (byte)EquipmentType.Fairy)
+                    if (EquipmentSlot == EquipmentType.Fairy)
                     {
                         WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
                         session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXpData(fairy.ElementRate + fairy.Item.ElementRate)), 10));
