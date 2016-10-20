@@ -101,14 +101,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         /// <exception cref="ArgumentNullException">
         /// Throws ArgumentNullException if message is null
         /// </exception>
-        public void SendMessage(IScsMessage message)
+        public void SendMessage(IScsMessage message, byte priority)
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
 
-            SendMessagepublic(message);
+            SendMessagepublic(message, priority);
         }
 
         /// <summary>
@@ -151,12 +151,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         /// really send to message.
         /// </summary>
         /// <param name="message">Message to be sent</param>
-        protected abstract void SendMessagepublic(IScsMessage message);
+        protected abstract void SendMessagepublic(IScsMessage message, byte priority);
 
         /// <summary>
         /// Starts the communication with remote application really.
         /// </summary>
         protected abstract void Startpublic();
+
+        public abstract void ClearLowpriorityQueue();
 
         #endregion
     }

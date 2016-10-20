@@ -65,14 +65,14 @@ namespace OpenNos.Core
             _encryptor = encryptor;
         }
 
-        public void SendPacket(string packet)
+        public void SendPacket(string packet, byte priority = 10)
         {
             if (!IsDisposing)
             {
                 ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
 
                 // Logger.Debug(packet, -1);
-                SendMessage(rawMessage);
+                SendMessage(rawMessage, priority);
             }
         }
 
@@ -81,12 +81,12 @@ namespace OpenNos.Core
             SendPacket(String.Format(packet, param));
         }
 
-        public void SendPackets(IEnumerable<String> packets)
+        public void SendPackets(IEnumerable<String> packets, byte priority = 10)
         {
             // TODO: maybe send at once with delimiter
             foreach (string packet in packets)
             {
-                SendPacket(packet);
+                SendPacket(packet, priority);
             }
         }
 

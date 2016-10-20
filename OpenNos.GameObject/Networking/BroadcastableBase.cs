@@ -238,7 +238,7 @@ namespace OpenNos.GameObject
                         {
                             foreach (ClientSession session in Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)))
                             {
-                                session.SendPacket(sentPacket.Packet);
+                                session.SendPacket(sentPacket.Packet, 1);
                             }
                         }
                         break;

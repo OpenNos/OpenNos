@@ -1114,6 +1114,11 @@ namespace OpenNos.Handler
         [Packet("walk")]
         public void Walk(string packet)
         {
+            if(Session.Character.IsChangingMap)
+            {
+                return;
+            }
+
             WalkPacket walkPacket = PacketFactory.Serialize<WalkPacket>(packet, true);
 
             if (walkPacket != null)

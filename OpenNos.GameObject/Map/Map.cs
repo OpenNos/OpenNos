@@ -301,7 +301,7 @@ namespace OpenNos.GameObject
 
         public int GetNextMonsterId()
         {
-            int nextId = _mapMonsterIds.DefaultIfEmpty().Max() + 1;
+            int nextId = _mapMonsterIds.Last() + 1;
             _mapMonsterIds.Add(nextId);
             return nextId;
         }

@@ -21,6 +21,7 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -300,10 +301,11 @@ namespace OpenNos.GameObject
         public void ChangeMap(long id)
         {
             ClientSession session = GetSessionByCharacterId(id);
-            if (session != null)
+            if (session != null && session.Character != null && !session.Character.IsChangingMap)
             {
                 try
                 {
+                    session.Character.IsChangingMap = true;
                     session.CurrentMap.UnregisterSession(session.Character.CharacterId);
                     session.CurrentMap = GetMap(session.Character.MapId);
                     session.CurrentMap.RegisterSession(session);
@@ -368,10 +370,15 @@ namespace OpenNos.GameObject
                             }
                         }
                     }
+
+                    //cleanup sending queue to avoid sending uneccessary packets to it
+                    session.ClearLowpriorityQueue();
+                    session.Character.IsChangingMap = false;
                 }
                 catch (Exception)
                 {
                     Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
+                    session.Character.IsChangingMap = false;
                 }
             }
         }

@@ -281,7 +281,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
                         RepliedMessageId = requestMessage.MessageId,
                         ReturnValue = returnValue,
                         RemoteException = exception
-                    });
+                    }, 10);
             }
             catch
             {

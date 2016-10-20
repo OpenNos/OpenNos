@@ -192,6 +192,8 @@ namespace OpenNos.GameObject
 
         public bool InvisibleGm { get; set; }
 
+        public bool IsChangingMap { get; set; }
+
         public bool IsCustomSpeed { get; set; }
 
         public bool IsDancing

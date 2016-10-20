@@ -255,11 +255,11 @@ namespace OpenNos.GameObject
             IsAuthenticated = true;
         }
 
-        public void SendPacket(string packet)
+        public void SendPacket(string packet, byte priority = 10)
         {
             if (!IsDisposing)
             {
-                _client.SendPacket(packet);
+                _client.SendPacket(packet, priority);
             }
         }
 
@@ -271,12 +271,17 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SendPackets(IEnumerable<String> packets)
+        public void SendPackets(IEnumerable<String> packets, byte priority = 10)
         {
             if (!IsDisposing)
             {
-                _client.SendPackets(packets);
+                _client.SendPackets(packets, priority);
             }
+        }
+
+        public void ClearLowpriorityQueue()
+        {
+            _client.ClearLowpriorityQueue();
         }
 
         public void SetCharacter(Character character)
