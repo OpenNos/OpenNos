@@ -706,26 +706,23 @@ namespace OpenNos.Handler
                         return;
                     }
 
-                    if (Session.Character.Inventory.IsEmpty())
+                    ItemInstance inv = Session.Character.Inventory.MoveInInventory(slot, InventoryType.Wear, InventoryType.Equipment);
+
+                    if (inv == null)
                     {
-                        ItemInstance inv = Session.Character.Inventory.MoveInInventory(slot, InventoryType.Wear, InventoryType.Equipment);
-
-                        if (inv == null)
-                        {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
-                            return;
-                        }
-
-                        if (inv.Slot != -1)
-                        {
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inv.Amount, inv.Type, inv.Slot, inventory.Rare, inventory.Design, inventory.Upgrade, 0));
-                        }
-
-                        Session.SendPacket(Session.Character.GenerateStatChar());
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
-                        Session.SendPacket(Session.Character.GenerateEquipment());
-                        Session.CurrentMap?.Broadcast(Session.Character.GeneratePairy());
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                        return;
                     }
+
+                    if (inv.Slot != -1)
+                    {
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inv.Amount, inv.Type, inv.Slot, inventory.Rare, inventory.Design, inventory.Upgrade, 0));
+                    }
+
+                    Session.SendPacket(Session.Character.GenerateStatChar());
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
+                    Session.SendPacket(Session.Character.GenerateEquipment());
+                    Session.CurrentMap?.Broadcast(Session.Character.GeneratePairy());
                 }
             }
         }
