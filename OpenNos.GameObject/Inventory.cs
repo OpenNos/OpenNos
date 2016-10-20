@@ -287,11 +287,11 @@ namespace OpenNos.GameObject
         /// Equipment <-> Costume, Equipment <-> Specialist </summary> <param
         /// name="sourceSlot"></param> <param name="sourceType"></param> <param
         /// name="targetType"></param> <returns></returns>
-        public ItemInstance MoveInInventory(short sourceSlot, InventoryType sourceType, InventoryType targetType, short? targetSlot = null)
+        public ItemInstance MoveInInventory(short sourceSlot, InventoryType sourceType, InventoryType targetType, short? targetSlot = null, bool wear = true)
         {
             var sourceInstance = LoadBySlotAndType(sourceSlot, sourceType);
 
-            if (sourceInstance == null)
+            if (sourceInstance == null && wear)
             {
                 throw new InvalidOperationException("SourceInstance to move does not exist.");
             }
@@ -299,19 +299,23 @@ namespace OpenNos.GameObject
             {
                 if (targetSlot.HasValue)
                 {
-                    var targetInstance = LoadBySlotAndType(targetSlot.Value, targetType);
-
-                    if (targetInstance == null)
+                    if (wear)
                     {
-                        throw new InvalidOperationException("TargetInstance to move does not exist.");
+                        //swap
+                        var targetInstance = LoadBySlotAndType(targetSlot.Value, targetType);
+
+                        sourceInstance.Slot = targetSlot.Value;
+                        sourceInstance.Type = targetType;
+
+                        targetInstance.Slot = sourceSlot;
+                        targetInstance.Type = sourceType;
                     }
-
-                    // swap
-                    sourceInstance.Slot = targetSlot.Value;
-                    sourceInstance.Type = targetType;
-
-                    targetInstance.Slot = sourceSlot;
-                    targetInstance.Type = sourceType;
+                    else
+                    {
+                        //move source to target
+                        sourceInstance.Slot = GetFreeSlot(targetType, Owner.BackPack);
+                        sourceInstance.Type = targetType;
+                    }
 
                     return sourceInstance;
                 }
@@ -333,24 +337,6 @@ namespace OpenNos.GameObject
             }
 
             return sourceInstance;
-        }
-
-        public ItemInstance MoveInventory(ItemInstance inv, InventoryType desttype, short destslot)
-        {
-            if (Owner.Session != null && inv != null)
-            {
-                Logger.Debug($"Inventory: {inv.Id} Desttype: {desttype} Destslot: {destslot}", Owner.Session.SessionId);
-                Item iteminfo = inv.Item;
-                ItemInstance invdest = LoadBySlotAndType(destslot, desttype);
-
-                if (invdest == null && ((desttype == InventoryType.Specialist && iteminfo.ItemType == ItemType.Specialist) || (desttype == InventoryType.Costume && iteminfo.ItemType == ItemType.Fashion) || desttype == InventoryType.Equipment))
-                {
-                    inv.Slot = destslot;
-                    inv.Type = desttype;
-                    return inv;
-                }
-            }
-            return null;
         }
 
         public void MoveItem(InventoryType type, short sourceSlot, byte amount, short destinationSlot, out ItemInstance sourceInventory, out ItemInstance destinationInventory)

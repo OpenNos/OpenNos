@@ -559,7 +559,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("mve")]
-        public void MoveInventory(string packet)
+        public void MoveEquipment(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
@@ -575,7 +575,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                ItemInstance inv = Session.Character.Inventory.MoveInventory(Session.Character.Inventory.LoadBySlotAndType(slot, (InventoryType)type), (InventoryType)destinationType, destinationSlot);
+                ItemInstance inv = Session.Character.Inventory.MoveInInventory(slot, (InventoryType)type, (InventoryType)destinationType, destinationSlot, false);
                 if (inv != null)
                 {
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, (InventoryType)destinationType, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
