@@ -1258,17 +1258,17 @@ namespace OpenNos.Handler
 
                 if (skillinfo.SkillVNum < 200)
                 {
-                    for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
+                    foreach(var skill in Session.Character.Skills.GetAllItems())
                     {
-                        if ((skillinfo.CastId == Session.Character.Skills[i].Skill.CastId) && (Session.Character.Skills[i].Skill.SkillVNum < 200))
+                        if ((skillinfo.CastId == skill.Skill.CastId) && (skill.Skill.SkillVNum < 200))
                         {
-                            Session.Character.Skills.Remove(Session.Character.Skills[i]);
+                            Session.Character.Skills.Remove(skill.SkillVNum);
                         }
                     }
                 }
                 else
                 {
-                    if (Session.Character.Skills.Any(s => s.SkillVNum == vnum))
+                    if (Session.Character.Skills.ContainsKey(vnum))
                     {
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_ALREADY_EXIST"), 11));
                         return;
@@ -1276,15 +1276,15 @@ namespace OpenNos.Handler
 
                     if (skillinfo.UpgradeSkill != 0)
                     {
-                        CharacterSkill oldupgrade = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
+                        CharacterSkill oldupgrade = Session.Character.Skills.GetAllItems().FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
                         if (oldupgrade != null)
                         {
-                            Session.Character.Skills.Remove(oldupgrade);
+                            Session.Character.Skills.Remove(oldupgrade.SkillVNum);
                         }
                     }
                 }
 
-                Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = vnum, CharacterId = Session.Character.CharacterId });
+                Session.Character.Skills[vnum] = new CharacterSkill() { SkillVNum = vnum, CharacterId = Session.Character.CharacterId };
 
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());

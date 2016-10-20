@@ -17,6 +17,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -98,7 +99,7 @@ namespace OpenNos.Handler
             {
                 for (int i = 3; i < packetsplit.Length - 1; i += 2)
                 {
-                    List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
+                    List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
                     if (skills != null)
                     {
                         short CastId = -1;
@@ -130,7 +131,7 @@ namespace OpenNos.Handler
         {
             IList<string> broadcastPackets = new List<string>();
 
-            List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
+            List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems(); ;
             bool notcancel = false;
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
@@ -174,7 +175,7 @@ namespace OpenNos.Handler
                         }
 
                         Session.SendPacket(Session.Character.GenerateStat());
-                        CharacterSkill skillinfo = Session.Character.Skills.OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
+                        CharacterSkill skillinfo = Session.Character.Skills.GetAllItems().OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
                         Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {(skillinfo != null ? skillinfo.Skill.CastEffect : ski.Skill.CastEffect)} {ski.Skill.SkillVNum}");
 
                         // Generate scp
@@ -232,9 +233,9 @@ namespace OpenNos.Handler
                                             Session.SendPackets(Session.Character.GenerateQuicklist());
                                         }
                                         Session.SendPacket(Session.Character.GenerateStat());
-                                        CharacterSkill characterSkillInfo = Session.Character.Skills.OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
+                                        CharacterSkill characterSkillInfo = Session.Character.Skills.GetAllItems().OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
                                         Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.CastAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.CastEffect : ski.Skill.CastEffect)} {ski.Skill.SkillVNum}");
-                                        Session.Character.Skills.Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
+                                        Session.Character.Skills.GetAllItems().Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
 
                                         // Generate scp
                                         ski.LastUse = DateTime.Now;
@@ -1103,7 +1104,7 @@ namespace OpenNos.Handler
 
         private void ZoneHit(int Castingid, short x, short y)
         {
-            List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
+            List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
             ushort damage = 0;
             int hitmode = 0;
             CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == Castingid);

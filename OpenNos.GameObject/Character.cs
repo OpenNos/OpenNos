@@ -20,6 +20,7 @@ using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using OpenNos.GameObject.Packets.ServerPackets;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -360,9 +361,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public List<CharacterSkill> Skills { get; set; }
+        public ThreadSafeSortedList<int, CharacterSkill> Skills { get; set; }
 
-        public List<CharacterSkill> SkillsSp { get; set; }
+        public ThreadSafeSortedList<int, CharacterSkill> SkillsSp { get; set; }
 
         public int SnackAmount { get; set; }
 
@@ -446,13 +447,13 @@ namespace OpenNos.GameObject
                 {
                     if (Skills[i].SkillVNum >= 200)
                     {
-                        Skills.Remove(Skills[i]);
+                        Skills.Remove(i);
                     }
                 }
 
-                Skills.Add(new CharacterSkill { SkillVNum = (short)(200 + 20 * Class), CharacterId = CharacterId });
-                Skills.Add(new CharacterSkill { SkillVNum = (short)(201 + 20 * Class), CharacterId = CharacterId });
-                Skills.Add(new CharacterSkill { SkillVNum = 236, CharacterId = CharacterId });
+                Skills[(short)(200 + 20 * Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * Class), CharacterId = CharacterId };
+                Skills[(short)(201 + 20 * Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * Class), CharacterId = CharacterId };
+                Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = CharacterId };
 
                 Session.SendPacket(GenerateSki());
 
@@ -1136,7 +1137,7 @@ namespace OpenNos.GameObject
 
         public string GenerateSki()
         {
-            List<CharacterSkill> skill = UseSp ? SkillsSp : Skills;
+            List<CharacterSkill> skill = UseSp ? SkillsSp.GetAllItems() : Skills.GetAllItems();
             string skibase = String.Empty;
             if (!UseSp)
             {
@@ -1663,7 +1664,7 @@ namespace OpenNos.GameObject
         {
             int cpmax = (Class > 0 ? 40 : 0) + JobLevel * 2;
             int cpused = 0;
-            foreach (CharacterSkill ski in Skills)
+            foreach (CharacterSkill ski in Skills.GetAllItems())
             {
                 cpused += ski.Skill.CPCost;
             }
@@ -1883,7 +1884,7 @@ namespace OpenNos.GameObject
                         if (NewSkillVNum > 0)
                         {
                             NewSkill = 1;
-                            Skills.Add(new CharacterSkill() { SkillVNum = NewSkillVNum, CharacterId = CharacterId });
+                            Skills[NewSkillVNum] = new CharacterSkill() { SkillVNum = NewSkillVNum, CharacterId = CharacterId };
                         }
                     }
                 }
@@ -1900,12 +1901,12 @@ namespace OpenNos.GameObject
         {
             SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
             byte SkillSpCount = (byte)SkillsSp.Count;
-            SkillsSp = new List<CharacterSkill>();
+            SkillsSp = new ThreadSafeSortedList<int, CharacterSkill>();
             foreach (Skill ski in ServerManager.GetAllSkill())
             {
                 if (ski.Class == Morph + 31 && specialist.SpLevel >= ski.LevelMinimum)
                 {
-                    SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
+                    SkillsSp[ski.SkillVNum] = new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId };
                 }
             }
             if (SkillsSp.Count != SkillSpCount)
@@ -1964,13 +1965,13 @@ namespace OpenNos.GameObject
 
         public void LoadSkills()
         {
-            Skills = new List<CharacterSkill>();
+            Skills = new ThreadSafeSortedList<int, CharacterSkill>();
             IEnumerable<CharacterSkillDTO> characterskillDTO = DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId).ToList();
             foreach (CharacterSkillDTO characterskill in characterskillDTO.OrderBy(s => s.SkillVNum))
             {
-                if (!Skills.Any(s => s.SkillVNum == characterskill.SkillVNum))
+                if (!Skills.ContainsKey(characterskill.SkillVNum))
                 {
-                    Skills.Add(Mapper.DynamicMap<CharacterSkill>(characterskill));
+                    Skills[characterskill.SkillVNum] = Mapper.DynamicMap<CharacterSkill>(characterskill);
                 }
             }
         }
@@ -2135,12 +2136,12 @@ namespace OpenNos.GameObject
                 {
                     IEnumerable<Guid> currentlySavedCharacterSkills = DAOFactory.CharacterSkillDAO.LoadKeysByCharacterId(CharacterId).ToList();
 
-                    foreach (Guid characterSkillToDeleteId in currentlySavedCharacterSkills.Except(Skills.Select(s => s.Id)))
+                    foreach (Guid characterSkillToDeleteId in currentlySavedCharacterSkills.Except(Skills.GetAllItems().Select(s => s.Id)))
                     {
                         DAOFactory.CharacterSkillDAO.Delete(characterSkillToDeleteId);
                     }
 
-                    foreach (CharacterSkillDTO characterSkill in Skills)
+                    foreach (CharacterSkillDTO characterSkill in Skills.GetAllItems())
                     {
                         DAOFactory.CharacterSkillDAO.InsertOrUpdate(characterSkill);
                     }

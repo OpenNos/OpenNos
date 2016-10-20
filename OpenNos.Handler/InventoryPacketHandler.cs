@@ -1135,7 +1135,7 @@ namespace OpenNos.Handler
             }
             else if (!Session.Character.IsSitting)
             {
-                if (Session.Character.Skills.Any(s => (s.LastUse.AddMilliseconds((s.Skill.Cooldown) * 100) > DateTime.Now)))
+                if (Session.Character.Skills.GetAllItems().Any(s => (s.LastUse.AddMilliseconds((s.Skill.Cooldown) * 100) > DateTime.Now)))
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
                     return;
@@ -1416,12 +1416,12 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateStatChar());
-                Session.Character.SkillsSp = new List<CharacterSkill>();
+                Session.Character.SkillsSp = new ThreadSafeSortedList<int, CharacterSkill>();
                 foreach (Skill ski in ServerManager.GetAllSkill())
                 {
                     if (ski.Class == Session.Character.Morph + 31 && sp.SpLevel >= ski.LevelMinimum)
                     {
-                        Session.Character.SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId });
+                        Session.Character.SkillsSp[ski.SkillVNum] = new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId };
                     }
                 }
                 Session.SendPacket(Session.Character.GenerateSki());
@@ -1445,7 +1445,7 @@ namespace OpenNos.Handler
                 Session.Character.SpCooldown = 30;
                 if (Session.Character != null && Session.Character.SkillsSp != null)
                 {
-                    foreach (CharacterSkill ski in Session.Character.SkillsSp.Where(s => (s.LastUse.AddMilliseconds((s.Skill.Cooldown) * 100) > DateTime.Now)))
+                    foreach (CharacterSkill ski in Session.Character.SkillsSp.GetAllItems().Where(s => (s.LastUse.AddMilliseconds((s.Skill.Cooldown) * 100) > DateTime.Now)))
                     {
                         short time = ski.Skill.Cooldown;
                         double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;

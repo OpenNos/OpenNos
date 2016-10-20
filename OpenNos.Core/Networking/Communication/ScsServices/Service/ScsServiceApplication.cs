@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core.Collections;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
 using OpenNos.Core.Networking.Communication.Scs.Server;
