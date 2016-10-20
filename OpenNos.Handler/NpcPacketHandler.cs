@@ -128,7 +128,7 @@ namespace OpenNos.Handler
                     return;
                 }
                 Skill skillinfo = ServerManager.GetSkill(slot);
-                if (Session.Character.Skills.Any(s => s.SkillVNum == slot))
+                if (Session.Character.Skills.GetAllItems().Any(s => s.SkillVNum == slot))
                 {
                     return;
                 }
@@ -185,11 +185,11 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                             return;
                         }
-                        for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
+                        foreach(var skill in Session.Character.Skills.GetAllItems())
                         {
-                            if ((skillinfo.CastId == Session.Character.Skills[i].Skill.CastId) && (Session.Character.Skills[i].Skill.SkillVNum < 200))
+                            if ((skillinfo.CastId == skill.Skill.CastId) && skill.Skill.SkillVNum < 200)
                             {
-                                Session.Character.Skills.Remove(Session.Character.Skills[i]);
+                                Session.Character.Skills.Remove(skill.SkillVNum);
                             }
                         }
                     }
@@ -207,15 +207,15 @@ namespace OpenNos.Handler
                         }
                         if (skillinfo.UpgradeSkill != 0)
                         {
-                            CharacterSkill oldupgrade = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
+                            CharacterSkill oldupgrade = Session.Character.Skills.GetAllItems().FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
                             if (oldupgrade != null)
                             {
-                                Session.Character.Skills.Remove(oldupgrade);
+                                Session.Character.Skills.Remove(oldupgrade.SkillVNum);
                             }
                         }
                     }
 
-                    Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
+                    Session.Character.Skills[slot] = new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId };
 
                     Session.Character.Gold -= skillinfo.Price;
                     Session.SendPacket(Session.Character.GenerateGold());
@@ -557,7 +557,7 @@ namespace OpenNos.Handler
                         if (inv.GetType().Equals(typeof(WearableInstance)))
                         {
                             WearableInstance item = inv as WearableInstance;
-                            if (item != null && (item.Item.EquipmentSlot == (byte)EquipmentType.Armor || item.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || item.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon))
+                            if (item != null && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
                             {
                                 item.SetRarityPoint();
                             }
@@ -645,7 +645,7 @@ namespace OpenNos.Handler
             {
                 short vnum = -1;
                 short.TryParse(packetsplit[4], out vnum);
-                CharacterSkill skill = Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == vnum);
+                CharacterSkill skill = Session.Character.Skills[vnum];
                 if (skill == null || vnum == (200 + 20 * Session.Character.Class) || vnum == (201 + 20 * Session.Character.Class))
                 {
                     return;
@@ -653,15 +653,15 @@ namespace OpenNos.Handler
                 Session.Character.Gold -= skill.Skill.Price;
                 Session.SendPacket(Session.Character.GenerateGold());
 
-                for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
-                {
-                    if (skill.Skill.SkillVNum == Session.Character.Skills[i].Skill.UpgradeSkill)
+                foreach(var loadedSkill in Session.Character.Skills.GetAllItems())
+                { 
+                    if (skill.Skill.SkillVNum == loadedSkill.Skill.UpgradeSkill)
                     {
-                        Session.Character.Skills.Remove(Session.Character.Skills[i]);
+                        Session.Character.Skills.Remove(loadedSkill.SkillVNum);
                     }
                 }
 
-                Session.Character.Skills.Remove(skill);
+                Session.Character.Skills.Remove(skill.SkillVNum);
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());
                 Session.SendPacket(Session.Character.GenerateLev());

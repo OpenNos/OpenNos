@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
             {
                 // airwaves - eventitems
                 case 0:
-                    if (this != null && this.ItemType == (byte)Domain.ItemType.Event)
+                    if (this != null && this.ItemType == Domain.ItemType.Event)
                     {
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(EffectValue));
                         if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))

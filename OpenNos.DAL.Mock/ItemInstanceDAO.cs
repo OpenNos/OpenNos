@@ -44,12 +44,12 @@ namespace OpenNos.DAL.Mock
             return Enumerable.Empty<ItemInstanceDTO>();
         }
 
-        public ItemInstanceDTO LoadBySlotAndType(long characterId, short slot, Domain.InventoryType type)
+        public ItemInstanceDTO LoadBySlotAndType(long characterId, short slot, InventoryType type)
         {
             return Container.SingleOrDefault(i => i.CharacterId == characterId && i.Slot == slot && i.Type == type);
         }
 
-        public IEnumerable<ItemInstanceDTO> LoadByType(long characterId, Domain.InventoryType type)
+        public IEnumerable<ItemInstanceDTO> LoadByType(long characterId, InventoryType type)
         {
             return Container.Where(i => i.CharacterId == characterId && i.Type == type);
         }

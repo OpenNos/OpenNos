@@ -13,7 +13,6 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Core.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -238,7 +237,7 @@ namespace OpenNos.GameObject
                         {
                             foreach (ClientSession session in Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)))
                             {
-                                session.SendPacket(sentPacket.Packet);
+                                session.SendPacket(sentPacket.Packet, 1);
                             }
                         }
                         break;
@@ -272,7 +271,8 @@ namespace OpenNos.GameObject
                         break;
 
                     case ReceiverType.Group:
-                        foreach (ClientSession session in Sessions.Where(s => s.Character.Group != null
+                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.Group != null
+                                 && sentPacket.Sender != null && sentPacket.Sender.Character != null && sentPacket.Sender.Character.Group != null 
                                  && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId))
                         {
                             session.SendPacket(sentPacket.Packet);

@@ -214,7 +214,7 @@ namespace OpenNos.Handler
                 }
                 if (inventory != null && inventory.Item != null)
                 {
-                    Session.SendPacket(inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp ?
+                    Session.SendPacket(inventory.Item.EquipmentSlot != EquipmentType.Sp ?
                         Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ?
                         Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
                 }
@@ -514,7 +514,7 @@ namespace OpenNos.Handler
                     }
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
-                        if (mapitem.ItemInstance.Item.ItemType == (byte)ItemType.Map)
+                        if (mapitem.ItemInstance.Item.ItemType == ItemType.Map)
                         {
                             MapItem mapItem;
                             Session.CurrentMap.DroppedList.TryRemove(transportId, out mapItem);
@@ -559,7 +559,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("mve")]
-        public void MoveInventory(string packet)
+        public void MoveEquipment(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
@@ -575,7 +575,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                ItemInstance inv = Session.Character.Inventory.MoveInventory(Session.Character.Inventory.LoadBySlotAndType(slot, (InventoryType)type), (InventoryType)destinationType, destinationSlot);
+                ItemInstance inv = Session.Character.Inventory.MoveInInventory(slot, (InventoryType)type, (InventoryType)destinationType, destinationSlot, false);
                 if (inv != null)
                 {
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, (InventoryType)destinationType, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
@@ -1135,7 +1135,7 @@ namespace OpenNos.Handler
             }
             else if (!Session.Character.IsSitting)
             {
-                if (Session.Character.Skills.Any(s => (s.LastUse.AddMilliseconds((s.Skill.Cooldown) * 100) > DateTime.Now)))
+                if (Session.Character.Skills.GetAllItems().Any(s => (s.LastUse.AddMilliseconds((s.Skill.Cooldown) * 100) > DateTime.Now)))
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
                     return;
@@ -1207,7 +1207,7 @@ namespace OpenNos.Handler
                         inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                         if (inventory != null)
                         {
-                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                             {
                                 inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.None);
                             }
@@ -1218,7 +1218,7 @@ namespace OpenNos.Handler
                         inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                         if (inventory != null)
                         {
-                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                             {
                                 inventory.RarifyItem(Session, RarifyMode.Normal, RarifyProtection.None);
                             }
@@ -1242,7 +1242,7 @@ namespace OpenNos.Handler
                         {
                             if (specialist.Rare != -2)
                             {
-                                if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
+                                if (specialist.Item.EquipmentSlot == EquipmentType.Sp)
                                 {
                                     specialist.UpgradeSp(Session, UpgradeProtection.None);
                                 }
@@ -1258,7 +1258,7 @@ namespace OpenNos.Handler
                         inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                         if (inventory != null)
                         {
-                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                             {
                                 inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.Protected);
                             }
@@ -1269,7 +1269,7 @@ namespace OpenNos.Handler
                         inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                         if (inventory != null)
                         {
-                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                             {
                                 inventory.RarifyItem(Session, RarifyMode.Normal, RarifyProtection.Scroll);
                             }
@@ -1282,7 +1282,7 @@ namespace OpenNos.Handler
                         {
                             if (specialist.Rare != -2)
                             {
-                                if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
+                                if (specialist.Item.EquipmentSlot == EquipmentType.Sp)
                                 {
                                     specialist.UpgradeSp(Session, UpgradeProtection.Protected);
                                 }
@@ -1300,7 +1300,7 @@ namespace OpenNos.Handler
                         {
                             if (specialist.Rare != -2)
                             {
-                                if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
+                                if (specialist.Item.EquipmentSlot == EquipmentType.Sp)
                                 {
                                     specialist.UpgradeSp(Session, UpgradeProtection.Protected);
                                 }
@@ -1318,7 +1318,7 @@ namespace OpenNos.Handler
                         {
                             if (specialist.Rare != -2)
                             {
-                                if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
+                                if (specialist.Item.EquipmentSlot == EquipmentType.Sp)
                                 {
                                     specialist.PerfectSP(Session, UpgradeProtection.None);
                                 }
@@ -1334,7 +1334,7 @@ namespace OpenNos.Handler
                         inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, inventoryType);
                         if (inventory != null)
                         {
-                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            if (inventory.Item.EquipmentSlot == EquipmentType.Armor || inventory.Item.EquipmentSlot == EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                             {
                                 inventory.UpgradeItem(Session, UpgradeMode.Reduced, UpgradeProtection.Protected);
                             }
@@ -1416,12 +1416,12 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateStatChar());
-                Session.Character.SkillsSp = new List<CharacterSkill>();
+                Session.Character.SkillsSp = new ThreadSafeSortedList<int, CharacterSkill>();
                 foreach (Skill ski in ServerManager.GetAllSkill())
                 {
                     if (ski.Class == Session.Character.Morph + 31 && sp.SpLevel >= ski.LevelMinimum)
                     {
-                        Session.Character.SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId });
+                        Session.Character.SkillsSp[ski.SkillVNum] = new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId };
                     }
                 }
                 Session.SendPacket(Session.Character.GenerateSki());
@@ -1445,7 +1445,7 @@ namespace OpenNos.Handler
                 Session.Character.SpCooldown = 30;
                 if (Session.Character != null && Session.Character.SkillsSp != null)
                 {
-                    foreach (CharacterSkill ski in Session.Character.SkillsSp.Where(s => (s.LastUse.AddMilliseconds((s.Skill.Cooldown) * 100) > DateTime.Now)))
+                    foreach (CharacterSkill ski in Session.Character.SkillsSp.GetAllItems().Where(s => (s.LastUse.AddMilliseconds((s.Skill.Cooldown) * 100) > DateTime.Now)))
                     {
                         short time = ski.Skill.Cooldown;
                         double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;

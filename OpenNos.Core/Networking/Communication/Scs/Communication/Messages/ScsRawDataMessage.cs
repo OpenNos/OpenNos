@@ -20,7 +20,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
     /// This message is used to send/receive a raw byte array as message data.
     /// </summary>
     [Serializable]
-    public class ScsRawDataMessage : ScsMessage
+    public class ScsRawDataMessage : ScsMessage, IComparable
     {
         #region Instantiation
 
@@ -59,6 +59,18 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
         /// Message data that is being transmitted.
         /// </summary>
         public byte[] MessageData { get; set; }
+
+        public int Priority { get; set; }
+
+        public int CompareTo(object obj)
+        {
+            return CompareTo((ScsRawDataMessage)obj);
+        }
+
+        public int CompareTo(ScsRawDataMessage other)
+        {
+            return Priority.CompareTo(other.Priority);
+        }
 
         #endregion
 

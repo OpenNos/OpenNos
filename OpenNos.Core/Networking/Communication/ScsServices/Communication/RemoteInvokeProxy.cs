@@ -74,7 +74,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
                 Parameters = message.InArgs
             };
 
-            var responseMessage = _clientMessenger.SendMessageAndWaitForResponse(requestMessage) as ScsRemoteInvokeReturnMessage;
+            var responseMessage = _clientMessenger.SendMessageAndWaitForResponse(requestMessage, 10) as ScsRemoteInvokeReturnMessage;
             if (responseMessage == null)
             {
                 return null;

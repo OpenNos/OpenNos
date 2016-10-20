@@ -30,11 +30,13 @@ namespace OpenNos.Core
 
         void Initialize(EncryptionBase encryptor);
 
-        void SendPacket(string packet);
+        void SendPacket(string packet, byte priority = 10);
 
         void SendPacketFormat(string packet, params object[] param);
 
-        void SendPackets(IEnumerable<string> packets);
+        void SendPackets(IEnumerable<string> packets, byte priority = 10);
+
+        void ClearLowpriorityQueue();
 
         #endregion
     }

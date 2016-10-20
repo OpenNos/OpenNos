@@ -14,7 +14,6 @@
 
 using EpPathFinding.cs;
 using OpenNos.Core;
-using OpenNos.Core.Collections;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -102,7 +101,7 @@ namespace OpenNos.GameObject
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
 
             _npcs = new List<MapNpc>();
-            npcsDTO.ToList().ForEach(s=> _npcs.Add(new MapNpc(s)));
+            npcsDTO.ToList().ForEach(s => _npcs.Add(new MapNpc(s)));
         }
 
         #endregion
@@ -249,8 +248,8 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                //TODO Instantiate as concrete ItemInstance
-                ItemInstance newInstance = Inventory.InstantiateItemInstance(drop.ItemVNum, -1, (byte)drop.Amount);
+                // TODO Instantiate as concrete ItemInstance
+                ItemInstance newInstance = Inventory.InstantiateItemInstance(drop.ItemVNum, -1, drop.Amount);
 
                 droppedItem = new MapItem(localMapX, localMapY)
                 {
@@ -259,7 +258,7 @@ namespace OpenNos.GameObject
                 };
 
                 // rarify
-                if (droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                if (droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
                 {
                     droppedItem.Rarify(null);
                 }
@@ -301,7 +300,7 @@ namespace OpenNos.GameObject
 
         public int GetNextMonsterId()
         {
-            int nextId = _mapMonsterIds.DefaultIfEmpty().Max() + 1;
+            int nextId = _mapMonsterIds.Last() + 1;
             _mapMonsterIds.Add(nextId);
             return nextId;
         }
@@ -578,7 +577,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Wear);
+                        WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
                         if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
                         {
                             if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)

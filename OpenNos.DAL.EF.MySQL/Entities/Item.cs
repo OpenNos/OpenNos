@@ -173,7 +173,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte SpType { get; set; }
 
-        public InventoryType Type { get; set; }
+        public byte Type { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

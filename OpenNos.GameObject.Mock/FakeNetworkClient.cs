@@ -128,7 +128,7 @@ namespace OpenNos.GameObject.Mock
             ReceivePacket(PacketFactory.Deserialize(packet));
         }
 
-        public void SendPacket(string packet)
+        public void SendPacket(string packet, byte priority = 10)
         {
             _sentPackets.Enqueue(packet);
         }
@@ -138,12 +138,17 @@ namespace OpenNos.GameObject.Mock
             _sentPackets.Enqueue(String.Format(packet, param));
         }
 
-        public void SendPackets(IEnumerable<string> packets)
+        public void SendPackets(IEnumerable<string> packets, byte priority = 10)
         {
             foreach (string packet in packets)
             {
-                SendPacket(packet);
+                SendPacket(packet, priority);
             }
+        }
+
+        public void ClearLowpriorityQueue()
+        {
+            // nothing to do here
         }
 
         #endregion

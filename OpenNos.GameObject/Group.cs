@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core.Collections;
+using OpenNos.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;

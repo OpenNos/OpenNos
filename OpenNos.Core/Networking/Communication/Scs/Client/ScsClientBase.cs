@@ -208,14 +208,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
         /// <exception cref="CommunicationStateException">
         /// Throws a CommunicationStateException if client is not connected to the server.
         /// </exception>
-        public void SendMessage(IScsMessage message)
+        public void SendMessage(IScsMessage message, byte priority)
         {
             if (CommunicationState != CommunicationStates.Connected)
             {
                 throw new CommunicationStateException("Client is not connected to the server.");
             }
 
-            _communicationChannel.SendMessage(message);
+            _communicationChannel.SendMessage(message, priority);
         }
 
         /// <summary>
@@ -335,11 +335,16 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
                     return;
                 }
 
-                _communicationChannel.SendMessage(new ScsPingMessage());
+                _communicationChannel.SendMessage(new ScsPingMessage(), 10);
             }
             catch
             {
             }
+        }
+
+        public void ClearLowpriorityQueue()
+        {
+            _communicationChannel.ClearLowpriorityQueue();
         }
 
         #endregion

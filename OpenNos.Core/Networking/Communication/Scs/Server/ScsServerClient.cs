@@ -146,9 +146,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         /// Sends a message to the client.
         /// </summary>
         /// <param name="message">Message to be sent</param>
-        public void SendMessage(IScsMessage message)
+        public void SendMessage(IScsMessage message, byte priority)
         {
-            _communicationChannel.SendMessage(message);
+            _communicationChannel.SendMessage(message, priority);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
             var message = e.Message;
             if (message is ScsPingMessage)
             {
-                _communicationChannel.SendMessage(new ScsPingMessage { RepliedMessageId = message.MessageId });
+                _communicationChannel.SendMessage(new ScsPingMessage { RepliedMessageId = message.MessageId }, 10);
                 return;
             }
 
@@ -216,6 +216,11 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         private void OnMessageReceived(IScsMessage message)
         {
             MessageReceived?.Invoke(this, new MessageEventArgs(message, DateTime.Now));
+        }
+
+        public void ClearLowpriorityQueue()
+        {
+            _communicationChannel.ClearLowpriorityQueue();
         }
 
         #endregion

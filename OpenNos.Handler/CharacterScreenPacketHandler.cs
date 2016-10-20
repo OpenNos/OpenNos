@@ -160,7 +160,7 @@ namespace OpenNos.Handler
                             ItemInstance inventory = new WearableInstance() // first weapon
                             {
                                 CharacterId = newCharacter.CharacterId,
-                                Slot = (short)EquipmentType.MainWeapon,
+                                Slot = (byte)EquipmentType.MainWeapon,
                                 Type = InventoryType.Wear,
                                 Amount = 1,
                                 ItemVNum = 1,
@@ -170,7 +170,7 @@ namespace OpenNos.Handler
                             inventory = new WearableInstance() // second weapon
                             {
                                 CharacterId = newCharacter.CharacterId,
-                                Slot = (short)EquipmentType.SecondaryWeapon,
+                                Slot = (byte)EquipmentType.SecondaryWeapon,
                                 Type = InventoryType.Wear,
                                 Amount = 1,
                                 ItemVNum = 8
@@ -180,7 +180,7 @@ namespace OpenNos.Handler
                             inventory = new WearableInstance() // armor
                             {
                                 CharacterId = newCharacter.CharacterId,
-                                Slot = (short)EquipmentType.Armor,
+                                Slot = (byte)EquipmentType.Armor,
                                 Type = InventoryType.Wear,
                                 Amount = 1,
                                 ItemVNum = 12
@@ -357,7 +357,7 @@ namespace OpenNos.Handler
                 {
                     // explicit load of iteminstance
                     WearableInstance currentInstance = equipmentEntry as WearableInstance;
-                    equipment[currentInstance.Item.EquipmentSlot] = currentInstance;
+                    equipment[(short)currentInstance.Item.EquipmentSlot] = currentInstance;
                 }
 
                 // 1 1 before long string of -1.-1 = act completion

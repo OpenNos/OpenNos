@@ -61,7 +61,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// </summary>
         private volatile bool _running;
 
-        private ConcurrentQueue<byte[]> _sendBuffer;
+        private ConcurrentQueue<byte[]> _highPriorityBuffer;
+        private ConcurrentQueue<byte[]> _lowPriorityBuffer;
 
         private CancellationTokenSource _sendCancellationToken = new CancellationTokenSource();
 
@@ -90,7 +91,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _buffer = new byte[ReceiveBufferSize];
             _syncLock = new object();
 
-            _sendBuffer = new ConcurrentQueue<byte[]>();
+            _highPriorityBuffer = new ConcurrentQueue<byte[]>();
+            _lowPriorityBuffer = new ConcurrentQueue<byte[]>();
             CancellationToken cancellationToken = _sendCancellationToken.Token;
             _sendTask = StartSending(SendInterval, new TimeSpan(0, 0, 0, 0, 10), cancellationToken);
         }
@@ -188,27 +190,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             {
                 if (WireProtocol != null)
                 {
-                    IEnumerable<byte> outgoingPacket = new List<byte>();
-
-                    // send maximal 30 packets at once
-                    for (int i = 0; i < 30; i++) 
-                    {
-                        byte[] message;
-                        if (_sendBuffer.TryDequeue(out message) && message != null)
-                        {
-                            outgoingPacket = outgoingPacket.Concat(message);
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    if (outgoingPacket.Any())
-                    {
-                        _clientSocket.BeginSend(outgoingPacket.ToArray(), 0, outgoingPacket.Count(), SocketFlags.None,
-                        new AsyncCallback(SendCallback), _clientSocket);
-                    }
+                    SendByPriority(_highPriorityBuffer);
+                    SendByPriority(_lowPriorityBuffer);
                 }
             }
             catch (Exception)
@@ -222,13 +205,46 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             }
         }
 
+        private void SendByPriority(ConcurrentQueue<byte[]> buffer)
+        {
+            IEnumerable<byte> outgoingPacket = new List<byte>();
+
+            // send maximal 30 packets at once
+            for (int i = 0; i < 30; i++)
+            {
+                byte[] message;
+                if (buffer.TryDequeue(out message) && message != null)
+                {
+                    outgoingPacket = outgoingPacket.Concat(message);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (outgoingPacket.Any())
+            {
+                _clientSocket.BeginSend(outgoingPacket.ToArray(), 0, outgoingPacket.Count(), SocketFlags.None,
+                new AsyncCallback(SendCallback), _clientSocket);
+            }
+        }
+
         /// <summary>
         /// Sends a message to the remote application.
         /// </summary>
         /// <param name="message">Message to be sent</param>
-        protected override void SendMessagepublic(IScsMessage message)
+        protected override void SendMessagepublic(IScsMessage message, byte priority)
         {
-            _sendBuffer.Enqueue(WireProtocol.GetBytes(message));
+            if(priority > 5)
+            {
+                _highPriorityBuffer.Enqueue(WireProtocol.GetBytes(message));
+            }
+            else
+            {
+                _lowPriorityBuffer.Enqueue(WireProtocol.GetBytes(message));
+            }
+
         }
 
         /// <summary>
@@ -313,6 +329,11 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             {
                 Disconnect();
             }
+        }
+
+        public override void ClearLowpriorityQueue()
+        {
+            _lowPriorityBuffer.Clear();
         }
 
         #endregion

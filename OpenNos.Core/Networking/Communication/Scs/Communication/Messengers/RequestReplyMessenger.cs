@@ -181,9 +181,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// Sends a message.
         /// </summary>
         /// <param name="message">Message to be sent</param>
-        public void SendMessage(IScsMessage message)
+        public void SendMessage(IScsMessage message, byte priority)
         {
-            Messenger.SendMessage(message);
+            Messenger.SendMessage(message, priority);
         }
 
         /// <summary>
@@ -198,9 +198,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// </remarks>
         /// <param name="message">message to send</param>
         /// <returns>Response message</returns>
-        public IScsMessage SendMessageAndWaitForResponse(IScsMessage message)
+        public IScsMessage SendMessageAndWaitForResponse(IScsMessage message, byte priority)
         {
-            return SendMessageAndWaitForResponse(message, Timeout);
+            return SendMessageAndWaitForResponse(message, Timeout, priority);
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// <exception cref="CommunicationException">
         /// Throws CommunicationException if communication fails before reply message.
         /// </exception>
-        public IScsMessage SendMessageAndWaitForResponse(IScsMessage message, int timeoutMilliseconds)
+        public IScsMessage SendMessageAndWaitForResponse(IScsMessage message, int timeoutMilliseconds, byte priority)
         {
             // Create a waiting message record and add to list
             var waitingMessage = new WaitingMessage();
@@ -234,7 +234,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             try
             {
                 // Send message
-                Messenger.SendMessage(message);
+                Messenger.SendMessage(message, priority);
 
                 // Wait for response
                 waitingMessage.WaitEvent.Wait(timeoutMilliseconds);
@@ -366,6 +366,11 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         private void Messenger_MessageSent(object sender, MessageEventArgs e)
         {
             OnMessageSent(e.Message);
+        }
+
+        public void ClearLowpriorityQueue()
+        {
+           //do nothing
         }
 
         #endregion

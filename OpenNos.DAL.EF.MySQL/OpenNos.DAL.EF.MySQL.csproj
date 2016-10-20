@@ -115,9 +115,13 @@
     <Compile Include="Entities\NpcMonsterSkill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201610161230485_Aphrodite.cs" />
-    <Compile Include="Migrations\201610161230485_Aphrodite.Designer.cs">
-      <DependentUpon>201610161230485_Aphrodite.cs</DependentUpon>
+    <Compile Include="Migrations\201610191449374_Alexis.cs" />
+    <Compile Include="Migrations\201610191449374_Alexis.Designer.cs">
+      <DependentUpon>201610191449374_Alexis.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610192000016_Zephyr.cs" />
+    <Compile Include="Migrations\201610192000016_Zephyr.Designer.cs">
+      <DependentUpon>201610192000016_Zephyr.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -197,8 +201,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201610161230485_Aphrodite.resx">
-      <DependentUpon>201610161230485_Aphrodite.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201610191449374_Alexis.resx">
+      <DependentUpon>201610191449374_Alexis.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610192000016_Zephyr.resx">
+      <DependentUpon>201610192000016_Zephyr.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

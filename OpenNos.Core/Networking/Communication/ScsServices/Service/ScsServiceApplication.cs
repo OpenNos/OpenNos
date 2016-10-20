@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core.Collections;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
 using OpenNos.Core.Networking.Communication.Scs.Server;
@@ -189,7 +188,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                         RepliedMessageId = requestMessage.MessageId,
                         ReturnValue = returnValue,
                         RemoteException = exception
-                    });
+                    }, 10);
             }
             catch
             {
