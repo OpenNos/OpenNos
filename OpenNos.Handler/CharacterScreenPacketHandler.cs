@@ -234,7 +234,7 @@ namespace OpenNos.Handler
                 return;
             }
             string[] deleteCharacterPacket = packet.Split(' ');
-            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
+            AccountDTO account = DAOFactory.AccountDAO.LoadById(Session.Account.AccountId);
             if (account == null)
             {
                 return;
