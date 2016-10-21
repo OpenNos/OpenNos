@@ -99,8 +99,6 @@ namespace OpenNos.GameObject
 
         public void Broadcast(ClientSession client, string[] packets, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
         {
-            // Send message to all online users
-            Task.Delay(delay);
             try
             {
                 foreach (string packet in packets)
@@ -116,7 +114,6 @@ namespace OpenNos.GameObject
 
         public void Broadcast(IEnumerable<BroadcastPacket> packets, int delay = 0)
         {
-            Task.Delay(delay);
             try
             {
                 SpreadBroadcasts(packets);
@@ -129,7 +126,6 @@ namespace OpenNos.GameObject
 
         public void Broadcast(BroadcastPacket packet, int delay = 0)
         {
-            Task.Delay(delay);
             try
             {
                 SpreadBroadcastpacket(packet);
@@ -142,7 +138,6 @@ namespace OpenNos.GameObject
 
         public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
         {
-            Task.Delay(delay);
             try
             {
                 SpreadBroadcastpacket(new BroadcastPacket(client, content, receiver, characterName, characterId));
@@ -212,7 +207,6 @@ namespace OpenNos.GameObject
                         {
                             foreach (ClientSession session in Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)))
                             {
-                                Console.WriteLine(sentPacket.Packet);
                                 session.SendPacket(sentPacket.Packet, 1);
                             }
                         }
