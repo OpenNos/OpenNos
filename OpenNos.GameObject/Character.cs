@@ -443,11 +443,11 @@ namespace OpenNos.GameObject
                 Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
                 Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
 
-                for (int i = Skills.Count - 1; i >= 0; i--)
-                {
-                    if (Skills[i].SkillVNum >= 200)
+                foreach(var skill in Skills.GetAllItems())
+                { 
+                    if (skill.SkillVNum >= 200)
                     {
-                        Skills.Remove(i);
+                        Skills.Remove(skill.SkillVNum);
                     }
                 }
 
