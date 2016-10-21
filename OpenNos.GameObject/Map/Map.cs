@@ -300,7 +300,7 @@ namespace OpenNos.GameObject
 
         public int GetNextMonsterId()
         {
-            int nextId = _mapMonsterIds.Last() + 1;
+            int nextId = _mapMonsterIds.Any() ? _mapMonsterIds.Last() + 1 : 1;
             _mapMonsterIds.Add(nextId);
             return nextId;
         }
