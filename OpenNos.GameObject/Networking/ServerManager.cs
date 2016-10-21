@@ -920,6 +920,7 @@ namespace OpenNos.GameObject
             {
                 TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
                 map.Value.Disabled = false;
+                map.Value.Tempgrid.GetType();
             }
             foreach (var map in _maps.Where(s => !s.Value.Disabled && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
             {
