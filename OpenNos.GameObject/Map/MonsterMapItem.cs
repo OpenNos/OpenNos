@@ -9,6 +9,7 @@ namespace OpenNos.GameObject
 {
     public class MonsterMapItem : MapItem
     {
+
         public MonsterMapItem(short x, short y, short itemVNum, int amount = 1, long owner = -1) : base(x, y)
         {
             ItemVNum = itemVNum;

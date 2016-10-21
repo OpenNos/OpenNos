@@ -551,7 +551,7 @@ namespace OpenNos.Handler
                         if (Session.Character.Gold + droppedGold.GoldAmount <= 1000000000)
                         {
                             Session.Character.Gold += droppedGold.GoldAmount;
-                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapItem.GetItemInstance().Item.Name} x {mapItem.Amount}", 12));
+                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapItem.GetItemInstance().Item.Name} x {droppedGold.GoldAmount}", 12));
                         }
                         else
                         {

@@ -252,8 +252,8 @@ namespace OpenNos.GameObject
 
                 DroppedList.TryAdd(droppedItem.TransportId, droppedItem);
 
-                // TODO: UseTransportId
-                Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.Amount} 0 0 -1");
+                Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
+
             }
             catch (Exception e)
             {
