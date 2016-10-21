@@ -1872,19 +1872,10 @@ namespace OpenNos.GameObject
                     Skill skinfo = ServerManager.GetSkill((short)i);
                     if (skinfo.Class == 0 && JobLevel >= skinfo.LevelMinimum)
                     {
-                        byte NewSkillVNum = (byte)i;
-                        for (int ii = Skills.Count - 1; ii >= 0; ii--)
-                        {
-                            if (skinfo.SkillVNum == Skills[ii].Skill.SkillVNum)
-                            {
-                                NewSkillVNum = 0;
-                                break;
-                            }
-                        }
-                        if (NewSkillVNum > 0)
-                        {
+                         if(!Skills.GetAllItems().Any(s => s.SkillVNum == i))
+                        { 
                             NewSkill = 1;
-                            Skills[NewSkillVNum] = new CharacterSkill() { SkillVNum = NewSkillVNum, CharacterId = CharacterId };
+                            Skills[i] = new CharacterSkill() { SkillVNum = (short)i, CharacterId = CharacterId };
                         }
                     }
                 }
