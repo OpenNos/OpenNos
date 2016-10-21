@@ -7,13 +7,13 @@ namespace OpenNos.DAL.EF.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Zephyr : IMigrationMetadata
+    public sealed partial class Ares : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Zephyr));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Ares));
         
         string IMigrationMetadata.Id
         {
-            get { return "201610192000016_Zephyr"; }
+            get { return "201610211827432_Ares"; }
         }
         
         string IMigrationMetadata.Source

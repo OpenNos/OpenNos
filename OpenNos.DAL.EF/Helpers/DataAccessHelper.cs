@@ -103,34 +103,34 @@ namespace OpenNos.DAL.EF.Helpers
 
                     // add on line as above for each tableset(it will load the table at startup and
                     // will speedup the first query)
-                    context.Account.Any();
-                    context.Map.Any();
-                    context.MapTypeMap.Any();
-                    context.MapType.Any();
-                    context.Portal.Any();
-                    context.GeneralLog.Any();
-                    context.PenaltyLog.Any();
-                    context.Character.Any();
-                    context.NpcMonster.Any();
-                    context.MapNpc.Any();
-                    context.MapMonster.Any();
-                    context.ItemInstance.Any();
-                    context.Teleporter.Any();
-                    context.Mail.Any();
-                    context.Item.Any();
-                    context.Respawn.Any();
-                    context.Recipe.Any();
-                    context.RecipeItem.Any();
-                    context.QuicklistEntry.Any();
-                    context.CellonOption.Any();
-                    context.Shop.Any();
-                    context.ShopItem.Any();
-                    context.Drop.Any();
-                    context.Skill.Any();
-                    context.ShopSkill.Any();
-                    context.CharacterSkill.Any();
-                    context.NpcMonsterSkill.Any();
-                    context.Combo.Any();
+                    //context.Account.Any();
+                    //context.Map.Any();
+                    //context.MapTypeMap.Any();
+                    //context.MapType.Any();
+                    //context.Portal.Any();
+                    //context.GeneralLog.Any();
+                    //context.PenaltyLog.Any();
+                    //context.Character.Any();
+                    //context.NpcMonster.Any();
+                    //context.MapNpc.Any();
+                    //context.MapMonster.Any();
+                    //context.ItemInstance.Any();
+                    //context.Teleporter.Any();
+                    //context.Mail.Any();
+                    //context.Item.Any();
+                    //context.Respawn.Any();
+                    //context.Recipe.Any();
+                    //context.RecipeItem.Any();
+                    //context.QuicklistEntry.Any();
+                    //context.CellonOption.Any();
+                    //context.Shop.Any();
+                    //context.ShopItem.Any();
+                    //context.Drop.Any();
+                    //context.Skill.Any();
+                    //context.ShopSkill.Any();
+                    //context.CharacterSkill.Any();
+                    //context.NpcMonsterSkill.Any();
+                    //context.Combo.Any();
 
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_INITIALIZED"));
                 }

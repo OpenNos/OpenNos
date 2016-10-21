@@ -1,170 +1,597 @@
 -- ========================================== --
--- Current Migration: 201610192000016_Zephyr
+-- Current Migration: 201610211827432_Ares
 -- ========================================== --
 
-DROP PROCEDURE IF EXISTS `_idempotent_script`;
+DECLARE @CurrentMigration [nvarchar](max)
 
-DELIMITER //
+IF object_id('[dbo].[__MigrationHistory]') IS NOT NULL
+    SELECT @CurrentMigration =
+        (SELECT TOP (1) 
+        [Project1].[MigrationId] AS [MigrationId]
+        FROM ( SELECT 
+        [Extent1].[MigrationId] AS [MigrationId]
+        FROM [dbo].[__MigrationHistory] AS [Extent1]
+        WHERE [Extent1].[ContextKey] = N'OpenNos.DAL.EF.Migrations.Configuration'
+        )  AS [Project1]
+        ORDER BY [Project1].[MigrationId] DESC)
 
-CREATE PROCEDURE `_idempotent_script`()
+IF @CurrentMigration IS NULL
+    SET @CurrentMigration = '0'
+
+IF @CurrentMigration < '201610211827432_Ares'
 BEGIN
-  DECLARE CurrentMigration TEXT;
-
-  IF EXISTS(SELECT 1 FROM information_schema.tables 
-  WHERE table_name = '__MigrationHistory' 
-  AND table_schema = DATABASE()) THEN 
-    SET CurrentMigration = (SELECT
-`Project1`.`MigrationId`
-FROM `__MigrationHistory` AS `Project1`
- WHERE `Project1`.`ContextKey` = 'OpenNos.DAL.EF.Migrations.Configuration'
- ORDER BY 
-`Project1`.`MigrationId` DESC LIMIT 1);
-  END IF;
-
-  IF CurrentMigration IS NULL THEN
-    SET CurrentMigration = '0';
-  END IF;
-
-  IF CurrentMigration < '201610191449374_Alexis' THEN 
-create table `Account` (`AccountId` bigint not null  auto_increment ,`Authority` smallint not null ,`LastCompliment` datetime not null ,`LastSession` int not null ,`Name` nvarchar(255) ,`Password` varchar(255) ,primary key ( `AccountId`) ) engine=InnoDb auto_increment=0;
-create table `Character` (`CharacterId` bigint not null  auto_increment ,`AccountId` bigint not null ,`Act4Dead` int not null ,`Act4Kill` int not null ,`Act4Points` int not null ,`ArenaWinner` int not null ,`Backpack` int not null ,`Biography` longtext,`BuffBlocked` bool not null ,`Class` TINYINT UNSIGNED not null ,`Compliment` smallint not null ,`Dignity` float not null ,`EmoticonsBlocked` bool not null ,`ExchangeBlocked` bool not null ,`Faction` int not null ,`FamilyRequestBlocked` bool not null ,`FriendRequestBlocked` bool not null ,`Gender` TINYINT UNSIGNED not null ,`Gold` bigint not null ,`GroupRequestBlocked` bool not null ,`HairColor` TINYINT UNSIGNED not null ,`HairStyle` TINYINT UNSIGNED not null ,`HeroChatBlocked` bool not null ,`HeroLevel` TINYINT UNSIGNED not null ,`HeroXp` bigint not null ,`Hp` int not null ,`HpBlocked` bool not null ,`JobLevel` TINYINT UNSIGNED not null ,`JobLevelXp` bigint not null ,`Level` TINYINT UNSIGNED not null ,`LevelXp` bigint not null ,`MapId` smallint not null ,`MapX` smallint not null ,`MapY` smallint not null ,`MasterPoints` int not null ,`MasterTicket` int not null ,`MinilandInviteBlocked` bool not null ,`MouseAimLock` bool not null ,`Mp` int not null ,`Name` varchar(255) ,`QuickGetUp` bool not null ,`RagePoint` bigint not null ,`Reput` bigint not null ,`Slot` TINYINT UNSIGNED not null ,`SpAdditionPoint` int not null ,`SpPoint` int not null ,`State` TINYINT UNSIGNED not null ,`TalentLose` int not null ,`TalentSurrender` int not null ,`TalentWin` int not null ,`WhisperBlocked` bool not null ,primary key ( `CharacterId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_AccountId` on `Character` (`AccountId` DESC) using HASH;
-CREATE index  `IX_MapId` on `Character` (`MapId` DESC) using HASH;
-create table `CharacterSkill` (`Id` CHAR(36) BINARY default ''  not null ,`CharacterId` bigint not null ,`SkillVNum` smallint not null ,primary key ( `Id`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_CharacterId` on `CharacterSkill` (`CharacterId` DESC) using HASH;
-CREATE index  `IX_SkillVNum` on `CharacterSkill` (`SkillVNum` DESC) using HASH;
-create table `Skill` (`SkillVNum` smallint not null ,`AttackAnimation` smallint not null ,`BuffId` smallint not null ,`CastAnimation` smallint not null ,`CastEffect` smallint not null ,`CastId` smallint not null ,`CastTime` smallint not null ,`Class` TINYINT UNSIGNED not null ,`Cooldown` smallint not null ,`CPCost` TINYINT UNSIGNED not null ,`Damage` smallint not null ,`Duration` smallint not null ,`Effect` smallint not null ,`Element` TINYINT UNSIGNED not null ,`ElementalDamage` smallint not null ,`HitType` TINYINT UNSIGNED not null ,`ItemVNum` smallint not null ,`Level` TINYINT UNSIGNED not null ,`LevelMinimum` TINYINT UNSIGNED not null ,`MinimumAdventurerLevel` TINYINT UNSIGNED not null ,`MinimumArcherLevel` TINYINT UNSIGNED not null ,`MinimumMagicianLevel` TINYINT UNSIGNED not null ,`MinimumSwordmanLevel` TINYINT UNSIGNED not null ,`MpCost` smallint not null ,`Name` nvarchar(255) ,`Price` int not null ,`Range` TINYINT UNSIGNED not null ,`SecondarySkillVNum` smallint not null ,`SkillChance` smallint not null ,`SkillType` TINYINT UNSIGNED not null ,`TargetRange` TINYINT UNSIGNED not null ,`TargetType` TINYINT UNSIGNED not null ,`Type` TINYINT UNSIGNED not null ,`UpgradeSkill` smallint not null ,`UpgradeType` smallint not null ,primary key ( `SkillVNum`) ) engine=InnoDb auto_increment=0;
-create table `Combo` (`ComboId` int not null  auto_increment ,`Animation` smallint not null ,`Effect` smallint not null ,`Hit` smallint not null ,`SkillVNum` smallint not null ,primary key ( `ComboId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_SkillVNum` on `Combo` (`SkillVNum` DESC) using HASH;
-create table `NpcMonsterSkill` (`NpcMonsterSkillId` bigint not null  auto_increment ,`NpcMonsterVNum` smallint not null ,`Rate` smallint not null ,`SkillVNum` smallint not null ,primary key ( `NpcMonsterSkillId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_NpcMonsterVNum` on `NpcMonsterSkill` (`NpcMonsterVNum` DESC) using HASH;
-CREATE index  `IX_SkillVNum` on `NpcMonsterSkill` (`SkillVNum` DESC) using HASH;
-create table `NpcMonster` (`NpcMonsterVNum` smallint not null ,`AmountRequired` TINYINT UNSIGNED not null ,`AttackClass` TINYINT UNSIGNED not null ,`AttackUpgrade` TINYINT UNSIGNED not null ,`BasicArea` TINYINT UNSIGNED not null ,`BasicCooldown` smallint not null ,`BasicRange` TINYINT UNSIGNED not null ,`BasicSkill` smallint not null ,`CloseDefence` smallint not null ,`Concentrate` smallint not null ,`CriticalLuckRate` TINYINT UNSIGNED not null ,`CriticalRate` smallint not null ,`DamageMaximum` smallint not null ,`DamageMinimum` smallint not null ,`DarkResistance` tinyint not null ,`DefenceDodge` smallint not null ,`DefenceUpgrade` TINYINT UNSIGNED not null ,`DistanceDefence` smallint not null ,`DistanceDefenceDodge` smallint not null ,`Element` TINYINT UNSIGNED not null ,`ElementRate` smallint not null ,`FireResistance` tinyint not null ,`HeroLevel` TINYINT UNSIGNED not null ,`IsHostile` bool not null ,`JobXP` int not null ,`Level` TINYINT UNSIGNED not null ,`LightResistance` tinyint not null ,`MagicDefence` smallint not null ,`MaxHP` int not null ,`MaxMP` int not null ,`MonsterType` TINYINT UNSIGNED not null ,`Name` nvarchar(255) ,`NoAggresiveIcon` bool not null ,`Race` TINYINT UNSIGNED not null ,`RaceType` TINYINT UNSIGNED not null ,`RespawnTime` int not null ,`Speed` TINYINT UNSIGNED not null ,`VNumRequired` smallint not null ,`WaterResistance` tinyint not null ,`XP` int not null ,primary key ( `NpcMonsterVNum`) ) engine=InnoDb auto_increment=0;
-create table `Drop` (`DropId` smallint not null  auto_increment ,`Amount` int not null ,`DropChance` int not null ,`ItemVNum` smallint not null ,`MapTypeId` smallint,`MonsterVNum` smallint,primary key ( `DropId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_ItemVNum` on `Drop` (`ItemVNum` DESC) using HASH;
-CREATE index  `IX_MapTypeId` on `Drop` (`MapTypeId` DESC) using HASH;
-CREATE index  `IX_MonsterVNum` on `Drop` (`MonsterVNum` DESC) using HASH;
-create table `Item` (`VNum` smallint not null ,`BasicUpgrade` TINYINT UNSIGNED not null ,`CellonLvl` TINYINT UNSIGNED not null ,`Class` TINYINT UNSIGNED not null ,`CloseDefence` smallint not null ,`Color` TINYINT UNSIGNED not null ,`Concentrate` smallint not null ,`CriticalLuckRate` TINYINT UNSIGNED not null ,`CriticalRate` smallint not null ,`DamageMaximum` smallint not null ,`DamageMinimum` smallint not null ,`DarkElement` TINYINT UNSIGNED not null ,`DarkResistance` smallint not null ,`DefenceDodge` smallint not null ,`DistanceDefence` smallint not null ,`DistanceDefenceDodge` smallint not null ,`Effect` smallint not null ,`EffectValue` int not null ,`Element` TINYINT UNSIGNED not null ,`ElementRate` smallint not null ,`EquipmentSlot` smallint not null ,`FireElement` TINYINT UNSIGNED not null ,`FireResistance` smallint not null ,`HitRate` smallint not null ,`Hp` smallint not null ,`HpRegeneration` smallint not null ,`IsBlocked` bool not null ,`IsColored` bool not null ,`IsConsumable` bool not null ,`IsDroppable` bool not null ,`IsHeroic` bool not null ,`IsMinilandObject` bool not null ,`IsSoldable` bool not null ,`IsTradable` bool not null ,`IsWarehouse` bool not null ,`ItemSubType` TINYINT UNSIGNED not null ,`ItemType` TINYINT UNSIGNED not null ,`ItemValidTime` bigint not null ,`LevelJobMinimum` TINYINT UNSIGNED not null ,`LevelMinimum` TINYINT UNSIGNED not null ,`LightElement` TINYINT UNSIGNED not null ,`LightResistance` smallint not null ,`MagicDefence` smallint not null ,`MaxCellon` TINYINT UNSIGNED not null ,`MaxCellonLvl` TINYINT UNSIGNED not null ,`MaxElementRate` smallint not null ,`MaximumAmmo` TINYINT UNSIGNED not null ,`MoreHp` smallint not null ,`MoreMp` smallint not null ,`Morph` smallint not null ,`Mp` smallint not null ,`MpRegeneration` smallint not null ,`Name` nvarchar(255) ,`Price` bigint not null ,`PvpDefence` smallint not null ,`PvpStrength` TINYINT UNSIGNED not null ,`ReduceOposantResistance` smallint not null ,`ReputationMinimum` TINYINT UNSIGNED not null ,`ReputPrice` bigint not null ,`SecondaryElement` TINYINT UNSIGNED not null ,`Sex` TINYINT UNSIGNED not null ,`Speed` TINYINT UNSIGNED not null ,`SpType` TINYINT UNSIGNED not null ,`Type` TINYINT UNSIGNED not null ,`WaitDelay` smallint not null ,`WaterElement` TINYINT UNSIGNED not null ,`WaterResistance` smallint not null ,primary key ( `VNum`) ) engine=InnoDb auto_increment=0;
-create table `ItemInstance` (`Id` CHAR(36) BINARY default ''  not null ,`Amount` int not null ,`BoundCharacterId` bigint,`CharacterId` bigint not null ,`Design` smallint not null ,`DurabilityPoint` int not null ,`ItemDeleteTime` datetime,`ItemVNum` smallint not null ,`Rare` tinyint not null ,`Slot` smallint not null ,`Type` TINYINT UNSIGNED not null ,`Upgrade` TINYINT UNSIGNED not null ,`HP` smallint,`MP` smallint,`Ammo` TINYINT UNSIGNED,`Cellon` TINYINT UNSIGNED,`CellonOptionId` CHAR(36) BINARY,`CloseDefence` smallint,`Concentrate` smallint,`CriticalDodge` smallint,`CriticalLuckRate` TINYINT UNSIGNED,`CriticalRate` smallint,`DamageMaximum` smallint,`DamageMinimum` smallint,`DarkElement` TINYINT UNSIGNED,`DarkResistance` tinyint,`DefenceDodge` smallint,`DistanceDefence` smallint,`DistanceDefenceDodge` smallint,`ElementRate` smallint,`FireElement` TINYINT UNSIGNED,`FireResistance` tinyint,`HitRate` smallint,`HP1` smallint,`IsEmpty` bool,`IsFixed` bool,`LightElement` TINYINT UNSIGNED,`LightResistance` tinyint,`MagicDefence` smallint,`MaxElementRate` smallint,`MP1` smallint,`WaterElement` TINYINT UNSIGNED,`WaterResistance` tinyint,`XP` bigint,`SlDamage` smallint,`SlDefence` smallint,`SlElement` smallint,`SlHP` smallint,`SpDamage` TINYINT UNSIGNED,`SpDark` TINYINT UNSIGNED,`SpDefence` TINYINT UNSIGNED,`SpElement` TINYINT UNSIGNED,`SpFire` TINYINT UNSIGNED,`SpHP` TINYINT UNSIGNED,`SpLevel` TINYINT UNSIGNED,`SpLight` TINYINT UNSIGNED,`SpStoneUpgrade` TINYINT UNSIGNED,`SpWater` TINYINT UNSIGNED,`Discriminator` nvarchar(128)  not null ,primary key ( `Id`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_BoundCharacterId` on `ItemInstance` (`BoundCharacterId` DESC) using HASH;
-CREATE index  `IX_SlotAndType` on `ItemInstance` (`CharacterId` DESC,`Slot` DESC,`Type` DESC) using HASH;
-CREATE index  `IX_ItemVNum` on `ItemInstance` (`ItemVNum` DESC) using HASH;
-create table `CellonOption` (`Id` CHAR(36) BINARY default ''  not null ,`Level` TINYINT UNSIGNED not null ,`Type` TINYINT UNSIGNED not null ,`Value` int not null ,`WearableInstanceId` CHAR(36) BINARY default ''  not null ,primary key ( `Id`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_WearableInstanceId` on `CellonOption` (`WearableInstanceId` DESC) using HASH;
-create table `Mail` (`MailId` bigint not null  auto_increment ,`AttachmentAmount` TINYINT UNSIGNED not null ,`AttachmentRarity` TINYINT UNSIGNED not null ,`AttachmentUpgrade` TINYINT UNSIGNED not null ,`AttachmentVNum` smallint,`Date` datetime not null ,`EqPacket` nvarchar(255) ,`IsOpened` bool not null ,`IsSenderCopy` bool not null ,`Message` nvarchar(255) ,`ReceiverId` bigint not null ,`SenderClass` TINYINT UNSIGNED not null ,`SenderGender` TINYINT UNSIGNED not null ,`SenderHairColor` TINYINT UNSIGNED not null ,`SenderHairStyle` TINYINT UNSIGNED not null ,`SenderId` bigint not null ,`SenderMorphId` smallint not null ,`Title` nvarchar(255) ,primary key ( `MailId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_AttachmentVNum` on `Mail` (`AttachmentVNum` DESC) using HASH;
-CREATE index  `IX_ReceiverId` on `Mail` (`ReceiverId` DESC) using HASH;
-CREATE index  `IX_SenderId` on `Mail` (`SenderId` DESC) using HASH;
-create table `Recipe` (`RecipeId` smallint not null  auto_increment ,`Amount` TINYINT UNSIGNED not null ,`ItemVNum` smallint not null ,`MapNpcId` int not null ,primary key ( `RecipeId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_ItemVNum` on `Recipe` (`ItemVNum` DESC) using HASH;
-CREATE index  `IX_MapNpcId` on `Recipe` (`MapNpcId` DESC) using HASH;
-create table `MapNpc` (`MapNpcId` int not null ,`Dialog` smallint not null ,`Effect` smallint not null ,`EffectDelay` smallint not null ,`IsDisabled` bool not null ,`IsMoving` bool not null ,`IsSitting` bool not null ,`MapId` smallint not null ,`MapX` smallint not null ,`MapY` smallint not null ,`NpcVNum` smallint not null ,`Position` TINYINT UNSIGNED not null ,primary key ( `MapNpcId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_MapId` on `MapNpc` (`MapId` DESC) using HASH;
-CREATE index  `IX_NpcVNum` on `MapNpc` (`NpcVNum` DESC) using HASH;
-create table `Map` (`MapId` smallint not null ,`Data` longblob,`Music` int not null ,`Name` nvarchar(255) ,`ShopAllowed` bool not null ,primary key ( `MapId`) ) engine=InnoDb auto_increment=0;
-create table `MapMonster` (`MapMonsterId` int not null ,`IsDisabled` bool not null ,`IsMoving` bool not null ,`MapId` smallint not null ,`MapX` smallint not null ,`MapY` smallint not null ,`MonsterVNum` smallint not null ,`Position` TINYINT UNSIGNED not null ,primary key ( `MapMonsterId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_MapId` on `MapMonster` (`MapId` DESC) using HASH;
-CREATE index  `IX_MonsterVNum` on `MapMonster` (`MonsterVNum` DESC) using HASH;
-create table `MapTypeMap` (`MapId` smallint not null ,`MapTypeId` smallint not null ,primary key ( `MapId`,`MapTypeId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_MapId` on `MapTypeMap` (`MapId` DESC) using HASH;
-CREATE index  `IX_MapTypeId` on `MapTypeMap` (`MapTypeId` DESC) using HASH;
-create table `MapType` (`MapTypeId` smallint not null  auto_increment ,`MapTypeName` longtext,`PotionDelay` smallint not null ,primary key ( `MapTypeId`) ) engine=InnoDb auto_increment=0;
-create table `Portal` (`PortalId` int not null  auto_increment ,`DestinationMapId` smallint not null ,`DestinationX` smallint not null ,`DestinationY` smallint not null ,`IsDisabled` bool not null ,`SourceMapId` smallint not null ,`SourceX` smallint not null ,`SourceY` smallint not null ,`Type` tinyint not null ,primary key ( `PortalId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_DestinationMapId` on `Portal` (`DestinationMapId` DESC) using HASH;
-CREATE index  `IX_SourceMapId` on `Portal` (`SourceMapId` DESC) using HASH;
-create table `Teleporter` (`TeleporterId` smallint not null  auto_increment ,`Index` smallint not null ,`MapId` smallint not null ,`MapNpcId` int not null ,`MapX` smallint not null ,`MapY` smallint not null ,primary key ( `TeleporterId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_MapId` on `Teleporter` (`MapId` DESC) using HASH;
-CREATE index  `IX_MapNpcId` on `Teleporter` (`MapNpcId` DESC) using HASH;
-create table `Shop` (`ShopId` int not null  auto_increment ,`MapNpcId` int not null ,`MenuType` TINYINT UNSIGNED not null ,`Name` nvarchar(255) ,`ShopType` TINYINT UNSIGNED not null ,primary key ( `ShopId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_MapNpcId` on `Shop` (`MapNpcId` DESC) using HASH;
-create table `ShopItem` (`ShopItemId` int not null  auto_increment ,`Color` TINYINT UNSIGNED not null ,`ItemVNum` smallint not null ,`Rare` tinyint not null ,`ShopId` int not null ,`Slot` TINYINT UNSIGNED not null ,`Type` TINYINT UNSIGNED not null ,`Upgrade` TINYINT UNSIGNED not null ,primary key ( `ShopItemId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_ItemVNum` on `ShopItem` (`ItemVNum` DESC) using HASH;
-CREATE index  `IX_ShopId` on `ShopItem` (`ShopId` DESC) using HASH;
-create table `ShopSkill` (`ShopSkillId` int not null  auto_increment ,`ShopId` int not null ,`SkillVNum` smallint not null ,`Slot` TINYINT UNSIGNED not null ,`Type` TINYINT UNSIGNED not null ,primary key ( `ShopSkillId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_ShopId` on `ShopSkill` (`ShopId` DESC) using HASH;
-CREATE index  `IX_SkillVNum` on `ShopSkill` (`SkillVNum` DESC) using HASH;
-create table `RecipeItem` (`RecipeItemId` smallint not null  auto_increment ,`Amount` TINYINT UNSIGNED not null ,`ItemVNum` smallint not null ,`RecipeId` smallint not null ,primary key ( `RecipeItemId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_ItemVNum` on `RecipeItem` (`ItemVNum` DESC) using HASH;
-CREATE index  `IX_RecipeId` on `RecipeItem` (`RecipeId` DESC) using HASH;
-create table `GeneralLog` (`LogId` bigint not null  auto_increment ,`AccountId` bigint not null ,`CharacterId` bigint,`IpAddress` nvarchar(255) ,`LogData` nvarchar(255) ,`LogType` longtext,`Timestamp` datetime not null ,primary key ( `LogId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_AccountId` on `GeneralLog` (`AccountId` DESC) using HASH;
-CREATE index  `IX_CharacterId` on `GeneralLog` (`CharacterId` DESC) using HASH;
-create table `QuicklistEntry` (`Id` CHAR(36) BINARY default ''  not null ,`CharacterId` bigint not null ,`Morph` smallint not null ,`Pos` smallint not null ,`Q1` smallint not null ,`Q2` smallint not null ,`Slot` smallint not null ,`Type` smallint not null ,primary key ( `Id`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_CharacterId` on `QuicklistEntry` (`CharacterId` DESC) using HASH;
-create table `Respawn` (`RespawnId` bigint not null  auto_increment ,`CharacterId` bigint not null ,`MapId` smallint not null ,`RespawnType` TINYINT UNSIGNED not null ,`X` smallint not null ,`Y` smallint not null ,primary key ( `RespawnId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_CharacterId` on `Respawn` (`CharacterId` DESC) using HASH;
-create table `PenaltyLog` (`PenaltyLogId` int not null  auto_increment ,`AccountId` bigint not null ,`AdminName` longtext,`DateEnd` datetime not null ,`DateStart` datetime not null ,`Penalty` TINYINT UNSIGNED not null ,`Reason` nvarchar(255) ,primary key ( `PenaltyLogId`) ) engine=InnoDb auto_increment=0;
-CREATE index  `IX_AccountId` on `PenaltyLog` (`AccountId` DESC) using HASH;
-alter table `Character` add constraint `FK_Character_Map_MapId`  foreign key (`MapId`) references `Map` ( `MapId`) ;
-alter table `Character` add constraint `FK_Character_Account_AccountId`  foreign key (`AccountId`) references `Account` ( `AccountId`) ;
-alter table `CharacterSkill` add constraint `FK_CharacterSkill_Skill_SkillVNum`  foreign key (`SkillVNum`) references `Skill` ( `SkillVNum`) ;
-alter table `CharacterSkill` add constraint `FK_CharacterSkill_Character_CharacterId`  foreign key (`CharacterId`) references `Character` ( `CharacterId`) ;
-alter table `Combo` add constraint `FK_Combo_Skill_SkillVNum`  foreign key (`SkillVNum`) references `Skill` ( `SkillVNum`) ;
-alter table `NpcMonsterSkill` add constraint `FK_NpcMonsterSkill_NpcMonster_NpcMonsterVNum`  foreign key (`NpcMonsterVNum`) references `NpcMonster` ( `NpcMonsterVNum`) ;
-alter table `NpcMonsterSkill` add constraint `FK_NpcMonsterSkill_Skill_SkillVNum`  foreign key (`SkillVNum`) references `Skill` ( `SkillVNum`) ;
-alter table `Drop` add constraint `FK_Drop_Item_ItemVNum`  foreign key (`ItemVNum`) references `Item` ( `VNum`) ;
-alter table `Drop` add constraint `FK_Drop_MapType_MapTypeId`  foreign key (`MapTypeId`) references `MapType` ( `MapTypeId`) ;
-alter table `Drop` add constraint `FK_Drop_NpcMonster_MonsterVNum`  foreign key (`MonsterVNum`) references `NpcMonster` ( `NpcMonsterVNum`) ;
-alter table `ItemInstance` add constraint `FK_ItemInstance_Character_BoundCharacterId`  foreign key (`BoundCharacterId`) references `Character` ( `CharacterId`) ;
-alter table `ItemInstance` add constraint `FK_ItemInstance_Item_ItemVNum`  foreign key (`ItemVNum`) references `Item` ( `VNum`) ;
-alter table `ItemInstance` add constraint `FK_ItemInstance_Character_CharacterId`  foreign key (`CharacterId`) references `Character` ( `CharacterId`) ;
-alter table `CellonOption` add constraint `FK_CellonOption_ItemInstance_WearableInstanceId`  foreign key (`WearableInstanceId`) references `ItemInstance` ( `Id`)  on update cascade on delete cascade ;
-alter table `Mail` add constraint `FK_Mail_Item_AttachmentVNum`  foreign key (`AttachmentVNum`) references `Item` ( `VNum`) ;
-alter table `Mail` add constraint `FK_Mail_Character_SenderId`  foreign key (`SenderId`) references `Character` ( `CharacterId`) ;
-alter table `Mail` add constraint `FK_Mail_Character_ReceiverId`  foreign key (`ReceiverId`) references `Character` ( `CharacterId`) ;
-alter table `Recipe` add constraint `FK_Recipe_MapNpc_MapNpcId`  foreign key (`MapNpcId`) references `MapNpc` ( `MapNpcId`) ;
-alter table `Recipe` add constraint `FK_Recipe_Item_ItemVNum`  foreign key (`ItemVNum`) references `Item` ( `VNum`) ;
-alter table `MapNpc` add constraint `FK_MapNpc_Map_MapId`  foreign key (`MapId`) references `Map` ( `MapId`) ;
-alter table `MapNpc` add constraint `FK_MapNpc_NpcMonster_NpcVNum`  foreign key (`NpcVNum`) references `NpcMonster` ( `NpcMonsterVNum`) ;
-alter table `MapMonster` add constraint `FK_MapMonster_Map_MapId`  foreign key (`MapId`) references `Map` ( `MapId`) ;
-alter table `MapMonster` add constraint `FK_MapMonster_NpcMonster_MonsterVNum`  foreign key (`MonsterVNum`) references `NpcMonster` ( `NpcMonsterVNum`) ;
-alter table `MapTypeMap` add constraint `FK_MapTypeMap_Map_MapId`  foreign key (`MapId`) references `Map` ( `MapId`) ;
-alter table `MapTypeMap` add constraint `FK_MapTypeMap_MapType_MapTypeId`  foreign key (`MapTypeId`) references `MapType` ( `MapTypeId`) ;
-alter table `Portal` add constraint `FK_Portal_Map_DestinationMapId`  foreign key (`DestinationMapId`) references `Map` ( `MapId`) ;
-alter table `Portal` add constraint `FK_Portal_Map_SourceMapId`  foreign key (`SourceMapId`) references `Map` ( `MapId`) ;
-alter table `Teleporter` add constraint `FK_Teleporter_Map_MapId`  foreign key (`MapId`) references `Map` ( `MapId`) ;
-alter table `Teleporter` add constraint `FK_Teleporter_MapNpc_MapNpcId`  foreign key (`MapNpcId`) references `MapNpc` ( `MapNpcId`) ;
-alter table `Shop` add constraint `FK_Shop_MapNpc_MapNpcId`  foreign key (`MapNpcId`) references `MapNpc` ( `MapNpcId`) ;
-alter table `ShopItem` add constraint `FK_ShopItem_Shop_ShopId`  foreign key (`ShopId`) references `Shop` ( `ShopId`) ;
-alter table `ShopItem` add constraint `FK_ShopItem_Item_ItemVNum`  foreign key (`ItemVNum`) references `Item` ( `VNum`) ;
-alter table `ShopSkill` add constraint `FK_ShopSkill_Shop_ShopId`  foreign key (`ShopId`) references `Shop` ( `ShopId`) ;
-alter table `ShopSkill` add constraint `FK_ShopSkill_Skill_SkillVNum`  foreign key (`SkillVNum`) references `Skill` ( `SkillVNum`) ;
-alter table `RecipeItem` add constraint `FK_RecipeItem_Recipe_RecipeId`  foreign key (`RecipeId`) references `Recipe` ( `RecipeId`) ;
-alter table `RecipeItem` add constraint `FK_RecipeItem_Item_ItemVNum`  foreign key (`ItemVNum`) references `Item` ( `VNum`) ;
-alter table `GeneralLog` add constraint `FK_GeneralLog_Character_CharacterId`  foreign key (`CharacterId`) references `Character` ( `CharacterId`) ;
-alter table `GeneralLog` add constraint `FK_GeneralLog_Account_AccountId`  foreign key (`AccountId`) references `Account` ( `AccountId`) ;
-alter table `QuicklistEntry` add constraint `FK_QuicklistEntry_Character_CharacterId`  foreign key (`CharacterId`) references `Character` ( `CharacterId`) ;
-alter table `Respawn` add constraint `FK_Respawn_Character_CharacterId`  foreign key (`CharacterId`) references `Character` ( `CharacterId`) ;
-alter table `PenaltyLog` add constraint `FK_PenaltyLog_Account_AccountId`  foreign key (`AccountId`) references `Account` ( `AccountId`) ;
-INSERT INTO `__MigrationHistory`(
-`MigrationId`, 
-`ContextKey`, 
-`Model`, 
-`ProductVersion`) VALUES (
-'201610191449374_Alexis', 
-'OpenNos.DAL.EF.Migrations.Configuration', 
-0x1F8B0800000000000400ED7D5B73DC38B2E6FB46EC7F50E869F7448F6479A6CF99E9B0CF0959926D754BB65A658F3D4F0E8A055571C422D9244B9662637FD93EEC4FDABFB000AFB82440DC48963C8A8E70AB70F9884B2291994824FEDFFFF9BFAFFEEB6113EFDDA3BC88D2E4F5FED1C18BFD3D9484E9324A56AFF7B7E5ED9FFEBAFF5FFFF9DFFFDBABB3E5E661EFEF6DB93F9372B86652BCDE5F9765F6CBE16111AED126280E365198A7457A5B1E84E9E63058A6872F5FBCF8DBE1D1D121C210FB186B6FEFD5F53629A30DAA7EE09F276912A2ACDC06F165BA4471D1A4E39C4585BAF721D8A0220B42F47AFF6386920F6971707A7C7170F6F6E0F271F1FBC5C1E99BFDBDE3380A70731628BEDDDF0B92242D831237F697CF055A94799AAC16194E08E24F8F19C2E56E83B8404D277EE98BEBF6E7C54BD29FC3BE620B156E8B32DD18021EFDB919A043BEBAD530EF77038887F00C0F75F9487A5D0DE3EBFDE3304CF1F8EFEFF1DFFAE524CE4939C92037F57EDA83727FEA8803D310F9EFA7BD936D5C6E73F43A41DB320FE29FF6AEB6377114FE861E3FA57728799D6CE3986E296E2BCE631270D2559E66282F1FAFD12DDBFEF3E5FEDE215BFD90AFDFD516ABD61D3D4FCA7FFFCBFEDE07DC94E026461D595083B228D31CBD4309CA83122DAF82B244399ED5F325AA06566804FFC96DB94EF3AA60FD4942A0075D2A4903BEAFC6BC088AF224DD64315E4364226BE053DCBE4F38C50A6E818AA222B76E5CFEFCD21888FCDB75B3CC310FD9DFBB0C1E2E50B22AD7AFF75FFEFCF3FEDEDBE8012DDB9406F573126196832B95F976F0235741517C4FF3A5D387E0EE7C08EEA35535EBDC374FD6411E8478E2F7F7AE515C9528D651D64E664D55DFA8526FF374739DC63DC9F599DF16E9360FC938A5B2129F827C854AFDE6D5D4195FA42B65FBE8626203FB5C690BA922A64DBC424910978F434DA48B894DEC73A54DA48A404D7C75D8B3432593A4E6D2904D76356767945D4B6C582553793266A9CB9F8760CABF9CA260E9C6CD08CA6F111E7A6794AB344ACAC21127C794FD254A1242922E406F82F00E8B52778E2851BACA836CFDA860C3F84F0FFCFECDF6F6F64D9C8677A89BCF37295EF34162DCE89318EF1D1DC86369BE558ABB2E1EBEA37F37C6398D56092D13E0A18BCD5B73B6494B3C9249E1697CCE1EC27590AC9027B8B7987F38CB146F834D1463A6F6C71615A5AF86E5114A967E3131D35BF64BD38AB8DEA5B123E37B97A7DBCC6FBFDE07517E92C6A95BD708CAA27C8C911B0ACA53BC2F79EB1A86BB40F728766ED4D7CC6DDEDE676E8BE47DE669487E4D6FDC47A405711D15F7967869C6659031028905BBC7105F9D11FEE18A506061CC872852237D8A30C1958E485112C541B23C4FEEA3D2D7B673996E0B741C6D2ED25EC8B1C6725C98CE1AB1D6577EDFE2B97887CACF996B7FAF8315AA48C46DC95CA36CEB08B188D3D269ED2FB2E3E532AA5451AE4316F3B8C87C806025C96D03FC14C458F4BC480BE4D6921A67B1CD73466A7101C3AA891BCC977554E0DFB64C406A79E8CC9DEE969BD6A220B7DCB4660963C3D2E2AED2348136F6E07CE1BEA9B2328299445AD0B3C989B21481630BE50BC30B16321D61BCB560EA4CF3C781C1A5CA41E3DA652B86B42F633A9A97413434F97511A8692447D1AA2ADBA641471A2D3A9237E968A04D47168DCAC026E17498CA980C81BCD85C53BAAAF6DC382ACAB3A41C242EBE3034666C19C5E071054D47F19A9CA47D4F065ADC95829ADA642ADAD896F063836DF89DAD21B6AA3EBB35D6C608DBEB1DEFB6D1D2CAF4FA214D86AD5AFAB6DE0109878CF4DF3F6C3786AA8AE5C18BD3D6C8B383C13D54B7CDF2ADBCC693B715CA17DA091682DAA8BDCEEC96D76EAC2A8AE24C179736B1FA5964C765198477C749B40938ABA885324F8CE2AE468913ACC67B6A0E813ABBBD45A1A3599CE0F8E8567D0CEE84E2E1A8208D97E977D791BD3A490B3745F834D860ADDEF1BC629B7B20131F24721623FAF8C56A441A8C20F63134EFA3B276E27068D079893616DBE638F6526294DBF46DB1026A308E974423C27C3F776F5B0B99876B8F7097C12A0AA320F106B820BE291B2F8019BDF4ED48621A8F9C3C0A1D0D52D7E4D8D1CDDC87C2345906F9A3AD0C0A490758CA4A4247FE50013973885A0A741FA61AC7BD39AE009FB3551E2C51237ABA8C6F8344B7C89BD6E15994E7F565A5BCAFDDD8747393AADA58E70B4D23C9B2165579A60DF9908597F8FB1AC32694E41BC7159034932F65DAE0C53ACD869A4A95E11BD965499AD7E7BB5941EAF933357E905AB36B67552BACBCCFDA8AEA4DC5A3E7991F45C887848B054A0F3B8E4F2BCC201B54B11889FD82613F560B43E022864B84AB3FFB62E1DA63B36C0088A95C37FB4FBBCB5ED7D439E98E2C81BE7BE03AE8B3559B9BBC94B04A14457DDB238D77637845EB34D3626D3B2CEB1D5AD176164AB335E5C94CB92147DAC48730CAA963781B19BFB678BA5BD26A9C46CE77427A131451789CA3C01DC58F79AF8272D7EA2A180FBAD4499C16E814DD2267ADB7BAD29794B933273FC9A3320A83F8621BDE5DBBFACFB460EE1B4C6D39BC0C1E68539913146B75B385CAEFAE511115256DB758D8998D6B32384D97CEC6E31AC9C7023E6DBAE6854639300F3DF5689C7627D1B79881FB22063FAED2E7C5FBB42823CA0BDCDE4DF9EB959BC5D183B13C5AAD4B5F035CD9A1BD5035E649EF1DC706435CBA42D4720B6D95AB7D75E8F45D34667F488F57AB1CCFEA3D3A0F7B7380BD436D3F9F568441009CADAD8D3B0E772C6AE5078B1C854222C9F2D2A51DA17FC11C32F7B5FE8CD98954DD3AC53F8774C4BA0CA818922CC1A0C8E75B78CE696AAF7449B07D7D01552BA952166DC5401AEDAC4AC9DA887F0DB48F9418C3C4ED6C0A50345BC7E2ADAD63D74468A85D934AB3EBD5A41136E6B1B69EAB1EAD6D54DED49EE72E1C97B4593886B4C0F1E36280D70DA92E0CA29630007C5EDB8B1BB71E5C6D244360A75DA260AAEA734CAD684DCF650EC824AF022E3807E43E037240A6724D1BA46F911CDA6D14B647E9506973997AE60CB90CA9343B97B1B3D94D67A9AB8C3E3E94EA1314C7697271EFA60E79F098F3687D72BDB0FC6CBF9ACB7EE5C38602DBC19CAC573EEC603B6EBCF2E19D5961FC3D88B78EE2CA4E59D2CEB0BA9A1128FA52AABD51CE47DF60E39EB5C381FB1831210CACEA5FA355BD0F3A7B619CFB0A88725E543B891FA0A4D86E4815772C2295657EA08861370ADD71DA9BFC1F6FFE4931117BBC451A2FFDF4F013968FFC207D0972B426C1059CA1B078BBD8DE389BF5088E1710CCB0A325671DB40DD8F16B7AE3C383DC9B2B7A65A6F7C17225F67E5B45DAA3BDBF16E0DD9CCD5B145735000379DB771BF1F478B349DDDA8459B8EBFE44302EDD31B2B523846B133C6EB3939CC7F0970B2CD8D2D57DE665A5611CDCCDAA2F8EA731CB6D883E66691124DE184A1572A59A541F4CB342F330F4DDAD0C1F0C78811EDCEA3B1F5E2D32E7EDD619E04B1095A7280E1EDDE8A53A3DF3312B92633857874BE931DA80C5973F3D116DC12636E7F3A4EE55216F0A578C6B13930B378E2DE22D744815F7A3B6BED206E926113046B739A686E86B144612C37885D7E673235327C343D2E49987B620D5D467057419B045CC1800AD62464FB765E42E88BA5D7D09AE556D06DCA62ED7E9289026412B637D5B7976A3FD0E47D9F0711AF806432CE5E13A06ACC7BEC27C9C626EBF72141EC98DF29B28C674E821B21A2141BC27A236007E8DD507C49FE268F43AC87B69D84EBA70B62E3A0B1756C74952AEC752AB94F7B5CCE31B5F9EE5849262205F949535BE5CA9197F463B7A983CEA8C1861CCCFE1B8897C021E97C3228CD53EF3B9207464BDD3B0D5FDEE357B6F8202518E8ACC96A8B65C5F718B7640035715D71EC92F08D38DCB58F200BB329AA2B147E7F0DABCC6C78C0C12BFF55B1F50DB9E26EB9DF742A77B2EC7CED6A7CCF687CAF667C89647C63627C40BADAAF2135797F35FE7E35EDBC350CB034B9BF349ADF1858F2307EA98F1E0F3E26C93F5CF2F74E73843B52A6BA6612DF9F983D57183D6102A4E171CACF70EFB9A89FDC9CADCA4352C8C9337A02FC9C5406ACB802541AAC037716FA664425541513A54967612C5D82E994697A02A3FABFC8A35EC7CC9C859A3F3E08BC313DEE0E0E92E2B71A18CB7B48458B55A0BD16A692D3214460189D06B2D9D8B10E3CAE7C2B80E182AC0C07943D60D9B0D6911737B84662D43816091B13DD2D94D489DFCCEB0063B047A952C76C945460430B31AFD90E9950798DB601522D39855C1DC3781AF0E0FD5AC24057915EDE55C9FB0182E605269F69D9134C266776CEBA96DC41EEFC990000F6B42E3AC8DDC3E5AC4BA1661E977571DC17C38DAF768C35761047DB517C7AD1F7A3DFBE32AA01FED19CD69E3BC2094EFC36D72513D50729266A2B266EAF9828A82E2F0A3F5FD1A8528BAF7104BBDEEB9F3AD8A1AC7C3F37435909FF7E07A2CF757E16A2C3FC35D7968B946A0FE1495F10874666EFF1F7001E04562D139C0E0E0BDA279D71743E4A723EC8B22DAC7EE0DD5BBBCACA26E939B12DEBA46180A1775B5D9C58BC61FC242C0E86BAAD7D9585771670CD25DDF3C1F0E6DE9E7F04FED7B031EF7717E39FA7E48D26BFBCD657BB12D4C06743D96CAB5F34A928E4E830A7B03099902AB144B38590CDAC133563248B5D9F9404FD2E68A86DE62F0638D3B8D8298BC57E6B27CFD5D92F3E0C3795E9C46D591B80741FB32BDAFE41467813D2A4B0F403FC8A3AB98BADDB78CABB488686F7D47AF1CD5336A6258953E157C408D0BB5A2DB06FDE0053A815E14010C2CDBA7F069D5DCCD44E11ADAEB4CFC4755ADA9F385B69064594BAA3CD3767C4231CAD25C366FED7C50A58436F599B29651255C77559B2D7517F653CBCDD48744ADB59306651F42354A02E2F74629B8F84F58C11D60B7DBA2BF8A6A775445FE1DDDC24356CE711CA7DF7D3E53ABF634D47CE2125850C00398061B858A4937EC1F0817C6E680AD1A2740D8E01626698A4D2CB0267A8F62376DB2BF554584A0404D8E2C2A509B6DBA735D61C619C86E8464DFDA6C7674EA5470749A2CD3D1A9ABC14FC8F6B0477043C4A763E93CFF7B967CC31AD8AD7C6E55B6F1CEFBAABBB071354DB1DCBFA8DA532884BBA73FFD206A8FB79720A6557D86B732890AC4EF74A3A841DA7139D5EA90AAAD26FCAADBFCCCF955537517F895C8A8642549A34713CB071764FB7523189B75A027B4007B2124D318CA521A6DAA8BC9DA45FE1C685B55C475AFAE5B6147F8BB40F50EB4AC4788FE0E6E9A4F0E2876528DD32CD6444A5A6C6398555E63872F8F6B060D95503317527414A54563ADA9951766395AADB5565D315C6A75B5D9575ADD0C9B85D6D774958375D7D9292ACA28A90388B8EF58149AA3304A21390AA5FEA4FD9AA43D0C530DE438423588E3E0D46BBDE1AF234AD94AFB03245D73A6098336581B1FE4CD803D50B4B9196D6630E4687DD5D9B95ADF141BCEC6D69E4A8A384F967DF0206B21DC831C6FE3FBB10B0ABED562D732AB41AB0DB0BAF9F343D13D9D92F8A30CB44DFF96C8DAE2F9055269760650C59CB158FA6DBDA9441A4FCB0D255B7A77B4F21D9BEC5CCABCA50E2B4975EA2C593DCC89B4C9E9B7D493AB4604A2273119E21BDD4CAEE7A7C35B6CF141552647DE280FCFBBF44362C16376E20186B621D6BCA6A93B15BF71778BDF9948445A9C7A00838A6634CFD557BFC18C5CC3B781CEB6027B727608D26487C21BCE20B3B4663C762FB277357782F558BFC2CE549E8AF97859B296AFA6CFBFF21DD6C9D01E2D5D29E3BCC60E3789CD92BCC0AE6E94E1A5142BD1A1AF3AFB0AEE9BE27041851720FE552EA9E8DECFF17949652824ABE2B28AEFB0B5869743F896C9AF8F58ADC79A9EE20B7275C1703DF655675F8FB80D360BB1A9D691E1D837D1C3902C41D7CBA4B6115ACFB3E3E53247FD8DDFD16C05785C6927DE31BFC31C2D8C75744BEEC31765B0E99E47D0BF242FE5100D31802CA2C9FB462FCE9E4788B90293008A987230B5CB30050C7A0E43F98241022CE46496F87D1B857724B00DCE216EE3861C8DAD3E3B57DBE1D853DEA23D7B78B5E42A2DDC007E3F72ACFFD29F4AE37EC0EA2A4EE94625E6D71A74C79D2DA3B8EDCE15745431AAF7E82DF48BAADEECCBBE69879D66D1559D4AA8F1C709DC8F409BEE3BDBF61C4F40BD1D7FEA2EC58EE2A135D8642A165F5BC2CD990A25415C3EDA28127DD5D9D75EDF142BC72AA6F654C6394F6AC5F172132593784212E9F92C599A0BD300CEA20CF2D219A999B8AEE764793569353331664441D1DF2B98204A8F8E3641AF50519BE873A5DA0455C48C556C3714A338DE96EB348FDA913D2FDEC6C1AAE806408377E0EC2839607028C651E55A87AEFC4C62FAC48F78BE6816CECEC225DADCA0BC3D072A087BAE02A1BEDE7F21CC1853F612CF2C5EE3695FE1485DA15A935DE197EAC29F93BB24FDDE17FFD391383FF54C2866A7B9C0E1383714CA683353EDEC06C331303757988F24487B663E5C9DE8CECB17449ADF94FDF3402B1A0FC6A6B468D3614ABF498931A729FBB3BAEC591C1149A8292C8604649B81822C5D76A5FF435DBA8927DB15FFABBAF83BB4596441D870EAA6CEDF2C6895E1D0D6B44AA1CC46AB97DB122D7529F50DEE14555A6B951F17458AE7880C047D54D4DB5DEA5321F6AB788FDEA38F80D8C2BD39A7DF339BB3A54B3C4851868705736768250D0077FB4F0FCCB593FBC2BF095FC0121DCA89F814C4E46D6C3C5551528AE25F94845116C41ABDE4EAC2E7BAFD09A770EBEBB0FB189F738A3212482E293586C4B915DDC738C97668BC5E1D5214A44558E9E6261DA22752C62719557810F5548D199568E8AE4C4E2B74BF9F0289F4AF6CCA26147872B39FCEFAD04C9F3AC4573A29B0FAB1CF514843E884CEDC38D384D05B9DAFF627BBB31184ECA136D5AC0EBEDAC6124D1F317F68BEF53EA3DAA8F86FBC38381069D49AAC065AA433E58CE1CE91DE06E641A739E2E393B350A2FA4108199168BE0E419109F3408A3E356ABEF0D27F487CD382E79BFC287F4CEAC72EF78E43F215FCCDA0082B4F47DE1C869BE5819CB5BAA4C5C3DCE8586B0E75DA01BD6832DF36CBBED0A8DC2225CF493B6EBC9247206D39B3FD4E0C766FBA2D191C8727B037F771BE65D30C04FDEE67B70E80ADCFE18047C4D504E86F63153E3D097108A3A7F355FEB1879928838E1B279F5030881C4D218200AE622A2C9E8908E68999801DD29934594418135A01FAEEF4E989C8848A30A49A572082901BA140818B18C02EEED168A422F6693A5A11BBFF448885DC0D1C985726E2A22B9130817E19B0EA96E298C441F56352C2A0BAFC0488824C4A1B394A3197543109713425CC441238A6A621D1D91209F0EDC9080518CF27422C4DE8A38139E5E32009A4A2256DCA60A73537825DD29C2D52D10FB5B05D77FEFCE4DCA59A743D4E507577242E5361C39C0622CB51B80DDD86C9E90818E327424C6D182295C8C1C74476925FF80047940F53E34E309AFCC2F6633AF985EDB2CE77C5106433D3C79106811C79A590A31949E4682E1A39323A18A563AFCD461F540C21D5A442D1C39DA8040A4FD403D2918D462316B14FD3D18BD8FD2720EA52AFC528A6167A3A6648CB1DA016E86DB51EB2BDFF3A16A1881DD29C2BF02D31535211FBEEFAF529FC7298D81DB29995C435A27C73D6A202A374CD812383B080905DDF977F0ED421ADBD000C4466442A60DFDDBE3D25A10CF8044AA24D792015A91B2015BF625C6231F7FDF3482DE62E7F73920B1DAE6D60BF605F0CF3B001B1C1E0D494E777F3A1BB32F5D643F7FA096C3C974264CC81591D146CED88657EF116EEDCD4E4632DE7CE494462D414D96C2BDED71D924F5544A488CCC2C38E28CD483BA73385B227B58D88483A0EAE2D98CA216A405B829EA97675819A494F02BAA233497EDC9DCCF5A31DF041D6E12FB2D0507E886436CE22E9D6D40463CA5176816806956A381AA72BC1CCA854831D9A8E546C54EA9909857A264D79F1852B07110BFDAE9BD1E1348F3DEDF1B4A4673A73D75775A61FC9186849C0EA264C4B441A0E75EA97F9B4084A939A66F6B25376743EFAB274BEDB312A5379E20925C7A2AE39DCF3A49D9B95A20CBDF670F1DDA0A4FE4FB555595E6514DAE2BF011019DFF2D1A94DD2EFF9C84E32487E1A34D98D745D0A044B7BBCA5BE3324A7ECA8CEE4FABCC3EE406373DF66E743ABABA75F7D62664752F39E99C1DD9A9A80EC0ECE66269DFE2E8F6620165905F08EB1EC1E948AA0A41F982B28CB508F75A6D9D755F7A1C1F1D09609880E8CDD2CA3077520E79E16E850D5FA3ECFCA08D0D346555035654A1A530DF8D3A0AFBED9E7C93D864CF3470D7ED6951D8195F5D8F35C3F57F4721EF6250CC853A3ACEA56F9F0C45777ABFDD353050BDA2374EEBA3B9210DDA779A887EEBE9694457076856AE46EF75CB991E80674C29F8C708CDCF0C7A11C2387FC6B14A2E87E2788878B773F3CDB9298F6FEC849165DBFFF001FA37F640A837B3C0FA9C183F3D4F6B936B2FB3031F041DCFD919910409EF64A6802CF8F4C585CE7E6A1286E1C9E0629B5B1BB87353DA124444A5D9C717D4212716788D922ED9CCE2C5201F61D08493A0ECE4D98908C28357F68BE81B7A7FC1012F4EE959D21C28994C4FE4D4F4BE2503C2562A21E24189A73E0E9013FC4043D7B405D8EA59E4C189598C4FE4D4F4CE250EC1E319D552F4CE03A25AED145446FA2B69364F45002B1DF3F17A809FF5E342F6BF074416017A8643BB5BF77D6BD68C1939A40592C02B5A10918549E2E4A63619743350506F064307AB59B30DA6223EAF481DAC2A1A6802394D04654820DE2D44E6F02429D3C50B776B214EAD6C91A757BCB2388D1670FCD0D1350569C22267B00ABB646081875F240DDD6A15DA8DD660C7EBB76E901BE5E670CD7872BEBD49453139D398CD3457F8170BA4C3D1C39C820421BDA4100683306EAD357A2040C3A7388EBACC1F555276BD495ACB13E4B0343CAF9FA3C2DCA96B485CE1CC0A105540187CE1CC0E16D3B02165F60B07F8D2E0F74AEC919A2374A5A12698ECAE470A8BD9EDBAAF863F13DAA28BD75298FCF19B94FF99249D7A16EA714449A01A45686A49006B6E843B6F7FA23536FBAD20111DFDF805ACFBCC061D37DE6C90DBAD7A04C60DED9FEA908A0AB92772498768A2F4950AD8416ACA436D0475040B0EBA2ECF10349A7B5DE4A103A32F45A02373032D9431B57B5183C8C9B3A543F307206B1FD5953A856747FBA970A69CB0019183FA54C68B9BAD808F1B265A688232FAE183892BCF1C28343C78F371C7DA87360142471D099568B91D0A9C642F2B3A4B6A4AB5EBA48C7EC06BB290DEACD35160AEBCD7457608E0A809179C5251B835AD26FD9A51AA1DDC07D1AC39E035766580499BA61DDF74A7B92F65BB8E601B598BEE161DE5FFA12075B1B52ECACFA49470986FB2A8D23CCB7188A24CCB65AA2C8A980E0EEFBEB7B13F456DE75282A2ED4602E2EAED8719D5E735170FD4B4E62A8D0E15917E3BB2A268C89F0EA3AFB4C48D7E111B55CE9AD6E0FAF742834A9B056B9E0A4862B9D8B464AD596981D5CFA79A4EEA8F8BA11D4D623B7AE1E8DDE57DAD6027757165C476832105BC7B0D340181D0A416116B2EA3B15DF10EEBA2C0022DF6E2004E2E026A4C000BA2EB1705A28F84CA43E48C59787F263757430981FADE60326380502D069A911CEA1DB725B8F22321DDC6CB97D47BBE752C38EDC74684DE975ABA4742EC65883289489B26645E34C58B58141B3EFEC205753450D839A3DC8DB34BB3F218713C35A01433110FB8AE9823CFAD520A71AC091723C4FCB9F0ECE2433420C327A287A93B1D9610216CF071B52777860CE6511892C3B3EDD6CABF63845641DB1E1AA3D4EAFEB13ED717C1818A0E3CA48314CC365B162A8A6CB4FC19548E3A96C700813F530689965D4D14E9C8664425B8D187B637068D4961B79880ED72119DB9CA3081EA11E13E5457F598764F7FD9D464976D51F04F57B3CA831641A611180133F8D81D23D3C9C7178D46A86EA423FD00FB5A2A1391893A91AD23BE7D08999D6FD74F6486BE886BA8E855F0F718AC376F0B2343052C397AA993E29AF5553FD91FB830CC38D7DFC0A5CF3559290E436B064AEC5FBC00E84235E001EEF1091BBA4AA1C12F11AABA403CC45568781606EAE0E9C4D3AF71D34CE2A6F632A5A0D1A696DBA0F9A6BBDF79F77BE520D84EA66A1A42392BB850E4323B94C48210EF893B98C56E761A61A26F02E9CA437FC6D388781E1AFBF311A31EC18673E14E2352D602806EE7231ED97DFE6A2DA2F71661F001A795F01AE1A29C642762109EC037025C97234803B485ABBB6C378D00E94F2F190DDA9017B01DCAAB11C0FE01A0D7D1826F7FD948FC7ABC31AA1BBECD1E5BD3A5C846BB4099A845787B84888B2721BC497E912C5459B8175D12C4A56455FB349D95B64414856F99F16FB7B0F9B38295EEFAFCB32FBE5F0B0A8A08B834D14E66991DE960761BA390C96E9E1CB172FFE76787474B8A9310E43E61C9DBF9AD27D098B1DC10A71B9C4417289DE4679519E066570131478EC4F961BA11877B5851DBC6E88DB8FB1B757C4696B7D72DBF2E46FE60ACDC1E9F1C5C1D9DB83CBC7C5EF1707A76F0E2458FD50BEC5BDDB60E1AAEA2802C847A889EB2EC2200EF2F632917893E8248DB79B64F08291026B5BAED31C3785C3EA93F5B12E82A23C4937591C917EB2807C9E19EA021545E522C8437619FA78E45F16A84ED147B80A8AE27B9A73C3DFA78A48AF0E3922E029EE5020396EF5F314AC45DFAAFDCF9CC2A5681A34AEA82B1B65E64A383DD0CABBE2723CAFAB262CFF728A0201AA4D3543FAADD2C079A4DF4073881AE92A8D92B210B1DA7403B41C6F455FA22421A20A034767E8E3BD09C23BBC95DCB1607DAA015294AEF2205B731C8B4A36C0DADEDEBE89D3F00E7153C964E8E39DC4980970D45A2719604838A81DF73C8D5689C0DDBB447D9CB34D5A46619A14E07089B906C80FE13A48560806E633F571DF621E21EC195DA209CE268A1FAFD11F5B54946023E112065FC823942C955F004BE87FE15D15588AC56CD30C50D2986B579D628090A7DB4CD551B0803EFEFB20CA315CCA75954A36C35A948F3112B19A64032C94A778DB82FB2C649AE15EA07B148B884DB219D6D74C04FA0AB8FF28507804C3DAF008651663F36B7A030C4D9F6A8EC48F0E9D6E20CF8A8D326E11D81C8BB65CD66F32D32897F033CD4A8CAF02C45743847F0808FF304320275F90F4C3E698227E8A30D59510629B63801825511C24CBF3E43E2AE1DD4E52C4E01BE9B640C7D1E622E5252D36C7009123B24B23FA72D7B52A5BEA3B547EE6DA41A7EBA35D072B54D1020B46251B60A16CCBE3D449FA188B38E520EA140384EC78B98C884C03F44BC834C105F1CC71CAA0E448A049D2C7F814C458EABD480B0E884E37455B6CF31C108A844C535CAC19418855B23ED6977554E0DF2093E0F376CFDA203BF9763039809026760709806C02F85DD16C4BF46DBAA0A2EF330B491E947F3622F037F7B6536E38D336632B359A946510DE1D27D12610554F21D3CC4CC193529B664095587091B48DCB32C33CBBBD45216FACA0D2CDD08425D3A499A17C8A78C1A34F9DDA9C8375E4F43B3FE05DAA01D2D5495AF0E3DCA4191884820D9676387B50936680B2CD0132EA530DCC3F00F59853CE598C448B5997688C13C4D0300999068A6D54D6571719B5B64DD4C7E91FE7647627E9939D72246F6A28515A367C8BD81C33250957395E1237A46D8E72A099B232E65FC9C3B5F20B74BE31FA65B08AC22848E4F85C09E32F2CC871D346F505AE8489DA27F29A366DD2A3B63C0A398826C944E94BF895DC24194860284C9365903FCAC40520DF50BEC3B261C2F795C930C413F90D956CA2D6102F05600C990C533CB17174BA019A886388F0395BE5C112356EB034129B638C28368DC9D819895D1600CB425B8390749434B89EE280EC2615C4C436D1405A97C8E93672B01F29060B048284F083EA89C3B729CCE96F005383120711A43B1D5B91A74E20DB6017E59E0685814DF79C6BC12E776D68967B92D4E699D09C68CC86BC7C92C0F18678BE90D3D628E7AD8C7C9EA91104509D990C53BC66EF8410BB2C136F94220A8F7314F0EE285DB22116ACE57359869880CC45A71BA201020E9D6E6214490B748A6E9120ADB2392626125C21297381233119067879544638E3621BDE896C4ECC354796A39A22D6A684CBE041D4A1B92C634C482FE7B24C30F3BB6B5444EDED1F1694CD3340AD89E5345D0A262926C7181164177C9E891755DD3790EC854C6B5C681CC012B319C644C267320C7C9EF0B622A3273E6F1E7F98F3E27D5A9411EFFF43251B79907CBD129C4748D2C406BB68B52E65C32E649A784BACA2105C1C6C8E09E2C3FB2B1EAA4A32C2B814312ECD306AD14A54E6998C294D621FD2E3D52AC7D3748FCE435E7915324D14027EEEEA14330471A0FA5413DF8AEABE98788AC364987833205EC06D92F43188740DCBCA6C8EC1293FE699B96C350A99FAB83CAB81F9CC4CAA9824548BB912060169A85F7035E9068D7FF2CA7C9B66AA68410A9691B0807F4246623A7D8E93A4262C27E048D8261BB35BB161032AEE4CC42C09B9644ECC10900631C3D5541C4CE45CC69A24285BB339061A5515D8FDE29E936CA8E4898FEB47D06E057FF413535FF4670DF96968C8A0B6C564FC801AF7D3D58DFDB89E5435FE1EC45B5E33A6339EBEC67E8605DC8C54149D96B92C332B00D85F266376AB42048C62976880E37837E61AADAA7809E299259F6762E5009D8CCF6D6EF29D17D5C6266275C9665849B1DD90775E44B83EC7049108CA1904486518D987509E46A1601E6A524D90DA8B1F1F6FFE29702431D7047991C64BA8CB7DBA09DA272CDE41687DBA09DA9720476B722F8587A332CC149AC5F646344030196678309895D35E10474BD19EC165195A037F4D6FE4DE7774E69C2E7D95591164F26CCE0F6AC5AC3519C10AD9265B6009CA129B6384281512F83C23D4CA7972B34905C83EC3C42490237EE76CD3CC5084BB6C4D9A114AB616404892896B25EF5669565B2E05F0794FCD51F3EA3E03571F9D6E84B6287394ACCAB500D76798D8A497DB107DCCD22248A4DC475AC8E43BD9B67E8D1B64C340B62136305574BA85532CC8DDC55C13E4071EEC616A7BFF22033C68254F3AC951DC1D54BF0451798AE2808BE141251B9E3880B3C5E64C778631A3E156F1A0A5DC808B655DFCF7C7DBFFA1B2E4B6C8FFD3D2A42B6B997C1ADCEE2BFA399F601F3515EEAB09B9064645CFF7294F3149AEF8BB4B4D9A01CA360F6EA2184F1C70555AC8345317F0CA462582F5053A6F8EF39E6BAC9DF147BCB9D9C6E17CEDDD9BDF3F0BA238C07065549607439F0BD5DBBB3BCA4F78CF0D43B70DDE674356FB04CB17557483BDCAC88AA78F1D2CDE581CE6D1264A82123E7B996982879E57DED12916D53B53BD0E528CCDB562FA61686177E0F27E441F57E05884CB7A3E157C3E151C447D3E151CD5D3F55FE88C4BD8FA8FCC0E05CE36191FAEB24B34C1791B3D8807514DE2B3F15A0F7114F3B020DD1911C8EE593064B87A5E9890182B88844F42905D64288C02F2ECC5B328FB2CCA3E8BB2CFA2AC06DEB328FB2CCA3E8BB20338CFA2ECB328AB8F38A7282BB1F643C1D4161651D4701D882AA864132CF8D43AB639AE8E795E51A7981C36836394598C5146F64E1127370AFBBC803D3116368E188B0C1EE9CC66A433B22FF040759A098A305F99E97C01D771BB44231CC227059C3AD104076B52097CED9DCF3341AD98060FD724EA29B3805AF824D459B5263AB7222B0C33FB36EBA4036C1B778C5269FD841F53006ACC98BAFA38A6071F77FADD8FC281BB2BC6B756789B153F2E50FECE90A2E475617312848034480FAE2617662321C0589B6660F522B193D6A439A0F78F906B837C1D002F0B0AB936C8F270506CB60DB6E825C3E799D8387875E3D4F8DAD555203E42D2A79A2892846C454DB24D35415A54CF239CA499A0DFD23906AA142A0A41FCED124D1C5C4314DD8B8E6274BA891B6AD517F15A3193618A073DC6C5E698224A9EBD12326D708127B0844C535C7E76FA5453A4CAFB1E86EBB20CB6D2A8E4FBDA24EDCC56850939CACC5C56659B150CA5B15DC92A2A166524C687E853A77654F51AFAE2431602912F9AD49D219BBA499E641C084A4BCA812BFA1B5CB9A53D88C993DAAC5A54A719ECC41EAF8B030EFD4C86C95E8C153C22590BFB7A9F6E827699DEE349E4B1DA542319212A4B00AA4B365A663FC433759870C1F8ADA66CE72A2D22F1FA579FBA4B6CC717CFB1633846DCC699C6C80BF582B46F144CF6725BF037CA9B24032A0B5C2FF32DD669761CC7E977E112159DB14B5476E931BAB31C4E8FE6A49515A4D7D4012890CA79FA9BC28FC2C82F2DC394FD080CBD41F4B5D424707A4B4D5A796402348E7737EF74F99C2BFB89329A257F1105EB4AE2A6C864982C55B22401F99DC9D8190AB84AF332F063DC86A134E65F56513EC4A43C3FFB7DAA8933585192832F725B5E5CF962AE15F25729AAD1AE44D5FB8714D16897F22B052CD26D1E226018990C53BCAF1096D1B8D555FE01E1188D96FE39DA4C4BF9138A518617812731570EA7B1A45595A503DCD5E12988CD3120F064C9078A68922617493D59AAA6146EE77A2178ED29003404A441BA7035952A2C30BCB56900688F0482922D108CBE4B9DDA4C00C448E952778AE4BC856A968169929E59C8E6B60648824DBAC9CD0DF750C43B1547C2CBE2FC578C46E1B0903CBEF02E43D35C4AA62FBDB7552092B17897CF13F5797C7F7E4A4A9EF5FCDB1B3397C369D0A0AAB294E9757524E7E1C64C7DD7CEC4CD4FFB6722A57755A8C4F8225D792125399C0629A92ACB061A17E647B94932209E302494C2E350C906D285E7285DE7D9F1729923DEF78A4A3670B44D57E2E15C97688423B2C82ED1C4D368838A32D870B140A9E49D5926BF6FA3F08EF8EFE3FCFCD1CB5251436A2C972100294939796BFB26701FD164AF526E795409FAF57F3F62ABFF6E7485EDF7975CED97CFE20A27AE54EF95799255402C2D41455253BE875715C44DBC4B9E71D57830D8B5CFC8898FD5D119FA789CCDCEC860C759EB76C954778592202E1F7D494872389D432445652973ECEA0887494CCE3CF2D2F1721325A2158E4A36BB677096F0E75B6DA219CEA20C7221C243976CB035D5630C0EBCD9620D0ADE35A24D9B78A9B499276952061116D9F922DDD79B94EE77D12610BA26F137D2258A8BBEDE225CA34D50F51873A0B0B2CC2DD1DB282F4A22A3DE0405AA8BECEFE1E1B98F9628C77CEF71F1477C40F20FAA3F4FE20811B5AF2D711924D12D16283FA5772879BDFFF3C17FECEF1DC75150101FF9F8767FEF611327C52FE1B628D34D9024691D58FCF5FEBA2CB35F0E0F8BEA8BC5C1260AF3B4486FCB8330DD1C06CBF4F0E58BA33F1F1E1D1DA2E5E690AFDEC06AA1BCF85B8B52144BC69643711876EDB1CBFFD56FE8919FE1967EAED1ADB86C0FB9D9E6EBBF92AF78D296D7FB37D1AA0AE85B31A85A6F2BD1F22A28F14E96109112550DDFDFFBB08D6372CAFA7AFF3688C5B74C840F6DCB755ADF88AA3F546C8238AE3E6588741114E549BAC9E2A8BE5E5DC32D7133CB2A68F0558E95F1A29AE81756E00BAC7D55135D23DBB4B1667075FDE43EC8432C0CECEF5D060F175560FED7FB2F7FFE99062D73F13E228F791514C5F734EF66CA0A96E60F4A72ECC4171B8254C83EC324C9541E992865D4CF2FFA5FAA83D7D7FBFFABAAF8CBDEF9D76F5DDD9FF63EE6981BFDB2F762EF7F5BB4A0FCCB290A962EC446307E23B662478C2A9477E18492E3FDEF4B9424E49A973DCC9B20BCC3BBC49D134694AEF2205B77FC264EF112410FA5E9B27BB3BDBDED5E0B6BA8244D63E30635D7E96A846D19258F36DD12199F351F3D8D5609C58F6FE334300739DBA46514A649E16388CE1E30434B56C807D65BCC421C99F8DB6013C58FE4E96B2C647869538E0598A547C0F646A52351BD4B6381039A42E4E936F3D833EA5AA763E7A88B9CAE48284FF1E6E4A77F18AB8985E0A1555F33C7E97B9FB92C94F7998F21F935BDF133222D90F3A8F8698E9FB63446209EE76B082A554D2721A576D272DC6E6A3F2D671072FFC05D50A9713E45759001079CE6EDCAF3E43E2ABDEC5B97E461C8E3687391F6F28F1D90D392A615184FFA4B75AAF10E959F33A77E5D072BD43C3AE3B4A0AA47C11C316A83BE237F589013BFEA260CD32D3B287788B28AE0E1D8A74F418C45D48BB4402E6DA95116DB3C67E41C7B28AC9AB8807C594705FE6DBECCCDB56EC0F9474FF5B6D1B8FB8D65B58D96E63A895C61D7D89EA8DA4E9B14E55264B14976B50DDAA03DABD6932975931A9E53C570982AF5243CD0DD71126D025AA3B2C6230A3524CA98521DDEC2FD358AA0B5D10E3C4079EA5FFD0A9A2B9027C3035612D3EF1E46FAEA242DDC77CD3674A8AB11649BFB21204FC4D3050D751C9E0627883D8DD3FBA8AC4F8D1DDBD5BBDCB99E02F8D3CDBA60F18E600DCEF1F21E8FFC3647B99F36B6B05808F70C59C59B8E82C42BE8829C516CBC816634B7B0A69651CE63EA0785EDC5C96B62EB74571FDA8788FDEDF8151296CB92D09D7154585E58C7A7205FA1D2CFA0D5587E9AE503A4B90B510B8AAE43DE80D10DD3C4D2D753D2CD4D6A7532482A5A9D0AB615A9F5E6FD38D09B38E9491AC0BBAE9F05B89B7AD1872C6C228A586B481C840D650110E39E3AF71FB49E1616C2496FBEA6EC3D3F3691B9D1979D1A3E34D7A61CAABAF942CED9A2BCB740596F3BB56AEF4741ACB1BA4B7D8E686F82220A8F7314F841F2A6BD56687E64900ACACF8ECFBE75E60A46BF73E68A253C45E66A86605E217355FED9F7C7FCA0B1CAA4031AFB44580D676D2D619ED8726D5A0DE66BA90B6F8C39FBB540CF8AED965DC60BF9F26F88B991883F8F84F3E23DD6D9A3DEE3C2D61D803CC464AF5E7BB210F10F7DB98D32FBC497F369F8C37BA721C200976E00B56CE345071EC346F3213D5EAD723C7BF7E83CECF53ACB83E7D0BD9304C4CB68B55779A81302BB1363E4418E24B22D2F945A53B5F0929BDB8A336122DA4AC569CE47D9D15327483D1B1DB5ADC70FAD770B4873B3DE9EA0484B59D3A1DF63020D75B2ADECEAF3443E6DEF7355D796B5418779B91A09342C040E1704C4C0107A4BC04E8FF6A23D571A972FB1B57E50EBE2DE5DC4F07440EB5707F4E17AFBAC49EE8A26E94B7D81B552574DD2935AFA24F4484F6E02154CF38C9DFD36BB8B5AED1916233382463B573AE9C8BE7A09EBDB2E873B5E06ACF7DD7780B846AB5A8AF471FA75EEE536D07951ED421E509262BB21551C8188689B79C0219616F2E6851348EB79FEF1E69F1443B1045BA4F1D243C73E61C1CA03CC9720476BE206EF8683E5D3C5F6C68BB24DB0BC0161AE1D2D69BDDDE576CAAFE98D2FF725AFBE5095D9CC17E395D8E01CEC667E8D70B52AE0EEEBD422F9502A3098CF5DB9116D8F379BD4BD6998A97BD8B408CCA517181293CA15C54343FC6EC26398531997374BB675759FF95A7A186A51E655773CD85397DB107DCCD222487CF29AEA9A51FD088327D65A21FA9889CE73D0179F5E90D8F4AE185E0CD28BCCCB76ED05E44B10B5EF1EFAB08CFB9A2C8999DDB7A76015F1B57915FD89DC67723782BFC1004BB76B513C848B21D9AD25440F3F4E96A45EDF889FF6CE8BCF49F4C71697794B86C4C2C47E8A896FE5BED1912B1C37518CC9CEF9F2232156BC54518968F97C38B490CE24CC7FA451C79F773B4D838D32965474E4838A601E6DD9A2973E5AE4EB84A13FDB87D686D6099233C290C0AFC57E06D5237D948F19994D3983D742D23C29D1C2D23BE2D0826A0E24060DCD26603AC725267843CAA40E96F6618901D8F059891E98D651892E949613831698E611841696FE3189059C97266A1A2E74A034EDFFBA50DE6654C3F8AF057375E40A715E9C6DB23E0C186F6BD583781B3DC8EDF43A10BAF6426D2C6F33A56B2CD4C3D235CAE9EDEECE93AFAB516A63791BF6DE6D4BB46EE8D45F68DC7CD6C4F133F78B981B677B2077C17091B1A3633BE70427BFF380C28EB13D90275A5E6484DBBBA3F433658F31E8C7AC0943B8A23BCCA24C131DD77F3DB48A67388B5A5111E6D186BC21DB3B2D8126EFA3977FF565D7A2D5912762D7F2E310EFC526EAECB9F205053929DE9A16F9A1D1D0FF458831AE1F5E0691D5C55652CF8646DA7AECDEE9DD4F985CF65B134ECB1A4BDD6E0FAE6BC9888E12EE01D09739A647B436E3B1102E26DD534A7EF414FAFCEC8FAB808E87E8EBD0F0BCF89861CA7375E3595431E04ED24CAAAAE89DB2A2A2A0041F5F9DBC46218AEE2D2DEC7D65B70868F50879F126AEB13CC517AEC1FC85F4EDF1FC04F6ADF1EC0E479AAA1E26AE7244F01038EC5354C68EF4ADBDBBD5EF1EDAEC6FB217138777B8BE263F50E3DE861921E6D58497599AA7B829894BEF1A4B556F1CC18860DB8946F0C3E23AC211300EA6C78D5110A72BE755EAD511DC8F7BC17981352952DE75ABBE4CEFA364E5BADF4765E98AF21C34BBF204CB42974033CEDCE72A2D22DAA54D93919A70124B3662C9433C6CD2F5CBAC35087999E4264E6F8CEDBFDBA27723DF151741F244F8711CA7DFC709908C47DF219A4F5FDB72E6A9DA0E5E263BC4679F39640532FE4DDB5DE194E4974F86292B49BEE391BD4E45906DB3EDBE5FD71E495AAE0CAF76D3E63019B201F1AD6B359FA2B724DB17BBAE5232433632B1F6745CA5791958D975EB9A3693D1D7A4B61EDFD3708A8A921CA4107F75EB95C883382D4A0ACC7DB7A0C0DC770D4FFBF822DDE621B21F6DAABE9B15AAC2711FE31AC77D78E98326CFFBE02714A30C2F273B29B2AF6DB38CD9DA63B3D58A5C7C0859736ECA53D9AE764744D57F5A646D178888D4B3A1DEB6DE885BD0BC138E92AD9713EEB1746B8BC61911936D589FB6AE3551357547242C3F874FF35BF3BDDCE310D7B18EA851D57293327C3C99E66585DAF905182D26FB879FDACAB6CB890B653ECA7A9A8F86268F36BE3B746C78346BCBCEFBDA0E47B40C4B7F3EA6D57122919C6CEB39914463599FEAC98A2FD2950D2DE16A3644D4541BD9912D0C09F158F97E74759D267DF4D713B57CB4C81BA439EA1D877C89AC7812E9A32E8FB034EFB4B514925BBE45196CBAE01D56AE74DACBA87A01378E8A12E7E48F4FC46B78375EF7F413A5E52A2D9C317E575EBAD18378E96E64F3111C8F5E42BE0D134D7C6A3BD9A3AA6A27787455C7DD3776645578F145684389FB50AADCAD65A399CAAE5012C4E5A3A510D3D7B63ABB616A8FA893CD2FCF1C2F3751E2E3188FB8B89F254BA7AD19465D94415E7AC66D66D879015DA3A0E81D00FCBAEF1E17451A46D5F4D39AF437E5ABE3780AF6AED3B82DDCB66C81E2DB8326E5721B9751164721FEE6EBFD23A18B3D04F7251A8BCF6241FF4D00C54B13E56495043189F059E6011E6E711D4709568B8298E902570AB6C0C89EDE26C3DBC1F239A72823BEDC4909F7D7F9C31D3EC77F8606E3D52135F75A24013CF0E89712AA0F300450A7FC18F32E0EDF8E4E37315C7C039EB3E867AA3221D1135527E84F75854E03D409A34CB468EF928CBBF3148B6326F9526F579A6D82DB2B8E5C5431E994F725400ECDCFDD8B8303D5FC3321E07842EA3346A107495F2553C548F50EB4210F7A27F9B018306E165AA12F350BF763950CC2787E8FF87179F531A943AFED1D876525849D0445581DD0F0D236FEB49472E96BD90CF13219A3F11EA35977A432F91574C9F7A04BD3F36D3AF47015E3ED3E73729FE9762373DA9B775722D7D4BF01875386133FB0F35497EF698C3AE189CFB5185240F225FEC6FA4C339D7D1B9638884B3A3B518284A8A557EA092C9EA65CF0A397CC83CC71DE428F74FBDE44D32DBDA4E36DBEA92F70285DF2139F71D918EEEE948BB7797D4E3741E710AAA4A73FCDC2B8EDE61493B16F667AC4696EBEC2A374C94F7FBADBAE3C9129AF6C4372F1BCBD9704CC97A1AC36A59508BC4D259F0352D671E2B5AD45CACF4DBED2C551B29BFB1D5DF5131381F9EA9F9B14BE8117DDBC31FC069D4668939E38A387C64DF231F1CADDCCB37DF43CDD234E3773DD6FB69996DE80F336D9D41768143AF9894FBA6C0C4D3F38CD946335E31B18AECB42CD52CD7BF30D1AA44D1A6BBE0D3428307094D1AC436368F1BD294EF2D769F64D72A78B3ACB5F7372779DA03FE1DD177810C860EBEB3C5FB8F6289902F89EA3D184C32368FCBD29277CC08FC7C78C032E207DEA0F31E7063E23734E7AC3DA818BC09E19BB16D93C51A6AE4D5B33B3F466B2F5A437F7299F51869B74FACD25B93989A09640BE492FF859C862C3029DB0C3D3C9A3108181A0250B266B21D869EFF4AA6F4EE5423120CF3BFB4E4C2DCB4F77866E405C3BE0BFA7B3D63D4DF6F4EB7CEA49D7FEDE2E4CFCA0FAE63CED73A86FD34DB991F236F3846399A239F2573B64F7E59839A39377F6E48D6AA4CE8CF4C5A7F3D71EF8E0B484A0E14A634C0EBBE858331F5D983ADAEC1875A8BC6E7C53C6A43E38B35284AEF6D985569F9B12FA3FD5B63FAF24C17F14461CD326381F912807DCFAF393DDEFD3A5170F37FDE6A792A96FFFD9D0C6DCF7006BB2D0383C702788998E0F262602C3238499A7BF7330D7BD0C6EE871BFCB97C2E7B9236871357CFE0B827D20308D3B1D7E6F915231C868383AF907A20E59C4B59DA58C9E819C27F7183215025C8DC23B9EEF163F29DA005EC31D852CA6BCF8370F19685F02EC1FB7DC81B997BB963E4FFE18934F3F4B3BF3F42B831F8E4207DC17693C3EEB07A20DD538DB7D7A523281E3068E421FEDA7D8D3CE26ED07A20870487796149A28741AFA45539299BF2E6DD7EF8EB70DD599142AA8DF6477C895DF9C900CA4A1A7BDD3C15C0AE6F49460A85CEE0A294803787A2705EA4BCC65252AF9072105D998EE04299C55512C719D12D74079BB45A54BF436CA8B920416BF090AD1FF8DD45AA0926DF3FEDE59171493A78C45B8469BE0F5FEB20A495887D5EC32052A61E1A98D42F80095077D82CAD6FD486307957FA929A0FC5C5366E09BB24F29BEA007DC047A14FB50A7834DAFB3068085D324E1134209E8634221EDCF2ABF38F4B1C1EFD46E39C217EA6408BBCE1940ADDDBC04D43A1942AD7334507BF31B88DE67CBBED29718A22826B89B48584C36485F4C8981AFD5E604E12B7532845EE70CA0B68EB5026E9B0121B779832DAE1D358036D71970ABEBBC616C18588AAA03295F5074A6E403BA0B8A0E31007DA7CB947CA7CBD7FB8EFC23CA2F0CC2B777A805F43603026FF306B0E9AB1E023E9D097D83CE1FDA6CD6206FAB93C1AD66ADC1DB7A37561059CEE3FA5C8D2F4837CA3E4FF60DBD0D8676C196B0077957E8FC81EFD0AA8EF01D3A13FA0E9D3FF01DDEFA267C8B2F007D8F2F3338868D610718C026071EBD2673680D52AA81B80EA94C702D52F9DC7728C99893CCF883FA3DAA282DA9290FF419AD87A163FC35893C071B4FC4CA03E2E621DB35FD6ED7A2A0B4B750E46DD74ED2026BDD37501E35EF521F7D1BE890243437D3349A29542D83163A53839622AB1AA09468D715599C6949E7B4C252CB6C7510A5293B0E89A4DD9049454DF3815007510686C220EAB27B87D8E104E4E67A4455F2B02599B3F17E65F4AE880AEC48F853CD7F1FDA16E8A324EEAD63D7688DA4AA016A1C365DA163B782DD910677E51A9871ED13588ECB3AB7EC1AAD2AC07D935F0E70E89CA8DEB4D5648A8B75F72A054EDA35C0CBDDAD5B9492D956815448ABEED0F127E12E492354BA768B5312DB6A32F5CFBA7B4DAC4579EFA0608C5063A196CE221400D10407E70E0ACAE7A18B13CD631B314FB2EAE040610EE4C92AFF5515896AEFD29D23757FC4C71C76B743B45102EE933C1A8443B744434A554D6122B1EA1E15E50BEE9D2C0C981D2B676AB116CCAA96C43E69A1FB31B1AC20ED4F1EEC8AD5FFD61CA7830C49420D4124931A881CBA26D7E315719D3C740E5089A5A6296BA2AC5B22254928008F33416A0D877D970639892A548F87EE4DC152C4583340570702D2D83109A096B00A15B64D4B2555CE3BA501571C75B731B9261F3B44DD2DEF6AE964B3A6DA181461341CBB37F6C6C0C783003AA70C19C134563CA4AE9A2B3F7E9E443F80231DA83BAAA593BB75770A0D5DBCC63FD86DB5BEEEDCE5D1B477C53D75759F072ED27AEBBCC4718483F07B8EA131121A57B59DCF36E6E8BA5AD8555D4476EEEEF8F2AEF4262D64F9D7BA75EBED0464CAC33AF0A6283004C3374ABD755F3CDEAE2A2B0EAE5D66BFBF06A99C78C96DC9A777EAC5DEF153F619BABEE4A9BB639D84F0D7D806FBA73289ED760779C70A554FD5978D3C75197617A900069C405C86A1F3FC50F55F72B5C653C7399F954679821D52CCBB2A5EB401BA3A701B87692EE7685D3557E2453DF1611F709944D157F9F5080F9D9D6213022E4C28BA2BBF02E0A1BBA25F546DD1977B3CC9BB4B1E7E2608DD85802EEFD561ED56D524E09F78470D56E8325DA2B8A8525F1D5EE3B6461B54FF3A4545B4EA215E61CC0455EF4EF7A06D99F3E4366DAF42702D6A8BB4D9AD811095C1322883E3BC8C6E3111E3EC10154594E0EEFE3D88B7B8C8D9E6062DCF938FDB32DB96B8CB687313330C8CDCA7507DFFD5A1D0E657B5C346E1A30BB89911EE02FA98BCD946F1B26BF7DB202E38794106412E6AD4745DCD6589FF8F568F1DD28734D1046A86AFBB5FF2096DB21883151F9345708F6CDAF6B940176815848F38FD3E5A122E2303199E0876D85F9D46C12A0F364583D1D7C73F310D2F370FFFF9FF01D954286E16150300, 
-'6.1.3-40302');
-  END IF;
-
-  IF CurrentMigration < '201610192000016_Zephyr' THEN 
-alter table `Item` modify `EquipmentSlot` TINYINT UNSIGNED not null ;
-INSERT INTO `__MigrationHistory`(
-`MigrationId`, 
-`ContextKey`, 
-`Model`, 
-`ProductVersion`) VALUES (
-'201610192000016_Zephyr', 
-'OpenNos.DAL.EF.Migrations.Configuration', 
-0x1F8B0800000000000400ED7D5B73DC38B2E6FB46EC7F50E869F7448F6479A6CF99E9B0CF0959926D754BB65A658F3D4F0E8A055571C422D9244B9662637FD93EEC4FDABFB000AFB82440DC48963C8A8E70AB70F9884B2291994824FEDFFFF9BFAFFEEB6113EFDDA3BC88D2E4F5FED1C18BFD3D9484E9324A56AFF7B7E5ED9FFEBAFF5FFFF9DFFFDBABB3E5E661EFEF6DB93F9372B86652BCDE5F9765F6CBE16111AED126280E365198A7457A5B1E84E9E63058A6872F5FBCF8DBE1D1D121C210FB186B6FEFD5F53629A30DAA7EE09F276912A2ACDC06F165BA4471D1A4E39C4585BAF721D8A0220B42F47AFF6386920F6971707A7C7170F6F6E0F271F1FBC5C1E99BFDBDE3380A70731628BEDDDF0B92242D831237F697CF055A94799AAC16194E08E24F8F19C2E56E83B8404D277EE98BEBF6E7C54BD29FC3BE620B156E8B32DD18021EFDB919A043BEBAD530EF77038887F00C0F75F9487A5D0DE3EBFDE3304CF1F8EFEFF1DFFAE524CE4939C92037F57EDA83727FEA8803D310F9EFA7BD936D5C6E73F43A41DB320FE29FF6AEB6377114FE861E3FA57728799D6CE3986E296E2BCE631270D2559E66282F1FAFD12DDBFEF3E5FEDE215BFD90AFDFD516ABD61D3D4FCA7FFFCBFEDE07DC94E026461D595083B228D31CBD4309CA83122DAF82B244399ED5F325AA06566804FFC96DB94EF3AA60FD4942A0075D2A4903BEAFC6BC088AF224DD64315E4364226BE053DCBE4F38C50A6E818AA222B76E5CFEFCD21888FCDB75B3CC310FD9DFBB0C1E2E50B22AD7AFF75FFEFCF3FEDEDBE8012DDB9406F573126196832B95F976F0235741517C4FF3A5D387E0EE7C08EEA35535EBDC374FD6411E8478E2F7F7AE515C9528D651D64E664D55DFA8526FF374739DC63DC9F599DF16E9360FC938A5B2129F827C854AFDE6D5D4195FA42B65FBE8626203FB5C690BA922A64DBC424910978F434DA48B894DEC73A54DA48A404D7C75D8B3432593A4E6D2904D76356767945D4B6C582553793266A9CB9F8760CABF9CA260E9C6CD08CA6F111E7A6794AB344ACAC21127C794FD254A1242922E406F82F00E8B52778E2851BACA836CFDA860C3F84F0FFCFECDF6F6F64D9C8677A89BCF37295EF34162DCE89318EF1D1DC86369BE558ABB2E1EBEA37F37C6398D56092D13E0A18BCD5B73B6494B3C9249E1697CCE1EC27590AC9027B8B7987F38CB146F834D1463A6F6C71615A5AF86E5114A967E3131D35BF64BD38AB8DEA5B123E37B97A7DBCC6FBFDE07517E92C6A95BD708CAA27C8C911B0ACA53BC2F79EB1A86BB40F728766ED4D7CC6DDEDE676E8BE47DE669487E4D6FDC47A405711D15F7967869C6659031028905BBC7105F9D11FEE18A506061CC872852237D8A30C1958E485112C541B23C4FEEA3D2D7B673996E0B741C6D2ED25EC8B1C6725C98CE1AB1D6577EDFE2B97887CACF996B7FAF8315AA48C46DC95CA36CEB08B188D3D269ED2FB2E3E532AA5451AE4316F3B8C87C806025C96D03FC14C458F4BC480BE4D6921A67B1CD73466A7101C3AA891BCC977554E0DFB64C406A79E8CC9DEE969BD6A220B7DCB4660963C3D2E2AED2348136F6E07CE1BEA9B2328299445AD0B3C989B21481630BE50BC30B16321D61BCB560EA4CF3C781C1A5CA41E3DA652B86B42F633A9A97413434F97511A8692447D1AA2ADBA641471A2D3A9237E968A04D47168DCAC026E17498CA980C81BCD85C53BAAAF6DC382ACAB3A41C242EBE3034666C19C5E071054D47F19A9CA47D4F065ADC95829ADA642ADAD896F063836DF89DAD21B6AA3EBB35D6C608DBEB1DEFB6D1D2CAF4FA214D86AD5AFAB6DE0109878CF4DF3F6C3786AA8AE5C18BD3D6C8B383C13D54B7CDF2ADBCC693B715CA17DA091682DAA8BDCEEC96D76EAC2A8AE24C179736B1FA5964C765198477C749B40938ABA885324F8CE2AE468913ACC67B6A0E813ABBBD45A1A3599CE0F8E8567D0CEE84E2E1A8208D97E977D791BD3A490B3745F834D860ADDEF1BC629B7B20131F24721623FAF8C56A441A8C20F63134EFA3B276E27068D079893616DBE638F6526294DBF46DB1026A308E974423C27C3F776F5B0B99876B8F7097C12A0AA320F106B820BE291B2F8019BDF4ED48621A8F9C3C0A1D0D52D7E4D8D1CDDC87C2345906F9A3AD0C0A490758CA4A4247FE50013973885A0A741FA61AC7BD39AE009FB3551E2C51237ABA8C6F8344B7C89BD6E15994E7F565A5BCAFDDD8747393AADA58E70B4D23C9B2165579A60DF9908597F8FB1AC32694E41BC7159034932F65DAE0C53ACD869A4A95E11BD965499AD7E7BB5941EAF933357E905AB36B67552BACBCCFDA8AEA4DC5A3E7991F45C887848B054A0F3B8E4F2BCC201B54B11889FD82613F560B43E022864B84AB3FFB62E1DA63B36C0088A95C37FB4FBBCB5ED7D439E98E2C81BE7BE03AE8B3559B9BBC94B04A14457DDB238D77637845EB34D3626D3B2CEB1D5AD176164AB335E5C94CB92147DAC48730CAA963781B19BFB678BA5BD26A9C46CE77427A131451789CA3C01DC58F79AF8272D7EA2A180FBAD4499C16E814DD2267ADB7BAD29794B933273FC9A3320A83F8621BDE5DBBFACFB460EE1B4C6D39BC0C1E68539913146B75B385CAEFAE511115256DB758D8998D6B32384D97CEC6E31AC9C7023E6DBAE6854639300F3DF5689C7627D1B79881FB22063FAED2E7C5FBB42823CA0BDCDE4DF9EB959BC5D183B13C5AAD4B5F035CD9A1BD5035E649EF1DC706435CBA42D4720B6D95AB7D75E8F45D34667F488F57AB1CCFEA3D3A0F7B7380BD436D3F9F568441009CADAD8D3B0E772C6AE5078B1C854222C9F2D2A51DA17FC11C32F7B5FE8CD98954DD3AC53F8774C4BA0CA818922CC1A0C8E75B78CE696AAF7449B07D7D01552BA952166DC5401AEDAC4AC9DA887F0DB48F9418C3C4ED6C0A50345BC7E2ADAD63D74468A85D934AB3EBD5A41136E6B1B69EAB1EAD6D54DED49EE72E1C97B4593886B4C0F1E36280D70DA92E0CA29630007C5EDB8B1BB71E5C6D244360A75DA260AAEA734CAD684DCF650EC824AF022E3807E43E037240A6724D1BA46F911CDA6D14B647E9506973997AE60CB90CA9343B97B1B3D94D67A9AB8C3E3E94EA1314C7697271EFA60E79F098F3687D72BDB0FC6CBF9ACB7EE5C38602DBC19CAC573EEC603B6EBCF2E19D5961FC3D88B78EE2CA4E59D2CEB0BA9A1128E74BA9C426E7A36BB06DCFDADFC07D8898080656F5AFD1AADE069D9D30CE7DC543392FAA8DC40F50526C37A48A3B1611CA323F50C4AE1B85EE38ED45FE8F37FFA478883DDE228D977E7AF8098B477E90BE04395A93D802CE5058BA5D6C6F9CAD7A04C70B08E6D7D192330EDAC6EBF835BDF1E140EECD13BDB2D2FB60B91273BFAD1EEDD1DC5FCBEF6EBEE62D8AAB168081BC6DBB8D747ABCD9A46E6DC22CDC757F221897EE18D9DA11C2B5091EB7D9498E63F8BB05166CE9EA3EF3B2D2300EEE66D517C7C398E536441FB3B408126F0CA58AB8524DAA0FA659A17918FAEE52860F06BC400F6EF59DCFAE1699F376EB0CF02588CA5314078F6EF4521D9EF99815C9299CABBFA5F4146DC0E0CB1F9E88A6601393F37952F7AA9037852BC6B589C9851BC716F11639A40AFB511B5F697B749308D8A2DB1C533BF4350A23895DBCC26BF3B991A993E12169F2CC235B906AEAA302BA0CD822660C805631A3A7DB32721544DDAEBE04D7AA36036E5397EB74124893A095ADBEAD3CBBCD7E87836CF8380C7C832196F2681D03C6635F513E4E31B75F390A8FE442F94D14633AF410588D9020DE13511BFFBEC6EAE3E14F71327A1DE4BD346C275D50C645BB36380B1756A74952AEC752AB94F7B5CCE31B5F9EE5849262205F949535BE5BA9197E463B78983CE88C1860CCCFD9B8897C029E96C3228CD53EF3B9207464BDD3B0D5FDEE357B6F8202517E8ACC96A8B65C5F718B7640035715D71EC92F08D38DCB58F200BB329AA2B147E7ECDABCC6C78C0C12BFF55B9F4FDB1E26EB1DF742877B2EA7CED687CCF667CAF647C89627C63607C40BADAAF2035797E35FE7D35EDBB350CB034B9BF349ADF1858F2307EA98F1E0F3E26C93F5AF2F74E73843B52A6BA6612DF9F983D57183D6102A4E171CACF70EFB9A89FDC9CADCA4352C8C8F37A02FC9C5406ACB802541AAC037716FA664425541513A54967612C5D82E990697A02A3FABFC8A35EC7CC7C859A3F3E08AC313DEE0E0E92E2B71A18CB7B48450B55A0BD16A692D3214460109D06B2D9D8B10E3CAE7C2B80E182AC0B87943D60D9B0D6911737B84662D43816091B13DD2D94D489DFCCEB0063B047A952C76C945460430B31AFD90E9950798DB601522D39855C1DC37816F0E0FD5AC24057915EDE55C9FB0182E605269F69D9134C266776CEBA96DC41EAFC990F80E6B42E3AC8DDC3E58C4BA1661E967571DC17CF8D9F768C33761047DB517C7ADDF793DFBE32AA0DFEC19CD69E3BC2094EFC36D7251BD4F729266A2B266EAF9828A82E2F0A3F5FD1A8528BAF7104ABDEEB9F3A58A1AC7C3EB7435909FE7E07A2CF747E16A2C3FC35D7968B906A0FE1495F10874666EFF1F7001E04562D139C0E0E0BDA279D70743E4A723EC8322DAC7EE0DD5BB3CACA26E939B12DEBA46180A1775B5D9C58BC61FC242C0E86BAAD7D9583771678CD15D5F3C1F8E6CE9E7F04FED7B031EF7717E39FA7E48D25BFBCD5D7BB12D4C06743B96CAB5F34A928E4E830A7B03099902AB144B38590CDAC133563248B5D9F9404FD2E68A86DE62F0638D3B8D82983C57E6B27CFDDD91F3E0C3795E9C46D591B80741FB32BDAFE41467813D2A4B0F403FC89BAB98BADDB78CABB488686F7D47AF1CD52B6A6254953E157C3F8D8BB4A2DB06FDD8053A715E14F10B2CDBA7F069D5DCCD44E11ADAEB4CFC4755ADA9F385B69064594BAA3CD3767C4231CAD25C366FED7C50A58436F599B29651255C77559B2D7517F653CBCDD48744ADB59306651F41354A02E2F74629B8F84F58C11D60B7DBA2BF8A6A775445FE1DDDC24356CE711CA7DF7DBE52ABF634D47CE1125850C0FB97061B858A4937EC1F8816C6E680AD1A273ED8E01626698A4D28B026788F62376DB2BF55458498404D8E2C28509B6DBA735D61C619C86E8464DFDA6C7674EA5470749A2CD3D1A9ABC12FC8F6B0477043C49763E93CFF7B967CC31AD8AD7C6E55B6E1CEFBAABBB071354DB1DCBFA8DA532884BBA73FFD206A8FB78720A6557D86B732890AC4EF74A3A841DA6139D5EA90AAAD26FCAADBFCCCF955537517F895C8A8642549A34713CB071764FB7523189B75A027B4007B2124D318CA521A6DAA8BC9DA45FE1C685B55C475AFAE5B6147F8BB40F50EB4AC4788FE0E6E9A4F0E2876528DD32CD6444A5A6C6398555E63872F8F6BC60C95503317517414A54563ADA9951766395AADB5565D315C6A75B5D9575ADD0C9B85D6D774958375D7D9292ACA28A90388B8EF58149AA3304A21390AA5FEA4FD9AA43D0C530DE438423588E3E0D46BBDE1AF234AD94AFB03245D73A6098336581B1FE4CD803D50B4B9196D6630E4687DD5D9B95ADF141BCEC6D69E4A8A384F967DF0206B21DC831C6FE3FBB10B0ABED562D732AB41AB0DB0BAF9F343D13D9D92F8A30CB44DFF96C8DAE2F5055269760650C59CB158FA6DBDA9441A4FCB0D255B7A77B4F21D9BEC5CCABCA50E2B4975EA2C593DCC89B4C9E9B7D493AB4604A2273119E213DD4CAEE797C35B6CF13D552647DE280FAFBBF44362C16376E2FD85B621D6BCA6A93B15BF71778BDF9948445A9C7A00C33554BA33D3F51BCCC8357C1BE86C2BB0276787204D76283CE10C324B6BC663F7207B577327588FF523EC4CE5A9988F97256BF968FAFC2BDF619D0CEDD1D29532CE63EC7093D82CC903ECEA46195E4AB1121DFAAAB3AFE0BE290E17547801E25FE5928AEEFD1C9F97548642B22A2EABF80E5B6B7839846F99FCFA88D57AACE929BE2057170CD7635F75F6F588DB60B3109B6A1D198E7D133D0CC91274BD4C6A1BA1F53C3B5E2E73D4DFF81DCD5680C79576E21DF33BCCD1C25847B7E43E7C51069BEE7904FD4BF2520ED11003C8229ABC6FF4E2EC7984982B3009A088290753BB0C53C0A0E730942F1824C0424E6689DFB751784702DBE01CE2366EC8D1D8EAB373B51D8E3DE52DDAB387574BAED2C20DE0F723C7FA2FFDA934EE07ACAEE2946E54627EAD4177DCD9328ADBEE5C414715A37A8EDE42BFA8EACDBEEC9B76D869165DD5A9841A7F9CC0FD08B4E9BEB36DCFF104D4DBF1A7EE52EC281E5A834DA662F1B525DC9CA95012C4E5A38D22D1579D7DEDF54DB172AC626A4F659CF3A4561C2F375132892724919ECF92A5B9300DE02CCA202F9D919A89EB7A4E96579356331363461414FDBD8209A2F4E86813F40A15B5893E57AA4D5045CC58C57643318AE36DB94EF3A81DD9F3E26D1CAC8A6E00347807CE8E92030687621C55AE75E8CACF24A64FFC88E78B66E1EC2C5CA2CD0DCADB73A082B0E72A10EAEBFD17C28C31652FF1CCE2359EF6158ED415AA35D9157EA92EFC39B94BD2EF7DF13F1D89F353CF8462769A0B1C8E7343A18C3633D5CE6E301C03737385F94882B467E6C3D589EEBC7C41A4F94DD93F0FB4A2F1606C4A8B361DA6F49B9418739AB23FABCB9EC51191849AC2624840B61928C8D26557FA3FD4A59B78B25DF1BFAA8BBF439B4516840DA76EEAFCCD8256190E6D4DAB14CA6CB47AB92DD1529752DFE04E51A5B556F97151A4788EC840D04745BDDDA53E1562BF8AF7E83DFA08882DDC9B73FA3DB3395BBAC4831465785830778656D20070B7FFF4C05C3BB92FFC9BF0052CD1A19C884F414CDEC6C6531525A528FE4549186541ACD14BAE2E7CAEDB9F700AB7BE0EBB8FF139A7282381E4925263489C5BD17D8C936C87C6EBD52145415A84956E6ED2217A22657C92518507514FD598518986EECAE4B442F7FB299048FFCAA66C42812737FBE9AC0FCDF4A9437CA59302AB1FFB1C8534844EE8CC8D334D08BDD5F96A7FB23B1B41C81E6A53CDEAE0AB6D2CD1F411F387E65BEF33AA8D8AFFC68B83039146ADC96AA0453A53CE18EE1CE96D601E749A233E3E390B25AA1F84901189E6EB101499300FA4E853A3E60B2FFD87C4372D78BEC98FF2C7A47EEC72EF38245FC1DF0C8AB0F274E4CD61B8591EC859AB4B5A3CCC8D8EB5E650A71DD08B26F36DB3EC0B8DCA2D52F29CB4E3C62B7904D29633DBEFC460F7A6DB92C17178027B731FE75B36CD40D0EF7E76EB00D8FA1C0E78445C4D80FE3656E1D3931087307A3A5FE51F7B988932E8B871F2090583C8D1142208E02AA6C2E29988609E9809D8219D4993458431A115A0EF4E9F9E884CA80843AA79052208B9110A14B88801ECE21E8D462A629FA6A315B1FB4F8458C8DDC0817965222EBA120913E89701AB6E298E491C543F26250CAACB4F8028C8A4B491A31473491593104753C24C2481636A1A129D2D9100DF9E8C5080F17C22C4D2843E1A98533E0E92402A5AD2A60C765A7323D825CDD92215FD500BDB75E7CF4FCE5DAA49D7E304557747E2321536CC6920B21C85DBD06D989C8E80317E22C4D4862152891C7C4C6427F9850F7044F93035EE04A3C92F6C3FA6935FD82EEB7C570C4136337D1C6910C891570A399A91448EE6A29123A383513AF6DA6CF441C510524D2A143DDC894AA0F0443D201DD968346211FB341DBD88DD7F02A22EF55A8C626AA1A76386B4DC016A81DE56EB21DBFBAF63118AD821CDB902DF12332515B1EFAE5F9FC22F8789DD219B59495C23CA37672D2A304AD71C3832080B08D9F57DF9E7401DD2DA0BC0406446A402F6DDEDDB5312CA804FA024DA94075291BA0152F12BC6251673DF3F8FD462EEF23727B9D0E1DA06F60BF6C5300F1B101B0C4E4D797E371FBA2B536F3D74AF9FC0C6732944C61C98D541C1D68E58E6176FE1CE4D4D3ED672EE9C4424464D91CDB6E27DDD21F95445448AC82C3CEC88D28CB4733A53287B52DB8888A4E3E0DA82A91CA206B425E8996A5717A899F424A02B3A93E4C7DDC95C3FDA011F641DFE220B0DE5874866E32C926E4D4D30A61C6517886650A986A371BA12CC8C4A35D8A1E948C546A59E9950A867D294175FB87210B1D0EFBA191D4EF3D8D31E4F4B7AA633777D5567FA918C819604AC6EC2B444A4E150A77E994F8BA034A969662F3B6547E7A32F4BE7BB1DA33295279E50722CEA9AC33D4FDAB95929CAD06B0F17DF0D4AEAFF545B95E55546A12DFE1B0091F12D1F9DDA24FD9E8FEC2483E4A74193DD48D7A540B0B4C75BEA3B4372CA8EEA4CAECF3BEC0E3436F76D763EB4BA7AFAD52766762435EF9919DCADA909C8EEE06C66D2E9EFF2680662915500EF18CBEE41A9084AFA81B982B20CF558679A7D5D751F1A1C0F6D9980E8C0D8CD327A500772EE69810E55ADEFF3AC8C003D6D54055553A6A431D5803F0DFAEA9B7D9EDC63C8347FD4E0675DD91158598F3DCFF573452FE7615FC2803C35CAAA6E950F4F7C75B7DA3F3D55B0A03D42E7AEBB2309D17D9A877AE8EE6B4959046757A846EE76CF951B896E4027FCC908C7C80D7F1CCA3172C8BF46218AEE778278B878F7C3B32D8969EF8F9C64D1F5FB0FF031FA47A630B8C7F3901A3C384F6D9F6B23BB0F13031FC4DD1F990901E469AF8426F0FCC884C5756E1E8AE2C6E16990521BBB7B58D3134A42A4D4C519D72724117786982DD2CEE9CC221560DF8190A4E3E0DC8409C98852F387E61B787BCA0F2141EF5ED919229C4849ECDFF4B4240EC5532226EA4182A139079E1EF0434CD0B307D4E558EAC984518949ECDFF4C4240EC5EE11D359F5C204AE53E21A5D44F4266A3B49460F2510FBFD73819AF0EF45F3B2064F170476814AB653FB7B67DD8B163CA90994C522501B9A8041E5E9A234167639545360004F06A357BB09A32D36A24E1FA82D1C6A0A3842096D4425D8204EEDF42620D4C903756B274BA16E9DAC51B7B73C82187DF6D0DC300165C52962B207B06A6B848051270FD46D1DDA85DA6DC6E0B76B971EE0EB75C6707DB8B24E4D3935D199C3385DF41708A7CBD4C391830C22B4A11D04803663A03E7D254AC0A03387B8CE1A5C5F75B2465DC91AEBB33430A49CAFCFD3A26C495BE8CC011C5A401570E8CC011CDEB62360F10506FBD7E8F240E79A9C217AA3A42591E6A84C0E87DAEBB9AD8A3F16DFA38AD25B97F2F89C91FB942F99741DEA764A41A419406A65480A69608B3E647BAF3F32F5A62B1D10F1FD0DA8F5CC0B1C36DD679EDCA07B0DCA04E69DED9F8A00BA2A79478269A7F89204D54A68C14A6A037D040504BB2ECA1E3F90745AEBAD04A12343AF25700323933DB471558BC1C3B8A943F503236710DB9F35856A45F7A77BA990B60C9081F153CA8496AB8B8D102F5B668A38F2E28A8123C91B2F3C3874FC78C3D1873A07464112079D69B518099D6A2C243F4B6A4BBAEAA58B74CC6EB09BD2A0DE5C63A1B0DE4C7705E6A8001899575CB231A825FD965DAA11DA0DDCA731EC397065864590A91BD67DAFB42769BF856B1E508BE91B1EE6FDA52F71B0B521C5CEAA9F749460B8AFD238C27C8BA148C26CAB258A9C0A08EEBEBFBE37416FE55D87A2E2420DE6E2E28A1DD7E9351705D7BFE424860A1D9E7531BEAB62C29808AFAEB3CF84741D1E51CB95DEEAF6F04A8742930A6B950B4E6AB8D2B968A4546D89D9C1A59F47EA8E8AAF1B416D3D72EBEAD1E87DA56D2D707765C175842603B1750C3B0D84D1A110146621ABBE53F10DE1AECB0220F2ED0642200E6E420A0CA0EB120BA78582CF44EA83547C79283F56470783F9D16A3E60825320009D961AE11CBA2DB7F52822D3C1CD96DB77B47B2E35ECC84D87D6945EB74A4AE7628C35884299286B5634CE84551B1834FBCE0E723555D430A8D983BC4DB3FB13723831AC15301403B1AF982EC8A35F0D72AA011C29C7F3B4FCE9E04C3223C420A387A237199B1D2660F17CB021758707E65C1691C8B2E3D3CDB66A8F5344D6111BAEDAE3F4BA3ED11EC78781013AAE8C14C3345C162B866ABAFC145C89349ECA068730510F839659461DEDC4694826B4D588B1370687466DB99187E8701D92B1CD398AE011EA31515EF497754876DFDF69946457FD4150BFC7831A43A611160138F1D31828DDC3C3198747AD66A82EF403FD502B1A9A833199AA21BD730E9D9869DD4F678FB4866EA8EB58F8F510A7386C072F4B0323357CA99AE993F25A35D51FB93FC830DCD8C7AFC0355F2509496E034BE65ABC0FEC4038E205E0F10E11B94BAACA2111AFB14A3AC05C64751808E6E6EAC0D9A473DF41E3ACF236A6A2D5A091D6A6FBA0B9D67BFF79E72BD540A86E164A3A22B95BE8303492CB8414E2803F99CB68751E66AA6102EFC2497AC3DF86731818FEFA1BA311C38E71E643215ED3028662E02E17D37EF96D2EAAFD1267F601A091F715E0AA91622C641792C03E0057922C4703B883A4B56B3B8C07ED40291F0FD99D1AB017C0AD1ACBF100AED1D0876172DF4FF978BC3AAC11BACB1E5DDEABC345B8469BA0497875888B84282BB7417C992E515CB4195817CDA26455F4359B94BD4516846495FF69B1BFF7B08993E2F5FEBA2CB35F0E0F8B0ABA38D844619E16E96D7910A69BC360991EBE7CF1E26F874747879B1AE33064CED1F9AB29DD97B0D811AC10974B1C2497E86D9417E5695006374181C7FE64B9118A71575BD8C1EB86B8FD187B7B459CB6D627B72D4FFE66AED01C9C1E5F1C9CBD3DB87C5CFC7E7170FAE64082D50FE55BDCBB0D16AEAA8E22807C849AB8EE220CE2206F2F138937894ED278BB49062F1829B0B6E53ACD715338AC3E591FEB2228CA937493C511E9270BC8E799A12E5051542E823C6497A18F47FE6581EA147D84ABA028BEA73937FC7DAA88F4EA9023029EE20E0592E3563F4FC15AF4ADDAFFCC295C8AA641E38ABAB25166AE84D303ADBC2B2EC7F3BA6AC2F22FA72810A0DA5433A4DF2A0D9C47FA0D3487A891AED228290B11AB4D3740CBF156F4254A1222AA307074863EDE9B20BCC35BC91D0BD6A71A2045E92A0FB235C7B1A86403ACEDEDED9B380DEF1037954C863EDE498C990047AD759201868483DA71CFD3689508DCBD4BD4C739DBA46514A649010E97986B80FC10AE83648560603E531FF72DE611C29ED1259AE06CA2F8F11AFDB145450936122E61F0853C42C952F905B084FE17DE5581A558CC36CD00258DB976D529060879BACD541D050BE8E3BF0FA21CC3A55C57A96433AC45F9182311AB4936C042798AB72DB8CF42A619EE05BA47B188D8249B617DCD44A0AF80FB8F02854730AC0D8F50663136BFA637C0D0F4A9E648FCE8D0E906F2ACD828E31681CDB168CB65FD26338D72093FD3ACC4F82A407C3544F88780F00F330472F205493F6C8E29E2A708535D0921B63906885112C541B23C4FEEA312DEED24450CBE916E0B741C6D2E525ED262730C103922BB34A22F775DABB2A5BE43E567AE1D74BA3EDA75B042152DB06054B20116CAB63C4E9DA48FB188530EA24E3140C88E97CB88C83440BF844C135C10CF1CA70C4A8E049A247D8C4F418CA5DE8BB4E080E87453B4C536CF01A148C834C5C59A11845825EB637D594705FE0D32093E6FF7AC0DB2936F079303086962779000C82680DF15CDB644DFA60B2AFA3EB390E441F96723027F736F3BE586336D33B652A3495906E1DD71126D0251F51432CDCC143C29B569065489051749DBB82C33CCB3DB5B14F2C60A2ADD0C4D58324D9A19CAA788173CFAD4A9CD3958474EBFF303DEA51A205D9DA4053FCE4D9A814128D8606987B30735690628DB1C20A33ED5C0FC03508F39E59CC548B4987589C638410C0D939069A0D846657D7591516BDB447D9CFE714E6677923ED92947F2A68612A565C3B788CD3153927095E3257143DAE628079A292B63FE953C5C2BBF40E71BA35F06AB288C82448ECF9530FEC2821C376D545FE04A98A87D22AF69D3263D6ACBA3908368924C94BE845FC94D92810486C2345906F9A34C5C00F20DE53B2C1B267C5F990C433C91DF50C9266A0DF15200C690C930C5131B47A71BA0893886089FB3551E2C51E3064B23B139C68862D3988C9D91D86501B02CB4350849474983EB290EC86E52414C6C130DA475899C6E2307FB9162B0402048083FA89E387C9BC29CFE06303528711041BAD3B11579EA04B20D7651EE695018D874CFB916EC72D78666B927496D9E09CD89C66CC8CB27091C6F88E70B396D8D72DECAC8E7991A4100D599C930C56BF64E08B1CB32F14629A2F0384701EF8ED2251B62C15A3E97658809C85C74BA211A20E0D0E9264691B440A7E81609D22A9B636222C115923217381293618097476584332EB6E19DC8E6C45C736439AA29626D4AB80C1E441D9ACB32C684F4722ECB0433BFBB4645D4DEFE6141D93C03D49A584ED3A5609262728C114176C1E7997851D57D03C95EC8B4C685C6012C319B614C247C26C3C0E7096F2B327AE2F3E6F187392FDEA74519F1FE3F54B29107C9D72BC17984244D6CB08B56EB5236EC42A689B7C42A0AC1C5C1E698203EBCBFE2A1AA24238C4B11E3D20CA316AD44659EC998D224F6213D5EAD723C4DF7E83CE4955721D34421E0E7AE4E31431007AA4F35F1ADA8EE8B89A7384C86893703E205DC26491F8348D7B0ACCCE6189CF2639E99CB56A390A98FCBB31A98CFCCA48A4942B5982B61109086FA0557936ED0F827AFCCB769A68A16A46019090BF8276424A6D3E738496AC272028E846DB231BB151B36A0E2CE44CC92904BE6C40C016910335C4DC5C144CE65AC4982B2359B63A0515581DD2FEE39C9864A9EF8B87E04ED56F0473F31F5457FD6909F86860C6A5B4CC60FA8713F5DDDD88FEB4955E3EF41BCE535633AE3E96BEC6758C0CD4845D16999CB32B30280FD653266B72A44C028768906388E7763AED1AA8A97209E59F27926560ED0C9F8DCE626DF79516D6C2256976C869514DB0D79E74584EB734C1089A09C41805486917D08E569140AE6A126D504A9BDF8F1F1E69F024712734D901769BC84BADCA79BA07DC2E21D84D6A79BA07D0972B426F75278382AC34CA1596C6F44030493618607835939ED0571B414ED195C96A135F0D7F446EE7D4767CEE9D25799154126CFE6FCA056CC5A9311AC906DB20596A02CB1394688522181CF3342AD9C27379B5480EC334C4C0239E277CE36CD0C45B8CBD6A419A1646B01842499B856F26E9566B5E552009FF7D41C35AFEE3370F5D1E946688B3247C9AA5C0B707D86894D7AB90DD1C72C2D8244CA7DA4854CBE936DEBD7B841360C641B62035345A75B38C582DC5DCC35417EE0C11EA6B6F72F32C08356F2A4931CC5DD41F54B1095A7280EB8181E54B2E18903385B6CCE746718331A6E150F5ACA0DB858D6C57F7FBCFD1F2A4B6E8BFC3F2D4DBAB296C9A7C1EDBEA29FF309F65153E1BE9A906B6054F47C9FF21493E48ABFBBD4A419A06CF3E0268AF1C40157A5854C337501AF6C5422585FA0F3E638EFB9C6DA197FC49B9B6D1CCED7DEBDF9FDB3208A030C5746657930F4B950BDBDBBA3FC84F7DC3074DBE07D3664B54FB07C514537D8AB8CAC78FAD8C1E28DC5611E6DA22428E1B397992678E879E51D9D6251BD33D5EB20C5D85C2BA61F861676072EEF47F471058E45B8ACE753C1E753C141D4E753C1513D5DFF85CEB884ADFFC8EC50E06C93F1E12ABB44139CB7D1837810D5243E1BAFF51047310F0BD29D1181EC9E054386ABE7850989B18248F82404D94586C22820CF5E3C8BB2CFA2ECB328FB2CCA6AE03D8BB2CFA2ECB3283B80F32CCA3E8BB2FA88738AB2126B3F144C6D6111450DD781A8824A36C1824FAD639BE3EA98E715758AC96133384699C5186564EF147172A3B0CF0BD8136361E388B1C8E091CE6C463A23FB020F54A799A008F39599CE17701DB74B34C2217C52C0A9134D70B02695C0D7DEF93C13D48A69F0704DA29E320BA8854F429D556BA2732BB2C230B36FB34E3AC0B671C72895D64FF83105A0C68CA9AB8F637AF071A7DFFD281CB8BB627C6B85B759F1E302E5EF0C294A5E17362741084883F4E06A72613612028CB56906562F123B694D9A037AFF08B936C8D701F0B2A0906B832C0F07C566DB608B5E327C9E898D8357374E8DAF5D5D05E223247DAA892249C856D424DB5413A445F53CC2499A09FA2D9D63A04AA1A210C4DF2ED1C4C13544D1BDE82846A79BB8A1567D11AF153319A678D0635C6C8E29A2E4D92B21D3061778024BC834C5E567A74F3545AABCEF61B82ECB602B8D4ABEAF4DD2CE6C559890A3CCCC6555B659C1501ADB95ACA2625146627C883E756A4755AFA12F3E642110F9A249DD19B2A99BE449C681A0B4A41CB8A2BFC1955BDA83983CA9CDAA45759AC14EECF1BA38E0D0CF6498ECC558C12392B5B0AFF7E9266897E93D9E441EAB4D359211A2B204A0BA64A365F6433C538709178CDF6ACA76AED22212AF7FF5A9BBC4767CF11C3B8663C46D9C698CBC502F48FB46C1642FB7057FA3BC4932A0B2C0F532DF629D66C7719C7E172E51D119BB4465971EA33BCBE1F4684E5A59417A4D1D8002A99CA7BF29FC288CFCD2324CD98FC0D01B445F4B4D02A7B7D4A495472640E37877F34E97CFB9B29F28A359F21751B0AE246E8A4C86C952254B1290DF998C9DA180AB342F033FC66D184A63FE6515E5434CCAF3B3DFA79A3883152539F822B7E5C5952FE65A217F95A21AED4A54BD7F48118D7629BF52C022DDE621028691C930C5FB0A61198D5B5DE51F108ED168E99FA3CDB4943FA118657811781273E5701A4B5A55593AC05D1D9E82D81C03024F967CA08826697291D493A56A4AE176AE1782D79E024043401AA40B5753A9C202C35B9B0680F6482028D902C1E8BBD4A9CD04408C942E75A748CE5BA866199826E999856C6E6B8024D8A49BDCDC700F45BC537124BC2CCE7FC568140E0BC9E30BEF3234CDA564FAD27B5B0522198B77F93C519FC7F7E7A7A4E459CFBFBD3173399C060DAA2A4B995E5747721E6ECCD477ED4CDCFCB47F26527A57854A8C2FD295175292C3699092AAB26CA071617E949B2403E2094342293C0E956C205D788ED2759E1D2F9739E27DAFA8640347DB74251ECE75894638228BEC124D3C8D36A828830D170B944ADE9965F2FB360AEF88FF3ECECF1FBD2C1535A4C672190290929493B7B66F02F7114DF62AE5964795A05FFFF723B6FAEF4657D87E7FC9D57EF92CAE70E24AF55E99275905C4D212542435E57B785541DCC4BBE419578D07835DFB8C9CF8581D9DA18FC7D9EC8C0C769CB56E974C75572809E2F2D197842487D3394452549632C7AE8E7098C4E4CC232F1D2F3751225AE1A864B37B0667097FBED5269AE12CCA2017223C74C9065B533DC6E0C09B2DD6A0E05D23DAB489974A9B799226651061919D2FD27DBD49E97E176D02A16B127F235DA2B8E8EB2DC235DA04558F31070A2BCBDC12BD8DF2A22432EA4D50A0BAC8FE1E1E9EFB688972CCF71E177FC40724FFA0FAF3248E1051FBDA12974112DD6281F2537A8792D7FB3F1FFCC7FEDE711C0505F1918F6FF7F71E367152FC126E8B32DD044992D681C55FEFAFCB32FBE5F0B0A8BE581C6CA2304F8BF4B63C08D3CD61B04C0F5FBE38FAF3E1D1D1215A6E0EF9EA0DAC16CA8BBFB52845B1646C39148761D71EBBFC5FFD861EF9196EE9E71ADD8ACBF6909B6DBEFE2BF98A276D79BD7F13ADAA80BE1583AAF5B6122DAF8212EF6409112951D5F0FDBD0FDB3826A7ACAFF76F83587CCB44F8D0B65CA7F58DA8FA43C52688E3EA5386481741519EA49B2C8EEAEBD535DC1237B3AC82065FE558192FAA897E6105BEC0DA5735D135B24D1B6B0657D74FEE833CC4C2C0FEDE65F0705105E67FBDFFF2E79F69D03217EF23F2985741517C4FF36EA6AC6069FEA024C74E7CB1214885EC334C924CE591895246FDFCA2FFA53A787DBDFFBFAA8ABFEC9D7FFDD6D5FD69EF638EB9D12F7B2FF6FEB7450BCABF9CA260E9426C04E337622B76C4A84279174E2839DEFFBE444942AE79D9C3BC09C23BBC4BDC396144E92A0FB275C76FE2142F11F4509A2EBB37DBDBDBEEB5B0864AD234366E50739DAE46D89651F268D32D91F159F3D1D3689550FCF8364E037390B34D5A46619A143E86E8EC0133B464857C60BDC52CC49189BF0D3651FC489EBEC642869736E55880597A046C6F543A12D5BB341638A029449E6E338F3DA3AE753A768EBAC8E98A84F2146F4E7EFA87B19A58081E5AF535739CBEF799CB42799FF918925FD31B3F23D202398F8A9FE6F8694B6304E279BE86A052D57412526A272DC7EDA6F6D3720621F70FDC05951AE75354071970C069DEAE3C4FEEA3D2CBBE75491E863C8E3617692FFFD801392D695A81F1A4BF54A71AEF50F93973EAD775B042CDA3334E0BAA7A14CC11A336E83BF2870539F1AB6EC230DDB283728728AB081E8E7DFA14C45844BD480BE4D2961A65B1CD7346CEB187C2AA890BC8977554E0DFE6CBDC5CEB069C7FF4546F1B8DBBDF5856DB6869AE93C815768DED89AAEDB449512E45169B6457DBA00DDAB36A3D995237A9E139550C87A9524FC203DD1D27D126A0352A6B3CA25043A28C29D5E12DDC5FA3085A1BEDC00394A7FED5AFA0B90279323C602531FDEE61A4AF4ED2C27DD76C4387BA1A41B6B91F02F2443C5DD050C7E1697082D8D338BD8FCAFAD4D8B15DBDCB9DEB29803FDDAC0B16EF08D6E01C2FEFF1C86F7394FB69630B8B8570CF9055BCE92848BC822EC819C5C61B6846730B6B6A19E53CA67E50D85E9CBC26B64E77F5A17D88D8DF8E5F2161B92C09DD194785E585757C0AF2152AFD0C5A8DE5A7593E409ABB10B5A0E83AE40D18DD304D2C7D3D25DDDCA4562783A4A2D5A9605B915A6FDE8F03BD89939EA401BCEBFA5980BBA9177DC8C226A288B586C441D850160031EEA973FF41EB6961219CF4E66BCADEF36313991B7DD9A9E143736DCAA1AA9B2FE49C2DCA7B0B94F5B653ABF67E14C41AABBBD4E788F62628A2F03847811F246FDA6B85E64706A9A0FCECF8EC5B67AE60F43B67AE58C25364AE6608E6153257E59F7D7FCC0F1AAB4C3AA0B14F84D570D6D612E6892DD7A6D560BE96BAF0C698B35F0BF4ACD86ED965BC902FFF86981B89F8F348382FDE639D3DEA3D2E6CDD01C8434CF6EAB5270B11FFD097DB28B34F7C399F863FBC771A220C70E90650CB365E74E0316C341FD2E3D52AC7B3778FCEC35EAFB33C780EDD3B4940BC8C567B95873A21B03B31461EE44822DBF242A935550B2FB9B9AD381326A2AD549CE67C941D3D7582D4B3D151DB7AFCD07AB7803437EBED098AB494351DFA3D26D05027DBCAAE3E4FE4D3F63E57756D591B749897AB9140C342E07041400C0CA1B704ECF4682FDA73A571F9125BEB07B52EEEDD450C4F07B47E75401FAEB7CF9AE4AE6892BED417582B75D5243DA9A54F428FF4E42650C134CFD8D96FB3BBA8D59E61313223685E9C2B99A7BB3D607924FEEECD6E579CCC03C4355AD552A48FD3AF732FB781CE8B6A17F2809214DB0DA9E2084444DBCC030EB1B490372F9C405ACFF38F37FFA4188A25D8228D971E3AF6090B561E60BE04395A133778371C2C9F2EB6375E946D82E50D0873ED6849EBED2EB7537E4D6F7CB92F79F585AACC66BE18AFC406E76037F36B84AB5501775FA716C9875281C17CEECA8D687BBCD9A4EE4DC34CDDC3A645602EBDC0909854AE281E1AE277131EC39CCAB8BC59B2ADABFBCCD7D2C3508B32AFBAE3C19EBADC86E863961641E293D754D78CEA47183CB1D60AD1C74C749E83BEF8F482C4A677C5F062905E645EB66B2F205F82A87DF7D08765DCD76449CCECBE3D05AB88AFCDABE84FE43E93BB11FC0D0658BA5D8BE2215C0CC96E2D217AF871B224F5FA46FCB4775E7C4EA23FB6B8CC5B32241626F6534C7C2BF78D8E5CE1B889624C76CE971F09B1E2A58A4A44CBE7C3A185742661FE238D3AFEBCDB691A6D9431F3F103A8E8C80715C13CDAB2452F7DB4C8D709437FB60FAD0DAD1324678421815F8BFD0CAA47FA281F33329B7206AF85A47952A285A577C4A105D51C480C1A9A4DC0748E4B4CF08694491D2CEDC31203B0E1B3123D30ADA3125D282D27062D30CD23082D2CFD63120B382F4DD4345CE84069DAFF75A1BCCDA886F15F0BE6EAC815E2BC38DB647D1830DED6AA07F1367A90DBE9752074ED85DA58DE664AD758A887A56B94D3DBDD9D275F57A3D4C6F236ECBDDB9668DDD0A9BFD0B8F9AC89E367EE173137CEF640EE82E1226347C776CE094E7EE701851D637B204FB4BCC808B77747E967CA1E63D08F591386704577984599263AAEFF7A6815CF7016B5A222CCA30D7943B6775A024DDE472FFFEACBAE45AB234FC4AEE5C721DE8B4DD4D973E50B0A7252BC352DF243A3A1FF8B10635C3FBC0C22AB8BADA49E0D8DB4F5D8BDD3BB9F30B9ECB7269C963596BADD1E5CD792111D25DC03A02F734C8F686DC663215C4CBAA794FCE829F4F9D91F57011D0FD1D7A1E179F131C394E7EAC6B3A862C09DA4995455D13B65454541093EBE3A798D4214DD5B5AD8FBCA6E11D0EA11F2E24D5C63798A2F5C83F90BE9DBE3F909EC5BE3D91D8E34553D4C5CE588E02170D8A7A88C1DE95B7B77ABDF3DB4D9DF642F260EEF707D4D7EA0C6BD0D3342CCAB092FB3344F71531297DE3596AADE388211C1B6138DE087C5758423601C4C8F1BA3204E57CEABD4AB23B81FF782F3026B52A4BCEB567D99DE47C9CA75BF8FCAD215E5396876E50996852E81669CB9CF555A44B44B9B262335E124966CC4928778D8A4EB97596B10F232C94D9CDE18DB7FB745EF46BE2B2E82E489F0E3384EBF8F1320198FBE43349FBEB6E5CC53B51DBC4C7688CF3E73C80A64FC9BB6BBC229C92F9F0C5356927CC7237B9D8A20DB66DB7DBFAE3D92B45C195EEDA6CD61326403E25BD76A3E456F49B62F765DA564866C6462EDE9B84AF332B0B2EBD6356D26A3AF496D3DBEA7E1141525394821FEEAD62B9107715A941498FB6E4181B9EF1A9EF6F145BACD43643FDA547D372B5485E33EC6358EFBF0D2074D9EF7C14F2846195E4E7652645FDB6619B3B5C766AB15B9F810B2E6DC94A7B25DED8E88AAFFB4C8DA2E1011A96743BD6DBD11B7A079271C255B2F27DC63E9D6168D332226DBB03E6D5D6BA26AEA8E48587E0E9FE6B7E67BB9C721AE631D51A3AAE52665F888EAE16585DAF905182D26FB879FDACAB6CB890B653ECA7A9A8F86268F36BE3B746C78346BCBCEFBDA0E47B40C4B7F3EA6D57122919C6CEB39914463599FEAC98A2FD2950D2DE16A3644D4541BD9912D0C09F158F97E74759D267DF4D713B57CB4C81BA439EA1D877C89AC7812E9A32E8FB034EFB4B514925BBE45196CBAE01D56AE74DACBA87A01378E8A12E7E48F4FC46B78375EF7F413A5E52A2D9C317E575EBAD18378E96E6403EF613B881FBE0D134D7C6A3BD9A3AA6A27787455C7DD3776645578F145684389FB50AADCAD65A399CAAE5012C4E5A3A510D3D7B63ABB616A8FA893CD2FCF1C2F3751E2E3188FB8B89F254BA7AD19465D94415E7AC66D66D879015DA3A0E81D00FCBAEF1E17451A46D5F4D39AF437E5ABE3780AF6AED3B82DDCB66C81E2DB8326E5721B9751164721FEE6EBFD23A18B3D04F7251A8BCF6241FF4D00C54B13E56495043189F059E6011E6E711D4709568B8298E902570AB6C0C89EDE26C3DBC1F239A72823BEDC4909F7D7F9C31D3EC77F8606E3D52135F75A24013CF0E89712AA0F300450A7FC18F32E0EDF8E4E37315C7C039EB3E867AA3221D1135527E84F75854E03D409A34CB468EF928CBBF3148B6326F9526F579A6D82DB2B8E5C5431E994F725400ECDCFDD8B8303D5FC3321E07842EA3346A107495F2553C548F50EB4210F7A27F9B018306E165AA12F350BF763950CC2787E8FF87179F531A943AFED1D876525849D0445581DD0F0D236FEB49472E96BD90CF13219A3F11EA35977A432F91574C9F7A04BD3F36D3AF47015E3ED3E73729FE9762373DA9B775722D7D4BF01875386133FB0F35497EF698C3AE189CFB5185240F225FEC6FA4C339D7D1B9638884B3A3B518284A8A557EA092C9EA65CF0A397CC83CC71DE428F74FBDE44D32DBDA4E36DBEA92F70285DF2139F71D918EEEE948BB7797D4E3741E710AAA4A73FCDC2B8EDE61493B16F667AC4696EBEC2A374C94F7FBADBAE3C9129AF6C4372F1BCBD9704CC97A1AC36A59508BC4D259F0352D671E2B5AD45CACF4DBED2C551B29BFB1D5DF5131381F9EA9F9B14BE8117DDBC31FC069D4668939E38A387C64DF231F1CADDCCB37DF43CDD234E3773DD6FB69996DE80F336D9D41768143AF9894FBA6C0C4D3F38CD946335E31B18AECB42CD52CD7BF30D1AA44D1A6BBE0D3428307094D1AC436368F1BD294EF2D769F64D72A78B3ACB5F7372779DA03FE1DD177810C860EBEB3C5FB8F6289902F89EA3D184C32368FCBD29277CC08FC7C78C032E207DEA0F31E7063E23734E7AC3DA818BC09E19BB16D93C51A6AE4D5B33B3F466B2F5A437F7299F51869B74FACD25B93989A09640BE492FF859C862C3029DB0C3D3C9A3108181A0250B266B21D869EFF4AA6F4EE5423120CF3BFB4E4C2DCB4F77866E405C3BE0BFA7B3D63D4DF6F4EB7CEA49D7FEDE2E4CFCA0FAE63CED73A86FD34DB991F236F3846399A239F2573B64F7E59839A39377F6E48D6AA4CE8CF4C5A7F3D71EF8E0B484A0E14A634C0EBBE858331F5D983ADAEC1875A8BC6E7C53C6A43E38B35284AEF6D985569F9B12FA3FD5B63FAF24C17F14461CD326381F912807DCFAF393DDEFD3A5170F37FDE6A792A96FFFD9D0C6DCF7006BB2D0383C702788998E0F262602C3238499A7BF7330D7BD0C6EE871BFCB97C2E7B9236871357CFE0B827D20308D3B1D7E6F915231C868383AF907A20E59C4B59DA58C9E819C27F7183215025C8DC23B9EEF163F29DA005EC31D852CA6BCF8370F19685F02EC1FB7DC81B997BB963E4FFE18934F3F4B3BF3F42B831F8E4207DC17693C3EEB07A20DD538DB7D7A523281E3068E421FEDA7D8D3CE26ED07A20870487796149A28741AFA45539299BF2E6DD7EF8EB70DD599142AA8DF6477C895DF9C900CA4A1A7BDD3C15C0AE6F49460A85CEE0A294803787A2705EA4BCC65252AF9072105D998EE04299C55512C719D12D74079BB45A54BF436CA8B920416BF090AD1FF8DD45AA0926DF3FEDE59171493A78C45B8469BE0F5FEB20A495887D5EC32052A61E1A98D42F80095077D82CAD6FD486307957FA929A0FC5C5366E09BB24F29BEA007DC047A14FB50A7834DAFB3068085D324E1134209E8634221EDCF2ABF38F4B1C1EFD46E39C217EA6408BBCE1940ADDDBC04D43A1942AD7334507BF31B88DE67CBBED29718A22826B89B48584C36485F4C8981AFD5E604E12B7532845EE70CA0B68EB5026E9B0121B779832DAE1D358036D71970ABEBBC616C18588AAA03295F5074A6E403BA0B8A0E31007DA7CB947CA7CBD7FB8EFC23CA2F0CC2B777A805F43603026FF306B0E9AB1E023E9D097D83CE1FDA6CD6206FAB93C1AD66ADC1DB7A37561059CEE3FA5C8D2F4837CA3E4FF60DBD0D8676C196B0077957E8FC81EFD0AA8EF01D3A13FA0E9D3FF01DDEFA267C8B2F007D8F2F3338868D610718C026071EBD2673680D52AA81B80EA94C702D52F9DC7728C99893CCF883FA3DAA282DA9290FF419AD87A163FC35893C071B4FC4CA03E2E621DB35FD6ED7A2A0B4B750E46DD74ED2026BDD37501E35EF521F7D1BE890243437D3349A29542D83163A53839622AB1AA09468D715599C6949E7B4C252CB6C7510A5293B0E89A4DD9049454DF3815007510686C220EAB27B87D8E104E4E67A4455F2B02599B3F17E65F4AE880AEC48F853CD7F1FDA16E8A324EEAD63D7688DA4AA016A1C365DA163B782DD910677E51A9871ED13588ECB3AB7EC1AAD2AC07D935F0E70E89CA8DEB4D5648A8B75F72A054EDA35C0CBDDAD5B9492D956815448ABEED0F127E12E492354BA768B5312DB6A32F5CFBA7B4DAC4579EFA0608C5063A196CE221400D10407E70E0ACAE7A18B13CD631B314FB2EAE040610EE4C92AFF5515896AEFD29D23757FC4C71C76B743B45102EE933C1A8443B744434A554D6122B1EA1E15E50BEE9D2C0C981D2B676AB116CCAA96C43E69A1FB31B1AC20ED4F1EEC8AD5FFD61CA7830C49420D4124931A881CBA26D7E315719D3C740E5089A5A6296BA2AC5B22254928008F33416A0D877D970639892A548F87EE4DC152C4583340570702D2D83109A096B00A15B64D4B2555CE3BA501571C75B731B9261F3B44DD2DEF6AE964B3A6DA181461341CBB37F6C6C0C783003AA70C19C134563CA4AE9A2B3F7E9E443F80231DA83BAAA593BB75770A0D5DBCC63FD86DB5BEEEDCE5D1B477C53D75759F072ED27AEBBCC4718483F07B8EA131121A57B59DCF36E6E8BA5AD8555D4476EEEEF8F2AEF4262D64F9D7BA75EBED0464CAC33AF0A6283004C3374ABD755F3CDEAE2A2B0EAE5D66BFBF06A99C78C96DC9A777EAC5DEF153F619BABEE4A9BB639D84F0D7D806FBA73289ED760779C70A554FD5978D3C75197617A900069C405C86A1F3FC50F55F72B5C653C7399F954679821D52CCBB2A5EB401BA3A701B87692EE7685D3557E2453DF1611F709944D157F9F5080F9D9D6213022E4C28BA2BBF02E0A1BBA25F546DD1977B3CC9BB4B1E7E2608DD85802EEFD561ED56D524E09F78470D56E8325DA2B8A8525F1D5EE3B6461B54FF3A4545B4EA215E61CC0455EF4EF7A06D99F3E4366DAF42702D6A8BB4D9AD811095C1322883E3BC8C6E3111E3EC10154594E0EEFE3D88B7B8C8D9E6062DCF938FDB32DB96B8CB687313330C8CDCA7507DFFD5A1D0E657B5C346E1A30BB89911EE02FA98BCD946F1B26BF7DB202E38794106412E6AD4745DCD6589FF8F568F1DD28734D1046A86AFBB5FF2096DB21883151F9345708F6CDAF6B940176815848F38FD3E5A122E2303199E0876D85F9D46C12A0F364583D1D7C73F310D2F370FFFF9FF012E23708C15150300, 
-'6.1.3-40302');
-  END IF;
-
-END //
-
-DELIMITER ;
-
-CALL `_idempotent_script`();
-
-DROP PROCEDURE IF EXISTS `_idempotent_script`;
+    CREATE TABLE [dbo].[Account] (
+        [AccountId] [bigint] NOT NULL IDENTITY,
+        [Authority] [smallint] NOT NULL,
+        [LastCompliment] [datetime] NOT NULL,
+        [LastSession] [int] NOT NULL,
+        [Name] [nvarchar](255),
+        [Password] [varchar](255),
+        CONSTRAINT [PK_dbo.Account] PRIMARY KEY ([AccountId])
+    )
+    CREATE TABLE [dbo].[Character] (
+        [CharacterId] [bigint] NOT NULL IDENTITY,
+        [AccountId] [bigint] NOT NULL,
+        [Act4Dead] [int] NOT NULL,
+        [Act4Kill] [int] NOT NULL,
+        [Act4Points] [int] NOT NULL,
+        [ArenaWinner] [int] NOT NULL,
+        [Backpack] [int] NOT NULL,
+        [Biography] [nvarchar](max),
+        [BuffBlocked] [bit] NOT NULL,
+        [Class] [tinyint] NOT NULL,
+        [Compliment] [smallint] NOT NULL,
+        [Dignity] [real] NOT NULL,
+        [EmoticonsBlocked] [bit] NOT NULL,
+        [ExchangeBlocked] [bit] NOT NULL,
+        [Faction] [int] NOT NULL,
+        [FamilyRequestBlocked] [bit] NOT NULL,
+        [FriendRequestBlocked] [bit] NOT NULL,
+        [Gender] [tinyint] NOT NULL,
+        [Gold] [bigint] NOT NULL,
+        [GroupRequestBlocked] [bit] NOT NULL,
+        [HairColor] [tinyint] NOT NULL,
+        [HairStyle] [tinyint] NOT NULL,
+        [HeroChatBlocked] [bit] NOT NULL,
+        [HeroLevel] [tinyint] NOT NULL,
+        [HeroXp] [bigint] NOT NULL,
+        [Hp] [int] NOT NULL,
+        [HpBlocked] [bit] NOT NULL,
+        [JobLevel] [tinyint] NOT NULL,
+        [JobLevelXp] [bigint] NOT NULL,
+        [Level] [tinyint] NOT NULL,
+        [LevelXp] [bigint] NOT NULL,
+        [MapId] [smallint] NOT NULL,
+        [MapX] [smallint] NOT NULL,
+        [MapY] [smallint] NOT NULL,
+        [MasterPoints] [int] NOT NULL,
+        [MasterTicket] [int] NOT NULL,
+        [MinilandInviteBlocked] [bit] NOT NULL,
+        [MouseAimLock] [bit] NOT NULL,
+        [Mp] [int] NOT NULL,
+        [Name] [varchar](255),
+        [QuickGetUp] [bit] NOT NULL,
+        [RagePoint] [bigint] NOT NULL,
+        [Reput] [bigint] NOT NULL,
+        [Slot] [tinyint] NOT NULL,
+        [SpAdditionPoint] [int] NOT NULL,
+        [SpPoint] [int] NOT NULL,
+        [State] [tinyint] NOT NULL,
+        [TalentLose] [int] NOT NULL,
+        [TalentSurrender] [int] NOT NULL,
+        [TalentWin] [int] NOT NULL,
+        [WhisperBlocked] [bit] NOT NULL,
+        CONSTRAINT [PK_dbo.Character] PRIMARY KEY ([CharacterId])
+    )
+    CREATE INDEX [IX_AccountId] ON [dbo].[Character]([AccountId])
+    CREATE INDEX [IX_MapId] ON [dbo].[Character]([MapId])
+    CREATE TABLE [dbo].[CharacterSkill] (
+        [Id] [uniqueidentifier] NOT NULL,
+        [CharacterId] [bigint] NOT NULL,
+        [SkillVNum] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.CharacterSkill] PRIMARY KEY ([Id])
+    )
+    CREATE INDEX [IX_CharacterId] ON [dbo].[CharacterSkill]([CharacterId])
+    CREATE INDEX [IX_SkillVNum] ON [dbo].[CharacterSkill]([SkillVNum])
+    CREATE TABLE [dbo].[Skill] (
+        [SkillVNum] [smallint] NOT NULL,
+        [AttackAnimation] [smallint] NOT NULL,
+        [BuffId] [smallint] NOT NULL,
+        [CastAnimation] [smallint] NOT NULL,
+        [CastEffect] [smallint] NOT NULL,
+        [CastId] [smallint] NOT NULL,
+        [CastTime] [smallint] NOT NULL,
+        [Class] [tinyint] NOT NULL,
+        [Cooldown] [smallint] NOT NULL,
+        [CPCost] [tinyint] NOT NULL,
+        [Damage] [smallint] NOT NULL,
+        [Duration] [smallint] NOT NULL,
+        [Effect] [smallint] NOT NULL,
+        [Element] [tinyint] NOT NULL,
+        [ElementalDamage] [smallint] NOT NULL,
+        [HitType] [tinyint] NOT NULL,
+        [ItemVNum] [smallint] NOT NULL,
+        [Level] [tinyint] NOT NULL,
+        [LevelMinimum] [tinyint] NOT NULL,
+        [MinimumAdventurerLevel] [tinyint] NOT NULL,
+        [MinimumArcherLevel] [tinyint] NOT NULL,
+        [MinimumMagicianLevel] [tinyint] NOT NULL,
+        [MinimumSwordmanLevel] [tinyint] NOT NULL,
+        [MpCost] [smallint] NOT NULL,
+        [Name] [nvarchar](255),
+        [Price] [int] NOT NULL,
+        [Range] [tinyint] NOT NULL,
+        [SecondarySkillVNum] [smallint] NOT NULL,
+        [SkillChance] [smallint] NOT NULL,
+        [SkillType] [tinyint] NOT NULL,
+        [TargetRange] [tinyint] NOT NULL,
+        [TargetType] [tinyint] NOT NULL,
+        [Type] [tinyint] NOT NULL,
+        [UpgradeSkill] [smallint] NOT NULL,
+        [UpgradeType] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.Skill] PRIMARY KEY ([SkillVNum])
+    )
+    CREATE TABLE [dbo].[Combo] (
+        [ComboId] [int] NOT NULL IDENTITY,
+        [Animation] [smallint] NOT NULL,
+        [Effect] [smallint] NOT NULL,
+        [Hit] [smallint] NOT NULL,
+        [SkillVNum] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.Combo] PRIMARY KEY ([ComboId])
+    )
+    CREATE INDEX [IX_SkillVNum] ON [dbo].[Combo]([SkillVNum])
+    CREATE TABLE [dbo].[NpcMonsterSkill] (
+        [NpcMonsterSkillId] [bigint] NOT NULL IDENTITY,
+        [NpcMonsterVNum] [smallint] NOT NULL,
+        [Rate] [smallint] NOT NULL,
+        [SkillVNum] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.NpcMonsterSkill] PRIMARY KEY ([NpcMonsterSkillId])
+    )
+    CREATE INDEX [IX_NpcMonsterVNum] ON [dbo].[NpcMonsterSkill]([NpcMonsterVNum])
+    CREATE INDEX [IX_SkillVNum] ON [dbo].[NpcMonsterSkill]([SkillVNum])
+    CREATE TABLE [dbo].[NpcMonster] (
+        [NpcMonsterVNum] [smallint] NOT NULL,
+        [AmountRequired] [tinyint] NOT NULL,
+        [AttackClass] [tinyint] NOT NULL,
+        [AttackUpgrade] [tinyint] NOT NULL,
+        [BasicArea] [tinyint] NOT NULL,
+        [BasicCooldown] [smallint] NOT NULL,
+        [BasicRange] [tinyint] NOT NULL,
+        [BasicSkill] [smallint] NOT NULL,
+        [CloseDefence] [smallint] NOT NULL,
+        [Concentrate] [smallint] NOT NULL,
+        [CriticalLuckRate] [tinyint] NOT NULL,
+        [CriticalRate] [smallint] NOT NULL,
+        [DamageMaximum] [smallint] NOT NULL,
+        [DamageMinimum] [smallint] NOT NULL,
+        [DarkResistance] [smallint] NOT NULL,
+        [DefenceDodge] [smallint] NOT NULL,
+        [DefenceUpgrade] [tinyint] NOT NULL,
+        [DistanceDefence] [smallint] NOT NULL,
+        [DistanceDefenceDodge] [smallint] NOT NULL,
+        [Element] [tinyint] NOT NULL,
+        [ElementRate] [smallint] NOT NULL,
+        [FireResistance] [smallint] NOT NULL,
+        [HeroLevel] [tinyint] NOT NULL,
+        [IsHostile] [bit] NOT NULL,
+        [JobXP] [int] NOT NULL,
+        [Level] [tinyint] NOT NULL,
+        [LightResistance] [smallint] NOT NULL,
+        [MagicDefence] [smallint] NOT NULL,
+        [MaxHP] [int] NOT NULL,
+        [MaxMP] [int] NOT NULL,
+        [MonsterType] [tinyint] NOT NULL,
+        [Name] [nvarchar](255),
+        [NoAggresiveIcon] [bit] NOT NULL,
+        [Race] [tinyint] NOT NULL,
+        [RaceType] [tinyint] NOT NULL,
+        [RespawnTime] [int] NOT NULL,
+        [Speed] [tinyint] NOT NULL,
+        [VNumRequired] [smallint] NOT NULL,
+        [WaterResistance] [smallint] NOT NULL,
+        [XP] [int] NOT NULL,
+        CONSTRAINT [PK_dbo.NpcMonster] PRIMARY KEY ([NpcMonsterVNum])
+    )
+    CREATE TABLE [dbo].[Drop] (
+        [DropId] [smallint] NOT NULL IDENTITY,
+        [Amount] [int] NOT NULL,
+        [DropChance] [int] NOT NULL,
+        [ItemVNum] [smallint] NOT NULL,
+        [MapTypeId] [smallint],
+        [MonsterVNum] [smallint],
+        CONSTRAINT [PK_dbo.Drop] PRIMARY KEY ([DropId])
+    )
+    CREATE INDEX [IX_ItemVNum] ON [dbo].[Drop]([ItemVNum])
+    CREATE INDEX [IX_MapTypeId] ON [dbo].[Drop]([MapTypeId])
+    CREATE INDEX [IX_MonsterVNum] ON [dbo].[Drop]([MonsterVNum])
+    CREATE TABLE [dbo].[Item] (
+        [VNum] [smallint] NOT NULL,
+        [BasicUpgrade] [tinyint] NOT NULL,
+        [CellonLvl] [tinyint] NOT NULL,
+        [Class] [tinyint] NOT NULL,
+        [CloseDefence] [smallint] NOT NULL,
+        [Color] [tinyint] NOT NULL,
+        [Concentrate] [smallint] NOT NULL,
+        [CriticalLuckRate] [tinyint] NOT NULL,
+        [CriticalRate] [smallint] NOT NULL,
+        [DamageMaximum] [smallint] NOT NULL,
+        [DamageMinimum] [smallint] NOT NULL,
+        [DarkElement] [tinyint] NOT NULL,
+        [DarkResistance] [smallint] NOT NULL,
+        [DefenceDodge] [smallint] NOT NULL,
+        [DistanceDefence] [smallint] NOT NULL,
+        [DistanceDefenceDodge] [smallint] NOT NULL,
+        [Effect] [smallint] NOT NULL,
+        [EffectValue] [int] NOT NULL,
+        [Element] [tinyint] NOT NULL,
+        [ElementRate] [smallint] NOT NULL,
+        [EquipmentSlot] [tinyint] NOT NULL,
+        [FireElement] [tinyint] NOT NULL,
+        [FireResistance] [smallint] NOT NULL,
+        [HitRate] [smallint] NOT NULL,
+        [Hp] [smallint] NOT NULL,
+        [HpRegeneration] [smallint] NOT NULL,
+        [IsBlocked] [bit] NOT NULL,
+        [IsColored] [bit] NOT NULL,
+        [IsConsumable] [bit] NOT NULL,
+        [IsDroppable] [bit] NOT NULL,
+        [IsHeroic] [bit] NOT NULL,
+        [IsMinilandObject] [bit] NOT NULL,
+        [IsSoldable] [bit] NOT NULL,
+        [IsTradable] [bit] NOT NULL,
+        [IsWarehouse] [bit] NOT NULL,
+        [ItemSubType] [tinyint] NOT NULL,
+        [ItemType] [tinyint] NOT NULL,
+        [ItemValidTime] [bigint] NOT NULL,
+        [LevelJobMinimum] [tinyint] NOT NULL,
+        [LevelMinimum] [tinyint] NOT NULL,
+        [LightElement] [tinyint] NOT NULL,
+        [LightResistance] [smallint] NOT NULL,
+        [MagicDefence] [smallint] NOT NULL,
+        [MaxCellon] [tinyint] NOT NULL,
+        [MaxCellonLvl] [tinyint] NOT NULL,
+        [MaxElementRate] [smallint] NOT NULL,
+        [MaximumAmmo] [tinyint] NOT NULL,
+        [MoreHp] [smallint] NOT NULL,
+        [MoreMp] [smallint] NOT NULL,
+        [Morph] [smallint] NOT NULL,
+        [Mp] [smallint] NOT NULL,
+        [MpRegeneration] [smallint] NOT NULL,
+        [Name] [nvarchar](255),
+        [Price] [bigint] NOT NULL,
+        [PvpDefence] [smallint] NOT NULL,
+        [PvpStrength] [tinyint] NOT NULL,
+        [ReduceOposantResistance] [smallint] NOT NULL,
+        [ReputationMinimum] [tinyint] NOT NULL,
+        [ReputPrice] [bigint] NOT NULL,
+        [SecondaryElement] [tinyint] NOT NULL,
+        [Sex] [tinyint] NOT NULL,
+        [Speed] [tinyint] NOT NULL,
+        [SpType] [tinyint] NOT NULL,
+        [Type] [tinyint] NOT NULL,
+        [WaitDelay] [smallint] NOT NULL,
+        [WaterElement] [tinyint] NOT NULL,
+        [WaterResistance] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.Item] PRIMARY KEY ([VNum])
+    )
+    CREATE TABLE [dbo].[ItemInstance] (
+        [Id] [uniqueidentifier] NOT NULL,
+        [Amount] [int] NOT NULL,
+        [BoundCharacterId] [bigint],
+        [CharacterId] [bigint] NOT NULL,
+        [Design] [smallint] NOT NULL,
+        [DurabilityPoint] [int] NOT NULL,
+        [ItemDeleteTime] [datetime],
+        [ItemVNum] [smallint] NOT NULL,
+        [Rare] [smallint] NOT NULL,
+        [Slot] [smallint] NOT NULL,
+        [Type] [tinyint] NOT NULL,
+        [Upgrade] [tinyint] NOT NULL,
+        [HP] [smallint],
+        [MP] [smallint],
+        [Ammo] [tinyint],
+        [Cellon] [tinyint],
+        [CellonOptionId] [uniqueidentifier],
+        [CloseDefence] [smallint],
+        [Concentrate] [smallint],
+        [CriticalDodge] [smallint],
+        [CriticalLuckRate] [tinyint],
+        [CriticalRate] [smallint],
+        [DamageMaximum] [smallint],
+        [DamageMinimum] [smallint],
+        [DarkElement] [tinyint],
+        [DarkResistance] [smallint],
+        [DefenceDodge] [smallint],
+        [DistanceDefence] [smallint],
+        [DistanceDefenceDodge] [smallint],
+        [ElementRate] [smallint],
+        [FireElement] [tinyint],
+        [FireResistance] [smallint],
+        [HitRate] [smallint],
+        [HP1] [smallint],
+        [IsEmpty] [bit],
+        [IsFixed] [bit],
+        [LightElement] [tinyint],
+        [LightResistance] [smallint],
+        [MagicDefence] [smallint],
+        [MaxElementRate] [smallint],
+        [MP1] [smallint],
+        [WaterElement] [tinyint],
+        [WaterResistance] [smallint],
+        [XP] [bigint],
+        [SlDamage] [smallint],
+        [SlDefence] [smallint],
+        [SlElement] [smallint],
+        [SlHP] [smallint],
+        [SpDamage] [tinyint],
+        [SpDark] [tinyint],
+        [SpDefence] [tinyint],
+        [SpElement] [tinyint],
+        [SpFire] [tinyint],
+        [SpHP] [tinyint],
+        [SpLevel] [tinyint],
+        [SpLight] [tinyint],
+        [SpStoneUpgrade] [tinyint],
+        [SpWater] [tinyint],
+        [Discriminator] [nvarchar](128) NOT NULL,
+        CONSTRAINT [PK_dbo.ItemInstance] PRIMARY KEY ([Id])
+    )
+    CREATE INDEX [IX_BoundCharacterId] ON [dbo].[ItemInstance]([BoundCharacterId])
+    CREATE INDEX [IX_SlotAndType] ON [dbo].[ItemInstance]([CharacterId], [Slot], [Type])
+    CREATE INDEX [IX_ItemVNum] ON [dbo].[ItemInstance]([ItemVNum])
+    CREATE TABLE [dbo].[CellonOption] (
+        [Id] [uniqueidentifier] NOT NULL,
+        [Level] [tinyint] NOT NULL,
+        [Type] [tinyint] NOT NULL,
+        [Value] [int] NOT NULL,
+        [WearableInstanceId] [uniqueidentifier] NOT NULL,
+        CONSTRAINT [PK_dbo.CellonOption] PRIMARY KEY ([Id])
+    )
+    CREATE INDEX [IX_WearableInstanceId] ON [dbo].[CellonOption]([WearableInstanceId])
+    CREATE TABLE [dbo].[Mail] (
+        [MailId] [bigint] NOT NULL IDENTITY,
+        [AttachmentAmount] [tinyint] NOT NULL,
+        [AttachmentRarity] [tinyint] NOT NULL,
+        [AttachmentUpgrade] [tinyint] NOT NULL,
+        [AttachmentVNum] [smallint],
+        [Date] [datetime] NOT NULL,
+        [EqPacket] [nvarchar](255),
+        [IsOpened] [bit] NOT NULL,
+        [IsSenderCopy] [bit] NOT NULL,
+        [Message] [nvarchar](255),
+        [ReceiverId] [bigint] NOT NULL,
+        [SenderClass] [tinyint] NOT NULL,
+        [SenderGender] [tinyint] NOT NULL,
+        [SenderHairColor] [tinyint] NOT NULL,
+        [SenderHairStyle] [tinyint] NOT NULL,
+        [SenderId] [bigint] NOT NULL,
+        [SenderMorphId] [smallint] NOT NULL,
+        [Title] [nvarchar](255),
+        CONSTRAINT [PK_dbo.Mail] PRIMARY KEY ([MailId])
+    )
+    CREATE INDEX [IX_AttachmentVNum] ON [dbo].[Mail]([AttachmentVNum])
+    CREATE INDEX [IX_ReceiverId] ON [dbo].[Mail]([ReceiverId])
+    CREATE INDEX [IX_SenderId] ON [dbo].[Mail]([SenderId])
+    CREATE TABLE [dbo].[Recipe] (
+        [RecipeId] [smallint] NOT NULL IDENTITY,
+        [Amount] [tinyint] NOT NULL,
+        [ItemVNum] [smallint] NOT NULL,
+        [MapNpcId] [int] NOT NULL,
+        CONSTRAINT [PK_dbo.Recipe] PRIMARY KEY ([RecipeId])
+    )
+    CREATE INDEX [IX_ItemVNum] ON [dbo].[Recipe]([ItemVNum])
+    CREATE INDEX [IX_MapNpcId] ON [dbo].[Recipe]([MapNpcId])
+    CREATE TABLE [dbo].[MapNpc] (
+        [MapNpcId] [int] NOT NULL,
+        [Dialog] [smallint] NOT NULL,
+        [Effect] [smallint] NOT NULL,
+        [EffectDelay] [smallint] NOT NULL,
+        [IsDisabled] [bit] NOT NULL,
+        [IsMoving] [bit] NOT NULL,
+        [IsSitting] [bit] NOT NULL,
+        [MapId] [smallint] NOT NULL,
+        [MapX] [smallint] NOT NULL,
+        [MapY] [smallint] NOT NULL,
+        [NpcVNum] [smallint] NOT NULL,
+        [Position] [tinyint] NOT NULL,
+        CONSTRAINT [PK_dbo.MapNpc] PRIMARY KEY ([MapNpcId])
+    )
+    CREATE INDEX [IX_MapId] ON [dbo].[MapNpc]([MapId])
+    CREATE INDEX [IX_NpcVNum] ON [dbo].[MapNpc]([NpcVNum])
+    CREATE TABLE [dbo].[Map] (
+        [MapId] [smallint] NOT NULL,
+        [Data] [varbinary](max),
+        [Music] [int] NOT NULL,
+        [Name] [nvarchar](255),
+        [ShopAllowed] [bit] NOT NULL,
+        CONSTRAINT [PK_dbo.Map] PRIMARY KEY ([MapId])
+    )
+    CREATE TABLE [dbo].[MapMonster] (
+        [MapMonsterId] [int] NOT NULL,
+        [IsDisabled] [bit] NOT NULL,
+        [IsMoving] [bit] NOT NULL,
+        [MapId] [smallint] NOT NULL,
+        [MapX] [smallint] NOT NULL,
+        [MapY] [smallint] NOT NULL,
+        [MonsterVNum] [smallint] NOT NULL,
+        [Position] [tinyint] NOT NULL,
+        CONSTRAINT [PK_dbo.MapMonster] PRIMARY KEY ([MapMonsterId])
+    )
+    CREATE INDEX [IX_MapId] ON [dbo].[MapMonster]([MapId])
+    CREATE INDEX [IX_MonsterVNum] ON [dbo].[MapMonster]([MonsterVNum])
+    CREATE TABLE [dbo].[MapTypeMap] (
+        [MapId] [smallint] NOT NULL,
+        [MapTypeId] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.MapTypeMap] PRIMARY KEY ([MapId], [MapTypeId])
+    )
+    CREATE INDEX [IX_MapId] ON [dbo].[MapTypeMap]([MapId])
+    CREATE INDEX [IX_MapTypeId] ON [dbo].[MapTypeMap]([MapTypeId])
+    CREATE TABLE [dbo].[MapType] (
+        [MapTypeId] [smallint] NOT NULL IDENTITY,
+        [MapTypeName] [nvarchar](max),
+        [PotionDelay] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.MapType] PRIMARY KEY ([MapTypeId])
+    )
+    CREATE TABLE [dbo].[Portal] (
+        [PortalId] [int] NOT NULL IDENTITY,
+        [DestinationMapId] [smallint] NOT NULL,
+        [DestinationX] [smallint] NOT NULL,
+        [DestinationY] [smallint] NOT NULL,
+        [IsDisabled] [bit] NOT NULL,
+        [SourceMapId] [smallint] NOT NULL,
+        [SourceX] [smallint] NOT NULL,
+        [SourceY] [smallint] NOT NULL,
+        [Type] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.Portal] PRIMARY KEY ([PortalId])
+    )
+    CREATE INDEX [IX_DestinationMapId] ON [dbo].[Portal]([DestinationMapId])
+    CREATE INDEX [IX_SourceMapId] ON [dbo].[Portal]([SourceMapId])
+    CREATE TABLE [dbo].[Teleporter] (
+        [TeleporterId] [smallint] NOT NULL IDENTITY,
+        [Index] [smallint] NOT NULL,
+        [MapId] [smallint] NOT NULL,
+        [MapNpcId] [int] NOT NULL,
+        [MapX] [smallint] NOT NULL,
+        [MapY] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.Teleporter] PRIMARY KEY ([TeleporterId])
+    )
+    CREATE INDEX [IX_MapId] ON [dbo].[Teleporter]([MapId])
+    CREATE INDEX [IX_MapNpcId] ON [dbo].[Teleporter]([MapNpcId])
+    CREATE TABLE [dbo].[Shop] (
+        [ShopId] [int] NOT NULL IDENTITY,
+        [MapNpcId] [int] NOT NULL,
+        [MenuType] [tinyint] NOT NULL,
+        [Name] [nvarchar](255),
+        [ShopType] [tinyint] NOT NULL,
+        CONSTRAINT [PK_dbo.Shop] PRIMARY KEY ([ShopId])
+    )
+    CREATE INDEX [IX_MapNpcId] ON [dbo].[Shop]([MapNpcId])
+    CREATE TABLE [dbo].[ShopItem] (
+        [ShopItemId] [int] NOT NULL IDENTITY,
+        [Color] [tinyint] NOT NULL,
+        [ItemVNum] [smallint] NOT NULL,
+        [Rare] [smallint] NOT NULL,
+        [ShopId] [int] NOT NULL,
+        [Slot] [tinyint] NOT NULL,
+        [Type] [tinyint] NOT NULL,
+        [Upgrade] [tinyint] NOT NULL,
+        CONSTRAINT [PK_dbo.ShopItem] PRIMARY KEY ([ShopItemId])
+    )
+    CREATE INDEX [IX_ItemVNum] ON [dbo].[ShopItem]([ItemVNum])
+    CREATE INDEX [IX_ShopId] ON [dbo].[ShopItem]([ShopId])
+    CREATE TABLE [dbo].[ShopSkill] (
+        [ShopSkillId] [int] NOT NULL IDENTITY,
+        [ShopId] [int] NOT NULL,
+        [SkillVNum] [smallint] NOT NULL,
+        [Slot] [tinyint] NOT NULL,
+        [Type] [tinyint] NOT NULL,
+        CONSTRAINT [PK_dbo.ShopSkill] PRIMARY KEY ([ShopSkillId])
+    )
+    CREATE INDEX [IX_ShopId] ON [dbo].[ShopSkill]([ShopId])
+    CREATE INDEX [IX_SkillVNum] ON [dbo].[ShopSkill]([SkillVNum])
+    CREATE TABLE [dbo].[RecipeItem] (
+        [RecipeItemId] [smallint] NOT NULL IDENTITY,
+        [Amount] [tinyint] NOT NULL,
+        [ItemVNum] [smallint] NOT NULL,
+        [RecipeId] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.RecipeItem] PRIMARY KEY ([RecipeItemId])
+    )
+    CREATE INDEX [IX_ItemVNum] ON [dbo].[RecipeItem]([ItemVNum])
+    CREATE INDEX [IX_RecipeId] ON [dbo].[RecipeItem]([RecipeId])
+    CREATE TABLE [dbo].[GeneralLog] (
+        [LogId] [bigint] NOT NULL IDENTITY,
+        [AccountId] [bigint] NOT NULL,
+        [CharacterId] [bigint],
+        [IpAddress] [nvarchar](255),
+        [LogData] [nvarchar](255),
+        [LogType] [nvarchar](max),
+        [Timestamp] [datetime] NOT NULL,
+        CONSTRAINT [PK_dbo.GeneralLog] PRIMARY KEY ([LogId])
+    )
+    CREATE INDEX [IX_AccountId] ON [dbo].[GeneralLog]([AccountId])
+    CREATE INDEX [IX_CharacterId] ON [dbo].[GeneralLog]([CharacterId])
+    CREATE TABLE [dbo].[QuicklistEntry] (
+        [Id] [uniqueidentifier] NOT NULL,
+        [CharacterId] [bigint] NOT NULL,
+        [Morph] [smallint] NOT NULL,
+        [Pos] [smallint] NOT NULL,
+        [Q1] [smallint] NOT NULL,
+        [Q2] [smallint] NOT NULL,
+        [Slot] [smallint] NOT NULL,
+        [Type] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.QuicklistEntry] PRIMARY KEY ([Id])
+    )
+    CREATE INDEX [IX_CharacterId] ON [dbo].[QuicklistEntry]([CharacterId])
+    CREATE TABLE [dbo].[Respawn] (
+        [RespawnId] [bigint] NOT NULL IDENTITY,
+        [CharacterId] [bigint] NOT NULL,
+        [MapId] [smallint] NOT NULL,
+        [RespawnType] [tinyint] NOT NULL,
+        [X] [smallint] NOT NULL,
+        [Y] [smallint] NOT NULL,
+        CONSTRAINT [PK_dbo.Respawn] PRIMARY KEY ([RespawnId])
+    )
+    CREATE INDEX [IX_CharacterId] ON [dbo].[Respawn]([CharacterId])
+    CREATE TABLE [dbo].[PenaltyLog] (
+        [PenaltyLogId] [int] NOT NULL IDENTITY,
+        [AccountId] [bigint] NOT NULL,
+        [AdminName] [nvarchar](max),
+        [DateEnd] [datetime] NOT NULL,
+        [DateStart] [datetime] NOT NULL,
+        [Penalty] [tinyint] NOT NULL,
+        [Reason] [nvarchar](255),
+        CONSTRAINT [PK_dbo.PenaltyLog] PRIMARY KEY ([PenaltyLogId])
+    )
+    CREATE INDEX [IX_AccountId] ON [dbo].[PenaltyLog]([AccountId])
+    ALTER TABLE [dbo].[Character] ADD CONSTRAINT [FK_dbo.Character_dbo.Map_MapId] FOREIGN KEY ([MapId]) REFERENCES [dbo].[Map] ([MapId])
+    ALTER TABLE [dbo].[Character] ADD CONSTRAINT [FK_dbo.Character_dbo.Account_AccountId] FOREIGN KEY ([AccountId]) REFERENCES [dbo].[Account] ([AccountId])
+    ALTER TABLE [dbo].[CharacterSkill] ADD CONSTRAINT [FK_dbo.CharacterSkill_dbo.Skill_SkillVNum] FOREIGN KEY ([SkillVNum]) REFERENCES [dbo].[Skill] ([SkillVNum])
+    ALTER TABLE [dbo].[CharacterSkill] ADD CONSTRAINT [FK_dbo.CharacterSkill_dbo.Character_CharacterId] FOREIGN KEY ([CharacterId]) REFERENCES [dbo].[Character] ([CharacterId])
+    ALTER TABLE [dbo].[Combo] ADD CONSTRAINT [FK_dbo.Combo_dbo.Skill_SkillVNum] FOREIGN KEY ([SkillVNum]) REFERENCES [dbo].[Skill] ([SkillVNum])
+    ALTER TABLE [dbo].[NpcMonsterSkill] ADD CONSTRAINT [FK_dbo.NpcMonsterSkill_dbo.NpcMonster_NpcMonsterVNum] FOREIGN KEY ([NpcMonsterVNum]) REFERENCES [dbo].[NpcMonster] ([NpcMonsterVNum])
+    ALTER TABLE [dbo].[NpcMonsterSkill] ADD CONSTRAINT [FK_dbo.NpcMonsterSkill_dbo.Skill_SkillVNum] FOREIGN KEY ([SkillVNum]) REFERENCES [dbo].[Skill] ([SkillVNum])
+    ALTER TABLE [dbo].[Drop] ADD CONSTRAINT [FK_dbo.Drop_dbo.Item_ItemVNum] FOREIGN KEY ([ItemVNum]) REFERENCES [dbo].[Item] ([VNum])
+    ALTER TABLE [dbo].[Drop] ADD CONSTRAINT [FK_dbo.Drop_dbo.MapType_MapTypeId] FOREIGN KEY ([MapTypeId]) REFERENCES [dbo].[MapType] ([MapTypeId])
+    ALTER TABLE [dbo].[Drop] ADD CONSTRAINT [FK_dbo.Drop_dbo.NpcMonster_MonsterVNum] FOREIGN KEY ([MonsterVNum]) REFERENCES [dbo].[NpcMonster] ([NpcMonsterVNum])
+    ALTER TABLE [dbo].[ItemInstance] ADD CONSTRAINT [FK_dbo.ItemInstance_dbo.Character_BoundCharacterId] FOREIGN KEY ([BoundCharacterId]) REFERENCES [dbo].[Character] ([CharacterId])
+    ALTER TABLE [dbo].[ItemInstance] ADD CONSTRAINT [FK_dbo.ItemInstance_dbo.Item_ItemVNum] FOREIGN KEY ([ItemVNum]) REFERENCES [dbo].[Item] ([VNum])
+    ALTER TABLE [dbo].[ItemInstance] ADD CONSTRAINT [FK_dbo.ItemInstance_dbo.Character_CharacterId] FOREIGN KEY ([CharacterId]) REFERENCES [dbo].[Character] ([CharacterId])
+    ALTER TABLE [dbo].[CellonOption] ADD CONSTRAINT [FK_dbo.CellonOption_dbo.ItemInstance_WearableInstanceId] FOREIGN KEY ([WearableInstanceId]) REFERENCES [dbo].[ItemInstance] ([Id]) ON DELETE CASCADE
+    ALTER TABLE [dbo].[Mail] ADD CONSTRAINT [FK_dbo.Mail_dbo.Item_AttachmentVNum] FOREIGN KEY ([AttachmentVNum]) REFERENCES [dbo].[Item] ([VNum])
+    ALTER TABLE [dbo].[Mail] ADD CONSTRAINT [FK_dbo.Mail_dbo.Character_SenderId] FOREIGN KEY ([SenderId]) REFERENCES [dbo].[Character] ([CharacterId])
+    ALTER TABLE [dbo].[Mail] ADD CONSTRAINT [FK_dbo.Mail_dbo.Character_ReceiverId] FOREIGN KEY ([ReceiverId]) REFERENCES [dbo].[Character] ([CharacterId])
+    ALTER TABLE [dbo].[Recipe] ADD CONSTRAINT [FK_dbo.Recipe_dbo.MapNpc_MapNpcId] FOREIGN KEY ([MapNpcId]) REFERENCES [dbo].[MapNpc] ([MapNpcId])
+    ALTER TABLE [dbo].[Recipe] ADD CONSTRAINT [FK_dbo.Recipe_dbo.Item_ItemVNum] FOREIGN KEY ([ItemVNum]) REFERENCES [dbo].[Item] ([VNum])
+    ALTER TABLE [dbo].[MapNpc] ADD CONSTRAINT [FK_dbo.MapNpc_dbo.Map_MapId] FOREIGN KEY ([MapId]) REFERENCES [dbo].[Map] ([MapId])
+    ALTER TABLE [dbo].[MapNpc] ADD CONSTRAINT [FK_dbo.MapNpc_dbo.NpcMonster_NpcVNum] FOREIGN KEY ([NpcVNum]) REFERENCES [dbo].[NpcMonster] ([NpcMonsterVNum])
+    ALTER TABLE [dbo].[MapMonster] ADD CONSTRAINT [FK_dbo.MapMonster_dbo.Map_MapId] FOREIGN KEY ([MapId]) REFERENCES [dbo].[Map] ([MapId])
+    ALTER TABLE [dbo].[MapMonster] ADD CONSTRAINT [FK_dbo.MapMonster_dbo.NpcMonster_MonsterVNum] FOREIGN KEY ([MonsterVNum]) REFERENCES [dbo].[NpcMonster] ([NpcMonsterVNum])
+    ALTER TABLE [dbo].[MapTypeMap] ADD CONSTRAINT [FK_dbo.MapTypeMap_dbo.Map_MapId] FOREIGN KEY ([MapId]) REFERENCES [dbo].[Map] ([MapId])
+    ALTER TABLE [dbo].[MapTypeMap] ADD CONSTRAINT [FK_dbo.MapTypeMap_dbo.MapType_MapTypeId] FOREIGN KEY ([MapTypeId]) REFERENCES [dbo].[MapType] ([MapTypeId])
+    ALTER TABLE [dbo].[Portal] ADD CONSTRAINT [FK_dbo.Portal_dbo.Map_DestinationMapId] FOREIGN KEY ([DestinationMapId]) REFERENCES [dbo].[Map] ([MapId])
+    ALTER TABLE [dbo].[Portal] ADD CONSTRAINT [FK_dbo.Portal_dbo.Map_SourceMapId] FOREIGN KEY ([SourceMapId]) REFERENCES [dbo].[Map] ([MapId])
+    ALTER TABLE [dbo].[Teleporter] ADD CONSTRAINT [FK_dbo.Teleporter_dbo.Map_MapId] FOREIGN KEY ([MapId]) REFERENCES [dbo].[Map] ([MapId])
+    ALTER TABLE [dbo].[Teleporter] ADD CONSTRAINT [FK_dbo.Teleporter_dbo.MapNpc_MapNpcId] FOREIGN KEY ([MapNpcId]) REFERENCES [dbo].[MapNpc] ([MapNpcId])
+    ALTER TABLE [dbo].[Shop] ADD CONSTRAINT [FK_dbo.Shop_dbo.MapNpc_MapNpcId] FOREIGN KEY ([MapNpcId]) REFERENCES [dbo].[MapNpc] ([MapNpcId])
+    ALTER TABLE [dbo].[ShopItem] ADD CONSTRAINT [FK_dbo.ShopItem_dbo.Shop_ShopId] FOREIGN KEY ([ShopId]) REFERENCES [dbo].[Shop] ([ShopId])
+    ALTER TABLE [dbo].[ShopItem] ADD CONSTRAINT [FK_dbo.ShopItem_dbo.Item_ItemVNum] FOREIGN KEY ([ItemVNum]) REFERENCES [dbo].[Item] ([VNum])
+    ALTER TABLE [dbo].[ShopSkill] ADD CONSTRAINT [FK_dbo.ShopSkill_dbo.Shop_ShopId] FOREIGN KEY ([ShopId]) REFERENCES [dbo].[Shop] ([ShopId])
+    ALTER TABLE [dbo].[ShopSkill] ADD CONSTRAINT [FK_dbo.ShopSkill_dbo.Skill_SkillVNum] FOREIGN KEY ([SkillVNum]) REFERENCES [dbo].[Skill] ([SkillVNum])
+    ALTER TABLE [dbo].[RecipeItem] ADD CONSTRAINT [FK_dbo.RecipeItem_dbo.Recipe_RecipeId] FOREIGN KEY ([RecipeId]) REFERENCES [dbo].[Recipe] ([RecipeId])
+    ALTER TABLE [dbo].[RecipeItem] ADD CONSTRAINT [FK_dbo.RecipeItem_dbo.Item_ItemVNum] FOREIGN KEY ([ItemVNum]) REFERENCES [dbo].[Item] ([VNum])
+    ALTER TABLE [dbo].[GeneralLog] ADD CONSTRAINT [FK_dbo.GeneralLog_dbo.Character_CharacterId] FOREIGN KEY ([CharacterId]) REFERENCES [dbo].[Character] ([CharacterId])
+    ALTER TABLE [dbo].[GeneralLog] ADD CONSTRAINT [FK_dbo.GeneralLog_dbo.Account_AccountId] FOREIGN KEY ([AccountId]) REFERENCES [dbo].[Account] ([AccountId])
+    ALTER TABLE [dbo].[QuicklistEntry] ADD CONSTRAINT [FK_dbo.QuicklistEntry_dbo.Character_CharacterId] FOREIGN KEY ([CharacterId]) REFERENCES [dbo].[Character] ([CharacterId])
+    ALTER TABLE [dbo].[Respawn] ADD CONSTRAINT [FK_dbo.Respawn_dbo.Character_CharacterId] FOREIGN KEY ([CharacterId]) REFERENCES [dbo].[Character] ([CharacterId])
+    ALTER TABLE [dbo].[PenaltyLog] ADD CONSTRAINT [FK_dbo.PenaltyLog_dbo.Account_AccountId] FOREIGN KEY ([AccountId]) REFERENCES [dbo].[Account] ([AccountId])
+    CREATE TABLE [dbo].[__MigrationHistory] (
+        [MigrationId] [nvarchar](150) NOT NULL,
+        [ContextKey] [nvarchar](300) NOT NULL,
+        [Model] [varbinary](max) NOT NULL,
+        [ProductVersion] [nvarchar](32) NOT NULL,
+        CONSTRAINT [PK_dbo.__MigrationHistory] PRIMARY KEY ([MigrationId], [ContextKey])
+    )
+    INSERT [dbo].[__MigrationHistory]([MigrationId], [ContextKey], [Model], [ProductVersion])
+    VALUES (N'201610211827432_Ares', N'OpenNos.DAL.EF.Migrations.Configuration',  0x1F8B0800000000000400ED7D5B73DC3A92E6FB46EC7F50E86966E2B464B9BB67BB1DF64CC8926CEB1CC9D651D96DF793836241556CB14836C992A598D85FB60FFB93F62F2CC02B2E09103792258FE244F8A870F9884B02C84C6426FEDFFFF9BFAFFFF36113EFDDA3BC88D2E4CDFED1C18BFD3D9484E9324A566FF6B7E5ED1FFEB2FF9FFFF13FFFC7EBB3E5E661EF6F6DB93F9272B86652BCD95F9765F6EAF0B008D7681314079B28CCD322BD2D0FC27473182CD3C3972F5EFCF5F0E8E81061887D8CB5B7F7FA7A9B94D106553FF0CF93340951566E83F8325DA2B868D271CEA242DDFB186C509105217AB3FF2943C9C7B438383DBE38387B7770FA767FEF388E02DC90058A6FF7F7822449CBA0C4CD7CF5A5408B324F93D522C30941FCF93143B8DC6D1017A869FEABBEB86E4F5EBC243D39EC2BB650E1B628D38D21E0D11F9BA139E4AB5B0DF07E377478F0CEF020978FA4D7D500BED93F0EC3148FFCFE1EFFAD5727714ECA09C3DBD4F8658F4DFFA523054C31E4BF5FF64EB671B9CDD19B046DCB3C887FD9BBDADEC451F81B7AFC9CDEA1E44DB28D63BA75B87D388F49C04957799AA1BC7CBC46B76C9BCF97FB7B876CF543BE7E575BAC5A77EE3C29FFFD4FFB7B1F7153829B1875A4400DC4A24C73F41E25280F4AB4BC0ACA12E57826CF97A81A4CA111FC27B7E53ACDAB82F52709511E74A9240DF8BE1AF32228CA937493C578C590C9AB814F71FB3EE3142BB8052A8A8AC4BA71F9E34B6320F26FD7CD32C73BC6FEDE65F070819255B97EB3FFF2CF7FDEDF7B173DA0659BD2A07E4922BCC1E04A65BE1DFCC85550143FD27CE9F421B83B1F83FB6855CD3AF7CD93759007219EF8FDBD6B1457258A7594B5935953D577AAD4BB3CDD5CA7714F727DE6F745BACD43324EA9ACC4E7205FA152BF793575C617E94AD93EBA98D8C03E57DA42AA886913AF5012C4E5E35013E9626213FB5C6913A92250135F1FF65BA07263A4E6527B6BECEACCB839766DB0D91E99CA936D90BA7BF2104CF9A753142CDD763082F25B8487DE19E52A8D92B270C4C931357F8D928490A10BD0DB20BCC3CCD29D234A94AEF2205B3F2AB65EFCA7873DFEEDF6F6F66D9C8677A89BCFB7295EE74162DCE893189F171DC863697E3C8A272D1EBEA37F37C6398D5609CD07E0A18BCD5B73B6494B3C9249E1697CCE1EC27590AC9027B87778FF70E623DE059B28C69BDA3FB7A8287D352C8F50B2F48B8937BD65BF34AD88EB7D1A3B6E7CEFF3749BF9EDD78720CA4FD23875EB1A4159948F31724341798ACF256F5DC37017E81EC5CE8DFA96B9CDDB87CC6D917CC83C0DC9AFE98DFB88B420AEA3E2DE122FCDB80C328621B1D8EE31C4376784BFBB22149819F3C18AD4489F234C70A52352944471902CCF93FBA8F475EC5CA6DB021D479B8BB46772ACB11C17A6B314ACF595DFB7782EDEA3F24BE6DADFEB60852A12715B32D728DB3A422CE2B4745AFB8BEC78B98C2AF193EB90C53C2E321F205848723B003F0731663D2FD202B9B5A4C6596CF39CE15A5CC0B068E206F3751D15F8B7ED2620D536746A4D776D4DAB45906B6B5A5584B132697157499A401B7B70BE70DF5459194135222DE859CD446987C0B185F285E1050B998E303E5A3075A6F9E3C0E052E5A071EDB21543DA97311DCDCB201A9AFCBA08D43492A36855956DD3A0238D161DC99B7434D0A6238B46656093703A4C654C86405E6CAE295D55676E1C15E559520E12175F181A33B68C62F0B882A6A3784DEECA7E24032DEE4A414D6D32156D6C4BF8D1BB36FB9DB9F2B5AA38A306D646F1DACB1AEFB7D1D24ADDFA314D863559FAFADD01AE868CF1DF3E6E3786E289E5058BD371C86F0183E7A66E9BE5C7778D276F2B942FB4132C04B5517B6D992EA9B957124565A60B4A9B40FD2CACE3B20CC2BBE324DA049CF6D3426827CA6F57E5C30916D73D3587409DDDDEA2D051FD4D707C74ABBEE27642F1702590C6CBF487EBC85E9DA4859BC07B1A6CB0F4EE782FB1CD3D90890F12398B117DCD6235220D4610FB189A0F51591B683834E8BC441B8BA3721CBD2851BE6DFAB658013518C74B22F9E07D3F776F5B0B99876B8F7097C12A0AA320F106B82076271B2F8019BDF4ED48621A6B9B3C0A1D154FD7E47AD14DAD87C2345906F9A32DDF09710798B34A42C7FDA10272DE216ACECF7D986A1CF7E6B8027CC95679B0440DBBE932BE0D12DD226F928667F69D978B953CBE7663D3CD4DAA6A639D2F348D24CB5A54E59936E463165EE2EF6B0C9B50926F1C5740D24CBE94698317EB341B6A2A55866F649725695E9FEFA6EDA8E74F5FC941CACF695D46BE6F6559D656541F241EADCAFC083F3EB85ACC447A38657C6A5B06B73ED5B622D153305B8ED56210760EED65C1D59C7181702DB1592A00C454A698FDA7DD79AC6BEADE7347C8BEEF1E48FB7DB6EA109397125686A2A86F5DA3F1A90BAF629D665AAC67ABA5BC13ABD84EFB68B68E3CA92037E45A9AD801463975956EC3BFD7DA4C772D598DD3F0F04E486F83220A8F7314B8A3F851DD5550EE125B05E3414E3A89D3029DA25BE42CD1568E7749993BEFDE2779544661105F6CC3BB6B571B9816CCFD50A9B58297C103AD06738262356AB650F9DD352AA2A274D7493464709A2E9D15C335928F057CDA74CD0B8D72601E7AEA51F1EC4EA2EFF006EE8B18FC983B9F171FD2A28C284B6E7B53E36F576EDA440F8AF068B52E7D0D70A563F642D5784FFAE0383618E2D215A2E65B688D5B6D6F43A7EFA2A2FA637ABC5AE57856EFD179D88BFDF646B1FD7C5A51190170D6A4362635DC95A7952D2B72640A0927CB73977684FE15EF90B9AFF567BC9D4845AC53FC73482EACCB80C220C91294857CBE85F59BA6C44A9704DBD71750B5922A65D1560CA4D1CEAA94AC8DF8D740FB488931D4D7CEE2BFA2D93ADA6C6DB9BA26426D899A149F5196269FB75183B5F55C65676D85F1A6B61877D965499B856B450B1C3F260378AD90EAC2206A3100C0E7B5ADAF71EBC1154632842DB44B1454527D8EA9B6ACE9B9CC7098E455C0056738DC674086C354AE6983F4358F43278C42C7281D2AED9DA59E39ED9D85149F7167B1D3CD4DA791AB943B3E84E71314C7697271EF26F678B07AF3A86572752E7ED653CDA5A7F2A12BD9517DD78E2BA97C585856187F0BE2AD238BB2531AB3332C966604CAD98194E8DE7C74CDAB0E2FF230444CB401ABFAD768551F83CE4615E7BE62979C17D541E2072829B61B52C51D8B3062991F28A2BF8D42779CD6E9FED3CD3FA83DC41E6F91C64B3F3DFC8CD9233F485F831CAD491C006728CCD72EB637CEDA3B82E30504EFD7D1925302DAC6D6F835BDF16104EECD9ABCD2C6FBD8727757AD5FF3EF6EF6E22D8AAB148081BC1DBB0D777ABCD9A46E6DC25BB8EBF944302EDD31B2B523846B133C1EB3935CBBF0FE0116DBD2D57DE665A5611CDCCDAA2F8E972ECB6D883E65691124DE36942A3A4A35A93E36CD0ACDC3D0778E153E36E0057A70ABEF7C47B5C89C8F5B6780AF41549EA2387874A397EA92CCC7ACB8DDB699DF960D2879F94B1251FD6BA2663E4FEA5E15F2A670C5B83631B970E3D822DEA27C54213A6A852BAD836E1201FD739B63AA7BBE466124D18557786D3E373275323C244D9E79140A524D7D3D4097015BC48C01D02A66F4745B46DC39D4EDEA4B70AD6A33E03675B94E377E34091AEAE7DB6ACF0131A0CFF8B8F47B8B2196F2C81A030A635F11394EF10EBF7264188923F84D1463DAF310F88C101F3E07511B93BEC6EA63D44F71037A1DE48E6C1BAD50B443706628AC6E90A43B1D4BADD2FDAEDD36BEF3E5D9DD4F520CDC0B65658D7D223543C56807F7920788110380F9B90337E149C05B71986DB13A5BBE14848E2C4E17B6A2AFF365EF6D5020CAEE9039FAD41AEA2B6EA10E48DAAAE2DAA3F715615AB11B3FBEEAFC23282A7274EEA5CD6B7CCAC8C0F047BCF5DDB3ED45B1DE552E7471E772A36C7D816C7F5F6C7F3D6C791BEC70F96B7DD7EB72B5EB7C936B7BCF697919E970F76873D53850C76CDF3D2FCE3659FF0A4277473354ABD2541AD692DF2DB85C2558DF1C3868E61DCE3213DD928B2A495D97B1D306E42239BB471D1930C74715F82E9EC714EFA72A287281CAD24E2C17DB25FDE00F54B567711E5CB7CEBE41CED29A07D31A9ED806074F7729898B63BCE5248489D55A7C56CB6991A1300A48705C0B2E5CAC3C161F2E8CE580E2018C5F37A4ADB039781631771668D6323CF81719DB239D1387D4C9EF0C6BB043A057C9E2345C6484D132ABD10F995E7960431BAC427817B32A78C74D602FDFA19A154720AFA2BD84EB5B12ED454B8ACF780292CFDB9C826D3DB59ED7A34B0B89BFB02674CDEAB9ED8339AC6BF6947ECED411CC877D7C8F36ECB522C8A23DAB6DFD7EEAD93FAF02FA5D9CD18C2DCE0B42F33ECC1D17D51B202769260A62A6162BA828A85D7DB4BE5FA31045F71E4297D73D777686A8713CBC005703F97972ADC7727F78ADC6F233DC9565956BF0E7CF51198F4067E63AFC81AB7B9EF5152FF50D2ECC2B9A777D94437EC3C13EDAA17D5DDE50BDCBE325EA36B909D8AD4983364351579891A5686C172C988ABEA67A6D8DE5293B634CECDA197C38AAA49F4B3BB59D0C784DC7D9D0E8DB0C493DE91BFF77B12D4C06E4BD4AE5DA59104947A741852D77844C617B144B386903DAC1331026488559C589968CCD050ABD05E047BB761A053179FACB65C9FAF361F36063795E9C46D525B60786FA32BDAFF81167C63C2A4B0F403FC9FBA598BADD8F89ABB488686B7A470B1AD58B646274933E157C8B8C8B78A2DB06FD78023AF1561431052CDBA7B039D53CC144261A3ADF4CEC3B55ADA9F385B69064594BAA3CD3767C4631CAD25C366FED7C50A58436F599B29651255C4F52B36374DE33D4F200F5C1396B9D9E41D9472F8D9280D8A551C22BFE13165E07B6D86DD1BB87DA5D37917F47D7DE90D5721CC7E90F9FAFBCAA2D01355F88041611F07EA4C1E1A0DA989B2D1F88D4C5E680AD1A2736D7E0B125698A4D18AE26888EE2046DB2BF574584D83C4D8E2C384F9B6D7A5A5DE1CD3290796964DFDB6C7674EA5470749A2CD3D1A9ABC12FB0F6B0477043C49757E93CFFE794FC901A38A17C1E4FE6E1C5FB4AF31E564D232CCF2CAAF61482DFEEC9493F8978E3EDB18569459CE1E34B22EAF0A7DB28E28E76184CB5D8A36AABC91ED51D78267B545369D7186A5949D2DCD1D8EFC145D87EDD08C686F6F59813E0CC837817439E49A34D753159BBC89F036DAB8AB89EC9752B4C897D5E4A77A05F3DE2F377F9D27C724068934A9366B11D52D2621B45ABD26D1C76D6D68CCB29A1602E6AE7280289C6FA520B26CC12B45A5FAD28A2BDBCEA0A33AEAEBA01368BABAFE9CAE3EAAEAD535494515207E9703F99283447469342726438FD71F235197B18A61AC871846A10C7C1A9D7F7E85C845A9F0071CE9CAAC1A00DD6CA047933606B11ED1D8C561B68EF627DA51977B2BE1136BB195B7B2A6EE13C59F64179AC196C0F3CBA8D9DC62E08EC560B5C4B3506AD304073E6CF6644F75649623B32D0367D6F8DB5D1EB05A4F88C8BBE8ADF62B1DCDB7A53B12E9E96184AB6F4296865DB35D97D92794B1D568FEA8658B26298DB63939B6AA9A5558D0844226232C427AB995CCF2F69B7D8E2BBA34C8EBC511E5E44E987C4685F99F9FD82B609D6FB4B5377AA3DC6DD3C7D67A2FA68EDCE0318AEA1C69D375ABF81815CC39F8106B0C296E46CB0A3B9050ACF1B831BA4F56663FA40795767E6EDC6FA5172A6F2541B8E97656AF988F8FCABDD616D0C9DC5D2D531CEE3E47093D82CC983E4EA46193A8418B2087DA5F91D432CD904B6F6545A879D7110D1F58DF1E9203214BA54E128E23BBCABA16306DF32B9EB86D51AACE929BE202E04DA6BB0AF34E31AC45FB7597C4DB58EF4C6F6F60E43B2EC5C1D366D23999E67C7CB658E7AAFDAD1647F3CAEB431ED98DFA14FEDD1AE5989CF7951069BEEE9007D4774E9AED01003B82D3479DFE905D9EF0B62AEB03100454C772DB5E92E050C5AF042F98282012CE4A466F87D1B857724540CCE21E6DBDABB185BF1397693D9BE636C54E7FC8AC7555AB801FC7EE458FFA53F7165FECB50DD88BDFCFA827CC7D9320A2F72AEA0A3F8503DC36E243B543566151CAA16D8490D5DD5A998177FABDFFDBAB2E9BEB37ECEF1B6D2DB55A5EEF2EBA81C5A774DA662C1B525DC0C9C5012C4E5A39990D0579AD3D0A96B8495B113537B2A059B2791E178B98992492C1209677C962CCD19650067510679E98CD44C5CD773B2A49AB47A0331DE7C82A2B7E39F20CA8D8EA440AF4A5152E873A5920255C46C7BD86EA8CDE1785BAED33C6A47F6BC781707ABA21B008DFD026747C90183436D1955AE75B8C72F24264EFC88E78BDEB6D959B8449B1B94B7F73705D992AB80A16FF65F0833C694BDC4338BD778DA57385257A8D66457F8A5BAF097E42E497FF4C5FF7024CE4F3D138AD9691C261CE78642196D66AAD3DC603806E6E60AEF2309D29E998F5727BAF3F21591E63765FF38D08AC6AAB0292DEA6B98D26F53A2A869CAFE595DF62C8E08F7D3141643EAB1CD4041962EBBD2FF4B5DBA89BEDA15FF8BBAF87BB4596441D8ECD44D9DBF5AD02AB3435BD32A85321BAD5E6E4BB4D4A5D4B7B8535469AD557E5C14299E233210F4754FAF53A96F76D8AFE2337A8FBEC6610BF7AA9AFECC6CEE872EF12045191E16BC3B432B6900B83B7F7A60AE9DDC17FE4DF802E6E8504ED8A720266F42E3A98A925264FFA2248CB220D6E8255717BE9BED6F29058FABC3EE637CCE29CA4820B6A4D41812E756741FE338DBA1F17A7D4851901661A59B9B74889E48199F6454E141D453356654A2A1BB3239ADD0FD7E0A24D2BF2E299B50E0A9C97E3AEB4B307DEA105FA7A4C0EA472E47210DA1133A73E34C13426F75BEDADFD4CE4610B2C7CA54B33AF872194B347D64F9A1F9D6FB8CEAA0E2BFF1E2E040A4516BB21A6891CE9433CA3A477A1B98079DE6880F30CE4289EA87136444A2F98A024526CCE321FAD4A8F9FA49FF21F1ED077EDFE447F953523FF8B8771C92AFE06F0645585928F2EA30DC2C0FE4ACD525AD3DCC8D8EB5E650A71DD0CB1FF31DB3EC2B85CA2352F28CB2E3C12B7908D17667B63F89C1EE4D772483E3F004CEE63E4EB66C9A81A0D9FDECD601A4F57738E0F16C3501FA3B58854F4F421CC2E8E97C957F2C6126CAA063B3C927140CD4465388C080AB361516CF8405F3B499801DD29934593416135A01FAEEF4E989C8848AE8A39A5720628F1BA140818218C02ECED068A422F6693A5A11BBFF448885F8F10DCC2B13D5D095489800BA0C58E55138267150FD989430A82E3F01A22093D2466D52CC25554C421C4D093396048E5B694874B644027C7B324201C6F389104B138268604EF9784402A968719B32D869D58D609734678B54F4432D6CD79D3F3FF9EE524DBADE4E507577A45DA6C286771A882C47D96DE8364C4E47C0183F11626A4303A9580E3EEEB013FFC2071DA26C981A7382D1F817B61FD3F12F6C9775BE2B86059B993E8E3408E4C82B851CCD48224773D1C891D1C5281D0F6D36FAA062FCA826158AD0ED442550F8A01E908E3C341AB1887D9A8E5EC4EE3F0156977A854531B5D0932C4352EE00B540EF94F590AD3FEB588422764873AEC037BA4C4945ECBBEBD7A7B0CB61626EC86656128388B2CD598B028CD234078EE8C102427A7D5FF6395087B4CE0230689811A9807D77FBF6948432601328890CE58154A46680540C8A7189C5DCF6CF23B5989BFCCD492E7468B581F3827D89CBC301C4066E53539EDFC387EECAD4470FDDEB2770F05C0A912B07667590B1B52396F9D95BB87353938F359F3B271189515064B3AD78AB76883F55119122D20A0F3B223723ED9CCE14CA9EA7362222E938B8B6602A83A80169097AF2D9D5046A263909E88ACE24F9317732978F76C00659677F91857AF24324B3ED2C926E4D4D30A63BCA2E10CDA0500D47D174259819856AB043D3918A8D483D33A150CF92291D5FB87210B1D0EFA8195D4EF3D8D35E4F4B7AA633777D5567FA918C811607AC6EC2B444A46150A77E094F8BA034A969662B3B6547E7A32F4BE3BB1DA33295259EFC8979CFD43587799EB473B35294A1D51E2EBE1B94D4FFA9D62ACBAB8C425BFC370022E35B3E3AB549FA3D1FD94906C94F8326F348D7A540B0B4472FF59D213965477526D7A70FBB038DCDEDCDCE8747574FBFFAC6CC8EA4E6BD3383BB353501D95D9CCD4C3ABD2F8F6620165905D0C758E607A52228E907E60ACA32D4639D69F6E5EA3E34381EDA3201D181719965F4A00ED2DCD3021D865ADFE65919DD79DAA80AAAA64C4963AA017F1AF4D537FB3CB9C79069FEA8B19F756547D8CA7AEC79DCCF15BD9C67FB1206E4A95156E5553E3CF1956FB57F7AAA60417D848EAFBB2309D17D9A877AE8EE6B7159046757A8466E76CF951B896E4023FCC908C7C80C7F1CCA3132C8BF46218AEE778278B8B8F6C3B32D895DEF8F9C6451F4FB0FF0B1F847A630B8C7F3901A3C384FED9C6BA3B90F13031FB8DD1F990941E369AB8426D8FCC884C5756E1E8AE2C6E16990521BBB7B58D2134A42A4D4C519D72724117786982DD2CEE9CC221560DF8190A4E3E0DC8409C98812F387E61B7857CA0F21416F5AD929229C4849ECDFF4B4240EC5532226EA4182A139079E1EF0434CD0B30794732CF564C2A8C424F66F7A62128762F788E9AC7A6102D729718D2E227A13B59D24A3871288FDFEA5404DF8F7A2795983A70B02BB4025DBA9FDBDB3EE450B9ED404CA6211A8034DC0A0F274511A0DBB1CAA2930802783D1ABDD84D1161B51A70FD4162E35051CA18436A2126C10A7367A1310EAE481BAB591A550B74ED6A8DB6B1E418C3E7B686E9880B2E21431D90358B53642C0A89307EAB606ED42ED3663F0DBB5490FF0F53A63B83E5C59A7A69C9AE8CC619C2EFA0B84D365EAE1C8410611DAD00E02409B31509F76891230E8CCA15D670DAEAF3A59A3AE648DF5591A18D29DAFCFD3A26C495BE8CC011C9A411570E8CC011C5EB72360F10506FBD7C8F240E79A9C217AA3B82591E6A84C0E873AEBB9A38ABF16DFA38AD24797F2FA9CE1FB942F99741DEA4E4A81A519406A79480A69E0883E647BAF3F32F5A12B1D10F1FD0DA8F5CC0B1C36DD679EDCA07B0DF204E69DED9F8A00BA2A79478269A7F89204D54A68C14A6A037D041904BB2ECA1E3F90745AEBAD04A12343AF25700323E33DB471558BC1C3B8A943F503236710DB9F55856A45F7A77BA9E0B60C9081F153F28496AB8B8D102F5B668A38F2E28A8123C91B2F3C3874FC78C3D1873A07464112079D69B518099D6A2CC43F4B6A4BBAEAA58B74CC6EB09BD2A0DE5C63A1B0DE4C7785CD510130F25E71C9C6A096F45BE65423B41BF0A731EC39E032C322C8C40DEBBE57D293B4DF829B07D462DAC3C3BCBFB413075B1B12ECACFA49470986FB2A8D23CCB7188A24CCB65A22C8A980E0EEFBEB7B13F456DE75282A2ED4602E2EAED8719D5E735170FD734E62A8D0E15917E3BB2A268C89F0EA3AFB4C48D7E111B55CE9AD6C0FAF742834A9B056B9E0A4862B9D8B464AD596A81D5CFA79A4EEA8F8BA11D4D623B7AE1E8DDE575AD7027757165C476832105BC7B0D340181D0A41A116B2EA3B15DF10EEBA2C0022DF6E2004E2E021A4C000BA2ED1705A08F84CA43E48C49787F263657430981F2DE6032A380502D069A912CEA1DB725D8F22321DDC6CB97E47BBE752C58E5C75684DE975ABA4742EC65883289489B26645E34C58B58141B3EFECE0AEA68A1A06357B706FD3ECFE843B9C18D60A188A81D8574C17E4D1AF0677AA011CE98EE769F9D3C199644A88C18D1E8ADE64AC7698608BE7830DA93B3C30E7B28844961D9F6EB655679C22B28ED870D519A7D7F589CE383E0C0CD07165A418A6E1B2583154D3E5B7E04AA4F144363884897A18B4D432EA68274E4332A1AE468CBD3138346ACD8D3C4487EB908CADCE51048F508F89D2D15FD62199BFBFD328C95CFD4150BFD7831A43A6111601B8F1D31828DDCBC31987472D66A81CFA817EA8050DCDC1984CD490FA9C4337665AFEE9EC95D69087BA8E865F0F718ACB76D0591A18A961A76AA64F4AB76AAA3F727B9061B8B1AF5F01375F250949BC8125732DFA033B108EE8003CDE2522E7A4AA1C12D18D55D201C691D5612018CFD581BB49E7BE83CA59A537A6A2D5A092D6A6FBA0BAD67BFF79E32BD540A83C0B251D91F8163A0C8DC49990421CB0277319ADCEC24C354CA02F9CA437BC379CC3C0F0EE6F8C440C1BC6990F85E8A6050CC5802F17D37EB93717D57E8931FB00D0C8E70AE06AA4180B994312D807C025C97234001F24AD53DB613C68034AF978C87C6AC05E005E3596E301B8D1D0976172DB4FF978BC3EAC113A678F2EEFF5E1225CA34DD024BC3EC445429495DB20BE4C97282EDA0C2C8B6651B22AFA9A4DCADE220B42B2CAFFB0D8DF7BD8C449F1667F5D96D9ABC3C3A2822E0E365198A7457A5B1E84E9E63058A6872F5FBCF8EBE1D1D1E1A6C6380C997B74DE35A5FB12663B8215E2728981E412BD8BF2A23C0DCAE02628F0D89F2C374231CEB5851DBC6E88DB8FB1DE2BE2B4B536B96D79F237E34273707A7C7170F6EEE0F4ED8104A51FC477B85F1BCC56555D4400E1083571DD4518C441DEBA11893E442769BCDD2483AE450AAC6DB94E73DC140EAB4FD6C7BA088AF224DD647144FAC902F27966A80B54149571200FD965E8E3917F59A03A451FE12A288A1F69CE0D7F9F2A22BD3EE48880A7B54381D8B875CFD3AE1665AB4E3E13DA96E26850B7A2AE6C7C1937707A8895FEE1723CAFEB252CFF748A0201AA4D3543FAAD92BA79A4DF4015881AE92A8D92B210B1DA7403B41C1F3F5FA32421EC09034767E8E3BD0DC23B7C7CDCB1607DAA015294AEF2205B737B15956C80B5BDBD7D1BA7E11DE2A692C9D0C73B89F1F2E7A8B54E32C090EC9D76FBE669B44A847DBD4BD4C739DBA46514A649010E97986B80FC10AE83648560603E531FF71DDE2384D3A24B34C1D944F1E335FAE7161525D848B884C117F208254BE517C012FA5F785F05936231DB34039434E6DA55A71820E4E9365375142CA08FFF2188720C97725DA592CDB016E5638C44AC26D9000BE5293EB6E03E0B9966B817E81EC52262936C86F52D1381BE01263F0A141EC1B0363C4299C5D8FC9ADE0043D3A79A23F1A343A71B70B262A38C5B0436C7A22D97F53BCC34CA25FC34B312E39B00F1CD10E1EF02C2DFCD10C86D17C4FDB039A6889F234C752584D8E6182046491407C9F23CB98F4AF8B4931431F846BA2DD071B4B948794E8BCD3140E488ECD288BEDCA5AC4A7FFA1E955FB876D0E9FA68D7C10A55B4C08251C9065828DBF23875923EC6224E39883AC500213B5E2E23C2D300FD12324D70413C739C322839126892F4313E0731E67A2FD28203A2D34DD116DB3C07982221D314174B46106295AC8FF5751D15F837B849F079BBA76790DD765B291B4030138D83044036F4FC79687618FA565A50B1F69925240FC13FDBF4FB9875DBC9369C639B51952A4ACA3208EF8E93681388E2A69069A69AE089A84D33A047CCAC48DAC66599619EDDDEA290575050E96668C26269D2CC503E473CB3D1A74EADC2C17271FA831FF02ED500E9EA242DF8716ED20C9440C10673389C0EA8493340D9E60019F5A9062A1F807ACC29E72C46A296AC4B34C609626898844C0361362A6B174546946D13F571FA4738997349FA34A71CC99BE84904950DDF2236C74C30C2558E97C4DC689BA31C68A6AC8CF957F270ADFC029D6F8C7E19ACA2300A12393E57C2F80B0B72B9B4517D812B6122EA897B4D9B36E9C55A1E851C44936422E825FC4A6E920C782F14A6C932C81F65EC02906FC8D961AE30E1FBCA6418E289FB0D956C22CA106B04600C990C533CB17174BA019A886388F0255BE5C11235E6AE34129B638C28368DC9D8195E5D16E8CA48428330740433B89EE23AEC261518C436D1804F9770E8361CB01FFE05B302026FF093CA86C3FE1226943780A641838308D2D38DADC8D325906D707272CF7EC2C0A6E7CCB5A07FBB3654BF3D493AF346624ED46543583E27FF78436C5BC87D6A94F37A443ECF54E50108CA4C86295E735242885D9689BD491185C7390A7883932ED9100B96E9B92C434C80C3A2D30DD10076864E375181A4053A45B748E04DD91C138508AE9094B9B0173119067879544638E3621BDE891B9C986B8E2C473545AC150797C18328317359C6989014CE659960E677D7A8885A9F1E1694CD3340AD89E5345D0A0A2826C71811DC2EF83C133BA9BA6F20D90B99D6B8D03880256653838984CF64185835E16345464F7CDE3C162FE7C587B42823DEC2874A36B211F97625988790A489D573D16A5DCA865DC834B187584521B838D81C13C4870F573C549564847129625C9A61D4AC9528BA3319532AC03EA6C7AB558EA7E91E9D87BCC02A649A8802FCDCD5296608E240F5A926D6139517987867C36498D82B209EC16D92F43108770DF3CA6C8EC13D3EDE3373D96A1432F571F9AD06DE676612C22401584CC42F084243F082AB498F66FC9317E0DB3453110B12AD8CD804FC135206D3E973DC183561360123C136D978A3151B3620DCCE44C692104A26640C416890315C4DB56B89BB95B1F408F2D36C8E8114558568BFB8E7B8192A79E20BF911245AC1CAFCC4D4C2FC592A7E1A5231286131193FA194FD74E5613FC625558DBF05F1969786E98CA72FA59F61A63623154553642ECB4CF207FBCB64CCAE49888051EC120D701C3D5EAED1AA8A7C20DE4DF279269A0DD074F8DCC63FEFBCA80E3611AB4B36C34A8AED86BCD822C2F53926888445CE20402AC3482784F2340A059550936A82D4BA737CBAF987B02389B926C88B345E425DEED34DD03E63F60E42EBD34DD0BE06395A136F131E8ECA30136516DB1B51E9C06498E1C160566679411C2D451D069765A801FC35BD91DBD7D199731AED55AA44709367737E52CD652DC9089AC736D9024B1096D81C23442993C0E719A156E6919B4D2A40F61926CA801CF127679B66862278A835694628D95A00214926C693BCE1A4596D3917C0E73D3553CCABFB0C5C7D74BA11DAA2CC51B22AD7025C9F61A2875E6E43F4294B8B2091EE3ED24226DFC9B6F5BBDAE0360C641B62035345A75B98BD82BBBB986B82FCC0833D4CADE35F64808DACE47126398ABB09EAD7202A4F511C709139A864C35B0670B6D89CE9EE2D6654D92A9EA694AB6E31AF8BFFFE74FB2FB00EB7C5FC574B65AEAC4DF20970F342F47327C13E4C2AF8A209B906EA44CF5E92A7981857BC5F52936680B2CD839B28C61307B83E0B996682025ED3A844B0A440E7CD71C7738DE532FE4237373B329CDDD8BDD9F4B3208AAB0BD72DCAF832E84BA17A3977477712DE42C3D03C83B7CD90D53EC13C4515A760AF52ACE28963078B57108779B48992A084EF5B269FDAA167917774724561CE548A83C4607319987ED0593811B8BC9FD18A15B804E1B29EEF009FEF0007519FEF0047B565FD6F74A3251CFA47665700679B8C0F39D9259AE0BC8B1EC46BA726F15955AD87388A3258E0EB8C0864F7F415325C3D3B4B88811558C21D676117190AA3803C54F1CCC43E33B1CF4CEC3313AB81F7CCC43E33B1CF4CEC00CE3313FBCCC4EA23CEC9C44A74FB5058B485453C345C07A20A2AD9040BBE9D8E6DAEA5637EAFA8534C2E95C131CA2CC6282367A788931B056D5EC016170B1B838B45068F746633D219391778A03ACD044598AFCC74BE0057DB2ED10887EC93024E9D68828325A9047669E7F34C50AB4D83876B12F5C458402CDC7141562D83CE2DC20A03CCBEA33AE9D0DAC60EA38459D710620A288DB952571F47DDE0C347DFFDB21BF04B31F648E13554FCB840F93B43849237804D880F82D0203AB89A9C758D8420616D9A818E8B44415A93E680963D42AE0DF27500BCFF27E4DA20CB033BB1D936D8A2050C9F67A2D1E0858B536367AAAB407C30A44F35111B09C18A72639B6A82B4A89E32384933419AA5730C0427541402B3DB259A98AD8628BA178DC0E87413E3D2AA2FA2B33093618A073D9CC5E698224A9EA812326D7081E7AA844C535C7E76FA5453A4CAA61E86EBB20C0ED1A8E4FBDA24EDCC21850939CACC0C51C5630A06D138A8641515CB3112233DF4A9539B9F7A0D62F1310B8118164DEACE104CDD2467BE0602D1E26CE08AFE8655AE4B0F62F2CC352BFED46906A7AF47C76FC0349FC930397FB12047F868E12CEFD34DD02ED37B3C893C569B6AC4174465094075C9460BECA778460E132E187DD574C3B94A8B4874E4EA537769C371DF6DECB61AA37DC699BAC87BF1026F6F1404F6725BF05EE14D92017D05AE0E798B759A1DC771FA437084A2337689BE2EBDC4639603E9519BB4B282E89A3A00ED51394FFF20F85936EF4BCBF0623FC326DE20BA2F320990DE2293561E99F48C23D4CD3B517E66C97E8A8CE6C75FF4BFBA927804321926CB932C43804F67327666EEAFD2BC0C5C55D63088C6CCCB2ACA079794E7E7BD4F3531E82A4A7285453CDBC5D52EE65A217F93A21A9D4154BDBF4B118DCE24BF67FE22DDE621028691C930C5FB0661198D5B5DE5EF108ED168E9DF8BCDB4883FA31865781138B3B372208DC5ACAA2C1DDAAE0E4F3B6C8E0169274B3E9C43933439EBE9490B3525133BD71BBD6BE7D0CC108406D1C2D55462AEB0C9AD4D43337B240D946C8100F15DEAD42A0020864997BA53C4E62188B20C4693E8CC8229B73540E26BD24D7C2DDC8304EF549C072FCBF2BF63B4088725E4E55D75198EE622327D5FBDAD02118BC5CB789EE8CEE3ABEF53D2F0ACB7D71E3670399006F5A92A4B37BAAE8EE436DB7823DFB51B6DF3BBFA9988E87D15B830BE48578E442407D220225565D910E3C2FCF83649066413868446781C2AD98097F01C33EB3C3B5E2E73C45B4B51C90646B1E94ABC60EB128D70C46DB14B34B10DDAA0A20C365C4C4E2A796716C8EFDB28BC23F6F5383F7F745C246A308D853204202526279B6ADFA4ED239EEB55CA2D8C2A41BFFEEF476CF5DF8D9CCB7E7FC9D57EF9CC9C70CC49F54A98336702A268B125929AF213BBAA201ED95DF28CEBC5831AAE7DB64D7C1C8ECED0C7E33471466A384E07B74B0AB82B940471F9E8CE0FC98174AE831495A51B625747B8166272E6E18E8E979B2811756B54B2991FC059C2DF54B58966388B32C885780B5DB2C171548F3138F066CB3428789386366DE245D2669EA44919449841E78B745F6F52BADF459B40E89A44C34897282EFA7A8B708D3641D563BCF78495D66D89DE457951128EF42628505D647F0F0FCF7DB444393E221F0B2C881D9002078B7FC62771848874D716B80C92E816738F9FD33B94BCD97FF9E2081FC9C7711414C4863DBEDDDF7BD8C449F12ADC1665BA099224ADC379BFD95F9765F6EAF0B0A8BE581C6CA2304F8BF4B63C08D3CD61B04C0F31D61F0F8F8E0ED17273C8576F60B5505EFCB545298A25A3ADA1F61676EDB1CBFFF56FE8919FE1967EAED1ADB86C0FB9D9E6EBBF96AF78D29637FB37D1AA0AA65B6D50B59456A2E55550E2332C216C24AA1ABEBFF7711BC7E4BEF4CDFE6D108B2F88081FDA96EBB4F658AA3F546C8238AE3E6588741114E549BAC9E2A87676AEE196B8996515B0D7026E81A5AB6A6A6B2C9B56D55B5A5D3FB90FF2101FFCFB7B97C1C34515001FD3E79FFF4C8396B9E81BC8635E0545F123CDBBB9B182A57704250176AC8A0D092AF89C6122642A8F4C86327AE797F9ABEAEAF4CDFE7F55155FED9D7FFBDED5FD65EF538E37A0577B2FF6FEB7450BCA3F9DA260E9426C04E337A2FF75C4A80267174E28393EF1BE4649421CAFEC61DE06E11D3E17EE9C30A2749507D9FA915F86FFB2091EFED574EDBDDDDEDE764F73B5A462DEA8C6C9AD0628A3E4D1A667E26E67BD799E46AB84DA847314C4C618679BB48CC234293C8CCFD9039EA164853C40BDC35B88E326FE2ED844F12379561AF3153E9A94639665E90FAFF5707423A7F7692C6C7FA61079BACDFCF58B72B274EB1AE555E90884F2141F4B5E3A87A19A8004EE6DFA9639CEDC87CC65817CC83C0CC8AFE98D97F168719CC7C44B6BFC34A5D1F2F0BBBC067752D574E24C6ADB2AC703A636AF720621EE01EEDC498DF339AA7DFD1D709A8721CF93FBA8F471565D9247178FA3CD45DAF33C56384EAB9996593C892CD575C57B547EC95CBA751DAC50F3A88BD36AAA9EDB72C4A815F56E7BC3825CE1554E2A4CAFECA0DC21CA2A88865B973E0731E6472FD202B934A546596CF39CE16CECA1B028E202F2751D15F8B7F10A3717B201FB1D3D49DB46C0EE8F946D1261A62DAAC4E7DB888CB8A92C2297D5350E29AAB6D351455908591C955D6D833668CFB0F5C44AAD9E86E757311CA6F23C89D573779C449B8016A6ACF188180D3134A654870F727F8D22686D18020F509EFA573F37E60AE447DF8025C4F4878781BE3A490BE7D3B38DD9E9AAFAD8E67EC8C713E974D13ADD46A78109624FC3F4212AEB9B61B766F53674AEEA7E6FC25917A2DD0DAB81395EDEE361DFE628F7D2C2161573E17E11AB10CF5190F8C45C905B898D2FCC8CDE24ACE964940B98FAA55E7B7EF29AE8369DA587F6815F7FC77C858499B12474DF302A2C1F5BC6E7205FA1D2CB90D5505E1AE501A3F162A83943D7E16EC0E8766962E90B29E9E626B5BA052415AD6E00DB8AD452F37EF5E78D7FF4C4007C88DC31765810FA98854D9C0F6B918883B0A12C0062DC1BE6FE83D6D3C2423809CAD794AAE7E7263237FAB293BB87E6DA7487AAFC57C8B55A94F7DA27DB53A716E5BD08843554E78CE706F63628A2F038478117206FB26A85E685F9A890FC1CF6EC9362AE60F47362AE58C28B5F8E2A07E6AD2F57499F7DE5CB0F1A2B3C3AA0B10F71B9C2312F59F901F3B4CE8597BC9C4D57A0C7BB764A09E3857AF987BA5CB94C5FE607E7C5072CA747BD6D85E5DD3F79ECC85EA2F6A30EE2DFD272BEAFA69FD172067BF8E0344418E0D20DA0E6697C88BE6368653EA6C7AB558E67EF1E9D87BD386777D11C3A779160F818AAD62D87BA06B0BB2046EEBC236167793ED49AA08587D21CF14C36106D41E234E7A3E1E88910A49E8D5CDAD6E3C7C2BBD6A3F189B72728D2525655E8F73E4043846C2BBB9A37914FDB9B57D5B5656DD0D9B95C15031A5A0107070031A483DE12B0939DBD48CC95A8E5895FADDFAEBAB877E62EFCDCC1FA95FC3CD8D63E8B8F3B223E7A9259765A127D12B2A3273B800AA6792CCEFE80DD4149F60C33901941F36143C93C89ED0EE553C28EFC0C576F9AEF00718D5635F3E8E3A2EBDC878BCF79511D3FEE2049B1DD902A6E38849DCDDC61885A853C35E182D19A957FBAF907B591D8612DD278E9DEABCF98917247F91AE4684D2CDC9D603037BAD8DEF890AC09942F1CBC4F474B5A4677F139F935BDF16494E4D3C0897DBEFEE7D6B4D54CBFB309530BE4417AC0583ECFE0868D3DDE6C52E796E14DDCC31945602EBDC090F851AE281E1AE2F7CC1D4363CAD8B1596E5857F799AF7587A116655E75C75D69BADC86E853961641E2739FA93C87EA5710FC6CAA15A08F79E8AC013DEDD00B1220DE11C287CA7991F938A27D607C0DA2F651411F9A6F4FF3E4A645375202B6EF8B3F41F7247775F75B0CB074F372E2215C54C66E2D2182F771B224F5FA46FCB2775E7CA906FAD5DE3B322416CAF4534C882BF7C38EF864DC4431264167AF4642B878D5A212D1DC3914164867D8E7BFAEA823C13B8E2FAD783133DA0308E7C807E1801BB465835EFA6890A7DB83FECA1E9A2CADCB21678401265F6BBB199287F4413E65642AF5F6762D54CD1B112D2CBDBB0C2DA8E6EA6150A76C02A6712F6202372449EA6069DF8A18800D5F8AE881E9DC89E822E9B1585A689A970D5A58FA172216705E9AA8A9B5D081D2D3F5EB22F99B510D4DBF16CCD5912BC47971B6C9FA385E9C82550FE15DF42055CAEB2068EA09B5A1FCCD93AE96500F4B571FA777C83B4FBDA650A90DE56FD87BC32C51B7A1537FA1E1C3AC89E367EE173137CEF640EEFCE1226347C772CE094C7EE70EC28EB0358E1F425E6464A37706E927C91A62C83E591385EC87CE288B324D34ACF9F5C0AABDC295BF8A8A308F36E4DDD6DE1E0954721FBDFC8B2F8D162D8D3C418D961783771F6A51670B95AF28C849F156BDA81A240D8D8008378683E1651059B9AE927A3694D3D663CF51EF56C1C4A16F4D365E5661EAE420B8AE99243AC8B73B9E27F54C0F68ADD563215C74BAA71423691DB7FCEC9F57011DD7D0D75DE179F129C384E668ADB3A8E2B99DA4994C44D1BB5A454541713CBEBA788D4214DD5BAAD4FBCA6E11CCEA01F2612A5C43F9890D5C63798BC7DBC37989CA5BC3D9DD8434553D4C5A6579E021E8D7E7A88C1D695BFB18AB1F22B439C8644F180E1F657D4D7EA0C67572F11FB26A421795E6216C8ACBD2734EA9EA8DC300116C3B16087ED65B870902C6C1F46A310AE274E5BC48BD1A79FBB12A382FB01C45CA3B9ED197E97D94AC1CCFF9A82C1D419E435E57665F59E8122FC679EBB94A8B88B65FD3DB444D7611CB2DC472FFF0703ED76FA5D620F874BE8992207FB47A4CE4725BF4B6E2BB6214489EEB3E8EE3F4C728818EF1143804E6E96B5B4E3F55DBC1A4646736DAE73DB20219DF7D7647F64AF2CBE796292B49BEE371839D8A1EDB66DB7DBFAE3D12AF5C695AEDA6CD61326403E25BD06A3E051D475607E3554AA6C9862DD69E93AB342F032B156E5DD36646FA9AD4E1E37B2E4E5151929B1462A36EBD1C7910A7954981B99F181498FBC9E1E7245FA4DB3C44F6834DD57753435538EE435CE3B88F2E7DBBE47BF97E4631CAF072B2E323FBDA36CB98AD3DF6DE5AD18B0F466BCE93792AF5D5EEB0A9FA0F83ACED220C917A36D4DBD61BF1089A77C251B2F571AF3D966C6DDE362352B28DD6D3D6B526A9A6EE8864E5E5EA697E6DBE1F0F0E7115EB701A552D3726C343CC0E1FCBD3CA00C06825D9BFD8D456B65D4B5C48F25116D37C043479D4F05D2162C35B59DB9DBCAFED703BCBECE6CF37B41AA623923B6D3DD391682CD5533D57F145BAB221255CCD86869A6A23DBAA8521A11D2BAB8FAEAED3A48FFEE6A1965D1679433447BDB9902F5E154F227DD3E51196DE399DD484C4A3B728834D17AC43D36A4E7BF554CFD6C65151E29CFCF1095A09EFC6B39C7E62B25CA58533C6EF4A371B3D8897EECC3BE87EBD43DAB526E6B41DF75155B5633DBAAAE31E1D3BB22ABC5823B4E1C13D8854EE7AB2D19464572809E2F2D1928DE96B5BDDDA30B54714C9E6E7688E979B28F1768B47ECD9CF92A5E1E10CE32CCA202F9D919AA9745D28D72828FA6B7EBF26BAC74591865135CDB4C0FC5DF942381EE5BDEB346E0BB72D5BA0F8F6A049B9DCC66594C55188BFF966FF48E8620FC17D89C6E2B358D07F1340F1124439590D414CE274967980875B5CAF518205A02066BAC09582152DB2A7B1C9F076B07CCE29CA88BD7652C2FD75FE7087CFED334383F1FA909A7B2D9200DE63F44B09D5071802A8537E8E7917876F47A79BA828BE032F51F43355E98AE889AA13F4A7BA42A701EA8451265A546C49C6DD798AC531937CA9D720CD36C1ADBF2217264C3AE57D097087E6E7EEC5C1816AFE99F86E3C21F519A3D083A4AF92A962987707DA9047B4937C588C00370BADD07ECB82B3AB7283309EDF237E5C5E7F4AEA586A7BC721F93E6E4D5084D5350CCF55E34F4B2997F6BC668897C9186DEF319A75472A937B994BBE077943CF77E8D0C3558C77FACCB9FB4C771A99D3DEBCA712F139FF0EDC42194EFCC0C95379D2D31875C2139F6B313E80E44BBC07FA4C339D7D1FE63888E5393B510287A82557EA312C9EA65C309797CC83CC3EDE428E74FBDE44D32D75C4F136DFD41738942EF989CFB86C0C7777CA45975D9FD34DD039842AE9E94FB3306EBB39C564EC9B991E719A9BAFF0285DF2D39FEEB62B4F64CA2BDD909C3D6FDD8F80F932E4D5A6D412814E53F23920651D275E5B5BA4FCDCE42B5D1C25BBB9DFD1553F311198AFFEB949E13BE8CAE66DC36FD0698436E9896FF4D0B8493E263AD5CD3CDB47CFD33DE274331E7DB3CDB4D4C7CDDB64535FA051E8E4273EE9B23134FDE034538EC58CEF60482E0B314B35EFCD3768903669ACF93690A0C0E85046B30E8DA1C5F7A6B8C95FA7D97789DF167597BFE6F8EE3A417FC2BB2FF02090C2D6D77DBEE0D8289902D893D168C2E11134FEDE94133E60C7E363C60113903EF5A79873039B913927BDD9DA01575FCF1BBB16D93CD14D5D9BB666DED29BC9D6E3DEDCA77C461E6ED2E937E7E4E624829A03F92EF5E4B3E0C586193AE184A79347210203464B1630D682B1D33EE955DF9CCA8462809F77B69D989A979FEE0EDD80B876C07E4F67AD7B9AECE9D7F9D493AEFDBD5D98F841F1CD79DAE710DFA69B7223E16DE609C73C4573E5AF36C8EECB31734627EFECCD1BD5489D19E98B4F67AF3DF0C1690941C394C6981C76D1B0663EBA3035B4D931EA5059DDF8A68C496D7066A5085DE9B30BA13E3725F47FAA757F5E4982FF288C38A64E703E22510EB8F5E727F3EFD3A5170F9E7EF353C9D4DE7F36B431B71F604D161A9707EE0431D3F5C1C44460788530F3F47706E6BACEE08616F7BBEC143E8F8FA0856BF8FC0E827DC82F0D9F0EBF5EA454B4311A8E4EFE89A843165B6D6729A3DF40CE937B0C990A31AD46D93B9E7D8B9F146D004FDB8E4216533AFECD4306DA4E80FD03963B30F772D3D2E7C91F63F2E96767679E7E65BCC351E880FB228DC767FD44B4A11A67BB4F4F4A267078C051E8A3FD147BDBD9A4FD4414010EE9CE9242136D4E43BE684A32F3D7A5EDBAEF78DB509D49A182F74DE643AEFCE68464200D32ED9D0EE61230A7A70443E1725748411AA8D33B29505F629C95A8E49F84146463BA13A4705645B1C4754A5C03E5ED11952ED1BB282F4A1242FC262844FB37526B814AB6CDFB7B675D504C9E3216E11A6D8237FBCB2A24611D56B3CB14A88485A70E0AE103541EF4092A5BF7238D1E54FEA5A680F2734D99816FCA3EA5F8821E7013E851EC439D0E36BDCE1A00166E93844F0825A08F0985B43FABFCE2D0C706BF539BE5085FA89321EC3A6700B536F31250EB6408B5CED140EDD56F207A9F2DFB4A5F6288A298E06E226131D9207D312506BE56AB1384AFD4C9107A9D3380DA1AD60AB86D0684DCE60DB6B836D400DA5C67C0ADAEF386B1616029AA0EA47C41D199920FE82E283AC400F49D2E53F29D2E5FEF3BF28F28BF3008DFFA500BE86D0604DEE60D60D3AE1E023E9D097D83CE1F3A6CD6E0DE56278347CD5A636FEBCD584164F91ED7E76A7C417A50F679B26FE81D30B409B6647B907785CE1FF80E2DEA08DFA133A1EFD0F903DFE1B56FC2B7F802D0F7F8328363D8287680016C72E0D16B3287D620251A88EB90CA04D72295CF7D87E28C39CE8CBFA8DFA38AD29C9AF2429F917A183AC65F93F073B0F244AC3CC06E1EB25DD3EF76CD0A4A7B0B45DE76ED24CDB0D67D03F951F32EF5D1B7810E494273334DA33785AA65D042676AD05C645503E412EDBA228B332DE99C56586A99AE0EA23465C72196B41B3229AB693E10EA20CAC05018445D76EF103B9C00DF5C8FA88A1FB6247336DEAF8CDE1551811D097FAAF9EF43DB027D94C4BD75EC1A2D9154354089C3A62B74EC56B03BD2E0AE5C0333AE7DC296E3B2CE2DBB468B0A70DFE4CE010E9D13C59BB69A4C70B1EE5E25C049BB0658B9BB758B1232DB2A900869D51D3AFE24DC2569844AD76E7142625B4D26FE5977AF89B528EF1D148C116A2CD4D2599802209AE0E0DC4141F93C7471A2796C23E649561D1C28CC813C59E1BFAA2211ED5DBA73A4EE8FF898C3EE7688564AC07D92478370E896A848A9AA29542456DDA3A27CC1BD938501B3DBCA995AAC06B3AA25D14F5AC87E4C2C2B48FA9307BB62E5BF35B7D3418A24A186C0924915440E5D93CBF18AB84E1E3A0788C452D5943551D62D9192241480C79920B586C3BE4B833B892A548F87EE4DB1A588B16680AE0E04A4B1DB24805AC22A54E8362D8554F9DE290DB8E228BB8DB96BF2B143D4DDF22E964E366BAA83411146C3B17B631F0C7C3C08A073CA90114C63C54BEAAAB9F2EBE749E40338D281BAA35A32B95B77A790D04537FEC16EABE575E72E8F26BD2BFCD4D57D1E70A4F5D67989E10807E1F71E436324345CB59DEF36E6E8BA9AD95539223B77777C7E57EA490B69FEB5BC6EBDDD804C7959077A8A024330EC51EAADFBE2F57655597171ED32FBBD1BA472E225DE924FEFD68BF5F153F619725FF2D4DDB16E427837B6C1FEA95462BBDD41DEB042D553B5B391A72EC3E62215C0801188CB3074961FAAFE4B5C6B3C759CB359698427D820C5BCABA2A30DD0D5016F1CA6B99CA175D55C8915F5C4977D803389A2AF72F7080F9D9DE210021C2614DD95BB0078E8AE6817556BF4E5164FF2EE92879F0942E710D0E5BD3EACCDAA9A04FC139FA8C10A5DA64B141755EAEBC36BDCD66883EA5FA7A888563DC46B8C99A0EADDE91EB42D739EDCA6AD2B04D7A2B6489BDD2A0851192C833238CECBE8161331CE0E51514409EEEEDF82788B8B9C6D6ED0F23CF9B42DB36D89BB8C363731B381117F0AD5F75F1F0A6D7E5D1B6C143EBA809B19E12EA04FC9DB6D142FBB76BF0BE282E3176410C451A3A6EB6A2E4BFC7FB47AEC903EA6892650337C9D7FC967B4C9620C567C4A16C13DB269DB97025DA055103EE2F4FB6849761919C8F044B0C3FEFA340A5679B0291A8CBE3EFE896978B979F88FFF0FAF5DBCA168120300 , N'6.1.3-40302')
+END
 

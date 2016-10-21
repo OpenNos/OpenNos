@@ -14,11 +14,9 @@
 
 namespace OpenNos.DAL.EF.DB
 {
-    using MySql.Data.Entity;
     using System.Data.Entity;
     using System.Data.Entity.ModelConfiguration.Conventions;
 
-    [DbConfigurationType(typeof(MySqlEFConfiguration))]
     public partial class OpenNosContext : DbContext
     {
         #region Instantiation

@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Alexis : DbMigration
+    public partial class Ares : DbMigration
     {
         public override void Up()
         {
@@ -13,9 +13,9 @@ namespace OpenNos.DAL.EF.Migrations
                     {
                         AccountId = c.Long(nullable: false, identity: true),
                         Authority = c.Short(nullable: false),
-                        LastCompliment = c.DateTime(nullable: false, precision: 0),
+                        LastCompliment = c.DateTime(nullable: false),
                         LastSession = c.Int(nullable: false),
-                        Name = c.String(maxLength: 255, storeType: "nvarchar"),
+                        Name = c.String(maxLength: 255),
                         Password = c.String(maxLength: 255, unicode: false),
                     })
                 .PrimaryKey(t => t.AccountId);
@@ -31,7 +31,7 @@ namespace OpenNos.DAL.EF.Migrations
                         Act4Points = c.Int(nullable: false),
                         ArenaWinner = c.Int(nullable: false),
                         Backpack = c.Int(nullable: false),
-                        Biography = c.String(unicode: false),
+                        Biography = c.String(),
                         BuffBlocked = c.Boolean(nullable: false),
                         Class = c.Byte(nullable: false),
                         Compliment = c.Short(nullable: false),
@@ -124,7 +124,7 @@ namespace OpenNos.DAL.EF.Migrations
                         MinimumMagicianLevel = c.Byte(nullable: false),
                         MinimumSwordmanLevel = c.Byte(nullable: false),
                         MpCost = c.Short(nullable: false),
-                        Name = c.String(maxLength: 255, storeType: "nvarchar"),
+                        Name = c.String(maxLength: 255),
                         Price = c.Int(nullable: false),
                         Range = c.Byte(nullable: false),
                         SecondarySkillVNum = c.Short(nullable: false),
@@ -185,31 +185,31 @@ namespace OpenNos.DAL.EF.Migrations
                         CriticalRate = c.Short(nullable: false),
                         DamageMaximum = c.Short(nullable: false),
                         DamageMinimum = c.Short(nullable: false),
-                        DarkResistance = c.SByte(nullable: false),
+                        DarkResistance = c.Short(nullable: false),
                         DefenceDodge = c.Short(nullable: false),
                         DefenceUpgrade = c.Byte(nullable: false),
                         DistanceDefence = c.Short(nullable: false),
                         DistanceDefenceDodge = c.Short(nullable: false),
                         Element = c.Byte(nullable: false),
                         ElementRate = c.Short(nullable: false),
-                        FireResistance = c.SByte(nullable: false),
+                        FireResistance = c.Short(nullable: false),
                         HeroLevel = c.Byte(nullable: false),
                         IsHostile = c.Boolean(nullable: false),
                         JobXP = c.Int(nullable: false),
                         Level = c.Byte(nullable: false),
-                        LightResistance = c.SByte(nullable: false),
+                        LightResistance = c.Short(nullable: false),
                         MagicDefence = c.Short(nullable: false),
                         MaxHP = c.Int(nullable: false),
                         MaxMP = c.Int(nullable: false),
                         MonsterType = c.Byte(nullable: false),
-                        Name = c.String(maxLength: 255, storeType: "nvarchar"),
+                        Name = c.String(maxLength: 255),
                         NoAggresiveIcon = c.Boolean(nullable: false),
                         Race = c.Byte(nullable: false),
                         RaceType = c.Byte(nullable: false),
                         RespawnTime = c.Int(nullable: false),
                         Speed = c.Byte(nullable: false),
                         VNumRequired = c.Short(nullable: false),
-                        WaterResistance = c.SByte(nullable: false),
+                        WaterResistance = c.Short(nullable: false),
                         XP = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.NpcMonsterVNum);
@@ -257,7 +257,7 @@ namespace OpenNos.DAL.EF.Migrations
                         EffectValue = c.Int(nullable: false),
                         Element = c.Byte(nullable: false),
                         ElementRate = c.Short(nullable: false),
-                        EquipmentSlot = c.Short(nullable: false),
+                        EquipmentSlot = c.Byte(nullable: false),
                         FireElement = c.Byte(nullable: false),
                         FireResistance = c.Short(nullable: false),
                         HitRate = c.Short(nullable: false),
@@ -289,7 +289,7 @@ namespace OpenNos.DAL.EF.Migrations
                         Morph = c.Short(nullable: false),
                         Mp = c.Short(nullable: false),
                         MpRegeneration = c.Short(nullable: false),
-                        Name = c.String(maxLength: 255, storeType: "nvarchar"),
+                        Name = c.String(maxLength: 255),
                         Price = c.Long(nullable: false),
                         PvpDefence = c.Short(nullable: false),
                         PvpStrength = c.Byte(nullable: false),
@@ -317,9 +317,9 @@ namespace OpenNos.DAL.EF.Migrations
                         CharacterId = c.Long(nullable: false),
                         Design = c.Short(nullable: false),
                         DurabilityPoint = c.Int(nullable: false),
-                        ItemDeleteTime = c.DateTime(precision: 0),
+                        ItemDeleteTime = c.DateTime(),
                         ItemVNum = c.Short(nullable: false),
-                        Rare = c.SByte(nullable: false),
+                        Rare = c.Short(nullable: false),
                         Slot = c.Short(nullable: false),
                         Type = c.Byte(nullable: false),
                         Upgrade = c.Byte(nullable: false),
@@ -336,24 +336,24 @@ namespace OpenNos.DAL.EF.Migrations
                         DamageMaximum = c.Short(),
                         DamageMinimum = c.Short(),
                         DarkElement = c.Byte(),
-                        DarkResistance = c.SByte(),
+                        DarkResistance = c.Short(),
                         DefenceDodge = c.Short(),
                         DistanceDefence = c.Short(),
                         DistanceDefenceDodge = c.Short(),
                         ElementRate = c.Short(),
                         FireElement = c.Byte(),
-                        FireResistance = c.SByte(),
+                        FireResistance = c.Short(),
                         HitRate = c.Short(),
                         HP1 = c.Short(),
                         IsEmpty = c.Boolean(),
                         IsFixed = c.Boolean(),
                         LightElement = c.Byte(),
-                        LightResistance = c.SByte(),
+                        LightResistance = c.Short(),
                         MagicDefence = c.Short(),
                         MaxElementRate = c.Short(),
                         MP1 = c.Short(),
                         WaterElement = c.Byte(),
-                        WaterResistance = c.SByte(),
+                        WaterResistance = c.Short(),
                         XP = c.Long(),
                         SlDamage = c.Short(),
                         SlDefence = c.Short(),
@@ -369,7 +369,7 @@ namespace OpenNos.DAL.EF.Migrations
                         SpLight = c.Byte(),
                         SpStoneUpgrade = c.Byte(),
                         SpWater = c.Byte(),
-                        Discriminator = c.String(nullable: false, maxLength: 128, storeType: "nvarchar"),
+                        Discriminator = c.String(nullable: false, maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Character", t => t.BoundCharacterId)
@@ -402,11 +402,11 @@ namespace OpenNos.DAL.EF.Migrations
                         AttachmentRarity = c.Byte(nullable: false),
                         AttachmentUpgrade = c.Byte(nullable: false),
                         AttachmentVNum = c.Short(),
-                        Date = c.DateTime(nullable: false, precision: 0),
-                        EqPacket = c.String(maxLength: 255, storeType: "nvarchar"),
+                        Date = c.DateTime(nullable: false),
+                        EqPacket = c.String(maxLength: 255),
                         IsOpened = c.Boolean(nullable: false),
                         IsSenderCopy = c.Boolean(nullable: false),
-                        Message = c.String(maxLength: 255, storeType: "nvarchar"),
+                        Message = c.String(maxLength: 255),
                         ReceiverId = c.Long(nullable: false),
                         SenderClass = c.Byte(nullable: false),
                         SenderGender = c.Byte(nullable: false),
@@ -414,7 +414,7 @@ namespace OpenNos.DAL.EF.Migrations
                         SenderHairStyle = c.Byte(nullable: false),
                         SenderId = c.Long(nullable: false),
                         SenderMorphId = c.Short(nullable: false),
-                        Title = c.String(maxLength: 255, storeType: "nvarchar"),
+                        Title = c.String(maxLength: 255),
                     })
                 .PrimaryKey(t => t.MailId)
                 .ForeignKey("dbo.Item", t => t.AttachmentVNum)
@@ -469,7 +469,7 @@ namespace OpenNos.DAL.EF.Migrations
                         MapId = c.Short(nullable: false),
                         Data = c.Binary(),
                         Music = c.Int(nullable: false),
-                        Name = c.String(maxLength: 255, storeType: "nvarchar"),
+                        Name = c.String(maxLength: 255),
                         ShopAllowed = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.MapId);
@@ -511,7 +511,7 @@ namespace OpenNos.DAL.EF.Migrations
                 c => new
                     {
                         MapTypeId = c.Short(nullable: false, identity: true),
-                        MapTypeName = c.String(unicode: false),
+                        MapTypeName = c.String(),
                         PotionDelay = c.Short(nullable: false),
                     })
                 .PrimaryKey(t => t.MapTypeId);
@@ -528,7 +528,7 @@ namespace OpenNos.DAL.EF.Migrations
                         SourceMapId = c.Short(nullable: false),
                         SourceX = c.Short(nullable: false),
                         SourceY = c.Short(nullable: false),
-                        Type = c.SByte(nullable: false),
+                        Type = c.Short(nullable: false),
                     })
                 .PrimaryKey(t => t.PortalId)
                 .ForeignKey("dbo.Map", t => t.DestinationMapId)
@@ -560,7 +560,7 @@ namespace OpenNos.DAL.EF.Migrations
                         ShopId = c.Int(nullable: false, identity: true),
                         MapNpcId = c.Int(nullable: false),
                         MenuType = c.Byte(nullable: false),
-                        Name = c.String(maxLength: 255, storeType: "nvarchar"),
+                        Name = c.String(maxLength: 255),
                         ShopType = c.Byte(nullable: false),
                     })
                 .PrimaryKey(t => t.ShopId)
@@ -574,7 +574,7 @@ namespace OpenNos.DAL.EF.Migrations
                         ShopItemId = c.Int(nullable: false, identity: true),
                         Color = c.Byte(nullable: false),
                         ItemVNum = c.Short(nullable: false),
-                        Rare = c.SByte(nullable: false),
+                        Rare = c.Short(nullable: false),
                         ShopId = c.Int(nullable: false),
                         Slot = c.Byte(nullable: false),
                         Type = c.Byte(nullable: false),
@@ -624,10 +624,10 @@ namespace OpenNos.DAL.EF.Migrations
                         LogId = c.Long(nullable: false, identity: true),
                         AccountId = c.Long(nullable: false),
                         CharacterId = c.Long(),
-                        IpAddress = c.String(maxLength: 255, storeType: "nvarchar"),
-                        LogData = c.String(maxLength: 255, storeType: "nvarchar"),
-                        LogType = c.String(unicode: false),
-                        Timestamp = c.DateTime(nullable: false, precision: 0),
+                        IpAddress = c.String(maxLength: 255),
+                        LogData = c.String(maxLength: 255),
+                        LogType = c.String(),
+                        Timestamp = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.LogId)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
@@ -673,11 +673,11 @@ namespace OpenNos.DAL.EF.Migrations
                     {
                         PenaltyLogId = c.Int(nullable: false, identity: true),
                         AccountId = c.Long(nullable: false),
-                        AdminName = c.String(unicode: false),
-                        DateEnd = c.DateTime(nullable: false, precision: 0),
-                        DateStart = c.DateTime(nullable: false, precision: 0),
+                        AdminName = c.String(),
+                        DateEnd = c.DateTime(nullable: false),
+                        DateStart = c.DateTime(nullable: false),
                         Penalty = c.Byte(nullable: false),
-                        Reason = c.String(maxLength: 255, storeType: "nvarchar"),
+                        Reason = c.String(maxLength: 255),
                     })
                 .PrimaryKey(t => t.PenaltyLogId)
                 .ForeignKey("dbo.Account", t => t.AccountId)

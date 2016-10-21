@@ -43,7 +43,7 @@ namespace OpenNos.DAL.EF
 
         public short ItemVNum { get; set; }
 
-        public sbyte Rare { get; set; }
+        public short Rare { get; set; }
 
         [Index("IX_SlotAndType", 2, IsUnique = false, Order = 1)]
         public short Slot { get; set; }

@@ -55,21 +55,10 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.Entity.6.9.8\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MySql.Web, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Web.6.9.8\lib\net45\MySql.Web.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -105,7 +94,6 @@
     <Compile Include="Entities\SpecialistInstance.cs" />
     <Compile Include="Entities\UsableInstance.cs" />
     <Compile Include="Entities\WearableInstance.cs" />
-    <Compile Include="Helpers\ColumnBuilderExtension.cs" />
     <Compile Include="Helpers\MigrationHelper.cs" />
     <Compile Include="MailDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />
@@ -115,13 +103,9 @@
     <Compile Include="Entities\NpcMonsterSkill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201610191449374_Alexis.cs" />
-    <Compile Include="Migrations\201610191449374_Alexis.Designer.cs">
-      <DependentUpon>201610191449374_Alexis.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610192000016_Zephyr.cs" />
-    <Compile Include="Migrations\201610192000016_Zephyr.Designer.cs">
-      <DependentUpon>201610192000016_Zephyr.cs</DependentUpon>
+    <Compile Include="Migrations\201610211827432_Ares.cs" />
+    <Compile Include="Migrations\201610211827432_Ares.Designer.cs">
+      <DependentUpon>201610211827432_Ares.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -201,11 +185,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201610191449374_Alexis.resx">
-      <DependentUpon>201610191449374_Alexis.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610192000016_Zephyr.resx">
-      <DependentUpon>201610192000016_Zephyr.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201610211827432_Ares.resx">
+      <DependentUpon>201610211827432_Ares.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

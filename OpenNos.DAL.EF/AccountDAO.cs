@@ -222,6 +222,11 @@ namespace OpenNos.DAL.EF
 
         private AccountDTO Insert(AccountDTO account, OpenNosContext context)
         {
+            if(account.LastCompliment == DateTime.MinValue)
+            {
+                account.LastCompliment = DateTime.Now;
+            }
+
             Account entity = _mapper.Map<Account>(account);
             context.Account.Add(entity);
             context.SaveChanges();

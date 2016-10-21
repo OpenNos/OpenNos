@@ -45,7 +45,7 @@ namespace OpenNos.DAL.EF
 
         public byte? DarkElement { get; set; }
 
-        public sbyte? DarkResistance { get; set; }
+        public short? DarkResistance { get; set; }
 
         public short? DefenceDodge { get; set; }
 
@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF
 
         public byte? FireElement { get; set; }
 
-        public sbyte? FireResistance { get; set; }
+        public short? FireResistance { get; set; }
 
         public short? HitRate { get; set; }
 
@@ -69,7 +69,7 @@ namespace OpenNos.DAL.EF
 
         public byte? LightElement { get; set; }
 
-        public sbyte? LightResistance { get; set; }
+        public short? LightResistance { get; set; }
 
         public short? MagicDefence { get; set; }
 
@@ -79,7 +79,7 @@ namespace OpenNos.DAL.EF
 
         public byte? WaterElement { get; set; }
 
-        public sbyte? WaterResistance { get; set; }
+        public short? WaterResistance { get; set; }
 
         public long? XP { get; set; }
 

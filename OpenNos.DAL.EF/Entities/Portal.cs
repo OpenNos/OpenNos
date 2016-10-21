@@ -38,7 +38,7 @@ namespace OpenNos.DAL.EF
 
         public short SourceY { get; set; }
 
-        public sbyte Type { get; set; }
+        public short Type { get; set; }
 
         #endregion
     }

@@ -24,7 +24,7 @@ namespace OpenNos.DAL.EF
 
         public short ItemVNum { get; set; }
 
-        public sbyte Rare { get; set; }
+        public short Rare { get; set; }
 
         public virtual Shop Shop { get; set; }
 
