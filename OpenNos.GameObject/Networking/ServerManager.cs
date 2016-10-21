@@ -306,6 +306,10 @@ namespace OpenNos.GameObject
                 {
                     session.Character.IsChangingMap = true;
                     session.CurrentMap.UnregisterSession(session.Character.CharacterId);
+
+                    //cleanup sending queue to avoid sending uneccessary packets to it
+                    session.ClearLowpriorityQueue();
+
                     session.CurrentMap = GetMap(session.Character.MapId);
                     session.CurrentMap.RegisterSession(session);
                     session.SendPacket(session.Character.GenerateCInfo());
@@ -370,8 +374,6 @@ namespace OpenNos.GameObject
                         }
                     }
 
-                    //cleanup sending queue to avoid sending uneccessary packets to it
-                    session.ClearLowpriorityQueue();
                     session.Character.IsChangingMap = false;
                 }
                 catch (Exception)
