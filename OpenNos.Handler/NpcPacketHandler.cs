@@ -87,9 +87,9 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                if (amount > item.Amount)
+                if (amount > item.ItemInstance.Amount)
                 {
-                    amount = (byte)item.Amount;
+                    amount = (byte)item.ItemInstance.Amount;
                 }
                 if (item.Price * amount + ServerManager.Instance.GetProperty<long>(shop.Value.OwnerId, nameof(Character.Gold)) > 1000000000)
                 {
@@ -103,7 +103,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                ItemInstance inv = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount);
+                ItemInstance inv = Session.Character.Inventory.AddToInventory(item.ItemInstance);
 
                 if (inv != null)
                 {
@@ -393,14 +393,10 @@ namespace OpenNos.Handler
 
                                 PersonalShopItem personalshopitem = new PersonalShopItem()
                                 {
-                                    Slot = slot[i],
-                                    ShopSlot = shopSlot,
-                                    Type = type[i],
+                                    ShopSlot = shopSlot,     
                                     Price = gold[i],
-                                    Id = inv.Id,
-                                    CharacterId = inv.CharacterId,
-                                    Amount = qty[i],
-                                    ItemVNum = inv.ItemVNum
+                                    ItemInstance = inv
+
                                 };
                                 myShop.Items.Add(personalshopitem);
                                 shopSlot++;
@@ -409,7 +405,7 @@ namespace OpenNos.Handler
                     }
                     if (myShop.Items.Count != 0)
                     {
-                        if (!myShop.Items.Any(s => !s.Item.IsSoldable || s.IsBound))
+                        if (!myShop.Items.Any(s => !s.ItemInstance.Item.IsSoldable || s.ItemInstance.IsBound))
                         {
                             for (int i = 83; i < packetsplit.Length; i++)
                             {
@@ -854,13 +850,13 @@ namespace OpenNos.Handler
                 PersonalShopItem item = shop.Value.Items.Count() > i ? shop.Value.Items.ElementAt(i) : null;
                 if (item != null)
                 {
-                    if (item.Item.Type == 0)
+                    if (item.ItemInstance.Item.Type == 0)
                     {
-                        packetToSend += $" 0.{i}.{item.ItemVNum}.{item.Rare}.{item.Upgrade}.{item.Price}.";
+                        packetToSend += $" 0.{i}.{item.ItemInstance.ItemVNum}.{item.ItemInstance.Rare}.{item.ItemInstance.Upgrade}.{item.Price}.";
                     }
                     else
                     {
-                        packetToSend += $" {(byte)item.Item.Type}.{i}.{item.ItemVNum}.{item.Amount}.{item.Price}.-1.";
+                        packetToSend += $" {(byte)item.ItemInstance.Item.Type}.{i}.{item.ItemInstance.ItemVNum}.{item.ItemInstance.Amount}.{item.Price}.-1.";
                     }
                 }
                 else

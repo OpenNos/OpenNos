@@ -231,9 +231,9 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            Guid id = shopitem.Id;
-            shopitem.Amount -= amount;
-            if (shopitem.Amount <= 0)
+            Guid id = shopitem.ItemInstance.Id;
+            shopitem.ItemInstance.Amount -= amount;
+            if (shopitem.ItemInstance.Amount <= 0)
             {
                 clientSession.CurrentMap.UserShops[shop.Key].Items.Remove(shopitem);
             }
@@ -246,9 +246,9 @@ namespace OpenNos.GameObject
 
             shopOwnerSession.Character.Gold += shopitem.Price * amount;
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateGold());
-            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, shopitem.Item.Name, amount)));
+            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, shopitem.ItemInstance.Item.Name, amount)));
             clientSession.CurrentMap.UserShops[shop.Key].Sell += shopitem.Price * amount;
-            shopOwnerSession.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{shopitem.Amount}");
+            shopOwnerSession.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{shopitem.ItemInstance.Amount}");
 
             ItemInstance inv = shopOwnerSession.Character.Inventory.RemoveItemAmountFromInventory(amount, id);
 
@@ -260,8 +260,8 @@ namespace OpenNos.GameObject
             else
             {
                 // Send empty slot to owners inventory
-                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, shopitem.Type, shopitem.Slot, 0, 0, 0, 0));
-                if (!clientSession.CurrentMap.UserShops[shop.Key].Items.Any(s => s.Amount > 0))
+                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, shopitem.ItemInstance.Type, shopitem.ItemInstance.Slot, 0, 0, 0, 0));
+                if (!clientSession.CurrentMap.UserShops[shop.Key].Items.Any(s => s.ItemInstance.Amount > 0))
                 {
                     clientSession.SendPacket("shop_end 0");
                     shopOwnerSession.CurrentMap?.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
