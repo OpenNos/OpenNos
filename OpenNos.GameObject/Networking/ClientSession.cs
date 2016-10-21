@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -279,9 +280,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void ClearLowpriorityQueue()
+        public async Task ClearLowpriorityQueue()
         {
-            _client.ClearLowpriorityQueue();
+            await _client.ClearLowpriorityQueue();
         }
 
         public void SetCharacter(Character character)

@@ -20,7 +20,6 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -45,6 +44,7 @@ namespace OpenNos.GameObject
 
         private static List<Skill> _skills = new List<Skill>();
 
+        private bool _disposed;
         private ThreadSafeSortedList<short, List<DropDTO>> _dropsByMonster;
 
         private List<DropDTO> _generalDrops;
@@ -142,31 +142,9 @@ namespace OpenNos.GameObject
 
         public Task TaskShutdown { get; set; }
 
-        private bool _disposed;
-
         #endregion
 
         #region Methods
-
-        public override void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
-            }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _dropsByMonster.Dispose();
-                _groups.Dispose();
-                _monsterSkills.Dispose();
-            }
-        }
 
         public static ConcurrentDictionary<Guid, Map> GetAllMap()
         {
@@ -305,12 +283,17 @@ namespace OpenNos.GameObject
                 try
                 {
                     session.Character.IsChangingMap = true;
+                    session.CurrentMap.UnregisterSession(session.Character.CharacterId);
+
                     //cleanup sending queue to avoid sending uneccessary packets to it
-                    session.ClearLowpriorityQueue();
+                    Task.Factory.StartNew(async () =>
+                    {
+                        await session.ClearLowpriorityQueue();
+                    });
+
                     //avoid cleaning new portals
                     Task.Delay(100);
 
-                    session.CurrentMap.UnregisterSession(session.Character.CharacterId);
                     session.CurrentMap = GetMap(session.Character.MapId);
                     session.CurrentMap.RegisterSession(session);
                     session.SendPacket(session.Character.GenerateCInfo());
@@ -382,6 +365,16 @@ namespace OpenNos.GameObject
                     Logger.Log.Warn("Character changed while changing map. Do not abuse Commands.");
                     session.Character.IsChangingMap = false;
                 }
+            }
+        }
+
+        public override void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
             }
         }
 
@@ -864,6 +857,16 @@ namespace OpenNos.GameObject
         {
             ServerManager.Instance.ShutdownStop = true;
             ServerManager.Instance.TaskShutdown = null;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _dropsByMonster.Dispose();
+                _groups.Dispose();
+                _monsterSkills.Dispose();
+            }
         }
 
         // Server

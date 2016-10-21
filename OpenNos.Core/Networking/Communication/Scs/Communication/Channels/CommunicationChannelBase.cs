@@ -16,6 +16,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
+using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 {
@@ -158,7 +159,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
         /// </summary>
         protected abstract void Startpublic();
 
-        public abstract void ClearLowpriorityQueue();
+        public abstract Task ClearLowpriorityQueue();
 
         #endregion
     }

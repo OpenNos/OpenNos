@@ -331,7 +331,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             }
         }
 
-        public override void ClearLowpriorityQueue()
+        public override async Task ClearLowpriorityQueue()
         {
             _lowPriorityBuffer.Clear();
         }
