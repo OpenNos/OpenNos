@@ -916,21 +916,22 @@ namespace OpenNos.GameObject
         {
             List<Task> TaskMaps = null;
             TaskMaps = new List<Task>();
-            foreach (var map in _maps.Where(s => s.Value.Sessions.Any()))
+            while (true)
             {
-                TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
-                map.Value.Disabled = false;
-                map.Value.Tempgrid.GetType();
+                foreach (var map in _maps.Where(s => s.Value.Sessions.Any()))
+                {
+                    TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
+                    map.Value.Disabled = false;
+                }
+                foreach (var map in _maps.Where(s => !s.Value.Disabled && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
+                {
+                    map.Value.Tempgrid = null;
+                    map.Value.Disabled = true;
+                }
+                TaskMaps.ForEach(s => s.Start());
+                Task.WaitAll(TaskMaps.ToArray());
+                Thread.Sleep(300);
             }
-            foreach (var map in _maps.Where(s => !s.Value.Disabled && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
-            {
-                map.Value.Tempgrid = null;
-                map.Value.Disabled = true;
-            }
-            TaskMaps.ForEach(s => s.Start());
-            Task.WaitAll(TaskMaps.ToArray());
-            Thread.Sleep(300);
-
         }
 
         #endregion
