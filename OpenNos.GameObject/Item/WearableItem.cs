@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
             {
                 default:
                     short slot = itemToWear.Slot;
-                    InventoryType type = itemToWear.Type;
+                    InventoryType itemToWearType = itemToWear.Type;
 
                     if (itemToWear == null)
                     {
@@ -43,7 +43,7 @@ namespace OpenNos.GameObject
                     {
                         if (!DelayUsed && ((EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80)) || (EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit || EquipmentSlot == EquipmentType.WeaponSkin)))
                         {
-                            session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)type}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
+                            session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)itemToWearType}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                             return;
                         }
                         else if (DelayUsed)
@@ -110,8 +110,8 @@ namespace OpenNos.GameObject
                     if (currentlyEquippedItem == null)
                     {
                         // move from equipment to wear
-                        session.Character.Inventory.MoveInInventory(itemToWear.Slot, InventoryType.Equipment, InventoryType.Wear);
-                        session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
+                        session.Character.Inventory.MoveInInventory(itemToWear.Slot, itemToWearType, InventoryType.Wear);
+                        session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, itemToWearType, slot, 0, 0, 0, 0));
                         session.SendPacket(session.Character.GenerateStatChar());
                         session.CurrentMap?.Broadcast(session.Character.GenerateEq());
                         session.SendPacket(session.Character.GenerateEquipment());
@@ -120,9 +120,9 @@ namespace OpenNos.GameObject
                     else
                     {
                         // move from wear to equipment and back
-                        session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, InventoryType.Wear, InventoryType.Equipment, itemToWear.Slot);
+                        session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, InventoryType.Wear, itemToWearType, itemToWear.Slot);
 
-                        session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
+                        session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, itemToWearType, slot, 0, 0, 0, 0));
                         session.SendPacket(session.Character.GenerateInventoryAdd(currentlyEquippedItem.ItemVNum, currentlyEquippedItem.Amount,
                             currentlyEquippedItem.Type, currentlyEquippedItem.Slot, currentlyEquippedItem.Rare, currentlyEquippedItem.Design, currentlyEquippedItem.Upgrade, currentlyEquippedItem is SpecialistInstance ? ((SpecialistInstance)currentlyEquippedItem).SpStoneUpgrade : (byte)0));
 
