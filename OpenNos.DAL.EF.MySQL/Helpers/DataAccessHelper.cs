@@ -13,12 +13,12 @@
  */
 
 using OpenNos.Core;
-using OpenNos.DAL.EF.MySQL.DB;
+using OpenNos.DAL.EF.DB;
 using System;
 using System.Data.Common;
 using System.Linq;
 
-namespace OpenNos.DAL.EF.MySQL.Helpers
+namespace OpenNos.DAL.EF.Helpers
 {
     public static class DataAccessHelper
     {

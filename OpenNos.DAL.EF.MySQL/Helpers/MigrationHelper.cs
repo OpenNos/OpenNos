@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL.EF.MySQL.Migrations;
+using OpenNos.DAL.EF.Migrations;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Migrations.Infrastructure;
 using System.IO;
 using System.Linq;
 
-namespace OpenNos.DAL.EF.MySQL.Helpers
+namespace OpenNos.DAL.EF.Helpers
 {
     public static class MigrationHelper
     {
@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
             var sql = scriptor.ScriptUpdate("0", migration);
             string info = $"-- ========================================== --\r\n-- Current Migration: {migration}\r\n-- ========================================== --\r\n\r\n";
             string fileName = "OpenNos.sql";
-            File.WriteAllText(Path.Combine((@"../../../OpenNos.DAL.EF.MySQL/DB/"), fileName), info + sql);
+            File.WriteAllText(Path.Combine((@"../../../OpenNos.DAL.EF/DB/"), fileName), info + sql);
 #endif
         }
 

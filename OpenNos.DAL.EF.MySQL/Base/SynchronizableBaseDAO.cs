@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using OpenNos.Core;
-using OpenNos.DAL.EF.MySQL.DB;
-using OpenNos.DAL.EF.MySQL.Helpers;
+using OpenNos.DAL.EF.DB;
+using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenNos.DAL.EF.MySQL
+namespace OpenNos.DAL.EF
 {
     public abstract class SynchronizableBaseDAO<TEntity, TDTO> : ISynchronizableBaseDAO<TDTO>
         where TDTO : SynchronizableBaseDTO

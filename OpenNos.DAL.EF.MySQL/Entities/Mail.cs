@@ -15,7 +15,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace OpenNos.DAL.EF.MySQL
+namespace OpenNos.DAL.EF
 {
     public class Mail
     {

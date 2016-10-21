@@ -3,11 +3,11 @@ using System.Runtime.InteropServices;
 
 // Allgemeine Informationen über eine Assembly werden über die folgenden Attribute gesteuert. Ändern
 // Sie diese Attributwerte, um die Informationen zu ändern, die einer Assembly zugeordnet sind.
-[assembly: AssemblyTitle("OpenNos.DAL.EF.MySQL")]
+[assembly: AssemblyTitle("OpenNos.DAL.EF")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OpenNos.DAL.EF.MySQL")]
+[assembly: AssemblyProduct("OpenNos.DAL.EF")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

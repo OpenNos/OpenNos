@@ -15,7 +15,7 @@
 using OpenNos.Core;
 using OpenNos.DAL.Interface;
 using System;
-using MySQL = OpenNos.DAL.EF.MySQL;
+using MySQL = OpenNos.DAL.EF;
 
 namespace OpenNos.DAL
 {

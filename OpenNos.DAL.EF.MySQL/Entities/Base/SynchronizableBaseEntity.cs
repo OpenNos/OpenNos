@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OpenNos.DAL.EF.MySQL
+namespace OpenNos.DAL.EF
 {
     public abstract class SynchronizableBaseEntity
     {

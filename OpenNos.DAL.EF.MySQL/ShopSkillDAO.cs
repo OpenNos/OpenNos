@@ -14,14 +14,14 @@
 
 using AutoMapper;
 using OpenNos.Core;
-using OpenNos.DAL.EF.MySQL.Helpers;
+using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenNos.DAL.EF.MySQL
+namespace OpenNos.DAL.EF
 {
     public class ShopSkillDAO : IShopSkillDAO
     {

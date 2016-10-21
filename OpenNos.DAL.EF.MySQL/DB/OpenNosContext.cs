@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.DAL.EF.MySQL.DB
+namespace OpenNos.DAL.EF.DB
 {
     using MySql.Data.Entity;
     using System.Data.Entity;

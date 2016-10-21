@@ -1,4 +1,4 @@
-namespace OpenNos.DAL.EF.MySQL.Migrations
+namespace OpenNos.DAL.EF.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;

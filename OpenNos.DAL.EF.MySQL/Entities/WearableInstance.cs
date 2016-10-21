@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenNos.DAL.EF.MySQL
+namespace OpenNos.DAL.EF
 {
     public class WearableInstance : ItemInstance
     {

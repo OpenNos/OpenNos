@@ -145,9 +145,9 @@
       <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
       <Name>OpenNos.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.DAL.EF.MySQL\OpenNos.DAL.EF.MySQL.csproj">
+    <ProjectReference Include="..\OpenNos.DAL.EF.MySQL\OpenNos.DAL.EF.csproj">
       <Project>{4AECC47D-098A-4493-8E1E-D10EDBB7A189}</Project>
-      <Name>OpenNos.DAL.EF.MySQL</Name>
+      <Name>OpenNos.DAL.EF</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenNos.DAL.Interface\OpenNos.DAL.Interface.csproj">
       <Project>{175C851B-8DC8-43A5-AF93-AF32D106CD77}</Project>

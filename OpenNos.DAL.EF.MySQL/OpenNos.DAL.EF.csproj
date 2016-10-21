@@ -7,8 +7,8 @@
     <ProjectGuid>{4AECC47D-098A-4493-8E1E-D10EDBB7A189}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenNos.DAL.EF.MySQL</RootNamespace>
-    <AssemblyName>OpenNos.DAL.EF.MySQL</AssemblyName>
+    <RootNamespace>OpenNos.DAL.EF</RootNamespace>
+    <AssemblyName>OpenNos.DAL.EF</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StyleCopTreatErrorsAsWarnings>True</StyleCopTreatErrorsAsWarnings>
