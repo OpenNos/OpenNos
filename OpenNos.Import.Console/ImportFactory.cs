@@ -856,7 +856,7 @@ namespace OpenNos.Import.Console
                             drops.Add(new DropDTO
                             {
                                 ItemVNum = vnum,
-                                Amount = Convert.ToInt32(currentLine[i + 2]),
+                                Amount = Convert.ToByte(currentLine[i + 2]),
                                 MonsterVNum = npc.NpcMonsterVNum,
                                 DropChance = Convert.ToInt32(currentLine[i + 1])
                             });

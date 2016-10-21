@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static ItemInstance InstantiateItemInstance(short vnum, long ownerId, int amount = 1)
+        public static ItemInstance InstantiateItemInstance(short vnum, long ownerId, byte amount = 1)
         {
             ItemInstance newItem = new ItemInstance() { ItemVNum = vnum, Amount = amount, CharacterId = ownerId };
             if (newItem.Item != null)
@@ -438,18 +438,12 @@ namespace OpenNos.GameObject
 
             if (amount > 0 && amount <= inv.Amount)
             {
-                droppedItem = new MapItem(MapX, MapY)
-                {
-                    ItemInstance = inv.DeepCopy()
-                };
-                droppedItem.ItemInstance.Id = random2;
-                droppedItem.ItemInstance.Amount = amount;
-                while (Owner.Session.CurrentMap.DroppedList.ContainsKey(droppedItem.ItemInstance.TransportId))
-                {
-                    droppedItem.ItemInstance.TransportId = 0; // reset transportId
-                }
+                ItemInstance newItemInstance = inv.DeepCopy();
+                newItemInstance.Id = random2;
+                newItemInstance.Amount = amount;
+                droppedItem = new CharacterMapItem(MapX, MapY, newItemInstance);
 
-                Owner.Session.CurrentMap.DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
+                Owner.Session.CurrentMap.DroppedList.TryAdd(droppedItem.TransportId, droppedItem);
                 inv.Amount -= amount;
             }
             return droppedItem;

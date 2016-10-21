@@ -21,7 +21,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public int Amount { get; set; }
+        public byte Amount { get; set; }
 
         public long? BoundCharacterId { get; set; }
 
