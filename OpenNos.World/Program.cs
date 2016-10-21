@@ -15,7 +15,7 @@
 using log4net;
 using OpenNos.Core;
 using OpenNos.DAL;
-using OpenNos.DAL.EF.MySQL.Helpers;
+using OpenNos.DAL.EF.Helpers;
 using OpenNos.GameObject;
 using OpenNos.Handler;
 using OpenNos.ServiceRef.Internal;

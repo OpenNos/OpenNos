@@ -18,6 +18,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
+using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Server
 {
@@ -218,9 +219,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
             MessageReceived?.Invoke(this, new MessageEventArgs(message, DateTime.Now));
         }
 
-        public void ClearLowpriorityQueue()
+        public async Task ClearLowpriorityQueue()
         {
-            _communicationChannel.ClearLowpriorityQueue();
+            await _communicationChannel.ClearLowpriorityQueue();
         }
 
         #endregion

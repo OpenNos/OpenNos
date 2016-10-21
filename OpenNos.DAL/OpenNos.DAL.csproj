@@ -33,14 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -65,9 +57,9 @@
       <Project>{C93A0A40-0551-4732-B594-171B87679AC1}</Project>
       <Name>OpenNos.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.DAL.EF.MySQL\OpenNos.DAL.EF.MySQL.csproj">
+    <ProjectReference Include="..\OpenNos.DAL.EF\OpenNos.DAL.EF.csproj">
       <Project>{4aecc47d-098a-4493-8e1e-d10edbb7a189}</Project>
-      <Name>OpenNos.DAL.EF.MySQL</Name>
+      <Name>OpenNos.DAL.EF</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenNos.DAL.Interface\OpenNos.DAL.Interface.csproj">
       <Project>{175c851b-8dc8-43a5-af93-af32d106cd77}</Project>

@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
-        public WearableInstance(short vNum, int amount) : base(vNum, amount)
+        public WearableInstance(short vNum, byte amount) : base(vNum, amount)
         {
             _random = new Random();
         }

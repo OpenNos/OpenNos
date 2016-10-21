@@ -15,6 +15,7 @@
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
+using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 {
@@ -65,7 +66,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// <param name="message">Message to be sent</param>
         void SendMessage(IScsMessage message, byte priority);
 
-        void ClearLowpriorityQueue();
+        Task ClearLowpriorityQueue();
 
         #endregion
     }

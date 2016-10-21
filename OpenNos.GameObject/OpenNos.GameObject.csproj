@@ -37,14 +37,6 @@
       <HintPath>..\packages\AutoMapper.4.2.1\lib\net45\AutoMapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="EpPathFinding.cs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EpPathFinding.cs.1.1.4\lib\EpPathFinding.cs.dll</HintPath>
       <Private>True</Private>
@@ -81,16 +73,18 @@
     <Compile Include="Item\UpgradeItem.cs" />
     <Compile Include="Item\NoFunctionItem.cs" />
     <Compile Include="Item\WearableItem.cs" />
+    <Compile Include="Map\CharacterMapItem.cs" />
     <Compile Include="Map\Map.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Map\MapCell.cs" />
     <Compile Include="Map\MapMonster.cs" />
+    <Compile Include="Map\MonsterMapItem.cs" />
     <Compile Include="Networking\BroadcastableBase.cs" />
     <Compile Include="Networking\SessionManager.cs" />
     <Compile Include="Networking\TransportFactory.cs" />
     <Compile Include="NpcMonsterSkill.cs" />
     <Compile Include="Map\MapNpc.cs" />
-    <Compile Include="Networking\Npc\NRunHandler.cs" />
+    <Compile Include="Npc\NRunHandler.cs" />
     <Compile Include="Packets\ClientPackets\CharacterOptionPacket.cs" />
     <Compile Include="Packets\ClientPackets\ExchangeListPacket.cs" />
     <Compile Include="Packets\ClientPackets\ExchangeRequestPacket.cs" />
@@ -131,7 +125,7 @@
     <Compile Include="Networking\BroadcastPacket.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Networking\ReceiverType.cs" />
-    <Compile Include="Networking\Npc\NpcMonster.cs" />
+    <Compile Include="Npc\NpcMonster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\CharacterHelper.cs" />
     <Compile Include="Skill.cs" />
@@ -144,10 +138,6 @@
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
       <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
       <Name>OpenNos.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.DAL.EF.MySQL\OpenNos.DAL.EF.MySQL.csproj">
-      <Project>{4AECC47D-098A-4493-8E1E-D10EDBB7A189}</Project>
-      <Name>OpenNos.DAL.EF.MySQL</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenNos.DAL.Interface\OpenNos.DAL.Interface.csproj">
       <Project>{175C851B-8DC8-43A5-AF93-AF32D106CD77}</Project>
@@ -171,7 +161,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

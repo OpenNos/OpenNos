@@ -628,7 +628,7 @@ namespace OpenNos.GameObject
 
         public List<string> GenerateDroppedItem()
         {
-            return ServerManager.GetMap(MapId).DroppedList.Select(item => $"in 9 {item.Value.ItemInstance.ItemVNum} {item.Key} {item.Value.PositionX} {item.Value.PositionY} {item.Value.ItemInstance.Amount} 0 0 -1").ToList();
+            return ServerManager.GetMap(MapId).DroppedList.Select(item => $"in 9 {item.Value.ItemVNum} {item.Key} {item.Value.PositionX} {item.Value.PositionY} {(item.Value is MonsterMapItem && ((MonsterMapItem)item.Value).GoldAmount > 1 ? ((MonsterMapItem)item.Value).GoldAmount : item.Value.Amount)} 0 0 -1").ToList();
         }
 
         public string GenerateEff(int effectid)

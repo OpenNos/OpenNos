@@ -15,7 +15,6 @@
 using OpenNos.Core;
 using OpenNos.DAL.Interface;
 using System;
-using MySQL = OpenNos.DAL.EF.MySQL;
 
 namespace OpenNos.DAL
 {
@@ -65,7 +64,7 @@ namespace OpenNos.DAL
 
                 if (!_useMock)
                 {
-                    MySQL.Helpers.MigrationHelper.GenerateSQLScript();
+                    EF.Helpers.MigrationHelper.GenerateSQLScript();
                 }
             }
             catch (Exception ex)
@@ -90,7 +89,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _accountDAO = new MySQL.AccountDAO();
+                        _accountDAO = new EF.AccountDAO();
                     }
                 }
 
@@ -110,7 +109,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _cellonoptionDAO = new MySQL.CellonOptionDAO();
+                        _cellonoptionDAO = new EF.CellonOptionDAO();
                     }
                 }
 
@@ -130,7 +129,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _characterDAO = new MySQL.CharacterDAO();
+                        _characterDAO = new EF.CharacterDAO();
                     }
                 }
 
@@ -150,7 +149,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _characterskillDAO = new MySQL.CharacterSkillDAO();
+                        _characterskillDAO = new EF.CharacterSkillDAO();
                     }
                 }
 
@@ -170,7 +169,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _comboDAO = new MySQL.ComboDAO();
+                        _comboDAO = new EF.ComboDAO();
                     }
                 }
 
@@ -190,7 +189,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _dropDAO = new MySQL.DropDAO();
+                        _dropDAO = new EF.DropDAO();
                     }
                 }
 
@@ -210,7 +209,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _generallogDAO = new MySQL.GeneralLogDAO();
+                        _generallogDAO = new EF.GeneralLogDAO();
                     }
                 }
 
@@ -230,7 +229,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _itemInstanceDAO = new MySQL.ItemInstanceDAO();
+                        _itemInstanceDAO = new EF.ItemInstanceDAO();
                     }
                 }
 
@@ -250,7 +249,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _itemDAO = new MySQL.ItemDAO();
+                        _itemDAO = new EF.ItemDAO();
                     }
                 }
 
@@ -270,7 +269,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _mailDAO = new MySQL.MailDAO();
+                        _mailDAO = new EF.MailDAO();
                     }
                 }
 
@@ -290,7 +289,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _mapDAO = new MySQL.MapDAO();
+                        _mapDAO = new EF.MapDAO();
                     }
                 }
 
@@ -310,7 +309,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _mapmonsterDAO = new MySQL.MapMonsterDAO();
+                        _mapmonsterDAO = new EF.MapMonsterDAO();
                     }
                 }
 
@@ -330,7 +329,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _mapnpcDAO = new MySQL.MapNpcDAO();
+                        _mapnpcDAO = new EF.MapNpcDAO();
                     }
                 }
 
@@ -350,7 +349,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _maptypeDAO = new MySQL.MapTypeDAO();
+                        _maptypeDAO = new EF.MapTypeDAO();
                     }
                 }
 
@@ -370,7 +369,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _maptypemapDAO = new MySQL.MapTypeMapDAO();
+                        _maptypemapDAO = new EF.MapTypeMapDAO();
                     }
                 }
 
@@ -390,7 +389,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _npcmonsterDAO = new MySQL.NpcMonsterDAO();
+                        _npcmonsterDAO = new EF.NpcMonsterDAO();
                     }
                 }
 
@@ -410,7 +409,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _npcmonsterskillDAO = new MySQL.NpcMonsterSkillDAO();
+                        _npcmonsterskillDAO = new EF.NpcMonsterSkillDAO();
                     }
                 }
 
@@ -430,7 +429,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _penaltylogDAO = new MySQL.PenaltyLogDAO();
+                        _penaltylogDAO = new EF.PenaltyLogDAO();
                     }
                 }
 
@@ -450,7 +449,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _portalDAO = new MySQL.PortalDAO();
+                        _portalDAO = new EF.PortalDAO();
                     }
                 }
 
@@ -470,7 +469,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _quicklistDAO = new MySQL.QuicklistEntryDAO();
+                        _quicklistDAO = new EF.QuicklistEntryDAO();
                     }
                 }
 
@@ -490,7 +489,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _recipeDAO = new MySQL.RecipeDAO();
+                        _recipeDAO = new EF.RecipeDAO();
                     }
                 }
 
@@ -510,7 +509,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _recipeitemDAO = new MySQL.RecipeItemDAO();
+                        _recipeitemDAO = new EF.RecipeItemDAO();
                     }
                 }
 
@@ -530,7 +529,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _respawnDAO = new MySQL.RespawnDAO();
+                        _respawnDAO = new EF.RespawnDAO();
                     }
                 }
 
@@ -550,7 +549,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _shopDAO = new MySQL.ShopDAO();
+                        _shopDAO = new EF.ShopDAO();
                     }
                 }
 
@@ -570,7 +569,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _shopitemDAO = new MySQL.ShopItemDAO();
+                        _shopitemDAO = new EF.ShopItemDAO();
                     }
                 }
 
@@ -590,7 +589,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _shopskillDAO = new MySQL.ShopSkillDAO();
+                        _shopskillDAO = new EF.ShopSkillDAO();
                     }
                 }
 
@@ -610,7 +609,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _skillDAO = new MySQL.SkillDAO();
+                        _skillDAO = new EF.SkillDAO();
                     }
                 }
 
@@ -630,7 +629,7 @@ namespace OpenNos.DAL
                     }
                     else
                     {
-                        _teleporterDAO = new MySQL.TeleporterDAO();
+                        _teleporterDAO = new EF.TeleporterDAO();
                     }
                 }
 

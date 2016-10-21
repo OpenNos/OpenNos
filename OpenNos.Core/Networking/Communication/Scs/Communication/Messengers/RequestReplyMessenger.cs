@@ -18,6 +18,7 @@ using OpenNos.Core.Threading;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 {
@@ -368,7 +369,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             OnMessageSent(e.Message);
         }
 
-        public void ClearLowpriorityQueue()
+        public async Task ClearLowpriorityQueue()
         {
            //do nothing
         }

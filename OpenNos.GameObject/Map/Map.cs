@@ -221,11 +221,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY)
+        public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY, int gold = 0)
         {
             try
             {
-                MapItem droppedItem = null;
+                MonsterMapItem droppedItem = null;
                 short localMapX = (short)(_random.Next(mapX - 1, mapX + 1));
                 short localMapY = (short)(_random.Next(mapY - 1, mapY + 1));
                 List<MapCell> Possibilities = new List<MapCell>();
@@ -248,25 +248,12 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                // TODO Instantiate as concrete ItemInstance
-                ItemInstance newInstance = Inventory.InstantiateItemInstance(drop.ItemVNum, -1, drop.Amount);
+                droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, Owner ?? -1);
 
-                droppedItem = new MapItem(localMapX, localMapY)
-                {
-                    ItemInstance = newInstance,
-                    Owner = Owner
-                };
+                DroppedList.TryAdd(droppedItem.TransportId, droppedItem);
 
-                // rarify
-                if (droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
-                {
-                    droppedItem.Rarify(null);
-                }
+                Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
 
-                DroppedList.TryAdd(droppedItem.ItemInstance.TransportId, droppedItem);
-
-                // TODO: UseTransportId
-                Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");
             }
             catch (Exception e)
             {

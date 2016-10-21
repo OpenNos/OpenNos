@@ -491,45 +491,52 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             long transportId;
-            MapItem mapitem;
+            MapItem mapItem = new MonsterMapItem(0,0,0,0);
+
             if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now || Session.Character.IsVehicled)
             {
                 return;
             }
-            if (long.TryParse(packetsplit[4], out transportId) && Session.CurrentMap.DroppedList.TryGetValue(transportId, out mapitem))
+            if (long.TryParse(packetsplit[4], out transportId) && Session.CurrentMap.DroppedList.TryGetValue(transportId, out mapItem))
             {
-                int amount = mapitem.ItemInstance.Amount;
-
-                if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
+                if (mapItem.PositionX < Session.Character.MapX + 3 && mapItem.PositionX > Session.Character.MapX - 3 && mapItem.PositionY < Session.Character.MapY + 3 && mapItem.PositionY > Session.Character.MapY - 3)
                 {
-                    Group gr = null;
-                    if (mapitem.Owner != null)
+                    if (mapItem is MonsterMapItem)
                     {
-                        gr = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)mapitem.Owner) && g.IsMemberOfGroup(Session.Character.CharacterId));
-                        if (mapitem.CreateDate.AddSeconds(30) > DateTime.Now && !(mapitem.Owner == Session.Character.CharacterId || (gr != null && gr.SharingMode == (byte)GroupSharingType.Everyone)))
+                        MonsterMapItem monsterMapItem = mapItem as MonsterMapItem;
+                        if(monsterMapItem.Owner.HasValue)
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"), 10));
-                            return;
+                            Group group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(monsterMapItem.Owner.Value) && g.IsMemberOfGroup(Session.Character.CharacterId));
+                            if (mapItem.CreateDate.AddSeconds(30) > DateTime.Now && !(monsterMapItem.Owner == Session.Character.CharacterId ||
+                                (group != null && group.SharingMode == (byte)GroupSharingType.Everyone)))
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"), 10));
+                                return;
+                            }
                         }
+
+                        //initialize and rarify
+                        ((MonsterMapItem)mapItem).Rarify(null);
                     }
-                    if (mapitem.ItemInstance.ItemVNum != 1046)
+
+                    if (mapItem.ItemVNum != 1046)
                     {
-                        if (mapitem.ItemInstance.Item.ItemType == ItemType.Map)
+                        if (mapItem.GetItemInstance().Item.ItemType == ItemType.Map)
                         {
-                            MapItem mapItem;
-                            Session.CurrentMap.DroppedList.TryRemove(transportId, out mapItem);
+                            MapItem removeItem;
+                            Session.CurrentMap.DroppedList.TryRemove(transportId, out removeItem);
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
                         }
                         else
                         {
-                            ItemInstance newInv = Session.Character.Inventory.AddToInventory(mapitem.ItemInstance);
+                            ItemInstance newInv = Session.Character.Inventory.AddToInventory(mapItem.GetItemInstance());
                             if (newInv != null)
                             {
-                                MapItem mapItem;
-                                Session.CurrentMap.DroppedList.TryRemove(transportId, out mapItem);
+                                MapItem removeItem;
+                                Session.CurrentMap.DroppedList.TryRemove(transportId, out removeItem);
                                 Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, mapitem.ItemInstance.Rare, mapitem.ItemInstance.Design, mapitem.ItemInstance.Upgrade, 0));
-                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.Item.Name} x {amount}", 12));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.Item.Name} x {mapItem.Amount}", 12));
                             }
                             else
                             {
@@ -539,10 +546,12 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        if (Session.Character.Gold + mapitem.ItemInstance.Amount <= 1000000000)
+                        //handle gold drop
+                        MonsterMapItem droppedGold = mapItem as MonsterMapItem;
+                        if (Session.Character.Gold + droppedGold.GoldAmount <= 1000000000)
                         {
-                            Session.Character.Gold += mapitem.ItemInstance.Amount;
-                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapitem.ItemInstance.Item.Name} x {amount}", 12));
+                            Session.Character.Gold += droppedGold.GoldAmount;
+                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapItem.GetItemInstance().Item.Name} x {droppedGold.GoldAmount}", 12));
                         }
                         else
                         {
@@ -550,8 +559,8 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                         }
                         Session.SendPacket(Session.Character.GenerateGold());
-                        MapItem mapItem;
-                        Session.CurrentMap.DroppedList.TryRemove(transportId, out mapItem);
+                        MapItem removeMapItem;
+                        Session.CurrentMap.DroppedList.TryRemove(transportId, out removeMapItem);
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
                     }
                 }
@@ -643,8 +652,8 @@ namespace OpenNos.Handler
                     {
                         if (amount > 0 && amount < 100)
                         {
-                            MapItem DroppedItem = Session.Character.Inventory.PutItem(type, slot, amount, ref invitem);
-                            if (DroppedItem == null)
+                            MapItem droppedItem = Session.Character.Inventory.PutItem(type, slot, amount, ref invitem);
+                            if (droppedItem == null)
                             {
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
                                 return;
@@ -655,9 +664,9 @@ namespace OpenNos.Handler
                             {
                                 Session.Character.DeleteItem(invitem.Type, invitem.Slot);
                             }
-                            if (DroppedItem != null)
+                            if (droppedItem != null)
                             {
-                                Session.CurrentMap?.Broadcast($"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.TransportId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1");
+                                Session.CurrentMap?.Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.Amount} 0 -1");
                             }
                         }
                         else

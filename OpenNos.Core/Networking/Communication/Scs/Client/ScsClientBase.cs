@@ -18,6 +18,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using OpenNos.Core.Threading;
 using System;
+using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Client
 {
@@ -342,9 +343,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
             }
         }
 
-        public void ClearLowpriorityQueue()
+        public async Task ClearLowpriorityQueue()
         {
-            _communicationChannel.ClearLowpriorityQueue();
+            await _communicationChannel.ClearLowpriorityQueue();
         }
 
         #endregion

@@ -1,6 +1,7 @@
 ﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OpenNos.Core
 {
@@ -36,7 +37,7 @@ namespace OpenNos.Core
 
         void SendPackets(IEnumerable<string> packets, byte priority = 10);
 
-        void ClearLowpriorityQueue();
+        Task ClearLowpriorityQueue();
 
         #endregion
     }

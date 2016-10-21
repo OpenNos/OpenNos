@@ -34,7 +34,7 @@ namespace OpenNos.Data
 
         public short SourceY { get; set; }
 
-        public sbyte Type { get; set; }
+        public short Type { get; set; }
 
         #endregion
     }

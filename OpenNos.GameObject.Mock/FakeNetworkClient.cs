@@ -3,6 +3,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject.Mock
 {
@@ -146,7 +147,7 @@ namespace OpenNos.GameObject.Mock
             }
         }
 
-        public void ClearLowpriorityQueue()
+        public async Task ClearLowpriorityQueue()
         {
             // nothing to do here
         }

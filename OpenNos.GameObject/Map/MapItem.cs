@@ -17,8 +17,15 @@ using System;
 
 namespace OpenNos.GameObject
 {
-    public class MapItem
+    public abstract class MapItem
     {
+        #region Members
+
+        protected ItemInstance _itemInstance;
+        private long _transportId;
+
+        #endregion
+
         #region Instantiation
 
         public MapItem(short x, short y)
@@ -26,6 +33,7 @@ namespace OpenNos.GameObject
             PositionX = x;
             PositionY = y;
             CreateDate = DateTime.Now;
+            TransportId = 0;
         }
 
         #endregion
@@ -34,13 +42,35 @@ namespace OpenNos.GameObject
 
         public DateTime CreateDate { get; set; }
 
-        public ItemInstance ItemInstance { get; set; }
-
-        public long? Owner { get; set; }
-
         public short PositionX { get; set; }
 
         public short PositionY { get; set; }
+
+        public abstract short ItemVNum { get; set; }
+
+        public abstract byte Amount { get; set; }
+
+        public virtual long TransportId
+        {
+            get
+            {
+                if (_transportId == 0)
+                {
+                    // create transportId thru factory
+                    _transportId = TransportFactory.Instance.GenerateTransportId();
+                }
+
+                return _transportId;
+            }
+
+            set
+            {
+                if (value != _transportId)
+                {
+                    _transportId = value;
+                }
+            }
+        }
 
         #endregion
 
@@ -51,13 +81,7 @@ namespace OpenNos.GameObject
             return $"out 9 {id}";
         }
 
-        public void Rarify(ClientSession session)
-        {
-            if (ItemInstance is WearableInstance)
-            {
-                ((WearableInstance)ItemInstance).RarifyItem(session, RarifyMode.Drop, RarifyProtection.None);
-            }
-        }
+        public abstract ItemInstance GetItemInstance();
 
         #endregion
     }
