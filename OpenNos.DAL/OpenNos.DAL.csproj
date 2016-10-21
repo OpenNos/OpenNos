@@ -65,7 +65,7 @@
       <Project>{C93A0A40-0551-4732-B594-171B87679AC1}</Project>
       <Name>OpenNos.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.DAL.EF.MySQL\OpenNos.DAL.EF.csproj">
+    <ProjectReference Include="..\OpenNos.DAL.EF\OpenNos.DAL.EF.csproj">
       <Project>{4aecc47d-098a-4493-8e1e-d10edbb7a189}</Project>
       <Name>OpenNos.DAL.EF</Name>
     </ProjectReference>
