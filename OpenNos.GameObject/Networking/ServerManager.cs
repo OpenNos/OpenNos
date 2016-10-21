@@ -915,22 +915,21 @@ namespace OpenNos.GameObject
         private void TaskLauncherProcess()
         {
             List<Task> TaskMaps = null;
-            while (true)
+            TaskMaps = new List<Task>();
+            foreach (var map in _maps.Where(s => s.Value.Sessions.Any()))
             {
-                TaskMaps = new List<Task>();
-                foreach (var map in _maps.Where(s => s.Value.Sessions.Any()))
-                {
-                    TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
-                    map.Value.Disabled = false;
-                }
-                foreach (var map in _maps.Where(s => !s.Value.Disabled && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
-                {
-                    map.Value.Disabled = true;
-                }
-                TaskMaps.ForEach(s => s.Start());
-                Task.WaitAll(TaskMaps.ToArray());
-                Thread.Sleep(300);
+                TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
+                map.Value.Disabled = false;
             }
+            foreach (var map in _maps.Where(s => !s.Value.Disabled && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
+            {
+                map.Value.Tempgrid = null;
+                map.Value.Disabled = true;
+            }
+            TaskMaps.ForEach(s => s.Start());
+            Task.WaitAll(TaskMaps.ToArray());
+            Thread.Sleep(300);
+
         }
 
         #endregion

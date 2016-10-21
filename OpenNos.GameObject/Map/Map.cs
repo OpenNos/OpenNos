@@ -171,6 +171,11 @@ namespace OpenNos.GameObject
 
                 return _tempgrid;
             }
+            set
+            {
+                    _tempgrid = null;
+                    JumpPointParameters = null;      
+            }
         }
 
         public Dictionary<long, MapShop> UserShops { get; set; }
