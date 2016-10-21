@@ -28,6 +28,7 @@ namespace OpenNos.GameObject
         /// List of all connected clients.
         /// </summary>
         private readonly ThreadSafeSortedList<long, ClientSession> _sessions;
+
         private bool _disposed;
 
         #endregion
@@ -66,24 +67,6 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public virtual void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _sessions.Dispose();
-            }
-        }
-
         public void Broadcast(string packet, int delay = 0)
         {
             Broadcast(null, packet, delay: delay);
@@ -117,75 +100,67 @@ namespace OpenNos.GameObject
         public void Broadcast(ClientSession client, string[] packets, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
         {
             // Send message to all online users
-            Task.Factory.StartNew(
-                async () =>
+            Task.Delay(delay);
+            try
+            {
+                foreach (string packet in packets)
                 {
-                    await Task.Delay(delay);
-
-                    try
-                    {
-                        foreach (string packet in packets)
-                        {
-                            await SpreadBroadcastpacket(new BroadcastPacket(client, packet, receiver, characterName, characterId));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(ex);
-                    }
-                });
+                    SpreadBroadcastpacket(new BroadcastPacket(client, packet, receiver, characterName, characterId));
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
         }
 
         public void Broadcast(IEnumerable<BroadcastPacket> packets, int delay = 0)
         {
-            Task.Factory.StartNew(
-                async () =>
-                {
-                    await Task.Delay(delay);
-                    try
-                    {
-                        await SpreadBroadcasts(packets);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(ex);
-                    }
-                });
+            Task.Delay(delay);
+            try
+            {
+                SpreadBroadcasts(packets);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
         }
 
         public void Broadcast(BroadcastPacket packet, int delay = 0)
         {
-            // Send message to all online users
-            Task.Factory.StartNew(
-                async () =>
-                {
-                    await Task.Delay(delay);
-                    try
-                    {
-                        await SpreadBroadcastpacket(packet);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(ex);
-                    }
-                });
+            Task.Delay(delay);
+            try
+            {
+                SpreadBroadcastpacket(packet);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
         }
 
         public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
         {
-            Task.Factory.StartNew(
-                async () =>
-                {
-                    await Task.Delay(delay);
-                    try
-                    {
-                        await SpreadBroadcastpacket(new BroadcastPacket(client, content, receiver, characterName, characterId));
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(ex);
-                    }
-                });
+            Task.Delay(delay);
+            try
+            {
+                SpreadBroadcastpacket(new BroadcastPacket(client, content, receiver, characterName, characterId));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
+        }
+
+        public virtual void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
         }
 
         public ClientSession GetSessionByCharacterId(long characterId)
@@ -212,7 +187,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public async Task SpreadBroadcastpacket(BroadcastPacket sentPacket)
+        public void SpreadBroadcastpacket(BroadcastPacket sentPacket)
         {
             if (sentPacket != null)
             {
@@ -237,6 +212,7 @@ namespace OpenNos.GameObject
                         {
                             foreach (ClientSession session in Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)))
                             {
+                                Console.WriteLine(sentPacket.Packet);
                                 session.SendPacket(sentPacket.Packet, 1);
                             }
                         }
@@ -272,7 +248,7 @@ namespace OpenNos.GameObject
 
                     case ReceiverType.Group:
                         foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.Group != null
-                                 && sentPacket.Sender != null && sentPacket.Sender.Character != null && sentPacket.Sender.Character.Group != null 
+                                 && sentPacket.Sender != null && sentPacket.Sender.Character != null && sentPacket.Sender.Character.Group != null
                                  && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId))
                         {
                             session.SendPacket(sentPacket.Packet);
@@ -282,11 +258,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        public async Task SpreadBroadcasts(IEnumerable<BroadcastPacket> sentpackets)
+        public void SpreadBroadcasts(IEnumerable<BroadcastPacket> sentpackets)
         {
             foreach (BroadcastPacket broadcastPacket in sentpackets)
             {
-                await SpreadBroadcastpacket(broadcastPacket);
+                SpreadBroadcastpacket(broadcastPacket);
             }
         }
 
@@ -303,6 +279,14 @@ namespace OpenNos.GameObject
             _sessions.Remove(characterId);
 
             LastUnregister = DateTime.Now;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _sessions.Dispose();
+            }
         }
 
         #endregion
