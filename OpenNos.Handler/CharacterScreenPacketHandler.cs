@@ -243,7 +243,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (account != null && account.Password.ToLower() == EncryptionBase.Sha512(ConfigurationManager.AppSettings["UseOldCrypto"] == "true" ? EncryptionBase.GetPassword(deleteCharacterPacket[3]) : deleteCharacterPacket[3]))
+            if (account != null && account.Password.ToLower() == EncryptionBase.Sha512(deleteCharacterPacket[3]))
             {
                 CharacterDTO character = DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
                 if (character == null)
@@ -289,7 +289,7 @@ namespace OpenNos.Handler
                     if (accountDTO != null)
                     {
                         
-                        if (accountDTO.Password.ToLower().Equals(EncryptionBase.Sha512(ConfigurationManager.AppSettings["UseOldCrypto"] == "true" ? EncryptionBase.GetPassword(loginPacketParts[6]) : loginPacketParts[6])))
+                        if (accountDTO.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])))
                         {
                             var account = new Account()
                             {

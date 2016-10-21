@@ -68,7 +68,8 @@ namespace OpenNos.Handler
         public void VerifyLogin(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            UserDTO user = new UserDTO() { Name = packetsplit[2], Password = packetsplit[3] };
+           
+            UserDTO user = new UserDTO() { Name = packetsplit[2], Password = ConfigurationManager.AppSettings["UseOldCrypto"] == "true" ? EncryptionBase.Sha512(LoginEncryption.GetPassword(packetsplit[3])) : packetsplit[3] };
 
             // closed
             bool flag = true;
