@@ -30,8 +30,6 @@ namespace OpenNos.DAL.Interface
 
         AccountDTO LoadByName(string Name);
 
-        AccountDTO LoadBySessionId(int sessionId);
-
         void LogIn(string name);
 
         void UpdateLastSessionAndIp(string name, int session, string ip);

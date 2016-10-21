@@ -7,6 +7,7 @@ using OpenNos.GameObject;
 using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace OpenNos.Handler
 {
@@ -233,7 +234,7 @@ namespace OpenNos.Handler
                 return;
             }
             string[] deleteCharacterPacket = packet.Split(' ');
-            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
+            AccountDTO account = DAOFactory.AccountDAO.LoadById(Session.Account.AccountId);
             if (account == null)
             {
                 return;
@@ -287,6 +288,7 @@ namespace OpenNos.Handler
 
                     if (accountDTO != null)
                     {
+                        
                         if (accountDTO.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])))
                         {
                             var account = new Account()
