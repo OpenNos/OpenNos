@@ -23,6 +23,9 @@ http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409
 
 ##2. Install or Configure Microsoft SQL Server 2016 (at least Developer Edition)
 Detailed information will follow.
+- https://www.microsoft.com/en-us/sql-server/sql-server-editions-developers
+- SQL Server Management Studio (SSMS) Link : https://msdn.microsoft.com/en-us/library/mt238290.aspx
+- Tutorial pastebin Link : http://pastebin.com/gRVENLFm
 
 ##3. Use the NuGet Package Manager to Update the Database##
 
