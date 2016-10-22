@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [Header("stat")]
+    [PacketHeader("stat")]
     public class StatPacket : PacketBase
     {
         #region Properties

@@ -73,42 +73,14 @@ namespace OpenNos.Core
             }
         }
 
-        public static TPacket Serialize<TPacket>(string packetContent, bool includesKeepAliveIdentity = false)
-            where TPacket : PacketBase
+        public static object Serialize(string packetContent, Type packetType, bool includesKeepAliveIdentity = false)
         {
             try
             {
-                var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(typeof(TPacket)));
-                TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); // reflection is bad, improve?
+                var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(packetType));
+                object deserializedPacket = Activator.CreateInstance(packetType); // reflection is bad, improve?
 
-                MatchCollection matches = Regex.Matches(packetContent, @"([^\s]+[\.\^][^\s]+[\s]?)+((?=\s)|$)|([^\s]+)((?=\s)|$)");
-
-                if (matches.Count > 0)
-                {
-                    foreach (var packetBasePropertyInfo in serializationInformation.Value)
-                    {
-                        int currentIndex = packetBasePropertyInfo.Key.Index + (includesKeepAliveIdentity ? 2 : 1); // adding 2 because we need to skip incrementing number and packet header
-
-                        if (currentIndex < matches.Count)
-                        {
-                            string currentValue = matches[currentIndex].Value;
-
-                            // set the value & convert currentValue
-                            if (currentValue != null)
-                            {
-                                packetBasePropertyInfo.Value.SetValue(deserializedPacket, ConvertValue(packetBasePropertyInfo.Value.PropertyType, currentValue));
-                            }
-                            else
-                            {
-                                packetBasePropertyInfo.Value.SetValue(deserializedPacket, Activator.CreateInstance(packetBasePropertyInfo.Value.PropertyType));
-                            }
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
+                deserializedPacket = Serialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
 
                 return deserializedPacket;
             }
@@ -117,6 +89,60 @@ namespace OpenNos.Core
                 Logger.Log.Warn($"The serialized packet has the wrong format. Packet: {packetContent}", e);
                 return null;
             }
+        }
+
+        public static TPacket Serialize<TPacket>(string packetContent, bool includesKeepAliveIdentity = false)
+            where TPacket : PacketBase
+        {
+            try
+            {
+                var serializationInformation = _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1.Equals(typeof(TPacket)));
+                TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); // reflection is bad, improve?
+
+                deserializedPacket = (TPacket)Serialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
+
+                return deserializedPacket;
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Warn($"The serialized packet has the wrong format. Packet: {packetContent}", e);
+                return null;
+            }
+        }
+
+        private static object Serialize(string packetContent, object deserializedPacket, KeyValuePair<Tuple<Type, String>, 
+            Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformation, bool includesKeepAliveIdentity)
+        {
+            MatchCollection matches = Regex.Matches(packetContent, @"([^\s]+[\.\^][^\s]+[\s]?)+((?=\s)|$)|([^\s]+)((?=\s)|$)");
+
+            if (matches.Count > 0)
+            {
+                foreach (var packetBasePropertyInfo in serializationInformation.Value)
+                {
+                    int currentIndex = packetBasePropertyInfo.Key.Index + (includesKeepAliveIdentity ? 2 : 1); // adding 2 because we need to skip incrementing number and packet header
+
+                    if (currentIndex < matches.Count)
+                    {
+                        string currentValue = matches[currentIndex].Value;
+
+                        // set the value & convert currentValue
+                        if (currentValue != null)
+                        {
+                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, ConvertValue(packetBasePropertyInfo.Value.PropertyType, currentValue));
+                        }
+                        else
+                        {
+                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, Activator.CreateInstance(packetBasePropertyInfo.Value.PropertyType));
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return deserializedPacket;
         }
 
         /// <summary> Converts for instance -1.12.1.8.-1.-1.-1.-1.-1 to eg. List<byte?> </summary>
@@ -315,7 +341,7 @@ namespace OpenNos.Core
             // Iterate thru all PacketBase implementations
             foreach (Type packetBaseType in typeof(TPacketBase).Assembly.GetTypes().Where(p => !p.IsInterface && typeof(TPacketBase).BaseType.IsAssignableFrom(p)))
             {
-                string header = packetBaseType.GetCustomAttribute<HeaderAttribute>()?.Identification;
+                string header = packetBaseType.GetCustomAttribute<PacketHeaderAttribute>()?.Identification;
 
                 if (String.IsNullOrEmpty(header))
                 {

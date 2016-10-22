@@ -4,7 +4,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
-    [Header("req_exc")]
+    [PacketHeader("req_exc")]
     public class ExchangeRequestPacket : PacketBase
     {
         [PacketIndex(0)]

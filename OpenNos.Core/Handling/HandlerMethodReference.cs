@@ -21,37 +21,33 @@ namespace OpenNos.Core
 {
     public class HandlerMethodReference
     {
-        public HandlerMethodReference(Action<object,string> handlerMethod, IPacketHandler parentHandler, PacketAttribute handlerMethodAttribute)
+        public HandlerMethodReference(Action<object, object> handlerMethod, IPacketHandler parentHandler, PacketAttribute handlerMethodAttribute)
         {
             HandlerMethod = handlerMethod;
             ParentHandler = parentHandler;
             HandlerMethodAttribute = handlerMethodAttribute;
+            Identification =  HandlerMethodAttribute.Header;
         }
 
-        public HandlerMethodReference(Action<object, string> handlerMethod, IPacketHandler parentHandler, PacketBase packetBaseReference)
+        public HandlerMethodReference(Action<object, object> handlerMethod, IPacketHandler parentHandler, Type packetBaseParameterType)
         {
             HandlerMethod = handlerMethod;
             ParentHandler = parentHandler;
-            BasePacketParameter = packetBaseReference;
+            PacketBaseParameterType = packetBaseParameterType;
+            Identification = ((PacketHeaderAttribute)PacketBaseParameterType.GetCustomAttributes(true).FirstOrDefault(ca => ca.GetType().Equals(typeof(PacketHeaderAttribute)))).Identification;
         }
 
         public PacketAttribute HandlerMethodAttribute { get; set; }
 
-        public Action<object, string> HandlerMethod { get; set; }
+        public Action<object, object> HandlerMethod { get; set; }
 
         public IPacketHandler ParentHandler { get; set; }
 
-        public PacketBase BasePacketParameter { get; set; }
+        public Type PacketBaseParameterType { get; set; }
 
         /// <summary>
         /// Unique identification of the Packet by Header
         /// </summary>
-        public string Identification
-        {
-            get
-            {
-                return HandlerMethodAttribute.Header;
-            }
-        }
+        public string Identification { get; set; }
     }
 }

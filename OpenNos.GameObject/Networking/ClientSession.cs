@@ -326,17 +326,27 @@ namespace OpenNos.GameObject
             IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) // shitty but it works
                                                             : type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterfaces().FirstOrDefault().IsAssignableFrom(p));
 
-            // iterate thru each type in the given assembly, the IPacketHandler is expected in the same dll
+            // iterate thru each type in the given assembly
             foreach (Type handlerType in handlerTypes)
             {
                 IPacketHandler handler = (IPacketHandler)Activator.CreateInstance(handlerType, new object[] { this });
 
-                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any()))
+                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any() 
+                || x.GetParameters().FirstOrDefault()?.ParameterType?.BaseType == typeof(PacketBase))) //include PacketBase
                 {
                     PacketAttribute packetAttribute = methodInfo.GetCustomAttributes(false).OfType<PacketAttribute>().FirstOrDefault();
 
-                    HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, string>>(methodInfo), handler, packetAttribute);
-                    HandlerMethods.Add(methodReference.Identification, methodReference);
+                    if(packetAttribute == null) //assume PacketBase based handler method
+                    {
+                        HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, methodInfo.GetParameters().FirstOrDefault()?.ParameterType);
+                        HandlerMethods.Add(methodReference.Identification, methodReference);
+                    }
+                    else
+                    { 
+                        //assume string based handler method
+                        HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, packetAttribute);
+                        HandlerMethods.Add(methodReference.Identification, methodReference);
+                    }
                 }
             }
         }
@@ -517,7 +527,7 @@ namespace OpenNos.GameObject
 
                 if (methodReference != null)
                 {
-                    if (!force && methodReference.HandlerMethodAttribute.Amount > 1 && !_waitForPacketsAmount.HasValue)
+                    if (methodReference.HandlerMethodAttribute != null && !force && methodReference.HandlerMethodAttribute.Amount > 1 && !_waitForPacketsAmount.HasValue)
                     {
                         // we need to wait for more
                         _waitForPacketsAmount = methodReference.HandlerMethodAttribute.Amount;
@@ -529,7 +539,23 @@ namespace OpenNos.GameObject
                         if (HasSelectedCharacter || methodReference.ParentHandler.GetType().Name == "CharacterScreenPacketHandler" || methodReference.ParentHandler.GetType().Name == "LoginPacketHandler")
                         {
                             // call actual handler method
-                            methodReference.HandlerMethod(methodReference.ParentHandler, packet);
+                            if(methodReference.PacketBaseParameterType != null)
+                            {
+                                object serializedPacket = PacketFactory.Serialize(packet, methodReference.PacketBaseParameterType, true);
+
+                                if(serializedPacket != null)
+                                {
+                                    methodReference.HandlerMethod(methodReference.ParentHandler, serializedPacket);
+                                }
+                                else
+                                {
+                                    Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CORRUPT_PACKET"), packetHeader, packet);
+                                }
+                            }
+                            else
+                            {
+                                methodReference.HandlerMethod(methodReference.ParentHandler, packet);
+                            }
                         }
                     }
                     catch (Exception ex)

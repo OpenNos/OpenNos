@@ -991,4 +991,7 @@ Veux-tu le porter ?</value>
   <data name="ITEM_IS_NOT_FIXED" xml:space="preserve">
     <value>Tu ne peux pas l'utiliser. Ton objet ne remplis pas les conditions</value>
   </data>
+  <data name="CORRUPT_PACKET" xml:space="preserve">
+    <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
+  </data>
 </root>
