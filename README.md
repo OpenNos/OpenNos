@@ -21,8 +21,10 @@ We do not provide any modified client files. The alorithms are based on our logi
 ##1. Install SSDT For Visual Studio##
 http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409
 
-##2. Install MySQL##
-http://dev.mysql.com/downloads/windows/installer/
+##2. Install MSSQL#
+- https://www.microsoft.com/en-us/sql-server/sql-server-editions-developers
+- Server Management : https://msdn.microsoft.com/en-us/library/mt238290.aspx
+- Tutorial here : http://pastebin.com/DAHxvum4
 
 Installer Packages:
 - Custom Installation
