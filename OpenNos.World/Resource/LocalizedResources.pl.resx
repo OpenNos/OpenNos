@@ -958,4 +958,7 @@
   <data name="SP_RESURRECTED" xml:space="preserve">
     <value>Dusza twojego specjalisty została ożywiona!</value>
   </data>
+  <data name="CORRUPT_PACKET" xml:space="preserve">
+    <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
+  </data>
 </root>

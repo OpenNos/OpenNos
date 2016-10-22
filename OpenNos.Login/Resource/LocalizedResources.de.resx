@@ -177,4 +177,7 @@
   <data name="CONNECTION_CLOSED" xml:space="preserve">
     <value />
   </data>
+  <data name="CORRUPT_PACKET" xml:space="preserve">
+    <value>Das empfangene Paket mit der Identifikation {0} hat ein falsches Format oder die dazugehörige Packet-Definition ist fehlerhaft. Inhalt: {1} </value>
+  </data>
 </root>

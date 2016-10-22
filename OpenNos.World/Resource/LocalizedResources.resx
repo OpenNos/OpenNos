@@ -1000,4 +1000,7 @@
   <data name="ITEM_UNFIXED" xml:space="preserve">
     <value>You've removed blockade of upgrade level from your item!</value>
   </data>
+  <data name="CORRUPT_PACKET" xml:space="preserve">
+    <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
+  </data>
 </root>

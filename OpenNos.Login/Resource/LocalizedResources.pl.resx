@@ -174,4 +174,7 @@
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
     <value>Database is not up to date. Please consider updating your database.</value>
   </data>
+  <data name="CORRUPT_PACKET" xml:space="preserve">
+    <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1} </value>
+  </data>
 </root>

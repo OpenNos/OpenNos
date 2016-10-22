@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject.Packets.ServerPackets
 {
-    [Header("wear")]
+    [PacketHeader("wear")]
     public class WearjPacket : PacketBase
     {
         #region Properties

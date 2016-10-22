@@ -180,4 +180,7 @@
   <data name="MAINTENANCE" xml:space="preserve">
     <value>Server is currently under maintenance. Maintenance estimated time {0}</value>
   </data>
+  <data name="CORRUPT_PACKET" xml:space="preserve">
+    <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1} </value>
+  </data>
 </root>

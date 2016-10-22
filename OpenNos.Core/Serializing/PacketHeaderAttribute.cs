@@ -2,11 +2,11 @@
 
 namespace OpenNos.Core
 {
-    public class HeaderAttribute : Attribute
+    public class PacketHeaderAttribute : Attribute
     {
         #region Instantiation
 
-        public HeaderAttribute(string identification)
+        public PacketHeaderAttribute(string identification)
         {
             Identification = identification;
         }

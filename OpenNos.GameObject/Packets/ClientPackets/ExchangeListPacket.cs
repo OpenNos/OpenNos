@@ -4,7 +4,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [Header("exc_list")]
+    [PacketHeader("exc_list")]
     public class ExchangeListPacket
     {
         // exc_list 1 626114 0 0.2.2296.1.0
