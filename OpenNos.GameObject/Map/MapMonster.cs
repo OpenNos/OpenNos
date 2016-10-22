@@ -213,7 +213,7 @@ namespace OpenNos.GameObject
             {
                 ClientSession targetSession = Map.GetSessionByCharacterId(Target);
 
-                if (targetSession == null || targetSession.Character.Invisible)
+                if (targetSession == null || targetSession.Character.Invisible ||  targetSession.Character.Hp <= 0)
                 {
                     Target = -1;
                     Path = Map.StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
@@ -280,6 +280,7 @@ namespace OpenNos.GameObject
                             {
                                 Path = Map.JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
                             }
+                            Target = -1;
                         }
                         if (npcMonsterSkill != null && (npcMonsterSkill.Skill.Range > 0 || npcMonsterSkill.Skill.TargetRange > 0))
                         {
