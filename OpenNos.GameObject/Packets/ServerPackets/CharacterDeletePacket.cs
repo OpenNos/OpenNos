@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.GameObject.Packets.ServerPackets
 {
-    [Header("Char_DEL")]
+    [PacketHeader("Char_DEL")]
     public class CharacterDeletePacket : PacketBase
     {
         #region Properties

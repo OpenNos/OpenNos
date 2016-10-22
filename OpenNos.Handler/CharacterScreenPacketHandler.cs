@@ -64,7 +64,7 @@ namespace OpenNos.Handler
                 {
                     bool isIllegalCharacter = false;
 
-                    System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[\u4E00-\u9FA5a-zA-Z0-9ąáàâäãåçćéèêëęíìîïłńñóòôöõúùûüśźżýÿæœĄÁÀÂÄÃÅĆÇĘÉÈÊËÍÌÎÏŁŃÑÓÒÔÖÕÚÙÛÜŚŹŻÝŸÆŒ.¤*-|#²§µß™€=$^<>£!()&~{}@]*$`~");
+                    System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[\u4E00-\u9FA5a-zA-Z0-9ąáàâäãåçćéèêëęíìîïłńñóòôöõúùûüśźżýÿæœĄÁÀÂÄÃÅĆÇĘÉÈÊËÍÌÎÏŁŃÑÓÒÔÖÕÚÙÛÜŚŹŻÝŸÆŒ.¤*\-|#²§µß™€=$^<>£!()&~{}@]*$`~");
                     isIllegalCharacter = rg.IsMatch(characterName);
 
                     if (!isIllegalCharacter)
@@ -79,14 +79,11 @@ namespace OpenNos.Handler
                             {
                                 Class = (byte)ClassType.Adventurer,
                                 Gender = (Convert.ToByte(packetsplit[4]) >= 0 && Convert.ToByte(packetsplit[4]) <= 1 ? Convert.ToByte(packetsplit[4]) : Convert.ToByte(0)),
-                                Gold = 0,
                                 HairColor = Enum.IsDefined(typeof(HairColorType), Convert.ToByte(packetsplit[6])) ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0),
                                 HairStyle = Enum.IsDefined(typeof(HairStyleType), Convert.ToByte(packetsplit[5])) ? Convert.ToByte(packetsplit[5]) : Convert.ToByte(0),
                                 Hp = 221,
                                 JobLevel = 1,
-                                JobLevelXp = 0,
                                 Level = 1,
-                                LevelXp = 0,
                                 MapId = 1,
                                 MapX = (short)(random.Next(78, 81)),
                                 MapY = (short)(random.Next(114, 118)),
@@ -95,18 +92,6 @@ namespace OpenNos.Handler
                                 Slot = slot,
                                 AccountId = accountId,
                                 StateEnum = CharacterState.Active,
-                                WhisperBlocked = false,
-                                FamilyRequestBlocked = false,
-                                ExchangeBlocked = false,
-                                BuffBlocked = false,
-                                EmoticonsBlocked = false,
-                                FriendRequestBlocked = false,
-                                GroupRequestBlocked = false,
-                                MinilandInviteBlocked = false,
-                                HeroChatBlocked = false,
-                                QuickGetUp = false,
-                                MouseAimLock = false,
-                                HpBlocked = false,
                             };
 
                             SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
@@ -116,8 +101,6 @@ namespace OpenNos.Handler
                             QuicklistEntryDTO qlst1 = new QuicklistEntryDTO
                             {
                                 CharacterId = newCharacter.CharacterId,
-                                Q1 = 0,
-                                Q2 = 0,
                                 Type = 1,
                                 Slot = 1,
                                 Pos = 1
@@ -125,16 +108,12 @@ namespace OpenNos.Handler
                             QuicklistEntryDTO qlst2 = new QuicklistEntryDTO
                             {
                                 CharacterId = newCharacter.CharacterId,
-                                Q1 = 0,
                                 Q2 = 1,
-                                Type = 0,
                                 Slot = 2,
-                                Pos = 0
                             };
                             QuicklistEntryDTO qlst3 = new QuicklistEntryDTO
                             {
                                 CharacterId = newCharacter.CharacterId,
-                                Q1 = 0,
                                 Q2 = 8,
                                 Type = 1,
                                 Slot = 1,
@@ -143,7 +122,6 @@ namespace OpenNos.Handler
                             QuicklistEntryDTO qlst4 = new QuicklistEntryDTO
                             {
                                 CharacterId = newCharacter.CharacterId,
-                                Q1 = 0,
                                 Q2 = 9,
                                 Type = 1,
                                 Slot = 3,
@@ -191,7 +169,6 @@ namespace OpenNos.Handler
                             inventory = new ItemInstance() // snack
                             {
                                 CharacterId = newCharacter.CharacterId,
-                                Slot = 0,
                                 Type = InventoryType.Etc,
                                 Amount = 10,
                                 ItemVNum = 2024

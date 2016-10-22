@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject.Packets.ServerPackets
 {
-    [Header("u_s")]
+    [PacketHeader("u_s")]
     public class UseSkillPacket : PacketBase
     {
         #region Properties

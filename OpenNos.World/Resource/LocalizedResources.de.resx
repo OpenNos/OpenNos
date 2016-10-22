@@ -823,7 +823,7 @@
     <value>Der Skill existiert nicht.</value>
   </data>
   <data name="MONSTER_NOT_FOUND" xml:space="preserve">
-    <value />
+    <value>Das Monster konnte nicht gefunden werden.</value>
   </data>
   <data name="GIFTED" xml:space="preserve">
     <value />
@@ -842,5 +842,17 @@
   </data>
   <data name="ITEM_ACQUIRED_BY_THE_GIANT_MONSTER" xml:space="preserve">
     <value />
+  </data>
+  <data name="CORRUPT_PACKET" xml:space="preserve">
+    <value>Das empfangene Paket mit der Identifikation {0} hat ein falsches Format oder die dazugehörige Packet-Definition ist fehlerhaft. Inhalt: {1} </value>
+  </data>
+  <data name="ITEM_NOT_FOUND" xml:space="preserve">
+    <value>Gegenstand nicht gefunden!</value>
+  </data>
+  <data name="ADVENTURERS_CANT_USE" xml:space="preserve">
+    <value>Abenteurer können diesen Gegenstand nicht benutzen!</value>
+  </data>
+  <data name="DIGNITY_CHANGED" xml:space="preserve">
+    <value>Würge geändert!</value>
   </data>
 </root>

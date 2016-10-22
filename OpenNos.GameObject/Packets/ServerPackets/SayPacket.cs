@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.GameObject.Packets.ServerPackets
 {
-    [Header("say")]
+    [PacketHeader("say")]
     public class SayPacket : PacketBase
     {
         #region Properties

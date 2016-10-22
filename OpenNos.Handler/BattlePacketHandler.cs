@@ -110,7 +110,7 @@ namespace OpenNos.Handler
                             {
                                 CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == CastId);
                                 MapMonster mon = Session.CurrentMap.GetMonster(MapMonsterId);
-                                if (mon != null && ski != null)
+                                if (mon != null && ski != null && mon.CurrentHp > 0)
                                 {
                                     Session.Character.LastSkill = DateTime.Now;
                                     damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
@@ -189,7 +189,7 @@ namespace OpenNos.Handler
                         broadcastPackets.Add($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {ski.Skill.SkillType - 1}");
                         if (ski.Skill.TargetRange != 0)
                         {
-                            foreach (MapMonster mon in Session.CurrentMap.GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange))
+                            foreach (MapMonster mon in Session.CurrentMap.GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange).Where(s => s.CurrentHp > 0))
                             {
                                 mmon = Session.CurrentMap.GetMonster(mon.MapMonsterId);
                                 if (mmon != null)
@@ -268,7 +268,7 @@ namespace OpenNos.Handler
                                         if (ski.Skill.TargetRange != 0)
                                         {
                                             IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
-                                            foreach (MapMonster mon in monstersInAOERange)
+                                            foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
                                             {
                                                 damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
                                                 broadcastPackets.Add($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
@@ -1133,7 +1133,7 @@ namespace OpenNos.Handler
                         Session.CurrentMap?.Broadcast($"bs 1 {Session.Character.CharacterId} {x} {y} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} 0 0 1 1 0 0 0");
 
                         IEnumerable<MapMonster> monstersInRange = Session.CurrentMap.GetListMonsterInRange(x, y, ski.Skill.TargetRange).ToList();
-                        foreach (MapMonster mon in monstersInRange)
+                        foreach (MapMonster mon in monstersInRange.Where(s=>s.CurrentHp > 0))
                         {
                             damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
                             Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {x} {y} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");

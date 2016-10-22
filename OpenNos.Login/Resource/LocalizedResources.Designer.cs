@@ -133,6 +133,15 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1} .
+        /// </summary>
+        internal static string CORRUPT_PACKET {
+            get {
+                return ResourceManager.GetString("CORRUPT_PACKET", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Database has been initialized!.
         /// </summary>
         internal static string DATABASE_INITIALIZED {

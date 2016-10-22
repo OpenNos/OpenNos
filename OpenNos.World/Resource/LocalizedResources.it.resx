@@ -993,4 +993,7 @@
   <data name="SP_RESURRECTED" xml:space="preserve">
     <value>L'anima della SP ha ripreso vita!</value>
   </data>
+  <data name="CORRUPT_PACKET" xml:space="preserve">
+    <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
+  </data>
 </root>
