@@ -21,23 +21,11 @@ We do not provide any modified client files. The alorithms are based on our logi
 ##1. Install SSDT For Visual Studio##
 http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409
 
-##2. Install MySQL##
-http://dev.mysql.com/downloads/windows/installer/
-
-Installer Packages:
-- Custom Installation
-  - MySQL Server x64 (Database Server)
-  - MySQL Workbench x64 (Data Edtiting)
-  - MySQL Notifier x86 (Taskbar Icon Status)
-  - MySQL for Visual Studio x86
-  - Connector/NET x86 (according to our test theres a issue with 6.9.9 version please use [6.9.8 instead](https://downloads.mysql.com/archives/get/file/mysql-connector-net-6.9.8.msi))
-  
-- Port: 3306
-- User: test
-- Password: test
+##2. Install or Configure Microsoft SQL Server 2016 (at least Developer Edition)
+Detailed information will follow.
 
 ##3. Use the NuGet Package Manager to Update the Database##
 
 - Go to Tools -> NuGet Package Manager -> Package Manager Console
-- Choose Project OpenNos.DAL.EF.MySQL
+- Choose Project OpenNos.DAL.EF
 - Type 'update-database' and update the Database
