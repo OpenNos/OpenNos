@@ -51,8 +51,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="Collections\ConcurrentQueueExtensions.cs" />
-    <Compile Include="Collections\ThreadSafeSortedList.cs" />
+    <Compile Include="Handling\HandlerMethodReference.cs" />
+    <Compile Include="Handling\IPacketHandler.cs" />
+    <Compile Include="Threading\ConcurrentQueueExtensions.cs" />
+    <Compile Include="Threading\ThreadSafeSortedList.cs" />
     <Compile Include="DelegateBuilder.cs" />
     <Compile Include="LoginEncryption.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\IScsServiceClient.cs" />

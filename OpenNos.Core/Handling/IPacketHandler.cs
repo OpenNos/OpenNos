@@ -12,9 +12,7 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.Handler
+namespace OpenNos.Core
 {
-    public interface IPacketHandler
-    {
-    }
+    public interface IPacketHandler { }
 }
