@@ -127,7 +127,8 @@ namespace OpenNos.Handler
                         Reason = reason,
                         Penalty = PenaltyType.Banned,
                         DateStart = DateTime.Now,
-                        DateEnd = duration == 0 ? DateTime.Now.AddYears(15) : DateTime.Now.AddDays(duration)
+                        DateEnd = duration == 0 ? DateTime.Now.AddYears(15) : DateTime.Now.AddDays(duration),
+                        AdminName = Session.Character.Name
                     });
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
@@ -873,7 +874,8 @@ namespace OpenNos.Handler
                             Reason = reason,
                             Penalty = PenaltyType.Muted,
                             DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddHours(duration)
+                            DateEnd = DateTime.Now.AddHours(duration),
+                            AdminName = Session.Character.Name
                         });
                         if (duration == 1)
                         {
@@ -893,7 +895,8 @@ namespace OpenNos.Handler
                             Reason = reason,
                             Penalty = PenaltyType.Muted,
                             DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddHours(duration)
+                            DateEnd = DateTime.Now.AddHours(duration),
+                            AdminName = Session.Character.Name
                         });
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
