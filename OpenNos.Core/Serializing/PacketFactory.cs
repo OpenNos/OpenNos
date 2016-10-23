@@ -23,6 +23,13 @@ namespace OpenNos.Core
 
         #region Methods
 
+        /// <summary>
+        /// Deserializes a string into a PacketBase
+        /// </summary>
+        /// <param name="packetContent">The content to deseralize</param>
+        /// <param name="packetType">The type of the packet to deserialize to</param>
+        /// <param name="includesKeepAliveIdentity">Include the keep alive identity or exclude it</param>
+        /// <returns>The deserialized packet.</returns>
         public static object Deserialize(string packetContent, Type packetType, bool includesKeepAliveIdentity = false)
         {
             try
@@ -30,7 +37,7 @@ namespace OpenNos.Core
                 var serializationInformation = GetSerializationInformation(packetType);
                 object deserializedPacket = Activator.CreateInstance(packetType); // reflection is bad, improve?
 
-                deserializedPacket = Serialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
+                deserializedPacket = Deserialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
 
                 return deserializedPacket;
             }
@@ -41,6 +48,12 @@ namespace OpenNos.Core
             }
         }
 
+        /// <summary>
+        /// Deserializes a string into a PacketBase
+        /// </summary>
+        /// <param name="packetContent">The content to deseralize</param>
+        /// <param name="includesKeepAliveIdentity">Include the keep alive identity or exclude it</param>
+        /// <returns>The deserialized packet.</returns>
         public static TPacket Deserialize<TPacket>(string packetContent, bool includesKeepAliveIdentity = false)
             where TPacket : PacketBase
         {
@@ -49,7 +62,7 @@ namespace OpenNos.Core
                 var serializationInformation = GetSerializationInformation(typeof(TPacket));
                 TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); // reflection is bad, improve?
 
-                deserializedPacket = (TPacket)Serialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
+                deserializedPacket = (TPacket)Deserialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
 
                 return deserializedPacket;
             }
@@ -60,6 +73,10 @@ namespace OpenNos.Core
             }
         }
 
+        /// <summary>
+        /// Initializes the PacketFactory and generates the serialization informations based on the given BaseType.
+        /// </summary>
+        /// <typeparam name="TBaseType">The BaseType to generate serialization informations</typeparam>
         public static void Initialize<TBaseType>()
                     where TBaseType : PacketBase
         {
@@ -70,6 +87,12 @@ namespace OpenNos.Core
             }
         }
 
+        /// <summary>
+        /// Serializes a PacketBase to string.
+        /// </summary>
+        /// <typeparam name="TPacket">The type of the PacketBase</typeparam>
+        /// <param name="packet">The object reference of the PacketBase</param>
+        /// <returns>The serialized string.</returns>
         public static string Serialize<TPacket>(TPacket packet)
                                     where TPacket : PacketBase
         {
@@ -96,6 +119,13 @@ namespace OpenNos.Core
 
                     // add value for current configuration
                     deserializedPacket += DeserializeValue(packetBasePropertyInfo.Value.PropertyType, packetBasePropertyInfo.Value.GetValue(packet), packetBasePropertyInfo.Key);
+
+                    //check if the value should be serialized to end
+                    if (packetBasePropertyInfo.Key.SerializeToEnd)
+                    {
+                        //we reached the end
+                        break;
+                    }
 
                     // set new index
                     lastIndex = packetBasePropertyInfo.Key.Index;
@@ -263,7 +293,7 @@ namespace OpenNos.Core
                                               : GenerateSerializationInformations(serializationType); // generic runtime serialization parameter generation
         }
 
-        private static object Serialize(string packetContent, object deserializedPacket, KeyValuePair<Tuple<Type, String>,
+        private static object Deserialize(string packetContent, object deserializedPacket, KeyValuePair<Tuple<Type, String>,
                                                                             Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformation, bool includesKeepAliveIdentity)
         {
             MatchCollection matches = Regex.Matches(packetContent, @"([^\s]+[\.][^\s]+[\s]?)+((?=\s)|$)|([^\s]+)((?=\s)|$)");
@@ -276,6 +306,14 @@ namespace OpenNos.Core
 
                     if (currentIndex < matches.Count)
                     {
+                        if(packetBasePropertyInfo.Key.SerializeToEnd)
+                        {
+                            //get the value to the end and stop deserialization
+                            string valueToEnd = packetContent.Substring(matches[currentIndex].Index, packetContent.Length - matches[currentIndex].Index);
+                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, SerializeValue(packetBasePropertyInfo.Value.PropertyType, valueToEnd, packetBasePropertyInfo.Key));
+                            break;
+                        }
+
                         string currentValue = matches[currentIndex].Value;
 
                         // set the value & convert currentValue

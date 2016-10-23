@@ -13,5 +13,8 @@ namespace OpenNos.GameObject
 
         [PacketIndex(1, true)]
         public TAnswerNoPacket AnswerNoReturnPacket { get; set; }
+
+        [PacketIndex(2, SerializeToEnd = true)]
+        public string DialogText { get; set; }
     }
 }
