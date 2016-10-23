@@ -126,7 +126,7 @@ namespace OpenNos.GameObject.Mock
         /// <param name="packet">Packet created thru PacketFactory.</param>
         public void ReceivePacket(PacketBase packet)
         {
-            ReceivePacket(PacketFactory.Deserialize(packet));
+            ReceivePacket(PacketFactory.Serialize(packet));
         }
 
         public void SendPacket(string packet, byte priority = 10)

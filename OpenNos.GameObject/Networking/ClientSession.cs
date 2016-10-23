@@ -541,7 +541,7 @@ namespace OpenNos.GameObject
                             // call actual handler method
                             if(methodReference.PacketBaseParameterType != null)
                             {
-                                object serializedPacket = PacketFactory.Serialize(packet, methodReference.PacketBaseParameterType, true);
+                                object serializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketBaseParameterType, true);
 
                                 if(serializedPacket != null)
                                 {

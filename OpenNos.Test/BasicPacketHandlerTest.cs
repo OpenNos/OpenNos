@@ -23,7 +23,7 @@ namespace OpenNos.Test
             client.ReceivePacket(walkPacket);
 
             string mvPacket = HandlerTestHelper.WaitForPacket(client, "mv");
-            MovePacket movePacket = PacketFactory.Serialize<MovePacket>(mvPacket);
+            MovePacket movePacket = PacketFactory.Deserialize<MovePacket>(mvPacket);
 
             Assert.AreEqual(walkPacket.XCoordinate, movePacket.MapX);
             Assert.AreEqual(walkPacket.YCoordinate, movePacket.MapY);

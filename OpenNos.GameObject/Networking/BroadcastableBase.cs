@@ -94,7 +94,7 @@ namespace OpenNos.GameObject
 
         public void Broadcast(ClientSession client, PacketBase packet, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
         {
-            Broadcast(client, PacketFactory.Deserialize(packet), receiver, characterName, characterId, delay);
+            Broadcast(client, PacketFactory.Serialize(packet), receiver, characterName, characterId, delay);
         }
 
         public void Broadcast(ClientSession client, string[] packets, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)

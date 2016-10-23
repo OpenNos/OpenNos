@@ -279,7 +279,7 @@ namespace OpenNos.Handler
         public void ExchangeRequest(string deserializedPacket)
         {
             Logger.Debug(deserializedPacket, Session.SessionId);
-            ExchangeRequestPacket packet = PacketFactory.Serialize<ExchangeRequestPacket>(deserializedPacket, true);
+            ExchangeRequestPacket packet = PacketFactory.Deserialize<ExchangeRequestPacket>(deserializedPacket, true);
             if (packet != null)
             {
                 switch (packet.RequestType)

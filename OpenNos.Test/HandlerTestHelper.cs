@@ -81,7 +81,7 @@ namespace OpenNos.Test
             client.ReceivePacket("Char_NEW Test 2 1 0 9");
 
             List<string> clistAfterCreate = WaitForPackets(client, 3);
-            CListPacket cListPacket = PacketFactory.Serialize<CListPacket>(clistAfterCreate[1]);
+            CListPacket cListPacket = PacketFactory.Deserialize<CListPacket>(clistAfterCreate[1]);
 
             // select character
             client.ReceivePacket($"select {cListPacket.Slot}");

@@ -361,7 +361,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
 
             // serialization hack -> dialog answer packet isnt supported by PacketFactory atm
-            PJoinPacket pjoinPacket = PacketFactory.Serialize<PJoinPacket>(packet.Replace('^', ' ').Replace('#', ' '), true);
+            PJoinPacket pjoinPacket = PacketFactory.Deserialize<PJoinPacket>(packet.Replace('^', ' ').Replace('#', ' '), true);
             bool createNewGroup = true;
 
             if (pjoinPacket != null)
