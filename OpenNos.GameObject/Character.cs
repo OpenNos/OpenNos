@@ -864,7 +864,8 @@ namespace OpenNos.GameObject
 
         public string GenerateGp(PortalDTO portal)
         {
-            return $"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {ServerManager.GetMap(MapId).Portals.Count} {(portal.IsDisabled ? 1 : 0)}";
+            List<PortalDTO> portalList = ServerManager.GetMap(MapId).Portals;
+            return $"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {portalList.Count} {(portalList.Contains(portal) ? (portal.IsDisabled  ? 1 : 0) : 1)}";
         }
 
         public string GenerateGuri(byte type, byte argument, int value = 0)

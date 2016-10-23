@@ -1103,7 +1103,7 @@ namespace OpenNos.Handler
             {
                 Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
                 Session.CurrentMap.Portals.Remove(pt);
-                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                ServerManager.Instance.Broadcast(Session.Character.GenerateGp(pt));
             }
             else
             {
