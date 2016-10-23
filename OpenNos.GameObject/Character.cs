@@ -2182,22 +2182,28 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SendGift(long id, short vnum, byte amount, sbyte Rare, byte Upgrade, bool isNosmall)
+        public void SendGift(long id, short vnum, byte amount, sbyte rare, byte upgrade, bool isNosmall)
         {
             Item it = ServerManager.GetItem((short)vnum);
             int color = HairColor;
             if (it.ItemType != ItemType.Weapon && it.ItemType != ItemType.Armor)
             {
-                Rare = 0;
-                Upgrade = 0;
+                rare = 0;
+                upgrade = 0;
             }
-            if (Rare > 8 || Rare < -2)
+            if (rare > 8 || rare < -2)
             {
-                Rare = 0;
+                rare = 0;
             }
-            if (Upgrade < 0 || Upgrade > 10)
+            if (upgrade < 0 || upgrade > 10)
             {
-                Upgrade = 0;
+                upgrade = 0;
+            }
+            
+            //maximum size of the amount is 99
+            if(amount > 99)
+            {
+                amount = 99;
             }
 
             MailDTO mail = new MailDTO()
@@ -2207,8 +2213,8 @@ namespace OpenNos.GameObject
                 Date = DateTime.Now,
                 ReceiverId = id,
                 SenderId = id,
-                AttachmentRarity = (byte)Rare,
-                AttachmentUpgrade = Upgrade,
+                AttachmentRarity = (byte)rare,
+                AttachmentUpgrade = upgrade,
                 IsSenderCopy = false,
                 Title = isNosmall ? "NOSMALL" : "NOSTALE",
                 AttachmentVNum = vnum,

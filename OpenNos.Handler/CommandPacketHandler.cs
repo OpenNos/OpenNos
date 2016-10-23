@@ -574,22 +574,22 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             byte amount;
             short vnum = -1;
-            sbyte Rare = 0;
-            byte Upgrade = 0;
+            sbyte rare = 0;
+            byte upgrade = 0;
             if (packetsplit.Length > 5)
             {
                 if (packetsplit.Length == 6)
                 {
-                    if (!(byte.TryParse(packetsplit[3], out amount) && short.TryParse(packetsplit[2], out vnum) && sbyte.TryParse(packetsplit[4], out Rare) && byte.TryParse(packetsplit[5], out Upgrade)))
+                    if (!(byte.TryParse(packetsplit[3], out amount) && short.TryParse(packetsplit[2], out vnum) && sbyte.TryParse(packetsplit[4], out rare) && byte.TryParse(packetsplit[5], out upgrade)))
                     {
                         return;
                     }
-                    Session.Character.SendGift(Session.Character.CharacterId, vnum, amount, Rare, Upgrade, false);
+                    Session.Character.SendGift(Session.Character.CharacterId, vnum, amount, rare, upgrade, false);
                 }
                 else if (packetsplit.Length == 7)
                 {
                     string name = packetsplit[2];
-                    if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum) && sbyte.TryParse(packetsplit[5], out Rare) && byte.TryParse(packetsplit[6], out Upgrade)))
+                    if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum) && sbyte.TryParse(packetsplit[5], out rare) && byte.TryParse(packetsplit[6], out upgrade)))
                     {
                         return;
                     }
@@ -597,7 +597,7 @@ namespace OpenNos.Handler
                     {
                         foreach (ClientSession session in Session.CurrentMap.Sessions)
                         {
-                            Session.Character.SendGift((session.Character.CharacterId), vnum, amount, Rare, Upgrade, false);
+                            Session.Character.SendGift((session.Character.CharacterId), vnum, amount, rare, upgrade, false);
                         }
                     }
                     else
@@ -606,7 +606,7 @@ namespace OpenNos.Handler
 
                         if (chara != null)
                         {
-                            Session.Character.SendGift((chara.CharacterId), vnum, amount, Rare, Upgrade, false);
+                            Session.Character.SendGift((chara.CharacterId), vnum, amount, rare, upgrade, false);
                         }
                         else
                         {
