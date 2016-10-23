@@ -2,12 +2,15 @@
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
     public class NpcMonsterSkillDAO : INpcMonsterSkillDAO
     {
         #region Methods
+
+        private IList<NpcMonsterSkillDTO> _mockContainer = new List<NpcMonsterSkillDTO>();
 
         public void Insert(List<NpcMonsterSkillDTO> skills)
         {
@@ -21,7 +24,7 @@ namespace OpenNos.DAL.Mock
 
         public List<NpcMonsterSkillDTO> LoadAll()
         {
-            throw new NotImplementedException();
+            return _mockContainer.ToList();
         }
 
         public IEnumerable<NpcMonsterSkillDTO> LoadByNpcMonster(short npcId)

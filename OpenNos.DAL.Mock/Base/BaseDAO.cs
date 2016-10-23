@@ -44,7 +44,7 @@ namespace OpenNos.DAL.Mock
             }
         }
 
-        public TDTO Insert(TDTO dto)
+        public virtual TDTO Insert(TDTO dto)
         {
             Container.Add(dto);
             return dto;

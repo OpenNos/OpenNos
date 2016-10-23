@@ -52,6 +52,10 @@
       <Project>{C93A0A40-0551-4732-B594-171B87679AC1}</Project>
       <Name>OpenNos.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.GameObject\OpenNos.GameObject.csproj">
+      <Project>{EADD17BE-20A4-4589-830E-E41BE9314928}</Project>
+      <Name>OpenNos.GameObject</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(ProgramFiles)\MSBuild\StyleCop\v4.7\StyleCop.targets" />

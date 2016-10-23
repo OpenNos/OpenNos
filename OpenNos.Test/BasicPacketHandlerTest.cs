@@ -1,17 +1,27 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using OpenNos.Core;
+using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Mock;
 using OpenNos.GameObject.Packets.ServerPackets;
 
 namespace OpenNos.Test
 {
-    [TestClass]
+    [TestFixture]
     public class BasicPacketHandlerTest
     {
         #region Methods
 
-        [TestMethod]
+        //[Test]
+        public void InitializeTestEnvironmentTest()
+        {
+            // login, create character, start game
+            FakeNetworkClient client = HandlerTestHelper.InitializeTestEnvironment();
+            HandlerTestHelper.ShutdownTestingEnvironment();
+            Assert.Pass();
+        }
+
+        [Test, MaxTime(10000)]
         public void TestWalkMove()
         {
             // login, create character, start game
@@ -30,6 +40,24 @@ namespace OpenNos.Test
             Assert.AreEqual(walkPacket.Speed, movePacket.Speed);
 
             HandlerTestHelper.ShutdownTestingEnvironment();
+            Assert.Pass();
+        }
+
+        [Test, MaxTime(10000)]
+        public void TestCharacterOption()
+        {
+            // login, create character, start game
+            FakeNetworkClient client = HandlerTestHelper.InitializeTestEnvironment();
+
+            CharacterOptionPacket optionPacket = new CharacterOptionPacket() { IsActive = false, Option = CharacterOption.FamilyRequestBlocked };
+
+            //check family request
+            client.ReceivePacket(optionPacket);
+            string msgPacket = HandlerTestHelper.WaitForPacket(client, "msg");
+            Assert.IsTrue(client.Session.Character.FamilyRequestBlocked);
+
+            HandlerTestHelper.ShutdownTestingEnvironment();
+            Assert.Pass();
         }
 
         #endregion

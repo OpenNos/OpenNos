@@ -72,6 +72,12 @@ namespace OpenNos.DAL.Mock
             return Container.SingleOrDefault(c => c.AccountId == accountId && c.Slot == slot);
         }
 
+        public override CharacterDTO Insert(CharacterDTO dto)
+        {
+            dto.CharacterId = Container.Any() ? Container.Max(c => c.CharacterId) + 1 : 1;
+            return base.Insert(dto);
+        }
+
         #endregion
     }
-}
+} 

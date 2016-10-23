@@ -25,6 +25,7 @@ namespace OpenNos.Core
         #region Members
 
         private EncryptionBase _encryptor;
+        private object _session;
 
         #endregion
 
@@ -88,6 +89,11 @@ namespace OpenNos.Core
             {
                 SendPacket(packet, priority);
             }
+        }
+
+        public void SetClientSession(object clientSession)
+        {
+            _session = clientSession;
         }
 
         #endregion

@@ -37,6 +37,7 @@ namespace OpenNos.GameObject
             Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + customClient.ClientId);
 
             ClientSession session = IntializeNewSession(customClient);
+            customClient.SetClientSession(session);
 
             if (session != null && IsWorldServer)
             {
@@ -91,7 +92,9 @@ namespace OpenNos.GameObject
 
         protected virtual ClientSession IntializeNewSession(INetworkClient client)
         {
-            return new ClientSession(client);
+            ClientSession session = new ClientSession(client);
+            client.SetClientSession(session);
+            return session;
         }
 
         #endregion

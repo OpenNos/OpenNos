@@ -1,4 +1,5 @@
 ﻿using log4net;
+using NUnit.Framework;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -9,7 +10,9 @@ using OpenNos.Handler;
 using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OpenNos.Test
 {
@@ -92,6 +95,9 @@ namespace OpenNos.Test
             List<string> gameStartPacketsFirstPart = WaitForPackets(client, "p_clear");
             List<string> gameStartPacketsSecondPart = WaitForPackets(client, "p_clear");
 
+            //wait 100 milliseconds to be sure initialization has been finished
+            Task.Delay(100);
+
             return client;
         }
 
@@ -104,9 +110,11 @@ namespace OpenNos.Test
         {
             while (true)
             {
-                if (client.SentPackets.Any())
+                if (client.SentPackets.Count > 0)
                 {
-                    return client.SentPackets.Dequeue();
+                    string packet = client.SentPackets.Dequeue();
+                    Debug.WriteLine($"Dequeued {packet}");
+                    return packet;
                 }
             }
         }
@@ -115,9 +123,10 @@ namespace OpenNos.Test
         {
             while (true)
             {
-                if (client.SentPackets.Any())
+                if (client.SentPackets.Count > 0)
                 {
                     string packet = client.SentPackets.Dequeue();
+                    Debug.WriteLine($"Dequeued {packet}");
                     if (packet != null && packet.StartsWith(packetHeader))
                     {
                         return packet;
@@ -132,7 +141,7 @@ namespace OpenNos.Test
             List<string> packets = new List<string>();
             while (receivedPackets < amount)
             {
-                if (client.SentPackets.Any())
+                if (client.SentPackets.Count > 0)
                 {
                     packets.Add(client.SentPackets.Dequeue());
                     receivedPackets++;
@@ -149,7 +158,7 @@ namespace OpenNos.Test
 
             while (true)
             {
-                if (client.SentPackets.Any())
+                if (client.SentPackets.Count > 0)
                 {
                     string packet = client.SentPackets.Dequeue();
                     if (packet != null)
@@ -217,7 +226,7 @@ namespace OpenNos.Test
                 for (int j = 0; j < 100; j++)
                 {
                     // we can go everywhere
-                    mapData.Add(1);
+                    mapData.Add(0);
                 }
             }
             testingMap.Data = mapData.ToArray();

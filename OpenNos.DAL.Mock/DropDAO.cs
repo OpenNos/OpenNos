@@ -2,12 +2,15 @@
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
     public class DropDAO : IDropDAO
     {
         #region Methods
+
+        private IList<DropDTO> _mockContainer = new List<DropDTO>();
 
         public void Insert(List<DropDTO> drops)
         {
@@ -21,7 +24,7 @@ namespace OpenNos.DAL.Mock
 
         public List<DropDTO> LoadAll()
         {
-            throw new NotImplementedException();
+            return _mockContainer.ToList();
         }
 
         public IEnumerable<DropDTO> LoadByMonster(short monsterVNum)

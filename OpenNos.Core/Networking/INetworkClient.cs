@@ -39,6 +39,8 @@ namespace OpenNos.Core
 
         Task ClearLowpriorityQueue();
 
+        void SetClientSession(object clientSession);
+
         #endregion
     }
 }

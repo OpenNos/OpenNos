@@ -52,7 +52,9 @@
   <ItemGroup>
     <Compile Include="Application.cs" />
     <Compile Include="Handling\HandlerMethodReference.cs" />
+    <Compile Include="Networking\INetworkClient.cs" />
     <Compile Include="Handling\IPacketHandler.cs" />
+    <Compile Include="Networking\NetworkClient.cs" />
     <Compile Include="Threading\ConcurrentQueueExtensions.cs" />
     <Compile Include="Threading\ThreadSafeSortedList.cs" />
     <Compile Include="DelegateBuilder.cs" />
@@ -117,8 +119,6 @@
     <Compile Include="Networking\Communication\Scs\Server\ScsServerManager.cs" />
     <Compile Include="Networking\Communication\Scs\Server\ServerClientEventArgs.cs" />
     <Compile Include="Networking\Communication\Scs\Server\Tcp\ScsTcpServer.cs" />
-    <Compile Include="Networking\INetworkClient.cs" />
-    <Compile Include="Networking\NetworkClient.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="EncryptionBase.cs" />
     <Compile Include="Logger.cs" />

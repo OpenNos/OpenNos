@@ -1,7 +1,9 @@
 ﻿using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +18,7 @@ namespace OpenNos.GameObject.Mock
         private Queue<string> _receivedPackets;
         private Queue<string> _sentPackets;
         private long lastKeepAliveIdentitiy;
+        private ClientSession _clientSession;
 
         #endregion
 
@@ -27,6 +30,7 @@ namespace OpenNos.GameObject.Mock
             _sentPackets = new Queue<string>();
             _receivedPackets = new Queue<string>();
             lastKeepAliveIdentitiy = 1;
+            _isConnected = true;
         }
 
         #endregion
@@ -57,6 +61,14 @@ namespace OpenNos.GameObject.Mock
                 {
                     _clientId = value;
                 }
+            }
+        }
+
+        public ClientSession Session
+        {
+            get
+            {
+                return GetClientSession();
             }
         }
 
@@ -114,6 +126,7 @@ namespace OpenNos.GameObject.Mock
         /// <param name="packet"></param>
         public void ReceivePacket(string packet)
         {
+            Debug.WriteLine($"Enqueued {packet}");
             UTF8Encoding encoding = new UTF8Encoding();
             byte[] buf = encoding.GetBytes(String.Format("{0} {1}", lastKeepAliveIdentitiy, packet));
             MessageReceived?.Invoke(this, new MessageEventArgs(new ScsRawDataMessage(buf), DateTime.Now));
@@ -150,6 +163,16 @@ namespace OpenNos.GameObject.Mock
         public async Task ClearLowpriorityQueue()
         {
             // nothing to do here
+        }
+
+        public ClientSession GetClientSession()
+        {
+            return _clientSession;
+        }
+
+        public void SetClientSession(object clientSession)
+        {
+            _clientSession = (ClientSession)clientSession;
         }
 
         #endregion

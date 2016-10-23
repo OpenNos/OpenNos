@@ -62,7 +62,10 @@ namespace OpenNos.DAL.Mock
         public void RegisterMapping(Type gameObjectType)
         {
             Type itemInstanceType = typeof(ItemInstanceDTO);
-            itemInstanceMappings.Add(gameObjectType, itemInstanceType);
+            if(!itemInstanceMappings.ContainsKey(gameObjectType))
+            {
+                itemInstanceMappings.Add(gameObjectType, itemInstanceType);
+            }
         }
 
         public DeleteResult DeleteFromSlotAndType(long characterId, short slot, InventoryType type)
