@@ -306,7 +306,7 @@ namespace OpenNos.Core
 
                     if (currentIndex < matches.Count)
                     {
-                        if(packetBasePropertyInfo.Key.SerializeToEnd)
+                        if (packetBasePropertyInfo.Key.SerializeToEnd)
                         {
                             //get the value to the end and stop deserialization
                             string valueToEnd = packetContent.Substring(matches[currentIndex].Index, packetContent.Length - matches[currentIndex].Index);
