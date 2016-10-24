@@ -275,7 +275,7 @@ namespace OpenNos.GameObject
         }
 
         // Both partly
-        public void ChangeMap(long id)
+        public void ChangeMap(long id, short? mapId = null, short? mapX = null, short? mapY = null)
         {
             ClientSession session = GetSessionByCharacterId(id);
             if (session != null && session.Character != null && !session.Character.IsChangingMap)
@@ -293,6 +293,12 @@ namespace OpenNos.GameObject
 
                     //avoid cleaning new portals
                     Task.Delay(100);
+                    if(mapId != null || mapX != null || mapY != null)
+                    {
+                        session.Character.MapId = (short)mapId;
+                        session.Character.MapX = (short)mapX;
+                        session.Character.MapY = (short)mapY;
+                    }
 
                     session.CurrentMap = GetMap(session.Character.MapId);
                     session.CurrentMap.RegisterSession(session);
@@ -778,12 +784,9 @@ namespace OpenNos.GameObject
             if (session != null && session.Character.Hp <= 0)
             {
                 MapOut(session.Character.CharacterId);
-                session.Character.MapId = 1;
-                session.Character.MapX = 80;
-                session.Character.MapY = 116;
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
-                ChangeMap(session.Character.CharacterId);
+                ChangeMap(session.Character.CharacterId, 1, 80, 116);
                 session.CurrentMap?.Broadcast(session, session.Character.GenerateTp(), ReceiverType.All);
                 session.CurrentMap?.Broadcast(session.Character.GenerateRevive(), 200);
                 session.SendPacket(session.Character.GenerateStat());

@@ -115,10 +115,7 @@ namespace OpenNos.GameObject
                                 ServerManager.Instance.MapOut(Session.Character.CharacterId);
                                 Session.Character.Gold -= 1000 * type;
                                 Session.SendPacket(Session.Character.GenerateGold());
-                                Session.Character.MapY = tp.MapY;
-                                Session.Character.MapX = tp.MapX;
-                                Session.Character.MapId = tp.MapId;
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
                             else
                             {
@@ -138,11 +135,7 @@ namespace OpenNos.GameObject
                             {
                                 ServerManager.Instance.MapOut(Session.Character.CharacterId);
                                 Session.Character.Gold -= 5000 * type;
-                                Session.SendPacket(Session.Character.GenerateGold());
-                                Session.Character.MapY = tp.MapY;
-                                Session.Character.MapX = tp.MapX;
-                                Session.Character.MapId = tp.MapId;
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
                             else
                             {
@@ -163,10 +156,7 @@ namespace OpenNos.GameObject
                                 ServerManager.Instance.MapOut(Session.Character.CharacterId);
                                 Session.Character.Gold -= 500;
                                 Session.SendPacket(Session.Character.GenerateGold());
-                                Session.Character.MapY = tp.MapY;
-                                Session.Character.MapX = tp.MapX;
-                                Session.Character.MapId = tp.MapId;
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
                             else
                             {
@@ -183,10 +173,7 @@ namespace OpenNos.GameObject
                         if (tp != null)
                         {
                             ServerManager.Instance.MapOut(Session.Character.CharacterId);
-                            Session.Character.MapY = tp.MapY;
-                            Session.Character.MapX = tp.MapX;
-                            Session.Character.MapId = tp.MapId;
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
                     break;
@@ -198,10 +185,7 @@ namespace OpenNos.GameObject
                         if (tp != null)
                         {
                             ServerManager.Instance.MapOut(Session.Character.CharacterId);
-                            Session.Character.MapY = tp.MapY;
-                            Session.Character.MapX = tp.MapX;
-                            Session.Character.MapId = tp.MapId;
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
                     break;
@@ -214,10 +198,7 @@ namespace OpenNos.GameObject
                         {
                             Session.SendPacket("it 3");
                             ServerManager.Instance.MapOut(Session.Character.CharacterId);
-                            Session.Character.MapY = tp.MapY;
-                            Session.Character.MapX = tp.MapX;
-                            Session.Character.MapId = tp.MapId;
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
                     break;
@@ -229,10 +210,7 @@ namespace OpenNos.GameObject
                         if (tp != null)
                         {
                             ServerManager.Instance.MapOut(Session.Character.CharacterId);
-                            Session.Character.MapY = tp.MapY;
-                            Session.Character.MapX = tp.MapX;
-                            Session.Character.MapId = tp.MapId;
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
                     break;

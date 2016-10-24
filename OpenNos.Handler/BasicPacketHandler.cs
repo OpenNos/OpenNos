@@ -682,13 +682,8 @@ namespace OpenNos.Handler
                             return;
                     }
                     ServerManager.Instance.MapOut(Session.Character.CharacterId);
-
-                    Session.Character.MapId = portal.DestinationMapId;
-                    Session.Character.MapX = portal.DestinationX;
-                    Session.Character.MapY = portal.DestinationY;
                     Session.Character.LastPortal = currentRunningSeconds;
-
-                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, portal.DestinationMapId, portal.DestinationX, portal.DestinationY);
                     break;
                 }
             }

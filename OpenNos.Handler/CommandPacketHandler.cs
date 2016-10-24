@@ -1434,7 +1434,7 @@ namespace OpenNos.Handler
                         Session.Character.MapId = (short)mapId;
                         Session.Character.MapX = (short)((short)(mapx) + 1);
                         Session.Character.MapY = (short)((short)(mapy) + 1);
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, (short)mapId, (short)((short)(mapx) + 1), (short)((short)(mapy) + 1));
                     }
                     else
                     {
@@ -1446,10 +1446,7 @@ namespace OpenNos.Handler
                     if (verify)
                     {
                         ServerManager.Instance.MapOut(Session.Character.CharacterId);
-                        Session.Character.MapId = arg[0];
-                        Session.Character.MapX = arg[1];
-                        Session.Character.MapY = arg[2];
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, arg[0], arg[1], arg[2]);
                     }
                     break;
 
@@ -1487,18 +1484,18 @@ namespace OpenNos.Handler
                             }
                         }
 
+                        short mapXPossibility = Session.Character.MapX;
+                        short mapYPossibility = Session.Character.MapY;
                         foreach (MapCell possibility in possibilities.OrderBy(s => random.Next()))
                         {
-                            session.Character.MapX = (short)(Session.Character.MapX + possibility.X);
-                            session.Character.MapY = (short)(Session.Character.MapY + possibility.Y);
-                            if (!Session.CurrentMap.IsBlockedZone(session.Character.MapX, session.Character.MapY))
+                            mapXPossibility = (short)(Session.Character.MapX + possibility.X);
+                            mapYPossibility = (short)(Session.Character.MapY + possibility.Y);
+                            if (!Session.CurrentMap.IsBlockedZone(mapXPossibility, mapYPossibility))
                             {
                                 break;
                             }
                         }
-
-                        session.Character.MapId = Session.Character.MapId;
-                        ServerManager.Instance.ChangeMap(session.Character.CharacterId);
+                        ServerManager.Instance.ChangeMap(session.Character.CharacterId, Session.Character.MapId, mapXPossibility, mapYPossibility);
                     }
                 }
                 else
@@ -1509,10 +1506,7 @@ namespace OpenNos.Handler
                     {
                         ServerManager.Instance.MapOut((long)id);
                         ServerManager.Instance.SetProperty((long)id, nameof(Character.IsSitting), false);
-                        ServerManager.Instance.SetProperty((long)id, nameof(Character.MapId), Session.Character.MapId);
-                        ServerManager.Instance.SetProperty((long)id, nameof(Character.MapX), (short)((Session.Character.MapX) + (short)1));
-                        ServerManager.Instance.SetProperty((long)id, nameof(Character.MapY), (short)((Session.Character.MapY) + (short)1));
-                        ServerManager.Instance.ChangeMap((long)id);
+                        ServerManager.Instance.ChangeMap((long)id, Session.Character.MapId, (short)((Session.Character.MapX) + (short)1), (short)((Session.Character.MapY) + (short)1));
                     }
                     else
                     {
