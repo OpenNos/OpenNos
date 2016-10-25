@@ -118,10 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ALREADY_CONNECTED" xml:space="preserve">
-    <value>ไม่สามารถเชื่อมต่อกับ Server เนื่องจากมีการเชื่อมต่อ ID นี้ไว้อยู่แล้ว</value>
+    <value>Account is already connected.</value>
+    <comment>ไม่สามารถเชื่อมต่อกับ Server เนื่องจากมีการเชื่อมต่อ ID นี้ไว้อยู่แล้ว</comment>
   </data>
   <data name="BANNED" xml:space="preserve">
-    <value>ID ถูกระงับ กรุณาติดต่อทีมงาน</value>
+    <value>You have been banned. Reason {0}, until {1}</value>
+    <comment>ID ถูกระงับ กรุณาติดต่อทีมงาน</comment>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Connection closed by Client.</value>
@@ -145,7 +147,8 @@
     <value>Forced Disconnecting of client {0}, too much connections.</value>
   </data>
   <data name="IDERROR" xml:space="preserve">
-    <value>ไม่สามารถเชื่อมต่อกับ Server กรุณาตรวจสอบความถูกต้องของ ID และ Password</value>
+    <value>Wrong Id or Password!</value>
+    <comment>ไม่สามารถเชื่อมต่อกับ Server กรุณาตรวจสอบความถูกต้องของ ID และ Password</comment>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Message received {0} on client {1}</value>
@@ -169,7 +172,8 @@
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
   <data name="CONNECTION_LOST" xml:space="preserve">
-    <value>ไม่สามารถเชื่อมต่อ Server ได้</value>
+    <value>Connection to the server has been lost.</value>
+    <comment>ไม่สามารถเชื่อมต่อ Server ได้</comment>
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
     <value>Database may not be up to date. Please consider updating your database.</value>
@@ -178,7 +182,8 @@
     <value>Connection closed.</value>
   </data>
   <data name="MAINTENANCE" xml:space="preserve">
-    <value>ไม่สามารถเชื่อมต่อกับ Server เนื่องจากเวอร์ชั่นไม่ตรงกัน กรุณาดาวน์โหลดและติดตั้งเวอร์ชั่นล่าสุดได้ที่เว็บไซต์</value>
+    <value>Server is currently under maintenance. Maintenance estimated time {0}</value>
+    <comment>ไม่สามารถเชื่อมต่อกับ Server เนื่องจากเวอร์ชั่นไม่ตรงกัน กรุณาดาวน์โหลดและติดตั้งเวอร์ชั่นล่าสุดได้ที่เว็บไซต์</comment>
   </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1} </value>
