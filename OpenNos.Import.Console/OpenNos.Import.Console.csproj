@@ -47,6 +47,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'IT|AnyCPU'">
     <OutputPath>bin\IT\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TH|AnyCPU'">
+    <OutputPath>bin\TH\</OutputPath>
+  </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>on-logo-icon.ico</ApplicationIcon>
   </PropertyGroup>
@@ -84,6 +87,11 @@
     <Compile Include="ImportFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource\LocalizedResources.th.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocalizedResources.th.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resource\LocalizedResources.de.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -130,6 +138,10 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
     </None>
+	<None Include="App.TH.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
@@ -164,6 +176,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resource\LocalizedResources.th.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LocalizedResources.th.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resource\LocalizedResources.it.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedResources.it.Designer.cs</LastGenOutput>
