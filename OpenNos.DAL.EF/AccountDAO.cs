@@ -222,7 +222,7 @@ namespace OpenNos.DAL.EF
 
         private AccountDTO Insert(AccountDTO account, OpenNosContext context)
         {
-            if(account.LastCompliment == DateTime.MinValue)
+            if (account.LastCompliment == DateTime.MinValue)
             {
                 account.LastCompliment = DateTime.Now;
             }
