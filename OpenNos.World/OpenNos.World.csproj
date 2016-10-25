@@ -82,6 +82,16 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TH|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\TH\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <PropertyGroup>
     <StartupObject>OpenNos.World.Program</StartupObject>
   </PropertyGroup>
@@ -148,6 +158,10 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
     </None>
+    <None Include="App.TH.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
@@ -198,6 +212,7 @@
     <EmbeddedResource Include="Resource\LocalizedResources.fr.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.it.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.pl.resx" />
+    <EmbeddedResource Include="Resource\LocalizedResources.th.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
