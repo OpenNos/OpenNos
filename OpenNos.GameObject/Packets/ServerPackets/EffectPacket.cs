@@ -12,10 +12,10 @@ namespace OpenNos.GameObject
         public byte EffectType { get; set; }
 
         [PacketIndex(1)]
-        public long Id { get; set; }
+        public long CharacterId { get; set; }
 
         [PacketIndex(2)]
-        public short EffectId { get; set; }
+        public int Id { get; set; }
 
         #endregion
     }

@@ -98,9 +98,7 @@ namespace OpenNos.Core
             }
         }
 
-     
-
-
         #endregion
+
     }
 }

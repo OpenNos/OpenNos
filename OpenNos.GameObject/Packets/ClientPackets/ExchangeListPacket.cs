@@ -7,7 +7,6 @@ namespace OpenNos.GameObject
     [PacketHeader("exc_list")]
     public class ExchangeListPacket
     {
-        // exc_list 1 626114 0 0.2.2296.1.0
         [PacketIndex(1)]
         public long CharacterId { get; set; }
 

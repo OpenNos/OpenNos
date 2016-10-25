@@ -36,7 +36,6 @@ namespace OpenNos.GameObject
         private byte _cmapcount = 0;
         private int _direction;
         private Inventory _inventory;
-        private Inventory _Inventory;
         private bool _invisible;
         private bool _isDancing;
         private bool _issitting;
@@ -443,8 +442,8 @@ namespace OpenNos.GameObject
                 Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
                 Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
 
-                foreach(var skill in Skills.GetAllItems())
-                { 
+                foreach (var skill in Skills.GetAllItems())
+                {
                     if (skill.SkillVNum >= 200)
                     {
                         Skills.Remove(skill.SkillVNum);
@@ -631,9 +630,14 @@ namespace OpenNos.GameObject
             return ServerManager.GetMap(MapId).DroppedList.Select(item => $"in 9 {item.Value.ItemVNum} {item.Key} {item.Value.PositionX} {item.Value.PositionY} {(item.Value is MonsterMapItem && ((MonsterMapItem)item.Value).GoldAmount > 1 ? ((MonsterMapItem)item.Value).GoldAmount : item.Value.Amount)} 0 0 -1").ToList();
         }
 
-        public string GenerateEff(int effectid)
+        public EffectPacket GenerateEff(int effectid, byte effecttype = 1)
         {
-            return $"eff 1 {CharacterId} {effectid}";
+            return new EffectPacket()
+            {
+                CharacterId = CharacterId,
+                EffectType = effecttype,
+                Id = effectid
+            };
         }
 
         public string GenerateEInfo(WearableInstance item)
@@ -865,7 +869,7 @@ namespace OpenNos.GameObject
         public string GenerateGp(PortalDTO portal)
         {
             List<PortalDTO> portalList = ServerManager.GetMap(MapId).Portals;
-            return $"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {portalList.Count} {(portalList.Contains(portal) ? (portal.IsDisabled  ? 1 : 0) : 1)}";
+            return $"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {portalList.Count} {(portalList.Contains(portal) ? (portal.IsDisabled ? 1 : 0) : 1)}";
         }
 
         public string GenerateGuri(byte type, byte argument, int value = 0)
@@ -893,7 +897,7 @@ namespace OpenNos.GameObject
             }
             ItemInstance fairy = Inventory.LoadBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
 
-            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? fairy.Item.Element : 0)} 0 {(fairy != null ? fairy.Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
+            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? fairy.Item.Element : 0)} 0 {(fairy != null ? fairy.Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
         public List<string> GenerateIn2()
@@ -1873,8 +1877,8 @@ namespace OpenNos.GameObject
                     Skill skinfo = ServerManager.GetSkill((short)i);
                     if (skinfo.Class == 0 && JobLevel >= skinfo.LevelMinimum)
                     {
-                         if(!Skills.GetAllItems().Any(s => s.SkillVNum == i))
-                        { 
+                        if (!Skills.GetAllItems().Any(s => s.SkillVNum == i))
+                        {
                             NewSkill = 1;
                             Skills[i] = new CharacterSkill() { SkillVNum = (short)i, CharacterId = CharacterId };
                         }
@@ -2199,9 +2203,9 @@ namespace OpenNos.GameObject
             {
                 upgrade = 0;
             }
-            
+
             //maximum size of the amount is 99
-            if(amount > 99)
+            if (amount > 99)
             {
                 amount = 99;
             }

@@ -97,6 +97,7 @@
     <Compile Include="Packets\ServerPackets\CListPacket.cs" />
     <Compile Include="Packets\ServerPackets\DialogPacket.cs" />
     <Compile Include="Packets\ServerPackets\EffectPacket.cs" />
+    <Compile Include="Packets\ServerPackets\EqPacket.cs" />
     <Compile Include="Packets\ServerPackets\EquipPacket.cs" />
     <Compile Include="Packets\ServerPackets\GetPacket.cs" />
     <Compile Include="Packets\ServerPackets\InPacket.cs" />

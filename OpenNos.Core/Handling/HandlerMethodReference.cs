@@ -26,7 +26,7 @@ namespace OpenNos.Core
             HandlerMethod = handlerMethod;
             ParentHandler = parentHandler;
             HandlerMethodAttribute = handlerMethodAttribute;
-            Identification =  HandlerMethodAttribute.Header;
+            Identification = HandlerMethodAttribute.Header;
         }
 
         public HandlerMethodReference(Action<object, object> handlerMethod, IPacketHandler parentHandler, Type packetBaseParameterType)

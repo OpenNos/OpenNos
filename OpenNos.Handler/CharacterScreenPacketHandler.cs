@@ -326,6 +326,8 @@ namespace OpenNos.Handler
             // TODO: Wrap Database access up to GO
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
             Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.SessionId);
+
+            // load characterlist packet for each character in CharacterDTO
             Session.SendPacket("clist_start 0");
             foreach (CharacterDTO character in characters)
             {
@@ -387,8 +389,6 @@ namespace OpenNos.Handler
                             LastPulse = 0,
                             LastPortal = 0,
                             LastSp = 0,
-                            Invisible = false,
-                            InvisibleGm = false,
                             ArenaWinner = characterDTO.ArenaWinner,
                             Morph = 0,
                             MorphUpgrade = 0,

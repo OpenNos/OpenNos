@@ -92,6 +92,11 @@ namespace OpenNos.GameObject
             Broadcast(null, packet, delay: delay);
         }
 
+        public void Broadcast(PacketBase packet, int xRangeCoordinate, int yRangeCoordinate, int delay = 0)
+        {
+            Broadcast(new BroadcastPacket(null, PacketFactory.Serialize(packet), ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate), delay);
+        }
+
         public void Broadcast(ClientSession client, PacketBase packet, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
         {
             Broadcast(client, PacketFactory.Serialize(packet), receiver, characterName, characterId, delay);

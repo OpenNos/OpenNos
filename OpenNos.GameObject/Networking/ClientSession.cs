@@ -256,11 +256,20 @@ namespace OpenNos.GameObject
             IsAuthenticated = true;
         }
 
+        // [Obsolete("Primitive string operations will be removed in future, use PacketBase SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
         public void SendPacket(string packet, byte priority = 10)
         {
             if (!IsDisposing)
             {
                 _client.SendPacket(packet, priority);
+            }
+        }
+
+        public void SendPacket(PacketBase packet, byte priority = 10)
+        {
+            if (!IsDisposing)
+            {
+                _client.SendPacket(PacketFactory.Serialize(packet), priority);
             }
         }
 
