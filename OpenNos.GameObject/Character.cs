@@ -634,8 +634,8 @@ namespace OpenNos.GameObject
         {
             return new EffectPacket()
             {
-                CharacterId = CharacterId,
                 EffectType = effecttype,
+                CharacterId = CharacterId,
                 Id = effectid
             };
         }

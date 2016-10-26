@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("effect")]
+    [PacketHeader("eff")]
     public class EffectPacket : PacketBase
     {
         #region Properties
