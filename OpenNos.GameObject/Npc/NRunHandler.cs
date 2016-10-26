@@ -184,15 +184,8 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            if(Session.Character.Level >= 88)
-                            {
-                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
-                            }
-                            else
-                            {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("LEVEL_TOO_LOW"), 10));
-                            }
+                            ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
                     break;
