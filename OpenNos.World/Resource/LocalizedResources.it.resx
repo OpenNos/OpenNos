@@ -996,4 +996,7 @@
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
   </data>
+  <data name="LEVEL_TOO_LOW" xml:space="preserve">
+    <value />
+  </data>
 </root>

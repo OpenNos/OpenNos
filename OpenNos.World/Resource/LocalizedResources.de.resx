@@ -855,4 +855,7 @@
   <data name="DIGNITY_CHANGED" xml:space="preserve">
     <value>Würge geändert!</value>
   </data>
+  <data name="LEVEL_TOO_LOW" xml:space="preserve">
+    <value>dein Level ist zu niedrig, um fortfahren zu könne.</value>
+  </data>
 </root>
