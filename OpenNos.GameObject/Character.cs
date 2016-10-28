@@ -2111,6 +2111,7 @@ namespace OpenNos.GameObject
                 CharacterDTO character = this.DeepCopy();
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
+
                 // load and concat inventory with equipment
                 Inventory copiedInventory = Inventory.DeepCopy();
                 IEnumerable<ItemInstanceDTO> inventories = copiedInventory.Concat(Inventory);

