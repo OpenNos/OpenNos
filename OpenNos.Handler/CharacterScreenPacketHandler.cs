@@ -400,6 +400,7 @@ namespace OpenNos.Handler
                             BackPack = characterDTO.Backpack,
                             Compliment = characterDTO.Compliment,
                             Backpack = characterDTO.Backpack,
+                            Biography = characterDTO.Biography,
                             BuffBlocked = characterDTO.BuffBlocked,
                             EmoticonsBlocked = characterDTO.EmoticonsBlocked,
                             WhisperBlocked = characterDTO.WhisperBlocked,

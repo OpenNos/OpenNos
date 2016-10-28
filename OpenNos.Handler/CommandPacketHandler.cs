@@ -870,7 +870,7 @@ namespace OpenNos.Handler
                     {
                         session.Account.PenaltyLogs.Add(new PenaltyLogDTO()
                         {
-                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                            AccountId = session.Account.AccountId,
                             Reason = reason,
                             Penalty = PenaltyType.Muted,
                             DateStart = DateTime.Now,
@@ -941,7 +941,7 @@ namespace OpenNos.Handler
         public void Position(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapId} - X:{Session.Character.MapX} - Y:{Session.Character.MapY} - Dir: {Session.Character.Direction}", 12));
+            Session.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapId} - X:{Session.Character.MapX} - Y:{Session.Character.MapY} - Dir:{Session.Character.Direction}", 12));
         }
 
         [Packet("$Rarify")]
@@ -1261,7 +1261,7 @@ namespace OpenNos.Handler
 
                 if (skillinfo.SkillVNum < 200)
                 {
-                    foreach(var skill in Session.Character.Skills.GetAllItems())
+                    foreach (var skill in Session.Character.Skills.GetAllItems())
                     {
                         if ((skillinfo.CastId == skill.Skill.CastId) && (skill.Skill.SkillVNum < 200))
                         {
