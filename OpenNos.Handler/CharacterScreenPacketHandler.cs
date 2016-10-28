@@ -62,12 +62,12 @@ namespace OpenNos.Handler
             {
                 if (characterName.Length > 3 && characterName.Length < 15)
                 {
-                    bool isIllegalCharacter = false;
+                    int isIllegalCharacter = 0;
 
-                    System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[\u4E00-\u9FA5a-zA-Z0-9ąáàâäãåçćéèêëęíìîïłńñóòôöõúùûüśźżýÿæœĄÁÀÂÄÃÅĆÇĘÉÈÊËÍÌÎÏŁŃÑÓÒÔÖÕÚÙÛÜŚŹŻÝŸÆŒ.¤*\-|#²§µß™€=$^<>£!()&~{}@]*$`~");
-                    isIllegalCharacter = rg.IsMatch(characterName);
+                    System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B]*$");
+                    isIllegalCharacter = rg.Matches(characterName).Count;
 
-                    if (!isIllegalCharacter)
+                    if (isIllegalCharacter == 1)
                     {
                         if (DAOFactory.CharacterDAO.LoadByName(characterName) == null)
                         {
