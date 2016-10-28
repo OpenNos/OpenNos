@@ -435,8 +435,8 @@ namespace OpenNos.GameObject
         {
             if (this.Upgrade < 10)
             {
-                short[] upsuccess = { 100, 100, 100, 95, 80, 60, 40, 30, 20, 11 };
-                short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
+                short[] upsuccess = { 100, 100, 90, 80, 60, 40, 20, 10, 5, 1 };
+                short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 20, 20 };
 
                 // short itempricevnum1 = 0; short itempricevnum2 = 0;
                 int[] goldprice = { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
