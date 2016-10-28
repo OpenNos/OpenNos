@@ -88,6 +88,8 @@ namespace OpenNos.Handler
                                 MapX = (short)(random.Next(78, 81)),
                                 MapY = (short)(random.Next(114, 118)),
                                 Mp = 221,
+                                SpPoint = 10000,
+                                SpAdditionPoint = 0,
                                 Name = characterName,
                                 Slot = slot,
                                 AccountId = accountId,
