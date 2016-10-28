@@ -461,6 +461,9 @@ namespace OpenNos.Handler
             {
                 message += packetsplit[i] + " ";
             }
+            if (message.Length > 60)
+                message = message.Substring(0, 60);
+
             message = message.Substring(1).Trim();
 
             ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 3), ReceiverType.Group);
@@ -493,6 +496,9 @@ namespace OpenNos.Handler
                         {
                             message += guriPacket[i] + " ";
                         }
+                        if (message.Length > 60)
+                            message = message.Substring(0, 60);
+
                         message.Trim();
 
                         Session.Character.Inventory.RemoveItemAmount(speakerVNum);
@@ -794,6 +800,9 @@ namespace OpenNos.Handler
             {
                 message += packetsplit[i] + " ";
             }
+            if (message.Length > 60)
+                message = message.Substring(0, 60);
+
             if (Session.Character.IsMuted())
             {
                 if (Session.Character.Gender == 1)
@@ -1038,7 +1047,11 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateFd());
             Session.SendPacket("rage 0 250000");
             Session.SendPacket("rank_cool 0 0 18000");
-            Session.SendPacket(Session.Character.GenerateSpPoint());
+            SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((short)8, InventoryType.Wear);
+            if (specialistInstance != null)
+            {
+                Session.SendPacket(Session.Character.GenerateSpPoint());
+            }
             Session.SendPacket("scr 0 0 0 0 0 0");
             for (int i = 0; i < 10; i++)
             {
@@ -1127,6 +1140,9 @@ namespace OpenNos.Handler
             {
                 message += packetsplit[i] + " ";
             }
+            if (message.Length > 60)
+                message = message.Substring(0, 60);
+
             message.Trim();
 
             Session.SendPacket(Session.Character.GenerateSpk(message, 5));
