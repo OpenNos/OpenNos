@@ -428,6 +428,16 @@ namespace OpenNos.Import.Console
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt19);
             }
+            MapTypeDTO mt20 = new MapTypeDTO
+            {
+                MapTypeId = (short)MapTypeEnum.Act32,
+                MapTypeName = "Act 3.2",
+                PotionDelay = 300
+            };
+            if (!list.Any(s => s.MapTypeId == mt20.MapTypeId))
+            {
+                DAOFactory.MapTypeDAO.Insert(ref mt20);
+            }
             Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPES_PARSED"));
         }
 
