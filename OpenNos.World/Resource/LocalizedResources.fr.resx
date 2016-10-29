@@ -1009,4 +1009,10 @@ Veux-tu le porter ?</value>
   <data name="BOT_MESSAGE_3" xml:space="preserve">
     <value>Astuce : Peur d'un vol? lisez le guide anti-arnaque !</value>
   </data>
+  <data name="BOT_MESSAGE_4" xml:space="preserve">
+    <value>Astuce : Un seul cheat suffit pour être banni, qu'il soit grand ou petit !</value>
+  </data>
+  <data name="BOT_MESSAGE_5" xml:space="preserve">
+    <value>Astuce : Un problème ? reportez le sur notre github !</value>
+  </data>
 </root>
