@@ -92,6 +92,10 @@ namespace OpenNos.GameObject
             Task GroupTask = new Task(() => GroupProcess());
             GroupTask.Start();
 
+            Task BotTask = new Task(() => BotProcess());
+            BotTask.Start();
+
+
             Task TaskController = new Task(() => TaskLauncherProcess());
             TaskController.Start();
 
@@ -873,6 +877,16 @@ namespace OpenNos.GameObject
         }
 
         // Server
+        private async void BotProcess()
+        {
+            Random rnd = new Random();
+            while (true)
+            {
+                Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{ rnd.Next(0, 5) }"));
+                await Task.Delay(60000 * 30);
+            }
+        }
+
         private async void GroupProcess()
         {
             while (true)
