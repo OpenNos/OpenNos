@@ -858,4 +858,16 @@
   <data name="LEVEL_TOO_LOW" xml:space="preserve">
     <value>dein Level ist zu niedrig, um fortfahren zu könne.</value>
   </data>
+  <data name="BOT_MESSAGE_0" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BOT_MESSAGE_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BOT_MESSAGE_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BOT_MESSAGE_3" xml:space="preserve">
+    <value />
+  </data>
 </root>

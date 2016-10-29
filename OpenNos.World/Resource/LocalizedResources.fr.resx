@@ -739,7 +739,7 @@
     <value>Le niveau spécialiste est augmenté.</value>
   </data>
   <data name="FAIRY_LEVELUP" xml:space="preserve">
-    <value>{0} a gagné un niveau élémentaire !</value>
+    <value>{0} a progressé !</value>
   </data>
   <data name="JOB_LEVELUP" xml:space="preserve">
     <value>Ton niveau de métier a augmenté !</value>
@@ -995,6 +995,18 @@ Veux-tu le porter ?</value>
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
   </data>
   <data name="LEVEL_TOO_LOW" xml:space="preserve">
-    <value />
+    <value>Ton niveau n'est pas assez élevé .</value>
+  </data>
+  <data name="BOT_MESSAGE_0" xml:space="preserve">
+    <value>Astuce : Un seul cheat suffit pour être banni, qu'il soit grand ou petit !</value>
+  </data>
+  <data name="BOT_MESSAGE_1" xml:space="preserve">
+    <value>Astuce : Lisez le règlement, vous éviterez des embêtements !</value>
+  </data>
+  <data name="BOT_MESSAGE_2" xml:space="preserve">
+    <value>Astuce : Un bug, un problème? reportez le !</value>
+  </data>
+  <data name="BOT_MESSAGE_3" xml:space="preserve">
+    <value>Astuce : Peur d'un vol? lisez le guide anti-arnaque !</value>
   </data>
 </root>

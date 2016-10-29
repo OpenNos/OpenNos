@@ -217,6 +217,18 @@
   <data name="BN9" xml:space="preserve">
     <value>อ่านเพิ่มเติมได้ที่หน้าเวปไซต์จ้า</value>
   </data>
+  <data name="BOT_MESSAGE_0" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BOT_MESSAGE_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BOT_MESSAGE_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BOT_MESSAGE_3" xml:space="preserve">
+    <value />
+  </data>
   <data name="BUFF_BLOCKED" xml:space="preserve">
     <value>จากนี้ไปคุณจะไม่เห็นรายงาน เมื่อค่าสถานะต่างๆ หมดลง</value>
   </data>
