@@ -496,8 +496,8 @@ namespace OpenNos.Handler
                         {
                             message += guriPacket[i] + " ";
                         }
-                        if (message.Length > 60)
-                            message = message.Substring(0, 60);
+                        if (message.Length > 120)
+                            message = message.Substring(0, 120);
 
                         message.Trim();
 
