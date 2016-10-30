@@ -65,6 +65,11 @@ namespace OpenNos.GameObject
                 {
                     if (session.HasSelectedCharacter)
                     {
+                        if(session.Character.Hp < 1)
+                        {
+                            session.Character.Hp = 1;
+                        }                        
+
                         if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(session.Character.CharacterId)))
                         {
                             ServerManager.Instance.GroupLeave(session);
