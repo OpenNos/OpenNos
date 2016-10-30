@@ -1700,8 +1700,8 @@ namespace OpenNos.Handler
         private async void ShutdownTask()
         {
             string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
-            Session.CurrentMap?.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateMsg(message, 2));
+            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 60 * 4; i++)
             {
                 await Task.Delay(1000);
@@ -1712,8 +1712,8 @@ namespace OpenNos.Handler
                 }
             }
             message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
-            Session.CurrentMap?.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateMsg(message, 2));
+            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);
@@ -1724,8 +1724,8 @@ namespace OpenNos.Handler
                 }
             }
             message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
-            Session.CurrentMap?.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateMsg(message, 2));
+            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);
