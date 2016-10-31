@@ -485,6 +485,31 @@ namespace OpenNos.Handler
             {
                 int speakerVNum = 2173;
 
+
+                // presentation message
+                if (guriPacket[3] == "2")
+                {
+                    int presentationVNum = (Session.Character.Inventory.CountItem(1117) > 0 ? 1117 : (Session.Character.Inventory.CountItem(9013) > 0 ? 9013 : -1));
+                    if (presentationVNum != -1)
+                    {
+                        string message = String.Empty;
+                        //message = $" ";
+                        for (int i = 6; i < guriPacket.Length; i++)
+                        {
+                            message += guriPacket[i] + "^";
+                        }
+                        message = message.Substring(0, message.Length - 1); //Remove the last ^
+                        message.Trim();
+                        if (message.Length > 60)
+                        {
+                            message = message.Substring(0, 60);
+                        }
+
+                        Session.Character.Biography = message;
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("INTRODUCTION_SET"), 10));
+                        Session.Character.Inventory.RemoveItemAmount(presentationVNum);
+                    }
+                }
                 // Speaker
                 if (guriPacket[3] == "3")
                 {
@@ -505,31 +530,7 @@ namespace OpenNos.Handler
                         ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }
                 }
-            }
-            int presentationVNum = 1117 & 9013;
-
-            // presentation message (doesn't work for the moment)
-            if (guriPacket[3] == "3")
-            {
-                if (Session.Character.Inventory.CountItem(presentationVNum) > 0)
-                {
-                    string message = String.Empty;
-                    //message = $" ";
-                    for (int i = 6; i < guriPacket.Length; i++)
-                    {
-                        message += guriPacket[i] + " ";
-                        Session.Character.Biography = message;
-                        Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("INTRODUCTION_SET"), 10);
-                    }
-                    if (message.Length > 60)
-                        message = message.Substring(0, 60);
-
-                    message.Trim();
-
-                    Session.Character.Inventory.RemoveItemAmount(presentationVNum);
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateReqInfo());
-                }
-
+            }            
             else if (guriPacket[2] == "203" && guriPacket[3] == "0")
             {
                 // SP points initialization
