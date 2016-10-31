@@ -1015,4 +1015,13 @@ Veux-tu le porter ?</value>
   <data name="BOT_MESSAGE_5" xml:space="preserve">
     <value>Astuce : Un problème ? reportez le sur notre github !</value>
   </data>
+  <data name="MOB_DONT_FIND" xml:space="preserve">
+    <value>Aucun monstre n'a été selectionné ou trouvé.</value>
+  </data>
+  <data name="MOB_MUST_BE_ALIVE" xml:space="preserve">
+    <value>Le monstre doit être en vie. Sinon, essayez de cliquer dessus et ressayez !</value>
+  </data>
+  <data name="MOB_REMOVED" xml:space="preserve">
+    <value>Le monstre a été supprimé.</value>
+  </data>
 </root>

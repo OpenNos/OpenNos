@@ -198,17 +198,6 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                // presentation messages
-                case 203:
-                    if (this != null && !Session.Character.IsVehicled)
-                    {
-                        if (!DelayUsed)
-                        {
-                            Session.SendPacket(Session.Character.GenerateGuri(10, 2, 2));
-                        }
-                    }
-                    break;
-
                 default:
                     Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
                     break;

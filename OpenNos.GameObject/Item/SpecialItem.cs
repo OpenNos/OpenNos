@@ -62,6 +62,17 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                // presentation messages
+                case 203:
+                    if (this != null && !Session.Character.IsVehicled)
+                    {
+                        if (!DelayUsed)
+                        {
+                            Session.SendPacket(Session.Character.GenerateGuri(10, 2, 1));
+                        }
+                    }
+                    break;
+
                 // magic lamps
                 case 651:
                     if (!Session.Character.Inventory.Where(i => i.Type == InventoryType.Wear).Any())

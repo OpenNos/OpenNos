@@ -506,10 +506,34 @@ namespace OpenNos.Handler
                     }
                 }
             }
+            int presentationVNum = 1117 & 9013;
+
+            // presentation message (doesn't work for the moment)
+            if (guriPacket[3] == "3")
+            {
+                if (Session.Character.Inventory.CountItem(presentationVNum) > 0)
+                {
+                    string message = String.Empty;
+                    //message = $" ";
+                    for (int i = 6; i < guriPacket.Length; i++)
+                    {
+                        message += guriPacket[i] + " ";
+                        Session.Character.Biography = message;
+                        Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("INTRODUCTION_SET"), 10);
+                    }
+                    if (message.Length > 60)
+                        message = message.Substring(0, 60);
+
+                    message.Trim();
+
+                    Session.Character.Inventory.RemoveItemAmount(presentationVNum);
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateReqInfo());
+                }
+
             else if (guriPacket[2] == "203" && guriPacket[3] == "0")
             {
                 // SP points initialization
-                int[] listPotionResetVNums = new int[3] { 1366, 1427, 5115 };
+                int[] listPotionResetVNums = new int[4] { 1366, 1427, 5115, 9040 };
                 int vnumToUse = -1;
                 foreach (int vnum in listPotionResetVNums)
                 {

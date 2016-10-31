@@ -395,6 +395,8 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
+            Session.SendPacket(Session.Character.GenerateSay("RemoveMob", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(%)", 12));
@@ -414,7 +416,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift VNUM AMOUNT RARE UPGRADE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME(*) VNUM AMOUNT RARE UPGRADE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
         }
@@ -1079,7 +1080,7 @@ namespace OpenNos.Handler
             {
                 if (monst.Alive)
                 {
-                    Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
+                    Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {6000} 3 0");
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
                     Session.CurrentMap.RemoveMonster(monst);
                     if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) != null)
