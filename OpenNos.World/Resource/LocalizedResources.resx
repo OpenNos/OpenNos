@@ -1024,4 +1024,7 @@
   <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
     <value>You need atleast {0}x{1}</value>
   </data>
+  <data name="SHUTDOWN_SEC_END" xml:space="preserve">
+    <value>The server will be shutdown in 10 seconds.</value>
+  </data>
 </root>

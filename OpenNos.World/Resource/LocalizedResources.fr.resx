@@ -1033,4 +1033,7 @@ Veux-tu le porter ?</value>
   <data name="ITEM_UNFIXED" xml:space="preserve">
     <value>Le niveau de l'objet lui permet maintenant d'être amélioré.</value>
   </data>
+  <data name="SHUTDOWN_SEC_END" xml:space="preserve">
+    <value>Le serveur sera déconnecté dans 10 secondes.</value>
+  </data>
 </root>
