@@ -852,9 +852,6 @@
   <data name="RATEGOLD_NOW" xml:space="preserve">
     <value>Tasso d'oro</value>
   </data>
-  <data name="FAIRYXP_NOW" xml:space="preserve">
-    <value>Tasso Esperieza Fata</value>
-  </data>
   <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
     <value>Il tasso dell'esperienza della fata è stato cambiato.</value>
   </data>
@@ -978,13 +975,10 @@
   <data name="DIGNITY_CHANGED" xml:space="preserve">
     <value>Dignità cambiata!</value>
   </data>
-  <data name="MOB_DONT_FIND" xml:space="preserve">
-    <value>Non è stato trovato il mostro</value>
-  </data>
-  <data name="MOB_MUST_BE_ALIVE" xml:space="preserve">
+  <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
     <value>Se vuoi rimuovere il mostro, assicurati che sia vivo.</value>
   </data>
-  <data name="MOB_REMOVED" xml:space="preserve">
+  <data name="MONSTER_REMOVED" xml:space="preserve">
     <value>Mostro rimosso. (MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
   </data>
   <data name="QNA_ITEM" xml:space="preserve">
@@ -995,9 +989,6 @@
   </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
-  </data>
-  <data name="LEVEL_TOO_LOW" xml:space="preserve">
-    <value />
   </data>
   <data name="BOT_MESSAGE_0" xml:space="preserve">
     <value />

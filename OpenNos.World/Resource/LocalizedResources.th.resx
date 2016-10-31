@@ -373,10 +373,6 @@
     <value>Fairy XP: {0}/{1}</value>
     <comment>[ONONLY]</comment>
   </data>
-  <data name="FAIRYXP_NOW" xml:space="preserve">
-    <value>Fairy xp rate</value>
-    <comment>[ONONLY]</comment>
-  </data>
   <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
     <value>Fairy xp rate changed!</value>
     <comment>[ONONLY]</comment>
@@ -577,9 +573,6 @@
     <value>Your level has been changed!</value>
     <comment>[ONONLY]</comment>
   </data>
-  <data name="LEVEL_TOO_LOW" xml:space="preserve">
-    <value>Level ของคุณน้อยเกินไปที่จะทำสิ่งนี้</value>
-  </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>ค่าเกียรติยศ ลดลง : {0}</value>
   </data>
@@ -628,15 +621,11 @@
   <data name="MINI_INV_UNLOCKED" xml:space="preserve">
     <value>บ้านนี้ถูกเปิดเป็นแบบสาธารณะแล้ว</value>
   </data>
-  <data name="MOB_DONT_FIND" xml:space="preserve">
-    <value>This mob hasn't been find</value>
-    <comment>[ONONLY]</comment>
-  </data>
-  <data name="MOB_MUST_BE_ALIVE" xml:space="preserve">
+  <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
     <value>If you want to remove a mob, this must be alive!</value>
     <comment>[ONONLY]</comment>
   </data>
-  <data name="MOB_REMOVED" xml:space="preserve">
+  <data name="MONSTER_REMOVED" xml:space="preserve">
     <value>Mob removed(MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
     <comment>[ONONLY]</comment>
   </data>

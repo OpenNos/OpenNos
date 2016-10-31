@@ -148,7 +148,7 @@
     <value>ID oder Passwort ist falsch!</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
-    <value>Nachricht {0} von Client {1} empfangen</value>
+    <value>Nachricht {0} von Client {1} empfangen.</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
     <value>Nachricht zum Client gesendet</value>
@@ -175,7 +175,7 @@
     <value>Die Datenbank könnte nicht aktuell sein. Sie muss upgedated werden um eine Verbindung herstellen zu können.</value>
   </data>
   <data name="CONNECTION_CLOSED" xml:space="preserve">
-    <value />
+    <value>Verbindung geschlossen.</value>
   </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Das empfangene Paket mit der Identifikation {0} hat ein falsches Format oder die dazugehörige Packet-Definition ist fehlerhaft. Inhalt: {1} </value>

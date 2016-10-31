@@ -907,9 +907,6 @@ Veux-tu le porter ?</value>
   <data name="DELETE_PENALTYLOG_ERROR" xml:space="preserve">
     <value>Erreur de suppression de type PenaltyLog avec l' id {0} , {1}</value>
   </data>
-  <data name="FAIRYXP_NOW" xml:space="preserve">
-    <value>Taux d'expérience des fées</value>
-  </data>
   <data name="NOT_ENOUGH_ITEM" xml:space="preserve">
     <value>Tu n'as pas les éléments requis pour la récolte.</value>
   </data>
@@ -994,9 +991,6 @@ Veux-tu le porter ?</value>
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
   </data>
-  <data name="LEVEL_TOO_LOW" xml:space="preserve">
-    <value>Ton niveau n'est pas assez élevé .</value>
-  </data>
   <data name="BOT_MESSAGE_0" xml:space="preserve">
     <value>Astuce : Un seul cheat suffit pour être banni, qu'il soit grand ou petit !</value>
   </data>
@@ -1015,13 +1009,10 @@ Veux-tu le porter ?</value>
   <data name="BOT_MESSAGE_5" xml:space="preserve">
     <value>Astuce : Un problème ? reportez le sur notre github !</value>
   </data>
-  <data name="MOB_DONT_FIND" xml:space="preserve">
-    <value>Aucun monstre n'a été selectionné ou trouvé.</value>
-  </data>
-  <data name="MOB_MUST_BE_ALIVE" xml:space="preserve">
+  <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
     <value>Le monstre doit être en vie. Sinon, essayez de cliquer dessus et ressayez !</value>
   </data>
-  <data name="MOB_REMOVED" xml:space="preserve">
+  <data name="MONSTER_REMOVED" xml:space="preserve">
     <value>Le monstre a été supprimé.</value>
   </data>
   <data name="INTRODUCTION_SET" xml:space="preserve">

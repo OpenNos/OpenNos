@@ -751,7 +751,7 @@
   <data name="FAIRYMAX" xml:space="preserve">
     <value>Twoja wróżka zdobyła maksymalny poziom!</value>
   </data>
-  <data name="FAIRYSTAT" xml:space="preserve">
+  <data name="FAIRYSTATS" xml:space="preserve">
     <value>Doświadczenie wróżki: {0}/{1}</value>
   </data>
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
@@ -961,25 +961,67 @@
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
   </data>
-  <data name="LEVEL_TOO_LOW" xml:space="preserve">
-    <value />
-  </data>
   <data name="BOT_MESSAGE_0" xml:space="preserve">
-    <value />
+    <value>Nigdy nie podawaj swojego hasła!</value>
   </data>
   <data name="BOT_MESSAGE_1" xml:space="preserve">
-    <value />
+    <value>Znalazłeś błąd? zgłoś go na naszym githubie!</value>
   </data>
   <data name="BOT_MESSAGE_2" xml:space="preserve">
-    <value />
+    <value>To jest fajna wiadomość!</value>
   </data>
   <data name="BOT_MESSAGE_3" xml:space="preserve">
-    <value />
+    <value>Dziekujemy za uczestniczenie w naszym projekcie!</value>
   </data>
   <data name="INTRODUCTION_SET" xml:space="preserve">
-    <value />
+    <value>Twój opis został zaktualizowany!</value>
   </data>
   <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
-    <value />
+    <value>Potrzebujesz przynajmniej {0}x{1}</value>
+  </data>
+  <data name="BAD_DIGNITY" xml:space="preserve">
+    <value>Zła wartość godności!</value>
+  </data>
+  <data name="DIGNITY_CHANGED" xml:space="preserve">
+    <value>Godność zmieniona!</value>
+  </data>
+  <data name="IMPOSSIBLE_TO_USE" xml:space="preserve">
+    <value>Nie możesz teraz tego użyć!</value>
+  </data>
+  <data name="JOB_LEVELUP" xml:space="preserve">
+    <value>Osiągnąłeś wyższy poziom profesji!</value>
+  </data>
+  <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
+    <value>Jeśli chcesz usunąć potwora, musi on być żywy!</value>
+  </data>
+  <data name="MONSTER_REMOVED" xml:space="preserve">
+    <value>Potwór usunięty (MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
+  </data>
+  <data name="MUTED_FEMALE" xml:space="preserve">
+    <value>Byłam złą dziewczynką i zostałam ukarana!</value>
+  </data>
+  <data name="MUTED_MALE" xml:space="preserve">
+    <value>Byłem złym chłopcem i zostałem ukarany!</value>
+  </data>
+  <data name="MUTE_END" xml:space="preserve">
+    <value>Klątwa ciążąca na tobie zniknęła!</value>
+  </data>
+  <data name="MUTE_TIME" xml:space="preserve">
+    <value>Długość kary: {0}</value>
+  </data>
+  <data name="NOT_YOUR_ITEM" xml:space="preserve">
+    <value>Ten przedmiot nie jest twój!</value>
+  </data>
+  <data name="QNA_ITEM" xml:space="preserve">
+    <value>Czy chcesz użyć tego przemiotu?</value>
+  </data>
+  <data name="RATEGOLD_NOW" xml:space="preserve">
+    <value>Ilość wypadającego złota</value>
+  </data>
+  <data name="SKILL_CANT_LEARN" xml:space="preserve">
+    <value>Nie możesz nauczyć się tej umiejętności.</value>
+  </data>
+  <data name="SP_REFILL" xml:space="preserve">
+    <value>Punkty specjalisty zostały zapisane!</value>
   </data>
 </root>

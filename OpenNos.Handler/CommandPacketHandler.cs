@@ -1083,7 +1083,7 @@ namespace OpenNos.Handler
                 if (monst.Alive)
                 {
                     Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {6000} 3 0");
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MONSTER_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
                     Session.CurrentMap.RemoveMonster(monst);
                     if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) != null)
                     {
@@ -1092,12 +1092,12 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MOB_MUST_BE_ALIVE")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MONSTER_NOT_ALIVE")), 11));
                 }
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MOB_DONT_FIND"), 11));
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MONSTER_NOT_FOUND"), 11));
             }
         }
 
