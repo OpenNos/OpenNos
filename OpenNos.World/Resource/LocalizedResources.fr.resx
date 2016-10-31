@@ -1024,4 +1024,7 @@ Veux-tu le porter ?</value>
   <data name="MOB_REMOVED" xml:space="preserve">
     <value>Le monstre a été supprimé.</value>
   </data>
+  <data name="INTRODUCTION_SET" xml:space="preserve">
+    <value>Ton message de présentation a été édité.</value>
+  </data>
 </root>

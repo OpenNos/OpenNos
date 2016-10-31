@@ -1018,4 +1018,7 @@
   <data name="BOT_MESSAGE_3" xml:space="preserve">
     <value>Thanks for all of your contributions!</value>
   </data>
+  <data name="INTRODUCTION_SET" xml:space="preserve">
+    <value>Your message has been edited for presentation.</value>
+  </data>
 </root>

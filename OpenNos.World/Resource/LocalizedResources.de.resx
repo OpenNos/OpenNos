@@ -870,4 +870,7 @@
   <data name="BOT_MESSAGE_3" xml:space="preserve">
     <value />
   </data>
+  <data name="INTRODUCTION_SET" xml:space="preserve">
+    <value />
+  </data>
 </root>

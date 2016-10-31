@@ -498,6 +498,9 @@
     <value>Error inserting or updating character: {0} , {1}</value>
     <comment>[ONONLY]</comment>
   </data>
+  <data name="INTRODUCTION_SET" xml:space="preserve">
+    <value />
+  </data>
   <data name="INVALID_CHARNAME" xml:space="preserve">
     <value>กรุณาพิมพ์ชื่อด้วยค่ะ</value>
   </data>
