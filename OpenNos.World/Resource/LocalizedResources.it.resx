@@ -1014,4 +1014,7 @@
   <data name="INTRODUCTION_SET" xml:space="preserve">
     <value>Il tuo messaggio è stato modificato per la presentazione.</value>
   </data>
+  <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
+    <value />
+  </data>
 </root>

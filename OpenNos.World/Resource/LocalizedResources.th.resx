@@ -705,6 +705,9 @@
     <value>You don't have required item to harvest.</value>
     <comment>[UNKNOW]</comment>
   </data>
+  <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
+    <value />
+  </data>
   <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
     <value>คุณมี Gold ไม่เพียงพอ</value>
   </data>
