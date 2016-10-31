@@ -1021,4 +1021,7 @@
   <data name="INTRODUCTION_SET" xml:space="preserve">
     <value>Your message has been edited for presentation.</value>
   </data>
+  <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
+    <value>You need atleast {0}x{1}</value>
+  </data>
 </root>
