@@ -1021,4 +1021,7 @@ Veux-tu le porter ?</value>
   <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
     <value>Tu n'as pas les objets requis !</value>
   </data>
+  <data name="ITEM_UNFIXED" xml:space="preserve">
+    <value>Le niveau de l'objet lui permet maintenant d'être amélioré.</value>
+  </data>
 </root>

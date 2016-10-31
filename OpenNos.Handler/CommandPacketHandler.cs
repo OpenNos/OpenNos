@@ -258,7 +258,6 @@ namespace OpenNos.Handler
                 {
                     Session.Character.JobLevel = joblevel;
                     Session.Character.JobLevelXp = 0;
-                    Session.Character.Skills.ClearAll();
                     Session.SendPacket(Session.Character.GenerateLev());
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
