@@ -479,7 +479,7 @@ namespace OpenNos.GameObject
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(goldScrollVnum).Name, cella[this.Upgrade] * reducedpricefactor)), 10));
                             return;
                         }
-                        if (this.Upgrade <= 5)
+                        if (this.Upgrade < 5)
                         {
                             if (Session.Character.Inventory.CountItem(gemVnum) < gem[this.Upgrade])
                             {
@@ -524,7 +524,7 @@ namespace OpenNos.GameObject
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(normalScrollVnum).Name, 1)), 10));
                             return;
                         }
-                        if (this.Upgrade <= 5)
+                        if (this.Upgrade < 5)
                         {
                             if (Session.Character.Inventory.CountItem(gemVnum) < gem[this.Upgrade])
                             {
