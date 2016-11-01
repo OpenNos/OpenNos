@@ -876,7 +876,4 @@
   <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
     <value />
   </data>
-  <data name="SHUTDOWN_SEC_END" xml:space="preserve">
-    <value />
-  </data>
 </root>

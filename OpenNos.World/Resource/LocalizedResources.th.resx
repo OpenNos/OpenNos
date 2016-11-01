@@ -940,9 +940,6 @@
     <value>Server will be shutdown in {0} Seconds.</value>
     <comment>[ONONLY]</comment>
   </data>
-  <data name="SHUTDOWN_SEC_END" xml:space="preserve">
-    <value />
-  </data>
   <data name="SKILLS_IN_LOADING" xml:space="preserve">
     <value>จะสามารถเปลี่ยนร่างได้อีกครั้งหลังจากหน่วงเวลาของ Skill ทั้งหมดสิ้นสุดลง</value>
   </data>
