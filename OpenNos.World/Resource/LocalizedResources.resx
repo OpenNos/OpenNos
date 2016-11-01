@@ -758,7 +758,10 @@
     <value>Your {0} level increased</value>
   </data>
   <data name="JOB_LEVELUP" xml:space="preserve">
-    <value>Job level has been increased!</value>
+    <value>Job level up!</value>
+  </data>
+  <data name="FAIRYXP_NOW" xml:space="preserve">
+    <value>Fairy xp rate</value>
   </data>
   <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
     <value>Fairy xp rate changed!</value>
@@ -938,7 +941,7 @@
     <value>Item not found!</value>
   </data>
   <data name="MONSTER_NOT_FOUND" xml:space="preserve">
-    <value>Monster not found!</value>
+    <value>Impossible to find this monster.</value>
   </data>
   <data name="NOT_YOUR_ITEM" xml:space="preserve">
     <value>The item is not yours!</value>
@@ -956,10 +959,10 @@
     <value>An new mail arrived!</value>
   </data>
   <data name="BAD_DIGNITY" xml:space="preserve">
-    <value>Bad dignity value.</value>
+    <value>Bad Dignity Value!</value>
   </data>
   <data name="DIGNITY_CHANGED" xml:space="preserve">
-    <value>Dignity changed!</value>
+    <value>Dignity Changed!</value>
   </data>
   <data name="NEAREST_PORTAL" xml:space="preserve">
     <value>Nearest Portal(MapID: {0}, MapX: {1}, MapY: {2})  has been removed!</value>
@@ -979,11 +982,14 @@
   <data name="ITEM_ACQUIRED_BY_THE_GIANT_MONSTER" xml:space="preserve">
     <value>You get the item from the giant monster !</value>
   </data>
-  <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
-    <value>If you want to remove monster, it needs to be alive!</value>
+  <data name="MOB_DONT_FIND" xml:space="preserve">
+    <value>This mob hasn't been find</value>
   </data>
-  <data name="MONSTER_REMOVED" xml:space="preserve">
-    <value>Monster removed (MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
+  <data name="MOB_MUST_BE_ALIVE" xml:space="preserve">
+    <value>If you want to remove a mob, this must be alive!</value>
+  </data>
+  <data name="MOB_REMOVED" xml:space="preserve">
+    <value>Mob removed(MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
   </data>
   <data name="QNA_ITEM" xml:space="preserve">
     <value>Do you want to use this item?</value>
@@ -997,11 +1003,14 @@
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
   </data>
+  <data name="LEVEL_TOO_LOW" xml:space="preserve">
+    <value>Your level is too low to continue.</value>
+  </data>
   <data name="BOT_MESSAGE_0" xml:space="preserve">
     <value>Don't share you password with anyone!</value>
   </data>
   <data name="BOT_MESSAGE_1" xml:space="preserve">
-    <value>Report bugs to our github page!</value>
+    <value>Report bug on GitHub</value>
   </data>
   <data name="BOT_MESSAGE_2" xml:space="preserve">
     <value>That's a cool message!</value>
@@ -1010,12 +1019,9 @@
     <value>Thanks for all of your contributions!</value>
   </data>
   <data name="INTRODUCTION_SET" xml:space="preserve">
-    <value>Your description has been updated!</value>
+    <value>Your message has been edited for presentation.</value>
   </data>
   <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
     <value>You need atleast {0}x{1}</value>
-  </data>
-  <data name="BANNED" xml:space="preserve">
-    <value>This account has been locked to {0} for {1}.</value>
   </data>
 </root>

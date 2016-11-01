@@ -476,7 +476,7 @@ namespace OpenNos.GameObject
                 };
                 if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session)))
                 {
-                    ServerManager.Instance.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
                 }
             }
         }
