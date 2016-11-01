@@ -19,11 +19,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Dispatcher;
+using System.ServiceModel.Channels;
 
 namespace OpenNos.WCF
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class CommunicationService : ICommunicationService
+    public class CommunicationService : ICommunicationService, IErrorHandler
     {
         #region Members
 
@@ -231,6 +233,12 @@ namespace OpenNos.WCF
             }
         }
 
+        public bool HandleError(Exception error)
+        {
+            //we do not handle any errors to wrap them up for the client
+            return true;
+        }
+
         /// <summary>
         /// Checks if the Account is allowed to login, removes the permission to login
         /// </summary>
@@ -261,6 +269,11 @@ namespace OpenNos.WCF
             }
 
             return false;
+        }
+
+        public void ProvideFault(Exception error, MessageVersion version, ref Message fault)
+        {
+            //we do not handle any errors to wrap them up for the client
         }
 
         /// <summary>

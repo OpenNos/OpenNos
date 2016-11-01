@@ -70,12 +70,12 @@ namespace OpenNos.ServiceRef.Internal
         {
             get
             {
-                // reinitialize faulted communicationservice (maybe we should find the cause of the
-                // faulted state)
+                // reinitialize serviceclient which is faulted caused by an exception 
                 if (!_useMock && _communicationServiceClient != null && _communicationServiceClient is CommunicationServiceClient
                     && ((CommunicationServiceClient)_communicationServiceClient).State == CommunicationState.Faulted)
                 {
                     _communicationServiceClient = new CommunicationServiceClient(_instanceContext);
+                    return _communicationServiceClient;
                 }
 
                 if (_communicationServiceClient == null)
