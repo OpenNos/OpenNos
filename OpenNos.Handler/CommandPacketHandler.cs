@@ -1737,6 +1737,18 @@ namespace OpenNos.Handler
                     return;
                 }
             }
+            message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
+            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
+            for (int i = 0; i < 10; i++)
+            {
+                await Task.Delay(1000);
+                if (ServerManager.Instance.ShutdownStop)
+                {
+                    ServerManager.Instance.ShutdownStop = false;
+                    return;
+                }
+            }
             ServerManager.Instance.SaveAll();
             Environment.Exit(0);
         }
