@@ -1021,4 +1021,10 @@ Veux-tu le porter ?</value>
   <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
     <value>Tu n'as pas les objets requis !</value>
   </data>
+  <data name="GM_BLOCK_DISABLE" xml:space="preserve">
+    <value>Maintenant, plus personne ne peut te contacter.</value>
+  </data>
+  <data name="GM_BLOCK_ENABLE" xml:space="preserve">
+    <value>Maintenant, tes messages privés sont débloqués.</value>
+  </data>
 </root>

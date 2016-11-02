@@ -1017,4 +1017,10 @@
   <data name="BANNED" xml:space="preserve">
     <value>Questo account è stato bannato fino al {0}. Ragione: {1}</value>
   </data>
+  <data name="GM_BLOCK_DISABLE" xml:space="preserve">
+    <value>Ora tutti possono contattarti in pvt!</value>
+  </data>
+  <data name="GM_BLOCK_ENABLE" xml:space="preserve">
+    <value>Ora nessuno può contattarti in pvt!</value>
+  </data>
 </root>

@@ -65,6 +65,7 @@ namespace OpenNos.GameObject
             LastMailRefresh = DateTime.Now;
             _session = Session;
             Group = null;
+            GmPvtBlock = false;
         }
 
         #endregion
@@ -96,6 +97,8 @@ namespace OpenNos.GameObject
                 _backpack = value;
             }
         }
+
+        public bool GmPvtBlock { get; set; }
 
         public bool CanFight
         {
