@@ -343,19 +343,22 @@ namespace OpenNos.GameObject
 
             if (this.IsFixed)
             {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
                 return;
             }
             if (Session.Character.Inventory.CountItem(fullmoonVnum) < fullmoon[this.Upgrade])
             {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(fullmoonVnum).Name, fullmoon[this.Upgrade])), 10));
                 return;
             }
             if (Session.Character.Inventory.CountItem(featherVnum) < feather[this.Upgrade])
             {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(featherVnum).Name, feather[this.Upgrade])), 10));
                 return;
             }
-
             if (Session.Character.Gold < goldprice[this.Upgrade])
             {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                 return;
             }
 
@@ -367,12 +370,14 @@ namespace OpenNos.GameObject
                     {
                         if (Session.Character.Inventory.CountItem(greenSoulVnum) < soul[this.Upgrade])
                         {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(greenSoulVnum).Name, soul[this.Upgrade])), 10));
                             return;
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
                             if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(blueScrollVnum).Name, 1)), 10));
                                 return;
                             }
                             Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
@@ -384,12 +389,14 @@ namespace OpenNos.GameObject
                     {
                         if (Session.Character.Inventory.CountItem(dragonSkinVnum) < soul[this.Upgrade])
                         {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(dragonSkinVnum).Name, soul[this.Upgrade])), 10));
                             return;
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
                             if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(blueScrollVnum).Name, 1)), 10));
                                 return;
                             }
                             Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
@@ -412,12 +419,14 @@ namespace OpenNos.GameObject
                     {
                         if (Session.Character.Inventory.CountItem(redSoulVnum) < soul[this.Upgrade])
                         {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(redSoulVnum).Name, soul[this.Upgrade])), 10));
                             return;
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
                             if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(blueScrollVnum).Name, 1)), 10));
                                 return;
                             }
                             Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
@@ -429,12 +438,14 @@ namespace OpenNos.GameObject
                     {
                         if (Session.Character.Inventory.CountItem(dragonBloodVnum) < soul[this.Upgrade])
                         {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(dragonBloodVnum).Name, soul[this.Upgrade])), 10));
                             return;
                         }
                         if (protect == UpgradeProtection.Protected)
                         {
                             if (Session.Character.Inventory.CountItem(blueScrollVnum) < 1)
                             {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(blueScrollVnum).Name, 1)), 10));
                                 return;
                             }
                             Session.Character.Inventory.RemoveItemAmount(blueScrollVnum);
@@ -457,12 +468,14 @@ namespace OpenNos.GameObject
                     {
                         if (Session.Character.Inventory.CountItem(blueSoulVnum) < soul[this.Upgrade])
                         {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(blueSoulVnum).Name, soul[this.Upgrade])), 10));
                             return;
                         }
                         if (protect == UpgradeProtection.Protected && this.Upgrade > 9)
                         {
                             if (Session.Character.Inventory.CountItem(redScrollVnum) < 1)
                             {
+
                                 return;
                             }
                             Session.Character.Inventory.RemoveItemAmount(redScrollVnum);
@@ -480,6 +493,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Inventory.CountItem(redScrollVnum) < 1)
                             {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(redScrollVnum).Name, 1)), 10));
                                 return;
                             }
                             Session.Character.Inventory.RemoveItemAmount(redScrollVnum);
@@ -495,6 +509,7 @@ namespace OpenNos.GameObject
                 }
             }
 
+            Session.Character.Gold -= goldprice[this.Upgrade];
             // remove feather and fullmoon before upgrading
             Session.Character.Inventory.RemoveItemAmount(featherVnum, (feather[this.Upgrade]));
             Session.Character.Inventory.RemoveItemAmount(fullmoonVnum, (fullmoon[this.Upgrade]));
@@ -538,8 +553,7 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 0));
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, this.SpStoneUpgrade));
                 }
-            }
-            Session.Character.Gold -= goldprice[this.Upgrade];
+            }            
             Session.SendPacket(Session.Character.GenerateGold());
             Session.SendPacket(Session.Character.GenerateEq());
             Session.SendPacket("shop_end 1");
