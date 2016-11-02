@@ -1027,4 +1027,7 @@ Veux-tu le porter ?</value>
   <data name="GM_BLOCK_ENABLE" xml:space="preserve">
     <value>Maintenant, tes messages privés sont débloqués.</value>
   </data>
+  <data name="GM_CHAT_BLOCKED" xml:space="preserve">
+    <value>Ce Maître du Jeu n'accepte pas de reçevoir des messages privés.</value>
+  </data>
 </root>
