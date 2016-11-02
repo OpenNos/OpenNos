@@ -1022,10 +1022,10 @@ Veux-tu le porter ?</value>
     <value>Tu n'as pas les objets requis !</value>
   </data>
   <data name="GM_BLOCK_DISABLE" xml:space="preserve">
-    <value>Maintenant, plus personne ne peut te contacter.</value>
+    <value>À partir de maintenant, tu pourras reçevoir des messages privés.</value>
   </data>
   <data name="GM_BLOCK_ENABLE" xml:space="preserve">
-    <value>Maintenant, tes messages privés sont débloqués.</value>
+    <value>À partir de maintenant, plus personne ne pourra t'envoyer des messages privés.</value>
   </data>
   <data name="GM_CHAT_BLOCKED" xml:space="preserve">
     <value>Ce Maître du Jeu n'accepte pas de reçevoir des messages privés.</value>
