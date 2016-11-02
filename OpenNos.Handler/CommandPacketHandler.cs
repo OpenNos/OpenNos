@@ -258,10 +258,16 @@ namespace OpenNos.Handler
                 {
                     Session.Character.JobLevel = joblevel;
                     Session.Character.JobLevelXp = 0;
+                    Session.Character.Skills.ClearAll();
                     Session.SendPacket(Session.Character.GenerateLev());
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(8), Session.Character.MapX, Session.Character.MapY);
+
+                    Session.Character.Skills[(short)(200 + 20 * Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * Session.Character.Class), CharacterId = Session.Character.CharacterId };
+                    Session.Character.Skills[(short)(201 + 20 * Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * Session.Character.Class), CharacterId = Session.Character.CharacterId };
+                    Session.Character.Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = Session.Character.CharacterId };
+
                     Session.SendPacket(Session.Character.GenerateSki());
                     Session.Character.LearnAdventurerSkill();
 
