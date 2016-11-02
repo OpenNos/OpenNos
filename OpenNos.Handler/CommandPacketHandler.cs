@@ -148,13 +148,13 @@ namespace OpenNos.Handler
         {
             if (!Session.Character.GmPvtBlock)
             {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_ENABLE"), 10));
-                Session.Character.GmPvtBlock = true;
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_DISABLE"), 10));
+                Session.Character.GmPvtBlock = false;
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_DISABLE"), 10));
-                Session.Character.GmPvtBlock = false;
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_ENABLE"), 10));
+                Session.Character.GmPvtBlock = true;
             }
         }
 
