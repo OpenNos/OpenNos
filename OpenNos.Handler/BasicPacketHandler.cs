@@ -1172,12 +1172,26 @@ namespace OpenNos.Handler
 
             Session.SendPacket(Session.Character.GenerateSpk(message, 5));
 
+            bool? GmPvtBlock = ServerManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), nameof(Character.GmPvtBlock));
+            if (GmPvtBlock.HasValue)
+            {                
+                if (GmPvtBlock.Value)
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_CHAT_BLOCKED"), 10));
+                    return;
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
+            }
+
             bool? whisperBlocked = ServerManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), nameof(Character.WhisperBlocked));
             if (whisperBlocked.HasValue)
             {
                 if (!whisperBlocked.Value)
                 {
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, (Session.Account.Authority == AuthorityType.Admin ? 8: 5)), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
                 }
                 else
                 {

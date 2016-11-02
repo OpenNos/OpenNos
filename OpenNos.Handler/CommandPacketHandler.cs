@@ -143,6 +143,22 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 10));
             }
         }
+        [Packet("$BlockMP")]
+        public void BlockMP(string packet)
+        {
+            if (!Session.Character.GmPvtBlock)
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_ENABLE"), 10));
+                Session.Character.GmPvtBlock = true;
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_DISABLE"), 10));
+                Session.Character.GmPvtBlock = false;
+            }
+        }
+
+
 
         [Packet("$ChangeClass")]
         public void ChangeClass(string packet)

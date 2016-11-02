@@ -1018,4 +1018,13 @@
   <data name="BANNED" xml:space="preserve">
     <value>This account has been locked to {0} for {1}.</value>
   </data>
+  <data name="GM_BLOCK_DISABLE" xml:space="preserve">
+    <value>Now everyone can contact you via pm</value>
+  </data>
+  <data name="GM_BLOCK_ENABLE" xml:space="preserve">
+    <value>Now none can contact you via pm</value>
+  </data>
+  <data name="GM_CHAT_BLOCKED" xml:space="preserve">
+    <value>This little monkey is busy atm. Try Later!</value>
+  </data>
 </root>
