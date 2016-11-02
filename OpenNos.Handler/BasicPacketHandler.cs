@@ -1189,7 +1189,7 @@ namespace OpenNos.Handler
             bool? whisperBlocked = ServerManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), nameof(Character.WhisperBlocked));
             if (whisperBlocked.HasValue)
             {
-                if (!whisperBlocked.Value)
+                if (!whisperBlocked.Value || Session.Account.Authority == AuthorityType.Admin)
                 {
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, (Session.Account.Authority == AuthorityType.Admin ? 9 : 5)), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
                 }
