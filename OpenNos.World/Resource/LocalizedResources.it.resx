@@ -991,21 +991,30 @@
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
   </data>
   <data name="BOT_MESSAGE_0" xml:space="preserve">
-    <value />
+    <value>Non condividere la tua password con nessuno</value>
   </data>
   <data name="BOT_MESSAGE_1" xml:space="preserve">
-    <value />
+    <value>Riferite i bug alla nostra pagina su github</value>
   </data>
   <data name="BOT_MESSAGE_2" xml:space="preserve">
-    <value />
+    <value>Questo è un messaggio figo</value>
   </data>
   <data name="BOT_MESSAGE_3" xml:space="preserve">
-    <value />
+    <value>Grazie per la vostra collaborazione</value>
   </data>
   <data name="INTRODUCTION_SET" xml:space="preserve">
     <value>Il tuo messaggio è stato modificato per la presentazione.</value>
   </data>
   <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
-    <value />
+    <value>Hai bisogno di almeno {0}x{1}</value>
+  </data>
+  <data name="ADVENTURERS_CANT_USE" xml:space="preserve">
+    <value>Gli avventurieri non possono usare quest'oggetto!</value>
+  </data>
+  <data name="ITEM_UNFIXED" xml:space="preserve">
+    <value>Hai sbloccato l'arma</value>
+  </data>
+  <data name="BANNED" xml:space="preserve">
+    <value>Questo account è stato bannato fino al {0}. Ragione: {1}</value>
   </data>
 </root>
