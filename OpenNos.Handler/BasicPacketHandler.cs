@@ -1191,7 +1191,7 @@ namespace OpenNos.Handler
             {
                 if (!whisperBlocked.Value)
                 {
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, (Session.Account.Authority == AuthorityType.Admin ? 8: 5)), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, (Session.Account.Authority == AuthorityType.Admin ? 9 : 5)), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
                 }
                 else
                 {
