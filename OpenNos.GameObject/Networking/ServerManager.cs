@@ -883,7 +883,7 @@ namespace OpenNos.GameObject
             while (true)
             {
                 Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{ rnd.Next(0, 5) }"));
-                await Task.Delay(60000 * 30);
+                await Task.Delay(60000 * 180);
             }
         }
 

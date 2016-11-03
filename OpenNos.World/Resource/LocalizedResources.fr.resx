@@ -998,16 +998,16 @@ Veux-tu le porter ?</value>
     <value>Astuce : Lisez le règlement, vous éviterez des embêtements !</value>
   </data>
   <data name="BOT_MESSAGE_2" xml:space="preserve">
-    <value>Astuce : Un bug, un problème? reportez le !</value>
+    <value>Astuce : L'utilisation de logiciels externe/bot est strictement interdit !</value>
   </data>
   <data name="BOT_MESSAGE_3" xml:space="preserve">
-    <value>Astuce : Peur d'un vol? lisez le guide anti-arnaque !</value>
+    <value>Astuce : Une arnaque ou un abus? Contactez le support !</value>
   </data>
   <data name="BOT_MESSAGE_4" xml:space="preserve">
-    <value>Astuce : Un seul cheat suffit pour être banni, qu'il soit grand ou petit !</value>
+    <value>Astuce : Qu'il soit grand ou petit, un seul cheat et c'est le pilori !</value>
   </data>
   <data name="BOT_MESSAGE_5" xml:space="preserve">
-    <value>Astuce : Un problème ? reportez le sur notre github !</value>
+    <value>Astuce : Un problème ? reportez le sur notre page github !</value>
   </data>
   <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
     <value>Le monstre doit être en vie. Sinon, essayez de cliquer dessus et ressayez !</value>
