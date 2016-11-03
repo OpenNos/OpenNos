@@ -382,6 +382,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME TIME REASON ", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$BlockMP", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
