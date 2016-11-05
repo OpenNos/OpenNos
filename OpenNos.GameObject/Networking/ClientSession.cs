@@ -44,9 +44,9 @@ namespace OpenNos.GameObject
         // Packetwait Packets
         private int? _waitForPacketsAmount;
 
-        private byte countPacketReceived;
+        //private byte countPacketReceived;
         private long lastPacketReceive;
-        private Task taskPacketReceived;
+        //private Task taskPacketReceived;
         #endregion
 
         #region Instantiation
@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
             lastPacketReceive = DateTime.Now.Ticks;
 
             //set packetcount to 0
-            countPacketReceived = 0;
+            //countPacketReceived = 0;
 
             // initialize network client
             _client = client;
@@ -517,7 +517,7 @@ namespace OpenNos.GameObject
             }
 
             long currentPacketReceive = e.ReceivedTimestamp.Ticks;
-
+            /*
             TimeSpan elapsedSpan = new TimeSpan(currentPacketReceive - lastPacketReceive);
             countPacketReceived++;
             if ((taskPacketReceived == null) || (taskPacketReceived.IsCompleted))
@@ -535,9 +535,9 @@ namespace OpenNos.GameObject
                 Disconnect();
                 return;
             }
-                 
+             */
 
-                _queue.EnqueueMessage(message.MessageData);
+            _queue.EnqueueMessage(message.MessageData);
             lastPacketReceive = e.ReceivedTimestamp.Ticks;
         }
 
