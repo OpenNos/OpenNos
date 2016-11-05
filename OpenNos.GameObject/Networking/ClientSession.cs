@@ -529,7 +529,7 @@ namespace OpenNos.GameObject
                 });
             }
 
-            if (IsAuthenticated && !IsLocalhost && countPacketReceived > 9)
+            if (IsAuthenticated && !IsLocalhost && countPacketReceived > 15)
             {                
                 Logger.Log.Warn($"[AntiSpam]: Packet has been ignored, access was too fast. Last: {lastPacketReceive}, Current: {currentPacketReceive}, Difference: {currentPacketReceive - lastPacketReceive}, SessionId: {SessionId}");
                 Disconnect();
