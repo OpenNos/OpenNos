@@ -533,8 +533,7 @@ namespace OpenNos.GameObject
 
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
 
-            FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
-            Mapper.Initialize(cfg => { });
+            FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);            
 
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
