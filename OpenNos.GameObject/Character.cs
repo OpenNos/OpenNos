@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -1948,7 +1947,7 @@ namespace OpenNos.GameObject
             IEnumerable<QuicklistEntryDTO> quicklistDTO = DAOFactory.QuicklistEntryDAO.LoadByCharacterId(CharacterId).ToList();
             foreach (QuicklistEntryDTO qle in quicklistDTO)
             {
-                QuicklistEntries.Add(Mapper.Map<QuicklistEntryDTO>(qle));
+                QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntryDTO>(qle));
             }
         }
 
@@ -1970,7 +1969,7 @@ namespace OpenNos.GameObject
             {
                 if (!Skills.ContainsKey(characterskill.SkillVNum))
                 {
-                    Skills[characterskill.SkillVNum] = Mapper.Map<CharacterSkill>(characterskill);
+                    Skills[characterskill.SkillVNum] = Mapper.DynamicMap<CharacterSkill>(characterskill);
                 }
             }
         }
@@ -2253,7 +2252,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                CharacterDTO characterToUpdate = Mapper.Map<CharacterDTO>(this);
+                CharacterDTO characterToUpdate = Mapper.DynamicMap<CharacterDTO>(this);
                 DAOFactory.CharacterDAO.InsertOrUpdate(ref characterToUpdate);
                 return true;
             }
