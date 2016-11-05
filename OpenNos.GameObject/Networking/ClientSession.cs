@@ -44,8 +44,9 @@ namespace OpenNos.GameObject
         // Packetwait Packets
         private int? _waitForPacketsAmount;
 
+        private byte countPacketReceived;
         private long lastPacketReceive;
-
+        private Task taskPacketReceived;
         #endregion
 
         #region Instantiation
@@ -54,6 +55,9 @@ namespace OpenNos.GameObject
         {
             // set last received
             lastPacketReceive = DateTime.Now.Ticks;
+
+            //set packetcount to 0
+            countPacketReceived = 0;
 
             // initialize network client
             _client = client;
@@ -514,18 +518,26 @@ namespace OpenNos.GameObject
 
             long currentPacketReceive = e.ReceivedTimestamp.Ticks;
 
-            // ignore a packet which has been sent after the last one, in waiting to an better way to
-            // prevent spam packets(Disable now because cause a lot of troubles)
-            /*
-             if (IsAuthenticated && currentPacketReceive - lastPacketReceive < 120000 && !IsLocalhost)
-             {
-                 Logger.Log.Warn($"[AntiSpam]: Packet has been ignored, access was too fast. Last: {lastPacketReceive}, Current: {currentPacketReceive}, Difference: {currentPacketReceive - lastPacketReceive}, SessionId: {SessionId}");
-                 Disconnect();
-                 return;
-             }
-             */
+            TimeSpan elapsedSpan = new TimeSpan(currentPacketReceive - lastPacketReceive);
+            countPacketReceived++;
+            if ((taskPacketReceived == null) || (taskPacketReceived.IsCompleted))
+            {
+                taskPacketReceived = Task.Factory.StartNew(async () =>
+                {
+                    await Task.Delay(1000);
+                    countPacketReceived = 0;
+                });
+            }
 
-            _queue.EnqueueMessage(message.MessageData);
+            if (IsAuthenticated && !IsLocalhost && countPacketReceived > 9)
+            {                
+                Logger.Log.Warn($"[AntiSpam]: Packet has been ignored, access was too fast. Last: {lastPacketReceive}, Current: {currentPacketReceive}, Difference: {currentPacketReceive - lastPacketReceive}, SessionId: {SessionId}");
+                Disconnect();
+                return;
+            }
+                 
+
+                _queue.EnqueueMessage(message.MessageData);
             lastPacketReceive = e.ReceivedTimestamp.Ticks;
         }
 
