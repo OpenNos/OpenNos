@@ -430,7 +430,7 @@ namespace OpenNos.GameObject
             {
                 MapX = (short)(Owner.MapX + possibilitie.X);
                 MapY = (short)(Owner.MapY + possibilitie.Y);
-                if (!Owner.Session.CurrentMap.IsBlockedZone(MapX, MapY))
+                if (Owner.Session.CurrentMap.IsBlockedZone(MapX, MapY))
                 {
                     break;
                 }

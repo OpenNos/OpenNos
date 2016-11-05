@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using EpPathFinding.cs;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
@@ -50,7 +51,7 @@ namespace OpenNos.GameObject
 
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
-            Path = new List<MapCell>();
+            Path = new List<GridPos>();
             Map = parent;
             Alive = true;
             Respawn = true;
@@ -90,7 +91,7 @@ namespace OpenNos.GameObject
 
         public NpcMonster Monster { get; set; }
 
-        public List<MapCell> Path { get; set; }
+        public List<GridPos> Path { get; set; }
 
         public bool Respawn { get; set; }
 
@@ -134,7 +135,7 @@ namespace OpenNos.GameObject
                     CurrentMp = Monster.MaxMP;
                     MapX = FirstX;
                     MapY = FirstY;
-                    Path = new List<MapCell>();
+                    Path = new List<GridPos>();
                     Map.Broadcast(GenerateIn3());
                     Map.Broadcast(GenerateEff(7), MapX, MapY, 10);
                 }
@@ -156,8 +157,8 @@ namespace OpenNos.GameObject
                         int timetowalk = 1000 / (2 * Monster.Speed);
                         if (time > timetowalk)
                         {
-                            short mapX = Path.ElementAt(0).X;
-                            short mapY = Path.ElementAt(0).Y;
+                            int mapX = Path.ElementAt(0).x;
+                            int mapY = Path.ElementAt(0).y;
                             Path.RemoveAt(0);
                             LastMove = DateTime.Now;
                             Map.Broadcast(new BroadcastPacket(null, $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
@@ -165,8 +166,8 @@ namespace OpenNos.GameObject
                             Task.Factory.StartNew(async () =>
                             {
                                 await Task.Delay(timetowalk);
-                                MapX = mapX;
-                                MapY = mapY;
+                                MapX = (short)mapX;
+                                MapY = (short)mapY;
                             });
                             return;
                         }
@@ -216,10 +217,10 @@ namespace OpenNos.GameObject
                 if (targetSession == null || targetSession.Character.Invisible || targetSession.Character.Hp <= 0)
                 {
                     Target = -1;
-                    Path = Map.StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                    Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY}, new GridPos() { x = FirstX, y = FirstY });
                     if (!Path.Any())
                     {
-                        Path = Map.JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                        Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                     }
                 }
                 NpcMonsterSkill npcMonsterSkill = null;
@@ -255,7 +256,7 @@ namespace OpenNos.GameObject
                             Map.Broadcast(GenerateEff(npcMonsterSkill.Skill.CastEffect), MapX, MapY, 10);
                             Thread.Sleep(npcMonsterSkill.Skill.CastTime * 100);
                         }
-                        Path = new List<MapCell>();
+                        Path = new List<GridPos>();
                         targetSession.Character.LastDefence = DateTime.Now;
                         targetSession.Character.GetDamage(damage);
 
@@ -275,10 +276,10 @@ namespace OpenNos.GameObject
                         {
                             Thread.Sleep(1000);
                             ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
-                            Path = Map.StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                             if (!Path.Any())
                             {
-                                Path = Map.JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                             }
                             Target = -1;
                         }
@@ -322,10 +323,10 @@ namespace OpenNos.GameObject
                             short xoffset = (short)_random.Next(-1, 1);
                             short yoffset = (short)_random.Next(-1, 1);
 
-                            Path = Map.StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
+                            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset)});
                             if (!Path.Any())
                             {
-                                Path = Map.JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset), MapId = this.MapId });
+                                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset)});
                             }
                         }
                         if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
@@ -333,8 +334,8 @@ namespace OpenNos.GameObject
                             short mapX;
                             short mapY;
                             int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                            mapX = Path.ElementAt(maxindex - 1).X;
-                            mapY = Path.ElementAt(maxindex - 1).Y;
+                            mapX = (short)Path.ElementAt(maxindex - 1).x;
+                            mapY = (short)Path.ElementAt(maxindex - 1).y;
                             double waitingtime = (double)(Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId })) / (double)(Monster.Speed);
                             Map.Broadcast(new BroadcastPacket(null, $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                             LastMove = DateTime.Now.AddSeconds((waitingtime > 1 ? 1 : waitingtime));
@@ -352,10 +353,10 @@ namespace OpenNos.GameObject
                         }
                         if (Path.Count() == 0 && (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance))
                         {
-                            Path = Map.StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY}, new GridPos() { x = FirstX, y = FirstY });
                             if (!Path.Any())
                             {
-                                Path = Map.JPSPlus(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = FirstX, Y = FirstY, MapId = this.MapId });
+                                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                             }
                             Target = -1;
                         }

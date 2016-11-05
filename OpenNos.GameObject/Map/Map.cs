@@ -33,12 +33,11 @@ namespace OpenNos.GameObject
 
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
         private bool _disposed;
-        private short[,] _grid;
+        private StaticGrid _grid;
         private List<int> _mapMonsterIds;
         private List<MapNpc> _npcs;
         private List<PortalDTO> _portals;
         private Random _random;
-        private BaseGrid _tempgrid;
         private Guid _uniqueIdentifier;
 
         #endregion
@@ -158,25 +157,6 @@ namespace OpenNos.GameObject
         }
 
         public bool ShopAllowed { get; set; }
-
-        public BaseGrid Tempgrid
-        {
-            get
-            {
-                if (_tempgrid == null)
-                {
-                    _tempgrid = ConvertToGrid(_grid);
-                    JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
-                }
-
-                return _tempgrid;
-            }
-            set
-            {
-                    _tempgrid = null;
-                    JumpPointParameters = null;      
-            }
-        }
 
         public Dictionary<long, MapShop> UserShops { get; set; }
 
@@ -299,7 +279,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (y >= 0 && x >= 0 && y < _grid.GetLength(1) && x < _grid.GetLength(0) && _grid[x, y] != 0)
+            if (!_grid.IsWalkableAt(new GridPos(x, y)))
             {
                 return true;
             }
@@ -326,27 +306,15 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        public List<MapCell> JPSPlus(MapCell cell1, MapCell cell2)
+        public List<GridPos> JPSPlus(GridPos cell1, GridPos cell2)
         {
-            List<MapCell> path = new List<MapCell>();
             List<GridPos> lpath = new List<GridPos>();
-            if (cell1.MapId != cell2.MapId)
-            {
-                return path;
-            }
-            JumpPointParameters.Reset(new GridPos(cell1.X, cell1.Y), new GridPos(cell2.X, cell2.Y));
+
+            JumpPointParameters.Reset(cell1, cell2);
             List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
             lpath = JumpPointFinder.GetFullPath(resultPathList);
-            Debug.WriteLine($"From X: {cell1.X} Y: {cell1.Y}, To X: {cell2.X} Y: {cell2.Y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
-            if (lpath.Any())
-            {
-                List<GridPos> gridPositions = lpath.ToList();
-                foreach (GridPos item in gridPositions)
-                {
-                    path.Add(new MapCell { X = Convert.ToInt16(item.x), Y = Convert.ToInt16(item.y), MapId = cell1.MapId });
-                }
-            }
-            return path;
+            Debug.WriteLine($"From X: {cell1.x} Y: {cell1.y}, To X: {cell2.x} Y: {cell2.y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
+            return lpath;
         }
 
         public void LoadZone()
@@ -370,19 +338,19 @@ namespace OpenNos.GameObject
             YLength = BitConverter.ToInt16(ylength, 0);
             XLength = BitConverter.ToInt16(xlength, 0);
 
-            _grid = new short[XLength, YLength];
+            _grid = new StaticGrid(XLength, YLength);
             for (int i = 0; i < YLength; ++i)
             {
                 for (int t = 0; t < XLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
-                    _grid[t, i] = Convert.ToInt16(bytes[0]);
+                    _grid.SetWalkableAt(new GridPos(t, i), Convert.ToBoolean(Convert.ToInt16(bytes[0]) == 0 ? true: false ));
                 }
             }
 
             // initialize JPS
             //_tempgrid = ConvertToGrid(_grid);
-            //JumpPointParameters = new JumpPointParam(_tempgrid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
+            JumpPointParameters = new JumpPointParam(_grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
 
         public void MonsterLifeManager()
@@ -488,47 +456,47 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal List<MapCell> StraightPath(MapCell mapCell1, MapCell mapCell2)
+        internal List<GridPos> StraightPath(GridPos mapCell1, GridPos mapCell2)
         {
-            List<MapCell> Path = new List<MapCell>();
+            List<GridPos> Path = new List<GridPos>();
             Path.Add(mapCell1);
             do
             {
-                if (Path.Last().X < mapCell2.X && Path.Last().Y < mapCell2.Y)
+                if (Path.Last().x < mapCell2.x && Path.Last().y < mapCell2.y)
                 {
-                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X + 1), Y = (short)(Path.Last().Y + 1) });
+                    Path.Add(new GridPos() { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y + 1) });
                 }
-                else if (Path.Last().X > mapCell2.X && Path.Last().Y > mapCell2.Y)
+                else if (Path.Last().x > mapCell2.x && Path.Last().y > mapCell2.y)
                 {
-                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X - 1), Y = (short)(Path.Last().Y - 1) });
+                    Path.Add(new GridPos() { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y - 1) });
                 }
-                else if (Path.Last().X < mapCell2.X && Path.Last().Y > mapCell2.Y)
+                else if (Path.Last().x < mapCell2.x && Path.Last().y > mapCell2.y)
                 {
-                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X + 1), Y = (short)(Path.Last().Y - 1) });
+                    Path.Add(new GridPos() { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y - 1) });
                 }
-                else if (Path.Last().X > mapCell2.X && Path.Last().Y < mapCell2.Y)
+                else if (Path.Last().x > mapCell2.x && Path.Last().y < mapCell2.y)
                 {
-                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X - 1), Y = (short)(Path.Last().Y + 1) });
+                    Path.Add(new GridPos() { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y + 1) });
                 }
-                else if (Path.Last().X > mapCell2.X)
+                else if (Path.Last().x > mapCell2.x)
                 {
-                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X - 1), Y = (short)(Path.Last().Y) });
+                    Path.Add(new GridPos() { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y) });
                 }
-                else if (Path.Last().X < mapCell2.X)
+                else if (Path.Last().x < mapCell2.x)
                 {
-                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X + 1), Y = (short)(Path.Last().Y) });
+                    Path.Add(new GridPos() { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y) });
                 }
-                else if (Path.Last().Y > mapCell2.Y)
+                else if (Path.Last().y > mapCell2.y)
                 {
-                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X), Y = (short)(Path.Last().Y - 1) });
+                    Path.Add(new GridPos() { x = (short)(Path.Last().x), y = (short)(Path.Last().y - 1) });
                 }
-                else if (Path.Last().Y < mapCell2.Y)
+                else if (Path.Last().y < mapCell2.y)
                 {
-                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X), Y = (short)(Path.Last().Y + 1) });
+                    Path.Add(new GridPos() { x = (short)(Path.Last().x), y = (short)(Path.Last().y + 1) });
                 }
             }
-            while ((Path.Last().X != mapCell2.X || Path.Last().Y != mapCell2.Y) && (!IsBlockedZone(Path.Last().X, Path.Last().Y)));
-            if (IsBlockedZone(Path.Last().X, Path.Last().Y))
+            while ((Path.Last().x != mapCell2.x || Path.Last().y != mapCell2.y) && (!IsBlockedZone(Path.Last().x, Path.Last().y)));
+            if (IsBlockedZone(Path.Last().x, Path.Last().y))
             {
                 if (Path.Any())
                 {

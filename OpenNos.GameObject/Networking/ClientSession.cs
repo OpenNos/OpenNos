@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using EpPathFinding.cs;
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Threading;

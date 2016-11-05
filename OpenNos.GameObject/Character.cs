@@ -1948,7 +1948,7 @@ namespace OpenNos.GameObject
             IEnumerable<QuicklistEntryDTO> quicklistDTO = DAOFactory.QuicklistEntryDAO.LoadByCharacterId(CharacterId).ToList();
             foreach (QuicklistEntryDTO qle in quicklistDTO)
             {
-                QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntryDTO>(qle));
+                QuicklistEntries.Add(Mapper.Map<QuicklistEntryDTO>(qle));
             }
         }
 
@@ -1970,7 +1970,7 @@ namespace OpenNos.GameObject
             {
                 if (!Skills.ContainsKey(characterskill.SkillVNum))
                 {
-                    Skills[characterskill.SkillVNum] = Mapper.DynamicMap<CharacterSkill>(characterskill);
+                    Skills[characterskill.SkillVNum] = Mapper.Map<CharacterSkill>(characterskill);
                 }
             }
         }
@@ -2253,7 +2253,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                CharacterDTO characterToUpdate = Mapper.DynamicMap<CharacterDTO>(this);
+                CharacterDTO characterToUpdate = Mapper.Map<CharacterDTO>(this);
                 DAOFactory.CharacterDAO.InsertOrUpdate(ref characterToUpdate);
                 return true;
             }

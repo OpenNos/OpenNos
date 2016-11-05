@@ -534,6 +534,7 @@ namespace OpenNos.GameObject
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
 
             FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
+            Mapper.Initialize(cfg => { });
 
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
@@ -939,11 +940,9 @@ namespace OpenNos.GameObject
                 {
                     TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
                     map.Value.Disabled = false;
-                    map.Value.Tempgrid.ToString();
                 }
                 foreach (var map in _maps.Where(s => !s.Value.Disabled && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
                 {
-                    map.Value.Tempgrid = null;
                     map.Value.Disabled = true;
                 }
                 TaskMaps.ForEach(s => s.Start());
