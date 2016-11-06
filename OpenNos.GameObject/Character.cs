@@ -54,6 +54,7 @@ namespace OpenNos.GameObject
         public Character(ClientSession Session)
         {
             _random = new Random();
+            ExchangeInfo = null;
             SpCooldown = 30;
             SaveX = 0;
             SaveY = 0;
@@ -515,6 +516,24 @@ namespace OpenNos.GameObject
                     Session.SendPacket("shop_end 0");
                 }
                 HasShopOpened = false;
+            }
+        }
+
+        public void CloseTrade()
+        {
+            if (InExchangeOrTrade)
+            {
+                ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
+
+                if (targetSession == null)
+                {
+                    return;
+                }
+
+                Session.SendPacket("exc_close 0");
+                targetSession.SendPacket("exc_close 0");
+                Session.Character.ExchangeInfo = null;
+                targetSession.Character.ExchangeInfo = null;
             }
         }
 

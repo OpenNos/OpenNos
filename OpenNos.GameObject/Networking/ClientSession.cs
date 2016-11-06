@@ -219,7 +219,7 @@ namespace OpenNos.GameObject
             if (HasSelectedCharacter)
             {
                 Character.CloseShop();
-
+                Character.CloseTrade();
                 // disconnect client
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
 
