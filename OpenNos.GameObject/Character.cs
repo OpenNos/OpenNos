@@ -11,6 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL;
@@ -19,7 +20,6 @@ using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using OpenNos.GameObject.Packets.ServerPackets;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,7 +29,6 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private ClientSession _session;
         private AuthorityType _authority;
         private int _backpack;
         private byte _cmapcount = 0;
@@ -44,6 +43,7 @@ namespace OpenNos.GameObject
         private int _morphUpgrade;
         private int _morphUpgrade2;
         private Random _random;
+        private ClientSession _session;
         private int _size = 10;
         private byte _speed;
 
@@ -51,24 +51,10 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public Character() { }
-
-        public override void Initialize()
+        public Character()
         {
-            _random = new Random();
-            ExchangeInfo = null;
-            SpCooldown = 30;
-            SaveX = 0;
-            SaveY = 0;
-            LastDefence = DateTime.Now.AddSeconds(-21);
-            LastHealth = DateTime.Now;
-            LastEffect = DateTime.Now;
-            Session = null;
-            MailList = new Dictionary<int, MailDTO>();
-            LastMailRefresh = DateTime.Now;
-            Group = null;
-            GmPvtBlock = false;
         }
+
         #endregion
 
         #region Properties
@@ -98,8 +84,6 @@ namespace OpenNos.GameObject
                 _backpack = value;
             }
         }
-
-        public bool GmPvtBlock { get; set; }
 
         public bool CanFight
         {
@@ -147,6 +131,8 @@ namespace OpenNos.GameObject
         public ExchangeInfo ExchangeInfo { get; set; }
 
         public int FireResistance { get; set; }
+
+        public bool GmPvtBlock { get; set; }
 
         public Group Group { get; set; }
 
@@ -1883,6 +1869,23 @@ namespace OpenNos.GameObject
             return (int)((CharacterHelper.HPData[Class, Level] + hp) * multiplicator);
         }
 
+        public override void Initialize()
+        {
+            _random = new Random();
+            ExchangeInfo = null;
+            SpCooldown = 30;
+            SaveX = 0;
+            SaveY = 0;
+            LastDefence = DateTime.Now.AddSeconds(-21);
+            LastHealth = DateTime.Now;
+            LastEffect = DateTime.Now;
+            Session = null;
+            MailList = new Dictionary<int, MailDTO>();
+            LastMailRefresh = DateTime.Now;
+            Group = null;
+            GmPvtBlock = false;
+        }
+
         public bool IsMuted()
         {
             return Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now);
@@ -2145,7 +2148,6 @@ namespace OpenNos.GameObject
             {
                 CharacterDTO character = this.DeepCopy();
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
-
 
                 // load and concat inventory with equipment
                 Inventory copiedInventory = Inventory.DeepCopy();
@@ -2422,6 +2424,11 @@ namespace OpenNos.GameObject
         internal bool IsInRange(int xCoordinate, int yCoordinate)
         {
             return Math.Abs(MapX - xCoordinate) <= 50 && Math.Abs(MapY - yCoordinate) <= 50;
+        }
+
+        internal void SetSession(ClientSession clientSession)
+        {
+            Session = clientSession;
         }
 
         private object HeroXPLoad()

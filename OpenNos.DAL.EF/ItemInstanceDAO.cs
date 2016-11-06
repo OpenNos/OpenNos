@@ -77,9 +77,7 @@ namespace OpenNos.DAL.EF
                     cfg.CreateMap(entry.Value, entry.Key)
                                     .IncludeBase(typeof(ItemInstance), baseType);
 
-                    Type retrieveDTOType = Type.GetType($"OpenNos.Data.{entry.Key.Name}DTO, OpenNos.Data");
-
-                    // Entity -> DTO
+                    // Entity -> GameObject
                     cfg.CreateMap(entry.Value, typeof(ItemInstanceDTO)).As(entry.Key);
                 }
             });
@@ -137,6 +135,22 @@ namespace OpenNos.DAL.EF
                 {
                     return context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)).Select(i => i.Id).ToList();
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+        }
+
+        public override IGameObjectMappingBaseDAO RegisterMapping(Type gameObjectType)
+        {
+            try
+            {
+                Type targetType = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(t => t.Name.Equals(gameObjectType.Name));
+                Type itemInstanceType = typeof(ItemInstance);
+                mappings.Add(gameObjectType, targetType);
+                return this;
             }
             catch (Exception e)
             {

@@ -693,6 +693,7 @@ namespace OpenNos.GameObject
 
                     // register for broadcast
                     _maps.TryAdd(guid, newMap);
+                    newMap.SetMapMapMonsterReference();
                     i++;
                     npccount += newMap.Npcs.Count();
 

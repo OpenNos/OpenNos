@@ -103,6 +103,14 @@ namespace OpenNos.GameObject
             npcsDTO.ToList().ForEach(s => _npcs.Add(new MapNpc(s)));
         }
 
+        public void SetMapMapMonsterReference()
+        {
+            foreach(MapMonster monster in _monsters.GetAllItems())
+            {
+                monster.Map = this;
+            }
+        }
+
         #endregion
 
         #region Properties

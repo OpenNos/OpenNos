@@ -45,7 +45,6 @@ namespace OpenNos.GameObject
             Alive = true;
             Respawn = true;
             Monster = ServerManager.GetNpc(MonsterVNum);
-            Map = ServerManager.GetMap(MapId);
             CurrentHp = Monster.MaxHP;
             CurrentMp = Monster.MaxHP;
             Skills = Monster.Skills.ToList();

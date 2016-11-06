@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF
 
         protected IDictionary<Type, Type> mappings = new Dictionary<Type, Type>();
 
-        public IGameObjectMappingBaseDAO RegisterMapping(Type gameObjectType)
+        public virtual IGameObjectMappingBaseDAO RegisterMapping(Type gameObjectType)
         {
             try
             {
