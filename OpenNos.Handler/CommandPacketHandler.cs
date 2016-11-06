@@ -379,6 +379,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
             Session.SendPacket(Session.Character.GenerateSay("$ArenaWinner", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Backpack", 12));
             Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME TIME REASON ", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
@@ -574,7 +575,16 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
             }
         }
-
+        
+       [Packet("$Backpack")]
+        public void BackPack(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            Session.Character.BackPack = Session.Character.BackPack == 0 ? 1 : 0;
+            Session.SendPacket(Session.Character.GenerateExts());
+            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        }
+        
         [Packet("$Effect")]
         public void Effect(string packet)
         {
