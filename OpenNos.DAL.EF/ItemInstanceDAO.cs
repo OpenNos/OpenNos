@@ -51,6 +51,11 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public override void InitializeMapper()
+        {
+            // avoid override of mapping
+        }
+
         public void InitializeMapper(Type baseType)
         {
             _baseType = baseType;

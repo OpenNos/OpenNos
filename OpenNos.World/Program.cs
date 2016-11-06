@@ -16,6 +16,7 @@ using log4net;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
+using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Handler;
 using OpenNos.ServiceRef.Internal;
@@ -108,33 +109,29 @@ namespace OpenNos.World
             }
         }
 
-        private static void RegisterMappings()
-        {
-            // register mappings for items
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(UsableInstance));
-            DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
-
-            // npcmonster
-            DAOFactory.NpcMonsterDAO.RegisterMapping(typeof(NpcMonster));
-            DAOFactory.NpcMonsterDAO.InitializeMapper();
-
-            // mapmonster
-            DAOFactory.MapMonsterDAO.RegisterMapping(typeof(MapMonster));
-            DAOFactory.MapMonsterDAO.InitializeMapper();
-
-            // character
-            DAOFactory.CharacterDAO.RegisterMapping(typeof(Character));
-            DAOFactory.CharacterDAO.InitializeMapper();
-        }
-
         private static bool ExitHandler(CtrlType sig)
         {
             ServerManager.Instance.Shout(String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             Thread.Sleep(5000);
             ServerManager.Instance.SaveAll();
             return false;
+        }
+
+        private static void RegisterMappings()
+        {
+            // register mappings for items
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
+            DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
+
+            // entities
+            DAOFactory.NpcMonsterDAO.RegisterMapping(typeof(NpcMonster)).InitializeMapper();
+            DAOFactory.MapMonsterDAO.RegisterMapping(typeof(MapMonster)).InitializeMapper();
+            DAOFactory.CharacterDAO.RegisterMapping(typeof(Character)).InitializeMapper();
+            DAOFactory.QuicklistEntryDAO.RegisterMapping(typeof(QuicklistEntryDTO)).InitializeMapper();
+            DAOFactory.CharacterSkillDAO.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();
+
+
         }
 
         [DllImport("Kernel32")]

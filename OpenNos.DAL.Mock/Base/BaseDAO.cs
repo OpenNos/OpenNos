@@ -62,9 +62,10 @@ namespace OpenNos.DAL.Mock
             return Container;
         }
 
-        public void RegisterMapping(Type gameObjectType)
+        public IGameObjectMappingBaseDAO RegisterMapping(Type gameObjectType)
         {
             //TODO
+            return null;
         }
 
         #endregion

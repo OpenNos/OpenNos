@@ -47,7 +47,6 @@ namespace OpenNos.Test
             // register mappings for items
             DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
             DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(UsableInstance));
             DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
 
             // initialize PacketSerialization

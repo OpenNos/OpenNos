@@ -133,7 +133,6 @@
     <Compile Include="Skill.cs" />
     <Compile Include="CharacterSkill.cs" />
     <Compile Include="Item\Instance\SpecialistInstance.cs" />
-    <Compile Include="Item\Instance\UsableInstance.cs" />
     <Compile Include="Item\Instance\WearableInstance.cs" />
   </ItemGroup>
   <ItemGroup>

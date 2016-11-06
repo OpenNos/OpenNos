@@ -18,17 +18,18 @@ namespace OpenNos.DAL.EF
 
         protected IDictionary<Type, Type> mappings = new Dictionary<Type, Type>();
 
-        public void RegisterMapping(Type gameObjectType)
+        public IGameObjectMappingBaseDAO RegisterMapping(Type gameObjectType)
         {
             try
             {
-                Type targetType = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(t => t.Name.Equals(gameObjectType.Name));
-                Type itemInstanceType = typeof(TEntity);
+                Type targetType = typeof(TEntity);
                 mappings.Add(gameObjectType, targetType);
+                return this;
             }
             catch (Exception e)
             {
                 Logger.Error(e);
+                return null;
             }
         }
 

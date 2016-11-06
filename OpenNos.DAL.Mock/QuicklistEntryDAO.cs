@@ -10,7 +10,7 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
-        public IEnumerable<QuicklistEntry> LoadByCharacterId(long characterId)
+        public IEnumerable<QuicklistEntryDTO> LoadByCharacterId(long characterId)
         {
             return Container.Where(c => c.CharacterId == characterId);
         }
