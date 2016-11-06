@@ -89,13 +89,13 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public MapNpcDTO LoadById(int id)
+        public MapNpcDTO LoadById(int mapNpcId)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<MapNpcDTO>(context.MapNpc.FirstOrDefault(i => i.MapNpcId.Equals(id)));
+                    return _mapper.Map<MapNpcDTO>(context.MapNpc.FirstOrDefault(i => i.MapNpcId.Equals(mapNpcId)));
                 }
             }
             catch (Exception e)

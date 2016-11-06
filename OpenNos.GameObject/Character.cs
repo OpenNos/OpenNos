@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private readonly ClientSession _session;
+        private ClientSession _session;
         private AuthorityType _authority;
         private int _backpack;
         private byte _cmapcount = 0;
@@ -51,7 +51,9 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public Character(ClientSession Session)
+        public Character() { }
+
+        public override void Initialize()
         {
             _random = new Random();
             ExchangeInfo = null;
@@ -61,13 +63,12 @@ namespace OpenNos.GameObject
             LastDefence = DateTime.Now.AddSeconds(-21);
             LastHealth = DateTime.Now;
             LastEffect = DateTime.Now;
+            Session = null;
             MailList = new Dictionary<int, MailDTO>();
             LastMailRefresh = DateTime.Now;
-            _session = Session;
             Group = null;
             GmPvtBlock = false;
         }
-
         #endregion
 
         #region Properties
@@ -347,6 +348,10 @@ namespace OpenNos.GameObject
             get
             {
                 return _session;
+            }
+            private set
+            {
+                _session = value;
             }
         }
 
@@ -1966,7 +1971,7 @@ namespace OpenNos.GameObject
             IEnumerable<QuicklistEntryDTO> quicklistDTO = DAOFactory.QuicklistEntryDAO.LoadByCharacterId(CharacterId).ToList();
             foreach (QuicklistEntryDTO qle in quicklistDTO)
             {
-                QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntryDTO>(qle));
+                QuicklistEntries.Add(qle as QuicklistEntryDTO);
             }
         }
 
@@ -1988,7 +1993,7 @@ namespace OpenNos.GameObject
             {
                 if (!Skills.ContainsKey(characterskill.SkillVNum))
                 {
-                    Skills[characterskill.SkillVNum] = Mapper.DynamicMap<CharacterSkill>(characterskill);
+                    Skills[characterskill.SkillVNum] = characterskill as CharacterSkill;
                 }
             }
         }
@@ -2271,7 +2276,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                CharacterDTO characterToUpdate = Mapper.DynamicMap<CharacterDTO>(this);
+                CharacterDTO characterToUpdate = this;
                 DAOFactory.CharacterDAO.InsertOrUpdate(ref characterToUpdate);
                 return true;
             }

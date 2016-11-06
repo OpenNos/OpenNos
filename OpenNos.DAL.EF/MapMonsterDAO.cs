@@ -24,28 +24,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class MapMonsterDAO : IMapMonsterDAO
+    public class MapMonsterDAO : GameObjectMappingBaseDAO<MapMonster, MapMonsterDTO>, IMapMonsterDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public MapMonsterDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<MapMonster, MapMonsterDTO>();
-                cfg.CreateMap<MapMonsterDTO, MapMonster>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
 
         #region Methods
 

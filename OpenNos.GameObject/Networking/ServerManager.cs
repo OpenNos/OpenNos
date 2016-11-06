@@ -673,7 +673,7 @@ namespace OpenNos.GameObject
             }
             foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
             {
-                _npcs.Add(_mapper.Map<NpcMonster>(npcmonsterDTO));
+                _npcs.Add(npcmonsterDTO as NpcMonster);
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
 

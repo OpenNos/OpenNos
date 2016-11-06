@@ -80,6 +80,9 @@ namespace OpenNos.World
             // initialize DB
             if (DataAccessHelper.Initialize())
             {
+                //register mappings for DAOs, Entity -> GameObject and GameObject -> Entity
+                RegisterMappings();
+
                 // initialilize maps
                 ServerManager.Instance.Initialize();
             }
@@ -88,12 +91,6 @@ namespace OpenNos.World
                 Console.ReadLine();
                 return;
             }
-
-            // register mappings for items
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(UsableInstance));
-            DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
 
             // TODO: initialize ClientLinkManager initialize PacketSerialization
             PacketFactory.Initialize<WalkPacket>();
@@ -109,6 +106,27 @@ namespace OpenNos.World
             {
                 Logger.Log.Error("General Error", ex);
             }
+        }
+
+        private static void RegisterMappings()
+        {
+            // register mappings for items
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(UsableInstance));
+            DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
+
+            // npcmonster
+            DAOFactory.NpcMonsterDAO.RegisterMapping(typeof(NpcMonster));
+            DAOFactory.NpcMonsterDAO.InitializeMapper();
+
+            // mapmonster
+            DAOFactory.MapMonsterDAO.RegisterMapping(typeof(MapMonster));
+            DAOFactory.MapMonsterDAO.InitializeMapper();
+
+            // character
+            DAOFactory.CharacterDAO.RegisterMapping(typeof(Character));
+            DAOFactory.CharacterDAO.InitializeMapper();
         }
 
         private static bool ExitHandler(CtrlType sig)

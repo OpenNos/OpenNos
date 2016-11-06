@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface ISynchronizableBaseDAO<TDTO>
+    public interface ISynchronizableBaseDAO<TDTO> : IGameObjectMappingBaseDAO
         where TDTO : SynchronizableBaseDTO
     {
         #region Methods

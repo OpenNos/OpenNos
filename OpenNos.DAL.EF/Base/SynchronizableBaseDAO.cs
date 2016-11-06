@@ -11,30 +11,10 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public abstract class SynchronizableBaseDAO<TEntity, TDTO> : ISynchronizableBaseDAO<TDTO>
+    public abstract class SynchronizableBaseDAO<TEntity, TDTO> : GameObjectMappingBaseDAO<TEntity, TDTO>, ISynchronizableBaseDAO<TDTO>
         where TDTO : SynchronizableBaseDTO
         where TEntity : SynchronizableBaseEntity
     {
-        #region Members
-
-        protected IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public SynchronizableBaseDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<TEntity, TDTO>();
-                cfg.CreateMap<TDTO, TEntity>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
 
         #region Methods
 

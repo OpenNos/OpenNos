@@ -33,25 +33,26 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public MapNpc(MapNpcDTO npc)
+        public MapNpc(MapNpcDTO npcdto)
         {
-            _random = new Random(npc.MapNpcId);
+            _random = new Random(npcdto.MapNpcId);
 
             // Replace by MAPPING
-            MapId = npc.MapId;
-            MapX = npc.MapX;
-            MapY = npc.MapY;
-            Position = npc.Position;
-            NpcVNum = npc.NpcVNum;
-            IsSitting = npc.IsSitting;
-            IsMoving = npc.IsMoving;
-            Effect = npc.Effect;
-            EffectDelay = npc.EffectDelay;
-            Dialog = npc.Dialog;
-            FirstX = npc.MapX;
-            FirstY = npc.MapY;
-            MapNpcId = npc.MapNpcId;
-            ////////////////////////
+            MapId = npcdto.MapId;
+            MapX = npcdto.MapX;
+            MapY = npcdto.MapY;
+            Position = npcdto.Position;
+            NpcVNum = npcdto.NpcVNum;
+            IsSitting = npcdto.IsSitting;
+            IsMoving = npcdto.IsMoving;
+            Effect = npcdto.Effect;
+            EffectDelay = npcdto.EffectDelay;
+            Dialog = npcdto.Dialog;
+            MapNpcId = npcdto.MapNpcId;
+            IsDisabled = npcdto.IsDisabled;
+            FirstX = npcdto.MapX;
+            FirstY = npcdto.MapY;
+            ///////////////////
 
             Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = LastMove = DateTime.Now;

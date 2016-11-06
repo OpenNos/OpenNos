@@ -94,7 +94,7 @@ namespace OpenNos.GameObject
 
             foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
             {
-                _monsters[monster.MapMonsterId] = new MapMonster(monster, this);
+                _monsters[monster.MapMonsterId] = monster as MapMonster;
                 _mapMonsterIds.Add(monster.MapMonsterId);
             }
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
@@ -344,7 +344,7 @@ namespace OpenNos.GameObject
                 for (int t = 0; t < XLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
-                    _grid.SetWalkableAt(new GridPos(t, i), Convert.ToBoolean(Convert.ToInt16(bytes[0]) == 0 ? true: false ));
+                    _grid.SetWalkableAt(new GridPos(t, i), Convert.ToBoolean(Convert.ToInt16(bytes[0]) == 0 ? true : false));
                 }
             }
 

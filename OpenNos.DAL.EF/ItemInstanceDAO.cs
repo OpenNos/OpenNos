@@ -32,7 +32,6 @@ namespace OpenNos.DAL.EF
         #region Members
 
         private Type _baseType;
-        private IDictionary<Type, Type> itemInstanceMappings = new Dictionary<Type, Type>();
 
         #endregion
 
@@ -63,7 +62,7 @@ namespace OpenNos.DAL.EF
                 cfg.CreateMap(typeof(ItemInstance), typeof(ItemInstanceDTO)).As(baseType);
 
                 Type itemInstanceType = typeof(ItemInstance);
-                foreach (KeyValuePair<Type, Type> entry in itemInstanceMappings)
+                foreach (KeyValuePair<Type, Type> entry in mappings)
                 {
                     // GameObject -> Entity
                     cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
@@ -141,20 +140,6 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public void RegisterMapping(Type gameObjectType)
-        {
-            try
-            {
-                Type targetType = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(t => t.Name.Equals(gameObjectType.Name));
-                Type itemInstanceType = typeof(ItemInstance);
-                itemInstanceMappings.Add(gameObjectType, targetType);
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
         protected override ItemInstanceDTO InsertOrUpdate(OpenNosContext context, ItemInstanceDTO itemInstance)
         {
             try
@@ -183,7 +168,7 @@ namespace OpenNos.DAL.EF
             try
             {
                 var entity = _mapper.Map<ItemInstance>(dto);
-                KeyValuePair<Type, Type> targetMapping = itemInstanceMappings.FirstOrDefault(k => k.Key.Equals(dto.GetType()));
+                KeyValuePair<Type, Type> targetMapping = mappings.FirstOrDefault(k => k.Key.Equals(dto.GetType()));
                 if (targetMapping.Key != null)
                 {
                     entity = _mapper.Map(dto, targetMapping.Key, targetMapping.Value) as ItemInstance;

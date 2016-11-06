@@ -16,9 +16,9 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public MapMonsterDTO LoadById(int monsterId)
+        public MapMonsterDTO LoadById(int mapMonsterId)
         {
-            return Container.SingleOrDefault(m => m.MapMonsterId == monsterId);
+            return Container.SingleOrDefault(m => m.MapMonsterId == mapMonsterId);
         }
 
         public IEnumerable<MapMonsterDTO> LoadFromMap(short mapId)

@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\GameObjectMappingBaseDTO.cs" />
     <Compile Include="Base\SynchronizableBaseDTO.cs" />
     <Compile Include="CellonOptionDTO.cs" />
     <Compile Include="ComboDTO.cs" />

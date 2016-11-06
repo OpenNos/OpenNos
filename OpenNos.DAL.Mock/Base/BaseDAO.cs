@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using OpenNos.DAL.Interface;
 using System.Collections.Generic;
+using System;
 
 namespace OpenNos.DAL.Mock
 {
-    public abstract class BaseDAO<TDTO>
+    public abstract class BaseDAO<TDTO> : IGameObjectMappingBaseDAO
     {
         #region Members
 
@@ -32,6 +34,11 @@ namespace OpenNos.DAL.Mock
 
         public IList<TDTO> Container { get; set; }
 
+        public void InitializeMapper()
+        {
+            //TODO
+        }
+
         #endregion
 
         #region Methods
@@ -53,6 +60,11 @@ namespace OpenNos.DAL.Mock
         public IEnumerable<TDTO> LoadAll()
         {
             return Container;
+        }
+
+        public void RegisterMapping(Type gameObjectType)
+        {
+            //TODO
         }
 
         #endregion
