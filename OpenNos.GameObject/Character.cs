@@ -933,7 +933,16 @@ namespace OpenNos.GameObject
 
         public List<string> GenerateIn3()
         {
-            return ServerManager.GetMap(MapId).Monsters.Select(monster => monster.GenerateIn3()).ToList();
+            List<string> listIn = new List<string>();
+            foreach (MapMonster monster in ServerManager.GetMap(MapId).Monsters)
+            {
+                string in3 = monster.GenerateIn3();
+                if (in3 != string.Empty)
+                {
+                    listIn.Add(in3);
+                }
+            }
+            return listIn;
         }
 
         public string GenerateInfo(string message)
