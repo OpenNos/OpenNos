@@ -787,10 +787,13 @@ namespace OpenNos.GameObject
             ClientSession session = GetSessionByCharacterId(characterId);
             if (session != null && session.Character.Hp <= 0)
             {
+                Random rnd = new Random();
                 MapOut(session.Character.CharacterId);
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
-                ChangeMap(session.Character.CharacterId, 1, 80, 116);
+                short x = (short)(80 + rnd.Next(-5, 5));
+                short y = (short)(116 + rnd.Next(-5, 5));
+                ChangeMap(session.Character.CharacterId, 1, x, y);
                 session.CurrentMap?.Broadcast(session, session.Character.GenerateTp(), ReceiverType.All);
                 session.CurrentMap?.Broadcast(session.Character.GenerateRevive(), 200);
                 session.SendPacket(session.Character.GenerateStat());

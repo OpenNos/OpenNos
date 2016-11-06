@@ -219,7 +219,8 @@ namespace OpenNos.GameObject
             if (HasSelectedCharacter)
             {
                 Character.CloseShop();
-
+                //TODO Check why ExchangeInfo.TargetCharacterId is null
+                //Character.CloseTrade(); 
                 // disconnect client
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
 
