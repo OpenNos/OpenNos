@@ -92,22 +92,18 @@ namespace OpenNos.GameObject
                 //////////////////
             }
 
-            foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
-            {
-                _monsters[monster.MapMonsterId] = monster as MapMonster;
-                _mapMonsterIds.Add(monster.MapMonsterId);
-            }
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
 
             _npcs = new List<MapNpc>();
             npcsDTO.ToList().ForEach(s => _npcs.Add(new MapNpc(s)));
         }
 
-        public void SetMapMapMonsterReference()
+        public void LoadMonsters()
         {
-            foreach(MapMonster monster in _monsters.GetAllItems())
+            foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
             {
-                monster.Map = this;
+                _monsters[monster.MapMonsterId] = monster as MapMonster;
+                _mapMonsterIds.Add(monster.MapMonsterId);
             }
         }
 

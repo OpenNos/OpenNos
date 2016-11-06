@@ -665,10 +665,7 @@ namespace OpenNos.GameObject
             foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
             {
                 Skill skill = _mapper.Map<Skill>(skillDTO);
-                foreach (ComboDTO com in DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList())
-                {
-                    skill.Combos.Add(_mapper.Map<ComboDTO>(com));
-                }
+                skill.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList());
                 _skills.Add(skill);
             }
             foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
@@ -693,16 +690,17 @@ namespace OpenNos.GameObject
 
                     // register for broadcast
                     _maps.TryAdd(guid, newMap);
-                    newMap.SetMapMapMonsterReference();
                     i++;
                     npccount += newMap.Npcs.Count();
 
-                    foreach (MapMonster n in newMap.Monsters)
+                    newMap.LoadMonsters();
+                    foreach (MapMonster mapMonster in newMap.Monsters)
                     {
-                        newMap.AddMonster(n);
+                        mapMonster.Map = newMap;
+                        newMap.AddMonster(mapMonster);
                     }
                     monstercount += newMap.Monsters.Count();
-                    foreach (MapNpc n in newMap.Npcs.Where(n => n.Shop != null))
+                    foreach (MapNpc mapNpc in newMap.Npcs.Where(n => n.Shop != null))
                     {
                         shopcount++;
                     }
