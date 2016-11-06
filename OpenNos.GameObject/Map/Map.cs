@@ -48,54 +48,33 @@ namespace OpenNos.GameObject
         {
             _random = new Random();
             MapId = mapId;
+            ShopAllowed = true;
             _uniqueIdentifier = uniqueIdentifier;
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
             Data = data;
             LoadZone();
             IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId).ToList();
-            _portals = new List<PortalDTO>();
             DroppedList = new ConcurrentDictionary<long, MapItem>();
 
             MapTypes = new List<MapTypeDTO>();
             foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId).ToList())
             {
-                MapTypeDTO MT = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
-
-                // Replace by MAPPING
-                MapTypeDTO maptype = new MapTypeDTO()
-                {
-                    MapTypeId = MT.MapTypeId,
-                    MapTypeName = MT.MapTypeName,
-                    PotionDelay = MT.PotionDelay
-                };
-                ///////////////
+                MapTypeDTO maptype = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId) as MapTypeDTO;
                 MapTypes.Add(maptype);
             }
 
-            UserShops = new Dictionary<long, MapShop>();
+            _portals = new List<PortalDTO>();
             foreach (PortalDTO portal in portals)
             {
-                // Replace by MAPPING
-                _portals.Add(new PortalDTO()
-                {
-                    DestinationMapId = portal.DestinationMapId,
-                    SourceMapId = portal.SourceMapId,
-                    SourceX = portal.SourceX,
-                    SourceY = portal.SourceY,
-                    DestinationX = portal.DestinationX,
-                    DestinationY = portal.DestinationY,
-                    Type = portal.Type,
-                    PortalId = portal.PortalId,
-                    IsDisabled = portal.IsDisabled
-                });
-                //////////////////
+                _portals.Add(portal as PortalDTO);
             }
 
+            UserShops = new Dictionary<long, MapShop>();
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
 
             _npcs = new List<MapNpc>();
-            npcsDTO.ToList().ForEach(s => _npcs.Add(new MapNpc(s)));
+            npcsDTO.ToList().ForEach(s => _npcs.Add(s as MapNpc));
         }
 
         public void LoadMonsters()

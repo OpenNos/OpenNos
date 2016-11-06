@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface ICellonOptionDAO
+    public interface ICellonOptionDAO : ISynchronizableBaseDAO<CellonOptionDTO>
     {
         #region Methods
 

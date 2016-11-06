@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
-    public class TeleporterDAO : ITeleporterDAO
+    public class TeleporterDAO : BaseDAO<TeleporterDTO>, ITeleporterDAO
     {
         #region Methods
 

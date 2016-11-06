@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IDropDAO
+    public interface IDropDAO : IGameObjectMappingBaseDAO
     {
         #region Methods
 

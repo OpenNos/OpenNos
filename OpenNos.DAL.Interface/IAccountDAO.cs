@@ -18,7 +18,7 @@ using System;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IAccountDAO
+    public interface IAccountDAO : IGameObjectMappingBaseDAO
     {
         #region Methods
 

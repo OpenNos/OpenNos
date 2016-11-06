@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
-    public class NpcMonsterSkillDAO : INpcMonsterSkillDAO
+    public class NpcMonsterSkillDAO : BaseDAO<NpcMonsterSkillDTO>, INpcMonsterSkillDAO
     {
         #region Methods
 

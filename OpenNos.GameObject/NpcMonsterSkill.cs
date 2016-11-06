@@ -29,6 +29,10 @@ namespace OpenNos.GameObject
 
         public NpcMonsterSkill()
         {
+        }
+
+        public override void Initialize()
+        {
             LastUse = DateTime.Now.AddHours(-1);
             Hit = 0;
         }

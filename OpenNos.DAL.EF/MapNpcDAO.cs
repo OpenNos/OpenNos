@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -23,29 +22,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class MapNpcDAO : IMapNpcDAO
+    public class MapNpcDAO : GameObjectMappingBaseDAO<MapNpc, MapNpcDTO>, IMapNpcDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public MapNpcDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<MapNpc, MapNpcDTO>();
-                cfg.CreateMap<MapNpcDTO, MapNpc>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public void Insert(List<MapNpcDTO> npcs)

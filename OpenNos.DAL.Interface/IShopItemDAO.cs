@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IShopItemDAO
+    public interface IShopItemDAO : IGameObjectMappingBaseDAO
     {
         #region Methods
 

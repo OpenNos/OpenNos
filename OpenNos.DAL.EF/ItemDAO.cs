@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -23,30 +22,20 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class ItemDAO : IItemDAO
+    public class ItemDAO : GameObjectMappingBaseDAO<Item, ItemDTO>, IItemDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public ItemDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Item, ItemDTO>();
-                cfg.CreateMap<ItemDTO, Item>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
+
+        public IEnumerable<ItemDTO> FindByName(string name)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Item item in context.Item.Where(s => s.Name.Contains(name)))
+                {
+                    yield return _mapper.Map<ItemDTO>(item);
+                }
+            }
+        }
 
         public void Insert(List<ItemDTO> items)
         {
@@ -116,17 +105,6 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<ItemDTO> FindByName(string name)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Item item in context.Item.Where(s => s.Name.Contains(name)))
-                {
-                    yield return _mapper.Map<ItemDTO>(item);
-                }
-            }
-        }
+        #endregion
     }
-
-    #endregion
 }

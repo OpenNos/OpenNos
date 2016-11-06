@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
@@ -25,29 +24,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class MailDAO : IMailDAO
+    public class MailDAO : GameObjectMappingBaseDAO<Mail, MailDTO>, IMailDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public MailDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Mail, MailDTO>();
-                cfg.CreateMap<MailDTO, Mail>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public DeleteResult DeleteById(long mailId)

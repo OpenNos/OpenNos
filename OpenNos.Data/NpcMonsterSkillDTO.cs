@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class NpcMonsterSkillDTO
+    public class NpcMonsterSkillDTO : GameObjectMappingBaseDTO
     {
         #region Properties
 

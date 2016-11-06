@@ -16,7 +16,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.Data
 {
-    public class ItemDTO
+    public class ItemDTO : GameObjectMappingBaseDTO
     {
         #region Properties
 

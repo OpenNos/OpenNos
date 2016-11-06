@@ -17,7 +17,7 @@ using System;
 
 namespace OpenNos.Data
 {
-    public class PenaltyLogDTO
+    public class PenaltyLogDTO : GameObjectMappingBaseDTO
     {
         #region Properties
 

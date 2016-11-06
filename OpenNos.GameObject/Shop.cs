@@ -23,18 +23,21 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public Shop(int shopId)
+        public Shop()
+        {
+        }
+
+        public override void Initialize()
         {
             ShopItems = new List<ShopItemDTO>();
-            ShopSkills = new List<ShopSkillDTO>();
-            ShopId = shopId;
             foreach (ShopItemDTO item in DAOFactory.ShopItemDAO.LoadByShopId(ShopId))
             {
-                ShopItems.Add(new ShopItemDTO() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade, Color = item.Color, Type = item.Type, ShopId = item.ShopId });
+                ShopItems.Add(item as ShopItemDTO);
             }
+            ShopSkills = new List<ShopSkillDTO>();
             foreach (ShopSkillDTO skill in DAOFactory.ShopSkillDAO.LoadByShopId(ShopId))
             {
-                ShopSkills.Add(new ShopSkillDTO() { SkillVNum = skill.SkillVNum, ShopSkillId = skill.ShopSkillId, Slot = skill.Slot, Type = skill.Type, ShopId = skill.ShopId });
+                ShopSkills.Add(skill as ShopSkillDTO);
             }
         }
 

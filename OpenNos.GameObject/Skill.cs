@@ -23,6 +23,10 @@ namespace OpenNos.GameObject
 
         public Skill()
         {
+        }
+
+        public override void Initialize()
+        {
             Combos = new List<ComboDTO>();
         }
 

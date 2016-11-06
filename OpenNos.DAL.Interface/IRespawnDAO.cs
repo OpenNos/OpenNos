@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IRespawnDAO
+    public interface IRespawnDAO : IGameObjectMappingBaseDAO
     {
         #region Methods
 

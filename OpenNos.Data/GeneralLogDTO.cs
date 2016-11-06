@@ -16,7 +16,7 @@ using System;
 
 namespace OpenNos.Data
 {
-    public class GeneralLogDTO
+    public class GeneralLogDTO : GameObjectMappingBaseDTO
     {
         #region Properties
 

@@ -23,28 +23,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class DropDAO : IDropDAO
+    public class DropDAO : GameObjectMappingBaseDAO<Drop, DropDTO>, IDropDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public DropDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Drop, DropDTO>();
-                cfg.CreateMap<DropDTO, Drop>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
 
         #region Methods
 

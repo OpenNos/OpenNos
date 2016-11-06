@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IMailDAO
+    public interface IMailDAO : IGameObjectMappingBaseDAO
     {
         #region Methods
 

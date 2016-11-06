@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
-    public class RespawnDAO : IRespawnDAO
+    public class RespawnDAO : BaseDAO<RespawnDTO>, IRespawnDAO
     {
         #region Methods
 

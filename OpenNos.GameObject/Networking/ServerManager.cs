@@ -297,7 +297,7 @@ namespace OpenNos.GameObject
 
                     //avoid cleaning new portals
                     Task.Delay(100);
-                    if(mapId != null || mapX != null || mapY != null)
+                    if (mapId != null || mapX != null || mapY != null)
                     {
                         session.Character.MapId = (short)mapId;
                         session.Character.MapX = (short)mapX;
@@ -533,7 +533,7 @@ namespace OpenNos.GameObject
 
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
 
-            FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);            
+            FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
 
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
@@ -542,99 +542,99 @@ namespace OpenNos.GameObject
                 switch (itemDTO.ItemType)
                 {
                     case Domain.ItemType.Ammo:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        ItemGO = itemDTO as NoFunctionItem;
                         break;
 
                     case Domain.ItemType.Armor:
-                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
+                        ItemGO = itemDTO as WearableItem;
                         break;
 
                     case Domain.ItemType.Box:
-                        ItemGO = _mapper.Map<BoxItem>(itemDTO);
+                        ItemGO = itemDTO as BoxItem;
                         break;
 
                     case Domain.ItemType.Event:
-                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
+                        ItemGO = itemDTO as MagicalItem;
                         break;
 
                     case Domain.ItemType.Fashion:
-                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
+                        ItemGO = itemDTO as WearableItem;
                         break;
 
                     case Domain.ItemType.Food:
-                        ItemGO = _mapper.Map<FoodItem>(itemDTO);
+                        ItemGO = itemDTO as FoodItem;
                         break;
 
                     case Domain.ItemType.Jewelery:
-                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
+                        ItemGO = itemDTO as WearableItem;
                         break;
 
                     case Domain.ItemType.Magical:
-                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
+                        ItemGO = itemDTO as MagicalItem;
                         break;
 
                     case Domain.ItemType.Main:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        ItemGO = itemDTO as NoFunctionItem;
                         break;
 
                     case Domain.ItemType.Map:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        ItemGO = itemDTO as NoFunctionItem;
                         break;
 
                     case Domain.ItemType.Part:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        ItemGO = itemDTO as NoFunctionItem;
                         break;
 
                     case Domain.ItemType.Potion:
-                        ItemGO = _mapper.Map<PotionItem>(itemDTO);
+                        ItemGO = itemDTO as PotionItem;
                         break;
 
                     case Domain.ItemType.Production:
-                        ItemGO = _mapper.Map<ProduceItem>(itemDTO);
+                        ItemGO = itemDTO as ProduceItem;
                         break;
 
                     case Domain.ItemType.Quest1:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        ItemGO = itemDTO as NoFunctionItem;
                         break;
 
                     case Domain.ItemType.Quest2:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        ItemGO = itemDTO as NoFunctionItem;
                         break;
 
                     case Domain.ItemType.Sell:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        ItemGO = itemDTO as NoFunctionItem;
                         break;
 
                     case Domain.ItemType.Shell:
-                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
+                        ItemGO = itemDTO as MagicalItem;
                         break;
 
                     case Domain.ItemType.Snack:
-                        ItemGO = _mapper.Map<SnackItem>(itemDTO);
+                        ItemGO = itemDTO as SnackItem;
                         break;
 
                     case Domain.ItemType.Special:
-                        ItemGO = _mapper.Map<SpecialItem>(itemDTO);
+                        ItemGO = itemDTO as SpecialItem;
                         break;
 
                     case Domain.ItemType.Specialist:
-                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
+                        ItemGO = itemDTO as WearableItem;
                         break;
 
                     case Domain.ItemType.Teacher:
-                        ItemGO = _mapper.Map<TeacherItem>(itemDTO);
+                        ItemGO = itemDTO as TeacherItem;
                         break;
 
                     case Domain.ItemType.Upgrade:
-                        ItemGO = _mapper.Map<UpgradeItem>(itemDTO);
+                        ItemGO = itemDTO as UpgradeItem;
                         break;
 
                     case Domain.ItemType.Weapon:
-                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
+                        ItemGO = itemDTO as WearableItem;
                         break;
 
                     default:
-                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
+                        ItemGO = itemDTO as NoFunctionItem;
                         break;
                 }
                 _items.Add(ItemGO);
@@ -658,13 +658,13 @@ namespace OpenNos.GameObject
             _monsterSkills = new ThreadSafeSortedList<short, List<NpcMonsterSkill>>();
             foreach (var monsterSkillGrouping in DAOFactory.NpcMonsterSkillDAO.LoadAll().GroupBy(n => n.NpcMonsterVNum))
             {
-                _monsterSkills[monsterSkillGrouping.Key] = monsterSkillGrouping.Select(n => _mapper.Map<NpcMonsterSkill>(n)).ToList();
+                _monsterSkills[monsterSkillGrouping.Key] = monsterSkillGrouping.Select(n => n as NpcMonsterSkill).ToList();
             }
 
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
             foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
             {
-                Skill skill = _mapper.Map<Skill>(skillDTO);
+                Skill skill = skillDTO as Skill;
                 skill.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList());
                 _skills.Add(skill);
             }

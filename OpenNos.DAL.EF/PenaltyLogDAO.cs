@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -24,29 +23,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class PenaltyLogDAO : IPenaltyLogDAO
+    public class PenaltyLogDAO : GameObjectMappingBaseDAO<PenaltyLog, PenaltyLogDTO>, IPenaltyLogDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public PenaltyLogDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<PenaltyLog, PenaltyLogDTO>();
-                cfg.CreateMap<PenaltyLogDTO, PenaltyLog>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public DeleteResult Delete(int penaltylogid)

@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class RespawnDTO
+    public class RespawnDTO : GameObjectMappingBaseDTO
     {
         #region Properties
 

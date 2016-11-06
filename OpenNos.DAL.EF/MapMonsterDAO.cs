@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -26,7 +25,6 @@ namespace OpenNos.DAL.EF
 {
     public class MapMonsterDAO : GameObjectMappingBaseDAO<MapMonster, MapMonsterDTO>, IMapMonsterDAO
     {
-
         #region Methods
 
         public DeleteResult DeleteById(int mapMonsterId)

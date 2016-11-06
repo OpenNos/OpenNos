@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class PortalDTO
+    public class PortalDTO : GameObjectMappingBaseDTO
     {
         #region Properties
 

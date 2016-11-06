@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface ITeleporterDAO
+    public interface ITeleporterDAO : IGameObjectMappingBaseDAO
     {
         #region Methods
 

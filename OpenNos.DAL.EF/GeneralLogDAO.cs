@@ -23,28 +23,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class GeneralLogDAO : IGeneralLogDAO
+    public class GeneralLogDAO : GameObjectMappingBaseDAO<GeneralLog,GeneralLogDTO>,IGeneralLogDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public GeneralLogDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<GeneralLog, GeneralLogDTO>();
-                cfg.CreateMap<GeneralLogDTO, GeneralLog>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
 
         #region Methods
 

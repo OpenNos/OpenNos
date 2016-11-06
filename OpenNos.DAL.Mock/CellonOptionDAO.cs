@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
-    public class CellonOptionDAO : ICellonOptionDAO
+    public class CellonOptionDAO : SynchronizableBaseDAO<CellonOptionDTO>, ICellonOptionDAO
     {
         #region Methods
 

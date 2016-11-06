@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -23,29 +22,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class SkillDAO : ISkillDAO
+    public class SkillDAO : GameObjectMappingBaseDAO<Skill, SkillDTO>, ISkillDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public SkillDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Skill, SkillDTO>();
-                cfg.CreateMap<SkillDTO, Skill>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public void Insert(List<SkillDTO> skills)
