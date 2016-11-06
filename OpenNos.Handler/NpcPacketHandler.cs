@@ -230,7 +230,7 @@ namespace OpenNos.Handler
                 MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)owner));
 
                 ShopItemDTO item = npc?.Shop.ShopItems.FirstOrDefault(it => it.Slot == slot);
-                if (item == null)
+                if (item == null || amount <= 0)
                 {
                     return;
                 }
