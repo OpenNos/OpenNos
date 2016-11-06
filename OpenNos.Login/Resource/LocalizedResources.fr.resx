@@ -121,7 +121,7 @@
     <value>Cet ID est déjà utilisé.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
-    <value>Échec. Votre compte à été banni. Veuillez contacter l'équipe du jeu.</value>
+    <value>Échec. Votre compte à été banni. Veuillez contacter l'équipe du jeu. Raison : {0} | Durée de la sanction : {1}</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>La connexion a été fermée par le client.</value>
