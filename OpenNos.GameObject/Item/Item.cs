@@ -20,8 +20,30 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public Item()
+        public Item() { }
+
+        public void InitializeItem(ItemDTO item)
         {
+            //manual mapping to avoid automapper outside of DAO
+            this.BasicUpgrade = item.BasicUpgrade;
+            this.CellonLvl = item.CellonLvl;
+            this.Class = item.Class;
+            this.CloseDefence = item.CloseDefence;
+            this.Color = item.Color;
+            this.Concentrate = item.Concentrate;
+            this.CriticalLuckRate = item.CriticalLuckRate;
+            this.DamageMaximum = item.DamageMaximum;
+            this.DamageMinimum = item.DamageMinimum;
+            this.DarkElement = item.DarkElement;
+            this.DarkResistance = item.DarkResistance;
+            this.DefenceDodge = item.DefenceDodge;
+            this.DistanceDefence = item.DistanceDefence;
+            this.DistanceDefenceDodge = item.DistanceDefenceDodge;
+            this.Effect = item.Effect;
+            this.EffectValue = item.EffectValue;
+            this.Element = item.Element;
+            this.ElementRate = item.ElementRate;
+            this.EquipmentSlot = item.EquipmentSlot;
         }
 
         #endregion

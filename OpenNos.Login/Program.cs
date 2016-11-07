@@ -14,6 +14,7 @@
 
 using log4net;
 using OpenNos.Core;
+using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.GameObject;
 using OpenNos.Handler;
@@ -27,6 +28,12 @@ namespace OpenNos.Login
     public class Program
     {
         #region Methods
+
+        private static void RegisterMappings()
+        {
+            // entities
+            DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
+        }
 
         public static void Main()
         {
@@ -58,8 +65,12 @@ namespace OpenNos.Login
                     }
 
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));
+
                     try
                     {
+                        //register EF -> GO and GO -> EF mappings
+                        RegisterMappings();
+
                         ServiceFactory.Instance.Initialize();
                         NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>("127.0.0.1", port, typeof(LoginPacketHandler), typeof(LoginEncryption), false);
 

@@ -132,7 +132,7 @@ namespace OpenNos.World
             DAOFactory.ComboDAO.RegisterMapping(typeof(ComboDTO)).InitializeMapper();
             DAOFactory.DropDAO.RegisterMapping(typeof(DropDTO)).InitializeMapper();
             DAOFactory.GeneralLogDAO.RegisterMapping(typeof(GeneralLogDTO)).InitializeMapper();
-            DAOFactory.ItemDAO.RegisterMapping(typeof(Item)).InitializeMapper();
+            DAOFactory.ItemDAO.RegisterMapping(typeof(ItemDTO)).InitializeMapper();
             DAOFactory.MailDAO.RegisterMapping(typeof(MailDTO)).InitializeMapper();
             DAOFactory.MapMonsterDAO.RegisterMapping(typeof(MapMonster)).InitializeMapper();
             DAOFactory.MapNpcDAO.RegisterMapping(typeof(MapNpc)).InitializeMapper();
