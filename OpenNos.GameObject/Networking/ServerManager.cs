@@ -820,7 +820,7 @@ namespace OpenNos.GameObject
         public void Shout(string message)
         {
             Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Broadcast($"msg 2 {message}");
+            Broadcast($"msg 2 [{Language.Instance.GetMessageFromKey("ADMINISTRATOR")}]: {message}");
         }
 
         // Server
@@ -839,7 +839,7 @@ namespace OpenNos.GameObject
                 foreach (ClientSession session in groupMembers)
                 {
                     i++;
-                    str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{session.Character.Gender}|{session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{session.Character.HeroLevel}";
+                    str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{session.Character.Gender}|{session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{session.Character.IsVehicled: 0}|{session.Character.HeroLevel}";
                 }
 
                 foreach (ClientSession session in myGroup.Characters)
