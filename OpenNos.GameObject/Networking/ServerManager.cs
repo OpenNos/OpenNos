@@ -820,7 +820,7 @@ namespace OpenNos.GameObject
         public void Shout(string message)
         {
             Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            Broadcast($"msg 2 [{Language.Instance.GetMessageFromKey("ADMINISTRATOR")}]: {message}");
+            Broadcast($"msg 2 {message}");
         }
 
         // Server
