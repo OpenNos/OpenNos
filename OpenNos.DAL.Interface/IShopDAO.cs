@@ -25,6 +25,8 @@ namespace OpenNos.DAL.Interface
 
         void Insert(List<ShopDTO> shops);
 
+        IEnumerable<ShopDTO> LoadAll();
+
         ShopDTO LoadById(int ShopId);
 
         ShopDTO LoadByNpc(int NpcId);

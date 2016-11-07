@@ -71,10 +71,8 @@ namespace OpenNos.GameObject
             }
 
             UserShops = new Dictionary<long, MapShop>();
-            IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
-
             _npcs = new List<MapNpc>();
-            npcsDTO.ToList().ForEach(s => _npcs.Add(s as MapNpc));
+            _npcs.AddRange(ServerManager.Instance.GetMapNpcsByMapId(MapId).AsEnumerable<MapNpc>());
         }
 
         public void LoadMonsters()

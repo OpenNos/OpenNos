@@ -74,6 +74,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<ShopDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Shop entity in context.Shop)
+                {
+                    yield return _mapper.Map<ShopDTO>(entity);
+                }
+            }
+        }
+
         public ShopDTO LoadById(int shopId)
         {
             try

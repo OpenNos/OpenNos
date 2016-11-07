@@ -25,6 +25,8 @@ namespace OpenNos.DAL.Interface
 
         void Insert(List<MapNpcDTO> npcs);
 
+        IEnumerable<MapNpcDTO> LoadAll();
+
         MapNpcDTO LoadById(int MapNpcId);
 
         IEnumerable<MapNpcDTO> LoadFromMap(short MapId);

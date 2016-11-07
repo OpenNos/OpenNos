@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
         /// </summary>
         public override void Initialize()
         {
-            Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcMonsterVNum).ToList();
+            Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum(NpcMonsterVNum);
             Drops = ServerManager.Instance.GetDropsByMonsterVNum(NpcMonsterVNum);
             LastEffect = LastMove = DateTime.Now;
             Skills = ServerManager.Instance.GetNpcMonsterSkillsByMonsterVNum(NpcMonsterVNum);

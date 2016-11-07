@@ -67,6 +67,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<MapNpcDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (MapNpc entity in context.MapNpc)
+                {
+                    yield return _mapper.Map<MapNpcDTO>(entity);
+                }
+            }
+        }
+
         public MapNpcDTO LoadById(int mapNpcId)
         {
             try

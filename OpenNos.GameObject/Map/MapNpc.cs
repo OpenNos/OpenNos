@@ -40,31 +40,15 @@ namespace OpenNos.GameObject
             Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = LastMove = DateTime.Now;
             _movetime = _random.Next(300, 3000);
-            IEnumerable<RecipeDTO> recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId).ToList();
-            if (recipe != null)
-            {
-                Recipes = new List<Recipe>();
-                foreach (RecipeDTO rec in recipe)
-                {
-                    Recipes.Add(rec as Recipe);
-                }
-            }
+            Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
 
-            IEnumerable<TeleporterDTO> teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId).ToList();
-            if (teleporters != null)
-            {
-                Teleporters = new List<TeleporterDTO>();
-                foreach (TeleporterDTO teleporter in teleporters)
-                {
-                    Teleporters.Add(teleporter as TeleporterDTO);
-                }
-            }
+            Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
 
-            ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
+            Shop shop = ServerManager.Instance.GetShopByMapNpcId(MapNpcId);
             if (shop != null)
             {
-                Shop = shop as Shop;
                 shop.Initialize();
+                Shop = shop;
             }
         }
 

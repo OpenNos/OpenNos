@@ -45,6 +45,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<RecipeDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Recipe Recipe in context.Recipe)
+                {
+                    yield return _mapper.Map<RecipeDTO>(Recipe);
+                }
+            }
+        }
+
         public RecipeDTO LoadById(short recipeId)
         {
             try

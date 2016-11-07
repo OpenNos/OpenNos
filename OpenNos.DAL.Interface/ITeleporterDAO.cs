@@ -23,6 +23,8 @@ namespace OpenNos.DAL.Interface
 
         TeleporterDTO Insert(TeleporterDTO teleporter);
 
+        IEnumerable<TeleporterDTO> LoadAll();
+
         TeleporterDTO LoadById(short TeleporterId);
 
         IEnumerable<TeleporterDTO> LoadFromNpc(int NpcId);

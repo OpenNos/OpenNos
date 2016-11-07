@@ -43,13 +43,22 @@ namespace OpenNos.GameObject
         private static List<Skill> _skills = new List<Skill>();
 
         private bool _disposed;
+
         private ThreadSafeSortedList<short, List<DropDTO>> _dropsByMonster;
 
         private List<DropDTO> _generalDrops;
 
         private ThreadSafeSortedList<long, Group> _groups;
 
+        private ThreadSafeSortedList<short, List<MapNpc>> _mapNpcs;
+
         private ThreadSafeSortedList<short, List<NpcMonsterSkill>> _monsterSkills;
+
+        private ThreadSafeSortedList<int, List<Recipe>> _receipes;
+
+        private ThreadSafeSortedList<int, Shop> _shops;
+
+        private ThreadSafeSortedList<int, List<TeleporterDTO>> _teleporters;
 
         private long lastGroupId;
 
@@ -429,6 +438,16 @@ namespace OpenNos.GameObject
             return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
         }
 
+        public List<Recipe> GetReceipesByMapNpcId(int mapNpcId)
+        {
+            if (_receipes.ContainsKey(mapNpcId))
+            {
+                return _receipes[mapNpcId];
+            }
+
+            return new List<Recipe>();
+        }
+
         public T GetUserMethod<T>(long characterId, string methodName)
         {
             ClientSession session = GetSessionByCharacterId(characterId);
@@ -486,6 +505,13 @@ namespace OpenNos.GameObject
             DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
             FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
+
+            //intialize receipes
+            _receipes = new ThreadSafeSortedList<int, List<Recipe>>();
+            foreach (var receipeGrouping in DAOFactory.RecipeDAO.LoadAll().GroupBy(t => t.MapNpcId))
+            {
+                _receipes[receipeGrouping.Key] = receipeGrouping.Select(t => t as Recipe).ToList();
+            }
 
             //load explicite type of ItemDTO
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
@@ -605,6 +631,27 @@ namespace OpenNos.GameObject
                 {
                     _generalDrops = monsterDropGrouping.ToList();
                 }
+            }
+
+            //initialize shops
+            _shops = new ThreadSafeSortedList<int, Shop>();
+            foreach (var shopGrouping in DAOFactory.ShopDAO.LoadAll().GroupBy(t => t.MapNpcId))
+            {
+                _shops[shopGrouping.Key] = shopGrouping as Shop;
+            }
+
+            //intialize mapNpcs
+            _mapNpcs = new ThreadSafeSortedList<short, List<MapNpc>>();
+            foreach (var mapNpcGrouping in DAOFactory.MapNpcDAO.LoadAll().GroupBy(t => t.MapId))
+            {
+                _mapNpcs[mapNpcGrouping.Key] = mapNpcGrouping.Select(t => t as MapNpc).ToList();
+            }
+
+            //initialize teleporters
+            _teleporters = new ThreadSafeSortedList<int, List<TeleporterDTO>>();
+            foreach (var teleporterGrouping in DAOFactory.TeleporterDAO.LoadAll().GroupBy(t => t.MapNpcId))
+            {
+                _teleporters[teleporterGrouping.Key] = teleporterGrouping.Select(t => t).ToList();
             }
 
             // initialiize monster skills
@@ -805,6 +852,16 @@ namespace OpenNos.GameObject
             }
         }
 
+        internal IEnumerable<MapNpc> GetMapNpcsByMapId(short mapId)
+        {
+            if (_mapNpcs.ContainsKey(mapId))
+            {
+                return _mapNpcs[mapId];
+            }
+
+            return new List<MapNpc>();
+        }
+
         internal List<NpcMonsterSkill> GetNpcMonsterSkillsByMonsterVNum(short npcMonsterVNum)
         {
             if (_monsterSkills.ContainsKey(npcMonsterVNum))
@@ -813,6 +870,28 @@ namespace OpenNos.GameObject
             }
 
             return new List<NpcMonsterSkill>();
+        }
+
+        internal Shop GetShopByMapNpcId(int mapNpcId)
+        {
+            if (_shops.ContainsKey(mapNpcId))
+            {
+                return _shops[mapNpcId];
+            }
+
+            return new Shop();
+        }
+
+        internal List<TeleporterDTO> GetTeleportersByNpcVNum(short npcMonsterVNum)
+        {
+            if (_teleporters != null && _teleporters.ContainsKey(npcMonsterVNum))
+            {
+                return _teleporters[npcMonsterVNum];
+            }
+            else
+            {
+                return new List<TeleporterDTO>();
+            }
         }
 
         internal void StopServer()

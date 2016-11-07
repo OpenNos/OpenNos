@@ -45,6 +45,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<TeleporterDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Teleporter entity in context.Teleporter)
+                {
+                    yield return _mapper.Map<TeleporterDTO>(entity);
+                }
+            }
+        }
+
         public TeleporterDTO LoadById(short teleporterId)
         {
             try
@@ -65,9 +76,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Teleporter Teleporterobject in context.Teleporter.Where(c => c.MapNpcId.Equals(npcId)))
+                foreach (Teleporter entity in context.Teleporter.Where(c => c.MapNpcId.Equals(npcId)))
                 {
-                    yield return _mapper.Map<TeleporterDTO>(Teleporterobject);
+                    yield return _mapper.Map<TeleporterDTO>(entity);
                 }
             }
         }
