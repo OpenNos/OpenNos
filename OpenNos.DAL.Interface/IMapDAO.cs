@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IMapDAO
+    public interface IMapDAO : IMappingBaseDAO
     {
         #region Methods
 

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IPenaltyLogDAO : IGameObjectMappingBaseDAO
+    public interface IPenaltyLogDAO : IMappingBaseDAO
     {
         #region Methods
 

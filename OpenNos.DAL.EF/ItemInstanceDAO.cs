@@ -143,7 +143,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public override IGameObjectMappingBaseDAO RegisterMapping(Type gameObjectType)
+        public override IMappingBaseDAO RegisterMapping(Type gameObjectType)
         {
             try
             {

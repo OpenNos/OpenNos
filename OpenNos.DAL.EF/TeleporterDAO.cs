@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class TeleporterDAO : GameObjectMappingBaseDAO<Teleporter, TeleporterDTO>, ITeleporterDAO
+    public class TeleporterDAO : MappingBaseDAO<Teleporter, TeleporterDTO>, ITeleporterDAO
     {
         #region Methods
 

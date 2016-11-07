@@ -24,7 +24,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class MailDAO : GameObjectMappingBaseDAO<Mail, MailDTO>, IMailDAO
+    public class MailDAO : MappingBaseDAO<Mail, MailDTO>, IMailDAO
     {
         #region Methods
 

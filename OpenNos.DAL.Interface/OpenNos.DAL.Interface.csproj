@@ -55,7 +55,7 @@
     <Compile Include="ICellonOptionDAO.cs" />
     <Compile Include="IComboDAO.cs" />
     <Compile Include="IDropDAO.cs" />
-    <Compile Include="IGameObjectMappingBaseDAO.cs" />
+    <Compile Include="IMappingBaseDAO.cs" />
     <Compile Include="IGeneralLogDAO.cs" />
     <Compile Include="IAccountDAO.cs" />
     <Compile Include="ICharacterDAO.cs" />

@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class PortalDAO : GameObjectMappingBaseDAO<Portal, PortalDTO>, IPortalDAO
+    public class PortalDAO : MappingBaseDAO<Portal, PortalDTO>, IPortalDAO
     {
         #region Methods
 

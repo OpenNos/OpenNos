@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class ShopSkillDAO : GameObjectMappingBaseDAO<ShopSkill, ShopSkillDTO>, IShopSkillDAO
+    public class ShopSkillDAO : MappingBaseDAO<ShopSkill, ShopSkillDTO>, IShopSkillDAO
     {
         #region Methods
 

@@ -23,7 +23,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class ComboDAO : GameObjectMappingBaseDAO<Combo,ComboDTO>,IComboDAO
+    public class ComboDAO : MappingBaseDAO<Combo,ComboDTO>,IComboDAO
     {
 
         #region Methods

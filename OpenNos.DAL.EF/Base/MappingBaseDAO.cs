@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace OpenNos.DAL.EF
 {
-    public class GameObjectMappingBaseDAO<TEntity, TDTO> : IGameObjectMappingBaseDAO
-        where TDTO : GameObjectMappingBaseDTO
+    public class MappingBaseDAO<TEntity, TDTO> : IMappingBaseDAO
+        where TDTO : MappingBaseDTO
     {
         protected IMapper _mapper;
 
         protected IDictionary<Type, Type> mappings = new Dictionary<Type, Type>();
 
-        public virtual IGameObjectMappingBaseDAO RegisterMapping(Type gameObjectType)
+        public virtual IMappingBaseDAO RegisterMapping(Type gameObjectType)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace OpenNos.DAL.EF
 
                     // Entity -> GameObject
                     cfg.CreateMap(entry.Value, typeof(TDTO))
-                        .AfterMap((src, dest) => ((GameObjectMappingBaseDTO)dest).Initialize()).As(entry.Key);
+                        .AfterMap((src, dest) => ((MappingBaseDTO)dest).Initialize()).As(entry.Key);
                 }
             });
 

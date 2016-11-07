@@ -24,7 +24,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class RespawnDAO : GameObjectMappingBaseDAO<Respawn, RespawnDTO>, IRespawnDAO
+    public class RespawnDAO : MappingBaseDAO<Respawn, RespawnDTO>, IRespawnDAO
     {
         #region Methods
 

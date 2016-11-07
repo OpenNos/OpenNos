@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class MapTypeMapDAO : GameObjectMappingBaseDAO<MapTypeMap, MapTypeMapDTO>, IMapTypeMapDAO
+    public class MapTypeMapDAO : MappingBaseDAO<MapTypeMap, MapTypeMapDTO>, IMapTypeMapDAO
     {
         #region Methods
 

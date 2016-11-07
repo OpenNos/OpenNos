@@ -16,7 +16,7 @@ using System;
 
 namespace OpenNos.Data
 {
-    public class MailDTO : GameObjectMappingBaseDTO
+    public class MailDTO : MappingBaseDTO
     {
         #region Properties
 

@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class RecipeDAO : GameObjectMappingBaseDAO<Recipe, RecipeDTO>, IRecipeDAO
+    public class RecipeDAO : MappingBaseDAO<Recipe, RecipeDTO>, IRecipeDAO
     {
         #region Methods
 

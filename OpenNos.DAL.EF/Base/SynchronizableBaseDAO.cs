@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public abstract class SynchronizableBaseDAO<TEntity, TDTO> : GameObjectMappingBaseDAO<TEntity, TDTO>, ISynchronizableBaseDAO<TDTO>
+    public abstract class SynchronizableBaseDAO<TEntity, TDTO> : MappingBaseDAO<TEntity, TDTO>, ISynchronizableBaseDAO<TDTO>
         where TDTO : SynchronizableBaseDTO
         where TEntity : SynchronizableBaseEntity
     {

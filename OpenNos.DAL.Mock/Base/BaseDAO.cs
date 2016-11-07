@@ -5,7 +5,7 @@ using System;
 
 namespace OpenNos.DAL.Mock
 {
-    public abstract class BaseDAO<TDTO> : IGameObjectMappingBaseDAO
+    public abstract class BaseDAO<TDTO> : IMappingBaseDAO
     {
         #region Members
 
@@ -62,7 +62,7 @@ namespace OpenNos.DAL.Mock
             return Container;
         }
 
-        public IGameObjectMappingBaseDAO RegisterMapping(Type gameObjectType)
+        public IMappingBaseDAO RegisterMapping(Type gameObjectType)
         {
             //TODO
             return null;

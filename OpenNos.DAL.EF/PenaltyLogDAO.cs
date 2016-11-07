@@ -23,7 +23,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class PenaltyLogDAO : GameObjectMappingBaseDAO<PenaltyLog, PenaltyLogDTO>, IPenaltyLogDAO
+    public class PenaltyLogDAO : MappingBaseDAO<PenaltyLog, PenaltyLogDTO>, IPenaltyLogDAO
     {
         #region Methods
 

@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class MapMonsterDTO : GameObjectMappingBaseDTO
+    public class MapMonsterDTO : MappingBaseDTO
     {
         #region Properties
 

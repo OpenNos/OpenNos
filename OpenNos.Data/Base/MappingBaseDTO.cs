@@ -1,6 +1,6 @@
 ﻿namespace OpenNos.Data
 {
-    public class GameObjectMappingBaseDTO
+    public class MappingBaseDTO
     {
         /// <summary>
         /// Intializes the GameObject, will be injected by AutoMapper after Entity -> GO mapping

@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IRecipeDAO : IGameObjectMappingBaseDAO
+    public interface IRecipeDAO : IMappingBaseDAO
     {
         #region Methods
 
