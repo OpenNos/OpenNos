@@ -12,12 +12,21 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Data;
 using System;
 
 namespace OpenNos.GameObject
 {
     public class PotionItem : Item
     {
+        #region Instantiation
+
+        public PotionItem(ItemDTO item) : base(item)
+        {
+        }
+
+        #endregion
+
         #region Methods
 
         public override void Use(ClientSession session, ref ItemInstance inv, bool DelayUsed = false, string[] packetsplit = null)

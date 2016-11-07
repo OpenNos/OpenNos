@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 
@@ -20,6 +21,14 @@ namespace OpenNos.GameObject
 {
     public class MagicalItem : Item
     {
+        #region Instantiation
+
+        public MagicalItem(ItemDTO item) : base(item)
+        {
+        }
+
+        #endregion
+
         #region Methods
 
         public override void Use(ClientSession Session, ref ItemInstance Inv, bool DelayUsed = false, string[] packetsplit = null)

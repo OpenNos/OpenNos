@@ -14,11 +14,13 @@
 
 namespace OpenNos.DAL.EF
 {
-    using Domain;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
+    /// <summary>
+    /// Do Not forget to change Mapping in Item GO when changing this class
+    /// </summary>
     public class Item
     {
         #region Instantiation
@@ -68,8 +70,6 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<Drop> Drop { get; set; }
 
-        public virtual ICollection<ItemInstance> ItemInstances { get; set; }
-
         public short Effect { get; set; }
 
         public int EffectValue { get; set; }
@@ -107,6 +107,8 @@ namespace OpenNos.DAL.EF
         public bool IsTradable { get; set; }
 
         public bool IsWarehouse { get; set; }
+
+        public virtual ICollection<ItemInstance> ItemInstances { get; set; }
 
         public byte ItemSubType { get; set; }
 

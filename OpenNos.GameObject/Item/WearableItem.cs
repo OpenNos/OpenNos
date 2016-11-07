@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Diagnostics;
@@ -21,6 +22,14 @@ namespace OpenNos.GameObject
 {
     public class WearableItem : Item
     {
+        #region Instantiation
+
+        public WearableItem(ItemDTO item) : base(item)
+        {
+        }
+
+        #endregion
+
         #region Methods
 
         public override void Use(ClientSession session, ref ItemInstance itemToWear, bool DelayUsed = false, string[] packetsplit = null)
@@ -79,7 +88,7 @@ namespace OpenNos.GameObject
 
                     if (session.Character.UseSp)
                     {
-                        SpecialistInstance sp = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,InventoryType.Wear);
+                        SpecialistInstance sp = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
 
                         if (sp.Item.Element != 0 && EquipmentSlot == EquipmentType.Fairy && Element != sp.Item.Element && Element != sp.Item.SecondaryElement)
                         {

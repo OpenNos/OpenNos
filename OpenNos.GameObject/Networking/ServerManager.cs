@@ -36,8 +36,6 @@ namespace OpenNos.GameObject
         private static ServerManager _instance;
         private static List<Item> _items = new List<Item>();
 
-        private static IMapper _mapper;
-
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
 
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
@@ -59,29 +57,6 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        static ServerManager()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<ItemDTO, NoFunctionItem>();
-                cfg.CreateMap<ItemDTO, WearableItem>();
-                cfg.CreateMap<ItemDTO, BoxItem>();
-                cfg.CreateMap<ItemDTO, MagicalItem>();
-                cfg.CreateMap<ItemDTO, FoodItem>();
-                cfg.CreateMap<ItemDTO, PotionItem>();
-                cfg.CreateMap<ItemDTO, ProduceItem>();
-                cfg.CreateMap<ItemDTO, SnackItem>();
-                cfg.CreateMap<ItemDTO, SpecialItem>();
-                cfg.CreateMap<ItemDTO, TeacherItem>();
-                cfg.CreateMap<ItemDTO, UpgradeItem>();
-                cfg.CreateMap<SkillDTO, Skill>();
-                cfg.CreateMap<NpcMonsterDTO, NpcMonster>();
-                cfg.CreateMap<NpcMonsterSkillDTO, NpcMonsterSkill>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
         private ServerManager()
         {
             _groups = new ThreadSafeSortedList<long, Group>();
@@ -95,31 +70,10 @@ namespace OpenNos.GameObject
             Task BotTask = new Task(() => BotProcess());
             BotTask.Start();
 
-
             Task TaskController = new Task(() => TaskLauncherProcess());
             TaskController.Start();
 
             lastGroupId = 1;
-
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<ItemDTO, NoFunctionItem>();
-                cfg.CreateMap<ItemDTO, WearableItem>();
-                cfg.CreateMap<ItemDTO, BoxItem>();
-                cfg.CreateMap<ItemDTO, MagicalItem>();
-                cfg.CreateMap<ItemDTO, FoodItem>();
-                cfg.CreateMap<ItemDTO, PotionItem>();
-                cfg.CreateMap<ItemDTO, ProduceItem>();
-                cfg.CreateMap<ItemDTO, SnackItem>();
-                cfg.CreateMap<ItemDTO, SpecialItem>();
-                cfg.CreateMap<ItemDTO, TeacherItem>();
-                cfg.CreateMap<ItemDTO, UpgradeItem>();
-                cfg.CreateMap<SkillDTO, Skill>();
-                cfg.CreateMap<NpcMonsterDTO, NpcMonster>();
-                cfg.CreateMap<NpcMonsterSkillDTO, NpcMonsterSkill>();
-            });
-
-            _mapper = config.CreateMapper();
         }
 
         #endregion
@@ -527,114 +481,113 @@ namespace OpenNos.GameObject
 
         public void Initialize()
         {
+            //parse rates
             XPRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXp"]);
-
             DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
-
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
-
             FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
 
+            //load explicite type of ItemDTO
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
                 Item ItemGO = null;
 
                 switch (itemDTO.ItemType)
                 {
-                    case Domain.ItemType.Ammo:
-                        ItemGO = itemDTO as NoFunctionItem;
+                    case ItemType.Ammo:
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Armor:
-                        ItemGO = itemDTO as WearableItem;
+                    case ItemType.Armor:
+                        ItemGO = new WearableItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Box:
-                        ItemGO = itemDTO as BoxItem;
+                    case ItemType.Box:
+                        ItemGO = new BoxItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Event:
-                        ItemGO = itemDTO as MagicalItem;
+                    case ItemType.Event:
+                        ItemGO = new MagicalItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Fashion:
-                        ItemGO = itemDTO as WearableItem;
+                    case ItemType.Fashion:
+                        ItemGO = new WearableItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Food:
-                        ItemGO = itemDTO as FoodItem;
+                    case ItemType.Food:
+                        ItemGO = new FoodItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Jewelery:
-                        ItemGO = itemDTO as WearableItem;
+                    case ItemType.Jewelery:
+                        ItemGO = new WearableItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Magical:
-                        ItemGO = itemDTO as MagicalItem;
+                    case ItemType.Magical:
+                        ItemGO = new MagicalItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Main:
-                        ItemGO = itemDTO as NoFunctionItem;
+                    case ItemType.Main:
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Map:
-                        ItemGO = itemDTO as NoFunctionItem;
+                    case ItemType.Map:
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Part:
-                        ItemGO = itemDTO as NoFunctionItem;
+                    case ItemType.Part:
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Potion:
-                        ItemGO = itemDTO as PotionItem;
+                    case ItemType.Potion:
+                        ItemGO = new PotionItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Production:
-                        ItemGO = itemDTO as ProduceItem;
+                    case ItemType.Production:
+                        ItemGO = new ProduceItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Quest1:
-                        ItemGO = itemDTO as NoFunctionItem;
+                    case ItemType.Quest1:
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Quest2:
-                        ItemGO = itemDTO as NoFunctionItem;
+                    case ItemType.Quest2:
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Sell:
-                        ItemGO = itemDTO as NoFunctionItem;
+                    case ItemType.Sell:
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Shell:
-                        ItemGO = itemDTO as MagicalItem;
+                    case ItemType.Shell:
+                        ItemGO = new MagicalItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Snack:
-                        ItemGO = itemDTO as SnackItem;
+                    case ItemType.Snack:
+                        ItemGO = new SnackItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Special:
-                        ItemGO = itemDTO as SpecialItem;
+                    case ItemType.Special:
+                        ItemGO = new SpecialItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Specialist:
-                        ItemGO = itemDTO as WearableItem;
+                    case ItemType.Specialist:
+                        ItemGO = new WearableItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Teacher:
-                        ItemGO = itemDTO as TeacherItem;
+                    case ItemType.Teacher:
+                        ItemGO = new TeacherItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Upgrade:
-                        ItemGO = itemDTO as UpgradeItem;
+                    case ItemType.Upgrade:
+                        ItemGO = new UpgradeItem(itemDTO);
                         break;
 
-                    case Domain.ItemType.Weapon:
-                        ItemGO = itemDTO as WearableItem;
+                    case ItemType.Weapon:
+                        ItemGO = new WearableItem(itemDTO);
                         break;
 
                     default:
-                        ItemGO = itemDTO as NoFunctionItem;
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
                 }
                 _items.Add(ItemGO);

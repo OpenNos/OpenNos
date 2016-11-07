@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Data;
 using System;
 using System.Threading;
 
@@ -20,6 +21,14 @@ namespace OpenNos.GameObject
 {
     public class FoodItem : Item
     {
+        #region Instantiation
+
+        public FoodItem(ItemDTO item) : base(item)
+        {
+        }
+
+        #endregion
+
         #region Methods
 
         public void Regenerate(ClientSession session, Item item, string[] packetsplit = null)

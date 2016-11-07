@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Linq;
@@ -21,6 +22,14 @@ namespace OpenNos.GameObject
 {
     public class SpecialItem : Item
     {
+        #region Instantiation
+
+        public SpecialItem(ItemDTO item) : base(item)
+        {
+        }
+
+        #endregion
+
         #region Methods
 
         public override void Use(ClientSession Session, ref ItemInstance inventory, bool DelayUsed = false, string[] packetsplit = null)
