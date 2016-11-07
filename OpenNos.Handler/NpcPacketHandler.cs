@@ -83,7 +83,7 @@ namespace OpenNos.Handler
                 // User shop
                 KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
                 PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
-                if (item == null || amount <= 0)
+                if (item == null || amount <= 0 || amount > 99)
                 {
                     return;
                 }
@@ -230,7 +230,7 @@ namespace OpenNos.Handler
                 MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)owner));
 
                 ShopItemDTO item = npc?.Shop.ShopItems.FirstOrDefault(it => it.Slot == slot);
-                if (item == null || amount <= 0)
+                if (item == null || amount <= 0 || amount > 99)
                 {
                     return;
                 }
