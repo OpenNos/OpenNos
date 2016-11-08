@@ -11,6 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL;
@@ -19,7 +20,6 @@ using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using OpenNos.GameObject.Packets.ServerPackets;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -98,8 +98,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool GmPvtBlock { get; set; }
-
         public bool CanFight
         {
             get
@@ -146,6 +144,8 @@ namespace OpenNos.GameObject
         public ExchangeInfo ExchangeInfo { get; set; }
 
         public int FireResistance { get; set; }
+
+        public bool GmPvtBlock { get; set; }
 
         public Group Group { get; set; }
 
@@ -1178,7 +1178,7 @@ namespace OpenNos.GameObject
             {
                 skibase = $"{200 + 20 * Class} {201 + 20 * Class}";
             }
-            else if(characterSkills.Any())
+            else if (characterSkills.Any())
             {
                 skibase = $"{characterSkills.ElementAt(0).SkillVNum} {characterSkills.ElementAt(0).SkillVNum}";
             }
@@ -2140,7 +2140,6 @@ namespace OpenNos.GameObject
             {
                 CharacterDTO character = this.DeepCopy();
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
-
 
                 // load and concat inventory with equipment
                 Inventory copiedInventory = Inventory.DeepCopy();
