@@ -999,30 +999,35 @@ namespace OpenNos.Handler
                     case 2:
 
                         // DragDrop / Reorder qset type to1 to2 from1 from2 vars -> q1 q2 data1 data2
-                        QuicklistEntryDTO qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
-                        QuicklistEntryDTO qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+                        QuicklistEntryDTO qlFrom = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
-                        qlFrom.Q1 = q1;
-                        qlFrom.Q2 = q2;
-
-                        if (qlTo == null)
+                        if(qlFrom != null)
                         {
-                            // Put 'from' to new position (datax)
-                            Session.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
+                            QuicklistEntryDTO qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
-                            // old 'from' is now empty.
-                            Session.SendPacket($"qset {data1} {data2} 7.7.-1.0");
-                        }
-                        else
-                        {
-                            // Put 'from' to new position (datax)
-                            Session.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
+                            qlFrom.Q1 = q1;
+                            qlFrom.Q2 = q2;
 
-                            // 'from' is now 'to' because they exchanged
-                            qlTo.Q1 = data1;
-                            qlTo.Q2 = data2;
-                            Session.SendPacket($"qset {qlTo.Q1} {qlTo.Q2} {qlTo.Type}.{qlTo.Slot}.{qlTo.Pos}.0");
+                            if (qlTo == null)
+                            {
+                                // Put 'from' to new position (datax)
+                                Session.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
+
+                                // old 'from' is now empty.
+                                Session.SendPacket($"qset {data1} {data2} 7.7.-1.0");
+                            }
+                            else
+                            {
+                                // Put 'from' to new position (datax)
+                                Session.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
+
+                                // 'from' is now 'to' because they exchanged
+                                qlTo.Q1 = data1;
+                                qlTo.Q2 = data2;
+                                Session.SendPacket($"qset {qlTo.Q1} {qlTo.Q2} {qlTo.Type}.{qlTo.Slot}.{qlTo.Pos}.0");
+                            }
                         }
+
                         break;
 
                     case 3:
