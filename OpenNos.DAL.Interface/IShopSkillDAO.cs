@@ -27,6 +27,8 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<ShopSkillDTO> LoadByShopId(int ShopId);
 
+        IEnumerable<ShopSkillDTO> LoadAll();
+
         #endregion
     }
 }

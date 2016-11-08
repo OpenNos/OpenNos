@@ -12,11 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -33,26 +31,9 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public override void Initialize()
+        public MapNpc()
         {
-            _random = new Random(MapNpcId);
-
-            Npc = ServerManager.GetNpc(this.NpcVNum);
-            LastEffect = LastMove = DateTime.Now;
-            _movetime = _random.Next(300, 3000);
-            Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
-
-            Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
-
-            Shop shop = ServerManager.Instance.GetShopByMapNpcId(MapNpcId);
-            if (shop != null)
-            {
-                shop.Initialize();
-                Shop = shop;
-            }
         }
-
-        public MapNpc() { }
 
         #endregion
 
@@ -105,6 +86,26 @@ namespace OpenNos.GameObject
         public string GetNpcDialog()
         {
             return $"npc_req 2 {MapNpcId} {Dialog}";
+        }
+
+        public override void Initialize()
+        {
+            _random = new Random(MapNpcId);
+
+            Npc = ServerManager.GetNpc(this.NpcVNum);
+            LastEffect = DateTime.Now;
+            LastMove = DateTime.Now;
+            _movetime = _random.Next(300, 3000);
+            Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
+
+            Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
+
+            Shop shop = ServerManager.Instance.GetShopByMapNpcId(MapNpcId);
+            if (shop != null)
+            {
+                shop.Initialize();
+                Shop = shop;
+            }
         }
 
         internal void NpcLife()

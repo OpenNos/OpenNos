@@ -26,6 +26,17 @@ namespace OpenNos.DAL.EF
     {
         #region Methods
 
+        public IEnumerable<ShopSkillDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (ShopSkill entity in context.ShopSkill)
+                {
+                    yield return _mapper.Map<ShopSkillDTO>(entity);
+                }
+            }
+        }
+
         public ShopSkillDTO Insert(ShopSkillDTO shopSkill)
         {
             try
