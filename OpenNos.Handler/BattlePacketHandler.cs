@@ -17,7 +17,6 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -63,22 +62,12 @@ namespace OpenNos.Handler
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted())
             {
-                if (Session.Character.Gender == 1)
-                {
-                    Session.SendPacket("cancel 0 0");
-                    ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
-                    return;
-                }
-                else
-                {
-                    Session.SendPacket("cancel 0 0");
-                    ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
-                    return;
-                }
+                Session.SendPacket("cancel 0 0");
+                ServerManager.Instance.Broadcast(Session.Character.Gender == 1 ? Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1) :
+                    Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                return;
             }
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
@@ -92,25 +81,34 @@ namespace OpenNos.Handler
                 return;
             }
             Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
+            string[] packetsplit = packet.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             ushort damage = 0;
             int hitmode = 0;
             if (packetsplit.Length > 3)
             {
-                for (int i = 3; i < packetsplit.Length - 1; i += 2)
+                // get amount of mobs which are targeted
+                short mobAmount = 0;
+                short.TryParse(packetsplit[2], out mobAmount);
+                if((packetsplit.Length - 3) / 2 != mobAmount)
+                {
+                    return;
+                }
+
+                for (int i = 3; i < packetsplit.Length - 2; i += 2)
                 {
                     List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
                     if (skills != null)
                     {
-                        short CastId = -1;
-                        short MapMonsterId = -1;
-                        if (short.TryParse(packetsplit[i], out CastId) && short.TryParse(packetsplit[i + 1], out MapMonsterId))
+                        short mapMonsterTargetId = -1;
+                        short skillCastId = -1;
+    
+                        if (short.TryParse(packetsplit[i], out skillCastId) && short.TryParse(packetsplit[i + 1], out mapMonsterTargetId))
                         {
                             Task t = Task.Factory.StartNew((Func<Task>)(async () =>
                             {
-                                CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == CastId);
-                                MapMonster mon = Session.CurrentMap.GetMonster(MapMonsterId);
-                                if (mon != null && ski != null && mon.CurrentHp > 0)
+                                CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == skillCastId - 1);
+                                MapMonster mon = Session.CurrentMap.GetMonster(mapMonsterTargetId);
+                                if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && ski != null && mon.CurrentHp > 0)
                                 {
                                     Session.Character.LastSkill = DateTime.Now;
                                     damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
@@ -119,7 +117,7 @@ namespace OpenNos.Handler
                                 }
 
                                 await Task.Delay((ski.Skill.Cooldown) * 100);
-                                Session.SendPacket($"sr {CastId}");
+                                Session.SendPacket($"sr {skillCastId - 1}");
                             }));
                         }
                     }
@@ -195,7 +193,7 @@ namespace OpenNos.Handler
                                 if (mmon != null)
                                 {
                                     damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
-                                    broadcastPackets.Add($"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
+                                    broadcastPackets.Add($"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)mon.Monster.MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
                                     GenerateKillBonus(mon.MapMonsterId);
                                 }
                             }
@@ -461,6 +459,7 @@ namespace OpenNos.Handler
             short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
             Random random = new Random();
             int generated = random.Next(0, 100);
+
             //int miss_chance = 20;
             int monsterDefence = 0;
 
@@ -488,7 +487,7 @@ namespace OpenNos.Handler
             #endregion
 
             #region Sp
-            
+
             SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
 
             #endregion
@@ -555,9 +554,11 @@ namespace OpenNos.Handler
                     monsterDefence = monsterToAttack.Monster.MagicDefence;
                     break;
             }
+
             #endregion
 
             #region Basic Damage Data Calculation
+
             if (specialistInstance != null)
             {
                 mainMinDmg += specialistInstance.DamageMinimum;
@@ -567,10 +568,10 @@ namespace OpenNos.Handler
                 mainHitRate += specialistInstance.HitRate;
             }
 
-#warning TODO: Implement BCard damage boosts, see Issue 
+#warning TODO: Implement BCard damage boosts, see Issue
 
             mainUpgrade -= monsterToAttack.Monster.DefenceUpgrade;
-            if(mainUpgrade < -10)
+            if (mainUpgrade < -10)
             {
                 mainUpgrade = -10;
             }
@@ -582,7 +583,9 @@ namespace OpenNos.Handler
             #endregion
 
             #region Detailed Calculation
-            #region Base Damage 
+
+            #region Base Damage
+
             int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
             baseDamage += (skill.Damage / 4);
             int elementalDamage = 0; //placeholder for BCard etc...
@@ -672,13 +675,15 @@ namespace OpenNos.Handler
                     baseDamage += (int)(baseDamage * 2);
                     break;
             }
+
             #endregion
+
             #region Critical Damage
-            if(random.Next(100) <= mainCritChance)
+
+            if (random.Next(100) <= mainCritChance)
             {
                 if (skill.Type == 2)
                 {
-
                 }
                 else if (skill.Type == 3 && Session.Character.Class != 3)
                 {
@@ -690,17 +695,21 @@ namespace OpenNos.Handler
                     baseDamage = (int)(baseDamage * ((mainCritHit / 100D) + 1));
                     hitmode = 3;
                 }
-
             }
+
             #endregion
+
             #region Elementary Damage
+
             #region Calculate Elemental Boost + Rate
+
             double elementalBoost = 0;
             short monsterResistance = 0;
             switch (Session.Character.Element)
             {
                 case 0:
                     break;
+
                 case 1:
                     monsterResistance = monsterToAttack.Monster.FireResistance;
                     switch (monsterToAttack.Monster.Element)
@@ -708,20 +717,25 @@ namespace OpenNos.Handler
                         case 0:
                             elementalBoost = 1.3;
                             break;
+
                         case 1:
                             elementalBoost = 1;
                             break;
+
                         case 2:
                             elementalBoost = 2;
                             break;
+
                         case 3:
                             elementalBoost = 0.5;
                             break;
+
                         case 4:
                             elementalBoost = 1.5;
                             break;
                     }
                     break;
+
                 case 2:
                     monsterResistance = monsterToAttack.Monster.WaterResistance;
                     switch (monsterToAttack.Monster.Element)
@@ -729,20 +743,25 @@ namespace OpenNos.Handler
                         case 0:
                             elementalBoost = 1.3;
                             break;
+
                         case 1:
                             elementalBoost = 2;
                             break;
+
                         case 2:
                             elementalBoost = 1;
                             break;
+
                         case 3:
                             elementalBoost = 1.5;
                             break;
+
                         case 4:
                             elementalBoost = 0.5;
                             break;
                     }
                     break;
+
                 case 3:
                     monsterResistance = monsterToAttack.Monster.LightResistance;
                     switch (monsterToAttack.Monster.Element)
@@ -750,20 +769,25 @@ namespace OpenNos.Handler
                         case 0:
                             elementalBoost = 1.3;
                             break;
+
                         case 1:
                             elementalBoost = 1.5;
                             break;
+
                         case 2:
                             elementalBoost = 0.5;
                             break;
+
                         case 3:
                             elementalBoost = 1;
                             break;
+
                         case 4:
                             elementalBoost = 2;
                             break;
                     }
                     break;
+
                 case 4:
                     monsterResistance = monsterToAttack.Monster.DarkResistance;
                     switch (monsterToAttack.Monster.Element)
@@ -771,23 +795,29 @@ namespace OpenNos.Handler
                         case 0:
                             elementalBoost = 1.3;
                             break;
+
                         case 1:
                             elementalBoost = 0.5;
                             break;
+
                         case 2:
                             elementalBoost = 1.5;
                             break;
+
                         case 3:
                             elementalBoost = 2;
                             break;
+
                         case 4:
                             elementalBoost = 1;
                             break;
                     }
                     break;
             }
+
             #endregion;
-            if(monsterResistance < 0)
+
+            if (monsterResistance < 0)
             {
                 monsterResistance = 0;
             }
@@ -795,16 +825,21 @@ namespace OpenNos.Handler
             elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
 
             #endregion
+
             #region Total Damage
+
             int totalDamage = baseDamage + elementalDamage - monsterDefence;
-            if(totalDamage < 5)
+            if (totalDamage < 5)
             {
                 totalDamage = random.Next(1, 6);
             }
+
             #endregion
+
             #endregion
 
             #region Old code as of 09/27/2016
+
             //float[] Bonus = new float[10] { 0.1f, 0.15f, 0.22f, 0.32f, 0.43f, 0.54f, 0.65f, 0.90f, 1.20f, 2f };
             //// TODO: Add skill uprade effect on damage
             //int AEq = Convert.ToInt32(random.Next(MainMinDmg, MainMaxDmg) * (1 + (MainUpgrade > monsterinfo.DefenceUpgrade ? Bonus[MainUpgrade - monsterinfo.DefenceUpgrade - 1] : 0)));
@@ -953,7 +988,9 @@ namespace OpenNos.Handler
             //    //    finalDamage = 0;
             //    //}
             //}
+
             #endregion
+
             if (monsterToAttack.DamageList.ContainsKey(Session.Character.CharacterId))
             {
                 monsterToAttack.DamageList[Session.Character.CharacterId] += totalDamage;
@@ -967,7 +1004,7 @@ namespace OpenNos.Handler
                 monsterToAttack.Alive = false;
                 monsterToAttack.CurrentHp = 0;
                 monsterToAttack.CurrentMp = 0;
-                monsterToAttack.Death = DateTime.Now;                           
+                monsterToAttack.Death = DateTime.Now;
             }
             else
             {
@@ -1133,7 +1170,7 @@ namespace OpenNos.Handler
                         Session.CurrentMap?.Broadcast($"bs 1 {Session.Character.CharacterId} {x} {y} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} 0 0 1 1 0 0 0");
 
                         IEnumerable<MapMonster> monstersInRange = Session.CurrentMap.GetListMonsterInRange(x, y, ski.Skill.TargetRange).ToList();
-                        foreach (MapMonster mon in monstersInRange.Where(s=>s.CurrentHp > 0))
+                        foreach (MapMonster mon in monstersInRange.Where(s => s.CurrentHp > 0))
                         {
                             damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
                             Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {x} {y} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
