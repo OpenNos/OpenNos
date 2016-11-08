@@ -521,11 +521,16 @@ namespace OpenNos.Handler
                         {
                             message += guriPacket[i] + " ";
                         }
-                        if (message.Length > 120)
+                            if (message.Length > 120)
                             message = message.Substring(0, 120);
 
                         message.Trim();
 
+                        if (Session.Character.IsMuted())
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SPEAKER_CANT_BE_USED"), 10));
+                            return;
+                        }
                         Session.Character.Inventory.RemoveItemAmount(speakerVNum);
                         ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }

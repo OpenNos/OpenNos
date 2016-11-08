@@ -1030,4 +1030,7 @@ Veux-tu le porter ?</value>
   <data name="GM_CHAT_BLOCKED" xml:space="preserve">
     <value>Ce Maître du Jeu n'accepte pas de reçevoir des messages privés.</value>
   </data>
+  <data name="SPEAKER_CANT_BE_USED" xml:space="preserve">
+    <value>Tu subis une sanction. par conséquant, tu ne peux pas utiliser cet objet.</value>
+  </data>
 </root>
