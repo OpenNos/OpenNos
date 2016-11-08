@@ -306,7 +306,6 @@ namespace OpenNos.GameObject
 
                     session.CurrentMap = GetMap(session.Character.MapId);
                     session.CurrentMap.RegisterSession(session);
-                    session.SendPacket(session.Character.GenerateCond());
                     session.SendPacket(session.Character.GenerateCInfo());
                     session.SendPacket(session.Character.GenerateCMode());
                     session.SendPacket(session.Character.GenerateEq());
@@ -314,14 +313,14 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateLev());
                     session.SendPacket(session.Character.GenerateStat());
                     session.SendPacket(session.Character.GenerateAt());
+                    session.SendPacket(session.Character.GenerateCond());
                     session.SendPacket(session.Character.GenerateCMap());
                     session.SendPacket(session.Character.GenerateStatChar());
                     session.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
                     session.SendPacket("rsfp 0 -1");
-
                     // in 2 // send only when partner present cond 2 // send only when partner present
-                    session.SendPacket("pinit 0"); // clear party list
                     session.SendPacket(session.Character.GeneratePairy());
+                    session.SendPacket("pinit 0"); // clear party list
                     session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
                     Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));

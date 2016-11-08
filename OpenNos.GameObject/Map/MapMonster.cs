@@ -120,6 +120,20 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool IsInRange(short mapX, short mapY, byte distance)
+        {
+            return Map.GetDistance(
+                new MapCell()
+                {
+                    X = mapX,
+                    Y = mapY
+                }, new MapCell()
+                {
+                    X = MapX,
+                    Y = MapY
+                }) <= distance + 1;
+        }
+
         internal void MonsterLife()
         {
             // Respawn
@@ -217,7 +231,7 @@ namespace OpenNos.GameObject
                 if (targetSession == null || targetSession.Character.Invisible || targetSession.Character.Hp <= 0)
                 {
                     Target = -1;
-                    Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY}, new GridPos() { x = FirstX, y = FirstY });
+                    Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                     if (!Path.Any())
                     {
                         Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
@@ -323,10 +337,10 @@ namespace OpenNos.GameObject
                             short xoffset = (short)_random.Next(-1, 1);
                             short yoffset = (short)_random.Next(-1, 1);
 
-                            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset)});
+                            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
                             if (!Path.Any())
                             {
-                                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset)});
+                                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
                             }
                         }
                         if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
@@ -353,7 +367,7 @@ namespace OpenNos.GameObject
                         }
                         if (Path.Count() == 0 && (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance))
                         {
-                            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY}, new GridPos() { x = FirstX, y = FirstY });
+                            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                             if (!Path.Any())
                             {
                                 Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });

@@ -307,7 +307,7 @@
     <value>À partir de maintenant, la barre des HP sera visible.</value>
   </data>
   <data name="INCOMING_EXCHANGE" xml:space="preserve">
-    <value>{0} t'as envoyé une demande d'échange.</value>
+    <value>{0} t'a envoyé une demande d'échange.</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Erreur d'insertion ou de mise à jour du personnage {0} , {1}</value>
@@ -1029,5 +1029,8 @@ Veux-tu le porter ?</value>
   </data>
   <data name="GM_CHAT_BLOCKED" xml:space="preserve">
     <value>Ce Maître du Jeu n'accepte pas de reçevoir des messages privés.</value>
+  </data>
+  <data name="SPEAKER_CANT_BE_USED" xml:space="preserve">
+    <value>Tu subis une sanction. par conséquant, tu ne peux pas utiliser cet objet.</value>
   </data>
 </root>

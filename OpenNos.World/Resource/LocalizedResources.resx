@@ -1027,4 +1027,7 @@
   <data name="GM_CHAT_BLOCKED" xml:space="preserve">
     <value>This little monkey is busy atm. Try Later!</value>
   </data>
+  <data name="SPEAKER_CANT_BE_USED" xml:space="preserve">
+    <value>You can't use this item because you are penalized</value>
+  </data>
 </root>
