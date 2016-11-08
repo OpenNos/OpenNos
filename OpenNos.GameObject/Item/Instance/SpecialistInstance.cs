@@ -258,7 +258,7 @@ namespace OpenNos.GameObject
                     count = (byte)_random.Next(3, 6);
                 }
 
-                ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
 
                 if (type < 3)
                 {
@@ -315,6 +315,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 11));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 0));
             }
+            Session.SendPacket(Session.Character.GenerateInventoryAdd(ItemVNum, Amount, InventoryType.Equipment, Slot, Rare, Design, Upgrade, SpStoneUpgrade));
             Session.Character.Gold -= goldprice[upmode - 1];
             Session.SendPacket(Session.Character.GenerateGold());
             Session.Character.Inventory.RemoveItemAmount(stonevnum, stoneprice[upmode - 1]);

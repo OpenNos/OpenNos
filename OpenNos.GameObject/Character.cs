@@ -11,6 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL;
@@ -19,7 +20,6 @@ using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using OpenNos.GameObject.Packets.ServerPackets;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -98,8 +98,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool GmPvtBlock { get; set; }
-
         public bool CanFight
         {
             get
@@ -146,6 +144,8 @@ namespace OpenNos.GameObject
         public ExchangeInfo ExchangeInfo { get; set; }
 
         public int FireResistance { get; set; }
+
+        public bool GmPvtBlock { get; set; }
 
         public Group Group { get; set; }
 
@@ -1172,23 +1172,23 @@ namespace OpenNos.GameObject
 
         public string GenerateSki()
         {
-            List<CharacterSkill> skill = UseSp ? SkillsSp.GetAllItems() : Skills.GetAllItems();
+            List<CharacterSkill> characterSkills = UseSp ? SkillsSp.GetAllItems() : Skills.GetAllItems();
             string skibase = String.Empty;
             if (!UseSp)
             {
                 skibase = $"{200 + 20 * Class} {201 + 20 * Class}";
             }
-            else
+            else if (characterSkills.Any())
             {
-                skibase = $"{skill.ElementAt(0).SkillVNum} {skill.ElementAt(0).SkillVNum}";
+                skibase = $"{characterSkills.ElementAt(0).SkillVNum} {characterSkills.ElementAt(0).SkillVNum}";
             }
-            string skills = String.Empty;
-            foreach (CharacterSkill ski in skill)
+            string generatedSkills = String.Empty;
+            foreach (CharacterSkill ski in characterSkills)
             {
-                skills += $" {ski.SkillVNum}";
+                generatedSkills += $" {ski.SkillVNum}";
             }
 
-            return $"ski {skibase}{skills}";
+            return $"ski {skibase}{generatedSkills}";
         }
 
         public string GenerateSlInfo(SpecialistInstance inventoryItem, int type)
@@ -2140,7 +2140,6 @@ namespace OpenNos.GameObject
             {
                 CharacterDTO character = this.DeepCopy();
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
-
 
                 // load and concat inventory with equipment
                 Inventory copiedInventory = Inventory.DeepCopy();

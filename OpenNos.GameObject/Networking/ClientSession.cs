@@ -457,11 +457,11 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        string[] packetHeader = packet.Split(' ', '^');
+                        string[] packetHeader = packet.Split(new char[] { ' ', '^' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        // 0 is a keep alive packet with no content to handle
+                        // 1 is a keep alive packet with no content to handle
                         int permit = 1;
-                        if (packetHeader.Length > 0)
+                        if (packetHeader.Length > 1)
                         {
                             if (packetHeader[1][0] == '$')
                             {
@@ -538,7 +538,11 @@ namespace OpenNos.GameObject
             }
              */
 
-            _queue.EnqueueMessage(message.MessageData);
+            if(message.MessageData.Any() && message.MessageData.Length > 2)
+            {
+                _queue.EnqueueMessage(message.MessageData);
+            }
+ 
             lastPacketReceive = e.ReceivedTimestamp.Ticks;
         }
 
