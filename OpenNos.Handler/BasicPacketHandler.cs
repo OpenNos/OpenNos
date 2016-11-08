@@ -382,7 +382,7 @@ namespace OpenNos.Handler
                 // accepted, join the group
                 if (pjoinPacket.RequestType.Equals(GroupRequestType.Accepted))
                 {
-                    if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId) ||
+                    if (ServerManager.Instance.IsCharacterMemberOfGroup(Session.Character.CharacterId) &&
                         ServerManager.Instance.IsCharacterMemberOfGroup(pjoinPacket.CharacterId))
                     {
                         // everyone is in group, return
