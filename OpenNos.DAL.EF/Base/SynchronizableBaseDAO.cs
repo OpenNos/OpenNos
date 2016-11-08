@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using OpenNos.Core;
+﻿using OpenNos.Core;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -15,7 +14,6 @@ namespace OpenNos.DAL.EF
         where TDTO : SynchronizableBaseDTO
         where TEntity : SynchronizableBaseEntity
     {
-
         #region Methods
 
         public virtual DeleteResult Delete(Guid id)

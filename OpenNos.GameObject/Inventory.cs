@@ -301,7 +301,7 @@ namespace OpenNos.GameObject
                 {
                     if (wear)
                     {
-                        //swap
+                        // swap
                         var targetInstance = LoadBySlotAndType(targetSlot.Value, targetType);
 
                         sourceInstance.Slot = targetSlot.Value;
@@ -312,7 +312,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        //move source to target
+                        // move source to target
                         sourceInstance.Slot = GetFreeSlot(targetType, Owner.BackPack);
                         sourceInstance.Type = targetType;
                     }

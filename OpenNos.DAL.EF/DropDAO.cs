@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -25,7 +24,6 @@ namespace OpenNos.DAL.EF
 {
     public class DropDAO : MappingBaseDAO<Drop, DropDTO>, IDropDAO
     {
-
         #region Methods
 
         public void Insert(List<DropDTO> drops)

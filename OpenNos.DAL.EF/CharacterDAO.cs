@@ -27,7 +27,6 @@ namespace OpenNos.DAL.EF
 {
     public class CharacterDAO : MappingBaseDAO<Character, CharacterDTO>, ICharacterDAO
     {
-
         #region Methods
 
         public DeleteResult DeleteByPrimaryKey(long accountId, byte characterSlot)

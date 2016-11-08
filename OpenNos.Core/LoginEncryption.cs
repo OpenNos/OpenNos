@@ -42,7 +42,10 @@ namespace OpenNos.Core
             {
                 str = decpass = string.Empty;
                 str = passcrypt.Remove(0, 2);
-                for (int i = 0; i < str.Length; i += 2) decpass += str[i];
+                for (int i = 0; i < str.Length; i += 2)
+                {
+                    decpass += str[i];
+                }
             }
             StringBuilder temp = new StringBuilder();
             for (int i = 0; i < decpass.Length; i += 2)
@@ -105,6 +108,5 @@ namespace OpenNos.Core
         }
 
         #endregion
-
     }
 }

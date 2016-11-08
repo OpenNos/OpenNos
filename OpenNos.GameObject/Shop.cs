@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
@@ -27,20 +26,6 @@ namespace OpenNos.GameObject
         {
         }
 
-        public override void Initialize()
-        {
-            ShopItems = new List<ShopItemDTO>();
-            foreach (ShopItemDTO item in DAOFactory.ShopItemDAO.LoadByShopId(ShopId))
-            {
-                ShopItems.Add(item as ShopItemDTO);
-            }
-            ShopSkills = new List<ShopSkillDTO>();
-            foreach (ShopSkillDTO skill in DAOFactory.ShopSkillDAO.LoadByShopId(ShopId))
-            {
-                ShopSkills.Add(skill as ShopSkillDTO);
-            }
-        }
-
         #endregion
 
         #region Properties
@@ -52,6 +37,12 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public override void Initialize()
+        {
+            ShopItems = ServerManager.Instance.GetShopItemsByShopId(ShopId);
+            ShopSkills = ServerManager.Instance.GetShopSkillsByShopId(ShopId);
+        }
 
         public void Save()
         {

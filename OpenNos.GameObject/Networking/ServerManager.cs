@@ -894,7 +894,7 @@ namespace OpenNos.GameObject
             return null;
         }
 
-        internal List<ShopSkillDTO> GetShopSkillByShopId(int shopId)
+        internal List<ShopSkillDTO> GetShopSkillsByShopId(int shopId)
         {
             if (_shopSkills.ContainsKey(shopId))
             {
@@ -904,7 +904,7 @@ namespace OpenNos.GameObject
             return new List<ShopSkillDTO>();
         }
 
-        internal List<ShopItemDTO> GetShopItemByShopId(int shopId)
+        internal List<ShopItemDTO> GetShopItemsByShopId(int shopId)
         {
             if (_shopItems.ContainsKey(shopId))
             {
@@ -939,6 +939,12 @@ namespace OpenNos.GameObject
                 _monsterDrops.Dispose();
                 _groups.Dispose();
                 _monsterSkills.Dispose();
+                _shopSkills.Dispose();
+                _shopItems.Dispose();
+                _shops.Dispose();
+                _recipes.Dispose();
+                _mapNpcs.Dispose();
+                _teleporters.Dispose();
             }
         }
 

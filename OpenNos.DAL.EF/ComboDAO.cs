@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -23,9 +22,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class ComboDAO : MappingBaseDAO<Combo,ComboDTO>,IComboDAO
+    public class ComboDAO : MappingBaseDAO<Combo, ComboDTO>, IComboDAO
     {
-
         #region Methods
 
         public void Insert(List<ComboDTO> combos)

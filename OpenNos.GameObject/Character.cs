@@ -2242,7 +2242,7 @@ namespace OpenNos.GameObject
                 upgrade = 0;
             }
 
-            //maximum size of the amount is 99
+            // maximum size of the amount is 99
             if (amount > 99)
             {
                 amount = 99;

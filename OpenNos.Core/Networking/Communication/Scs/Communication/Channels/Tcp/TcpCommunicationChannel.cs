@@ -56,19 +56,20 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// </summary>
         private readonly object _syncLock;
 
+        private bool _disposed;
+
+        private ConcurrentQueue<byte[]> _highPriorityBuffer;
+
+        private ConcurrentQueue<byte[]> _lowPriorityBuffer;
+
         /// <summary>
         /// A flag to control thread's running
         /// </summary>
         private volatile bool _running;
 
-        private ConcurrentQueue<byte[]> _highPriorityBuffer;
-        private ConcurrentQueue<byte[]> _lowPriorityBuffer;
-
         private CancellationTokenSource _sendCancellationToken = new CancellationTokenSource();
 
         private Task _sendTask;
-
-        private bool _disposed;
 
         #endregion
 
@@ -129,26 +130,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             }
         }
 
-        /// <summary>
-        /// Calls Disconnect method.
-        /// </summary>
-        public void Dispose()
+        public override async Task ClearLowpriorityQueue()
         {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Disconnect();
-                _sendCancellationToken.Dispose();
-            }
+            _lowPriorityBuffer.Clear();
         }
 
         /// <summary>
@@ -184,6 +168,19 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             OnDisconnected();
         }
 
+        /// <summary>
+        /// Calls Disconnect method.
+        /// </summary>
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
+        }
+
         public void SendInterval()
         {
             try
@@ -205,28 +202,12 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             }
         }
 
-        private void SendByPriority(ConcurrentQueue<byte[]> buffer)
+        protected virtual void Dispose(bool disposing)
         {
-            IEnumerable<byte> outgoingPacket = new List<byte>();
-
-            // send maximal 30 packets at once
-            for (int i = 0; i < 30; i++)
+            if (disposing)
             {
-                byte[] message;
-                if (buffer.TryDequeue(out message) && message != null)
-                {
-                    outgoingPacket = outgoingPacket.Concat(message);
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            if (outgoingPacket.Any())
-            {
-                _clientSocket.BeginSend(outgoingPacket.ToArray(), 0, outgoingPacket.Count(), SocketFlags.None,
-                new AsyncCallback(SendCallback), _clientSocket);
+                Disconnect();
+                _sendCancellationToken.Dispose();
             }
         }
 
@@ -236,7 +217,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// <param name="message">Message to be sent</param>
         protected override void SendMessagepublic(IScsMessage message, byte priority)
         {
-            if(priority > 5)
+            if (priority > 5)
             {
                 _highPriorityBuffer.Enqueue(WireProtocol.GetBytes(message));
             }
@@ -244,7 +225,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             {
                 _lowPriorityBuffer.Enqueue(WireProtocol.GetBytes(message));
             }
-
         }
 
         /// <summary>
@@ -331,9 +311,29 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             }
         }
 
-        public override async Task ClearLowpriorityQueue()
+        private void SendByPriority(ConcurrentQueue<byte[]> buffer)
         {
-            _lowPriorityBuffer.Clear();
+            IEnumerable<byte> outgoingPacket = new List<byte>();
+
+            // send maximal 30 packets at once
+            for (int i = 0; i < 30; i++)
+            {
+                byte[] message;
+                if (buffer.TryDequeue(out message) && message != null)
+                {
+                    outgoingPacket = outgoingPacket.Concat(message);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (outgoingPacket.Any())
+            {
+                _clientSocket.BeginSend(outgoingPacket.ToArray(), 0, outgoingPacket.Count(), SocketFlags.None,
+                new AsyncCallback(SendCallback), _clientSocket);
+            }
         }
 
         #endregion
