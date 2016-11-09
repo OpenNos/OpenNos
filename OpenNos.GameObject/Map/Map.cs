@@ -341,6 +341,7 @@ namespace OpenNos.GameObject
                 RemoveDeadMonsters();
                 foreach (MapMonster monster in Monsters.OrderBy(i => _random.Next()))
                 {
+                    monster.Map = this;
                     monster.MonsterLife();
                 }
             }
