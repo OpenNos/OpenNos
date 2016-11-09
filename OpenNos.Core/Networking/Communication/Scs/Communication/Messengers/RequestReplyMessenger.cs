@@ -165,6 +165,11 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #region Methods
 
+        public async Task ClearLowpriorityQueue()
+        {
+            // do nothing
+        }
+
         /// <summary>
         /// Calls Stop method of this object.
         /// </summary>
@@ -367,11 +372,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         private void Messenger_MessageSent(object sender, MessageEventArgs e)
         {
             OnMessageSent(e.Message);
-        }
-
-        public async Task ClearLowpriorityQueue()
-        {
-           // do nothing
         }
 
         #endregion

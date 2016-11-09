@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
 using System;
 
 namespace OpenNos.GameObject
@@ -40,15 +39,15 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public abstract byte Amount { get; set; }
+
         public DateTime CreateDate { get; set; }
+
+        public abstract short ItemVNum { get; set; }
 
         public short PositionX { get; set; }
 
         public short PositionY { get; set; }
-
-        public abstract short ItemVNum { get; set; }
-
-        public abstract byte Amount { get; set; }
 
         public virtual long TransportId
         {

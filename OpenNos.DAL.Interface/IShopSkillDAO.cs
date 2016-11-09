@@ -25,9 +25,9 @@ namespace OpenNos.DAL.Interface
 
         void Insert(List<ShopSkillDTO> skills);
 
-        IEnumerable<ShopSkillDTO> LoadByShopId(int ShopId);
-
         IEnumerable<ShopSkillDTO> LoadAll();
+
+        IEnumerable<ShopSkillDTO> LoadByShopId(int ShopId);
 
         #endregion
     }

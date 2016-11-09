@@ -28,7 +28,9 @@ namespace OpenNos.Core
         /// </summary>
         /// <param name="packetContent">The content to deseralize</param>
         /// <param name="packetType">The type of the packet to deserialize to</param>
-        /// <param name="includesKeepAliveIdentity">Include the keep alive identity or exclude it</param>
+        /// <param name="includesKeepAliveIdentity">
+        /// Include the keep alive identity or exclude it
+        /// </param>
         /// <returns>The deserialized packet.</returns>
         public static object Deserialize(string packetContent, Type packetType, bool includesKeepAliveIdentity = false)
         {
@@ -52,7 +54,9 @@ namespace OpenNos.Core
         /// Deserializes a string into a PacketBase
         /// </summary>
         /// <param name="packetContent">The content to deseralize</param>
-        /// <param name="includesKeepAliveIdentity">Include the keep alive identity or exclude it</param>
+        /// <param name="includesKeepAliveIdentity">
+        /// Include the keep alive identity or exclude it
+        /// </param>
         /// <returns>The deserialized packet.</returns>
         public static TPacket Deserialize<TPacket>(string packetContent, bool includesKeepAliveIdentity = false)
             where TPacket : PacketBase
@@ -74,7 +78,8 @@ namespace OpenNos.Core
         }
 
         /// <summary>
-        /// Initializes the PacketFactory and generates the serialization informations based on the given BaseType.
+        /// Initializes the PacketFactory and generates the serialization informations based on the
+        /// given BaseType.
         /// </summary>
         /// <typeparam name="TBaseType">The BaseType to generate serialization informations</typeparam>
         public static void Initialize<TBaseType>()
@@ -138,6 +143,49 @@ namespace OpenNos.Core
                 Logger.Log.Warn("Wrong Packet Format!", e);
                 return String.Empty;
             }
+        }
+
+        private static object Deserialize(string packetContent, object deserializedPacket, KeyValuePair<Tuple<Type, String>,
+                                                                                    Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformation, bool includesKeepAliveIdentity)
+        {
+            MatchCollection matches = Regex.Matches(packetContent, @"([^\s]+[\.][^\s]+[\s]?)+((?=\s)|$)|([^\s]+)((?=\s)|$)");
+
+            if (matches.Count > 0)
+            {
+                foreach (var packetBasePropertyInfo in serializationInformation.Value)
+                {
+                    int currentIndex = packetBasePropertyInfo.Key.Index + (includesKeepAliveIdentity ? 2 : 1); // adding 2 because we need to skip incrementing number and packet header
+
+                    if (currentIndex < matches.Count)
+                    {
+                        if (packetBasePropertyInfo.Key.SerializeToEnd)
+                        {
+                            // get the value to the end and stop deserialization
+                            string valueToEnd = packetContent.Substring(matches[currentIndex].Index, packetContent.Length - matches[currentIndex].Index);
+                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, SerializeValue(packetBasePropertyInfo.Value.PropertyType, valueToEnd, packetBasePropertyInfo.Key));
+                            break;
+                        }
+
+                        string currentValue = matches[currentIndex].Value;
+
+                        // set the value & convert currentValue
+                        if (currentValue != null)
+                        {
+                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, SerializeValue(packetBasePropertyInfo.Value.PropertyType, currentValue, packetBasePropertyInfo.Key));
+                        }
+                        else
+                        {
+                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, Activator.CreateInstance(packetBasePropertyInfo.Value.PropertyType));
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return deserializedPacket;
         }
 
         /// <summary> Converts for instance List<byte?> to -1.12.1.8.-1.-1.-1.-1.-1 </summary> <param
@@ -291,49 +339,6 @@ namespace OpenNos.Core
             return _packetSerializationInformations.Any(si => si.Key.Item1 == serializationType)
                                               ? _packetSerializationInformations.SingleOrDefault(si => si.Key.Item1 == serializationType)
                                               : GenerateSerializationInformations(serializationType); // generic runtime serialization parameter generation
-        }
-
-        private static object Deserialize(string packetContent, object deserializedPacket, KeyValuePair<Tuple<Type, String>,
-                                                                            Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformation, bool includesKeepAliveIdentity)
-        {
-            MatchCollection matches = Regex.Matches(packetContent, @"([^\s]+[\.][^\s]+[\s]?)+((?=\s)|$)|([^\s]+)((?=\s)|$)");
-
-            if (matches.Count > 0)
-            {
-                foreach (var packetBasePropertyInfo in serializationInformation.Value)
-                {
-                    int currentIndex = packetBasePropertyInfo.Key.Index + (includesKeepAliveIdentity ? 2 : 1); // adding 2 because we need to skip incrementing number and packet header
-
-                    if (currentIndex < matches.Count)
-                    {
-                        if (packetBasePropertyInfo.Key.SerializeToEnd)
-                        {
-                            // get the value to the end and stop deserialization
-                            string valueToEnd = packetContent.Substring(matches[currentIndex].Index, packetContent.Length - matches[currentIndex].Index);
-                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, SerializeValue(packetBasePropertyInfo.Value.PropertyType, valueToEnd, packetBasePropertyInfo.Key));
-                            break;
-                        }
-
-                        string currentValue = matches[currentIndex].Value;
-
-                        // set the value & convert currentValue
-                        if (currentValue != null)
-                        {
-                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, SerializeValue(packetBasePropertyInfo.Value.PropertyType, currentValue, packetBasePropertyInfo.Key));
-                        }
-                        else
-                        {
-                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, Activator.CreateInstance(packetBasePropertyInfo.Value.PropertyType));
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-
-            return deserializedPacket;
         }
 
         /// <summary> Converts for instance -1.12.1.8.-1.-1.-1.-1.-1 to eg. List<byte?> </summary>

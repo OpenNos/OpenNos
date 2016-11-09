@@ -11,16 +11,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.Core
 {
     public class HandlerMethodReference
     {
+        #region Instantiation
+
         public HandlerMethodReference(Action<object, object> handlerMethod, IPacketHandler parentHandler, PacketAttribute handlerMethodAttribute)
         {
             HandlerMethod = handlerMethod;
@@ -37,17 +37,23 @@ namespace OpenNos.Core
             Identification = ((PacketHeaderAttribute)PacketBaseParameterType.GetCustomAttributes(true).FirstOrDefault(ca => ca.GetType().Equals(typeof(PacketHeaderAttribute)))).Identification;
         }
 
-        public PacketAttribute HandlerMethodAttribute { get; set; }
+        #endregion
+
+        #region Properties
 
         public Action<object, object> HandlerMethod { get; set; }
 
-        public IPacketHandler ParentHandler { get; set; }
-
-        public Type PacketBaseParameterType { get; set; }
+        public PacketAttribute HandlerMethodAttribute { get; set; }
 
         /// <summary>
         /// Unique identification of the Packet by Header
         /// </summary>
         public string Identification { get; set; }
+
+        public Type PacketBaseParameterType { get; set; }
+
+        public IPacketHandler ParentHandler { get; set; }
+
+        #endregion
     }
 }

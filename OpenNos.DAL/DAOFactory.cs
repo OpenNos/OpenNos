@@ -29,8 +29,8 @@ namespace OpenNos.DAL
         private static IComboDAO _comboDAO;
         private static IDropDAO _dropDAO;
         private static IGeneralLogDAO _generallogDAO;
-        private static IItemInstanceDAO _itemInstanceDAO;
         private static IItemDAO _itemDAO;
+        private static IItemInstanceDAO _itemInstanceDAO;
         private static IMailDAO _mailDAO;
         private static IMapDAO _mapDAO;
         private static IMapMonsterDAO _mapmonsterDAO;
@@ -217,26 +217,6 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IItemInstanceDAO ItemInstanceDAO
-        {
-            get
-            {
-                if (_itemInstanceDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _itemInstanceDAO = new Mock.ItemInstanceDAO();
-                    }
-                    else
-                    {
-                        _itemInstanceDAO = new EF.ItemInstanceDAO();
-                    }
-                }
-
-                return _itemInstanceDAO;
-            }
-        }
-
         public static IItemDAO ItemDAO
         {
             get
@@ -254,6 +234,26 @@ namespace OpenNos.DAL
                 }
 
                 return _itemDAO;
+            }
+        }
+
+        public static IItemInstanceDAO ItemInstanceDAO
+        {
+            get
+            {
+                if (_itemInstanceDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _itemInstanceDAO = new Mock.ItemInstanceDAO();
+                    }
+                    else
+                    {
+                        _itemInstanceDAO = new EF.ItemInstanceDAO();
+                    }
+                }
+
+                return _itemInstanceDAO;
             }
         }
 

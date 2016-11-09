@@ -33,24 +33,8 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public MapMonster() { }
-
-        public override void Initialize()
+        public MapMonster()
         {
-            FirstX = MapX;
-            FirstY = MapY;
-            LastEffect = LastMove = DateTime.Now;
-            Target = -1;
-            Path = new List<GridPos>();
-            Alive = true;
-            Respawn = true;
-            Monster = ServerManager.GetNpc(MonsterVNum);
-            CurrentHp = Monster.MaxHP;
-            CurrentMp = Monster.MaxMP;
-            Skills = Monster.Skills.ToList();
-            DamageList = new Dictionary<long, long>();
-            _random = new Random(MapMonsterId);
-            _movetime = _random.Next(400, 3200);
         }
 
         #endregion
@@ -113,6 +97,24 @@ namespace OpenNos.GameObject
         public string GenerateMv3()
         {
             return $"mv 3 {MapMonsterId} {MapX} {MapY} {Monster.Speed}";
+        }
+
+        public override void Initialize()
+        {
+            FirstX = MapX;
+            FirstY = MapY;
+            LastEffect = LastMove = DateTime.Now;
+            Target = -1;
+            Path = new List<GridPos>();
+            Alive = true;
+            Respawn = true;
+            Monster = ServerManager.GetNpc(MonsterVNum);
+            CurrentHp = Monster.MaxHP;
+            CurrentMp = Monster.MaxMP;
+            Skills = Monster.Skills.ToList();
+            DamageList = new Dictionary<long, long>();
+            _random = new Random(MapMonsterId);
+            _movetime = _random.Next(400, 3200);
         }
 
         internal void MonsterLife()

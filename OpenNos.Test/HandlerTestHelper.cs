@@ -1,5 +1,4 @@
 ﻿using log4net;
-using NUnit.Framework;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -11,7 +10,6 @@ using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenNos.Test

@@ -10,7 +10,9 @@ namespace OpenNos.Core
         /// Specify the Index of the packet to parse this property to.
         /// </summary>
         /// <param name="index">The zero based index starting from header (exclusive).</param>
-        /// <param name="isReturnPacket">Adds an # to the Header and replaces Spaces with ^ if set to true.</param>
+        /// <param name="isReturnPacket">
+        /// Adds an # to the Header and replaces Spaces with ^ if set to true.
+        /// </param>
         public PacketIndexAttribute(int index, bool isReturnPacket = false, bool serializeToEnd = false)
         {
             Index = index;

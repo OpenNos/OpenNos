@@ -44,14 +44,10 @@ namespace OpenNos.GameObject
 
         private bool _disposed;
 
-        private ThreadSafeSortedList<short, List<DropDTO>> _monsterDrops;
-
         private List<DropDTO> _generalDrops;
-
         private ThreadSafeSortedList<long, Group> _groups;
-
         private ThreadSafeSortedList<short, List<MapNpc>> _mapNpcs;
-
+        private ThreadSafeSortedList<short, List<DropDTO>> _monsterDrops;
         private ThreadSafeSortedList<short, List<NpcMonsterSkill>> _monsterSkills;
 
         private ThreadSafeSortedList<int, List<Recipe>> _recipes;
@@ -282,6 +278,7 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateStatChar());
                     session.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
                     session.SendPacket("rsfp 0 -1");
+
                     // in 2 // send only when partner present cond 2 // send only when partner present
                     session.SendPacket(session.Character.GeneratePairy());
                     session.SendPacket("pinit 0"); // clear party list
@@ -613,7 +610,6 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEMS_LOADED"), _items.Count()));
 
-
             // intialize monsterdrops
             _monsterDrops = new ThreadSafeSortedList<short, List<DropDTO>>();
             foreach (var monsterDropGrouping in DAOFactory.DropDAO.LoadAll().GroupBy(d => d.MonsterVNum))
@@ -891,16 +887,6 @@ namespace OpenNos.GameObject
             return null;
         }
 
-        internal List<ShopSkillDTO> GetShopSkillsByShopId(int shopId)
-        {
-            if (_shopSkills.ContainsKey(shopId))
-            {
-                return _shopSkills[shopId];
-            }
-
-            return new List<ShopSkillDTO>();
-        }
-
         internal List<ShopItemDTO> GetShopItemsByShopId(int shopId)
         {
             if (_shopItems.ContainsKey(shopId))
@@ -909,6 +895,16 @@ namespace OpenNos.GameObject
             }
 
             return new List<ShopItemDTO>();
+        }
+
+        internal List<ShopSkillDTO> GetShopSkillsByShopId(int shopId)
+        {
+            if (_shopSkills.ContainsKey(shopId))
+            {
+                return _shopSkills[shopId];
+            }
+
+            return new List<ShopSkillDTO>();
         }
 
         internal List<TeleporterDTO> GetTeleportersByNpcVNum(short npcMonsterVNum)

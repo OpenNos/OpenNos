@@ -62,6 +62,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 
         public int Priority { get; set; }
 
+        #endregion
+
+        #region Methods
+
         public int CompareTo(object obj)
         {
             return CompareTo((ScsRawDataMessage)obj);
@@ -71,10 +75,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
         {
             return Priority.CompareTo(other.Priority);
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// Creates a string to represents this object.

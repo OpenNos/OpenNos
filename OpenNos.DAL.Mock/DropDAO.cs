@@ -8,9 +8,13 @@ namespace OpenNos.DAL.Mock
 {
     public class DropDAO : BaseDAO<DropDTO>, IDropDAO
     {
-        #region Methods
+        #region Members
 
         private IList<DropDTO> _mockContainer = new List<DropDTO>();
+
+        #endregion
+
+        #region Methods
 
         public void Insert(List<DropDTO> drops)
         {

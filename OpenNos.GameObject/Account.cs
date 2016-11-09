@@ -11,12 +11,6 @@ namespace OpenNos.GameObject
         {
         }
 
-        public override void Initialize()
-        {
-            PenaltyLogs = new List<PenaltyLogDTO>();
-            GeneralLogs = new List<GeneralLogDTO>();
-        }
-
         #endregion
 
         #region Properties
@@ -24,6 +18,16 @@ namespace OpenNos.GameObject
         public List<GeneralLogDTO> GeneralLogs { get; set; }
 
         public List<PenaltyLogDTO> PenaltyLogs { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        public override void Initialize()
+        {
+            PenaltyLogs = new List<PenaltyLogDTO>();
+            GeneralLogs = new List<GeneralLogDTO>();
+        }
 
         #endregion
     }

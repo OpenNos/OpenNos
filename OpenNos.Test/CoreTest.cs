@@ -44,7 +44,6 @@ namespace OpenNos.Test
             DialogPacket<WalkPacket, WalkPacket> deserializedDialogPacket = PacketFactory.Deserialize<DialogPacket<WalkPacket, WalkPacket>>(dialogPacket);
             string serializedDialogPacket = PacketFactory.Serialize(deserializedDialogPacket);
             Assert.AreEqual(dialogPacket, serializedDialogPacket);
-
         }
 
         #endregion

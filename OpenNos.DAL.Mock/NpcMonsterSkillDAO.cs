@@ -8,9 +8,13 @@ namespace OpenNos.DAL.Mock
 {
     public class NpcMonsterSkillDAO : BaseDAO<NpcMonsterSkillDTO>, INpcMonsterSkillDAO
     {
-        #region Methods
+        #region Members
 
         private IList<NpcMonsterSkillDTO> _mockContainer = new List<NpcMonsterSkillDTO>();
+
+        #endregion
+
+        #region Methods
 
         public void Insert(List<NpcMonsterSkillDTO> skills)
         {

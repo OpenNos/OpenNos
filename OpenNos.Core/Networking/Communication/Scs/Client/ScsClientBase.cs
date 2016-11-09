@@ -160,6 +160,11 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #region Methods
 
+        public async Task ClearLowpriorityQueue()
+        {
+            await _communicationChannel.ClearLowpriorityQueue();
+        }
+
         /// <summary>
         /// Connects to server.
         /// </summary>
@@ -341,11 +346,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
             catch
             {
             }
-        }
-
-        public async Task ClearLowpriorityQueue()
-        {
-            await _communicationChannel.ClearLowpriorityQueue();
         }
 
         #endregion

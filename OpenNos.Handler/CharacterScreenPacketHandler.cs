@@ -7,7 +7,6 @@ using OpenNos.GameObject;
 using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 
 namespace OpenNos.Handler
 {
@@ -267,7 +266,6 @@ namespace OpenNos.Handler
 
                     if (accountDTO != null)
                     {
-                        
                         if (accountDTO.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])))
                         {
                             var account = new Account()

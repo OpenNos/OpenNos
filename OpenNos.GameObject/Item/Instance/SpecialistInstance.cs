@@ -476,7 +476,6 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Inventory.CountItem(redScrollVnum) < 1)
                             {
-
                                 return;
                             }
                             Session.Character.Inventory.RemoveItemAmount(redScrollVnum);
@@ -511,6 +510,7 @@ namespace OpenNos.GameObject
             }
 
             Session.Character.Gold -= goldprice[this.Upgrade];
+
             // remove feather and fullmoon before upgrading
             Session.Character.Inventory.RemoveItemAmount(featherVnum, (feather[this.Upgrade]));
             Session.Character.Inventory.RemoveItemAmount(fullmoonVnum, (fullmoon[this.Upgrade]));
@@ -554,7 +554,7 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 0));
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, this.SpStoneUpgrade));
                 }
-            }            
+            }
             Session.SendPacket(Session.Character.GenerateGold());
             Session.SendPacket(Session.Character.GenerateEq());
             Session.SendPacket("shop_end 1");

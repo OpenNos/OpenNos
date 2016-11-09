@@ -47,11 +47,11 @@ namespace OpenNos.GameObject
 
         public DateTime LastMove { get; private set; }
 
+        public Map Map { get; set; }
+
         public List<Recipe> Recipes { get; set; }
 
         public Shop Shop { get; set; }
-
-        public Map Map { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
 

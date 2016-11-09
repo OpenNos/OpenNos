@@ -185,7 +185,7 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                             return;
                         }
-                        foreach(var skill in Session.Character.Skills.GetAllItems())
+                        foreach (var skill in Session.Character.Skills.GetAllItems())
                         {
                             if ((skillinfo.CastId == skill.Skill.CastId) && skill.Skill.SkillVNum < 200)
                             {
@@ -394,10 +394,9 @@ namespace OpenNos.Handler
 
                                 PersonalShopItem personalshopitem = new PersonalShopItem()
                                 {
-                                    ShopSlot = shopSlot,     
+                                    ShopSlot = shopSlot,
                                     Price = gold[i],
                                     ItemInstance = inv
-
                                 };
                                 myShop.Items.Add(personalshopitem);
                                 shopSlot++;
@@ -650,8 +649,8 @@ namespace OpenNos.Handler
                 Session.Character.Gold -= skill.Skill.Price;
                 Session.SendPacket(Session.Character.GenerateGold());
 
-                foreach(var loadedSkill in Session.Character.Skills.GetAllItems())
-                { 
+                foreach (var loadedSkill in Session.Character.Skills.GetAllItems())
+                {
                     if (skill.Skill.SkillVNum == loadedSkill.Skill.UpgradeSkill)
                     {
                         Session.Character.Skills.Remove(loadedSkill.SkillVNum);

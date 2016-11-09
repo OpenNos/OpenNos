@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -23,9 +22,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class GeneralLogDAO : MappingBaseDAO<GeneralLog,GeneralLogDTO>,IGeneralLogDAO
+    public class GeneralLogDAO : MappingBaseDAO<GeneralLog, GeneralLogDTO>, IGeneralLogDAO
     {
-
         #region Methods
 
         public bool IdAlreadySet(long id)

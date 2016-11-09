@@ -4,34 +4,21 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.DAL.EF
 {
     public class MappingBaseDAO<TEntity, TDTO> : IMappingBaseDAO
         where TDTO : MappingBaseDTO
     {
+        #region Members
+
         protected IMapper _mapper;
 
         protected IDictionary<Type, Type> mappings = new Dictionary<Type, Type>();
 
-        public virtual IMappingBaseDAO RegisterMapping(Type gameObjectType)
-        {
-            try
-            {
-                Type targetType = typeof(TEntity);
-                mappings.Add(gameObjectType, targetType);
-                return this;
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return null;
-            }
-        }
+        #endregion
+
+        #region Methods
 
         public virtual void InitializeMapper()
         {
@@ -50,5 +37,22 @@ namespace OpenNos.DAL.EF
 
             _mapper = config.CreateMapper();
         }
+
+        public virtual IMappingBaseDAO RegisterMapping(Type gameObjectType)
+        {
+            try
+            {
+                Type targetType = typeof(TEntity);
+                mappings.Add(gameObjectType, targetType);
+                return this;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+        }
+
+        #endregion
     }
 }

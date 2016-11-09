@@ -31,12 +31,6 @@ namespace OpenNos.GameObject
         {
         }
 
-        public override void Initialize()
-        {
-            LastUse = DateTime.Now.AddHours(-1);
-            Hit = 0;
-        }
-
         #endregion
 
         #region Properties
@@ -58,6 +52,16 @@ namespace OpenNos.GameObject
                 }
                 return skill;
             }
+        }
+
+        #endregion
+
+        #region Methods
+
+        public override void Initialize()
+        {
+            LastUse = DateTime.Now.AddHours(-1);
+            Hit = 0;
         }
 
         #endregion

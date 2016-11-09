@@ -89,7 +89,7 @@ namespace OpenNos.Handler
                 // get amount of mobs which are targeted
                 short mobAmount = 0;
                 short.TryParse(packetsplit[2], out mobAmount);
-                if((packetsplit.Length - 3) / 2 != mobAmount)
+                if ((packetsplit.Length - 3) / 2 != mobAmount)
                 {
                     return;
                 }
@@ -101,7 +101,7 @@ namespace OpenNos.Handler
                     {
                         short mapMonsterTargetId = -1;
                         short skillCastId = -1;
-    
+
                         if (short.TryParse(packetsplit[i], out skillCastId) && short.TryParse(packetsplit[i + 1], out mapMonsterTargetId))
                         {
                             Task t = Task.Factory.StartNew((Func<Task>)(async () =>

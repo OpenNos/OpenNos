@@ -27,6 +27,8 @@ namespace OpenNos.Core
 
         #region Methods
 
+        Task ClearLowpriorityQueue();
+
         void Disconnect();
 
         void Initialize(EncryptionBase encryptor);
@@ -36,8 +38,6 @@ namespace OpenNos.Core
         void SendPacketFormat(string packet, params object[] param);
 
         void SendPackets(IEnumerable<string> packets, byte priority = 10);
-
-        Task ClearLowpriorityQueue();
 
         void SetClientSession(object clientSession);
 

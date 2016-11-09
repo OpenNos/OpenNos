@@ -70,9 +70,16 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum,
-                    MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction,
-                    IsMoving = isMoving == 1 ? true : false, MapMonsterId = Session.CurrentMap.GetNextMonsterId() };
+                MapMonsterDTO monst = new MapMonsterDTO()
+                {
+                    MonsterVNum = vnum,
+                    MapY = Session.Character.MapY,
+                    MapX = Session.Character.MapX,
+                    MapId = Session.Character.MapId,
+                    Position = (byte)Session.Character.Direction,
+                    IsMoving = isMoving == 1 ? true : false,
+                    MapMonsterId = Session.CurrentMap.GetNextMonsterId()
+                };
                 MapMonster monster = null;
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null) //TODO Speed up with DoesMonsterExist
                 {
@@ -94,6 +101,15 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        }
+
+        [Packet("$Backpack")]
+        public void BackPack(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            Session.Character.BackPack = Session.Character.BackPack == 0 ? 1 : 0;
+            Session.SendPacket(Session.Character.GenerateExts());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
@@ -144,6 +160,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 10));
             }
         }
+
         [Packet("$BlockMP")]
         public void BlockMP(string packet)
         {
@@ -158,8 +175,6 @@ namespace OpenNos.Handler
                 Session.Character.GmPvtBlock = false;
             }
         }
-
-
 
         [Packet("$ChangeClass")]
         public void ChangeClass(string packet)
@@ -287,7 +302,6 @@ namespace OpenNos.Handler
 
                     Session.SendPacket(Session.Character.GenerateSki());
                     Session.Character.LearnAdventurerSkill();
-
                 }
             }
             else
@@ -576,16 +590,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
             }
         }
-        
-       [Packet("$Backpack")]
-        public void BackPack(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            Session.Character.BackPack = Session.Character.BackPack == 0 ? 1 : 0;
-            Session.SendPacket(Session.Character.GenerateExts());
-            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        }
-        
+
         [Packet("$Effect")]
         public void Effect(string packet)
         {

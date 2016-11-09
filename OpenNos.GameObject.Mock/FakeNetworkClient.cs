@@ -1,6 +1,5 @@
 ﻿using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
-using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,11 +13,11 @@ namespace OpenNos.GameObject.Mock
         #region Members
 
         private long _clientId;
+        private ClientSession _clientSession;
         private bool _isConnected;
         private Queue<string> _receivedPackets;
         private Queue<string> _sentPackets;
         private long lastKeepAliveIdentitiy;
-        private ClientSession _clientSession;
 
         #endregion
 
@@ -64,14 +63,6 @@ namespace OpenNos.GameObject.Mock
             }
         }
 
-        public ClientSession Session
-        {
-            get
-            {
-                return GetClientSession();
-            }
-        }
-
         public string IpAddress
         {
             get
@@ -106,13 +97,31 @@ namespace OpenNos.GameObject.Mock
             }
         }
 
+        public ClientSession Session
+        {
+            get
+            {
+                return GetClientSession();
+            }
+        }
+
         #endregion
 
         #region Methods
 
+        public async Task ClearLowpriorityQueue()
+        {
+            // nothing to do here
+        }
+
         public void Disconnect()
         {
             _isConnected = false;
+        }
+
+        public ClientSession GetClientSession()
+        {
+            return _clientSession;
         }
 
         public void Initialize(EncryptionBase encryptor)
@@ -158,16 +167,6 @@ namespace OpenNos.GameObject.Mock
             {
                 SendPacket(packet, priority);
             }
-        }
-
-        public async Task ClearLowpriorityQueue()
-        {
-            // nothing to do here
-        }
-
-        public ClientSession GetClientSession()
-        {
-            return _clientSession;
         }
 
         public void SetClientSession(object clientSession)

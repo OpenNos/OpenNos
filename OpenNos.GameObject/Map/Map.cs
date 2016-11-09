@@ -224,7 +224,7 @@ namespace OpenNos.GameObject
 
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
-            return _monsters.GetAllItems().Where(s => s.Alive && s.IsInRange(mapX,mapY, distance)).ToList();
+            return _monsters.GetAllItems().Where(s => s.Alive && s.IsInRange(mapX, mapY, distance)).ToList();
         }
 
         public MapMonster GetMonster(long mapMonsterId)

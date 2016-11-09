@@ -216,6 +216,7 @@ namespace OpenNos.Import.Console
                 System.Threading.Thread.Sleep(5000);
             }
         }
+
         private static void RegisterMappings()
         {
             // entities

@@ -27,16 +27,6 @@ namespace OpenNos.DAL.EF
     public class ShopItemDAO : MappingBaseDAO<ShopItem, ShopItemDTO>, IShopItemDAO
     {
         #region Methods
-        public IEnumerable<ShopItemDTO> LoadAll()
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (ShopItem entity in context.ShopItem)
-                {
-                    yield return _mapper.Map<ShopItemDTO>(entity);
-                }
-            }
-        }
 
         public DeleteResult DeleteById(int itemId)
         {
@@ -100,6 +90,17 @@ namespace OpenNos.DAL.EF
             catch (Exception e)
             {
                 Logger.Error(e);
+            }
+        }
+
+        public IEnumerable<ShopItemDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (ShopItem entity in context.ShopItem)
+                {
+                    yield return _mapper.Map<ShopItemDTO>(entity);
+                }
             }
         }
 

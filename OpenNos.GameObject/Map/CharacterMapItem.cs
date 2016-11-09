@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenNos.GameObject
+﻿namespace OpenNos.GameObject
 {
     public class CharacterMapItem : MapItem
     {
+        #region Instantiation
+
         public CharacterMapItem(short x, short y, ItemInstance itemInstance) : base(x, y)
         {
             ItemInstance = itemInstance;
         }
+
+        #endregion
+
+        #region Properties
 
         public override byte Amount
         {
@@ -25,19 +25,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public ItemInstance ItemInstance { get;set; }
-
-        public override long TransportId
-        {
-            get
-            {
-                return ItemInstance.TransportId;
-            }
-            set
-            {
-                //cannot set TransportId
-            }
-        }
+        public ItemInstance ItemInstance { get; set; }
 
         public override short ItemVNum
         {
@@ -51,9 +39,27 @@ namespace OpenNos.GameObject
             }
         }
 
+        public override long TransportId
+        {
+            get
+            {
+                return ItemInstance.TransportId;
+            }
+            set
+            {
+                //cannot set TransportId
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
         public override ItemInstance GetItemInstance()
         {
             return ItemInstance;
         }
+
+        #endregion
     }
 }

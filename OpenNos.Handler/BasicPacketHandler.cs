@@ -485,7 +485,6 @@ namespace OpenNos.Handler
             {
                 int speakerVNum = 2173;
 
-
                 // presentation message
                 if (guriPacket[3] == "2")
                 {
@@ -493,6 +492,7 @@ namespace OpenNos.Handler
                     if (presentationVNum != -1)
                     {
                         string message = String.Empty;
+
                         //message = $" ";
                         for (int i = 6; i < guriPacket.Length; i++)
                         {
@@ -510,6 +510,7 @@ namespace OpenNos.Handler
                         Session.Character.Inventory.RemoveItemAmount(presentationVNum);
                     }
                 }
+
                 // Speaker
                 if (guriPacket[3] == "3")
                 {
@@ -521,7 +522,7 @@ namespace OpenNos.Handler
                         {
                             message += guriPacket[i] + " ";
                         }
-                            if (message.Length > 120)
+                        if (message.Length > 120)
                             message = message.Substring(0, 120);
 
                         message.Trim();
@@ -535,7 +536,7 @@ namespace OpenNos.Handler
                         ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }
                 }
-            }            
+            }
             else if (guriPacket[2] == "203" && guriPacket[3] == "0")
             {
                 // SP points initialization
@@ -1001,7 +1002,7 @@ namespace OpenNos.Handler
                         // DragDrop / Reorder qset type to1 to2 from1 from2 vars -> q1 q2 data1 data2
                         QuicklistEntryDTO qlFrom = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
-                        if(qlFrom != null)
+                        if (qlFrom != null)
                         {
                             QuicklistEntryDTO qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
@@ -1184,7 +1185,7 @@ namespace OpenNos.Handler
 
             bool? GmPvtBlock = ServerManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), nameof(Character.GmPvtBlock));
             if (GmPvtBlock.HasValue)
-            {                
+            {
                 if (GmPvtBlock.Value)
                 {
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_CHAT_BLOCKED"), 10));

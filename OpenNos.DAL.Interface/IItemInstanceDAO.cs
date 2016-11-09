@@ -24,11 +24,11 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
+        DeleteResult DeleteFromSlotAndType(long characterId, short slot, InventoryType type);
+
         void InitializeMapper(Type baseType);
 
         IEnumerable<ItemInstanceDTO> LoadByCharacterId(long characterId);
-
-        DeleteResult DeleteFromSlotAndType(long characterId, short slot, InventoryType type);
 
         ItemInstanceDTO LoadBySlotAndType(long characterId, short slot, InventoryType type);
 

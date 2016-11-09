@@ -135,6 +135,11 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #region Methods
 
+        public async Task ClearLowpriorityQueue()
+        {
+            await _communicationChannel.ClearLowpriorityQueue();
+        }
+
         /// <summary>
         /// Disconnects from client and closes underlying communication channel.
         /// </summary>
@@ -217,11 +222,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
         private void OnMessageReceived(IScsMessage message)
         {
             MessageReceived?.Invoke(this, new MessageEventArgs(message, DateTime.Now));
-        }
-
-        public async Task ClearLowpriorityQueue()
-        {
-            await _communicationChannel.ClearLowpriorityQueue();
         }
 
         #endregion

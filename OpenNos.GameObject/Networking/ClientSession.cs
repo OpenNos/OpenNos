@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using EpPathFinding.cs;
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Threading;
@@ -46,8 +45,10 @@ namespace OpenNos.GameObject
 
         //private byte countPacketReceived;
         private long lastPacketReceive;
-        //private Task taskPacketReceived;
+
         #endregion
+
+        //private Task taskPacketReceived;
 
         #region Instantiation
 
@@ -209,6 +210,11 @@ namespace OpenNos.GameObject
 
         #region Methods
 
+        public async Task ClearLowpriorityQueue()
+        {
+            await _client.ClearLowpriorityQueue();
+        }
+
         public void Destroy()
         {
             // unregister from WCF events
@@ -219,8 +225,9 @@ namespace OpenNos.GameObject
             if (HasSelectedCharacter)
             {
                 Character.CloseShop();
+
                 //TODO Check why ExchangeInfo.TargetCharacterId is null
-                //Character.CloseTrade(); 
+                //Character.CloseTrade();
                 // disconnect client
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
 
@@ -262,7 +269,8 @@ namespace OpenNos.GameObject
             IsAuthenticated = true;
         }
 
-        // [Obsolete("Primitive string operations will be removed in future, use PacketBase SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
+        // [Obsolete("Primitive string operations will be removed in future, use PacketBase
+        // SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
         public void SendPacket(string packet, byte priority = 10)
         {
             if (!IsDisposing)
@@ -293,11 +301,6 @@ namespace OpenNos.GameObject
             {
                 _client.SendPackets(packets, priority);
             }
-        }
-
-        public async Task ClearLowpriorityQueue()
-        {
-            await _client.ClearLowpriorityQueue();
         }
 
         public void SetCharacter(Character character)
@@ -347,18 +350,18 @@ namespace OpenNos.GameObject
             {
                 IPacketHandler handler = (IPacketHandler)Activator.CreateInstance(handlerType, new object[] { this });
 
-                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any() 
+                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any()
                 || x.GetParameters().FirstOrDefault()?.ParameterType?.BaseType == typeof(PacketBase))) //include PacketBase
                 {
                     PacketAttribute packetAttribute = methodInfo.GetCustomAttributes(false).OfType<PacketAttribute>().FirstOrDefault();
 
-                    if(packetAttribute == null) //assume PacketBase based handler method
+                    if (packetAttribute == null) //assume PacketBase based handler method
                     {
                         HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, methodInfo.GetParameters().FirstOrDefault()?.ParameterType);
                         HandlerMethods.Add(methodReference.Identification, methodReference);
                     }
                     else
-                    { 
+                    {
                         //assume string based handler method
                         HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, packetAttribute);
                         HandlerMethods.Add(methodReference.Identification, methodReference);
@@ -532,18 +535,18 @@ namespace OpenNos.GameObject
             }
 
             if (IsAuthenticated && !IsLocalhost && countPacketReceived > 15)
-            {                
+            {
                 Logger.Log.Warn($"[AntiSpam]: Packet has been ignored, access was too fast. Last: {lastPacketReceive}, Current: {currentPacketReceive}, Difference: {currentPacketReceive - lastPacketReceive}, SessionId: {SessionId}");
                 Disconnect();
                 return;
             }
              */
 
-            if(message.MessageData.Any() && message.MessageData.Length > 2)
+            if (message.MessageData.Any() && message.MessageData.Length > 2)
             {
                 _queue.EnqueueMessage(message.MessageData);
             }
- 
+
             lastPacketReceive = e.ReceivedTimestamp.Ticks;
         }
 
@@ -567,11 +570,11 @@ namespace OpenNos.GameObject
                         if (HasSelectedCharacter || methodReference.ParentHandler.GetType().Name == "CharacterScreenPacketHandler" || methodReference.ParentHandler.GetType().Name == "LoginPacketHandler")
                         {
                             // call actual handler method
-                            if(methodReference.PacketBaseParameterType != null)
+                            if (methodReference.PacketBaseParameterType != null)
                             {
                                 object serializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketBaseParameterType, true);
 
-                                if(serializedPacket != null)
+                                if (serializedPacket != null)
                                 {
                                     methodReference.HandlerMethod(methodReference.ParentHandler, serializedPacket);
                                 }

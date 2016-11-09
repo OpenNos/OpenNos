@@ -42,28 +42,6 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
-        public long TransportId
-        {
-            get
-            {
-                if (_transportId == 0)
-                {
-                    // create transportId thru factory
-                    _transportId = TransportFactory.Instance.GenerateTransportId();
-                }
-
-                return _transportId;
-            }
-
-            set
-            {
-                if (value != _transportId)
-                {
-                    _transportId = value;
-                }
-            }
-        }
-
         #endregion
 
         #region Properties
@@ -85,6 +63,28 @@ namespace OpenNos.GameObject
                     item = ServerManager.GetItem(this.ItemVNum);
                 }
                 return item;
+            }
+        }
+
+        public long TransportId
+        {
+            get
+            {
+                if (_transportId == 0)
+                {
+                    // create transportId thru factory
+                    _transportId = TransportFactory.Instance.GenerateTransportId();
+                }
+
+                return _transportId;
+            }
+
+            set
+            {
+                if (value != _transportId)
+                {
+                    _transportId = value;
+                }
             }
         }
 

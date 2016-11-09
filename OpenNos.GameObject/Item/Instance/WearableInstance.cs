@@ -34,11 +34,6 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
-        public override void Initialize()
-        {
-            _random = new Random();
-        }
-
         public WearableInstance(Guid id)
         {
             Id = id;
@@ -115,6 +110,11 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public override void Initialize()
+        {
+            _random = new Random();
+        }
 
         public void RarifyItem(ClientSession Session, RarifyMode mode, RarifyProtection protection, bool isCommand = false)
         {
@@ -562,7 +562,7 @@ namespace OpenNos.GameObject
                     wearable.IsFixed = true;
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
-                }                
+                }
                 else if (rnd <= upsuccess[this.Upgrade])
                 {
                     Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);

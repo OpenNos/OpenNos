@@ -28,11 +28,11 @@ namespace OpenNos.DAL.Interface
 
         void Insert(List<ShopItemDTO> items);
 
+        IEnumerable<ShopItemDTO> LoadAll();
+
         ShopItemDTO LoadById(int ItemId);
 
         IEnumerable<ShopItemDTO> LoadByShopId(int ShopId);
-
-        IEnumerable<ShopItemDTO> LoadAll();
 
         #endregion
     }

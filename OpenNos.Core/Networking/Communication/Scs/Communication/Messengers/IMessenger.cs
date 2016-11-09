@@ -60,13 +60,13 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #region Methods
 
+        Task ClearLowpriorityQueue();
+
         /// <summary>
         /// Sends a message to the remote application.
         /// </summary>
         /// <param name="message">Message to be sent</param>
         void SendMessage(IScsMessage message, byte priority);
-
-        Task ClearLowpriorityQueue();
 
         #endregion
     }

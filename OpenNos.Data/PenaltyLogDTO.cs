@@ -23,6 +23,8 @@ namespace OpenNos.Data
 
         public long AccountId { get; set; }
 
+        public string AdminName { get; set; }
+
         public DateTime DateEnd { get; set; }
 
         public DateTime DateStart { get; set; }
@@ -32,8 +34,6 @@ namespace OpenNos.Data
         public int PenaltyLogId { get; set; }
 
         public string Reason { get; set; }
-
-        public string AdminName { get; set; }
 
         #endregion
     }

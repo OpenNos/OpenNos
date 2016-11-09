@@ -22,6 +22,23 @@ namespace OpenNos.Test
         }
 
         [Test, MaxTime(10000)]
+        public void TestCharacterOption()
+        {
+            // login, create character, start game
+            FakeNetworkClient client = HandlerTestHelper.InitializeTestEnvironment();
+
+            CharacterOptionPacket optionPacket = new CharacterOptionPacket() { IsActive = false, Option = CharacterOption.FamilyRequestBlocked };
+
+            //check family request
+            client.ReceivePacket(optionPacket);
+            string msgPacket = HandlerTestHelper.WaitForPacket(client, "msg");
+            Assert.IsTrue(client.Session.Character.FamilyRequestBlocked);
+
+            HandlerTestHelper.ShutdownTestingEnvironment();
+            Assert.Pass();
+        }
+
+        [Test, MaxTime(10000)]
         public void TestWalkMove()
         {
             // login, create character, start game
@@ -38,23 +55,6 @@ namespace OpenNos.Test
             Assert.AreEqual(walkPacket.XCoordinate, movePacket.MapX);
             Assert.AreEqual(walkPacket.YCoordinate, movePacket.MapY);
             Assert.AreEqual(walkPacket.Speed, movePacket.Speed);
-
-            HandlerTestHelper.ShutdownTestingEnvironment();
-            Assert.Pass();
-        }
-
-        [Test, MaxTime(10000)]
-        public void TestCharacterOption()
-        {
-            // login, create character, start game
-            FakeNetworkClient client = HandlerTestHelper.InitializeTestEnvironment();
-
-            CharacterOptionPacket optionPacket = new CharacterOptionPacket() { IsActive = false, Option = CharacterOption.FamilyRequestBlocked };
-
-            //check family request
-            client.ReceivePacket(optionPacket);
-            string msgPacket = HandlerTestHelper.WaitForPacket(client, "msg");
-            Assert.IsTrue(client.Session.Character.FamilyRequestBlocked);
 
             HandlerTestHelper.ShutdownTestingEnvironment();
             Assert.Pass();

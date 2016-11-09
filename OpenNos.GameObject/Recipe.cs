@@ -27,6 +27,16 @@ namespace OpenNos.GameObject
         {
         }
 
+        #endregion
+
+        #region Properties
+
+        public List<RecipeItemDTO> Items { get; set; }
+
+        #endregion
+
+        #region Methods
+
         public override void Initialize()
         {
             Items = new List<RecipeItemDTO>();
@@ -35,12 +45,6 @@ namespace OpenNos.GameObject
                 Items.Add(rec as RecipeItemDTO);
             }
         }
-
-        #endregion
-
-        #region Properties
-
-        public List<RecipeItemDTO> Items { get; set; }
 
         #endregion
     }

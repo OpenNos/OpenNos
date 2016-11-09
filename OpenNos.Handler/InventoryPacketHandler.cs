@@ -16,7 +16,6 @@ using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -491,7 +490,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             long transportId;
-            MapItem mapItem = new MonsterMapItem(0,0,0,0);
+            MapItem mapItem = new MonsterMapItem(0, 0, 0, 0);
 
             if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now || Session.Character.IsVehicled)
             {
@@ -504,7 +503,7 @@ namespace OpenNos.Handler
                     if (mapItem is MonsterMapItem)
                     {
                         MonsterMapItem monsterMapItem = mapItem as MonsterMapItem;
-                        if(monsterMapItem.Owner.HasValue)
+                        if (monsterMapItem.Owner.HasValue)
                         {
                             Group group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(monsterMapItem.Owner.Value) && g.IsMemberOfGroup(Session.Character.CharacterId));
                             if (mapItem.CreateDate.AddSeconds(30) > DateTime.Now && !(monsterMapItem.Owner == Session.Character.CharacterId ||
@@ -586,8 +585,8 @@ namespace OpenNos.Handler
                 }
 
                 ItemInstance sourceItem = Session.Character.Inventory.LoadBySlotAndType(slot, (InventoryType)type);
-                
-                if(sourceItem != null && sourceItem.Item.ItemType == ItemType.Specialist || sourceItem.Item.ItemType == ItemType.Fashion)
+
+                if (sourceItem != null && sourceItem.Item.ItemType == ItemType.Specialist || sourceItem.Item.ItemType == ItemType.Fashion)
                 {
                     ItemInstance inv = Session.Character.Inventory.MoveInInventory(slot, (InventoryType)type, (InventoryType)destinationType, destinationSlot, false);
                     if (inv != null)

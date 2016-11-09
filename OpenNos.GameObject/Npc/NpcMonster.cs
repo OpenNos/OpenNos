@@ -75,7 +75,7 @@ namespace OpenNos.GameObject
         }
 
         /// <summary>
-        /// Intializes the GameObject, will be injected by AutoMapper after Entity -> GO mapping
+        /// Intializes the GameObject, will be injected by AutoMapper after Entity -&gt; GO mapping
         /// </summary>
         public override void Initialize()
         {

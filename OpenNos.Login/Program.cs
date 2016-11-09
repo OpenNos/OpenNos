@@ -29,12 +29,6 @@ namespace OpenNos.Login
     {
         #region Methods
 
-        private static void RegisterMappings()
-        {
-            // entities
-            DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
-        }
-
         public static void Main()
         {
             checked
@@ -88,6 +82,12 @@ namespace OpenNos.Login
                     Console.ReadKey();
                 }
             }
+        }
+
+        private static void RegisterMappings()
+        {
+            // entities
+            DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
         }
 
         #endregion

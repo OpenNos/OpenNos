@@ -25,16 +25,20 @@ namespace OpenNos.GameObject
         {
         }
 
-        public override void Initialize()
-        {
-            Combos = new List<ComboDTO>();
-        }
-
         #endregion
 
         #region Properties
 
         public List<ComboDTO> Combos { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        public override void Initialize()
+        {
+            Combos = new List<ComboDTO>();
+        }
 
         #endregion
     }
