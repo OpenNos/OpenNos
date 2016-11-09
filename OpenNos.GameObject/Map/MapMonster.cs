@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
             Respawn = true;
             Monster = ServerManager.GetNpc(MonsterVNum);
             CurrentHp = Monster.MaxHP;
-            CurrentMp = Monster.MaxHP;
+            CurrentMp = Monster.MaxMP;
             Skills = Monster.Skills.ToList();
             DamageList = new Dictionary<long, long>();
             _random = new Random(MapMonsterId);
