@@ -14,7 +14,9 @@
 
 using log4net;
 using OpenNos.Core;
+using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
+using OpenNos.Data;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -42,7 +44,10 @@ namespace OpenNos.Import.Console
                 new String('=', System.Console.WindowWidth) + "\n");
             }
 
-            DataAccessHelper.Initialize();
+            if (DataAccessHelper.Initialize())
+            {
+                RegisterMappings();
+            }
             ConsoleKeyInfo key = new ConsoleKeyInfo();
             Logger.Log.Warn(Language.Instance.GetMessageFromKey("NEED_TREE"));
             System.Console.BackgroundColor = ConsoleColor.Blue;
@@ -210,6 +215,37 @@ namespace OpenNos.Import.Console
                 Logger.Log.Error(Language.Instance.GetMessageFromKey("AT_LEAST_ONE_FILE_MISSING"));
                 System.Threading.Thread.Sleep(5000);
             }
+        }
+        private static void RegisterMappings()
+        {
+            // entities
+            DAOFactory.AccountDAO.RegisterMapping(typeof(AccountDTO)).InitializeMapper();
+            DAOFactory.CellonOptionDAO.RegisterMapping(typeof(CellonOptionDTO)).InitializeMapper();
+            DAOFactory.CharacterDAO.RegisterMapping(typeof(CharacterDTO)).InitializeMapper();
+            DAOFactory.CharacterSkillDAO.RegisterMapping(typeof(CharacterSkillDTO)).InitializeMapper();
+            DAOFactory.ComboDAO.RegisterMapping(typeof(ComboDTO)).InitializeMapper();
+            DAOFactory.DropDAO.RegisterMapping(typeof(DropDTO)).InitializeMapper();
+            DAOFactory.GeneralLogDAO.RegisterMapping(typeof(GeneralLogDTO)).InitializeMapper();
+            DAOFactory.ItemDAO.RegisterMapping(typeof(ItemDTO)).InitializeMapper();
+            DAOFactory.MailDAO.RegisterMapping(typeof(MailDTO)).InitializeMapper();
+            DAOFactory.MapDAO.RegisterMapping(typeof(MapDTO)).InitializeMapper();
+            DAOFactory.MapMonsterDAO.RegisterMapping(typeof(MapMonsterDTO)).InitializeMapper();
+            DAOFactory.MapNpcDAO.RegisterMapping(typeof(MapNpcDTO)).InitializeMapper();
+            DAOFactory.MapTypeDAO.RegisterMapping(typeof(MapTypeDTO)).InitializeMapper();
+            DAOFactory.MapTypeMapDAO.RegisterMapping(typeof(MapTypeMapDTO)).InitializeMapper();
+            DAOFactory.NpcMonsterDAO.RegisterMapping(typeof(NpcMonsterDTO)).InitializeMapper();
+            DAOFactory.NpcMonsterSkillDAO.RegisterMapping(typeof(NpcMonsterSkillDTO)).InitializeMapper();
+            DAOFactory.PenaltyLogDAO.RegisterMapping(typeof(PenaltyLogDTO)).InitializeMapper();
+            DAOFactory.PortalDAO.RegisterMapping(typeof(PortalDTO)).InitializeMapper();
+            DAOFactory.QuicklistEntryDAO.RegisterMapping(typeof(QuicklistEntryDTO)).InitializeMapper();
+            DAOFactory.RecipeDAO.RegisterMapping(typeof(RecipeDTO)).InitializeMapper();
+            DAOFactory.RecipeItemDAO.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();
+            DAOFactory.RespawnDAO.RegisterMapping(typeof(RespawnDTO)).InitializeMapper();
+            DAOFactory.ShopDAO.RegisterMapping(typeof(ShopDTO)).InitializeMapper();
+            DAOFactory.ShopItemDAO.RegisterMapping(typeof(ShopItemDTO)).InitializeMapper();
+            DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
+            DAOFactory.SkillDAO.RegisterMapping(typeof(SkillDTO)).InitializeMapper();
+            DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
         }
 
         #endregion

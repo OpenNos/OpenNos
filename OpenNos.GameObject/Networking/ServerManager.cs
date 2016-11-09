@@ -630,6 +630,21 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("DROPS_LOADED"), _monsterDrops.GetAllItems().Sum(i => i.Count())));
 
+            // initialiize monsterskills
+            _monsterSkills = new ThreadSafeSortedList<short, List<NpcMonsterSkill>>();
+            foreach (var monsterSkillGrouping in DAOFactory.NpcMonsterSkillDAO.LoadAll().GroupBy(n => n.NpcMonsterVNum))
+            {
+                _monsterSkills[monsterSkillGrouping.Key] = monsterSkillGrouping.Select(n => n as NpcMonsterSkill).ToList();
+            }
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count())));
+
+            // initialize npcmonsters
+            foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
+            {
+                _npcs.Add(npcmonsterDTO as NpcMonster);
+            }
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
+
             // intialize receipes
             _recipes = new ThreadSafeSortedList<int, List<Recipe>>();
             foreach (var recipeGrouping in DAOFactory.RecipeDAO.LoadAll().GroupBy(r => r.MapNpcId))
@@ -670,14 +685,7 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_LOADED"), _teleporters.GetAllItems().Sum(i => i.Count())));
 
-            // initialiize monsterskills
-            _monsterSkills = new ThreadSafeSortedList<short, List<NpcMonsterSkill>>();
-            foreach (var monsterSkillGrouping in DAOFactory.NpcMonsterSkillDAO.LoadAll().GroupBy(n => n.NpcMonsterVNum))
-            {
-                _monsterSkills[monsterSkillGrouping.Key] = monsterSkillGrouping.Select(n => n as NpcMonsterSkill).ToList();
-            }
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count())));
-
+            // initialize skills
             foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
             {
                 Skill skill = skillDTO as Skill;
@@ -685,13 +693,6 @@ namespace OpenNos.GameObject
                 _skills.Add(skill);
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count()));
-
-            // initialize npcmonsters
-            foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
-            {
-                _npcs.Add(npcmonsterDTO as NpcMonster);
-            }
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
 
             // intialize mapnpcs
             _mapNpcs = new ThreadSafeSortedList<short, List<MapNpc>>();
@@ -709,7 +710,7 @@ namespace OpenNos.GameObject
                 foreach (MapDTO map in DAOFactory.MapDAO.LoadAll())
                 {
                     Guid guid = Guid.NewGuid();
-                    Map newMap = new Map(Convert.ToInt16(map.MapId), guid, map.Data);
+                    Map newMap = new Map(map.MapId, guid, map.Data);
                     newMap.Music = map.Music;
                     newMap.ShopAllowed = map.ShopAllowed;
 
@@ -738,7 +739,7 @@ namespace OpenNos.GameObject
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
-            }            
+            }
         }
 
         public bool IsCharacterMemberOfGroup(long characterId)

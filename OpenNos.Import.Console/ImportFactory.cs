@@ -1464,28 +1464,26 @@ namespace OpenNos.Import.Console
                 {
                     continue;
                 }
-                string named = String.Empty;
+                string name = String.Empty;
                 for (int j = 6; j < currentPacket.Length; j++)
                 {
-                    named += $"{currentPacket[j]} ";
+                    name += $"{currentPacket[j]} ";
                 }
-                named = named.Trim();
+                name = name.Trim();
 
                 ShopDTO shop = new ShopDTO
                 {
-                    Name = named,
+                    Name = name,
                     MapNpcId = npc.MapNpcId,
                     MenuType = byte.Parse(currentPacket[4]),
                     ShopType = byte.Parse(currentPacket[5])
                 };
 
-                if (DAOFactory.ShopDAO.LoadByNpc(shop.MapNpcId) != null)
+                if (DAOFactory.ShopDAO.LoadByNpc(npc.MapNpcId) == null && !shops.Any(s => s.MapNpcId == npc.MapNpcId))
                 {
-                    continue;
+                    shops.Add(shop);
+                    shopCounter++;
                 }
-
-                shops.Add(shop);
-                shopCounter++;
             }
 
             DAOFactory.ShopDAO.Insert(shops);

@@ -101,6 +101,8 @@ namespace OpenNos.GameObject
             Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = DateTime.Now;
             LastMove = DateTime.Now;
+            FirstX = MapX;
+            FirstY = MapY;
             _movetime = _random.Next(500, 3000);
             Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
             Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
@@ -143,7 +145,7 @@ namespace OpenNos.GameObject
                         this.MapY = mapY;
                     });
                     LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Npc.Speed));
-                    Map.Broadcast(GenerateMv2());
+                    Map.Broadcast(new BroadcastPacket(null, GenerateMv2(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                 }
             }
         }

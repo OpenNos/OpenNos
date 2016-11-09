@@ -101,13 +101,13 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public ShopDTO LoadByNpc(int npcId)
+        public ShopDTO LoadByNpc(int mapNpcId)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
+                    return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(mapNpcId)));
                 }
             }
             catch (Exception e)
