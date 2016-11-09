@@ -12,11 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -26,18 +24,6 @@ namespace OpenNos.GameObject
 
         public NpcMonster()
         {
-
-        }
-
-        /// <summary>
-        /// Intializes the GameObject, will be injected by AutoMapper after Entity -> GO mapping
-        /// </summary>
-        public override void Initialize()
-        {
-            Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum(NpcMonsterVNum);
-            Drops = ServerManager.Instance.GetDropsByMonsterVNum(NpcMonsterVNum);
-            LastEffect = LastMove = DateTime.Now;
-            Skills = ServerManager.Instance.GetNpcMonsterSkillsByMonsterVNum(NpcMonsterVNum);
         }
 
         #endregion
@@ -86,6 +72,17 @@ namespace OpenNos.GameObject
                 default:
                     return 0f;
             }
+        }
+
+        /// <summary>
+        /// Intializes the GameObject, will be injected by AutoMapper after Entity -> GO mapping
+        /// </summary>
+        public override void Initialize()
+        {
+            Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum(NpcMonsterVNum);
+            Drops = ServerManager.Instance.GetDropsByMonsterVNum(NpcMonsterVNum);
+            LastEffect = LastMove = DateTime.Now;
+            Skills = ServerManager.Instance.GetNpcMonsterSkillsByMonsterVNum(NpcMonsterVNum);
         }
 
         #endregion

@@ -507,33 +507,6 @@ namespace OpenNos.GameObject
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
             FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
 
-            // intialize receipes
-            _recipes = new ThreadSafeSortedList<int, List<Recipe>>();
-            foreach (var recipeGrouping in DAOFactory.RecipeDAO.LoadAll().GroupBy(r => r.MapNpcId))
-            {
-                _recipes[recipeGrouping.Key] = recipeGrouping.Select(r => r as Recipe).ToList();
-            }
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), _recipes.GetAllItems().Sum(i => i.Count())));
-
-
-            // initialize shopitems
-            _shopItems = new ThreadSafeSortedList<int, List<ShopItemDTO>>();
-            foreach (var shopItemGrouping in DAOFactory.ShopItemDAO.LoadAll().GroupBy(s => s.ShopItemId))
-            {
-                _shopItems[shopItemGrouping.Key] = shopItemGrouping.Select(s => s).ToList();
-            }
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_LOADED"), _shopItems.GetAllItems().Sum(i => i.Count())));
-
-
-            // initialize shopskills
-            _shopSkills = new ThreadSafeSortedList<int, List<ShopSkillDTO>>();
-            foreach (var shopSkillGrouping in DAOFactory.ShopSkillDAO.LoadAll().GroupBy(s => s.ShopSkillId))
-            {
-                _shopSkills[shopSkillGrouping.Key] = shopSkillGrouping.Select(s => s).ToList();
-            }
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_LOADED"), _shopSkills.GetAllItems().Sum(i => i.Count())));
-
-
             // load explicite type of ItemDTO
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
@@ -657,6 +630,30 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("DROPS_LOADED"), _monsterDrops.GetAllItems().Sum(i => i.Count())));
 
+            // intialize receipes
+            _recipes = new ThreadSafeSortedList<int, List<Recipe>>();
+            foreach (var recipeGrouping in DAOFactory.RecipeDAO.LoadAll().GroupBy(r => r.MapNpcId))
+            {
+                _recipes[recipeGrouping.Key] = recipeGrouping.Select(r => r as Recipe).ToList();
+            }
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), _recipes.GetAllItems().Sum(i => i.Count())));
+
+            // initialize shopitems
+            _shopItems = new ThreadSafeSortedList<int, List<ShopItemDTO>>();
+            foreach (var shopItemGrouping in DAOFactory.ShopItemDAO.LoadAll().GroupBy(s => s.ShopId))
+            {
+                _shopItems[shopItemGrouping.Key] = shopItemGrouping.ToList();
+            }
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_LOADED"), _shopItems.GetAllItems().Sum(i => i.Count())));
+
+            // initialize shopskills
+            _shopSkills = new ThreadSafeSortedList<int, List<ShopSkillDTO>>();
+            foreach (var shopSkillGrouping in DAOFactory.ShopSkillDAO.LoadAll().GroupBy(s => s.ShopId))
+            {
+                _shopSkills[shopSkillGrouping.Key] = shopSkillGrouping.ToList();
+            }
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_LOADED"), _shopSkills.GetAllItems().Sum(i => i.Count())));
+
             // initialize shops
             _shops = new ThreadSafeSortedList<int, Shop>();
             foreach (var shopGrouping in DAOFactory.ShopDAO.LoadAll())
@@ -741,7 +738,7 @@ namespace OpenNos.GameObject
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
-            }
+            }            
         }
 
         public bool IsCharacterMemberOfGroup(long characterId)

@@ -75,15 +75,6 @@ namespace OpenNos.GameObject
             _npcs.AddRange(ServerManager.Instance.GetMapNpcsByMapId(MapId).AsEnumerable<MapNpc>());
         }
 
-        public void LoadMonsters()
-        {
-            foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
-            {
-                _monsters[monster.MapMonsterId] = monster as MapMonster;
-                _mapMonsterIds.Add(monster.MapMonsterId);
-            }
-        }
-
         #endregion
 
         #region Properties
@@ -219,7 +210,6 @@ namespace OpenNos.GameObject
                 DroppedList.TryAdd(droppedItem.TransportId, droppedItem);
 
                 Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
-
             }
             catch (Exception e)
             {
@@ -298,6 +288,15 @@ namespace OpenNos.GameObject
             return lpath;
         }
 
+        public void LoadMonsters()
+        {
+            foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
+            {
+                _monsters[monster.MapMonsterId] = monster as MapMonster;
+                _mapMonsterIds.Add(monster.MapMonsterId);
+            }
+        }
+
         public void LoadZone()
         {
             Stream stream = new MemoryStream(Data);
@@ -357,6 +356,7 @@ namespace OpenNos.GameObject
             {
                 foreach (MapNpc npc in Npcs.OrderBy(i => _random.Next()))
                 {
+                    npc.Map = this;
                     npc.NpcLife();
                 }
             }

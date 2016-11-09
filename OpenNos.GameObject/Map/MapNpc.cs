@@ -51,6 +51,8 @@ namespace OpenNos.GameObject
 
         public Shop Shop { get; set; }
 
+        public Map Map { get; set; }
+
         public List<TeleporterDTO> Teleporters { get; set; }
 
         #endregion
@@ -83,6 +85,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string GenerateMv2()
+        {
+            return $"mv 2 {MapNpcId} {MapX} {MapY} {Npc.Speed}";
+        }
+
         public string GetNpcDialog()
         {
             return $"npc_req 2 {MapNpcId} {Dialog}";
@@ -91,15 +98,12 @@ namespace OpenNos.GameObject
         public override void Initialize()
         {
             _random = new Random(MapNpcId);
-
             Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = DateTime.Now;
             LastMove = DateTime.Now;
-            _movetime = _random.Next(300, 3000);
+            _movetime = _random.Next(500, 3000);
             Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
-
             Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
-
             Shop shop = ServerManager.Instance.GetShopByMapNpcId(MapNpcId);
             if (shop != null)
             {
@@ -113,7 +117,7 @@ namespace OpenNos.GameObject
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
-                ServerManager.GetMap(MapId).Broadcast(GenerateEff(), MapX, MapY, 10);
+                Map.Broadcast(GenerateEff(), MapX, MapY, 10);
                 LastEffect = DateTime.Now;
             }
 
@@ -130,7 +134,7 @@ namespace OpenNos.GameObject
                 short mapX = FirstX;
                 short mapY = FirstY;
 
-                if (ServerManager.GetMap(MapId).GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
+                if (Map.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                 {
                     Task.Factory.StartNew(async () =>
                     {
@@ -139,9 +143,7 @@ namespace OpenNos.GameObject
                         this.MapY = mapY;
                     });
                     LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Npc.Speed));
-
-                    string movePacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {Npc.Speed}";
-                    ServerManager.GetMap(MapId).Broadcast(movePacket);
+                    Map.Broadcast(GenerateMv2());
                 }
             }
         }
