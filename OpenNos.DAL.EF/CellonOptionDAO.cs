@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -21,29 +20,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class CellonOptionDAO : ICellonOptionDAO
+    public class CellonOptionDAO : SynchronizableBaseDAO<CellonOption, CellonOptionDTO>, ICellonOptionDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public CellonOptionDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<CellonOption, CellonOptionDTO>();
-                cfg.CreateMap<CellonOptionDTO, CellonOption>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(long wearableInstanceId)

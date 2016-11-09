@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
-    public class ShopItemDAO : IShopItemDAO
+    public class ShopItemDAO : BaseDAO<ShopItemDTO>, IShopItemDAO
     {
         #region Methods
 

@@ -12,11 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -33,60 +31,8 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public MapNpc(MapNpcDTO npc)
+        public MapNpc()
         {
-            _random = new Random(npc.MapNpcId);
-
-            // Replace by MAPPING
-            MapId = npc.MapId;
-            MapX = npc.MapX;
-            MapY = npc.MapY;
-            Position = npc.Position;
-            NpcVNum = npc.NpcVNum;
-            IsSitting = npc.IsSitting;
-            IsMoving = npc.IsMoving;
-            Effect = npc.Effect;
-            EffectDelay = npc.EffectDelay;
-            Dialog = npc.Dialog;
-            FirstX = npc.MapX;
-            FirstY = npc.MapY;
-            MapNpcId = npc.MapNpcId;
-            ////////////////////////
-
-            Npc = ServerManager.GetNpc(this.NpcVNum);
-            LastEffect = LastMove = DateTime.Now;
-            _movetime = _random.Next(300, 3000);
-            IEnumerable<RecipeDTO> recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId).ToList();
-            if (recipe != null)
-            {
-                Recipes = new List<Recipe>();
-                foreach (RecipeDTO rec in recipe)
-                {
-                    // Replace by MAPPING
-                    Recipes.Add(new Recipe(rec.RecipeId) { ItemVNum = rec.ItemVNum, MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId, Amount = rec.Amount });
-                    ///////////////////
-                }
-            }
-
-            IEnumerable<TeleporterDTO> teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId).ToList();
-            if (teleporters != null)
-            {
-                Teleporters = new List<TeleporterDTO>();
-                foreach (TeleporterDTO teleporter in teleporters)
-                {
-                    // Replace by MAPPING
-                    Teleporters.Add(new TeleporterDTO() { MapId = teleporter.MapId, Index = teleporter.Index, MapNpcId = teleporter.MapNpcId, MapX = teleporter.MapX, MapY = teleporter.MapY, TeleporterId = teleporter.TeleporterId });
-                    ///////////////////
-                }
-            }
-
-            ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
-            if (shop != null)
-            {
-                // Replace by MAPPING
-                Shop = new Shop(shop.ShopId) { Name = shop.Name, MapNpcId = MapNpcId, MenuType = shop.MenuType, ShopType = shop.ShopType };
-                ///////////////////
-            }
         }
 
         #endregion
@@ -104,6 +50,8 @@ namespace OpenNos.GameObject
         public List<Recipe> Recipes { get; set; }
 
         public Shop Shop { get; set; }
+
+        public Map Map { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
 
@@ -137,9 +85,33 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string GenerateMv2()
+        {
+            return $"mv 2 {MapNpcId} {MapX} {MapY} {Npc.Speed}";
+        }
+
         public string GetNpcDialog()
         {
             return $"npc_req 2 {MapNpcId} {Dialog}";
+        }
+
+        public override void Initialize()
+        {
+            _random = new Random(MapNpcId);
+            Npc = ServerManager.GetNpc(this.NpcVNum);
+            LastEffect = DateTime.Now;
+            LastMove = DateTime.Now;
+            FirstX = MapX;
+            FirstY = MapY;
+            _movetime = _random.Next(500, 3000);
+            Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
+            Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
+            Shop shop = ServerManager.Instance.GetShopByMapNpcId(MapNpcId);
+            if (shop != null)
+            {
+                shop.Initialize();
+                Shop = shop;
+            }
         }
 
         internal void NpcLife()
@@ -147,7 +119,7 @@ namespace OpenNos.GameObject
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
-                ServerManager.GetMap(MapId).Broadcast(GenerateEff(), MapX, MapY, 10);
+                Map.Broadcast(GenerateEff(), MapX, MapY, 10);
                 LastEffect = DateTime.Now;
             }
 
@@ -164,7 +136,7 @@ namespace OpenNos.GameObject
                 short mapX = FirstX;
                 short mapY = FirstY;
 
-                if (ServerManager.GetMap(MapId).GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
+                if (Map.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                 {
                     Task.Factory.StartNew(async () =>
                     {
@@ -173,9 +145,7 @@ namespace OpenNos.GameObject
                         this.MapY = mapY;
                     });
                     LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Npc.Speed));
-
-                    string movePacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {Npc.Speed}";
-                    ServerManager.GetMap(MapId).Broadcast(movePacket);
+                    Map.Broadcast(new BroadcastPacket(null, GenerateMv2(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                 }
             }
         }

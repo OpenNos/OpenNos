@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class TeleporterDTO
+    public class TeleporterDTO : MappingBaseDTO
     {
         #region Properties
 

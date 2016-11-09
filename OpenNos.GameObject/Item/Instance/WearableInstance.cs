@@ -34,15 +34,14 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
-        public WearableInstance(Guid id)
+        public override void Initialize()
         {
-            Id = id;
             _random = new Random();
         }
 
-        public WearableInstance(WearableInstanceDTO wearableInstance)
+        public WearableInstance(Guid id)
         {
-            XP = wearableInstance.XP;
+            Id = id;
             _random = new Random();
         }
 

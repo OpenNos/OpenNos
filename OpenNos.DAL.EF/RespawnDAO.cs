@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
@@ -25,29 +24,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class RespawnDAO : IRespawnDAO
+    public class RespawnDAO : MappingBaseDAO<Respawn, RespawnDTO>, IRespawnDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public RespawnDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Respawn, RespawnDTO>();
-                cfg.CreateMap<RespawnDTO, Respawn>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public SaveResult InsertOrUpdate(ref RespawnDTO respawn)

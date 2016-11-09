@@ -16,7 +16,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.Data
 {
-    public class AccountDTO
+    public class AccountDTO : MappingBaseDTO
     {
         #region Properties
 

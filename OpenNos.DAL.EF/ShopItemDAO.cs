@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
@@ -25,30 +24,19 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class ShopItemDAO : IShopItemDAO
+    public class ShopItemDAO : MappingBaseDAO<ShopItem, ShopItemDTO>, IShopItemDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public ShopItemDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<ShopItem, ShopItemDTO>();
-                cfg.CreateMap<ShopItemDTO, ShopItem>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
+        public IEnumerable<ShopItemDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (ShopItem entity in context.ShopItem)
+                {
+                    yield return _mapper.Map<ShopItemDTO>(entity);
+                }
+            }
+        }
 
         public DeleteResult DeleteById(int itemId)
         {

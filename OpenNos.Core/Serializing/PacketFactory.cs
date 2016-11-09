@@ -120,10 +120,10 @@ namespace OpenNos.Core
                     // add value for current configuration
                     deserializedPacket += DeserializeValue(packetBasePropertyInfo.Value.PropertyType, packetBasePropertyInfo.Value.GetValue(packet), packetBasePropertyInfo.Key);
 
-                    //check if the value should be serialized to end
+                    // check if the value should be serialized to end
                     if (packetBasePropertyInfo.Key.SerializeToEnd)
                     {
-                        //we reached the end
+                        // we reached the end
                         break;
                     }
 
@@ -308,7 +308,7 @@ namespace OpenNos.Core
                     {
                         if (packetBasePropertyInfo.Key.SerializeToEnd)
                         {
-                            //get the value to the end and stop deserialization
+                            // get the value to the end and stop deserialization
                             string valueToEnd = packetContent.Substring(matches[currentIndex].Index, packetContent.Length - matches[currentIndex].Index);
                             packetBasePropertyInfo.Value.SetValue(deserializedPacket, SerializeValue(packetBasePropertyInfo.Value.PropertyType, valueToEnd, packetBasePropertyInfo.Key));
                             break;
@@ -360,7 +360,7 @@ namespace OpenNos.Core
 
             foreach (var subpacketPropertyInfo in subpacketSerializationInfo.Value)
             {
-                int currentSubIndex = isReturnPacket ? subpacketPropertyInfo.Key.Index + 1 : subpacketPropertyInfo.Key.Index; //return packets do include header
+                int currentSubIndex = isReturnPacket ? subpacketPropertyInfo.Key.Index + 1 : subpacketPropertyInfo.Key.Index; // return packets do include header
                 string currentSubValue = subpacketValues[currentSubIndex];
 
                 subpacketPropertyInfo.Value.SetValue(newSubpacket, SerializeValue(subpacketPropertyInfo.Value.PropertyType, currentSubValue, subpacketPropertyInfo.Key));
@@ -411,7 +411,7 @@ namespace OpenNos.Core
 
                 return convertedValue;
             }
-            else if (packetPropertyType.Equals(typeof(bool))) //handle boolean values
+            else if (packetPropertyType.Equals(typeof(bool))) // handle boolean values
             {
                 return currentValue == "0" ? false : true;
             }

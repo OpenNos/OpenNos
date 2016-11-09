@@ -312,6 +312,7 @@ namespace OpenNos.GameObject
 
             // register for servermanager
             ServerManager.Instance.RegisterSession(this);
+            Character.SetSession(this);
         }
 
         private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)

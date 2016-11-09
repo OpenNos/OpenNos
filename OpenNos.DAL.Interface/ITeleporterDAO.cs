@@ -17,11 +17,13 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface ITeleporterDAO
+    public interface ITeleporterDAO : IMappingBaseDAO
     {
         #region Methods
 
         TeleporterDTO Insert(TeleporterDTO teleporter);
+
+        IEnumerable<TeleporterDTO> LoadAll();
 
         TeleporterDTO LoadById(short TeleporterId);
 

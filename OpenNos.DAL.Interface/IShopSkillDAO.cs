@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IShopSkillDAO
+    public interface IShopSkillDAO : IMappingBaseDAO
     {
         #region Methods
 
@@ -26,6 +26,8 @@ namespace OpenNos.DAL.Interface
         void Insert(List<ShopSkillDTO> skills);
 
         IEnumerable<ShopSkillDTO> LoadByShopId(int ShopId);
+
+        IEnumerable<ShopSkillDTO> LoadAll();
 
         #endregion
     }

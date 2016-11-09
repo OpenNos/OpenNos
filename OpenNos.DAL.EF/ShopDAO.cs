@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -23,29 +22,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class ShopDAO : IShopDAO
+    public class ShopDAO : MappingBaseDAO<Shop, ShopDTO>, IShopDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public ShopDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Shop, ShopDTO>();
-                cfg.CreateMap<ShopDTO, Shop>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public void Insert(List<ShopDTO> shops)
@@ -96,6 +74,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<ShopDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Shop entity in context.Shop)
+                {
+                    yield return _mapper.Map<ShopDTO>(entity);
+                }
+            }
+        }
+
         public ShopDTO LoadById(int shopId)
         {
             try
@@ -112,13 +101,13 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public ShopDTO LoadByNpc(int npcId)
+        public ShopDTO LoadByNpc(int mapNpcId)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
+                    return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(mapNpcId)));
                 }
             }
             catch (Exception e)

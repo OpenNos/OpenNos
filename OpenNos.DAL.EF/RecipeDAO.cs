@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -23,29 +22,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class RecipeDAO : IRecipeDAO
+    public class RecipeDAO : MappingBaseDAO<Recipe, RecipeDTO>, IRecipeDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public RecipeDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Recipe, RecipeDTO>();
-                cfg.CreateMap<RecipeDTO, Recipe>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public RecipeDTO Insert(RecipeDTO recipe)
@@ -64,6 +42,17 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
                 return null;
+            }
+        }
+
+        public IEnumerable<RecipeDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Recipe Recipe in context.Recipe)
+                {
+                    yield return _mapper.Map<RecipeDTO>(Recipe);
+                }
             }
         }
 

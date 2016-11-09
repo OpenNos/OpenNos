@@ -13,12 +13,17 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Data;
 using System;
 
 namespace OpenNos.GameObject
 {
     public class UpgradeItem : Item
     {
+        public UpgradeItem(ItemDTO item) : base(item)
+        {
+        }
+
         #region Methods
 
         public override void Use(ClientSession Session, ref ItemInstance Inv, bool DelayUsed = false, string[] packetsplit = null)
@@ -74,27 +79,27 @@ namespace OpenNos.GameObject
                                         Session.SendPacket(Session.Character.GenerateSpPoint());
                                         Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (Domain.InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
                                         isUsed = true;
-                                       }
-                                       break;
-                               }
+                                    }
+                                    break;
+                            }
 
                             switch (Inv.ItemVNum)
-                            {               
-                                 case 9039:
-                                      SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
-                                      if (specialist != null && specialist.Rare == -2)
-                                      {
-                                         specialist.Rare = 0;
-                                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
-                                         Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(13, 1, 1));
-                                         Session.Character.SpPoint = 10000;
-                                         Session.SendPacket(Session.Character.GenerateSpPoint());
-                                         Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (Domain.InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
-                                         isUsed = true;
-                                        }
-                                        break;
-                               }
-                            
+                            {
+                                case 9039:
+                                    SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
+                                    if (specialist != null && specialist.Rare == -2)
+                                    {
+                                        specialist.Rare = 0;
+                                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
+                                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(13, 1, 1));
+                                        Session.Character.SpPoint = 10000;
+                                        Session.SendPacket(Session.Character.GenerateSpPoint());
+                                        Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (Domain.InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                        isUsed = true;
+                                    }
+                                    break;
+                            }
+
                             if (!isUsed)
                             {
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_NOT_FIXED"), 11));

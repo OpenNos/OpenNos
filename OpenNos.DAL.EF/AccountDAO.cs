@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
@@ -24,29 +23,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class AccountDAO : IAccountDAO
+    public class AccountDAO : MappingBaseDAO<Account, AccountDTO>, IAccountDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public AccountDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Account, AccountDTO>();
-                cfg.CreateMap<AccountDTO, Account>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public DeleteResult Delete(long accountId)

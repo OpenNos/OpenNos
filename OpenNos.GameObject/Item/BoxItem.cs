@@ -13,12 +13,21 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Data;
 using System;
 
 namespace OpenNos.GameObject
 {
     public class BoxItem : Item
     {
+        #region Instantiation
+
+        public BoxItem(ItemDTO item) : base(item)
+        {
+        }
+
+        #endregion
+
         #region Methods
 
         public override void Use(ClientSession Session, ref ItemInstance Inv, bool DelayUsed = false, string[] packetsplit = null)

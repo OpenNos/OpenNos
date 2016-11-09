@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
-    public class RecipeDAO : IRecipeDAO
+    public class RecipeDAO : BaseDAO<RecipeDTO>, IRecipeDAO
     {
         #region Methods
 

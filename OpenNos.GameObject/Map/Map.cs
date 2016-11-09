@@ -48,59 +48,31 @@ namespace OpenNos.GameObject
         {
             _random = new Random();
             MapId = mapId;
+            ShopAllowed = true;
             _uniqueIdentifier = uniqueIdentifier;
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
             Data = data;
             LoadZone();
             IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId).ToList();
-            _portals = new List<PortalDTO>();
             DroppedList = new ConcurrentDictionary<long, MapItem>();
 
             MapTypes = new List<MapTypeDTO>();
             foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId).ToList())
             {
-                MapTypeDTO MT = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
-
-                // Replace by MAPPING
-                MapTypeDTO maptype = new MapTypeDTO()
-                {
-                    MapTypeId = MT.MapTypeId,
-                    MapTypeName = MT.MapTypeName,
-                    PotionDelay = MT.PotionDelay
-                };
-                ///////////////
+                MapTypeDTO maptype = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId) as MapTypeDTO;
                 MapTypes.Add(maptype);
             }
 
-            UserShops = new Dictionary<long, MapShop>();
+            _portals = new List<PortalDTO>();
             foreach (PortalDTO portal in portals)
             {
-                // Replace by MAPPING
-                _portals.Add(new PortalDTO()
-                {
-                    DestinationMapId = portal.DestinationMapId,
-                    SourceMapId = portal.SourceMapId,
-                    SourceX = portal.SourceX,
-                    SourceY = portal.SourceY,
-                    DestinationX = portal.DestinationX,
-                    DestinationY = portal.DestinationY,
-                    Type = portal.Type,
-                    PortalId = portal.PortalId,
-                    IsDisabled = portal.IsDisabled
-                });
-                //////////////////
+                _portals.Add(portal as PortalDTO);
             }
 
-            foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
-            {
-                _monsters[monster.MapMonsterId] = new MapMonster(monster, this);
-                _mapMonsterIds.Add(monster.MapMonsterId);
-            }
-            IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId).ToList();
-
+            UserShops = new Dictionary<long, MapShop>();
             _npcs = new List<MapNpc>();
-            npcsDTO.ToList().ForEach(s => _npcs.Add(new MapNpc(s)));
+            _npcs.AddRange(ServerManager.Instance.GetMapNpcsByMapId(MapId).AsEnumerable<MapNpc>());
         }
 
         #endregion
@@ -238,7 +210,6 @@ namespace OpenNos.GameObject
                 DroppedList.TryAdd(droppedItem.TransportId, droppedItem);
 
                 Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
-
             }
             catch (Exception e)
             {
@@ -308,6 +279,15 @@ namespace OpenNos.GameObject
             return lpath;
         }
 
+        public void LoadMonsters()
+        {
+            foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
+            {
+                _monsters[monster.MapMonsterId] = monster as MapMonster;
+                _mapMonsterIds.Add(monster.MapMonsterId);
+            }
+        }
+
         public void LoadZone()
         {
             Stream stream = new MemoryStream(Data);
@@ -335,7 +315,7 @@ namespace OpenNos.GameObject
                 for (int t = 0; t < XLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
-                    _grid.SetWalkableAt(new GridPos(t, i), Convert.ToBoolean(Convert.ToInt16(bytes[0]) == 0 ? true: false ));
+                    _grid.SetWalkableAt(new GridPos(t, i), Convert.ToBoolean(Convert.ToInt16(bytes[0]) == 0 ? true : false));
                 }
             }
 
@@ -352,6 +332,7 @@ namespace OpenNos.GameObject
                 RemoveDeadMonsters();
                 foreach (MapMonster monster in Monsters.OrderBy(i => _random.Next()))
                 {
+                    monster.Map = this;
                     monster.MonsterLife();
                 }
             }
@@ -367,6 +348,7 @@ namespace OpenNos.GameObject
             {
                 foreach (MapNpc npc in Npcs.OrderBy(i => _random.Next()))
                 {
+                    npc.Map = this;
                     npc.NpcLife();
                 }
             }

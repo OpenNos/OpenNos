@@ -14,5 +14,7 @@
 
 namespace OpenNos.Core
 {
-    public abstract class PacketBase { }
+    public abstract class PacketBase
+    {
+    }
 }

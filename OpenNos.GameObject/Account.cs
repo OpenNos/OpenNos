@@ -9,6 +9,10 @@ namespace OpenNos.GameObject
 
         public Account()
         {
+        }
+
+        public override void Initialize()
+        {
             PenaltyLogs = new List<PenaltyLogDTO>();
             GeneralLogs = new List<GeneralLogDTO>();
         }

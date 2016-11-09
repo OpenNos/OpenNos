@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -23,29 +22,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class PortalDAO : IPortalDAO
+    public class PortalDAO : MappingBaseDAO<Portal, PortalDTO>, IPortalDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public PortalDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Portal, PortalDTO>();
-                cfg.CreateMap<PortalDTO, Portal>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public void Insert(List<PortalDTO> portals)

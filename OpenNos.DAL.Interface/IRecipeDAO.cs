@@ -17,15 +17,17 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IRecipeDAO
+    public interface IRecipeDAO : IMappingBaseDAO
     {
         #region Methods
 
         RecipeDTO Insert(RecipeDTO recipe);
 
+        IEnumerable<RecipeDTO> LoadAll();
+
         RecipeDTO LoadById(short RecipeId);
 
-        IEnumerable<RecipeDTO> LoadByNpc(int npcId);
+        IEnumerable<RecipeDTO> LoadByNpc(int mapNpcId);
 
         void Update(RecipeDTO recipe);
 

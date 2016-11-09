@@ -14,5 +14,7 @@
 
 namespace OpenNos.Core
 {
-    public interface IPacketHandler { }
+    public interface IPacketHandler
+    {
+    }
 }

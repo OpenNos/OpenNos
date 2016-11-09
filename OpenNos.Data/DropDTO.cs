@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class DropDTO
+    public class DropDTO : MappingBaseDTO
     {
         #region Properties
 

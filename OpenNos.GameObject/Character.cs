@@ -29,7 +29,6 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private readonly ClientSession _session;
         private AuthorityType _authority;
         private int _backpack;
         private byte _cmapcount = 0;
@@ -44,6 +43,7 @@ namespace OpenNos.GameObject
         private int _morphUpgrade;
         private int _morphUpgrade2;
         private Random _random;
+        private ClientSession _session;
         private int _size = 10;
         private byte _speed;
 
@@ -51,21 +51,8 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public Character(ClientSession Session)
+        public Character()
         {
-            _random = new Random();
-            ExchangeInfo = null;
-            SpCooldown = 30;
-            SaveX = 0;
-            SaveY = 0;
-            LastDefence = DateTime.Now.AddSeconds(-21);
-            LastHealth = DateTime.Now;
-            LastEffect = DateTime.Now;
-            MailList = new Dictionary<int, MailDTO>();
-            LastMailRefresh = DateTime.Now;
-            _session = Session;
-            Group = null;
-            GmPvtBlock = false;
         }
 
         #endregion
@@ -347,6 +334,10 @@ namespace OpenNos.GameObject
             get
             {
                 return _session;
+            }
+            private set
+            {
+                _session = value;
             }
         }
 
@@ -1878,6 +1869,23 @@ namespace OpenNos.GameObject
             return (int)((CharacterHelper.HPData[Class, Level] + hp) * multiplicator);
         }
 
+        public override void Initialize()
+        {
+            _random = new Random();
+            ExchangeInfo = null;
+            SpCooldown = 30;
+            SaveX = 0;
+            SaveY = 0;
+            LastDefence = DateTime.Now.AddSeconds(-21);
+            LastHealth = DateTime.Now;
+            LastEffect = DateTime.Now;
+            Session = null;
+            MailList = new Dictionary<int, MailDTO>();
+            LastMailRefresh = DateTime.Now;
+            Group = null;
+            GmPvtBlock = false;
+        }
+
         public bool IsMuted()
         {
             return Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now);
@@ -1975,7 +1983,7 @@ namespace OpenNos.GameObject
             IEnumerable<QuicklistEntryDTO> quicklistDTO = DAOFactory.QuicklistEntryDAO.LoadByCharacterId(CharacterId).ToList();
             foreach (QuicklistEntryDTO qle in quicklistDTO)
             {
-                QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntryDTO>(qle));
+                QuicklistEntries.Add(qle as QuicklistEntryDTO);
             }
         }
 
@@ -1997,7 +2005,7 @@ namespace OpenNos.GameObject
             {
                 if (!Skills.ContainsKey(characterskill.SkillVNum))
                 {
-                    Skills[characterskill.SkillVNum] = Mapper.DynamicMap<CharacterSkill>(characterskill);
+                    Skills[characterskill.SkillVNum] = characterskill as CharacterSkill;
                 }
             }
         }
@@ -2234,7 +2242,7 @@ namespace OpenNos.GameObject
                 upgrade = 0;
             }
 
-            //maximum size of the amount is 99
+            // maximum size of the amount is 99
             if (amount > 99)
             {
                 amount = 99;
@@ -2279,7 +2287,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                CharacterDTO characterToUpdate = Mapper.DynamicMap<CharacterDTO>(this);
+                CharacterDTO characterToUpdate = this;
                 DAOFactory.CharacterDAO.InsertOrUpdate(ref characterToUpdate);
                 return true;
             }
@@ -2416,6 +2424,11 @@ namespace OpenNos.GameObject
         internal bool IsInRange(int xCoordinate, int yCoordinate)
         {
             return Math.Abs(MapX - xCoordinate) <= 50 && Math.Abs(MapY - yCoordinate) <= 50;
+        }
+
+        internal void SetSession(ClientSession clientSession)
+        {
+            Session = clientSession;
         }
 
         private object HeroXPLoad()

@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -23,29 +22,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class TeleporterDAO : ITeleporterDAO
+    public class TeleporterDAO : MappingBaseDAO<Teleporter, TeleporterDTO>, ITeleporterDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public TeleporterDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Teleporter, TeleporterDTO>();
-                cfg.CreateMap<TeleporterDTO, Teleporter>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public TeleporterDTO Insert(TeleporterDTO teleporter)
@@ -64,6 +42,17 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
                 return null;
+            }
+        }
+
+        public IEnumerable<TeleporterDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Teleporter entity in context.Teleporter)
+                {
+                    yield return _mapper.Map<TeleporterDTO>(entity);
+                }
             }
         }
 
@@ -87,9 +76,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Teleporter Teleporterobject in context.Teleporter.Where(c => c.MapNpcId.Equals(npcId)))
+                foreach (Teleporter entity in context.Teleporter.Where(c => c.MapNpcId.Equals(npcId)))
                 {
-                    yield return _mapper.Map<TeleporterDTO>(Teleporterobject);
+                    yield return _mapper.Map<TeleporterDTO>(entity);
                 }
             }
         }

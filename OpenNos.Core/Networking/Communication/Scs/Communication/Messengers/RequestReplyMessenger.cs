@@ -371,7 +371,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         public async Task ClearLowpriorityQueue()
         {
-           //do nothing
+           // do nothing
         }
 
         #endregion

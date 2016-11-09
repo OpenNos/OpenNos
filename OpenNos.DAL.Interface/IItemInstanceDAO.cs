@@ -36,8 +36,6 @@ namespace OpenNos.DAL.Interface
 
         IList<Guid> LoadSlotAndTypeByCharacterId(long characterId);
 
-        void RegisterMapping(Type gameObjectType);
-
         #endregion
     }
 }

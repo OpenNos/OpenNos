@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
-    public class DropDAO : IDropDAO
+    public class DropDAO : BaseDAO<DropDTO>, IDropDAO
     {
         #region Methods
 

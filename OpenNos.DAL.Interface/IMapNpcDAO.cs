@@ -17,13 +17,15 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IMapNpcDAO
+    public interface IMapNpcDAO : IMappingBaseDAO
     {
         #region Methods
 
         MapNpcDTO Insert(MapNpcDTO npc);
 
         void Insert(List<MapNpcDTO> npcs);
+
+        IEnumerable<MapNpcDTO> LoadAll();
 
         MapNpcDTO LoadById(int MapNpcId);
 

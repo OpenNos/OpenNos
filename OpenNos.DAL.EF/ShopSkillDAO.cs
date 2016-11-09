@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -23,30 +22,20 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class ShopSkillDAO : IShopSkillDAO
+    public class ShopSkillDAO : MappingBaseDAO<ShopSkill, ShopSkillDTO>, IShopSkillDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public ShopSkillDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<ShopSkill, ShopSkillDTO>();
-                cfg.CreateMap<ShopSkillDTO, ShopSkill>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
+
+        public IEnumerable<ShopSkillDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (ShopSkill entity in context.ShopSkill)
+                {
+                    yield return _mapper.Map<ShopSkillDTO>(entity);
+                }
+            }
+        }
 
         public ShopSkillDTO Insert(ShopSkillDTO shopSkill)
         {

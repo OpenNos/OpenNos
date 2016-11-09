@@ -2,7 +2,7 @@
 
 namespace OpenNos.Data
 {
-    public abstract class SynchronizableBaseDTO
+    public abstract class SynchronizableBaseDTO : MappingBaseDTO
     {
         #region Instantiation
 

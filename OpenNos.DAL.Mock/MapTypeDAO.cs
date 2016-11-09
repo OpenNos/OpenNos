@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
-    public class MapTypeDAO : IMapTypeDAO
+    public class MapTypeDAO : BaseDAO<MapTypeDTO>, IMapTypeDAO
     {
         #region Methods
 

@@ -33,33 +33,23 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public MapMonster(MapMonsterDTO monsterdto, Map parent)
+        public MapMonster() { }
+
+        public override void Initialize()
         {
-            _random = new Random(monsterdto.MapMonsterId);
-
-            // Replace by MAPPING
-            MapId = monsterdto.MapId;
-            MapX = monsterdto.MapX;
-            MapMonsterId = monsterdto.MapMonsterId;
-            MonsterVNum = monsterdto.MonsterVNum;
-            MapY = monsterdto.MapY;
-            Position = monsterdto.Position;
-            FirstX = monsterdto.MapX;
-            FirstY = monsterdto.MapY;
-            IsMoving = monsterdto.IsMoving;
-            ///////////////////////////////////
-
+            FirstX = MapX;
+            FirstY = MapY;
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
             Path = new List<GridPos>();
-            Map = parent;
             Alive = true;
             Respawn = true;
             Monster = ServerManager.GetNpc(MonsterVNum);
             CurrentHp = Monster.MaxHP;
-            CurrentMp = Monster.MaxMP;
+            CurrentMp = Monster.MaxHP;
             Skills = Monster.Skills.ToList();
             DamageList = new Dictionary<long, long>();
+            _random = new Random(MapMonsterId);
             _movetime = _random.Next(400, 3200);
         }
 
@@ -120,18 +110,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool IsInRange(short mapX, short mapY, byte distance)
+        public string GenerateMv3()
         {
-            return Map.GetDistance(
-                new MapCell()
-                {
-                    X = mapX,
-                    Y = mapY
-                }, new MapCell()
-                {
-                    X = MapX,
-                    Y = MapY
-                }) <= distance + 1;
+            return $"mv 3 {MapMonsterId} {MapX} {MapY} {Monster.Speed}";
         }
 
         internal void MonsterLife()
@@ -174,8 +155,6 @@ namespace OpenNos.GameObject
                             int mapX = Path.ElementAt(0).x;
                             int mapY = Path.ElementAt(0).y;
                             Path.RemoveAt(0);
-                            LastMove = DateTime.Now;
-                            Map.Broadcast(new BroadcastPacket(null, $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
 
                             Task.Factory.StartNew(async () =>
                             {
@@ -183,6 +162,8 @@ namespace OpenNos.GameObject
                                 MapX = (short)mapX;
                                 MapY = (short)mapY;
                             });
+                            LastMove = DateTime.Now;
+                            Map.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                             return;
                         }
                     }
@@ -206,8 +187,7 @@ namespace OpenNos.GameObject
                                 this.MapY = mapY;
                             });
                             LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Monster.Speed));
-
-                            Map.Broadcast(new BroadcastPacket(null, $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
+                            Map.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                         }
                     }
                 }

@@ -278,6 +278,7 @@ namespace OpenNos.Handler
                                 Authority = accountDTO.Authority,
                                 LastCompliment = accountDTO.LastCompliment,
                             };
+                            account.Initialize();
                             foreach (PenaltyLogDTO penalty in DAOFactory.PenaltyLogDAO.LoadByAccount(accountDTO.AccountId))
                             {
                                 account.PenaltyLogs.Add(new PenaltyLogDTO()
@@ -361,7 +362,7 @@ namespace OpenNos.Handler
                     CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2]));
                     if (characterDTO != null)
                     {
-                        Session.SetCharacter(new Character(Session)
+                        Character character = new Character()
                         {
                             AccountId = characterDTO.AccountId,
                             CharacterId = characterDTO.CharacterId,
@@ -420,7 +421,9 @@ namespace OpenNos.Handler
                             MaxSnack = 0,
                             HeroLevel = characterDTO.HeroLevel,
                             HeroXp = characterDTO.HeroXp
-                        });
+                        };
+                        character.Initialize();
+                        Session.SetCharacter(character);
                         Session.Character.Update();
                         Session.Character.LoadInventory();
                         Session.Character.LoadQuicklists();

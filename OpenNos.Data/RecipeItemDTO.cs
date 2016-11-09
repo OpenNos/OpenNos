@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class RecipeItemDTO
+    public class RecipeItemDTO : MappingBaseDTO
     {
         #region Properties
 

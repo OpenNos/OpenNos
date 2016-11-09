@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
@@ -23,29 +22,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class MapTypeMapDAO : IMapTypeMapDAO
+    public class MapTypeMapDAO : MappingBaseDAO<MapTypeMap, MapTypeMapDTO>, IMapTypeMapDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
-        #region Instantiation
-
-        public MapTypeMapDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<MapTypeMap, MapTypeMapDTO>();
-                cfg.CreateMap<MapTypeMapDTO, MapTypeMap>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
-
         #region Methods
 
         public void Insert(List<MapTypeMapDTO> maptypemaps)

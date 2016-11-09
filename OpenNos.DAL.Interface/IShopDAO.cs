@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IShopDAO
+    public interface IShopDAO : IMappingBaseDAO
     {
         #region Methods
 
@@ -25,9 +25,11 @@ namespace OpenNos.DAL.Interface
 
         void Insert(List<ShopDTO> shops);
 
-        ShopDTO LoadById(int ShopId);
+        IEnumerable<ShopDTO> LoadAll();
 
-        ShopDTO LoadByNpc(int NpcId);
+        ShopDTO LoadById(int shopId);
+
+        ShopDTO LoadByNpc(int mapNpcId);
 
         #endregion
     }

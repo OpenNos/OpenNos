@@ -23,20 +23,16 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public Recipe(short RecipeId)
+        public Recipe()
+        {
+        }
+
+        public override void Initialize()
         {
             Items = new List<RecipeItemDTO>();
             foreach (RecipeItemDTO rec in DAOFactory.RecipeItemDAO.LoadByRecipe(RecipeId).ToList())
             {
-                // Replace by MAPPING
-                Items.Add(new RecipeItemDTO()
-                {
-                    Amount = rec.Amount,
-                    ItemVNum = rec.ItemVNum,
-                    RecipeId = rec.RecipeId,
-                    RecipeItemId = rec.RecipeItemId
-                });
-                //////////////////////
+                Items.Add(rec as RecipeItemDTO);
             }
         }
 

@@ -16,7 +16,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.Data
 {
-    public class NpcMonsterDTO
+    public class NpcMonsterDTO : MappingBaseDTO
     {
         #region Properties
 

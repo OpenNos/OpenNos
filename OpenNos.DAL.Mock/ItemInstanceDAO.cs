@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Data.Enums;
-using OpenNos.Domain;
 
 namespace OpenNos.DAL.Mock
 {
@@ -19,6 +19,16 @@ namespace OpenNos.DAL.Mock
         #endregion
 
         #region Methods
+
+        public DeleteResult DeleteFromSlotAndType(long characterId, short slot, InventoryType type)
+        {
+            throw new NotImplementedException();
+        }
+
+        IList<Guid> IItemInstanceDAO.LoadSlotAndTypeByCharacterId(long characterId)
+        {
+            throw new NotImplementedException();
+        }
 
         public void InitializeMapper(Type baseType)
         {
@@ -62,20 +72,10 @@ namespace OpenNos.DAL.Mock
         public void RegisterMapping(Type gameObjectType)
         {
             Type itemInstanceType = typeof(ItemInstanceDTO);
-            if(!itemInstanceMappings.ContainsKey(gameObjectType))
+            if (!itemInstanceMappings.ContainsKey(gameObjectType))
             {
                 itemInstanceMappings.Add(gameObjectType, itemInstanceType);
             }
-        }
-
-        public DeleteResult DeleteFromSlotAndType(long characterId, short slot, InventoryType type)
-        {
-            throw new NotImplementedException();
-        }
-
-        IList<Guid> IItemInstanceDAO.LoadSlotAndTypeByCharacterId(long characterId)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion
