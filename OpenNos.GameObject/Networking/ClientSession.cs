@@ -43,12 +43,12 @@ namespace OpenNos.GameObject
         // Packetwait Packets
         private int? _waitForPacketsAmount;
 
-        //private byte countPacketReceived;
+        // private byte countPacketReceived;
         private long lastPacketReceive;
 
         #endregion
 
-        //private Task taskPacketReceived;
+        // private Task taskPacketReceived;
 
         #region Instantiation
 
@@ -57,8 +57,8 @@ namespace OpenNos.GameObject
             // set last received
             lastPacketReceive = DateTime.Now.Ticks;
 
-            //set packetcount to 0
-            //countPacketReceived = 0;
+            // set packetcount to 0
+            // countPacketReceived = 0;
 
             // initialize network client
             _client = client;

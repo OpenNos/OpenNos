@@ -222,6 +222,22 @@ namespace OpenNos.GameObject
             return UserShops.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();
         }
 
+        public void SetMapMapMonsterReference()
+        {
+            foreach (MapMonster monster in _monsters.GetAllItems())
+            {
+                monster.Map = this;
+            }
+        }
+
+        public void SetMapMapNpcReference()
+        {
+            foreach (MapNpc npc in _npcs)
+            {
+                npc.Map = this;
+            }
+        }
+
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
             return _monsters.GetAllItems().Where(s => s.Alive && s.IsInRange(mapX, mapY, distance)).ToList();
@@ -332,7 +348,6 @@ namespace OpenNos.GameObject
                 RemoveDeadMonsters();
                 foreach (MapMonster monster in Monsters.OrderBy(i => _random.Next()))
                 {
-                    monster.Map = this;
                     monster.MonsterLife();
                 }
             }
@@ -348,7 +363,6 @@ namespace OpenNos.GameObject
             {
                 foreach (MapNpc npc in Npcs.OrderBy(i => _random.Next()))
                 {
-                    npc.Map = this;
                     npc.NpcLife();
                 }
             }

@@ -117,6 +117,20 @@ namespace OpenNos.GameObject
             _movetime = _random.Next(400, 3200);
         }
 
+        public bool IsInRange(short mapX, short mapY, byte distance)
+        {
+            return Map.GetDistance(
+             new MapCell()
+             {
+                 X = mapX,
+                 Y = mapY
+             }, new MapCell()
+             {
+                 X = MapX,
+                 Y = MapY
+             }) <= distance + 1;
+        }
+
         internal void MonsterLife()
         {
             // Respawn

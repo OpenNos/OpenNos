@@ -635,10 +635,20 @@ namespace OpenNos.Handler
                             if (randomAmount <= ((double)dropChance * RateDrop) / 5000.000)
                             {
                                 short vnum = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum;
-                                Session.Character.Inventory.AddNewToInventory(vnum);
+                                ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(vnum);
                                 Session.Character.LastMapObject = DateTime.Now;
-                                Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 0));
-                                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 11));
+                                if (newInv != null)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                                    Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
+                                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 11));
+                                    return;
+                                }
+                                else
+                                {
+                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                                    return;
+                                }
                             }
                             else
                             {

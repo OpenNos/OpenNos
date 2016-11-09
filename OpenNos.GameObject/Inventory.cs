@@ -140,7 +140,7 @@ namespace OpenNos.GameObject
                 throw new InvalidOperationException("Cannot add the same ItemInstance twice to inventory.");
             }
 
-            string inventoryPacket = Owner.Session.Character.GenerateInventoryAdd(itemInstance.ItemVNum, itemInstance.Amount, type, slot, itemInstance.Rare, itemInstance.Design, 0, 0);
+            string inventoryPacket = Owner.Session.Character.GenerateInventoryAdd(itemInstance.ItemVNum, itemInstance.Amount, type, slot, itemInstance.Rare, itemInstance.Design, itemInstance.Upgrade, 0);
             if (!String.IsNullOrEmpty(inventoryPacket))
             {
                 Owner.Session.SendPacket(inventoryPacket);

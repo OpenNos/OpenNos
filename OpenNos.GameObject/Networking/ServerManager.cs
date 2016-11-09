@@ -711,6 +711,8 @@ namespace OpenNos.GameObject
 
                     // register for broadcast
                     _maps.TryAdd(guid, newMap);
+                    newMap.SetMapMapMonsterReference();
+                    newMap.SetMapMapNpcReference();
                     i++;
 
                     newMap.LoadMonsters();
