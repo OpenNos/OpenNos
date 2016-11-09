@@ -547,7 +547,7 @@ namespace OpenNos.GameObject
                                 return;
                             }
 
-                            if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkill.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
+                            if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkillUse.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
                             {
                                 if (x == 0)
                                 {

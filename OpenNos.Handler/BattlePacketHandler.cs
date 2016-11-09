@@ -107,17 +107,20 @@ namespace OpenNos.Handler
                             Task t = Task.Factory.StartNew((Func<Task>)(async () =>
                             {
                                 CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == skillCastId - 1);
-                                MapMonster mon = Session.CurrentMap.GetMonster(mapMonsterTargetId);
-                                if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && ski != null && mon.CurrentHp > 0)
+                                if(ski.CanBeUsed())
                                 {
-                                    Session.Character.LastSkill = DateTime.Now;
-                                    damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
-                                    Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 0 {ski.Skill.SkillType - 1}");
-                                    GenerateKillBonus(mon.MapMonsterId);
-                                }
+                                    MapMonster mon = Session.CurrentMap.GetMonster(mapMonsterTargetId);
+                                    if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && ski != null && mon.CurrentHp > 0)
+                                    {
+                                        Session.Character.LastSkillUse = DateTime.Now;
+                                        damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
+                                        Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 0 {ski.Skill.SkillType - 1}");
+                                        GenerateKillBonus(mon.MapMonsterId);
+                                    }
 
-                                await Task.Delay((ski.Skill.Cooldown) * 100);
-                                Session.SendPacket($"sr {skillCastId - 1}");
+                                    await Task.Delay((ski.Skill.Cooldown) * 100);
+                                    Session.SendPacket($"sr {skillCastId - 1}");
+                                }
                             }));
                         }
                     }
@@ -148,7 +151,7 @@ namespace OpenNos.Handler
                     Session.SendPacket("cancel 2 0");
                     return;
                 }
-                for (int i = 0; i < 10 && (ski.LastUse.AddMilliseconds((ski.Skill.Cooldown) * 100) > DateTime.Now); i++)
+                for (int i = 0; i < 10 && !ski.CanBeUsed(); i++)
                 {
                     Thread.Sleep(100);
                     if (i == 10)
@@ -162,7 +165,7 @@ namespace OpenNos.Handler
                 {
                     if (ski.Skill.TargetType == 1 && ski.Skill.HitType == 1)
                     {
-                        Session.Character.LastSkill = DateTime.Now;
+                        Session.Character.LastSkillUse = DateTime.Now;
                         if (!Session.Character.HasGodMode)
                         {
                             Session.Character.Mp -= ski.Skill.MpCost;
@@ -206,7 +209,7 @@ namespace OpenNos.Handler
                         if (monsterToAttack != null && monsterToAttack.Alive)
                         {
                             NpcMonster monsterToAttackInfo = ServerManager.GetNpc(monsterToAttack.MonsterVNum);
-                            if (ski != null && monsterToAttackInfo != null && ski.Skill != null && (ski.LastUse.AddMilliseconds((ski.Skill.Cooldown) * 100) < DateTime.Now))
+                            if (monsterToAttack != null && ski != null && ski.CanBeUsed())
                             {
                                 if (Session.Character.Mp >= ski.Skill.MpCost)
                                 {
@@ -216,7 +219,7 @@ namespace OpenNos.Handler
                                     if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY },
                                                         new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + (DateTime.Now - monsterToAttack.LastMove).TotalSeconds * 2 * (monsterToAttackInfo.Speed == 0 ? 1 : monsterToAttackInfo.Speed) || ski.Skill.TargetRange != 0)
                                     {
-                                        Session.Character.LastSkill = DateTime.Now;
+                                        Session.Character.LastSkillUse = DateTime.Now;
                                         damage = GenerateDamage(monsterToAttack.MapMonsterId, ski.Skill, ref hitmode);
 
                                         ski.LastUse = DateTime.Now;
@@ -1150,7 +1153,7 @@ namespace OpenNos.Handler
                 Session.SendPacket("cancel 2 0");
                 return;
             }
-            if (ski != null)
+            if (ski != null && ski.CanBeUsed())
             {
                 if (Session.Character.Mp >= ski.Skill.MpCost)
                 {
@@ -1165,7 +1168,7 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateStat());
                         ski.LastUse = DateTime.Now;
                         await Task.Delay(ski.Skill.CastTime * 100);
-                        Session.Character.LastSkill = DateTime.Now;
+                        Session.Character.LastSkillUse = DateTime.Now;
 
                         Session.CurrentMap?.Broadcast($"bs 1 {Session.Character.CharacterId} {x} {y} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} 0 0 1 1 0 0 0");
 
