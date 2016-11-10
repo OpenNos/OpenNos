@@ -2115,13 +2115,13 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case 5226: //Invisible locomotion, only 5 seconds with booster
-                                item.Morph = 817;
+                                item.Morph = 1817;
                                 item.Speed = 20;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5228: //Invisible locoomotion, only 5 seconds with booster
-                                item.Morph = 819;
+                                item.Morph = 1819;
                                 item.Speed = 20;
                                 item.WaitDelay = 3000;
                                 break;
