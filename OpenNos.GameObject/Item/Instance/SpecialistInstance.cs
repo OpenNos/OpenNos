@@ -367,7 +367,7 @@ namespace OpenNos.GameObject
             {
                 if (this.SpLevel > 20)
                 {
-                    if (this.Item.Morph <= 15)
+                    if (this.Item.Morph <= 16)
                     {
                         if (Session.Character.Inventory.CountItem(greenSoulVnum) < soul[this.Upgrade])
                         {
@@ -416,7 +416,7 @@ namespace OpenNos.GameObject
             {
                 if (this.SpLevel > 40)
                 {
-                    if (this.Item.Morph <= 15)
+                    if (this.Item.Morph <= 16)
                     {
                         if (Session.Character.Inventory.CountItem(redSoulVnum) < soul[this.Upgrade])
                         {
@@ -465,7 +465,7 @@ namespace OpenNos.GameObject
             {
                 if (this.SpLevel > 50)
                 {
-                    if (this.Item.Morph <= 15)
+                    if (this.Item.Morph <= 16)
                     {
                         if (Session.Character.Inventory.CountItem(blueSoulVnum) < soul[this.Upgrade])
                         {
