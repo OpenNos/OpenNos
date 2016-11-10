@@ -2065,6 +2065,7 @@ namespace OpenNos.Import.Console
                         // item.DesignId = Convert.ToInt16(currentLine[6]);
                         switch (item.VNum)
                         {
+                          
                             case 1906:
                                 item.Morph = 2368;
                                 item.Speed = 20;
@@ -2107,17 +2108,29 @@ namespace OpenNos.Import.Console
                                 item.WaitDelay = 3000;
                                 break;
 
-                            /*  case 5226: //Invisible locomotion, only 5 seconds with booster
-                                     item.Morph = 817;
-                                     item.Speed = 20;
-                                     item.WaitDelay = 3000;
-                                     break;
+                            case 5196:
+                                item.Morph = 2517;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
 
-                                 case 5228: //Invisible locoomotion, only 5 seconds with booster
-                                     item.Morph = 819;
-                                     item.Speed = 20;
-                                     item.WaitDelay = 3000;
-                                     break; */
+                            case 5226: //Invisible locomotion, only 5 seconds with booster
+                                item.Morph = 1817;
+                                item.Speed = 20;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 5228: //Invisible locoomotion, only 5 seconds with booster
+                                item.Morph = 1819;
+                                item.Speed = 20;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 5232:
+                                item.Morph = 2520;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
 
                             case 5234:
                                 item.Morph = 2522;
@@ -2140,24 +2153,6 @@ namespace OpenNos.Import.Console
                             case 5240:
                                 item.Morph = 1819;
                                 item.Speed = 20;
-                                item.WaitDelay = 3000;
-                                break;
-
-                            case 5914:
-                                item.Morph = 2513;
-                                item.Speed = 14;
-                                item.WaitDelay = 3000;
-                                break;
-
-                            case 5196:
-                                item.Morph = 2517;
-                                item.Speed = 21;
-                                item.WaitDelay = 3000;
-                                break;
-
-                            case 5232:
-                                item.Morph = 2520;
-                                item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
 
@@ -2232,6 +2227,145 @@ namespace OpenNos.Import.Console
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
+
+                            case 5914:
+                                item.Morph = 2513;
+                                item.Speed = 14;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9054:
+                                item.Morph = 2368;
+                                item.Speed = 20;
+                                item.WaitDelay = 3000;
+                                break;
+
+
+                            case 9055:
+                                item.Morph = 2370;
+                                item.Speed = 20;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9058:
+                                item.Morph = 2406;
+                                item.Speed = 20;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9065:
+                                item.Morph = 2411;
+                                item.Speed = 20;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9070:
+                                item.Morph = 2429;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9073:
+                                item.Morph = 2432;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9078:
+                                item.Morph = 2520;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9079:
+                                item.Morph = 2522;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9080:
+                                item.Morph = 2524;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9081:
+                                item.Morph = 1817;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9082:
+                                item.Morph = 1819;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9083:
+                                item.Morph = 2526;
+                                item.Speed = 22;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9084:
+                                item.Morph = 2528;
+                                item.Speed = 22;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9085:
+                                item.Morph = 2930;
+                                item.Speed = 22;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9086:
+                                item.Morph = 2928;
+                                item.Speed = 22;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9087:
+                                item.Morph = 2930;
+                                item.Speed = 14;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9088:
+                                item.Morph = 2932;
+                                item.Speed = 22;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9090:
+                                item.Morph = 2934;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9091:
+                                item.Morph = 2936;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9092:
+                                item.Morph = 2938;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9093:
+                                item.Morph = 2940;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;
+
+                            case 9094:
+                                item.Morph = 2942;
+                                item.Speed = 21;
+                                item.WaitDelay = 3000;
+                                break;            
 
                             default:
                                 if (item.EquipmentSlot.Equals(EquipmentType.Amulet))
