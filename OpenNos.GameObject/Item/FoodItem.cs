@@ -51,6 +51,10 @@ namespace OpenNos.GameObject
         {
             for (session.Character.MaxSnack = 0; session.Character.MaxSnack < 5 && session.Character.IsSitting; session.Character.MaxSnack++)
             {
+                if (session.Character.Hp <= 0)
+                {
+                    return;
+                }
                 session.Character.Hp += session.Character.SnackHp;
                 session.Character.Mp += session.Character.SnackMp;
                 if ((session.Character.SnackHp > 0 && session.Character.SnackHp > 0) && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))

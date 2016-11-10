@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void Regen(ClientSession session, Item item, string[] packetsplit = null)
+        public void Regenerate(ClientSession session, Item item, string[] packetsplit = null)
         {
             session.SendPacket(session.Character.GenerateEff(6000));
             session.Character.SnackAmount++;
@@ -51,6 +51,10 @@ namespace OpenNos.GameObject
         {
             for (session.Character.MaxSnack = 0; session.Character.MaxSnack < 5; session.Character.MaxSnack++)
             {
+                if (session.Character.Hp <= 0)
+                {
+                    return;
+                }
                 session.Character.Hp += session.Character.SnackHp;
                 session.Character.Mp += session.Character.SnackMp;
                 if (session.Character.Mp > session.Character.MPLoad())
@@ -98,7 +102,7 @@ namespace OpenNos.GameObject
                     int amount = session.Character.SnackAmount;
                     if (amount < 5)
                     {
-                        Thread workerThread = new Thread(() => Regen(session, item));
+                        Thread workerThread = new Thread(() => Regenerate(session, item));
                         workerThread.Start();
                         inv.Amount--;
                         if (inv.Amount > 0)

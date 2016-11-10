@@ -37,7 +37,7 @@ namespace OpenNos.GameObject
 
         public short Hit { get; set; }
 
-        public DateTime LastUse
+        public DateTime LastSkillUse
         {
             get; set;
         }
@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
-            LastUse = DateTime.Now.AddHours(-1);
+            LastSkillUse = DateTime.Now.AddHours(-1);
             Hit = 0;
         }
 
