@@ -42,6 +42,7 @@ namespace OpenNos.GameObject
             this.CloseDefence = item.CloseDefence;
             this.Color = item.Color;
             this.Concentrate = item.Concentrate;
+            this.CriticalRate = item.CriticalRate;
             this.CriticalLuckRate = item.CriticalLuckRate;
             this.DamageMaximum = item.DamageMaximum;
             this.DamageMinimum = item.DamageMinimum;

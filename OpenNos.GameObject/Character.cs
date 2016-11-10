@@ -1987,7 +1987,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void LoadSendedMail()
+        public void LoadSentMail()
         {
             foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
@@ -2076,7 +2076,6 @@ namespace OpenNos.GameObject
             for (int x = mails.Count - 1; x >= 0; x--)
             {
                 MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mails.ElementAt(x));
-
                 if (mails.ElementAt(x).AttachmentVNum != null)
                 {
                     i++;

@@ -223,7 +223,9 @@ namespace OpenNos.Handler
                             newInv.Upgrade = mail.AttachmentUpgrade;
                             newInv.Rare = (sbyte)mail.AttachmentRarity;
                             if (newInv.Rare != 0)
+                            {
                                 (newInv as WearableInstance).SetRarityPoint();
+                            }
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
 
@@ -1150,7 +1152,7 @@ namespace OpenNos.Handler
             // finfo - friends info
             Session.SendPacket("p_clear");
             Session.Character.RefreshMail();
-            Session.Character.LoadSendedMail();
+            Session.Character.LoadSentMail();
             Session.Character.DeleteTimeout();
         }
 
