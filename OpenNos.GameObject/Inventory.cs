@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using EpPathFinding.cs;
 using OpenNos.Core;
 using OpenNos.Domain;
 using System;
@@ -415,36 +416,42 @@ namespace OpenNos.GameObject
             Logger.Debug($"type: {type} slot: {slot} amount: {amount}", Owner.Session.SessionId);
             Guid random2 = Guid.NewGuid();
             MapItem droppedItem = null;
-            List<MapCell> Possibilities = new List<MapCell>();
+            List<GridPos> Possibilities = new List<GridPos>();
 
             for (short x = -2; x < 3; x++)
             {
                 for (short y = -2; y < 3; y++)
                 {
-                    Possibilities.Add(new MapCell() { X = x, Y = y });
+                    Possibilities.Add(new GridPos() { x = x, y = y });
                 }
             }
+
             short MapX = 0;
             short MapY = 0;
-            foreach (MapCell possibilitie in Possibilities.OrderBy(s => _random.Next()))
+            bool niceSpot = false;
+            foreach (GridPos possibilitie in Possibilities.OrderBy(s => _random.Next()))
             {
-                MapX = (short)(Owner.MapX + possibilitie.X);
-                MapY = (short)(Owner.MapY + possibilitie.Y);
-                if (Owner.Session.CurrentMap.IsBlockedZone(MapX, MapY))
+                MapX = (short)(Owner.MapX + possibilitie.x);
+                MapY = (short)(Owner.MapY + possibilitie.y);
+                if (!Owner.Session.CurrentMap.IsBlockedZone(MapX, MapY))
                 {
+                    niceSpot = true;
                     break;
                 }
             }
 
-            if (amount > 0 && amount <= inv.Amount)
+            if (niceSpot)
             {
-                ItemInstance newItemInstance = inv.DeepCopy();
-                newItemInstance.Id = random2;
-                newItemInstance.Amount = amount;
-                droppedItem = new CharacterMapItem(MapX, MapY, newItemInstance);
+                if (amount > 0 && amount <= inv.Amount)
+                {
+                    ItemInstance newItemInstance = inv.DeepCopy();
+                    newItemInstance.Id = random2;
+                    newItemInstance.Amount = amount;
+                    droppedItem = new CharacterMapItem(MapX, MapY, newItemInstance);
 
-                Owner.Session.CurrentMap.DroppedList.TryAdd(droppedItem.TransportId, droppedItem);
-                inv.Amount -= amount;
+                    Owner.Session.CurrentMap.DroppedList.TryAdd(droppedItem.TransportId, droppedItem);
+                    inv.Amount -= amount;
+                }
             }
             return droppedItem;
         }
