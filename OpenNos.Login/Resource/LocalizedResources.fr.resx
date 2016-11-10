@@ -144,9 +144,6 @@
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Déconnexion forcée du client {0}</value>
   </data>
-  <data name="IDERROR" xml:space="preserve">
-    <value>Erreur : Votre identifiant ou mot de passe est incorrect.</value>
-  </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Message reçu {0} sur le client {1}</value>
   </data>
@@ -176,5 +173,8 @@
   </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1} </value>
+  </data>
+  <data name="IDERROR" xml:space="preserve">
+    <value>Erreur : Votre identifiant ou mot de passe est incorrect. La saisie répétée de données incorrectes entrainera un blocage temporaire de votre compte.                                                                                                                                                                               </value>
   </data>
 </root>
