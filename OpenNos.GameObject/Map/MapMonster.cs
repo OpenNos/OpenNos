@@ -236,7 +236,7 @@ namespace OpenNos.GameObject
                 NpcMonsterSkill npcMonsterSkill = null;
                 if (_random.Next(10) > 8)
                 {
-                    npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
+                    npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
                 }
 
                 int damage = 100;
@@ -247,7 +247,7 @@ namespace OpenNos.GameObject
                     {
                         if (npcMonsterSkill != null)
                         {
-                            npcMonsterSkill.LastUse = DateTime.Now;
+                            npcMonsterSkill.LastSkillUse = DateTime.Now;
                             CurrentMp -= npcMonsterSkill.Skill.MpCost;
                             Map.Broadcast($"ct 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
                         }
