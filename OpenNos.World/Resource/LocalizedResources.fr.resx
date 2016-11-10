@@ -148,7 +148,7 @@
     <value>La carte spécialiste et ta fée ont des attributs différents.</value>
   </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
-    <value>Erreur : Votre identifiant ou mot de passe est incorrect.</value>
+    <value>Erreur : Votre identifiant ou mot de passe est incorrect. La saisie répétée de données incorrectes entrainera un blocage temporaire de votre compte.                                                                                                                                        </value>
   </data>
   <data name="BN0" xml:space="preserve">
     <value>Lisez^le^règlement,^vous^éviterez^des^embêtements^!</value>
@@ -1007,7 +1007,7 @@ Veux-tu le porter ?</value>
     <value>Astuce : Qu'il soit grand ou petit, un seul cheat et c'est le pilori !</value>
   </data>
   <data name="BOT_MESSAGE_5" xml:space="preserve">
-    <value>Astuce : Un problème ? reportez le sur notre page github !</value>
+    <value>Astuce : Un GM ne vous demandera JAMAIS vos identifiants !</value>
   </data>
   <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
     <value>Le monstre doit être en vie. Sinon, essayez de cliquer dessus et ressayez !</value>
@@ -1032,5 +1032,8 @@ Veux-tu le porter ?</value>
   </data>
   <data name="SPEAKER_CANT_BE_USED" xml:space="preserve">
     <value>Tu subis une sanction. par conséquant, tu ne peux pas utiliser cet objet.</value>
+  </data>
+  <data name="ITEM_NOT_DROPPABLE_HERE" xml:space="preserve">
+    <value>L'objet ne peut pas être jeté ici.</value>
   </data>
 </root>

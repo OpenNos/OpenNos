@@ -262,7 +262,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public DateTime LastSkill { get; set; }
+        public DateTime LastSkillUse { get; set; }
 
         public double LastSp { get; set; }
 
@@ -2126,7 +2126,7 @@ namespace OpenNos.GameObject
 
         public void Rest()
         {
-            if (LastSkill.AddSeconds(4) > DateTime.Now || LastDefence.AddSeconds(4) > DateTime.Now)
+            if (LastSkillUse.AddSeconds(4) > DateTime.Now || LastDefence.AddSeconds(4) > DateTime.Now)
             {
                 return;
             }

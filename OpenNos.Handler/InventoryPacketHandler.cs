@@ -296,13 +296,13 @@ namespace OpenNos.Handler
                             {
                                 Session.Character.ExchangeBlocked = true;
                             }
-                            if (targetSession.Character.LastSkill.AddSeconds(20) > DateTime.Now || targetSession.Character.LastDefence.AddSeconds(20) > DateTime.Now)
+                            if (targetSession.Character.LastSkillUse.AddSeconds(20) > DateTime.Now || targetSession.Character.LastDefence.AddSeconds(20) > DateTime.Now)
                             {
                                 Session.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("PLAYER_IN_BATTLE"), targetSession.Character.Name)));
                                 return;
                             }
 
-                            if (Session.Character.LastSkill.AddSeconds(20) > DateTime.Now || Session.Character.LastDefence.AddSeconds(20) > DateTime.Now)
+                            if (Session.Character.LastSkillUse.AddSeconds(20) > DateTime.Now || Session.Character.LastDefence.AddSeconds(20) > DateTime.Now)
                             {
                                 Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("IN_BATTLE")));
                                 return;
@@ -492,7 +492,7 @@ namespace OpenNos.Handler
             long transportId;
             MapItem mapItem = new MonsterMapItem(0, 0, 0, 0);
 
-            if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now || Session.Character.IsVehicled)
+            if (Session.Character.LastSkillUse.AddSeconds(1) > DateTime.Now || Session.Character.IsVehicled)
             {
                 return;
             }
@@ -707,7 +707,7 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
                             return;
                         }
-                        if (Session.Character.LastSkill.AddSeconds(2) > DateTime.Now)
+                        if (Session.Character.LastSkillUse.AddSeconds(2) > DateTime.Now)
                         {
                             return;
                         }
@@ -1149,7 +1149,7 @@ namespace OpenNos.Handler
             }
             else if (!Session.Character.IsSitting)
             {
-                if (Session.Character.Skills.GetAllItems().Any(s => (s.LastUse.AddMilliseconds((s.Skill.Cooldown) * 100) > DateTime.Now)))
+                if (Session.Character.Skills.GetAllItems().Any(s => !s.CanBeUsed()))
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
                     return;
@@ -1174,7 +1174,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    if (Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkill.AddSeconds(2) >= DateTime.Now)
+                    if (Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkillUse.AddSeconds(2) >= DateTime.Now)
                     {
                         return;
                     }
@@ -1459,7 +1459,7 @@ namespace OpenNos.Handler
                 Session.Character.SpCooldown = 30;
                 if (Session.Character != null && Session.Character.SkillsSp != null)
                 {
-                    foreach (CharacterSkill ski in Session.Character.SkillsSp.GetAllItems().Where(s => (s.LastUse.AddMilliseconds((s.Skill.Cooldown) * 100) > DateTime.Now)))
+                    foreach (CharacterSkill ski in Session.Character.SkillsSp.GetAllItems().Where(s => !s.CanBeUsed()))
                     {
                         short time = ski.Skill.Cooldown;
                         double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
