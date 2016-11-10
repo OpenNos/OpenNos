@@ -1246,7 +1246,7 @@ namespace OpenNos.Handler
 
                         if (inventory != null && inventory2 != null && inventory != inventory2)
                         {
-                            inventory.SumItem(Session, inventory2);
+                            inventory.Sum(Session, inventory2);
                         }
                         break;
 
