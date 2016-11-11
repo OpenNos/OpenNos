@@ -15,7 +15,7 @@ We do not provide any modified client files. The alorithms are based on our logi
 
 ###Before opening new issues troubleshooting can be found [here](TROUBLESHOOTING.md)###
 ###Read our [faq](FAQ.md) before asking questions###
-###Contribution is only possible with Visual Studio 2015 (Community or other editions), Microsoft SQL Server 2016 and [StyleCop extension](https://stylecop.codeplex.com/)###
+###Contribution is only possible with Visual Studio 2015 (Community or other editions), Microsoft SQL Server 2016, [StyleCop extension](https://stylecop.codeplex.com/) and [ResX Resource Manager](https://resxresourcemanager.codeplex.com/)###
 
 #Building the code#
 ##1. Install SSDT For Visual Studio##
