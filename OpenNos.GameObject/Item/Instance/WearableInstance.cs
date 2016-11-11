@@ -357,7 +357,7 @@ namespace OpenNos.GameObject
             }
             else if (this.Item.EquipmentSlot == EquipmentType.Armor)
             {
-                int point = CharacterHelper.RarityPoint(this.Rare, this.Item.LevelMinimum);
+                int point = CharacterHelper.RarityPoint(this.Rare, (this.Item.IsHeroic ? (short)(95 + this.Item.LevelMinimum) : this.Item.LevelMinimum));
                 this.DefenceDodge = 0;
                 this.DistanceDefenceDodge = 0;
                 this.DistanceDefence = 0;
