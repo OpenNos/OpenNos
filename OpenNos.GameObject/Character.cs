@@ -919,16 +919,7 @@ namespace OpenNos.GameObject
 
         public List<string> GenerateIn3()
         {
-            List<string> listIn = new List<string>();
-            foreach (MapMonster monster in ServerManager.GetMap(MapId).Monsters)
-            {
-                string in3 = monster.GenerateIn3();
-                if (in3 != string.Empty)
-                {
-                    listIn.Add(in3);
-                }
-            }
-            return listIn;
+            return ServerManager.GetMap(MapId).Monsters.Select(monster => monster.GenerateIn3()).Where(s => !String.IsNullOrEmpty(s)).ToList();
         }
 
         public string GenerateInfo(string message)
