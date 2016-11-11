@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
 
         public long OwnerId { get; set; }
 
-        public long Sell { get; internal set; }
+        public long Sell { get; set; }
 
         #endregion
     }
