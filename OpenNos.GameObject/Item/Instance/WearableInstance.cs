@@ -127,7 +127,8 @@ namespace OpenNos.GameObject
             double rare4 = 10;
             double rare5 = 5;
             double rare6 = 3;
-            double rare7 = 1;
+            double rare7 = 2;
+            double rare8 = 1;
             short goldprice = 500;
             double reducedpricefactor = 0.5;
             double reducedchancefactor = 1.1;
@@ -159,7 +160,7 @@ namespace OpenNos.GameObject
                 rare5 = rare5 * reducedchancefactor;
                 rare6 = rare6 * reducedchancefactor;
                 rare7 = rare7 * reducedchancefactor;
-
+                rare8 = rare8 * reducedchancefactor;
                 // rare8 = rare8 * reducedchancefactor;
             }
             switch (mode)
@@ -209,7 +210,19 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateGold());
                     break;
             }
+            if (this.Item.IsHeroic)
+            {
+                if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
+                {
+                    if (mode != RarifyMode.Drop)
+                    {
+                        Session.Character.NotifyRarifyResult(7);
+                    }
 
+                    this.Rare = 8;
+                    SetRarityPoint();
+                }
+            }
             if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
             {
                 if (mode != RarifyMode.Drop)
