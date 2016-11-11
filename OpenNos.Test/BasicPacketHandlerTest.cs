@@ -4,6 +4,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Mock;
 using OpenNos.GameObject.Packets.ServerPackets;
+using System.Threading;
 
 namespace OpenNos.Test
 {
@@ -21,7 +22,7 @@ namespace OpenNos.Test
             Assert.Pass();
         }
 
-        [Test, MaxTime(10000)]
+        [Test, MaxTime(10000), RequiresThread(ApartmentState.STA)]
         public void TestCharacterOption()
         {
             // login, create character, start game
@@ -38,7 +39,7 @@ namespace OpenNos.Test
             Assert.Pass();
         }
 
-        [Test, MaxTime(10000)]
+        [Test, MaxTime(10000), RequiresThread(ApartmentState.STA)]
         public void TestWalkMove()
         {
             // login, create character, start game

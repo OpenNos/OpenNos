@@ -67,7 +67,7 @@ namespace OpenNos.DAL.EF
                 cfg.CreateMap(typeof(ItemInstance), typeof(ItemInstanceDTO)).As(baseType);
 
                 Type itemInstanceType = typeof(ItemInstance);
-                foreach (KeyValuePair<Type, Type> entry in mappings)
+                foreach (KeyValuePair<Type, Type> entry in _mappings)
                 {
                     // GameObject -> Entity
                     cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
@@ -149,7 +149,7 @@ namespace OpenNos.DAL.EF
             {
                 Type targetType = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(t => t.Name.Equals(gameObjectType.Name));
                 Type itemInstanceType = typeof(ItemInstance);
-                mappings.Add(gameObjectType, targetType);
+                _mappings.Add(gameObjectType, targetType);
                 return this;
             }
             catch (Exception e)
@@ -187,7 +187,7 @@ namespace OpenNos.DAL.EF
             try
             {
                 var entity = _mapper.Map<ItemInstance>(dto);
-                KeyValuePair<Type, Type> targetMapping = mappings.FirstOrDefault(k => k.Key.Equals(dto.GetType()));
+                KeyValuePair<Type, Type> targetMapping = _mappings.FirstOrDefault(k => k.Key.Equals(dto.GetType()));
                 if (targetMapping.Key != null)
                 {
                     entity = _mapper.Map(dto, targetMapping.Key, targetMapping.Value) as ItemInstance;

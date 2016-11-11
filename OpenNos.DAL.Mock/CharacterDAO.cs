@@ -60,7 +60,7 @@ namespace OpenNos.DAL.Mock
 
         public IEnumerable<CharacterDTO> LoadByAccount(long accountId)
         {
-            return Container.Where(c => c.AccountId == accountId);
+            return Container.Where(c => c.AccountId == accountId).Select(e => MapEntity(e));
         }
 
         public CharacterDTO LoadById(long characterId)

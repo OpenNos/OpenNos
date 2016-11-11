@@ -17,12 +17,12 @@ namespace OpenNos.DAL.Mock
 
         public IEnumerable<GeneralLogDTO> LoadByAccount(long accountId)
         {
-            return Container.Where(c => c.AccountId == accountId);
+            return Container.Where(c => c.AccountId == accountId).Select(e => MapEntity(e));
         }
 
         public IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, long? CharacterId)
         {
-            return Enumerable.Empty<GeneralLogDTO>();
+            return Enumerable.Empty<GeneralLogDTO>().Select(e => MapEntity(e)); ;
         }
 
         public void SetCharIdNull(long? CharacterId)

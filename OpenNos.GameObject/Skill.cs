@@ -23,6 +23,7 @@ namespace OpenNos.GameObject
 
         public Skill()
         {
+            Combos = new List<ComboDTO>();
         }
 
         #endregion
@@ -37,7 +38,7 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
-            Combos = new List<ComboDTO>();
+            // no custom stuff done for Skill
         }
 
         #endregion

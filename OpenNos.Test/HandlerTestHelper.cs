@@ -24,12 +24,52 @@ namespace OpenNos.Test
 
         #region Methods
 
+        private static void RegisterMappings()
+        {
+            // register mappings for items
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
+            DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
+
+            // entities
+            DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
+            DAOFactory.CellonOptionDAO.RegisterMapping(typeof(CellonOptionDTO)).InitializeMapper();
+            DAOFactory.CharacterDAO.RegisterMapping(typeof(Character)).InitializeMapper();
+            DAOFactory.CharacterSkillDAO.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();
+            DAOFactory.ComboDAO.RegisterMapping(typeof(ComboDTO)).InitializeMapper();
+            DAOFactory.DropDAO.RegisterMapping(typeof(DropDTO)).InitializeMapper();
+            DAOFactory.GeneralLogDAO.RegisterMapping(typeof(GeneralLogDTO)).InitializeMapper();
+            DAOFactory.ItemDAO.RegisterMapping(typeof(ItemDTO)).InitializeMapper();
+            DAOFactory.MailDAO.RegisterMapping(typeof(MailDTO)).InitializeMapper();
+            DAOFactory.MapDAO.RegisterMapping(typeof(MapDTO)).InitializeMapper();
+            DAOFactory.MapMonsterDAO.RegisterMapping(typeof(MapMonster)).InitializeMapper();
+            DAOFactory.MapNpcDAO.RegisterMapping(typeof(MapNpc)).InitializeMapper();
+            DAOFactory.MapTypeDAO.RegisterMapping(typeof(MapTypeDTO)).InitializeMapper();
+            DAOFactory.MapTypeMapDAO.RegisterMapping(typeof(MapTypeMapDTO)).InitializeMapper();
+            DAOFactory.NpcMonsterDAO.RegisterMapping(typeof(NpcMonster)).InitializeMapper();
+            DAOFactory.NpcMonsterSkillDAO.RegisterMapping(typeof(NpcMonsterSkill)).InitializeMapper();
+            DAOFactory.PenaltyLogDAO.RegisterMapping(typeof(PenaltyLogDTO)).InitializeMapper();
+            DAOFactory.PortalDAO.RegisterMapping(typeof(PortalDTO)).InitializeMapper();
+            DAOFactory.QuicklistEntryDAO.RegisterMapping(typeof(QuicklistEntryDTO)).InitializeMapper();
+            DAOFactory.RecipeDAO.RegisterMapping(typeof(Recipe)).InitializeMapper();
+            DAOFactory.RecipeItemDAO.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();
+            DAOFactory.RespawnDAO.RegisterMapping(typeof(RespawnDTO)).InitializeMapper();
+            DAOFactory.ShopDAO.RegisterMapping(typeof(Shop)).InitializeMapper();
+            DAOFactory.ShopItemDAO.RegisterMapping(typeof(ShopItemDTO)).InitializeMapper();
+            DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
+            DAOFactory.SkillDAO.RegisterMapping(typeof(Skill)).InitializeMapper();
+            DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
+        }
+
         public static FakeNetworkClient InitializeTestEnvironment()
         {
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
 
             // initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(BasicPacketHandlerTest)));
+
+            // register mappings for items
+            RegisterMappings();
 
             // create server entities (this values would have been imported)
             CreateServerItems();
@@ -42,16 +82,17 @@ namespace OpenNos.Test
             // initialize WCF
             ServiceFactory.Instance.Initialize();
 
-            // register mappings for items
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
-
             // initialize PacketSerialization
             PacketFactory.Initialize<WalkPacket>();
 
             // initialize new manager
             _sessionManager = new NetworkManager<TestEncryption>("127.0.0.1", 1234, typeof(CharacterScreenPacketHandler), typeof(TestEncryption), true);
+            
+            return CreateClientSession();
+        }
+
+        public static FakeNetworkClient CreateClientSession()
+        {
             FakeNetworkClient client = new FakeNetworkClient();
             _sessionManager.AddSession(client);
 
@@ -217,10 +258,15 @@ namespace OpenNos.Test
             };
             List<byte> mapData = new List<byte>();
 
+            mapData.Add(255); // x length
+            mapData.Add(0); // x length
+            mapData.Add(255); // y length
+            mapData.Add(0); // y length
+
             // create map grid
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 255; i++)
             {
-                for (int j = 0; j < 100; j++)
+                for (int j = 0; j < 255; j++)
                 {
                     // we can go everywhere
                     mapData.Add(0);
@@ -234,15 +280,18 @@ namespace OpenNos.Test
         {
             DAOFactory.SkillDAO.Insert(new SkillDTO()
             {
-                SkillVNum = 200
+                SkillVNum = 200,
+                CastId = 0,
             });
             DAOFactory.SkillDAO.Insert(new SkillDTO()
             {
-                SkillVNum = 201
+                SkillVNum = 201,
+                CastId = 1,
             });
             DAOFactory.SkillDAO.Insert(new SkillDTO()
             {
-                SkillVNum = 209
+                SkillVNum = 209,
+                CastId = 2,
             });
         }
 

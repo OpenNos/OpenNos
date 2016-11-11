@@ -20,7 +20,7 @@ namespace OpenNos.DAL.Mock
 
         public IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId)
         {
-            return Container.Where(c => c.CharacterId == characterId);
+            return Container.Where(c => c.CharacterId == characterId).Select(e => MapEntity(e));
         }
 
         public IEnumerable<Guid> LoadKeysByCharacterId(long characterId)

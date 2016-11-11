@@ -16,19 +16,9 @@ namespace OpenNos.DAL.Mock
 
         #region Methods
 
-        public void Insert(List<DropDTO> drops)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DropDTO Insert(DropDTO drop)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<DropDTO> LoadAll()
         {
-            return _mockContainer.ToList();
+            return _mockContainer.ToList().Select(e => MapEntity(e)).ToList();
         }
 
         public IEnumerable<DropDTO> LoadByMonster(short monsterVNum)

@@ -14,7 +14,7 @@ namespace OpenNos.DAL.EF
 
         protected IMapper _mapper;
 
-        protected IDictionary<Type, Type> mappings = new Dictionary<Type, Type>();
+        protected IDictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
 
         #endregion
 
@@ -24,7 +24,7 @@ namespace OpenNos.DAL.EF
         {
             var config = new MapperConfiguration(cfg =>
             {
-                foreach (KeyValuePair<Type, Type> entry in mappings)
+                foreach (KeyValuePair<Type, Type> entry in _mappings)
                 {
                     // GameObject -> Entity
                     cfg.CreateMap(typeof(TDTO), entry.Value);
@@ -43,7 +43,7 @@ namespace OpenNos.DAL.EF
             try
             {
                 Type targetType = typeof(TEntity);
-                mappings.Add(gameObjectType, targetType);
+                _mappings.Add(gameObjectType, targetType);
                 return this;
             }
             catch (Exception e)

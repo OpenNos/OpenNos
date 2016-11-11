@@ -43,7 +43,7 @@ namespace OpenNos.DAL.Mock
 
         public TSynchronizableBaseDTO LoadById(Guid id)
         {
-            return Container.SingleOrDefault(s => s.Id.Equals(id));
+            return MapEntity(Container.SingleOrDefault(s => s.Id.Equals(id)));
         }
 
         #endregion

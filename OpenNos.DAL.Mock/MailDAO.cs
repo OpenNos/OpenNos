@@ -39,12 +39,12 @@ namespace OpenNos.DAL.Mock
 
         public IEnumerable<MailDTO> LoadByReceiverId(long receiverId)
         {
-            return Container.Where(m => m.ReceiverId == receiverId);
+            return Container.Where(m => m.ReceiverId == receiverId).Select(e => MapEntity(e));
         }
 
         public IEnumerable<MailDTO> LoadBySenderId(long senderId)
         {
-            return Container.Where(m => m.SenderId == senderId);
+            return Container.Where(m => m.SenderId == senderId).Select(e => MapEntity(e));
         }
 
         #endregion

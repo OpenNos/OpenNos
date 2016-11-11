@@ -32,7 +32,7 @@ namespace OpenNos.DAL.Mock
 
         public AccountDTO LoadById(long accountId)
         {
-            return Container.SingleOrDefault(a => a.AccountId == accountId);
+            return MapEntity(Container.SingleOrDefault(a => a.AccountId == accountId));
         }
 
         public AccountDTO LoadByName(string name)

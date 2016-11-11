@@ -51,12 +51,12 @@ namespace OpenNos.DAL.Mock
 
         public IEnumerable<ItemInstanceDTO> LoadByCharacterId(long characterId)
         {
-            return Enumerable.Empty<ItemInstanceDTO>();
+            return Container.Where(i => i.CharacterId == characterId);
         }
 
         public ItemInstanceDTO LoadBySlotAndType(long characterId, short slot, InventoryType type)
         {
-            return Container.SingleOrDefault(i => i.CharacterId == characterId && i.Slot == slot && i.Type == type);
+            return MapEntity(Container.SingleOrDefault(i => i.CharacterId == characterId && i.Slot == slot && i.Type == type));
         }
 
         public IEnumerable<ItemInstanceDTO> LoadByType(long characterId, InventoryType type)
@@ -69,13 +69,15 @@ namespace OpenNos.DAL.Mock
             return Container.Where(i => i.CharacterId == characterId).Select(c => c.Id);
         }
 
-        public void RegisterMapping(Type gameObjectType)
+        public override IMappingBaseDAO RegisterMapping(Type gameObjectType)
         {
             Type itemInstanceType = typeof(ItemInstanceDTO);
             if (!itemInstanceMappings.ContainsKey(gameObjectType))
             {
                 itemInstanceMappings.Add(gameObjectType, itemInstanceType);
             }
+
+            return (IMappingBaseDAO)this;
         }
 
         #endregion
