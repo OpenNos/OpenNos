@@ -391,9 +391,11 @@ namespace OpenNos.Handler
                         return;
                     }
 
-                    if (ServerManager.Instance.IsCharactersGroupFull(pjoinPacket.CharacterId))
+                    if (ServerManager.Instance.IsCharactersGroupFull(pjoinPacket.CharacterId)
+                        || ServerManager.Instance.IsCharactersGroupFull(Session.Character.CharacterId))
                     {
                         Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
+                        targetSession.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
                         return;
                     }
 
