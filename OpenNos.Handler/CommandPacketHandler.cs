@@ -920,11 +920,11 @@ namespace OpenNos.Handler
                         });
                         if (duration == 1)
                         {
-                            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)), ReceiverType.OnlySomeone, name);
+                            session.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)));
                         }
                         else
                         {
-                            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)), ReceiverType.OnlySomeone, name);
+                            session.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
                         }
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
@@ -1147,7 +1147,7 @@ namespace OpenNos.Handler
             {
                 Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
                 Session.CurrentMap.Portals.Remove(pt);
-                ServerManager.Instance.Broadcast(Session.Character.GenerateGp(pt));
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateGp(pt));
             }
             else
             {
