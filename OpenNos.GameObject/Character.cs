@@ -490,7 +490,7 @@ namespace OpenNos.GameObject
             Session.CurrentMap?.Broadcast(GenerateEff(196), MapX, MapY);
         }
 
-        public void CloseShop()
+        public void Dispose()
         {
             if (HasShopOpened)
             {
@@ -507,6 +507,11 @@ namespace OpenNos.GameObject
                     Session.SendPacket("shop_end 0");
                 }
                 HasShopOpened = false;
+            }
+
+            if(InExchangeOrTrade)
+            {
+                ExchangeInfo = null;
             }
         }
 
@@ -1690,7 +1695,7 @@ namespace OpenNos.GameObject
 
         public int GetDamage(int damage)
         {
-            CloseShop();
+            Dispose();
 
             Hp -= damage;
             if (Hp < 0)

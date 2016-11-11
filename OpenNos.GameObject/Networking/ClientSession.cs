@@ -224,7 +224,7 @@ namespace OpenNos.GameObject
             // do everything necessary before removing client, DB save, Whatever
             if (HasSelectedCharacter)
             {
-                Character.CloseShop();
+                Character.Dispose();
 
                 //TODO Check why ExchangeInfo.TargetCharacterId is null
                 //Character.CloseTrade();
