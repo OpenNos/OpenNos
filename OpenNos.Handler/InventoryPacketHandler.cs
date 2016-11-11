@@ -590,7 +590,7 @@ namespace OpenNos.Handler
 
                 ItemInstance sourceItem = Session.Character.Inventory.LoadBySlotAndType(slot, (InventoryType)type);
 
-                if (sourceItem != null && sourceItem.Item.ItemType == ItemType.Specialist || sourceItem.Item.ItemType == ItemType.Fashion)
+                if ((sourceItem != null && sourceItem.Item.ItemType == ItemType.Specialist) || (sourceItem != null && sourceItem.Item.ItemType == ItemType.Fashion))
                 {
                     ItemInstance inv = Session.Character.Inventory.MoveInInventory(slot, (InventoryType)type, (InventoryType)destinationType, destinationSlot, false);
                     if (inv != null)

@@ -99,6 +99,12 @@ namespace OpenNos.GameObject
             return $"mv 3 {MapMonsterId} {MapX} {MapY} {Monster.Speed}";
         }
 
+        public void Initialize(Map currentMap)
+        {
+            Map = currentMap;
+            Initialize();
+        }
+
         public override void Initialize()
         {
             FirstX = MapX;
@@ -194,7 +200,7 @@ namespace OpenNos.GameObject
 
                         short mapX = FirstX;
                         short mapY = FirstY;
-                        if (Map.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
+                        if (Map?.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint) ?? false)
                         {
                             Task.Factory.StartNew(async () =>
                             {

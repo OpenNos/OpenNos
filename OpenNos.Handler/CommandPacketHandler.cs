@@ -85,6 +85,7 @@ namespace OpenNos.Handler
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
                     monster = DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) as MapMonster;
+                    monster.Initialize(Session.CurrentMap);
                     Session.CurrentMap.AddMonster(monster);
                     Session.CurrentMap?.Broadcast(monster.GenerateIn3());
                 }
@@ -1434,7 +1435,7 @@ namespace OpenNos.Handler
                         }
 
                         MapMonster monster = new MapMonster() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = Session.CurrentMap.GetNextMonsterId() };
-                        monster.Initialize();
+                        monster.Initialize(currentMap);
                         currentMap?.AddMonster(monster);
                         currentMap?.Broadcast(monster.GenerateIn3());
                     }
