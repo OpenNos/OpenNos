@@ -2150,7 +2150,7 @@ namespace OpenNos.GameObject
 
                 // load and concat inventory with equipment
                 Inventory copiedInventory = Inventory.DeepCopy();
-                IEnumerable<ItemInstanceDTO> inventories = copiedInventory.Concat(Inventory);
+                List<ItemInstanceDTO> inventories = copiedInventory.Concat(Inventory).Select(i => i as ItemInstanceDTO).ToList();
                 IList<Guid> currentlySavedInventoryIds = DAOFactory.ItemInstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
 
                 // remove all which are saved but not in our current enumerable
