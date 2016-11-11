@@ -511,34 +511,43 @@ namespace OpenNos.GameObject
 
         public void Reorder(ClientSession Session, InventoryType inventoryType)
         {
-            List<ItemInstance> templist = new List<ItemInstance>();
+            List<ItemInstance> itemsByInventoryType = new List<ItemInstance>();
             switch (inventoryType)
             {
                 case InventoryType.Costume:
-                    templist = this.Where(s => s.Type == InventoryType.Costume).OrderBy(s => s.ItemVNum).ToList();
+                    itemsByInventoryType = this.Where(s => s.Type == InventoryType.Costume).OrderBy(s => s.ItemVNum).ToList();
                     break;
 
                 case InventoryType.Specialist:
-                    templist = this.Where(s => s.Type == InventoryType.Specialist).OrderBy(s => ServerManager.GetItem(s.ItemVNum).LevelJobMinimum).ToList();
+                    itemsByInventoryType = this.Where(s => s.Type == InventoryType.Specialist).OrderBy(s => s.Item.LevelJobMinimum).ToList();
                     break;
             }
-            short i = 0;
-            foreach (ItemInstance invtemp in templist)
-            {
-                ItemInstance temp = new GameObject.ItemInstance();
-                ItemInstance temp2 = new GameObject.ItemInstance();
-                if (invtemp.Slot != i)
-                {
-                    MoveItem(inventoryType, invtemp.Slot, 1, i, out temp, out temp2);
 
-                    if (temp2 == null || temp == null)
-                    {
-                        return;
-                    }
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(temp2.ItemVNum, temp2.Amount, inventoryType, temp2.Slot, temp2.Rare, temp2.Design, temp2.Upgrade, 0));
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(temp.ItemVNum, temp.Amount, inventoryType, temp.Slot, temp.Rare, temp.Design, temp.Upgrade, 0));
-                }
+            short i = 0;
+
+            // send clear equipment
+            GenerateClearInventory(inventoryType);
+
+            foreach (ItemInstance item in itemsByInventoryType)
+            {
+                // remove item from inventory
+                Remove(item);
+
+                // readd item to inventory
+                item.Slot = i;
+                Session.SendPacket(Session.Character.GenerateInventoryAdd(item.ItemVNum, item.Amount, inventoryType, item.Slot, item.Rare, item.Design, item.Upgrade, 0));
+                Add(item);
+
+                // increment slot
                 i++;
+            }
+        }
+
+        public void GenerateClearInventory(InventoryType type)
+        {
+            for(short i = 0; i < 48; i++)
+            {
+                Owner.Session.SendPacket(Owner.GenerateInventoryAdd(-1, 0, type, i, 0, 0, 0, 0));
             }
         }
 
