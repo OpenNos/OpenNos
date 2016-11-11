@@ -339,7 +339,8 @@ namespace OpenNos.Handler
                         }
                     case RequestExchangeType.Confirmed:
                         {
-                            if (Session.Character.ExchangeInfo.TargetCharacterId != Session.Character.CharacterId)
+                            if (Session.HasCurrentMap && Session.HasSelectedCharacter 
+                                && Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.TargetCharacterId != Session.Character.CharacterId)
                             {
                                 ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
 
@@ -463,18 +464,21 @@ namespace OpenNos.Handler
                         }
                     case RequestExchangeType.Cancelled:
                         {
-                            ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
-
-                            if (targetSession == null)
+                            if(Session.HasCurrentMap)
                             {
-                                return;
+                                ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
+
+                                if (targetSession == null)
+                                {
+                                    return;
+                                }
+
+                                Session.SendPacket("exc_close 0");
+                                targetSession.SendPacket("exc_close 0");
+
+                                targetSession.Character.ExchangeInfo = null;
+                                Session.Character.ExchangeInfo = null;
                             }
-
-                            Session.SendPacket("exc_close 0");
-                            targetSession.SendPacket("exc_close 0");
-
-                            targetSession.Character.ExchangeInfo = null;
-                            Session.Character.ExchangeInfo = null;
                             break;
                         }
                     default:
@@ -1246,7 +1250,7 @@ namespace OpenNos.Handler
 
                         if (inventory != null && inventory2 != null && inventory != inventory2)
                         {
-                            inventory.SumItem(Session, inventory2);
+                            inventory.Sum(Session, inventory2);
                         }
                         break;
 

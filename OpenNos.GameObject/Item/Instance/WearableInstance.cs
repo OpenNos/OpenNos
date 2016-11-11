@@ -381,52 +381,55 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SumItem(ClientSession Session, WearableInstance itemToSum)
+        public void Sum(ClientSession Session, WearableInstance itemToSum)
         {
-            short[] upsuccess = { 100, 100, 85, 70, 50, 20 };
-            int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };
-            short[] sand = { 5, 10, 15, 20, 25, 30 };
-            int sandVnum = 1027;
-            if ((this.Upgrade + itemToSum.Upgrade) < 6 && ((((itemToSum.Item.EquipmentSlot == EquipmentType.Gloves) && (this.Item.EquipmentSlot == EquipmentType.Gloves)) || ((this.Item.EquipmentSlot == EquipmentType.Boots) && (itemToSum.Item.EquipmentSlot == EquipmentType.Boots)))))
+            if (this.Upgrade < 6) // cannot sum higher than 5
             {
-                if (Session.Character.Gold < goldprice[this.Upgrade])
+                short[] upsuccess = { 100, 100, 85, 70, 50, 20 };
+                int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };
+                short[] sand = { 5, 10, 15, 20, 25, 30 };
+                int sandVnum = 1027;
+                if ((this.Upgrade + itemToSum.Upgrade) < 6 && ((((itemToSum.Item.EquipmentSlot == EquipmentType.Gloves) && (this.Item.EquipmentSlot == EquipmentType.Gloves)) || ((this.Item.EquipmentSlot == EquipmentType.Boots) && (itemToSum.Item.EquipmentSlot == EquipmentType.Boots)))))
                 {
-                    return;
-                }
-                if (Session.Character.Inventory.CountItem(sandVnum) < sand[this.Upgrade])
-                {
-                    return;
-                }
+                    if (Session.Character.Gold < goldprice[this.Upgrade])
+                    {
+                        return;
+                    }
+                    if (Session.Character.Inventory.CountItem(sandVnum) < sand[this.Upgrade])
+                    {
+                        return;
+                    }
 
-                int rnd = _random.Next(100);
-                if (rnd <= upsuccess[this.Upgrade + itemToSum.Upgrade])
-                {
-                    this.Upgrade += (byte)(itemToSum.Upgrade + 1);
-                    this.DarkResistance += (short)(itemToSum.DarkResistance + itemToSum.Item.DarkResistance);
-                    this.LightResistance += (short)(itemToSum.LightResistance + itemToSum.Item.LightResistance);
-                    this.WaterResistance += (short)(itemToSum.WaterResistance + itemToSum.Item.WaterResistance);
-                    this.FireResistance += (short)(itemToSum.FireResistance + itemToSum.Item.FireResistance);
-                    Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
-                    Session.SendPacket($"pdti 10 {this.ItemVNum} 1 27 {this.Upgrade} 0");
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
-                    Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
-                    ItemInstance itemInstnace = Session.Character.Inventory.GetItemInstanceById(this.Id);
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(itemInstnace.ItemVNum, 1, itemInstnace.Type, itemInstnace.Slot, 0, 0, this.Upgrade, 0));
+                    int rnd = _random.Next(100);
+                    if (rnd <= upsuccess[this.Upgrade + itemToSum.Upgrade])
+                    {
+                        this.Upgrade += (byte)(itemToSum.Upgrade + 1);
+                        this.DarkResistance += (short)(itemToSum.DarkResistance + itemToSum.Item.DarkResistance);
+                        this.LightResistance += (short)(itemToSum.LightResistance + itemToSum.Item.LightResistance);
+                        this.WaterResistance += (short)(itemToSum.WaterResistance + itemToSum.Item.WaterResistance);
+                        this.FireResistance += (short)(itemToSum.FireResistance + itemToSum.Item.FireResistance);
+                        Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
+                        Session.SendPacket($"pdti 10 {this.ItemVNum} 1 27 {this.Upgrade} 0");
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
+                        Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
+                        ItemInstance itemInstnace = Session.Character.Inventory.GetItemInstanceById(this.Id);
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(itemInstnace.ItemVNum, 1, itemInstnace.Type, itemInstnace.Slot, 0, 0, this.Upgrade, 0));
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
+                        Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1332));
+                        Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
+                        Session.Character.DeleteItemByItemInstanceId(this.Id);
+                    }
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
+                    Session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
+                    Session.Character.Gold -= goldprice[this.Upgrade];
+                    Session.SendPacket(Session.Character.GenerateGold());
+                    Session.SendPacket("shop_end 1");
                 }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
-                    Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1332));
-                    Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
-                    Session.Character.DeleteItemByItemInstanceId(this.Id);
-                }
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
-                Session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
-                Session.Character.Gold -= goldprice[this.Upgrade];
-                Session.SendPacket(Session.Character.GenerateGold());
-                Session.SendPacket("shop_end 1");
             }
         }
 
