@@ -47,8 +47,8 @@ namespace OpenNos.GameObject
             _server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
 
             // Register events of the server to be informed about clients
-            _server.ClientConnected += OnServerClientDisconnected;
-            _server.ClientDisconnected += OnServerClientConnected;
+            _server.ClientConnected += OnServerClientConnected;
+            _server.ClientDisconnected += OnServerClientDisconnected;
             _server.WireProtocolFactory = new WireProtocolFactory<EncryptorT>();
 
             // Start the server
@@ -139,12 +139,12 @@ namespace OpenNos.GameObject
 
         private void OnServerClientConnected(object sender, ServerClientEventArgs e)
         {
-            RemoveSession(e.Client as NetworkClient);
+            AddSession(e.Client as NetworkClient);
         }
 
         private void OnServerClientDisconnected(object sender, ServerClientEventArgs e)
         {
-            AddSession(e.Client as NetworkClient);
+            RemoveSession(e.Client as NetworkClient);
         }
 
         #endregion

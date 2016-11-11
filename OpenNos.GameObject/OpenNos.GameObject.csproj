@@ -90,7 +90,7 @@
     <Compile Include="Packets\ClientPackets\ExchangeRequestPacket.cs" />
     <Compile Include="Packets\ClientPackets\PJoinPacket.cs" />
     <Compile Include="Packets\ClientPackets\WalkPacket.cs" />
-    <Compile Include="Packets\ServerPackets\Buy.cs" />
+    <Compile Include="Packets\ServerPackets\BuyPacket.cs" />
     <Compile Include="Packets\ServerPackets\CharacterCreatePacket.cs" />
     <Compile Include="Packets\ServerPackets\CharacterDeletePacket.cs" />
     <Compile Include="Packets\ServerPackets\CharacterRenamePacket.cs" />
