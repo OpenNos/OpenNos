@@ -113,23 +113,28 @@ namespace OpenNos.GameObject
 
         private bool CheckGeneralLog(INetworkClient client)
         {
-            if (ConnectionLog.Any())
+            if (!client.IpAddress.Contains("127.0.0.1"))
             {
-                foreach (var item in ConnectionLog.Where(cl => cl.Key.Equals(client.IpAddress) && (DateTime.Now - cl.Value).Seconds > 3).ToList())
+                if (ConnectionLog.Any())
                 {
-                    ConnectionLog.Remove(item.Key);
+                    foreach (var item in ConnectionLog.Where(cl => cl.Key.Equals(client.IpAddress) && (DateTime.Now - cl.Value).Seconds > 3).ToList())
+                    {
+                        ConnectionLog.Remove(item.Key);
+                    }
+                }
+
+                if (ConnectionLog.ContainsKey(client.IpAddress))
+                {
+                    return false;
+                }
+                else
+                {
+                    ConnectionLog.Add(client.IpAddress, DateTime.Now);
+                    return true;
                 }
             }
 
-            if (ConnectionLog.ContainsKey(client.IpAddress))
-            {
-                return false;
-            }
-            else
-            {
-                ConnectionLog.Add(client.IpAddress, DateTime.Now);
-                return true;
-            }
+            return true;
         }
 
         private void OnServerClientConnected(object sender, ServerClientEventArgs e)

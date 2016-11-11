@@ -1,4 +1,5 @@
 ﻿using log4net;
+using NUnit.Framework;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -24,41 +25,53 @@ namespace OpenNos.Test
 
         #region Methods
 
-        private static void RegisterMappings()
+        public static FakeNetworkClient CreateFakeNetworkClient()
         {
-            // register mappings for items
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
+            FakeNetworkClient client = new FakeNetworkClient();
+            _sessionManager.AddSession(client);
 
-            // entities
-            DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
-            DAOFactory.CellonOptionDAO.RegisterMapping(typeof(CellonOptionDTO)).InitializeMapper();
-            DAOFactory.CharacterDAO.RegisterMapping(typeof(Character)).InitializeMapper();
-            DAOFactory.CharacterSkillDAO.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();
-            DAOFactory.ComboDAO.RegisterMapping(typeof(ComboDTO)).InitializeMapper();
-            DAOFactory.DropDAO.RegisterMapping(typeof(DropDTO)).InitializeMapper();
-            DAOFactory.GeneralLogDAO.RegisterMapping(typeof(GeneralLogDTO)).InitializeMapper();
-            DAOFactory.ItemDAO.RegisterMapping(typeof(ItemDTO)).InitializeMapper();
-            DAOFactory.MailDAO.RegisterMapping(typeof(MailDTO)).InitializeMapper();
-            DAOFactory.MapDAO.RegisterMapping(typeof(MapDTO)).InitializeMapper();
-            DAOFactory.MapMonsterDAO.RegisterMapping(typeof(MapMonster)).InitializeMapper();
-            DAOFactory.MapNpcDAO.RegisterMapping(typeof(MapNpc)).InitializeMapper();
-            DAOFactory.MapTypeDAO.RegisterMapping(typeof(MapTypeDTO)).InitializeMapper();
-            DAOFactory.MapTypeMapDAO.RegisterMapping(typeof(MapTypeMapDTO)).InitializeMapper();
-            DAOFactory.NpcMonsterDAO.RegisterMapping(typeof(NpcMonster)).InitializeMapper();
-            DAOFactory.NpcMonsterSkillDAO.RegisterMapping(typeof(NpcMonsterSkill)).InitializeMapper();
-            DAOFactory.PenaltyLogDAO.RegisterMapping(typeof(PenaltyLogDTO)).InitializeMapper();
-            DAOFactory.PortalDAO.RegisterMapping(typeof(PortalDTO)).InitializeMapper();
-            DAOFactory.QuicklistEntryDAO.RegisterMapping(typeof(QuicklistEntryDTO)).InitializeMapper();
-            DAOFactory.RecipeDAO.RegisterMapping(typeof(Recipe)).InitializeMapper();
-            DAOFactory.RecipeItemDAO.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();
-            DAOFactory.RespawnDAO.RegisterMapping(typeof(RespawnDTO)).InitializeMapper();
-            DAOFactory.ShopDAO.RegisterMapping(typeof(Shop)).InitializeMapper();
-            DAOFactory.ShopItemDAO.RegisterMapping(typeof(ShopItemDTO)).InitializeMapper();
-            DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
-            DAOFactory.SkillDAO.RegisterMapping(typeof(Skill)).InitializeMapper();
-            DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
+            long id = new Random().Next(0, 999999);
+            AccountDTO account = new AccountDTO()
+            {
+                AccountId = id,
+                Authority = AuthorityType.Admin,
+                LastSession = 12345,
+                Name = "test" + id,
+                Password = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff"
+            };
+            DAOFactory.AccountDAO.InsertOrUpdate(ref account);
+
+            // register for account login
+            ServiceFactory.Instance.CommunicationService.RegisterAccountLogin(account.Name, 12345);
+
+            // OpenNosEntryPoint -> LoadCharacterList
+            client.ReceivePacket("12345");
+            client.ReceivePacket(account.Name);
+            client.ReceivePacket("test");
+
+            string clistStart = WaitForPacket(client);
+
+            string clistEnd = WaitForPacket(client);
+
+            // creation of character
+            client.ReceivePacket($"Char_NEW {account.Name} 2 1 0 9");
+
+            List<string> clistAfterCreate = WaitForPackets(client, 3);
+            CListPacket cListPacket = PacketFactory.Deserialize<CListPacket>(clistAfterCreate[1]);
+
+            // select character
+            client.ReceivePacket($"select {cListPacket.Slot}");
+            string okPacket = WaitForPacket(client);
+
+            // start game
+            client.ReceivePacket("game_start");
+            List<string> gameStartPacketsFirstPart = WaitForPackets(client, "p_clear");
+            List<string> gameStartPacketsSecondPart = WaitForPackets(client, "p_clear");
+
+            //wait 100 milliseconds to be sure initialization has been finished
+            Task.Delay(100);
+
+            return client;
         }
 
         public static FakeNetworkClient InitializeTestEnvironment()
@@ -87,56 +100,8 @@ namespace OpenNos.Test
 
             // initialize new manager
             _sessionManager = new NetworkManager<TestEncryption>("127.0.0.1", 1234, typeof(CharacterScreenPacketHandler), typeof(TestEncryption), true);
-            
-            return CreateClientSession();
-        }
 
-        public static FakeNetworkClient CreateClientSession()
-        {
-            FakeNetworkClient client = new FakeNetworkClient();
-            _sessionManager.AddSession(client);
-
-            AccountDTO account = new AccountDTO()
-            {
-                AccountId = 1,
-                Authority = AuthorityType.Admin,
-                LastSession = 12345,
-                Name = "test",
-                Password = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff"
-            };
-            DAOFactory.AccountDAO.InsertOrUpdate(ref account);
-
-            // register for account login
-            ServiceFactory.Instance.CommunicationService.RegisterAccountLogin("test", 12345);
-
-            // OpenNosEntryPoint -> LoadCharacterList
-            client.ReceivePacket("12345");
-            client.ReceivePacket("test");
-            client.ReceivePacket("test");
-
-            string clistStart = WaitForPacket(client);
-
-            string clistEnd = WaitForPacket(client);
-
-            // creation of character
-            client.ReceivePacket("Char_NEW Test 2 1 0 9");
-
-            List<string> clistAfterCreate = WaitForPackets(client, 3);
-            CListPacket cListPacket = PacketFactory.Deserialize<CListPacket>(clistAfterCreate[1]);
-
-            // select character
-            client.ReceivePacket($"select {cListPacket.Slot}");
-            string okPacket = WaitForPacket(client);
-
-            // start game
-            client.ReceivePacket("game_start");
-            List<string> gameStartPacketsFirstPart = WaitForPackets(client, "p_clear");
-            List<string> gameStartPacketsSecondPart = WaitForPackets(client, "p_clear");
-
-            //wait 100 milliseconds to be sure initialization has been finished
-            Task.Delay(100);
-
-            return client;
+            return CreateFakeNetworkClient();
         }
 
         public static void ShutdownTestingEnvironment()
@@ -146,6 +111,8 @@ namespace OpenNos.Test
 
         public static string WaitForPacket(FakeNetworkClient client)
         {
+            DateTime startTime = DateTime.Now;
+
             while (true)
             {
                 if (client.SentPackets.Count > 0)
@@ -154,11 +121,20 @@ namespace OpenNos.Test
                     Debug.WriteLine($"Dequeued {packet}");
                     return packet;
                 }
+
+                // exit token
+                if (startTime.AddSeconds(10) < DateTime.Now)
+                {
+                    Assert.Fail($"Timed out while waiting for a Packet.");
+                    return String.Empty;
+                }
             }
         }
 
         public static string WaitForPacket(FakeNetworkClient client, string packetHeader)
         {
+            DateTime startTime = DateTime.Now;
+
             while (true)
             {
                 if (client.SentPackets.Count > 0)
@@ -170,11 +146,20 @@ namespace OpenNos.Test
                         return packet;
                     }
                 }
+
+                // exit token
+                if (startTime.AddSeconds(10) < DateTime.Now)
+                {
+                    Assert.Fail($"Timed out while waiting for {packetHeader}");
+                    return String.Empty;
+                }
             }
         }
 
         public static List<string> WaitForPackets(FakeNetworkClient client, int amount)
         {
+            DateTime startTime = DateTime.Now;
+
             int receivedPackets = 0;
             List<string> packets = new List<string>();
             while (receivedPackets < amount)
@@ -183,6 +168,13 @@ namespace OpenNos.Test
                 {
                     packets.Add(client.SentPackets.Dequeue());
                     receivedPackets++;
+                }
+
+                // exit token
+                if (startTime.AddSeconds(10) < DateTime.Now)
+                {
+                    Assert.Fail($"Timed out while waiting for {amount} Packets");
+                    return new List<string>();
                 }
             }
 
@@ -293,6 +285,43 @@ namespace OpenNos.Test
                 SkillVNum = 209,
                 CastId = 2,
             });
+        }
+
+        private static void RegisterMappings()
+        {
+            // register mappings for items
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
+            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
+            DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
+
+            // entities
+            DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
+            DAOFactory.CellonOptionDAO.RegisterMapping(typeof(CellonOptionDTO)).InitializeMapper();
+            DAOFactory.CharacterDAO.RegisterMapping(typeof(Character)).InitializeMapper();
+            DAOFactory.CharacterSkillDAO.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();
+            DAOFactory.ComboDAO.RegisterMapping(typeof(ComboDTO)).InitializeMapper();
+            DAOFactory.DropDAO.RegisterMapping(typeof(DropDTO)).InitializeMapper();
+            DAOFactory.GeneralLogDAO.RegisterMapping(typeof(GeneralLogDTO)).InitializeMapper();
+            DAOFactory.ItemDAO.RegisterMapping(typeof(ItemDTO)).InitializeMapper();
+            DAOFactory.MailDAO.RegisterMapping(typeof(MailDTO)).InitializeMapper();
+            DAOFactory.MapDAO.RegisterMapping(typeof(MapDTO)).InitializeMapper();
+            DAOFactory.MapMonsterDAO.RegisterMapping(typeof(MapMonster)).InitializeMapper();
+            DAOFactory.MapNpcDAO.RegisterMapping(typeof(MapNpc)).InitializeMapper();
+            DAOFactory.MapTypeDAO.RegisterMapping(typeof(MapTypeDTO)).InitializeMapper();
+            DAOFactory.MapTypeMapDAO.RegisterMapping(typeof(MapTypeMapDTO)).InitializeMapper();
+            DAOFactory.NpcMonsterDAO.RegisterMapping(typeof(NpcMonster)).InitializeMapper();
+            DAOFactory.NpcMonsterSkillDAO.RegisterMapping(typeof(NpcMonsterSkill)).InitializeMapper();
+            DAOFactory.PenaltyLogDAO.RegisterMapping(typeof(PenaltyLogDTO)).InitializeMapper();
+            DAOFactory.PortalDAO.RegisterMapping(typeof(PortalDTO)).InitializeMapper();
+            DAOFactory.QuicklistEntryDAO.RegisterMapping(typeof(QuicklistEntryDTO)).InitializeMapper();
+            DAOFactory.RecipeDAO.RegisterMapping(typeof(Recipe)).InitializeMapper();
+            DAOFactory.RecipeItemDAO.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();
+            DAOFactory.RespawnDAO.RegisterMapping(typeof(RespawnDTO)).InitializeMapper();
+            DAOFactory.ShopDAO.RegisterMapping(typeof(Shop)).InitializeMapper();
+            DAOFactory.ShopItemDAO.RegisterMapping(typeof(ShopItemDTO)).InitializeMapper();
+            DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
+            DAOFactory.SkillDAO.RegisterMapping(typeof(Skill)).InitializeMapper();
+            DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
         }
 
         #endregion

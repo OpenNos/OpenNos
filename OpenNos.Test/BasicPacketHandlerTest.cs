@@ -5,6 +5,7 @@ using OpenNos.GameObject;
 using OpenNos.GameObject.Mock;
 using OpenNos.GameObject.Packets.ServerPackets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.Test
 {
@@ -61,6 +62,43 @@ namespace OpenNos.Test
             Assert.Pass();
         }
 
-        #endregion
+
+        [Test, MaxTime(10000)]
+        public void GroupTest()
+        {
+            // login, create character, start game
+            FakeNetworkClient clientA = HandlerTestHelper.InitializeTestEnvironment();
+            FakeNetworkClient clientB = HandlerTestHelper.CreateFakeNetworkClient();
+
+            Task.Delay(1000);
+
+            // client A asks client B for group
+            PJoinPacket pjoinPacketRequest = new PJoinPacket()
+            {
+                CharacterId = clientB.Session.Character.CharacterId,
+                RequestType = GroupRequestType.Invited
+            };
+
+            clientA.ReceivePacket(pjoinPacketRequest);
+            HandlerTestHelper.WaitForPackets(clientA, 1);
+
+            // client B accepts group request
+            PJoinPacket pjoinPacketAccept = new PJoinPacket()
+            {
+                CharacterId = clientA.Session.Character.CharacterId,
+                RequestType = GroupRequestType.Accepted
+            };
+
+            clientB.ReceivePacket(pjoinPacketAccept);
+            HandlerTestHelper.WaitForPackets(clientA, 1);
+
+            // check if group has been created successfully
+            Assert.IsNotNull(clientA.Session.Character.Group);
+            Assert.IsNotNull(clientB.Session.Character.Group);
+            Assert.AreEqual(2, clientA.Session.Character.Group.CharacterCount);
+
+        }
+
+            #endregion
     }
 }
