@@ -121,7 +121,7 @@
     <value>Konto jest aktualnie zajete.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
-    <value>Konto zablokowane!</value>
+    <value>Konto zablokowane! Powód {0}, do {1} </value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Połaczenie zakończone przez użytkownika</value>
@@ -176,5 +176,11 @@
   </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1} </value>
+  </data>
+  <data name="CONNECTION_CLOSED" xml:space="preserve">
+    <value>Połączenie zakończone.</value>
+  </data>
+  <data name="MAINTENANCE" xml:space="preserve">
+    <value>Serwer jest aktualnie wyłączony na czas prac technicznych. Przewidywany czas trwania {0}</value>
   </data>
 </root>

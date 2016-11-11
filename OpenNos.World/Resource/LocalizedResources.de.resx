@@ -327,7 +327,7 @@
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Das Item ist fixiert.</value>
   </data>
-  <data name="ITEM_LOADED" xml:space="preserve">
+  <data name="ITEMS_LOADED" xml:space="preserve">
     <value>{0} Items geladen!</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
@@ -366,7 +366,7 @@
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magier</value>
   </data>
-  <data name="MAP_LOADED" xml:space="preserve">
+  <data name="MAPS_LOADED" xml:space="preserve">
     <value>{0} Karten geladen!</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
@@ -381,8 +381,8 @@
   <data name="MINI_INV_UNLOCKED" xml:space="preserve">
     <value>Miniland-Einladungen freigeschaltet.</value>
   </data>
-  <data name="MONSTERS_LOADED" xml:space="preserve">
-    <value>{0} Monster geladen!</value>
+  <data name="MAPMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} MapMonster geladen!</value>
   </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>Mausfalle aktiviert.</value>
@@ -441,7 +441,7 @@
   <data name="NPCMONSTERS_LOADED" xml:space="preserve">
     <value>{0} NPC-Monster geladen!</value>
   </data>
-  <data name="NPCS_LOADED" xml:space="preserve">
+  <data name="MAPNPCS_LOADED" xml:space="preserve">
     <value>{0} NPCs geladen!</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
@@ -660,9 +660,6 @@
   <data name="MUTED_MALE" xml:space="preserve">
     <value>Ich war ein böser Junge und wurde bestraft!</value>
   </data>
-  <data name="MUTED" xml:space="preserve">
-    <value>Du hast eine Strafe erhalten.</value>
-  </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>Deine Strafe ist vorüber!</value>
   </data>
@@ -722,9 +719,6 @@
   </data>
   <data name="FAIRYMAX" xml:space="preserve">
     <value>Deine Fee hat das maximale Level erreicht!</value>
-  </data>
-  <data name="FAIRYSTAT" xml:space="preserve">
-    <value>Feen XP: {0}/{1}</value>
   </data>
   <data name="SCROLL_PROTECT_USED" xml:space="preserve">
     <value>Schutzrolle wurde benutzt!</value>
@@ -921,15 +915,6 @@
   <data name="MAIL_DELETED" xml:space="preserve">
     <value>Die Nachricht wurde gelöscht!</value>
   </data>
-  <data name="MOB_DONT_FIND" xml:space="preserve">
-    <value>Das Monster konnte nicht gefunden werden.</value>
-  </data>
-  <data name="MOB_MUST_BE_ALIVE" xml:space="preserve">
-    <value>Wenn du ein Monster löschen möchtest, muss es auch am Leben sein!</value>
-  </data>
-  <data name="MOB_REMOVED" xml:space="preserve">
-    <value>Monster gelöscht(MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
-  </data>
   <data name="NEW_MAIL" xml:space="preserve">
     <value>Du hast eine neue Sendung erhalten!</value>
   </data>
@@ -975,9 +960,6 @@
   <data name="SP_REFILL" xml:space="preserve">
     <value>Spezialistenpunkte wurden aufgefüllt!</value>
   </data>
-  <data name="SP_RESURECTED" xml:space="preserve">
-    <value>Die Seele deiner Spezialistenkarte wurde wiederhergestellt!</value>
-  </data>
   <data name="TRY_FAILED" xml:space="preserve">
     <value>Fehlgeschlagen.</value>
   </data>
@@ -992,5 +974,17 @@
   </data>
   <data name="SUM_SUCCESS" xml:space="preserve">
     <value>Summieren erfolgreich!</value>
+  </data>
+  <data name="FAIRYSTATS" xml:space="preserve">
+    <value>Feen XP: {0}/{1}</value>
+  </data>
+  <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
+    <value>Wenn du aein Monster löschen möchtest, muss es auch am Leben sein!</value>
+  </data>
+  <data name="MONSTER_REMOVED" xml:space="preserve">
+    <value>Monster gelöscht(MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
+  </data>
+  <data name="SP_RESURRECTED" xml:space="preserve">
+    <value>Die Seele deiner Spezialistenkarte wurde wiederhergestellt!</value>
   </data>
 </root>

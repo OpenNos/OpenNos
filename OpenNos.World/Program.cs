@@ -62,7 +62,6 @@ namespace OpenNos.World
         public static void Main(string[] args)
         {
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
-            Console.OutputEncoding = Encoding.UTF8;
 
             // initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));

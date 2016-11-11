@@ -301,7 +301,7 @@
     <comment>[ONONLY]</comment>
   </data>
   <data name="CRAFTED_OBJECT" xml:space="preserve">
-    <value>คุณได้ผลิต -{0}</value>
+    <value>คุณได้ผลิต {0} x {1}</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Database initialized.</value>
@@ -508,7 +508,7 @@
     <comment>[UNKNOW]</comment>
   </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
-    <value>กำลังรอการยืนยัน</value>
+    <value>กำลังรอการยืนยัน {0}</value>
   </data>
   <data name="ITEM_ACQUIRED" xml:space="preserve">
     <value>คุณได้รับ </value>
@@ -527,7 +527,7 @@
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Item นี้ถูกจำกัดระดับ จะไม่สามารถนำมาอัพเกรดได้อีก</value>
   </data>
-  <data name="ITEM_LOADED" xml:space="preserve">
+  <data name="ITEMS_LOADED" xml:space="preserve">
     <value>{0} Items Loaded!</value>
     <comment>[ONONLY]</comment>
   </data>
@@ -597,7 +597,7 @@
   <data name="MAIL_DELETED" xml:space="preserve">
     <value>ลบทิ้ง</value>
   </data>
-  <data name="MAP_LOADED" xml:space="preserve">
+  <data name="MAPS_LOADED" xml:space="preserve">
     <value>{0} Maps Loaded!</value>
     <comment>[ONONLY]</comment>
   </data>
@@ -629,8 +629,8 @@
     <value>Mob removed(MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
     <comment>[ONONLY]</comment>
   </data>
-  <data name="MONSTERS_LOADED" xml:space="preserve">
-    <value>{0} Monsters Loaded!</value>
+  <data name="MAPMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} MapMonsters Loaded!</value>
     <comment>[ONONLY]</comment>
   </data>
   <data name="MONSTER_NOT_FOUND" xml:space="preserve">
@@ -779,7 +779,7 @@
     <value>{0} Npc-Monsters Loaded!</value>
     <comment>[ONONLY]</comment>
   </data>
-  <data name="NPCS_LOADED" xml:space="preserve">
+  <data name="MAPNPCS_LOADED" xml:space="preserve">
     <value>{0} Npcs Loaded!</value>
     <comment>[ONONLY]</comment>
   </data>

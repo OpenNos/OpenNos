@@ -138,7 +138,7 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
     </None>
-	<None Include="App.TH.config">
+    <None Include="App.TH.config">
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
     </None>

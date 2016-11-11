@@ -47,6 +47,10 @@
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -79,6 +83,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="packages.config" />
     <None Include="Properties\PublishProfiles\LocalPublish.pubxml" />
     <None Include="Properties\PublishProfiles\OpenNos_CommunicationService.pubxml" />
     <None Include="Web.Debug.config">

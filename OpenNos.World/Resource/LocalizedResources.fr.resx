@@ -327,7 +327,7 @@
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Niveau de mise à niveau d'objet est verrouillé.</value>
   </data>
-  <data name="ITEM_LOADED" xml:space="preserve">
+  <data name="ITEMS_LOADED" xml:space="preserve">
     <value>{0} Objets chargés !</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
@@ -366,7 +366,7 @@
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magicien</value>
   </data>
-  <data name="MAP_LOADED" xml:space="preserve">
+  <data name="MAPS_LOADED" xml:space="preserve">
     <value>{0} Carte chargées !</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
@@ -381,8 +381,8 @@
   <data name="MINI_INV_UNLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu débloques les invitations Mini-Pays.</value>
   </data>
-  <data name="MONSTERS_LOADED" xml:space="preserve">
-    <value>{0} Monstres chargés !</value>
+  <data name="MAPMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} MapMonstres chargés !</value>
   </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques le suivi de cible.</value>
@@ -441,7 +441,7 @@
   <data name="NPCMONSTERS_LOADED" xml:space="preserve">
     <value>{0} Pnj-Monstres chargés !</value>
   </data>
-  <data name="NPCS_LOADED" xml:space="preserve">
+  <data name="MAPNPCS_LOADED" xml:space="preserve">
     <value>{0} Pnj chargés !</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
@@ -647,9 +647,6 @@
   </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>Dignité réduite : --{0}</value>
-  </data>
-  <data name="MUTED" xml:space="preserve">
-    <value>Vous avez été sanctionné.</value>
   </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>La sanction est terminée.</value>
@@ -985,9 +982,6 @@ Veux-tu le porter ?</value>
   <data name="SP_RESURRECTED" xml:space="preserve">
     <value>L'âme reprend vie.</value>
   </data>
-  <data name="ITEM_IS_NOT_FIXED" xml:space="preserve">
-    <value>Tu ne peux pas l'utiliser. Ton objet ne remplis pas les conditions</value>
-  </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
   </data>
@@ -1003,23 +997,17 @@ Veux-tu le porter ?</value>
   <data name="BOT_MESSAGE_3" xml:space="preserve">
     <value>Astuce : Une arnaque ou un abus? Contactez le support !</value>
   </data>
-  <data name="BOT_MESSAGE_4" xml:space="preserve">
-    <value>Astuce : Qu'il soit grand ou petit, un seul cheat et c'est le pilori !</value>
-  </data>
-  <data name="BOT_MESSAGE_5" xml:space="preserve">
-    <value>Astuce : Un GM ne vous demandera JAMAIS vos identifiants !</value>
-  </data>
   <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
     <value>Le monstre doit être en vie. Sinon, essayez de cliquer dessus et ressayez !</value>
   </data>
   <data name="MONSTER_REMOVED" xml:space="preserve">
-    <value>Le monstre a été supprimé.</value>
+    <value>Le monstre a été supprimé.(MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
   </data>
   <data name="INTRODUCTION_SET" xml:space="preserve">
     <value>Ton message de présentation a été édité.</value>
   </data>
   <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
-    <value>Tu n'as pas les objets requis !</value>
+    <value>Tu n'as pas les objets requis ! {0}x{1}</value>
   </data>
   <data name="GM_BLOCK_DISABLE" xml:space="preserve">
     <value>À partir de maintenant, tu pourras reçevoir des messages privés.</value>
@@ -1035,5 +1023,8 @@ Veux-tu le porter ?</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE_HERE" xml:space="preserve">
     <value>L'objet ne peut pas être jeté ici.</value>
+  </data>
+  <data name="ITEM_UNFIXED" xml:space="preserve">
+    <value>Tu ne peux pas l'utiliser. Ton objet ne remplis pas les conditions</value>
   </data>
 </root>

@@ -332,8 +332,8 @@
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Poziom ulepszenia przedmiotu zablokowany.</value>
   </data>
-  <data name="ITEM_LOADED" xml:space="preserve">
-    <value>{0} Załadowanych przedmiotów!</value>
+  <data name="ITEMS_LOADED" xml:space="preserve">
+    <value>{0} Załadowanych Przedmiotów!</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
     <value>Ten przedmiot nie moze zostać upuszczony.</value>
@@ -371,8 +371,8 @@
   <data name="MAGICIAN" xml:space="preserve">
     <value>Mag</value>
   </data>
-  <data name="MAP_LOADED" xml:space="preserve">
-    <value>{0} Załadowanych map!</value>
+  <data name="MAPS_LOADED" xml:space="preserve">
+    <value>{0} Załadowanych Map!</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
     <value>Maksymalna ilosc złota osiągnięta!</value>
@@ -386,8 +386,8 @@
   <data name="MINI_INV_UNLOCKED" xml:space="preserve">
     <value>Zaproszenia do minilandu odblokowane.</value>
   </data>
-  <data name="MONSTERS_LOADED" xml:space="preserve">
-    <value>{0} Załadowanych potworów!</value>
+  <data name="MAPMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} Załadowanych MapMonster!</value>
   </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>Wskaźnik myszy z wspomaganym celowaniem właczony</value>
@@ -455,8 +455,8 @@
   <data name="NPCMONSTERS_LOADED" xml:space="preserve">
     <value>{0} Załadowanych npc-potworów!</value>
   </data>
-  <data name="NPCS_LOADED" xml:space="preserve">
-    <value>{0} Załadowanych npc!</value>
+  <data name="MAPNPCS_LOADED" xml:space="preserve">
+    <value>{0} Załadowanych MapNpc!</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Odebrano pakiet, packet: {0}</value>
@@ -670,7 +670,7 @@
     <value>Czy chcesz się wskrzesić? będzie to darmowy proces.</value>
   </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
-    <value>Straciłeś troche godności.</value>
+    <value>Straciłeś {0} godności.</value>
   </data>
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
     <value>Poziom bohatera zostal zmieniony!</value>
@@ -1023,5 +1023,29 @@
   </data>
   <data name="SP_REFILL" xml:space="preserve">
     <value>Punkty specjalisty zostały zapisane!</value>
+  </data>
+  <data name="TELEPORTERS_LOADED" xml:space="preserve">
+    <value>{0} Załadowanych Teleporterów!</value>
+  </data>
+  <data name="SHOPSKILLS_LOADED" xml:space="preserve">
+    <value>{0} Załadowanych ShopSkills!</value>
+  </data>
+  <data name="SHOPITEMS_LOADED" xml:space="preserve">
+    <value>{0} Załadowanych ShopItem!</value>
+  </data>
+  <data name="MONSTERSKILLS_LOADED" xml:space="preserve">
+    <value>{0} Załadowanych MonsterSkill</value>
+  </data>
+  <data name="DROPS_LOADED" xml:space="preserve">
+    <value>{0} Załadowanych Dropów!</value>
+  </data>
+  <data name="GM_CHAT_BLOCKED" xml:space="preserve">
+    <value>Ten administrator jest aktualnie zajęty. Spróbuj następnym razem!</value>
+  </data>
+  <data name="GM_BLOCK_ENABLE" xml:space="preserve">
+    <value>Zablokowano prywatne wiadomości!</value>
+  </data>
+  <data name="GM_BLOCK_DISABLE" xml:space="preserve">
+    <value>Odblokowano prywatne wiadomości!</value>
   </data>
 </root>

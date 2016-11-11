@@ -324,7 +324,7 @@
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>L'upgrade dell'item è stato bloccato.</value>
   </data>
-  <data name="ITEM_LOADED" xml:space="preserve">
+  <data name="ITEMS_LOADED" xml:space="preserve">
     <value>{0} Items caricati !</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
@@ -360,7 +360,7 @@
   <data name="MAGICIAN" xml:space="preserve">
     <value>Mago</value>
   </data>
-  <data name="MAP_LOADED" xml:space="preserve">
+  <data name="MAPS_LOADED" xml:space="preserve">
     <value>{0} Mappe caricate !</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
@@ -432,7 +432,7 @@
   <data name="NPCMONSTERS_LOADED" xml:space="preserve">
     <value>{0} Npc-Mostri Caricati!</value>
   </data>
-  <data name="NPCS_LOADED" xml:space="preserve">
+  <data name="MAPNPCS_LOADED" xml:space="preserve">
     <value>{0} Npc Caricati!</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
@@ -762,8 +762,8 @@
   <data name="DONE" xml:space="preserve">
     <value>Il comando è stato applicato!.</value>
   </data>
-  <data name="MONSTERS_LOADED" xml:space="preserve">
-    <value>{0} Mostri caricati!</value>
+  <data name="MAPMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} MappeMostri caricati!</value>
   </data>
   <data name="NOT_ENOUGH_CP" xml:space="preserve">
     <value>Non hai abbastanza punti CP.</value>

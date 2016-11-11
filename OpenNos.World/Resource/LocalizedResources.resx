@@ -366,9 +366,6 @@
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magician</value>
   </data>
-  <data name="MAPS_LOADED" xml:space="preserve">
-    <value>{0} Maps loaded!</value>
-  </data>
   <data name="MAX_GOLD" xml:space="preserve">
     <value>Maximum amount of gold reached!</value>
   </data>
@@ -380,9 +377,6 @@
   </data>
   <data name="MINI_INV_UNLOCKED" xml:space="preserve">
     <value>Miniland invite allowed</value>
-  </data>
-  <data name="MAPMONSTERS_LOADED" xml:space="preserve">
-    <value>{0} MapMonsters loaded!</value>
   </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>Mouse locked on enemy</value>
@@ -1024,12 +1018,6 @@
   <data name="DROPS_LOADED" xml:space="preserve">
     <value>{0} Drops loaded!</value>
   </data>
-  <data name="ITEMS_LOADED" xml:space="preserve">
-    <value>{0} Items loaded!</value>
-  </data>
-  <data name="MAPNPCS_LOADED" xml:space="preserve">
-    <value>{0} MapNpcs loaded!</value>
-  </data>
   <data name="MONSTERSKILLS_LOADED" xml:space="preserve">
     <value>{0} MonsterSkills loaded!</value>
   </data>
@@ -1041,5 +1029,17 @@
   </data>
   <data name="TELEPORTERS_LOADED" xml:space="preserve">
     <value>{0} Teleporters loaded!</value>
+  </data>
+  <data name="MAPS_LOADED" xml:space="preserve">
+    <value>{0} Maps loaded!</value>
+  </data>
+  <data name="ITEMS_LOADED" xml:space="preserve">
+    <value>{0} Items loaded!</value>
+  </data>
+  <data name="MAPMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} MapMonsters loaded!</value>
+  </data>
+  <data name="MAPNPCS_LOADED" xml:space="preserve">
+    <value>{0} MapNpcs loaded!</value>
   </data>
 </root>

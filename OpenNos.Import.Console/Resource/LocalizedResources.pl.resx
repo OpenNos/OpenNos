@@ -231,4 +231,7 @@
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
     <value>{0} teleporterów wprowadzonych</value>
   </data>
+  <data name="PARSE_MAPTYPEMAPS" xml:space="preserve">
+    <value>Czy chcesz wprowadzić MapTypeMaps?</value>
+  </data>
 </root>
