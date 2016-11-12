@@ -1186,49 +1186,48 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             string message = String.Empty;
-            for (int i = 2; i < packetsplit.Length; i++)
+
+            ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(packetsplit[(packetsplit[1] == "/GM" ? 2 : 1)].Substring((packetsplit[1] == "/GM" ? 0 : 1)));
+            if (targetSession == null)
+            {
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
+                return;
+            }
+
+            if (packetsplit[1] == "/GM" && targetSession.Account.Authority != AuthorityType.Admin)
+            {
+                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("USER_IS_NOT_AN_ADMIN"), targetSession.Character.Name), 10));
+                return;
+            }
+
+            for (int i = (packetsplit[1] == "/GM" ? 3 : 2); i < packetsplit.Length; i++)
             {
                 message += packetsplit[i] + " ";
             }
             if (message.Length > 60)
+            {
                 message = message.Substring(0, 60);
+            }
 
             message.Trim();
 
             Session.SendPacket(Session.Character.GenerateSpk(message, 5));
 
-            bool? GmPvtBlock = ServerManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), nameof(Character.GmPvtBlock));
-            if (GmPvtBlock.HasValue)
+            if (targetSession.Character.GmPvtBlock)
             {
-                if (GmPvtBlock.Value)
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_CHAT_BLOCKED"), 10));
-                    return;
-                }
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_CHAT_BLOCKED"), 10));
+                return;
             }
 
-            bool? whisperBlocked = ServerManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), nameof(Character.WhisperBlocked));
-            if (whisperBlocked.HasValue)
+            if (!targetSession.Character.WhisperBlocked)
             {
-                if (!whisperBlocked.Value || Session.Account.Authority == AuthorityType.Admin)
-                {
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, (Session.Account.Authority == AuthorityType.Admin ? 15 : 5)), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_WHISPER_BLOCKED"), 0));
-                }
+                ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, (Session.Account.Authority == AuthorityType.Admin ? 15 : 5)), ReceiverType.OnlySomeone, packetsplit[(packetsplit[1] == "/GM" ? 2 : 1)].Substring((packetsplit[1] == "/GM" ? 0 : 1)));
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_WHISPER_BLOCKED"), 0));
             }
         }
-
         #endregion
     }
 }
