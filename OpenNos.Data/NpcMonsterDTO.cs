@@ -84,6 +84,8 @@ namespace OpenNos.Data
 
         public bool NoAggresiveIcon { get; set; }
 
+        public byte NoticeRange { get; set; }
+
         public short NpcMonsterVNum { get; set; }
 
         public byte Race { get; set; }
