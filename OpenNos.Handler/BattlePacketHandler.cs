@@ -565,15 +565,6 @@ namespace OpenNos.Handler
 
             #region Basic Damage Data Calculation
 
-            if (specialistInstance != null)
-            {
-                mainMinDmg += specialistInstance.DamageMinimum;
-                mainMaxDmg += specialistInstance.DamageMaximum;
-                mainCritHit += specialistInstance.CriticalRate;
-                mainCritChance += specialistInstance.CriticalLuckRate;
-                mainHitRate += specialistInstance.HitRate;
-            }
-
 #warning TODO: Implement BCard damage boosts, see Issue
 
             mainUpgrade -= monsterToAttack.Monster.DefenceUpgrade;
