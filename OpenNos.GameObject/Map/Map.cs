@@ -600,7 +600,7 @@ namespace OpenNos.GameObject
 
         private void RemoveDeadMonsters()
         {
-            foreach (MapMonster monster in _monsters.GetAllItems().Where(s => !s.Alive && !s.Respawn))
+            foreach (MapMonster monster in _monsters.GetAllItems().Where(s => !s.Alive && !s.Respawn.Value))
             {
                 RemoveMonster(monster);
             }
