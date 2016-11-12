@@ -1191,7 +1191,9 @@ namespace OpenNos.Handler
                 message += packetsplit[i] + " ";
             }
             if (message.Length > 60)
+            {
                 message = message.Substring(0, 60);
+            }
 
             message.Trim();
 
