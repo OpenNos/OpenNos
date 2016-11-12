@@ -1254,22 +1254,6 @@ namespace OpenNos.Handler
             ServerManager.Instance.Shout(message);
         }
 
-        [Packet("$Grid")]
-        public void ShowGrid(string packet)
-        {
-            string grid = String.Empty;
-            for (int y = 0; y < Session.CurrentMap.YLength; y++)
-            {
-                for (int x = 0; x < Session.CurrentMap.XLength; x++)
-                {
-                    if (Session.CurrentMap.IsBlockedZone(x, y))
-                    {
-                        Session.SendPacket($"in 2 1 {int.MaxValue - (x * y)} {x} {y} 1 100 100 -1 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0");
-                    }
-                }
-            }
-        }
-
         [Packet("$Shutdown")]
         public void Shutdown(string packet)
         {
