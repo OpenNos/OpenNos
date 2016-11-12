@@ -372,7 +372,6 @@ namespace OpenNos.GameObject
             {
                 return _speed;
             }
-
             set
             {
                 if (value > 59)
@@ -387,6 +386,8 @@ namespace OpenNos.GameObject
         }
 
         public bool UseSp { get; set; }
+
+        public byte VehicleSpeed { get; internal set; }
 
         public int WaterResistance { get; set; }
 
@@ -490,13 +491,27 @@ namespace OpenNos.GameObject
             Session.CurrentMap?.Broadcast(GenerateEff(196), MapX, MapY);
         }
 
-        /// <summary>
-        /// Make the character moveable also from Teleport, ..
-        /// </summary>
-        public void Dispose()
+        public void CloseExchangeOrTrade()
         {
-            CloseShop();
-            CloseExchangeOrTrade();
+            if (InExchangeOrTrade)
+            {
+                long? targetSessionId = Session.Character?.ExchangeInfo?.TargetCharacterId;
+
+                if (targetSessionId.HasValue)
+                {
+                    ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(targetSessionId.Value);
+
+                    if (targetSession == null)
+                    {
+                        return;
+                    }
+
+                    Session.SendPacket("exc_close 0");
+                    targetSession.SendPacket("exc_close 0");
+                    Session.Character.ExchangeInfo = null;
+                    targetSession.Character.ExchangeInfo = null;
+                }
+            }
         }
 
         public void CloseShop(bool closedByCharacter = false)
@@ -509,7 +524,7 @@ namespace OpenNos.GameObject
                     Session.CurrentMap.UserShops.Remove(shop.Key);
 
                     // if the character closed his shop temporarely, we dont need to end it
-                    if(!closedByCharacter)
+                    if (!closedByCharacter)
                     {
                         Session.SendPacket("shop_end 0");
                         Session.Character.IsShopping = false;
@@ -526,35 +541,12 @@ namespace OpenNos.GameObject
                     HasShopOpened = false;
                 }
             }
-            else if(IsShopping && closedByCharacter) // close temporarley open shop
+            else if (IsShopping && closedByCharacter) // close temporarley open shop
             {
                 Session.SendPacket("shop_end 0");
                 Session.Character.IsShopping = false;
                 LoadSpeed();
                 Session.SendPacket(GenerateCond());
-            }
-        }
-
-        public void CloseExchangeOrTrade()
-        {
-            if (InExchangeOrTrade)
-            {
-                long? targetSessionId = Session.Character?.ExchangeInfo?.TargetCharacterId;
-
-                if(targetSessionId.HasValue)
-                {
-                    ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(targetSessionId.Value);
-
-                    if (targetSession == null)
-                    {
-                        return;
-                    }
-
-                    Session.SendPacket("exc_close 0");
-                    targetSession.SendPacket("exc_close 0");
-                    Session.Character.ExchangeInfo = null;
-                    targetSession.Character.ExchangeInfo = null;
-                }
             }
         }
 
@@ -609,6 +601,15 @@ namespace OpenNos.GameObject
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Make the character moveable also from Teleport, ..
+        /// </summary>
+        public void Dispose()
+        {
+            CloseShop();
+            CloseExchangeOrTrade();
         }
 
         public string GenerateAt()
@@ -2052,6 +2053,12 @@ namespace OpenNos.GameObject
             {
                 Speed = 0;
                 IsCustomSpeed = false;
+                return;
+            }
+
+            if(IsVehicled) // reload vehicle speed after opening an shop for instance
+            {
+                Speed = VehicleSpeed;
             }
         }
 

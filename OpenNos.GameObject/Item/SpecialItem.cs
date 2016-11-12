@@ -113,7 +113,7 @@ namespace OpenNos.GameObject
 
                 // vehicles
                 case 1000:
-                    SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+
                     if (!DelayUsed && !Session.Character.IsVehicled)
                     {
                         if (Session.Character.IsSitting)
@@ -128,6 +128,7 @@ namespace OpenNos.GameObject
                         if (!Session.Character.IsVehicled)
                         {
                             Session.Character.IsVehicled = true;
+                            Session.Character.VehicleSpeed = Speed;
                             Session.Character.MorphUpgrade = 0;
                             Session.Character.MorphUpgrade2 = 0;
                             Session.Character.Morph = Morph + Session.Character.Gender;
