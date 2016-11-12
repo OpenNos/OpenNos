@@ -523,25 +523,26 @@ namespace OpenNos.GameObject
                 {
                     Session.CurrentMap.UserShops.Remove(shop.Key);
 
-                    // if the character closed his shop temporarely, we dont need to end it
+                    // if the character closed his shop temporarly, we dont need to end it
                     if (!closedByCharacter)
                     {
                         Session.SendPacket("shop_end 0");
                         Session.Character.IsShopping = false;
                     }
 
-                    Session.CurrentMap?.Broadcast(GenerateShopEnd());
-                    Session.CurrentMap?.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                    LoadSpeed();
-                    IsSitting = false;
-                    Session.SendPacket(GenerateCond());
-                    Session.CurrentMap?.Broadcast(GenerateRest());
-
                     // declare that the shop cannot be closed
                     HasShopOpened = false;
+
+                    Session.CurrentMap?.Broadcast(GenerateShopEnd());
+                    Session.CurrentMap?.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    IsSitting = false;
+
+                    LoadSpeed();
+                    Session.SendPacket(GenerateCond());
+                    Session.CurrentMap?.Broadcast(GenerateRest());
                 }
             }
-            else if (IsShopping && closedByCharacter) // close temporarley open shop
+            else if (IsShopping && closedByCharacter) // close temporarly open shop
             {
                 Session.SendPacket("shop_end 0");
                 Session.Character.IsShopping = false;
@@ -2056,7 +2057,7 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            if(IsVehicled) // reload vehicle speed after opening an shop for instance
+            if (IsVehicled) // reload vehicle speed after opening an shop for instance
             {
                 Speed = VehicleSpeed;
             }
