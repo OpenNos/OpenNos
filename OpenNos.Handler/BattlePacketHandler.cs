@@ -465,6 +465,7 @@ namespace OpenNos.Handler
 
             //int miss_chance = 20;
             int monsterDefence = 0;
+            int monsterDodge = 0;
 
             short mainUpgrade = 0;
             int mainCritChance = 4;
@@ -529,6 +530,7 @@ namespace OpenNos.Handler
             {
                 case 0:
                     monsterDefence = monsterToAttack.Monster.CloseDefence;
+                    monsterDodge = monsterToAttack.Monster.DefenceDodge;
                     if (Session.Character.Class == 2)
                     {
                         mainCritHit = secCritHit;
@@ -542,6 +544,7 @@ namespace OpenNos.Handler
 
                 case 1:
                     monsterDefence = monsterToAttack.Monster.DistanceDefence;
+                    monsterDodge = monsterToAttack.Monster.DefenceDodge;
                     if (Session.Character.Class == 1 || Session.Character.Class == 0)
                     {
                         mainCritHit = secCritHit;
@@ -562,15 +565,6 @@ namespace OpenNos.Handler
 
             #region Basic Damage Data Calculation
 
-            if (specialistInstance != null)
-            {
-                mainMinDmg += specialistInstance.DamageMinimum;
-                mainMaxDmg += specialistInstance.DamageMaximum;
-                mainCritHit += specialistInstance.CriticalRate;
-                mainCritChance += specialistInstance.CriticalLuckRate;
-                mainHitRate += specialistInstance.HitRate;
-            }
-
 #warning TODO: Implement BCard damage boosts, see Issue
 
             mainUpgrade -= monsterToAttack.Monster.DefenceUpgrade;
@@ -586,6 +580,27 @@ namespace OpenNos.Handler
             #endregion
 
             #region Detailed Calculation
+
+            #region Dodge / Miss
+            double multiplier = monsterDodge / mainHitRate;
+            if (multiplier > 5)
+            {
+                multiplier = 5;
+            }
+            double chance = -0.25 * Math.Pow(multiplier, 3) - 0.57 * Math.Pow(multiplier, 2) + 25.3 * multiplier - 1.41;
+            if (chance <= 1)
+            {
+                chance = 1;
+            }
+            if (Session.Character.Class != 3 && !Session.Character.HasGodMode)
+            {
+                if (random.Next(0,100) <= chance)
+                {
+                    hitmode = 1;
+                    return 0;
+                }
+            }
+            #endregion
 
             #region Base Damage
 

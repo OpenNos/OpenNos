@@ -107,6 +107,8 @@ namespace OpenNos.DAL.EF
 
         public bool NoAggresiveIcon { get; set; }
 
+        public byte NoticeRange { get; set; }
+
         public virtual ICollection<NpcMonsterSkill> NpcMonsterSkill { get; set; }
 
         [Key]

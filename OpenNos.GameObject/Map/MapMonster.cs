@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
 
         public List<GridPos> Path { get; set; }
 
-        public bool Respawn { get; set; }
+        public bool? Respawn { get; set; }
 
         public List<NpcMonsterSkill> Skills { get; set; }
 
@@ -113,7 +113,7 @@ namespace OpenNos.GameObject
             Target = -1;
             Path = new List<GridPos>();
             Alive = true;
-            Respawn = true;
+            Respawn = (Respawn.HasValue? Respawn.Value : true);
             Monster = ServerManager.GetNpc(MonsterVNum);
             CurrentHp = Monster.MaxHP;
             CurrentMp = Monster.MaxMP;
@@ -140,7 +140,7 @@ namespace OpenNos.GameObject
         internal void MonsterLife()
         {
             // Respawn
-            if (!Alive && Respawn)
+            if (!Alive && Respawn.Value)
             {
                 double timeDeath = (DateTime.Now - Death).TotalSeconds;
                 if (timeDeath >= Monster.RespawnTime / 10)
@@ -215,7 +215,7 @@ namespace OpenNos.GameObject
                 }
                 if (Monster.IsHostile)
                 {
-                    Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapId == MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY }) < 10)?.Character;
+                    Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapId == MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY }) < Monster.NoticeRange)?.Character;
                     if (character != null)
                     {
                         Target = character.CharacterId;

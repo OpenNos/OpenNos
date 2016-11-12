@@ -121,7 +121,8 @@ namespace OpenNos.Handler
                         //load shop
                         MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)buyPacket.OwnerId));
 
-                        if (npc == null || npc.Shop == null)
+
+                        if (npc == null || npc.Shop == null || Map.GetDistance(new MapCell() { MapId = Session.CurrentMap.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { MapId = npc.MapId, X = npc.MapX, Y = npc.MapY }) > 5);
                         {
                             return;
                         }
