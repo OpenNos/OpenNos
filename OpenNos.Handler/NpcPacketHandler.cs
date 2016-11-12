@@ -916,24 +916,29 @@ namespace OpenNos.Handler
         private void LoadShopItem(long owner, KeyValuePair<long, MapShop> shop)
         {
             string packetToSend = $"n_inv 1 {owner} 0 0";
-            foreach(PersonalShopItem item in shop.Value.Items)
-            { 
-                if (item != null)
-                {
-                    if (item.ItemInstance.Item.Type == InventoryType.Equipment)
+
+            if(shop.Value != null && shop.Value.Items != null)
+            {
+                foreach(PersonalShopItem item in shop.Value.Items)
+                { 
+                    if (item != null)
                     {
-                        packetToSend += $" 0.{item.ShopSlot}.{item.ItemInstance.ItemVNum}.{item.ItemInstance.Rare}.{item.ItemInstance.Upgrade}.{item.Price}";
+                        if (item.ItemInstance.Item.Type == InventoryType.Equipment)
+                        {
+                            packetToSend += $" 0.{item.ShopSlot}.{item.ItemInstance.ItemVNum}.{item.ItemInstance.Rare}.{item.ItemInstance.Upgrade}.{item.Price}";
+                        }
+                        else
+                        {
+                            packetToSend += $" {(byte)item.ItemInstance.Item.Type}.{item.ShopSlot}.{item.ItemInstance.ItemVNum}.{item.SellAmount}.{item.Price}.-1";
+                        }
                     }
                     else
                     {
-                        packetToSend += $" {(byte)item.ItemInstance.Item.Type}.{item.ShopSlot}.{item.ItemInstance.ItemVNum}.{item.SellAmount}.{item.Price}.-1";
+                        packetToSend += " -1";
                     }
                 }
-                else
-                {
-                    packetToSend += " -1";
-                }
             }
+
             packetToSend += " -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1";
 
             Session.SendPacket(packetToSend);
