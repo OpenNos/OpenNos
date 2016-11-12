@@ -312,7 +312,7 @@ namespace OpenNos.Handler
                             {
                                 if (Session.Character.HasShopOpened || targetSession.Character.HasShopOpened)
                                 {
-                                    Session.CurrentMap?.Broadcast(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
+                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
                                 }
                                 else
                                 {
