@@ -394,13 +394,7 @@ namespace OpenNos.Handler
             // end shop 
             if (!clientSession.CurrentMap.UserShops[shop.Key].Items.Any(s => s.SellAmount > 0))
             {
-                clientSession.SendPacket("shop_end 0");
-                shopOwnerSession.CurrentMap?.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
-                shopOwnerSession.CurrentMap?.Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                shopOwnerSession.Character.LoadSpeed();
-                shopOwnerSession.Character.IsSitting = false;
-                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateCond());
-                shopOwnerSession.CurrentMap?.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
+                shopOwnerSession.Character.CloseShop();
             }
 
             return true;
@@ -420,7 +414,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 2)
             {
                 short.TryParse(packetsplit[2], out typePacket);
-                if (Session.Character.InExchangeOrTrade && typePacket != 1)
+                if (Session.Character.HasShopOpened && typePacket != 1)
                 {
                     return;
                 }
@@ -541,17 +535,7 @@ namespace OpenNos.Handler
                 }
                 else if (typePacket == 1)
                 {
-                    KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
-                    Session.CurrentMap.UserShops.Remove(shop.Key);
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateShopEnd());
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-
-                    Session.Character.IsShopping = false;
-                    Session.Character.IsSitting = false;
-
-                    Session.Character.LoadSpeed();
-                    Session.SendPacket(Session.Character.GenerateCond());
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
+                    Session.Character.CloseShop(true);
                 }
             }
         }

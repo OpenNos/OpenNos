@@ -1457,6 +1457,11 @@ namespace OpenNos.Handler
             short[] arg = new short[3];
             bool verify = false;
 
+            if(Session.Character.HasShopOpened || Session.Character.InExchangeOrTrade)
+            {
+                Session.Character.Dispose();
+            }
+
             if (packetsplit.Length > 4)
             {
                 verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
@@ -1513,6 +1518,9 @@ namespace OpenNos.Handler
                 {
                     foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.CharacterId != Session.Character.CharacterId))
                     {
+                        // clear any shop or trade on target character
+                        session.Character.Dispose();
+
                         ServerManager.Instance.MapOut(session.Character.CharacterId);
 
                         List<MapCell> possibilities = new List<MapCell>();
@@ -1540,13 +1548,17 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    long? id = ServerManager.Instance.GetProperty<long?>(name, nameof(Character.CharacterId));
+                    ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(name);
 
-                    if (id != null)
+                    if (targetSession != null)
                     {
-                        ServerManager.Instance.MapOut((long)id);
-                        ServerManager.Instance.SetProperty((long)id, nameof(Character.IsSitting), false);
-                        ServerManager.Instance.ChangeMap((long)id, Session.Character.MapId, (short)((Session.Character.MapX) + (short)1), (short)((Session.Character.MapY) + (short)1));
+                        // clear any shop or trade on target character
+                        targetSession.Character.Dispose();
+
+                        ServerManager.Instance.MapOut(targetSession.Character.CharacterId);
+                        targetSession.Character.IsSitting = false;
+                        ServerManager.Instance.ChangeMap(targetSession.Character.CharacterId, Session.Character.MapId
+                            , (short)((Session.Character.MapX) + (short)1), (short)((Session.Character.MapY) + (short)1));
                     }
                     else
                     {

@@ -394,6 +394,11 @@ namespace OpenNos.GameObject
             return new List<Recipe>();
         }
 
+        public ClientSession GetSessionByCharacterName(string name)
+        {
+            return Sessions.SingleOrDefault(s => s.Character.Name == name);
+        }
+
         public T GetUserMethod<T>(long characterId, string methodName)
         {
             ClientSession session = GetSessionByCharacterId(characterId);

@@ -490,7 +490,16 @@ namespace OpenNos.GameObject
             Session.CurrentMap?.Broadcast(GenerateEff(196), MapX, MapY);
         }
 
+        /// <summary>
+        /// Make the character moveable also from Teleport, ..
+        /// </summary>
         public void Dispose()
+        {
+            CloseShop();
+            CloseExchangeOrTrade();
+        }
+
+        public void CloseShop(bool closedByCharacter = false)
         {
             if (HasShopOpened)
             {
@@ -498,38 +507,54 @@ namespace OpenNos.GameObject
                 if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
                 {
                     Session.CurrentMap.UserShops.Remove(shop.Key);
+
+                    // if the character closed his shop temporarely, we dont need to end it
+                    if(!closedByCharacter)
+                    {
+                        Session.SendPacket("shop_end 0");
+                        Session.Character.IsShopping = false;
+                    }
+
                     Session.CurrentMap?.Broadcast(GenerateShopEnd());
                     Session.CurrentMap?.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                    IsSitting = false;
                     LoadSpeed();
+                    IsSitting = false;
                     Session.SendPacket(GenerateCond());
                     Session.CurrentMap?.Broadcast(GenerateRest());
-                    Session.SendPacket("shop_end 0");
-                }
-                HasShopOpened = false;
-            }
 
-            if(InExchangeOrTrade)
+                    // declare that the shop cannot be closed
+                    HasShopOpened = false;
+                }
+            }
+            else if(IsShopping && closedByCharacter) // close temporarley open shop
             {
-                ExchangeInfo = null;
+                Session.SendPacket("shop_end 0");
+                Session.Character.IsShopping = false;
+                LoadSpeed();
+                Session.SendPacket(GenerateCond());
             }
         }
 
-        public void CloseTrade()
+        public void CloseExchangeOrTrade()
         {
             if (InExchangeOrTrade)
             {
-                ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
+                long? targetSessionId = Session.Character?.ExchangeInfo?.TargetCharacterId;
 
-                if (targetSession == null)
+                if(targetSessionId.HasValue)
                 {
-                    return;
-                }
+                    ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(targetSessionId.Value);
 
-                Session.SendPacket("exc_close 0");
-                targetSession.SendPacket("exc_close 0");
-                Session.Character.ExchangeInfo = null;
-                targetSession.Character.ExchangeInfo = null;
+                    if (targetSession == null)
+                    {
+                        return;
+                    }
+
+                    Session.SendPacket("exc_close 0");
+                    targetSession.SendPacket("exc_close 0");
+                    Session.Character.ExchangeInfo = null;
+                    targetSession.Character.ExchangeInfo = null;
+                }
             }
         }
 
