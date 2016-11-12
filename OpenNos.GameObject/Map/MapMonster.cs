@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
 
         public List<GridPos> Path { get; set; }
 
-        public bool Respawn { get; set; }
+        public bool? Respawn { get; set; }
 
         public List<NpcMonsterSkill> Skills { get; set; }
 
@@ -113,7 +113,7 @@ namespace OpenNos.GameObject
             Target = -1;
             Path = new List<GridPos>();
             Alive = true;
-            Respawn = true;
+            Respawn = (Respawn.HasValue? Respawn.Value : true);
             Monster = ServerManager.GetNpc(MonsterVNum);
             CurrentHp = Monster.MaxHP;
             CurrentMp = Monster.MaxMP;
@@ -140,7 +140,7 @@ namespace OpenNos.GameObject
         internal void MonsterLife()
         {
             // Respawn
-            if (!Alive && Respawn)
+            if (!Alive && Respawn.Value)
             {
                 double timeDeath = (DateTime.Now - Death).TotalSeconds;
                 if (timeDeath >= Monster.RespawnTime / 10)
