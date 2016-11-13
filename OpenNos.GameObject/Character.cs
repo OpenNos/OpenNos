@@ -1582,7 +1582,7 @@ namespace OpenNos.GameObject
 
             if (Level < 99)
             {
-                LevelXp += monsterinfo.XP * ServerManager.XPRate / partySize;
+                LevelXp += GetXP(monsterinfo, grp);
             }
             if ((Class == 0 && JobLevel < 20) || (Class != 0 && JobLevel < 80))
             {
@@ -1592,7 +1592,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    JobLevelXp += monsterinfo.JobXP * ServerManager.XPRate / partySize;
+                    JobLevelXp += GetJXP(monsterinfo, grp);
                 }
             }
             if (specialist != null && UseSp && specialist.SpLevel < 99)
@@ -1694,6 +1694,86 @@ namespace OpenNos.GameObject
                 }
             }
             Session.SendPacket(GenerateLev());
+        }
+
+        public int GetJXP(NpcMonster monster, Group group)
+        {
+            int partySize = 1;
+            double partyPenalty = 1d;
+            int jxp = 0;
+            int levelDifference = Level - monster.Level;
+            int levelSum = 0;
+            if (group != null)
+            {
+                foreach (ClientSession client in group.Characters)
+                {
+                    levelSum += client.Character.Level;
+                }
+                partySize = group.CharacterCount;
+                partyPenalty = (12 / partySize) / levelSum;
+            }
+
+            // jxp calculation * jxp / penalty * rate
+            if (monster.Level == 1)
+            {
+                int multiplication = 3 * (Level - 1) != 0 ? 3 * (Level - 1) : 1;
+                jxp = (int)Math.Round(((monster.JobXP * multiplication) * CharacterHelper.ExperiencePenalty(levelDifference)) * ServerManager.XPRate);
+            }
+            else
+            {
+                jxp = (int)Math.Round(((monster.JobXP * 2 * Level) * CharacterHelper.ExperiencePenalty(levelDifference)) * ServerManager.XPRate);
+            }
+
+            // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
+            if (partySize > 1 && group != null)
+            {
+                jxp = (int)Math.Floor(jxp / (Level * partyPenalty));
+            }
+
+            return jxp;
+        }
+
+        public long GetXP(NpcMonster monster, Group group)
+        {
+            int partySize = 1;
+            double partyPenalty = 1d;
+            long xp = 0;
+            int levelSum = 0;
+            int levelDifference = Level - monster.Level;
+
+            if (group != null)
+            {
+                foreach (ClientSession client in group.Characters)
+                {
+                    levelSum += client.Character.Level;
+                }
+                partySize = group.CharacterCount;
+                partyPenalty = (12 / partySize) / levelSum;
+            }
+
+            // xp calculation * xp / penalty * rate / partysize
+            if (monster.Level > 0 && monster.Level < 6)
+            {
+                xp = (long)Math.Round((monster.XP * CharacterHelper.ExperiencePenalty(levelDifference)) * ServerManager.XPRate);
+            }
+            else
+            {
+                xp = (long)Math.Round((((monster.XP / 3) * 2) * CharacterHelper.ExperiencePenalty(levelDifference)) * ServerManager.XPRate);
+            }
+
+            // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal to 4
+            if (Level <= 5 && levelDifference < -4)
+            {
+                xp += xp / 2;
+            }
+
+            // divide exp by multiplication of partyPenalty with level e.g. 57 * 0,014...
+            if (partySize > 1 && group != null)
+            {
+                xp = (long)Math.Round(xp / (Level * partyPenalty));
+            }
+
+            return xp;
         }
 
         public int GetCP()
