@@ -751,7 +751,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ', '^');
             byte mode;
-            if (byte.TryParse(packetsplit[2], out mode) && !Session.Character.UseSp)
+            if (byte.TryParse(packetsplit[2], out mode) && !Session.Character.UseSp && !Session.Character.IsVehicled)
             {
                 double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
                 double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
