@@ -24,17 +24,17 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult DeleteByPrimaryKey(long accountId, byte characterSlot);
 
-        IEnumerable<CharacterDTO> GetTopComplimented();
+        IList<CharacterDTO> GetTopComplimented();
 
-        IEnumerable<CharacterDTO> GetTopPoints();
+        IList<CharacterDTO> GetTopPoints();
 
-        IEnumerable<CharacterDTO> GetTopReputation();
+        IList<CharacterDTO> GetTopReputation();
 
         SaveResult InsertOrUpdate(ref CharacterDTO character);
 
         int IsReputHero(long characterId);
 
-        IEnumerable<CharacterDTO> LoadByAccount(long accountId);
+        IList<CharacterDTO> LoadByAccount(long accountId);
 
         CharacterDTO LoadById(long characterId);
 

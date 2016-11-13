@@ -202,35 +202,30 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("Char_DEL")]
-        public void DeleteCharacter(string packet)
+        public void DeleteCharacter(CharacterDeletePacket characterDeletePacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug(characterDeletePacket.ToString(), Session.SessionId);
 
             if (Session.HasCurrentMap)
             {
                 return;
             }
-            string[] deleteCharacterPacket = packet.Split(' ');
             AccountDTO account = DAOFactory.AccountDAO.LoadById(Session.Account.AccountId);
             if (account == null)
             {
                 return;
             }
-            if (deleteCharacterPacket.Length <= 3)
+
+            if (account != null && account.Password.ToLower() == EncryptionBase.Sha512(characterDeletePacket.Password))
             {
-                return;
-            }
-            if (account != null && account.Password.ToLower() == EncryptionBase.Sha512(deleteCharacterPacket[3]))
-            {
-                CharacterDTO character = DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
+                CharacterDTO character = DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, characterDeletePacket.Slot);
                 if (character == null)
                 {
                     return;
                 }
                 DAOFactory.GeneralLogDAO.SetCharIdNull(Convert.ToInt64(character.CharacterId));
-                DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
-                LoadCharacters(packet);
+                DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, characterDeletePacket.Slot);
+                LoadCharacters(String.Empty);
             }
             else
             {
@@ -325,7 +320,7 @@ namespace OpenNos.Handler
             }
 
             // TODO: Wrap Database access up to GO
-            IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
+            IList<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
             Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.SessionId);
 
             // load characterlist packet for each character in CharacterDTO
