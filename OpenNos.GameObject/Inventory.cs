@@ -156,6 +156,17 @@ namespace OpenNos.GameObject
             return itemInstance;
         }
 
+        public bool CanAddItem(short itemVnum)
+        {
+            InventoryType type = ServerManager.GetItem(itemVnum).Type;
+            return CanAddItem(type);
+        }
+
+        public bool CanAddItem(InventoryType type)
+        {
+            return GetFreeSlot(type, Owner.BackPack) != -1;
+        }
+
         public int CountItem(int v)
         {
             int count = 0;
@@ -204,6 +215,14 @@ namespace OpenNos.GameObject
             else
             {
                 throw new InvalidOperationException("Expected item wasn't deleted, Type or Slot did not match!");
+            }
+        }
+
+        public void GenerateClearInventory(InventoryType type)
+        {
+            for (short i = 0; i < 48; i++)
+            {
+                Owner.Session.SendPacket(Owner.GenerateInventoryAdd(-1, 0, type, i, 0, 0, 0, 0));
             }
         }
 
@@ -540,14 +559,6 @@ namespace OpenNos.GameObject
 
                 // increment slot
                 i++;
-            }
-        }
-
-        public void GenerateClearInventory(InventoryType type)
-        {
-            for(short i = 0; i < 48; i++)
-            {
-                Owner.Session.SendPacket(Owner.GenerateInventoryAdd(-1, 0, type, i, 0, 0, 0, 0));
             }
         }
 
