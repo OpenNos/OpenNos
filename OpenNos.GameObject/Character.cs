@@ -1711,7 +1711,7 @@ namespace OpenNos.GameObject
             jxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
 
             // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
-            if (partySize > 1 && group != null)
+            if (partySize > 1 && group != null && partyPenalty > 0)
             {
                 jxp = (int)Math.Round(jxp / (Level * partyPenalty));
             }

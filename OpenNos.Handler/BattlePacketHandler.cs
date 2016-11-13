@@ -1133,7 +1133,10 @@ namespace OpenNos.Handler
                     Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
                     if (grp != null)
                     {
-                        grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId).ToList().ForEach(g => g.Character.GenerateXp(monsterToAttack.Monster));
+                        foreach(ClientSession targetSession in grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId))
+                        {
+                             targetSession.Character.GenerateXp(monsterToAttack.Monster);
+                        }
                     }
                     else
                     {
