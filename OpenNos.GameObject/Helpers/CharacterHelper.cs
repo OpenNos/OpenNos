@@ -928,15 +928,15 @@ namespace OpenNos.GameObject
                 {
                     if (i == 14)
                     {
-                        var = 6 / 3;
+                        var = 6 / 3d;
                     }
                     else if (i == 39)
                     {
-                        var = (19 / (double)3);
+                        var = 19 / 3d;
                     }
                     else if (i == 59)
                     {
-                        var = (70 / (double)3);
+                        var = 70 / 3d;
                     }
                     xpData[i] = Convert.ToInt64(xpData[i - 1] + var * v[i - 1]);
                 }
@@ -957,7 +957,7 @@ namespace OpenNos.GameObject
                     xpData[i] = Convert.ToInt64(xpData[i - 1] + var * (i + 2) * (i + 2));
                 }
 
-                // Console.WriteLine("lvl " + (i) + ":" + u[i - 1]);
+                // Console.WriteLine($"LvL {i}: xpdata: {xpData[i - 1]} v: {v[i - 1]}");
             }
         }
 

@@ -1705,29 +1705,18 @@ namespace OpenNos.GameObject
             int levelSum = 0;
             if (group != null)
             {
-                foreach (ClientSession client in group.Characters)
-                {
-                    levelSum += client.Character.Level;
-                }
+                levelSum = group.Characters.Sum(g => g.Character.Level);
                 partySize = group.CharacterCount;
                 partyPenalty = (12 / partySize) / levelSum;
             }
 
             // jxp calculation * jxp / penalty * rate
-            if (monster.Level == 1)
-            {
-                int multiplication = 3 * (Level - 1) != 0 ? 3 * (Level - 1) : 1;
-                jxp = (int)Math.Round(((monster.JobXP * multiplication) * CharacterHelper.ExperiencePenalty(levelDifference)) * ServerManager.XPRate);
-            }
-            else
-            {
-                jxp = (int)Math.Round(((monster.JobXP * 2 * Level) * CharacterHelper.ExperiencePenalty(levelDifference)) * ServerManager.XPRate);
-            }
+            jxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
 
             // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
             if (partySize > 1 && group != null)
             {
-                jxp = (int)Math.Floor(jxp / (Level * partyPenalty));
+                jxp = (int)Math.Round(jxp / (Level * partyPenalty));
             }
 
             return jxp;
@@ -1743,23 +1732,13 @@ namespace OpenNos.GameObject
 
             if (group != null)
             {
-                foreach (ClientSession client in group.Characters)
-                {
-                    levelSum += client.Character.Level;
-                }
+                levelSum = group.Characters.Sum(g => g.Character.Level);
                 partySize = group.CharacterCount;
-                partyPenalty = (12 / partySize) / levelSum;
+                partyPenalty = levelSum / (12 / partySize);
             }
 
             // xp calculation * xp / penalty * rate / partysize
-            if (monster.Level > 0 && monster.Level < 6)
-            {
-                xp = (long)Math.Round((monster.XP * CharacterHelper.ExperiencePenalty(levelDifference)) * ServerManager.XPRate);
-            }
-            else
-            {
-                xp = (long)Math.Round((((monster.XP / 3) * 2) * CharacterHelper.ExperiencePenalty(levelDifference)) * ServerManager.XPRate);
-            }
+            xp = (long)Math.Round(monster.XP * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
 
             // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal to 4
             if (Level <= 5 && levelDifference < -4)

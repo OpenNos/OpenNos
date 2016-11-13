@@ -26,7 +26,7 @@ namespace OpenNos.Domain
         End = 6,
         EndClosed = 7,
         Raid = 8,
-        Effect = 9, // same as 13-19 and 20 - 126
+        Effect = 9, // same as 13 - 19 and 20 - 126
         BlueRaidPortal = 10,
         DarkRaidPortal = 11,
         TimeSpace = 12,
