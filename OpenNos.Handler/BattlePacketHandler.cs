@@ -1022,7 +1022,9 @@ namespace OpenNos.Handler
 
             damage = Convert.ToUInt16(totalDamage);
             if (monsterToAttack.IsMoving)
+            {
                 monsterToAttack.Target = Session.Character.CharacterId;
+            }
             return damage;
         }
 

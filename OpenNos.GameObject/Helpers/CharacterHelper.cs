@@ -252,6 +252,42 @@ namespace OpenNos.GameObject
             return minHit[@class, level];
         }
 
+        public static float ExperiencePenalty(int levelDifference)
+        {
+            float penalty;
+            // penalty calculation
+            if (levelDifference == 6)
+            {
+                penalty = 0.9f;
+            }
+            else if (levelDifference == 7)
+            {
+                penalty = 0.7f;
+            }
+            else if (levelDifference == 8)
+            {
+                penalty = 0.5f;
+            }
+            else if (levelDifference == 9)
+            {
+                penalty = 0.3f;
+            }
+            else if (levelDifference > 9 && levelDifference < 19)
+            {
+                penalty = 0.1f;
+            }
+            else if (levelDifference > 18)
+            {
+                penalty = 0.05f;
+            }
+            else
+            {
+                penalty = 1f;
+            }
+
+            return penalty;
+        }
+
         public static int RarityPoint(short rarity, short lvl)
         {
             Random random = new Random();
