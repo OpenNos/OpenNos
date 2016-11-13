@@ -4,7 +4,7 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 
-namespace OpenNos.GameObject.Packets.ServerPackets
+namespace OpenNos.GameObject
 {
     [PacketHeader("Char_DEL")]
     public class CharacterDeletePacket : PacketBase
@@ -12,13 +12,15 @@ namespace OpenNos.GameObject.Packets.ServerPackets
         #region Properties
 
         [PacketIndex(0)]
-        public byte Unknown { get; set; }
+        public byte Slot { get; set; }
 
         [PacketIndex(1)]
-        public long CharId { get; set; }
+        public string Password { get; set; }
 
-        [PacketIndex(2)]
-        public long DropId { get; set; }
+        public override string ToString()
+        {
+            return $"Delete Character Slot {Slot}";
+        }
 
         #endregion
     }

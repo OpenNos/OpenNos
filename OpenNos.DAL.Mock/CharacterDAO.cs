@@ -17,19 +17,19 @@ namespace OpenNos.DAL.Mock
             return DeleteResult.Deleted;
         }
 
-        public IEnumerable<CharacterDTO> GetTopComplimented()
+        public IList<CharacterDTO> GetTopComplimented()
         {
-            return Enumerable.Empty<CharacterDTO>();
+            return new List<CharacterDTO>();
         }
 
-        public IEnumerable<CharacterDTO> GetTopPoints()
+        public IList<CharacterDTO> GetTopPoints()
         {
-            return Enumerable.Empty<CharacterDTO>();
+            return new List<CharacterDTO>();
         }
 
-        public IEnumerable<CharacterDTO> GetTopReputation()
+        public IList<CharacterDTO> GetTopReputation()
         {
-            return Enumerable.Empty<CharacterDTO>();
+            return new List<CharacterDTO>();
         }
 
         public override CharacterDTO Insert(CharacterDTO dto)
@@ -58,9 +58,9 @@ namespace OpenNos.DAL.Mock
             return 10000;
         }
 
-        public IEnumerable<CharacterDTO> LoadByAccount(long accountId)
+        public IList<CharacterDTO> LoadByAccount(long accountId)
         {
-            return Container.Where(c => c.AccountId == accountId).Select(e => MapEntity(e));
+            return Container.Where(c => c.AccountId == accountId).Select(e => MapEntity(e)).ToList();
         }
 
         public CharacterDTO LoadById(long characterId)
