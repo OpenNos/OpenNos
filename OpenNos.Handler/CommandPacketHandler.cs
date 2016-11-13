@@ -186,7 +186,7 @@ namespace OpenNos.Handler
             Logger.Debug("Change Class Command", Session.SessionId);
             if (changeClassPacket != null)
             {
-                    Session.Character.ChangeClass(changeClassPacket.ClassType);
+                Session.Character.ChangeClass(changeClassPacket.ClassType);
             }
             else
             {
@@ -479,7 +479,7 @@ namespace OpenNos.Handler
             }
             else if (short.TryParse(packetsplit[2], out vnum))
             {
-                if(vnum == 1014)
+                if (vnum == 1014)
                 {
                     return; // cannot create gold as item, use $Gold instead
                 }
@@ -715,7 +715,7 @@ namespace OpenNos.Handler
             {
                 if (Byte.TryParse(packetsplit[2], out haircolor) && haircolor < 128)
                 {
-                    Session.Character.HairColor = Enum.IsDefined(typeof(HairColorType),haircolor) ? (HairColorType)haircolor : 0;
+                    Session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), haircolor) ? (HairColorType)haircolor : 0;
                     Session.SendPacket(Session.Character.GenerateEq());
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
                 }
@@ -1421,7 +1421,7 @@ namespace OpenNos.Handler
                             }
                         }
 
-                        MapMonster monster = new MapMonster() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = Session.CurrentMap.GetNextMonsterId(), Respawn = false};
+                        MapMonster monster = new MapMonster() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = move == 1 ? true : false, MapMonsterId = Session.CurrentMap.GetNextMonsterId(), Respawn = false };
                         monster.Initialize(currentMap);
                         currentMap?.AddMonster(monster);
                         currentMap?.Broadcast(monster.GenerateIn3());
@@ -1444,7 +1444,7 @@ namespace OpenNos.Handler
             short[] arg = new short[3];
             bool verify = false;
 
-            if(Session.Character.HasShopOpened || Session.Character.InExchangeOrTrade)
+            if (Session.Character.HasShopOpened || Session.Character.InExchangeOrTrade)
             {
                 Session.Character.Dispose();
             }

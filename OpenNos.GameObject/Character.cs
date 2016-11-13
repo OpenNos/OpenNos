@@ -621,7 +621,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCond()
         {
-            return $"cond 1 {CharacterId} {(IsSitting ? 1 : 0)} 0 {Speed}";
+            return $"cond 1 {CharacterId} 0 0 {Speed}";
         }
 
         public string GenerateDelay(int delay, int type, string argument)
