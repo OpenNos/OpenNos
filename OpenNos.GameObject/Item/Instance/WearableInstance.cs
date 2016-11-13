@@ -210,13 +210,13 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateGold());
                     break;
             }
-            if (this.Item.IsHeroic)
+            if (this.Item.IsHeroic && protection == RarifyProtection.Scroll)
             {
                 if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
                 {
                     if (mode != RarifyMode.Drop)
                     {
-                        Session.Character.NotifyRarifyResult(7);
+                        Session.Character.NotifyRarifyResult(8);
                     }
 
                     this.Rare = 8;
