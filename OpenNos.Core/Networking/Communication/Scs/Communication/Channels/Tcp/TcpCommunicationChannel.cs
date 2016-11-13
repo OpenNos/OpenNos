@@ -43,6 +43,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// </summary>
         private readonly byte[] _buffer;
 
+        private Random _random = new Random();
+
         /// <summary>
         /// Socket object to send/reveice messages.
         /// </summary>
@@ -86,6 +88,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _clientSocket = clientSocket;
             _clientSocket.NoDelay = true;
 
+            // initialize lagging mode
+            bool isLagMode = System.Configuration.ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
+
             var ipEndPoint = (IPEndPoint)_clientSocket.RemoteEndPoint;
             _remoteEndPoint = new ScsTcpEndPoint(ipEndPoint.Address.ToString(), ipEndPoint.Port);
 
@@ -95,7 +100,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _highPriorityBuffer = new ConcurrentQueue<byte[]>();
             _lowPriorityBuffer = new ConcurrentQueue<byte[]>();
             CancellationToken cancellationToken = _sendCancellationToken.Token;
-            _sendTask = StartSending(SendInterval, new TimeSpan(0, 0, 0, 0, 10), cancellationToken);
+            _sendTask = StartSending(SendInterval, new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 10), cancellationToken);
         }
 
         #endregion
@@ -270,7 +275,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             }
 
             try
-            {
+            { 
+
                 var bytesRead = -1;
 
                 // Get received bytes count

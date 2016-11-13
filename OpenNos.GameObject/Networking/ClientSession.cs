@@ -38,6 +38,7 @@ namespace OpenNos.GameObject
         private INetworkClient _client;
         private IDictionary<string, HandlerMethodReference> _handlerMethods;
         private SequentialItemProcessor<byte[]> _queue;
+        private Random _random;
         private IList<String> _waitForPacketList = new List<String>();
 
         // Packetwait Packets
@@ -57,8 +58,11 @@ namespace OpenNos.GameObject
             // set last received
             lastPacketReceive = DateTime.Now.Ticks;
 
-            // set packetcount to 0
-            // countPacketReceived = 0;
+
+            // lag mode
+            _random = new Random((int)client.ClientId);
+            // initialize lagging mode
+            IsLagMode = System.Configuration.ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
 
             // initialize network client
             _client = client;
@@ -205,6 +209,7 @@ namespace OpenNos.GameObject
         public int LastKeepAliveIdentity { get; set; }
 
         public int SessionId { get; set; }
+        public bool IsLagMode { get; private set; }
 
         #endregion
 
@@ -519,6 +524,12 @@ namespace OpenNos.GameObject
             if (message == null)
             {
                 return;
+            }
+
+            if(IsLagMode)
+            {
+                // most devilish thing i can imagine
+                Task.Delay(_random.Next(1000, 2000));
             }
 
             long currentPacketReceive = e.ReceivedTimestamp.Ticks;
