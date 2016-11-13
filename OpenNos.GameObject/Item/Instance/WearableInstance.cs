@@ -437,7 +437,7 @@ namespace OpenNos.GameObject
                         Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
                         Session.Character.DeleteItemByItemInstanceId(this.Id);
                     }
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
                     Session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
                     Session.Character.Gold -= goldprice[this.Upgrade];
                     Session.SendPacket(Session.Character.GenerateGold());

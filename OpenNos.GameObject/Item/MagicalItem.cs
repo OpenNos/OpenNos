@@ -43,7 +43,7 @@ namespace OpenNos.GameObject
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(EffectValue));
                         if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))
                         {
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(19, 1, MappingHelper.GuriItemEffects[EffectValue]));
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(19, 1, MappingHelper.GuriItemEffects[EffectValue]), Session.Character.MapX, Session.Character.MapY);
                         }
 
                         Inv.Amount--;

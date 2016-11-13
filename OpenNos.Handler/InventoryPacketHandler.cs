@@ -339,7 +339,7 @@ namespace OpenNos.Handler
                         }
                     case RequestExchangeType.Confirmed:
                         {
-                            if (Session.HasCurrentMap && Session.HasSelectedCharacter 
+                            if (Session.HasCurrentMap && Session.HasSelectedCharacter
                                 && Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.TargetCharacterId != Session.Character.CharacterId)
                             {
                                 ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
@@ -464,7 +464,7 @@ namespace OpenNos.Handler
                         }
                     case RequestExchangeType.Cancelled:
                         {
-                            if(Session.HasCurrentMap)
+                            if (Session.HasCurrentMap)
                             {
                                 ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
 
@@ -1186,7 +1186,7 @@ namespace OpenNos.Handler
                     if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
                         Session.SendPacket(Session.Character.GenerateDelay(5000, 3, "#sl^1"));
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(2, 1), ReceiverType.All);
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.MapX, Session.Character.MapY);
                     }
                     else
                     {
@@ -1428,7 +1428,7 @@ namespace OpenNos.Handler
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                 Session.SendPacket(Session.Character.GenerateLev());
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196), Session.Character.MapX, Session.Character.MapY);
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
                 Session.SendPacket(Session.Character.GenerateSpPoint());
                 Session.Character.LoadSpeed();
                 Session.SendPacket(Session.Character.GenerateCond());
@@ -1474,7 +1474,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
                 Session.SendPacket($"sd {Session.Character.SpCooldown}");
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
 
                 // ms_c
                 Session.SendPacket(Session.Character.GenerateSki());
