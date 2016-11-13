@@ -523,31 +523,18 @@ namespace OpenNos.GameObject
                 {
                     Session.CurrentMap.UserShops.Remove(shop.Key);
 
-                    // if the character closed his shop temporarly, we dont need to end it
-                    if (!closedByCharacter)
-                    {
-                        Session.SendPacket("shop_end 0");
-                        Session.Character.IsShopping = false;
-                    }
-
                     // declare that the shop cannot be closed
                     HasShopOpened = false;
 
                     Session.CurrentMap?.Broadcast(GenerateShopEnd());
                     Session.CurrentMap?.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     IsSitting = false;
+                    IsShopping = false; // close shop by character will always completely close the shop
 
                     LoadSpeed();
                     Session.SendPacket(GenerateCond());
                     Session.CurrentMap?.Broadcast(GenerateRest());
                 }
-            }
-            else if (IsShopping && closedByCharacter) // close temporarly open shop
-            {
-                Session.SendPacket("shop_end 0");
-                Session.Character.IsShopping = false;
-                LoadSpeed();
-                Session.SendPacket(GenerateCond());
             }
         }
 
@@ -637,7 +624,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCond()
         {
-            return $"cond 1 {CharacterId} 0 0 {Speed}";
+            return $"cond 1 {CharacterId} {(IsSitting ? 1 : 0)} 0 {Speed}";
         }
 
         public string GenerateDelay(int delay, int type, string argument)
