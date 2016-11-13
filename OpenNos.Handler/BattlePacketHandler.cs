@@ -283,7 +283,7 @@ namespace OpenNos.Handler
                     }
 
                     // send su packets
-                    Session.CurrentMap.Broadcast(broadcastPackets.ToArray(), 10);
+                    Session.CurrentMap.Broadcast(broadcastPackets.ToArray());
 
                     Task t = Task.Factory.StartNew((Func<Task>)(async () =>
                     {
