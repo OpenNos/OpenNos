@@ -17,6 +17,9 @@ namespace OpenNos.Domain
     public enum HairStyleType : byte
     {
         HairTypeA = 0,
-        HairTypeB = 1
+        HairTypeB = 1,
+        HairTypeC = 2,
+        HairStyleD = 4,
+        NoHair = 5
     }
 }
