@@ -397,65 +397,65 @@ namespace OpenNos.GameObject
 
         public void ChangeClass(ClassType characterClass)
         {
-                JobLevel = 1;
-                JobLevelXp = 0;
-                Session.SendPacket("npinfo 0");
-                Session.SendPacket("p_clear");
+            JobLevel = 1;
+            JobLevelXp = 0;
+            Session.SendPacket("npinfo 0");
+            Session.SendPacket("p_clear");
 
-                if (characterClass == (byte)ClassType.Adventurer)
+            if (characterClass == (byte)ClassType.Adventurer)
+            {
+                HairStyle = (byte)HairStyle > 1 ? (byte)0 : HairStyle;
+            }
+
+            LoadSpeed();
+            Class = characterClass;
+            Hp = (int)HPLoad();
+            Mp = (int)MPLoad();
+            Session.SendPacket(GenerateTit());
+
+            // Session.SendPacket(GenerateEquipment());
+            Session.SendPacket(GenerateStat());
+            Session.CurrentMap?.Broadcast(Session, GenerateEq(), ReceiverType.All);
+            Session.CurrentMap?.Broadcast(GenerateEff(8), MapX, MapY);
+            Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
+            Session.CurrentMap?.Broadcast(GenerateEff(196), MapX, MapY);
+
+            int faction = 1 + (int)_random.Next(0, 2);
+            Faction = faction;
+            Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+
+            Session.SendPacket("scr 0 0 0 0 0 0");
+            Session.SendPacket(GenerateFaction());
+            Session.SendPacket(GenerateStatChar());
+            Session.SendPacket(GenerateEff(4799 + faction));
+            Session.SendPacket(GenerateCond());
+            Session.SendPacket(GenerateLev());
+            Session.CurrentMap?.Broadcast(Session, GenerateCMode(), ReceiverType.All);
+            Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+            Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
+            Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
+
+            foreach (var skill in Skills.GetAllItems())
+            {
+                if (skill.SkillVNum >= 200)
                 {
-                    HairStyle = (byte)HairStyle > 1 ? (byte)0 : HairStyle;
+                    Skills.Remove(skill.SkillVNum);
                 }
+            }
 
-                LoadSpeed();
-                Class = characterClass;
-                Hp = (int)HPLoad();
-                Mp = (int)MPLoad();
-                Session.SendPacket(GenerateTit());
+            Skills[(short)(200 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)Class), CharacterId = CharacterId };
+            Skills[(short)(201 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)Class), CharacterId = CharacterId };
+            Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = CharacterId };
 
-                // Session.SendPacket(GenerateEquipment());
-                Session.SendPacket(GenerateStat());
-                Session.CurrentMap?.Broadcast(Session, GenerateEq(), ReceiverType.All);
-                Session.CurrentMap?.Broadcast(GenerateEff(8), MapX, MapY);
-                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
-                Session.CurrentMap?.Broadcast(GenerateEff(196), MapX, MapY);
+            Session.SendPacket(GenerateSki());
 
-                int faction = 1 + (int)_random.Next(0, 2);
-                Faction = faction;
-                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+            // TODO: Reset Quicklist (just add Rest-on-T Item)
+            foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.LoadByCharacterId(CharacterId).Where(quicklists => QuicklistEntries.Any(qle => qle.Id == quicklists.Id)))
+            {
+                DAOFactory.QuicklistEntryDAO.Delete(quicklists.Id);
+            }
 
-                Session.SendPacket("scr 0 0 0 0 0 0");
-                Session.SendPacket(GenerateFaction());
-                Session.SendPacket(GenerateStatChar());
-                Session.SendPacket(GenerateEff(4799 + faction));
-                Session.SendPacket(GenerateCond());
-                Session.SendPacket(GenerateLev());
-                Session.CurrentMap?.Broadcast(Session, GenerateCMode(), ReceiverType.All);
-                Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
-                Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
-                Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
-
-                foreach (var skill in Skills.GetAllItems())
-                {
-                    if (skill.SkillVNum >= 200)
-                    {
-                        Skills.Remove(skill.SkillVNum);
-                    }
-                }
-
-                Skills[(short)(200 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)Class), CharacterId = CharacterId };
-                Skills[(short)(201 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)Class), CharacterId = CharacterId };
-                Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = CharacterId };
-
-                Session.SendPacket(GenerateSki());
-
-                // TODO: Reset Quicklist (just add Rest-on-T Item)
-                foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.LoadByCharacterId(CharacterId).Where(quicklists => QuicklistEntries.Any(qle => qle.Id == quicklists.Id)))
-                {
-                    DAOFactory.QuicklistEntryDAO.Delete(quicklists.Id);
-                }
-
-                QuicklistEntries = new List<QuicklistEntryDTO>
+            QuicklistEntries = new List<QuicklistEntryDTO>
                 {
                     new QuicklistEntryDTO
                     {
@@ -467,10 +467,10 @@ namespace OpenNos.GameObject
                         Pos = 1
                     }
                 };
-                if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session)))
-                {
-                    Session.CurrentMap?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
-                }
+            if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session)))
+            {
+                Session.CurrentMap?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
+            }
         }
 
         public void ChangeSex()
@@ -1585,7 +1585,7 @@ namespace OpenNos.GameObject
             {
                 if (specialist != null && UseSp && specialist.SpLevel < 99)
                 {
-                    JobLevelXp += ((int)((double)monsterinfo.JobXP / (double)100 * specialist.SpLevel)) * ServerManager.XPRate / partySize;
+                    JobLevelXp += (int)(GetJXP(monsterinfo, grp) / 100d * specialist.SpLevel);
                 }
                 else
                 {
@@ -1594,7 +1594,7 @@ namespace OpenNos.GameObject
             }
             if (specialist != null && UseSp && specialist.SpLevel < 99)
             {
-                specialist.XP += monsterinfo.JobXP * ServerManager.XPRate * (100 - specialist.SpLevel) / partySize;
+                specialist.XP += GetJXP(monsterinfo, grp) * (100 - specialist.SpLevel);
             }
             double t = XPLoad();
             while (LevelXp >= t)
@@ -1693,65 +1693,6 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateLev());
         }
 
-        public int GetJXP(NpcMonster monster, Group group)
-        {
-            int partySize = 1;
-            double partyPenalty = 1d;
-            int jxp = 0;
-            int levelDifference = Level - monster.Level;
-            int levelSum = 0;
-            if (group != null)
-            {
-                levelSum = group.Characters.Sum(g => g.Character.Level);
-                partySize = group.CharacterCount;
-                partyPenalty = (12 / partySize) / levelSum;
-            }
-
-            // jxp calculation * jxp / penalty * rate
-            jxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
-
-            // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
-            if (partySize > 1 && group != null && partyPenalty > 0)
-            {
-                jxp = (int)Math.Round(jxp / (Level * partyPenalty));
-            }
-
-            return jxp;
-        }
-
-        public long GetXP(NpcMonster monster, Group group)
-        {
-            int partySize = 1;
-            double partyPenalty = 1d;
-            long xp = 0;
-            int levelSum = 0;
-            int levelDifference = Level - monster.Level;
-
-            if (group != null)
-            {
-                levelSum = group.Characters.Sum(g => g.Character.Level);
-                partySize = group.CharacterCount;
-                partyPenalty = levelSum / (12 / partySize);
-            }
-
-            // xp calculation * xp / penalty * rate / partysize
-            xp = (long)Math.Round(monster.XP * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
-
-            // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal to 4
-            if (Level <= 5 && levelDifference < -4)
-            {
-                xp += xp / 2;
-            }
-
-            // divide exp by multiplication of partyPenalty with level e.g. 57 * 0,014...
-            if (partySize > 1 && group != null)
-            {
-                xp = (long)Math.Round(xp / (Level * partyPenalty));
-            }
-
-            return xp;
-        }
-
         public int GetCP()
         {
             int cpmax = (Class > 0 ? 40 : 0) + JobLevel * 2;
@@ -1801,6 +1742,33 @@ namespace OpenNos.GameObject
             }
 
             return icoDignity;
+        }
+
+        public int GetJXP(NpcMonster monster, Group group)
+        {
+            int partySize = 1;
+            double partyPenalty = 1d;
+            int jobxp = 0;
+            int levelSum = 0;
+            int levelDifference = Level - monster.Level;
+
+            if (group != null)
+            {
+                levelSum = group.Characters.Sum(g => g.Character.Level);
+                partySize = group.CharacterCount;
+                partyPenalty = (12 / partySize) / levelSum;
+            }
+
+            // monster jobxp / penalty * rate
+            jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
+
+            // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
+            if (partySize > 1 && group != null)
+            {
+                jobxp = (int)Math.Round(jobxp / (Level * partyPenalty));
+            }
+
+            return jobxp;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
@@ -1853,6 +1821,44 @@ namespace OpenNos.GameObject
             if (Reput <= 3750000) return 25;
             if (Reput <= 5000000) return 26;
             return 27;
+        }
+
+        public long GetXP(NpcMonster monster, Group group)
+        {
+            int partySize = 1;
+            double partyPenalty = 1d;
+            long xp = 0;
+            long xpcalculation = 0;
+            int levelSum = 0;
+            int levelDifference = Level - monster.Level;
+
+            if (group != null)
+            {
+                levelSum = group.Characters.Sum(g => g.Character.Level);
+                partySize = group.CharacterCount;
+                partyPenalty = (12 / partySize) / levelSum;
+            }
+
+            // xp calculation dependant on level difference
+            xpcalculation = levelDifference < 5 ? monster.XP : monster.XP / 3 * 2;
+
+            // xp calculation / penalty * rate
+            xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
+
+            // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal
+            // to 4
+            if (Level <= 5 && levelDifference < -4)
+            {
+                xp += xp / 2;
+            }
+
+            // divide exp by multiplication of partyPenalty with level e.g. 57 * 0,014...
+            if (partySize > 1 && group != null)
+            {
+                xp = (long)Math.Round(xp / (Level * partyPenalty));
+            }
+
+            return xp;
         }
 
         public void GiftAdd(short itemVNum, byte amount)
