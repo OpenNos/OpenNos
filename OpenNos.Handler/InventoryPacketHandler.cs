@@ -283,7 +283,7 @@ namespace OpenNos.Handler
             {
                 switch (packet.RequestType)
                 {
-                    case RequestExchangeType.Accepted:
+                    case RequestExchangeType.Requested: // send the request trade 
                         {
                             ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(packet.CharacterId);
 
@@ -327,17 +327,13 @@ namespace OpenNos.Handler
                                 }
                                 else
                                 {
-                                    if (Session.Character.Speed == 0)
-                                    {
-                                        return;
-                                    }
                                     Session.SendPacket(Session.Character.GenerateModal(String.Format(Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE"), targetSession.Character.Name), 0));
                                     targetSession.SendPacket(Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INCOMING_EXCHANGE"), Session.Character.Name)}"));
                                 }
                             }
                             break;
                         }
-                    case RequestExchangeType.Confirmed:
+                    case RequestExchangeType.Confirmed: // click Trade button in exchange window
                         {
                             if (Session.HasCurrentMap && Session.HasSelectedCharacter
                                 && Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.TargetCharacterId != Session.Character.CharacterId)
@@ -462,7 +458,7 @@ namespace OpenNos.Handler
 
                             break;
                         }
-                    case RequestExchangeType.Cancelled:
+                    case RequestExchangeType.Cancelled: // cancel trade thru exchange window
                         {
                             if (Session.HasCurrentMap)
                             {
