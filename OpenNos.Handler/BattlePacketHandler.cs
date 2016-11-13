@@ -63,7 +63,7 @@ namespace OpenNos.Handler
             if (Session.Character.IsMuted())
             {
                 Session.SendPacket("cancel 0 0");
-                Session.CurrentMap?.Broadcast(Session.Character.Gender == 1 ? Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1) :
+                Session.CurrentMap?.Broadcast(Session.Character.Gender == GenderType.Female ? Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1) :
                     Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                 Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
                 Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
@@ -309,7 +309,7 @@ namespace OpenNos.Handler
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted())
             {
-                if (Session.Character.Gender == 1)
+                if (Session.Character.Gender == GenderType.Female)
                 {
                     Session.SendPacket("cancel 0 0");
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
@@ -393,7 +393,7 @@ namespace OpenNos.Handler
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted())
             {
-                if (Session.Character.Gender == 1)
+                if (Session.Character.Gender == GenderType.Female)
                 {
                     Session.SendPacket("cancel 0 0");
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
@@ -529,7 +529,7 @@ namespace OpenNos.Handler
             {
                 case 0:
                     monsterDefence = monsterToAttack.Monster.CloseDefence;
-                    if (Session.Character.Class == 2)
+                    if (Session.Character.Class == ClassType.Archer)
                     {
                         mainCritHit = secCritHit;
                         mainCritChance = secCritChance;
@@ -542,7 +542,7 @@ namespace OpenNos.Handler
 
                 case 1:
                     monsterDefence = monsterToAttack.Monster.DistanceDefence;
-                    if (Session.Character.Class == 1 || Session.Character.Class == 0)
+                    if (Session.Character.Class == ClassType.Swordman || Session.Character.Class == ClassType.Adventurer)
                     {
                         mainCritHit = secCritHit;
                         mainCritChance = secCritChance;
@@ -688,7 +688,7 @@ namespace OpenNos.Handler
                 if (skill.Type == 2)
                 {
                 }
-                else if (skill.Type == 3 && Session.Character.Class != 3)
+                else if (skill.Type == 3 && Session.Character.Class != ClassType.Magician)
                 {
                     baseDamage = (int)(baseDamage * ((mainCritHit / 100D) + 1));
                     hitmode = 3;

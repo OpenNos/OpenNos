@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
 using System;
 
 namespace OpenNos.Data
@@ -42,13 +43,13 @@ namespace OpenNos.Data
 
         public long ReceiverId { get; set; }
 
-        public byte SenderClass { get; set; }
+        public ClassType SenderClass { get; set; }
 
-        public byte SenderGender { get; set; }
+        public GenderType SenderGender { get; set; }
 
-        public byte SenderHairColor { get; set; }
+        public HairColorType SenderHairColor { get; set; }
 
-        public byte SenderHairStyle { get; set; }
+        public HairStyleType SenderHairStyle { get; set; }
 
         public long SenderId { get; set; }
 

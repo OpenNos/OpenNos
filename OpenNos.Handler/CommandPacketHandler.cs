@@ -177,18 +177,16 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$ChangeClass")]
-        public void ChangeClass(string packet)
+        /// <summary>
+        /// $ChangeClass Command
+        /// </summary>
+        /// <param name="changeClassPacket"></param>
+        public void ChangeClass(ChangeClassPacket changeClassPacket)
         {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            byte Class;
-            if (packetsplit.Length > 2)
+            Logger.Debug("Change Class Command", Session.SessionId);
+            if (changeClassPacket != null)
             {
-                if (Byte.TryParse(packetsplit[2], out Class) && Class < 4)
-                {
-                    Session.Character.ChangeClass(Class);
-                }
+                    Session.Character.ChangeClass(changeClassPacket.ClassType);
             }
             else
             {
@@ -297,8 +295,8 @@ namespace OpenNos.Handler
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(8), Session.Character.MapX, Session.Character.MapY);
 
-                    Session.Character.Skills[(short)(200 + 20 * Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * Session.Character.Class), CharacterId = Session.Character.CharacterId };
-                    Session.Character.Skills[(short)(201 + 20 * Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * Session.Character.Class), CharacterId = Session.Character.CharacterId };
+                    Session.Character.Skills[(short)(200 + 20 * (byte)Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)Session.Character.Class), CharacterId = Session.Character.CharacterId };
+                    Session.Character.Skills[(short)(201 + 20 * (byte)Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)Session.Character.Class), CharacterId = Session.Character.CharacterId };
                     Session.Character.Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = Session.Character.CharacterId };
 
                     Session.SendPacket(Session.Character.GenerateSki());
@@ -717,7 +715,7 @@ namespace OpenNos.Handler
             {
                 if (Byte.TryParse(packetsplit[2], out haircolor) && haircolor < 128)
                 {
-                    Session.Character.HairColor = haircolor;
+                    Session.Character.HairColor = Enum.IsDefined(typeof(HairColorType),haircolor) ? (HairColorType)haircolor : 0;
                     Session.SendPacket(Session.Character.GenerateEq());
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
                 }
@@ -738,7 +736,7 @@ namespace OpenNos.Handler
             {
                 if (Byte.TryParse(packetsplit[2], out hairstyle))
                 {
-                    Session.Character.HairStyle = hairstyle;
+                    Session.Character.HairStyle = Enum.IsDefined(typeof(HairStyleType), hairstyle) ? (HairStyleType)hairstyle : 0;
                     Session.SendPacket(Session.Character.GenerateEq());
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
                 }

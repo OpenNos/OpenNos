@@ -131,7 +131,7 @@ namespace OpenNos.GameObject
                             Session.Character.VehicleSpeed = Speed;
                             Session.Character.MorphUpgrade = 0;
                             Session.Character.MorphUpgrade2 = 0;
-                            Session.Character.Morph = Morph + Session.Character.Gender;
+                            Session.Character.Morph = Morph + (byte)Session.Character.Gender;
                             Session.Character.Speed = Speed;
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196), Session.Character.MapX, Session.Character.MapY);
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());

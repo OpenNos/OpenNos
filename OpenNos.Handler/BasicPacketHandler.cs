@@ -850,7 +850,7 @@ namespace OpenNos.Handler
 
             if (Session.Character.IsMuted())
             {
-                if (Session.Character.Gender == 1)
+                if (Session.Character.Gender == GenderType.Female)
                 {
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1), ReceiverType.All);
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
@@ -881,7 +881,7 @@ namespace OpenNos.Handler
                     if (Receiver != null)
                     {
                         WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
-                        byte color = (headWearable != null && headWearable.Item.IsColored) ? headWearable.Design : Session.Character.HairColor;
+                        byte color = (headWearable != null && headWearable.Item.IsColored) ? headWearable.Design : (byte)Session.Character.HairColor;
                         MailDTO mailcopy = new MailDTO()
                         {
                             AttachmentAmount = 0,
@@ -894,7 +894,7 @@ namespace OpenNos.Handler
                             IsSenderCopy = true,
                             SenderClass = Session.Character.Class,
                             SenderGender = Session.Character.Gender,
-                            SenderHairColor = color,
+                            SenderHairColor = Enum.IsDefined(typeof(HairColorType), color) ? (HairColorType)color : 0,
                             SenderHairStyle = Session.Character.HairStyle,
                             EqPacket = Session.Character.GenerateEqListForPacket(),
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
@@ -911,7 +911,7 @@ namespace OpenNos.Handler
                             IsSenderCopy = false,
                             SenderClass = Session.Character.Class,
                             SenderGender = Session.Character.Gender,
-                            SenderHairColor = color,
+                            SenderHairColor = Enum.IsDefined(typeof(HairColorType), color) ? (HairColorType)color : 0,
                             SenderHairStyle = Session.Character.HairStyle,
                             EqPacket = Session.Character.GenerateEqListForPacket(),
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)

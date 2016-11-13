@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                         return;
                     }
-                    if (type == Session.Character.Class)
+                    if (type == (byte)Session.Character.Class)
                     {
                         return;
                     }
@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
                         }
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
                         Session.SendPacket(Session.Character.GenerateEquipment());
-                        Session.Character.ChangeClass(Convert.ToByte(type));
+                        Session.Character.ChangeClass((ClassType)type);
                     }
                     else
                     {

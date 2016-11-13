@@ -227,29 +227,29 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static int MagicalDefence(byte @class, byte level)
+        public static int MagicalDefence(ClassType @class, byte level)
         {
-            return magicalDef[@class, level];
+            return magicalDef[(byte)@class, level];
         }
 
-        public static int MaxDistance(byte @class, byte level)
+        public static int MaxDistance(ClassType @class, byte level)
         {
-            return maxDist[@class, level];
+            return maxDist[(byte)@class, level];
         }
 
-        public static int MaxHit(byte @class, byte level)
+        public static int MaxHit(ClassType @class, byte level)
         {
-            return maxHit[@class, level];
+            return maxHit[(byte)@class, level];
         }
 
-        public static int MinDistance(byte @class, byte level)
+        public static int MinDistance(ClassType @class, byte level)
         {
-            return minDist[@class, level];
+            return minDist[(byte)@class, level];
         }
 
-        public static int MinHit(byte @class, byte level)
+        public static int MinHit(ClassType @class, byte level)
         {
-            return minHit[@class, level];
+            return minHit[(int)@class, level];
         }
 
         public static float ExperiencePenalty(int levelDifference)
@@ -507,77 +507,77 @@ namespace OpenNos.GameObject
             return point;
         }
 
-        internal static int DarkResistance(byte @class, byte level)
+        internal static int DarkResistance(ClassType @class, byte level)
         {
             return 0;
         }
 
-        internal static int Defence(byte @class, byte level)
+        internal static int Defence(ClassType @class, byte level)
         {
-            return hitDef[@class, level];
+            return hitDef[(byte)@class, level];
         }
 
-        internal static int DefenceRate(byte @class, byte level)
+        internal static int DefenceRate(ClassType @class, byte level)
         {
-            return hitDodge[@class, level];
+            return hitDodge[(byte)@class, level];
         }
 
-        internal static int DistanceDefence(byte @class, byte level)
+        internal static int DistanceDefence(ClassType @class, byte level)
         {
-            return distDef[@class, level];
+            return distDef[(byte)@class, level];
         }
 
-        internal static int DistanceDefenceRate(byte @class, byte level)
+        internal static int DistanceDefenceRate(ClassType @class, byte level)
         {
-            return distDodge[@class, level];
+            return distDodge[(byte)@class, level];
         }
 
-        internal static int DistanceRate(byte @class, byte level)
+        internal static int DistanceRate(ClassType @class, byte level)
         {
-            return distRate[@class, level];
+            return distRate[(byte)@class, level];
         }
 
-        internal static int DistCritical(byte @class, byte level)
+        internal static int DistCritical(ClassType @class, byte level)
         {
-            return criticalDist[@class, level];
+            return criticalDist[(byte)@class, level];
         }
 
-        internal static int DistCriticalRate(byte @class, byte level)
+        internal static int DistCriticalRate(ClassType @class, byte level)
         {
-            return criticalDistRate[@class, level];
+            return criticalDistRate[(byte)@class, level];
         }
 
-        internal static int Element(byte @class, byte level)
-        {
-            return 0;
-        }
-
-        internal static int ElementRate(byte @class, byte level)
+        internal static int Element(ClassType @class, byte level)
         {
             return 0;
         }
 
-        internal static int FireResistance(byte @class, byte level)
+        internal static int ElementRate(ClassType @class, byte level)
         {
             return 0;
         }
 
-        internal static int HitCritical(byte @class, byte level)
+        internal static int FireResistance(ClassType @class, byte level)
         {
-            return criticalHit[@class, level];
+            return 0;
         }
 
-        internal static int HitCriticalRate(byte @class, byte level)
+        internal static int HitCritical(ClassType @class, byte level)
         {
-            return criticalHitRate[@class, level];
+            return criticalHit[(byte)@class, level];
         }
 
-        internal static int HitRate(byte @class, byte level)
+        internal static int HitCriticalRate(ClassType @class, byte level)
         {
-            return hitRate[@class, level];
+            return criticalHitRate[(byte)@class, level];
         }
 
-        internal static int LightResistance(byte @class, byte level)
+        internal static int HitRate(ClassType @class, byte level)
+        {
+            return hitRate[(byte)@class, level];
+        }
+
+        internal static int LightResistance(ClassType @class, byte level)
         {
             return 0;
         }
@@ -621,7 +621,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal static int WaterResistance(byte @class, byte level)
+        internal static int WaterResistance(ClassType @class, byte level)
         {
             return 0;
         }

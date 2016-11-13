@@ -799,7 +799,7 @@ namespace OpenNos.GameObject
                 foreach (ClientSession session in groupMembers)
                 {
                     i++;
-                    str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{session.Character.Gender}|{session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{session.Character.IsVehicled: 0}|{session.Character.HeroLevel}";
+                    str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{(byte)session.Character.Gender}|{(byte)session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{session.Character.IsVehicled: 0}|{session.Character.HeroLevel}";
                 }
 
                 foreach (ClientSession session in myGroup.Characters)

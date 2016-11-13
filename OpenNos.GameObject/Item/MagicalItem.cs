@@ -65,11 +65,12 @@ namespace OpenNos.GameObject
                     {
                         if (EffectValue == 99)
                         {
-                            Session.Character.HairColor = (byte)random.Next(0, 127);
+                            byte nextValue = (byte)random.Next(0, 127);
+                            Session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), nextValue) ? (HairColorType)nextValue : 0;
                         }
                         else
                         {
-                            Session.Character.HairColor = (byte)EffectValue;
+                            Session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), EffectValue) ? (HairColorType)EffectValue : 0;
                         }
                         Session.SendPacket(Session.Character.GenerateEq());
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
@@ -96,7 +97,8 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            Session.Character.HairStyle = Session.Character.HairStyle != (byte)EffectValue ? (byte)EffectValue : (byte)1;
+                            // TODO better handling of waxes combined with hairstyle
+                            Session.Character.HairStyle = Enum.IsDefined(typeof(HairStyleType), EffectValue) ? (HairStyleType)EffectValue : 0;
                             Session.SendPacket(Session.Character.GenerateEq());
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
                             Inv.Amount--;
