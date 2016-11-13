@@ -450,13 +450,28 @@ namespace OpenNos.GameObject
         {
             if (this.Upgrade < 10)
             {
-                short[] upsuccess = { 100, 100, 100, 95, 80, 60, 40, 30, 20, 11 };
-                short[] upfix =     { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
+                short[] upsuccess;
+                short[] upfix;
+                int[] goldprice;
+                short[] cella;
+                short[] gem;
 
-                // short itempricevnum1 = 0; short itempricevnum2 = 0;
-                int[] goldprice = { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
-                short[] cella = { 20, 50, 80, 120, 160, 220, 280, 380, 480, 600 };
-                short[] gem = { 1, 1, 2, 2, 3, 1, 1, 2, 2, 3 };
+                if (this.Rare == 8)
+                {
+                    upsuccess = new short[] { 50, 50, 45, 30, 20, 10, 5, 3, 2, 1 };
+                    upfix = new short[] { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
+                    goldprice = new int[] { 5000, 15000, 30000, 100000, 300000, 800000, 1500000, 4000000, 7000000, 10000000 };
+                    cella = new short[] { 40, 100, 160, 240, 320, 440, 560, 760, 960, 1200 };
+                    gem = new short[] { 2, 2, 4, 4, 6, 2, 2, 4, 4, 6 };
+                }
+                else
+                {
+                    upsuccess = new short[] { 100, 100, 100, 95, 80, 60, 40, 30, 20, 11 };
+                    upfix = new short[] { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
+                    goldprice = new int[] { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
+                    cella = new short[] { 20, 50, 80, 120, 160, 220, 280, 380, 480, 600 };
+                    gem = new short[] { 1, 1, 2, 2, 3, 1, 1, 2, 2, 3 };
+                }
 
                 short cellaVnum = 1014;
                 short gemVnum = 1015;

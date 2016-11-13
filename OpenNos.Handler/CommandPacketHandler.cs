@@ -479,7 +479,7 @@ namespace OpenNos.Handler
             }
             else if (short.TryParse(packetsplit[2], out vnum))
             {
-                if (vnum == 1014)
+                if (vnum == 1046)
                 {
                     return; // cannot create gold as item, use $Gold instead
                 }
