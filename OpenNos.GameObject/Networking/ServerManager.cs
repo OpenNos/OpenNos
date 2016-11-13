@@ -198,13 +198,13 @@ namespace OpenNos.GameObject
                     session.Character.IsChangingMap = true;
                     session.CurrentMap.UnregisterSession(session.Character.CharacterId);
 
-                    //cleanup sending queue to avoid sending uneccessary packets to it
+                    // cleanup sending queue to avoid sending uneccessary packets to it
                     Task.Factory.StartNew(async () =>
                     {
                         await session.ClearLowpriorityQueue();
                     });
 
-                    //avoid cleaning new portals
+                    // avoid cleaning new portals
                     Task.Delay(100);
                     if (mapId != null || mapX != null || mapY != null)
                     {
@@ -755,7 +755,7 @@ namespace OpenNos.GameObject
                 short y = (short)(116 + rnd.Next(-5, 5));
                 ChangeMap(session.Character.CharacterId, 1, x, y);
                 session.CurrentMap?.Broadcast(session, session.Character.GenerateTp(), ReceiverType.All);
-                session.CurrentMap?.Broadcast(session.Character.GenerateRevive(), 200);
+                session.CurrentMap?.Broadcast(session.Character.GenerateRevive());
                 session.SendPacket(session.Character.GenerateStat());
             }
         }

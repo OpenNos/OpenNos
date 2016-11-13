@@ -66,42 +66,42 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void Broadcast(string packet, int delay = 0)
+        public void Broadcast(string packet)
         {
-            Broadcast(null, packet, delay: delay);
+            Broadcast(null, packet);
         }
 
-        public void Broadcast(string packet, int xRangeCoordinate, int yRangeCoordinate, int delay = 0)
+        public void Broadcast(string packet, int xRangeCoordinate, int yRangeCoordinate)
         {
-            Broadcast(new BroadcastPacket(null, packet, ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate), delay);
+            Broadcast(new BroadcastPacket(null, packet, ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate));
         }
 
-        public void Broadcast(string[] packets, int delay = 0)
+        public void Broadcast(string[] packets)
         {
-            Broadcast(null, packets, delay: delay);
+            Broadcast(null, packets);
         }
 
-        public void Broadcast(string[] packets, int xRangeCoordinate, int yRangeCoordinate, int delay = 0)
+        public void Broadcast(string[] packets, int xRangeCoordinate, int yRangeCoordinate)
         {
-            Broadcast(packets.Select(p => new BroadcastPacket(null, p, ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate)), delay: delay);
+            Broadcast(packets.Select(p => new BroadcastPacket(null, p, ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate)));
         }
 
-        public void Broadcast(PacketBase packet, int delay = 0)
+        public void Broadcast(PacketBase packet)
         {
-            Broadcast(null, packet, delay: delay);
+            Broadcast(null, packet);
         }
 
-        public void Broadcast(PacketBase packet, int xRangeCoordinate, int yRangeCoordinate, int delay = 0)
+        public void Broadcast(PacketBase packet, int xRangeCoordinate, int yRangeCoordinate)
         {
-            Broadcast(new BroadcastPacket(null, PacketFactory.Serialize(packet), ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate), delay);
+            Broadcast(new BroadcastPacket(null, PacketFactory.Serialize(packet), ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate));
         }
 
-        public void Broadcast(ClientSession client, PacketBase packet, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
+        public void Broadcast(ClientSession client, PacketBase packet, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
         {
-            Broadcast(client, PacketFactory.Serialize(packet), receiver, characterName, characterId, delay);
+            Broadcast(client, PacketFactory.Serialize(packet), receiver, characterName, characterId);
         }
 
-        public void Broadcast(ClientSession client, string[] packets, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
+        public void Broadcast(ClientSession client, string[] packets, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void Broadcast(IEnumerable<BroadcastPacket> packets, int delay = 0)
+        public void Broadcast(IEnumerable<BroadcastPacket> packets)
         {
             try
             {
@@ -128,7 +128,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void Broadcast(BroadcastPacket packet, int delay = 0)
+        public void Broadcast(BroadcastPacket packet)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1, int delay = 0)
+        public void Broadcast(ClientSession client, string content, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
         {
             try
             {

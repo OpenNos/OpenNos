@@ -483,7 +483,7 @@ namespace OpenNos.Handler
             }
             if (guriPacket[2] == "2")
             {
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(2, 1));
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.MapX, Session.Character.MapY);
             }
             else if (guriPacket[2] == "4")
             {

@@ -154,7 +154,7 @@ namespace OpenNos.GameObject
                     MapY = FirstY;
                     Path = new List<GridPos>();
                     Map.Broadcast(GenerateIn3());
-                    Map.Broadcast(GenerateEff(7), MapX, MapY, 10);
+                    Map.Broadcast(GenerateEff(7), MapX, MapY);
                 }
                 return;
             }
@@ -269,7 +269,7 @@ namespace OpenNos.GameObject
                         }
                         if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                         {
-                            Map.Broadcast(GenerateEff(npcMonsterSkill.Skill.CastEffect), MapX, MapY, 10);
+                            Map.Broadcast(GenerateEff(npcMonsterSkill.Skill.CastEffect), MapX, MapY);
                             Thread.Sleep(npcMonsterSkill.Skill.CastTime * 100);
                         }
                         Path = new List<GridPos>();

@@ -119,7 +119,7 @@ namespace OpenNos.GameObject
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
-                Map.Broadcast(GenerateEff(), MapX, MapY, 10);
+                Map.Broadcast(GenerateEff(), MapX, MapY);
                 LastEffect = DateTime.Now;
             }
 
