@@ -38,9 +38,7 @@ namespace OpenNos.Data
 
         public long CharacterId { get; set; }
 
-        public byte Class { get; set; }
-
-        public ClassType Classnum { get { return (ClassType)Class; } set { Class = (byte)value; } }
+        public ClassType Class { get; set; }
 
         public short Compliment { get; set; }
 
@@ -56,15 +54,15 @@ namespace OpenNos.Data
 
         public bool FriendRequestBlocked { get; set; }
 
-        public byte Gender { get; set; }
+        public GenderType Gender { get; set; }
 
         public long Gold { get; set; }
 
         public bool GroupRequestBlocked { get; set; }
 
-        public byte HairColor { get; set; }
+        public HairColorType HairColor { get; set; }
 
-        public byte HairStyle { get; set; }
+        public HairStyleType HairStyle { get; set; }
 
         public bool HeroChatBlocked { get; set; }
 
@@ -114,9 +112,7 @@ namespace OpenNos.Data
 
         public int SpPoint { get; set; }
 
-        public byte State { get; set; }
-
-        public CharacterState StateEnum { get { return (CharacterState)State; } set { State = (byte)value; } }
+        public CharacterState State { get; set; }
 
         public int TalentLose { get; set; }
 

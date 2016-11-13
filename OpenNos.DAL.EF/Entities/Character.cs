@@ -14,6 +14,7 @@
 
 namespace OpenNos.DAL.EF
 {
+    using Domain;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
@@ -74,7 +75,7 @@ namespace OpenNos.DAL.EF
 
         public bool FriendRequestBlocked { get; set; }
 
-        public byte Gender { get; set; }
+        public GenderType Gender { get; set; }
 
         public virtual ICollection<GeneralLog> GeneralLog { get; set; }
 
@@ -82,9 +83,9 @@ namespace OpenNos.DAL.EF
 
         public bool GroupRequestBlocked { get; set; }
 
-        public byte HairColor { get; set; }
+        public HairColorType HairColor { get; set; }
 
-        public byte HairStyle { get; set; }
+        public HairStyleType HairStyle { get; set; }
 
         public bool HeroChatBlocked { get; set; }
 

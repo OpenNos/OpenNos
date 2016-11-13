@@ -117,7 +117,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        if (session.Character.Gender == 1)
+                        if (session.Character.Gender == Domain.GenderType.Female)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1));
                         }

@@ -162,19 +162,19 @@ namespace OpenNos.Handler
                                     {
                                         switch (Session.Character.Class)
                                         {
-                                            case (byte)ClassType.Adventurer:
+                                            case ClassType.Adventurer:
                                                 SkillMiniumLevel = skillinfo.MinimumAdventurerLevel;
                                                 break;
 
-                                            case (byte)ClassType.Swordman:
+                                            case ClassType.Swordman:
                                                 SkillMiniumLevel = skillinfo.MinimumSwordmanLevel;
                                                 break;
 
-                                            case (byte)ClassType.Archer:
+                                            case ClassType.Archer:
                                                 SkillMiniumLevel = skillinfo.MinimumArcherLevel;
                                                 break;
 
-                                            case (byte)ClassType.Magician:
+                                            case ClassType.Magician:
                                                 SkillMiniumLevel = skillinfo.MinimumMagicianLevel;
                                                 break;
                                         }
@@ -199,7 +199,7 @@ namespace OpenNos.Handler
                                 }
                                 else
                                 {
-                                    if (Session.Character.Class != skillinfo.Class)
+                                    if ((byte)Session.Character.Class != skillinfo.Class)
                                     {
                                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
                                         return;
@@ -713,7 +713,7 @@ namespace OpenNos.Handler
                 short vnum = -1;
                 short.TryParse(packetsplit[4], out vnum);
                 CharacterSkill skill = Session.Character.Skills[vnum];
-                if (skill == null || vnum == (200 + 20 * Session.Character.Class) || vnum == (201 + 20 * Session.Character.Class))
+                if (skill == null || vnum == (200 + 20 * (byte)Session.Character.Class) || vnum == (201 + 20 * (byte)Session.Character.Class))
                 {
                     return;
                 }
@@ -838,7 +838,7 @@ namespace OpenNos.Handler
                 if (skill.Type != 0)
                 {
                     typeshop = 1;
-                    if (skillinfo.Class == Session.Character.Class)
+                    if (skillinfo.Class == (byte)Session.Character.Class)
                     {
                         shoplist += $" {skillinfo.SkillVNum}";
                     }

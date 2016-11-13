@@ -79,8 +79,8 @@ namespace OpenNos.GameObject
                          && ItemType != Domain.ItemType.Fashion
                          && ItemType != Domain.ItemType.Jewelery
                          && ItemType != Domain.ItemType.Specialist)
-                        || LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) || (Sex != 0 && Sex != session.Character.Gender + 1)
-                        || ((ItemType != Domain.ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves) && ((Class >> session.Character.Class) & 1) != 1))
+                        || LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) || (Sex != 0 && Sex != (byte)session.Character.Gender + 1)
+                        || ((ItemType != Domain.ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves) && ((Class >> (byte)session.Character.Class) & 1) != 1))
                     {
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                         return;

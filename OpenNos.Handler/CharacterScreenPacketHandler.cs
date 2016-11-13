@@ -77,9 +77,9 @@ namespace OpenNos.Handler
                             CharacterDTO newCharacter = new CharacterDTO()
                             {
                                 Class = (byte)ClassType.Adventurer,
-                                Gender = (Convert.ToByte(packetsplit[4]) >= 0 && Convert.ToByte(packetsplit[4]) <= 1 ? Convert.ToByte(packetsplit[4]) : Convert.ToByte(0)),
-                                HairColor = Enum.IsDefined(typeof(HairColorType), Convert.ToByte(packetsplit[6])) ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0),
-                                HairStyle = Enum.IsDefined(typeof(HairStyleType), Convert.ToByte(packetsplit[5])) ? Convert.ToByte(packetsplit[5]) : Convert.ToByte(0),
+                                Gender = (GenderType)Enum.Parse(typeof(GenderType), packetsplit[4]),
+                                HairColor = (HairColorType)Enum.Parse(typeof(HairColorType), packetsplit[6]),
+                                HairStyle = (HairStyleType)Enum.Parse(typeof(HairStyleType), packetsplit[5]),
                                 Hp = 221,
                                 JobLevel = 1,
                                 Level = 1,
@@ -92,7 +92,7 @@ namespace OpenNos.Handler
                                 Name = characterName,
                                 Slot = slot,
                                 AccountId = accountId,
-                                StateEnum = CharacterState.Active,
+                                State = CharacterState.Active,
                             };
 
                             SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
@@ -343,7 +343,7 @@ namespace OpenNos.Handler
                 }
 
                 // 1 1 before long string of -1.-1 = act completion
-                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {character.HeroLevel} {(equipment[(byte)EquipmentType.Hat] != null ? equipment[(byte)EquipmentType.Hat].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Armor] != null ? equipment[(byte)EquipmentType.Armor].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.WeaponSkin] != null ? equipment[(byte)EquipmentType.WeaponSkin].ItemVNum : equipment[(byte)EquipmentType.MainWeapon] != null ? equipment[(byte)EquipmentType.MainWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.SecondaryWeapon] != null ? equipment[(byte)EquipmentType.SecondaryWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Mask] != null ? equipment[(byte)EquipmentType.Mask].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Fairy] != null ? equipment[(byte)EquipmentType.Fairy].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeSuit] != null ? equipment[(byte)EquipmentType.CostumeSuit].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeHat] != null ? equipment[(byte)EquipmentType.CostumeHat].ItemVNum : -1)} {character.JobLevel}  1 1 -1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1 {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
+                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {(equipment[(byte)EquipmentType.Hat] != null ? equipment[(byte)EquipmentType.Hat].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Armor] != null ? equipment[(byte)EquipmentType.Armor].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.WeaponSkin] != null ? equipment[(byte)EquipmentType.WeaponSkin].ItemVNum : equipment[(byte)EquipmentType.MainWeapon] != null ? equipment[(byte)EquipmentType.MainWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.SecondaryWeapon] != null ? equipment[(byte)EquipmentType.SecondaryWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Mask] != null ? equipment[(byte)EquipmentType.Mask].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Fairy] != null ? equipment[(byte)EquipmentType.Fairy].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeSuit] != null ? equipment[(byte)EquipmentType.CostumeSuit].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeHat] != null ? equipment[(byte)EquipmentType.CostumeHat].ItemVNum : -1)} {character.JobLevel}  1 1 -1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1 {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
             }
             Session.SendPacket("clist_end");
         }
@@ -357,70 +357,9 @@ namespace OpenNos.Handler
                 if (Session != null && Session.Account != null && !Session.HasSelectedCharacter)
                 {
                     string[] packetsplit = packet.Split(' ');
-                    CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2]));
-                    if (characterDTO != null)
+                    Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2])) as Character;
+                    if (character != null)
                     {
-                        Character character = new Character()
-                        {
-                            AccountId = characterDTO.AccountId,
-                            CharacterId = characterDTO.CharacterId,
-                            Class = characterDTO.Class,
-                            Dignity = characterDTO.Dignity,
-                            Gender = characterDTO.Gender,
-                            Gold = characterDTO.Gold,
-                            HairColor = characterDTO.HairColor,
-                            HairStyle = characterDTO.HairStyle,
-                            Hp = characterDTO.Hp,
-                            JobLevel = characterDTO.JobLevel,
-                            JobLevelXp = characterDTO.JobLevelXp,
-                            Level = characterDTO.Level,
-                            LevelXp = characterDTO.LevelXp,
-                            MapId = characterDTO.MapId,
-                            MapX = characterDTO.MapX,
-                            MapY = characterDTO.MapY,
-                            Mp = characterDTO.Mp,
-                            State = characterDTO.State,
-                            Faction = characterDTO.Faction,
-                            Name = characterDTO.Name,
-                            Reput = characterDTO.Reput,
-                            Slot = characterDTO.Slot,
-                            Authority = Session.Account.Authority,
-                            SpAdditionPoint = characterDTO.SpAdditionPoint,
-                            SpPoint = characterDTO.SpPoint,
-                            LastPulse = 0,
-                            LastPortal = 0,
-                            LastSp = 0,
-                            ArenaWinner = characterDTO.ArenaWinner,
-                            Morph = 0,
-                            MorphUpgrade = 0,
-                            MorphUpgrade2 = 0,
-                            Direction = 0,
-                            IsSitting = false,
-                            BackPack = characterDTO.Backpack,
-                            Compliment = characterDTO.Compliment,
-                            Backpack = characterDTO.Backpack,
-                            Biography = characterDTO.Biography,
-                            BuffBlocked = characterDTO.BuffBlocked,
-                            EmoticonsBlocked = characterDTO.EmoticonsBlocked,
-                            WhisperBlocked = characterDTO.WhisperBlocked,
-                            FamilyRequestBlocked = characterDTO.FamilyRequestBlocked,
-                            ExchangeBlocked = characterDTO.ExchangeBlocked,
-                            FriendRequestBlocked = characterDTO.FriendRequestBlocked,
-                            GroupRequestBlocked = characterDTO.GroupRequestBlocked,
-                            HeroChatBlocked = characterDTO.HeroChatBlocked,
-                            HpBlocked = characterDTO.HpBlocked,
-                            MinilandInviteBlocked = characterDTO.MinilandInviteBlocked,
-                            QuickGetUp = characterDTO.QuickGetUp,
-                            MouseAimLock = characterDTO.MouseAimLock,
-                            LastLogin = DateTime.Now,
-                            SnackHp = 0,
-                            SnackMp = 0,
-                            SnackAmount = 0,
-                            MaxSnack = 0,
-                            HeroLevel = characterDTO.HeroLevel,
-                            HeroXp = characterDTO.HeroXp
-                        };
-                        character.Initialize();
                         Session.SetCharacter(character);
                         Session.Character.Update();
                         Session.Character.LoadInventory();

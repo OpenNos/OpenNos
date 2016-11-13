@@ -395,10 +395,8 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void ChangeClass(byte characterClass)
+        public void ChangeClass(ClassType characterClass)
         {
-            if (characterClass < 4)
-            {
                 JobLevel = 1;
                 JobLevelXp = 0;
                 Session.SendPacket("npinfo 0");
@@ -406,7 +404,7 @@ namespace OpenNos.GameObject
 
                 if (characterClass == (byte)ClassType.Adventurer)
                 {
-                    HairStyle = HairStyle > 1 ? (byte)0 : HairStyle;
+                    HairStyle = (byte)HairStyle > 1 ? (byte)0 : HairStyle;
                 }
 
                 LoadSpeed();
@@ -445,8 +443,8 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                Skills[(short)(200 + 20 * Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * Class), CharacterId = CharacterId };
-                Skills[(short)(201 + 20 * Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * Class), CharacterId = CharacterId };
+                Skills[(short)(200 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)Class), CharacterId = CharacterId };
+                Skills[(short)(201 + 20 * (byte)Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)Class), CharacterId = CharacterId };
                 Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = CharacterId };
 
                 Session.SendPacket(GenerateSki());
@@ -473,15 +471,14 @@ namespace OpenNos.GameObject
                 {
                     Session.CurrentMap?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
                 }
-            }
         }
 
         public void ChangeSex()
         {
-            Gender = Gender == 1 ? (byte)0 : (byte)1;
+            Gender = Gender == GenderType.Female ? GenderType.Male : GenderType.Female;
             if (IsVehicled)
             {
-                Morph = Gender == 1 ? Morph + 1 : Morph - 1;
+                Morph = Gender == GenderType.Female ? Morph + 1 : Morph - 1;
             }
             Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
             Session.SendPacket(GenerateEq());
@@ -608,7 +605,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCInfo()
         {
-            return $"c_info {Name} - -1 -1 - {CharacterId} {(Invisible ? 6 : (byte)Authority)} {Gender} {HairStyle} {HairColor} {Class} {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
+            return $"c_info {Name} - -1 -1 - {CharacterId} {(Invisible ? 6 : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
 
         public string GenerateCMap()
@@ -765,7 +762,7 @@ namespace OpenNos.GameObject
 
         public string GenerateEq()
         {
-            int color = HairColor;
+            int color = (byte)HairColor;
             WearableInstance head = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
 
             if (head != null && head.Item.IsColored)
@@ -773,7 +770,7 @@ namespace OpenNos.GameObject
                 color = head.Design;
             }
 
-            return $"eq {CharacterId} {(Invisible ? 6 : (byte)Authority)} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {GenerateEqRareUpgradeForPacket()}";
+            return $"eq {CharacterId} {(Invisible ? 6 : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {GenerateEqRareUpgradeForPacket()}";
         }
 
         public string GenerateEqListForPacket()
@@ -871,7 +868,7 @@ namespace OpenNos.GameObject
 
         public string GenerateGender()
         {
-            return $"p_sex {Gender}";
+            return $"p_sex {(byte)Gender}";
         }
 
         public string GenerateGet(long id)
@@ -920,7 +917,7 @@ namespace OpenNos.GameObject
 
         public string GenerateIn()
         {
-            int color = HairColor;
+            int color = (byte)HairColor;
             WearableInstance headWearable = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
             if (headWearable != null && headWearable.Item.IsColored)
             {
@@ -928,7 +925,7 @@ namespace OpenNos.GameObject
             }
             ItemInstance fairy = Inventory.LoadBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
 
-            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? fairy.Item.Element : 0)} 0 {(fairy != null ? fairy.Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
+            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(byte)Authority} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {(Group != null ? Group.GroupId : -1)} {(fairy != null ? 2 : 0)} {(fairy != null ? fairy.Item.Element : 0)} 0 {(fairy != null ? fairy.Item.Morph : 0)} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
         public List<string> GenerateIn2()
@@ -1064,7 +1061,7 @@ namespace OpenNos.GameObject
             foreach (ClientSession groupSessionForId in grp.Characters)
             {
                 i++;
-                str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{groupSessionForId.Character.Gender}|{groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
+                str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{(byte)groupSessionForId.Character.Gender}|{(byte)groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
             }
             return str;
         }
@@ -1128,7 +1125,7 @@ namespace OpenNos.GameObject
             // tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph
             // talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary
             // ispvparmor herolvl desc
-            return $"tc_info {Level} {Name} {(fairy != null ? fairy.Item.Element : 0)} {ElementRate} {Class} {Gender} -1 - {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 0 0 0 {HeroLevel} {(String.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
+            return $"tc_info {Level} {Name} {(fairy != null ? fairy.Item.Element : 0)} {ElementRate} {(byte)Class} {(byte)Gender} -1 - {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 0 0 0 {HeroLevel} {(String.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
         }
 
         public string GenerateRest()
@@ -1177,7 +1174,7 @@ namespace OpenNos.GameObject
             string skibase = String.Empty;
             if (!UseSp)
             {
-                skibase = $"{200 + 20 * Class} {201 + 20 * Class}";
+                skibase = $"{200 + 20 * (byte)Class} {201 + 20 * (byte)Class}";
             }
             else if (characterSkills.Any())
             {
@@ -1323,17 +1320,17 @@ namespace OpenNos.GameObject
                     type2 = 1;
                     break;
 
-                case (byte)ClassType.Magician:
+                case ClassType.Magician:
                     type = 2;
                     type2 = 1;
                     break;
 
-                case (byte)ClassType.Swordman:
+                case ClassType.Swordman:
                     type = 0;
                     type2 = 1;
                     break;
 
-                case (byte)ClassType.Archer:
+                case ClassType.Archer:
                     type = 1;
                     type2 = 0;
                     break;
@@ -1548,7 +1545,7 @@ namespace OpenNos.GameObject
 
         public string GenerateTit()
         {
-            return $"tit {Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper())} {Name}";
+            return $"tit {Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper())} {Name}";
         }
 
         public string GenerateTp()
@@ -1885,11 +1882,11 @@ namespace OpenNos.GameObject
         {
             if (IsSitting)
             {
-                return CharacterHelper.HpHealth[Class];
+                return CharacterHelper.HpHealth[(byte)Class];
             }
             else if ((DateTime.Now - LastDefence).TotalSeconds > 2)
             {
-                return CharacterHelper.HpHealthStand[Class];
+                return CharacterHelper.HpHealthStand[(byte)Class];
             }
             else
             {
@@ -1901,11 +1898,11 @@ namespace OpenNos.GameObject
         {
             if (IsSitting)
             {
-                return CharacterHelper.MpHealth[Class];
+                return CharacterHelper.MpHealth[(byte)Class];
             }
             else if ((DateTime.Now - LastDefence).TotalSeconds > 2)
             {
-                return CharacterHelper.MpHealthStand[Class];
+                return CharacterHelper.MpHealthStand[(byte)Class];
             }
             else
             {
@@ -1935,7 +1932,7 @@ namespace OpenNos.GameObject
                     hp = inventory.HP + inventory.SpHP * 100;
                 }
             }
-            return (int)((CharacterHelper.HPData[Class, Level] + hp) * multiplicator);
+            return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp) * multiplicator);
         }
 
         public override void Initialize()
@@ -2084,7 +2081,7 @@ namespace OpenNos.GameObject
             // only load speed if you dont use custom speed
             if (!IsVehicled && !IsCustomSpeed)
             {
-                Speed = CharacterHelper.SpeedData[Class];
+                Speed = CharacterHelper.SpeedData[(byte)Class];
 
                 if (UseSp)
                 {
@@ -2132,7 +2129,7 @@ namespace OpenNos.GameObject
                     mp = inventory.MP + inventory.SpHP * 100;
                 }
             }
-            return (int)((CharacterHelper.MPData[Class, Level] + mp) * multiplicator);
+            return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp) * multiplicator);
         }
 
         public void NotifyRarifyResult(sbyte rare)
@@ -2301,7 +2298,7 @@ namespace OpenNos.GameObject
         public void SendGift(long id, short vnum, byte amount, sbyte rare, byte upgrade, bool isNosmall)
         {
             Item it = ServerManager.GetItem((short)vnum);
-            int color = HairColor;
+            int color = (byte)HairColor;
             if (it.ItemType != ItemType.Weapon && it.ItemType != ItemType.Armor)
             {
                 rare = 0;
@@ -2380,7 +2377,7 @@ namespace OpenNos.GameObject
                     default:
                         return false;
 
-                    case 0:
+                    case ClassType.Adventurer:
                         if (ski.Skill.Type == 1)
                         {
                             WearableInstance inv = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
@@ -2412,7 +2409,7 @@ namespace OpenNos.GameObject
                             }
                         }
                         else return true;
-                    case 1:
+                    case ClassType.Swordman:
                         if (ski.Skill.Type == 1)
                         {
                             WearableInstance inv = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
@@ -2444,7 +2441,7 @@ namespace OpenNos.GameObject
                             }
                         }
                         else return true;
-                    case 2:
+                    case ClassType.Archer:
                         if (ski.Skill.Type == 1)
                         {
                             WearableInstance inv = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
@@ -2476,7 +2473,7 @@ namespace OpenNos.GameObject
                             }
                         }
                         else return true;
-                    case 3:
+                    case ClassType.Magician:
                         return true;
                 }
             }

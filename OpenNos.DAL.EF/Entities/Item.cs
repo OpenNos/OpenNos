@@ -14,6 +14,7 @@
 
 namespace OpenNos.DAL.EF
 {
+    using Domain;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -78,7 +79,7 @@ namespace OpenNos.DAL.EF
 
         public short ElementRate { get; set; }
 
-        public byte EquipmentSlot { get; set; }
+        public EquipmentType EquipmentSlot { get; set; }
 
         public byte FireElement { get; set; }
 
