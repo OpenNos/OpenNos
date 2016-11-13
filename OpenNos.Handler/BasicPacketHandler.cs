@@ -216,27 +216,31 @@ namespace OpenNos.Handler
                     MailDTO mail = Session.Character.MailList[id];
                     if (packetsplit[2] == "4")
                     {
-                        ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
 
-                        if (newInv != null)
+                        if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                         {
-                            newInv.Upgrade = mail.AttachmentUpgrade;
-                            newInv.Rare = (sbyte)mail.AttachmentRarity;
-                            if (newInv.Rare != 0)
-                            {
-                                (newInv as WearableInstance).SetRarityPoint();
-                            }
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
-                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
+                            ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
 
-                            if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
+                            if(newInv != null)
                             {
-                                DAOFactory.MailDAO.DeleteById(mail.MailId);
-                            }
-                            Session.SendPacket($"parcel 2 1 {packetsplit[3]}");
-                            if (Session.Character.MailList.ContainsKey(id))
-                            {
-                                Session.Character.MailList.Remove(id);
+                                newInv.Upgrade = mail.AttachmentUpgrade;
+                                newInv.Rare = (sbyte)mail.AttachmentRarity;
+                                if (newInv.Rare != 0)
+                                {
+                                    (newInv as WearableInstance).SetRarityPoint();
+                                }
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
+
+                                if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
+                                {
+                                    DAOFactory.MailDAO.DeleteById(mail.MailId);
+                                }
+                                Session.SendPacket($"parcel 2 1 {packetsplit[3]}");
+                                if (Session.Character.MailList.ContainsKey(id))
+                                {
+                                    Session.Character.MailList.Remove(id);
+                                }
                             }
                         }
                         else
