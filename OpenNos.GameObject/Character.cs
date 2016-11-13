@@ -621,7 +621,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCond()
         {
-            return $"cond 1 {CharacterId} {(IsSitting ? 1 : 0)} 0 {Speed}";
+            return $"cond 1 {CharacterId} 0 0 {Speed}";
         }
 
         public string GenerateDelay(int delay, int type, string argument)
@@ -1756,7 +1756,7 @@ namespace OpenNos.GameObject
             {
                 levelSum = group.Characters.Sum(g => g.Character.Level);
                 partySize = group.CharacterCount;
-                partyPenalty = (12 / partySize) / levelSum;
+                partyPenalty = (12 / partySize) / (double)levelSum;
             }
 
             // monster jobxp / penalty * rate
@@ -1836,7 +1836,7 @@ namespace OpenNos.GameObject
             {
                 levelSum = group.Characters.Sum(g => g.Character.Level);
                 partySize = group.CharacterCount;
-                partyPenalty = (12 / partySize) / levelSum;
+                partyPenalty = (12 / partySize) / (double)levelSum;
             }
 
             // xp calculation dependant on level difference
