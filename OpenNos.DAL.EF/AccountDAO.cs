@@ -211,11 +211,11 @@ namespace OpenNos.DAL.EF
             return _mapper.Map<AccountDTO>(entity);
         }
 
-        private AccountDTO Update(Account entity, AccountDTO character, OpenNosContext context)
+        private AccountDTO Update(Account entity, AccountDTO account, OpenNosContext context)
         {
             if (entity != null)
             {
-                _mapper.Map(character, entity);
+                _mapper.Map(account, entity);
                 context.SaveChanges();
             }
             return _mapper.Map<AccountDTO>(entity);
