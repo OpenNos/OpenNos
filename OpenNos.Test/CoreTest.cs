@@ -18,6 +18,12 @@ namespace OpenNos.Test
 
             Logger.InitializeLogger(LogManager.GetLogger(typeof(CoreTest)));
 
+            // mtlist packet
+            string mtlistPacket = "mtlist 30 3 1698 3 1703 3 1861 3 1865 3 1870 3 1873 3 1874 3 1879 3 1880 3 1882 3 1885 3 1887 3 1890 3 1896 3 1900 3 1901 3 1904 3 1908 3 1915 3 1916 3 1919 3 1923 3 1925 3 1931 3 1934 3 1935 3 1937 3 1941 3 1942 3 1946";
+            MultiTargetListPacket deserializedMtlistPacket = PacketFactory.Deserialize<MultiTargetListPacket>(mtlistPacket);
+            string serializedMtlistPacket = PacketFactory.Serialize(deserializedMtlistPacket);
+            Assert.AreEqual(mtlistPacket, serializedMtlistPacket);
+
             // Equip Packet
             string equipPacket = "equip 5 0 0.4903.5.0.0 2.340.0.0.0 3.720.0.0.0 5.4912.6.0.0 9.227.0.0.0 10.803.0.0.0 11.347.0.0.0 13.4146.0.0.0 14.4138.0.0.0";
             EquipPacket deserializedEquipPacket = PacketFactory.Deserialize<EquipPacket>(equipPacket);
