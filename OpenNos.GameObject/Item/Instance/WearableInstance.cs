@@ -353,18 +353,38 @@ namespace OpenNos.GameObject
                 this.HitRate = 0;
                 this.DamageMinimum = 0;
                 this.DamageMaximum = 0;
-                for (int i = 0; i < point; i++)
+                if (this.Rare >= 0)
                 {
-                    int rndn = _random.Next(0, 3);
-                    if (rndn == 0)
+                    for (int i = 0; i < point; i++)
                     {
-                        this.Concentrate++;
-                        this.HitRate++;
+                        int rndn = _random.Next(0, 3);
+                        if (rndn == 0)
+                        {
+                            this.Concentrate++;
+                            this.HitRate++;
+                        }
+                        else
+                        {
+                            this.DamageMinimum++;
+                            this.DamageMaximum++;
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    for (int i = 0; i > point; i--)
                     {
-                        this.DamageMinimum++;
-                        this.DamageMaximum++;
+                        int rndn = _random.Next(0, 3);
+                        if (rndn == 0)
+                        {
+                            this.Concentrate--;
+                            this.HitRate--;
+                        }
+                        else
+                        {
+                            this.DamageMinimum--;
+                            this.DamageMaximum--;
+                        }
                     }
                 }
             }
@@ -376,19 +396,40 @@ namespace OpenNos.GameObject
                 this.DistanceDefence = 0;
                 this.MagicDefence = 0;
                 this.CloseDefence = 0;
-                for (int i = 0; i < point; i++)
+                if (this.Rare >= 0)
                 {
-                    int rndn = _random.Next(0, 3);
-                    if (rndn == 0)
+                    for (int i = 0; i < point; i++)
                     {
-                        this.DefenceDodge++;
-                        this.DistanceDefenceDodge++;
+                        int rndn = _random.Next(0, 3);
+                        if (rndn == 0)
+                        {
+                            this.DefenceDodge++;
+                            this.DistanceDefenceDodge++;
+                        }
+                        else
+                        {
+                            this.DistanceDefence++;
+                            this.MagicDefence++;
+                            this.CloseDefence++;
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    for (int i = 0; i > point; i--)
                     {
-                        this.DistanceDefence++;
-                        this.MagicDefence++;
-                        this.CloseDefence++;
+                        int rndn = _random.Next(0, 3);
+                        if (rndn == 0)
+                        {
+                            this.DefenceDodge--;
+                            this.DistanceDefenceDodge--;
+                        }
+                        else
+                        {
+                            this.DistanceDefence--;
+                            this.MagicDefence--;
+                            this.CloseDefence--;
+                        }
                     }
                 }
             }

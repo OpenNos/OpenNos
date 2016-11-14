@@ -299,11 +299,11 @@ namespace OpenNos.GameObject
                     break;
 
                 case -2:
-                    p = 0;
+                    p = -2;
                     break;
 
                 case -1:
-                    p = 0;
+                    p = -1;
                     break;
 
                 case 0:
