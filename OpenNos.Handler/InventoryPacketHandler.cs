@@ -514,7 +514,7 @@ namespace OpenNos.Handler
                             }
                         }
 
-                        //initialize and rarify
+                        // initialize and rarify
                         ((MonsterMapItem)mapItem).Rarify(null);
                     }
 
@@ -545,7 +545,7 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        //handle gold drop
+                        // handle gold drop
                         MonsterMapItem droppedGold = mapItem as MonsterMapItem;
                         if (Session.Character.Gold + droppedGold.GoldAmount <= 1000000000)
                         {
@@ -1492,6 +1492,5 @@ namespace OpenNos.Handler
         }
 
 #endregion
-
     }
 }

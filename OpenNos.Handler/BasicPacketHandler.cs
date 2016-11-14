@@ -216,7 +216,6 @@ namespace OpenNos.Handler
                     MailDTO mail = Session.Character.MailList[id];
                     if (packetsplit[2] == "4")
                     {
-
                         if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                         {
                             ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
@@ -470,7 +469,9 @@ namespace OpenNos.Handler
                 message += packetsplit[i] + " ";
             }
             if (message.Length > 60)
+            {
                 message = message.Substring(0, 60);
+            }
 
             message = message.Substring(1).Trim();
 
@@ -501,12 +502,12 @@ namespace OpenNos.Handler
                     {
                         string message = String.Empty;
 
-                        //message = $" ";
+                        // message = $" ";
                         for (int i = 6; i < guriPacket.Length; i++)
                         {
                             message += guriPacket[i] + "^";
                         }
-                        message = message.Substring(0, message.Length - 1); //Remove the last ^
+                        message = message.Substring(0, message.Length - 1); // Remove the last ^
                         message.Trim();
                         if (message.Length > 60)
                         {
@@ -531,7 +532,9 @@ namespace OpenNos.Handler
                             message += guriPacket[i] + " ";
                         }
                         if (message.Length > 120)
+                        {
                             message = message.Substring(0, 120);
+                        }
 
                         message.Trim();
 
@@ -850,7 +853,9 @@ namespace OpenNos.Handler
                 message += packetsplit[i] + " ";
             }
             if (message.Length > 60)
+            {
                 message = message.Substring(0, 60);
+            }
 
             if (Session.Character.IsMuted())
             {

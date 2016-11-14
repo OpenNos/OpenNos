@@ -335,6 +335,7 @@ namespace OpenNos.GameObject
             {
                 return _session;
             }
+
             private set
             {
                 _session = value;
@@ -372,6 +373,7 @@ namespace OpenNos.GameObject
             {
                 return _speed;
             }
+
             set
             {
                 if (value > 59)
@@ -2107,7 +2109,8 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            if (IsVehicled) // reload vehicle speed after opening an shop for instance
+            // reload vehicle speed after opening an shop for instance
+            if (IsVehicled) 
             {
                 Speed = VehicleSpeed;
             }

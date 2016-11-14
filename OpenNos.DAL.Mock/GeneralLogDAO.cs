@@ -22,7 +22,7 @@ namespace OpenNos.DAL.Mock
 
         public IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, long? CharacterId)
         {
-            return Enumerable.Empty<GeneralLogDTO>().Select(e => MapEntity(e)); ;
+            return Enumerable.Empty<GeneralLogDTO>().Select(e => MapEntity(e));
         }
 
         public void SetCharIdNull(long? CharacterId)

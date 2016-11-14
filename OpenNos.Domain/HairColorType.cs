@@ -144,6 +144,5 @@ namespace OpenNos.Domain
         PurpleVariant13 = 125,
         PurpleVariant14 = 126,
         PurpleVariant15 = 127
-
     }
 }

@@ -19,6 +19,7 @@
             {
                 return ItemInstance.Amount;
             }
+
             set
             {
                 ItemInstance.Amount = Amount;
@@ -33,6 +34,7 @@
             {
                 return ItemInstance.ItemVNum;
             }
+
             set
             {
                 ItemInstance.ItemVNum = value;
@@ -45,9 +47,10 @@
             {
                 return ItemInstance.TransportId;
             }
+
             set
             {
-                //cannot set TransportId
+                // cannot set TransportId
             }
         }
 

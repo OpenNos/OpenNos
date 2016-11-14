@@ -81,7 +81,9 @@ namespace OpenNos.Handler
                     MapMonsterId = Session.CurrentMap.GetNextMonsterId()
                 };
                 MapMonster monster = null;
-                if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null) //TODO Speed up with DoesMonsterExist
+
+                // TODO Speed up with DoesMonsterExist
+                if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null) 
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
                     monster = DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) as MapMonster;
@@ -1532,9 +1534,9 @@ namespace OpenNos.Handler
                     {
                         ServerManager.Instance.MapOut(Session.Character.CharacterId);
                         Session.Character.MapId = (short)mapId;
-                        Session.Character.MapX = (short)((short)(mapx) + 1);
-                        Session.Character.MapY = (short)((short)(mapy) + 1);
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, (short)mapId, (short)((short)(mapx) + 1), (short)((short)(mapy) + 1));
+                        Session.Character.MapX = (short)((short)(mapx)+1);
+                        Session.Character.MapY = (short)((short)(mapy)+1);
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, (short)mapId, (short)((short)(mapx)+1), (short)((short)(mapy)+1));
                     }
                     else
                     {
@@ -1610,8 +1612,7 @@ namespace OpenNos.Handler
 
                         ServerManager.Instance.MapOut(targetSession.Character.CharacterId);
                         targetSession.Character.IsSitting = false;
-                        ServerManager.Instance.ChangeMap(targetSession.Character.CharacterId, Session.Character.MapId
-                            , (short)((Session.Character.MapX) + (short)1), (short)((Session.Character.MapY) + (short)1));
+                        ServerManager.Instance.ChangeMap(targetSession.Character.CharacterId, Session.Character.MapId, (short)((Session.Character.MapX)+(short)1), (short)((Session.Character.MapY)+(short)1));
                     }
                     else
                     {

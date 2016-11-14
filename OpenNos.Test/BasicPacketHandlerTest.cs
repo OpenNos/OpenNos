@@ -14,7 +14,7 @@ namespace OpenNos.Test
     {
         #region Methods
 
-        //[Test]
+        // [Test]
         public void InitializeTestEnvironmentTest()
         {
             // login, create character, start game
@@ -31,7 +31,7 @@ namespace OpenNos.Test
 
             CharacterOptionPacket optionPacket = new CharacterOptionPacket() { IsActive = false, Option = CharacterOption.FamilyRequestBlocked };
 
-            //check family request
+            // check family request
             client.ReceivePacket(optionPacket);
             string msgPacket = HandlerTestHelper.WaitForPacket(client, "msg");
             Assert.IsTrue(client.Session.Character.FamilyRequestBlocked);
@@ -61,7 +61,6 @@ namespace OpenNos.Test
             HandlerTestHelper.ShutdownTestingEnvironment();
             Assert.Pass();
         }
-
 
         [Test, MaxTime(10000)]
         public void GroupTest()
@@ -96,7 +95,6 @@ namespace OpenNos.Test
             Assert.IsNotNull(clientA.Session.Character.Group);
             Assert.IsNotNull(clientB.Session.Character.Group);
             Assert.AreEqual(2, clientA.Session.Character.Group.CharacterCount);
-
         }
 
             #endregion

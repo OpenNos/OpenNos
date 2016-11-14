@@ -50,7 +50,6 @@ namespace OpenNos.GameObject
         #endregion
 
         // private Task taskPacketReceived;
-
         #region Instantiation
 
         public ClientSession(INetworkClient client)
@@ -58,9 +57,9 @@ namespace OpenNos.GameObject
             // set last received
             lastPacketReceive = DateTime.Now.Ticks;
 
-
             // lag mode
             _random = new Random((int)client.ClientId);
+
             // initialize lagging mode
             IsLagMode = System.Configuration.ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
 
@@ -209,8 +208,8 @@ namespace OpenNos.GameObject
         public int LastKeepAliveIdentity { get; set; }
 
         public int SessionId { get; set; }
-        public bool IsLagMode { get; private set; }
 
+        public bool IsLagMode { get; private set; }
         #endregion
 
         #region Methods
@@ -231,8 +230,8 @@ namespace OpenNos.GameObject
             {
                 Character.Dispose();
 
-                //TODO Check why ExchangeInfo.TargetCharacterId is null
-                //Character.CloseTrade();
+                // TODO Check why ExchangeInfo.TargetCharacterId is null
+                // Character.CloseTrade();
                 // disconnect client
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
 
@@ -355,19 +354,20 @@ namespace OpenNos.GameObject
             {
                 IPacketHandler handler = (IPacketHandler)Activator.CreateInstance(handlerType, new object[] { this });
 
-                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any()
-                || x.GetParameters().FirstOrDefault()?.ParameterType?.BaseType == typeof(PacketBase))) //include PacketBase
+                // include PacketBase
+                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any() || x.GetParameters().FirstOrDefault()?.ParameterType?.BaseType == typeof(PacketBase))) 
                 {
                     PacketAttribute packetAttribute = methodInfo.GetCustomAttributes(false).OfType<PacketAttribute>().FirstOrDefault();
 
-                    if (packetAttribute == null) //assume PacketBase based handler method
+                    // assume PacketBase based handler method
+                    if (packetAttribute == null) 
                     {
                         HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, methodInfo.GetParameters().FirstOrDefault()?.ParameterType);
                         HandlerMethods.Add(methodReference.Identification, methodReference);
                     }
                     else
                     {
-                        //assume string based handler method
+                        // assume string based handler method
                         HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, packetAttribute);
                         HandlerMethods.Add(methodReference.Identification, methodReference);
                     }
@@ -526,7 +526,7 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            if(IsLagMode)
+            if (IsLagMode)
             {
                 // most devilish thing i can imagine
                 Task.Delay(_random.Next(1000, 2000));

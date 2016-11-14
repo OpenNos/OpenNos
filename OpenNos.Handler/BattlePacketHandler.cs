@@ -132,7 +132,7 @@ namespace OpenNos.Handler
         {
             IList<string> broadcastPackets = new List<string>();
 
-            List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems(); ;
+            List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
             bool notcancel = false;
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
@@ -449,14 +449,16 @@ namespace OpenNos.Handler
 
             MapMonster monsterToAttack = Session.CurrentMap.GetMonster(monsterid);
             if (monsterToAttack == null)
+            {
                 return 0;
+            }                
 
             short distanceX = (short)(Session.Character.MapX - monsterToAttack.MapX);
             short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
             Random random = new Random();
             int generated = random.Next(0, 100);
 
-            //int miss_chance = 20;
+            // int miss_chance = 20;
             int monsterDefence = 0;
 
             short mainUpgrade = 0;
@@ -473,13 +475,12 @@ namespace OpenNos.Handler
             int secMaxDmg = 0;
             int secHitRate = 0;
 
-            //int CritChance = 4;
-            //int CritHit = 70;
-            //int MinDmg = 0;
-            //int MaxDmg = 0;
-            //int HitRate = 0;
-            //sbyte Upgrade = 0;
-
+            // int CritChance = 4;
+            // int CritHit = 70;
+            // int MinDmg = 0;
+            // int MaxDmg = 0;
+            // int HitRate = 0;
+            // sbyte Upgrade = 0;
             #endregion
 
             #region Sp
@@ -584,7 +585,7 @@ namespace OpenNos.Handler
 
             int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
             baseDamage += (skill.Damage / 4);
-            int elementalDamage = 0; //placeholder for BCard etc...
+            int elementalDamage = 0; // placeholder for BCard etc...
             elementalDamage += (skill.ElementalDamage / 4);
             switch (mainUpgrade)
             {

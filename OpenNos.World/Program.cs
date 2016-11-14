@@ -80,7 +80,7 @@ namespace OpenNos.World
             // initialize DB
             if (DataAccessHelper.Initialize())
             {
-                //register mappings for DAOs, Entity -> GameObject and GameObject -> Entity
+                // register mappings for DAOs, Entity -> GameObject and GameObject -> Entity
                 RegisterMappings();
 
                 // initialilize maps

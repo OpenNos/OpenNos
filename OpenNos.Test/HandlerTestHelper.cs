@@ -68,7 +68,7 @@ namespace OpenNos.Test
             List<string> gameStartPacketsFirstPart = WaitForPackets(client, "p_clear");
             List<string> gameStartPacketsSecondPart = WaitForPackets(client, "p_clear");
 
-            //wait 100 milliseconds to be sure initialization has been finished
+            // wait 100 milliseconds to be sure initialization has been finished
             Task.Delay(100);
 
             return client;

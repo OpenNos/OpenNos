@@ -113,7 +113,7 @@ namespace OpenNos.GameObject
             Target = -1;
             Path = new List<GridPos>();
             Alive = true;
-            Respawn = (Respawn.HasValue? Respawn.Value : true);
+            Respawn = (Respawn.HasValue ? Respawn.Value : true);
             Monster = ServerManager.GetNpc(MonsterVNum);
             CurrentHp = Monster.MaxHP;
             CurrentMp = Monster.MaxMP;

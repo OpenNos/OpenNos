@@ -118,7 +118,7 @@ namespace OpenNos.Handler
                     }
                 case BuyShopType.ItemShop:
                     {
-                        //load shop
+                        // load shop
                         MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)buyPacket.OwnerId));
 
                         if (npc == null || npc.Shop == null || Map.GetDistance(new MapCell() { MapId = Session.CurrentMap.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { MapId = npc.MapId, X = npc.MapX, Y = npc.MapY }) > 5)
@@ -917,9 +917,9 @@ namespace OpenNos.Handler
         {
             string packetToSend = $"n_inv 1 {owner} 0 0";
 
-            if(shop.Value != null && shop.Value.Items != null)
+            if (shop.Value != null && shop.Value.Items != null)
             {
-                foreach(PersonalShopItem item in shop.Value.Items)
+                foreach (PersonalShopItem item in shop.Value.Items)
                 { 
                     if (item != null)
                     {
