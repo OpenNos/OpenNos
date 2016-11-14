@@ -228,6 +228,8 @@ namespace OpenNos.GameObject
 
         public DateTime LastMapObject { get; set; }
 
+        public int TimesUsed { get; set; }
+
         public int LastMonsterId { get; set; }
 
         public DateTime LastMove { get; set; }

@@ -627,7 +627,9 @@ namespace OpenNos.Handler
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
 
                         int RateDrop = ServerManager.DropRate;
-                        if (Session.Character.LastMapObject.AddSeconds(6) < DateTime.Now)
+                        int delay = (int)Math.Round((3 + mapobject.RespawnTime / 1000d) * Session.Character.TimesUsed);
+                        delay = delay > 11 ? 8 : delay;
+                        if (Session.Character.LastMapObject.AddSeconds(delay) < DateTime.Now)
                         {
                             if (mapobject.Drops.Any(s => s.MonsterVNum != null))
                             {
@@ -645,6 +647,11 @@ namespace OpenNos.Handler
                                 short vnum = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum;
                                 ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(vnum);
                                 Session.Character.LastMapObject = DateTime.Now;
+                                Session.Character.TimesUsed++;
+                                if (Session.Character.TimesUsed >= 4)
+                                {
+                                    Session.Character.TimesUsed = 0;
+                                }
                                 if (newInv != null)
                                 {
                                     Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
@@ -667,7 +674,7 @@ namespace OpenNos.Handler
                         {
                             // make it like official, more than 6 seconds propably multiplied by
                             // amount of tries
-                            Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"), (int)(Session.Character.LastMapObject.AddSeconds(6) - DateTime.Now).TotalSeconds), 0));
+                            Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"), (int)(Session.Character.LastMapObject.AddSeconds(delay) - DateTime.Now).TotalSeconds), 0));
                         }
                     }
                     break;
