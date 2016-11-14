@@ -214,9 +214,9 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public async Task ClearLowpriorityQueue()
+        public async Task ClearLowPriorityQueue()
         {
-            await _client.ClearLowpriorityQueue();
+            await _client.ClearLowPriorityQueue();
         }
 
         public void Destroy()

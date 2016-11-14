@@ -165,7 +165,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #region Methods
 
-        public async Task ClearLowpriorityQueue()
+        public async Task ClearLowPriorityQueue()
         {
             // do nothing
         }

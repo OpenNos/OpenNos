@@ -199,13 +199,9 @@ namespace OpenNos.GameObject
                     session.CurrentMap.UnregisterSession(session.Character.CharacterId);
 
                     // cleanup sending queue to avoid sending uneccessary packets to it
-                    Task.Factory.StartNew(async () =>
-                    {
-                        await session.ClearLowpriorityQueue();
-                    });
+                    session.ClearLowPriorityQueue();
 
                     // avoid cleaning new portals
-                    Task.Delay(100);
                     if (mapId != null || mapX != null || mapY != null)
                     {
                         session.Character.MapId = (short)mapId;

@@ -109,7 +109,7 @@ namespace OpenNos.GameObject.Mock
 
         #region Methods
 
-        public async Task ClearLowpriorityQueue()
+        public async Task ClearLowPriorityQueue()
         {
             // nothing to do here
         }

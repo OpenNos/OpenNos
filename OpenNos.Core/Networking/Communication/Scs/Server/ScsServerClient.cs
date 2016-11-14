@@ -135,9 +135,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #region Methods
 
-        public async Task ClearLowpriorityQueue()
+        public async Task ClearLowPriorityQueue()
         {
-            await _communicationChannel.ClearLowpriorityQueue();
+            await _communicationChannel.ClearLowPriorityQueue();
         }
 
         /// <summary>

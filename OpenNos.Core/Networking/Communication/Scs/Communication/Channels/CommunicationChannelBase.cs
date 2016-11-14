@@ -90,7 +90,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 
         #region Methods
 
-        public abstract Task ClearLowpriorityQueue();
+        public abstract Task ClearLowPriorityQueue();
 
         /// <summary>
         /// Disconnects from remote application and closes this channel.
