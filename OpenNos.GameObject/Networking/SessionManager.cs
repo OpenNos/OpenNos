@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -74,6 +75,9 @@ namespace OpenNos.GameObject
                         {
                             ServerManager.Instance.GroupLeave(session);
                         }
+
+                        // wait to complete all active actions
+                        Task.Delay(5000);
 
                         session.Character.Save();
 

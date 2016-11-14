@@ -2244,9 +2244,9 @@ namespace OpenNos.GameObject
                 }
 
                 // create or update all which are new or do still exist
-                foreach (ItemInstanceDTO inventory in inventories)
+                foreach (ItemInstanceDTO itemInstance in inventories)
                 {
-                    DAOFactory.ItemInstanceDAO.InsertOrUpdate(inventory);
+                    DAOFactory.ItemInstanceDAO.InsertOrUpdate(itemInstance);
                 }
 
                 if (Skills != null)
