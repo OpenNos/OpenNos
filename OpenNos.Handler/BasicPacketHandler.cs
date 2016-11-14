@@ -910,7 +910,7 @@ namespace OpenNos.Handler
                             IsSenderCopy = true,
                             SenderClass = Session.Character.Class,
                             SenderGender = Session.Character.Gender,
-                            SenderHairColor = Enum.IsDefined(typeof(HairColorType), color) ? (HairColorType)color : 0,
+                            SenderHairColor = Enum.IsDefined(typeof(HairColorType), (byte)color) ? (HairColorType)color : 0,
                             SenderHairStyle = Session.Character.HairStyle,
                             EqPacket = Session.Character.GenerateEqListForPacket(),
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
@@ -927,7 +927,7 @@ namespace OpenNos.Handler
                             IsSenderCopy = false,
                             SenderClass = Session.Character.Class,
                             SenderGender = Session.Character.Gender,
-                            SenderHairColor = Enum.IsDefined(typeof(HairColorType), color) ? (HairColorType)color : 0,
+                            SenderHairColor = Enum.IsDefined(typeof(HairColorType), (byte)color) ? (HairColorType)color : 0,
                             SenderHairStyle = Session.Character.HairStyle,
                             EqPacket = Session.Character.GenerateEqListForPacket(),
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
