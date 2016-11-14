@@ -221,7 +221,7 @@ namespace OpenNos.Handler
                         {
                             ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
 
-                            if(newInv != null)
+                            if (newInv != null)
                             {
                                 newInv.Upgrade = mail.AttachmentUpgrade;
                                 newInv.Rare = (sbyte)mail.AttachmentRarity;
@@ -1127,7 +1127,9 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateFaction());
 
             // sc_p pet again sc_n nospartner again
+#pragma warning disable 618
             Session.Character.GenerateStartupInventory();
+#pragma warning restore 618
 
             // mlobjlst - miniland object list
             Session.SendPacket(Session.Character.GenerateGold());

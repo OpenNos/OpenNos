@@ -162,8 +162,8 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$BlockMP")]
-        public void BlockMP(string packet)
+        [Packet("$BlockPM")]
+        public void BlockPM(string packet)
         {
             if (!Session.Character.GmPvtBlock)
             {
@@ -397,7 +397,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME TIME REASON ", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$BlockMP", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$BlockPM", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
@@ -884,6 +884,76 @@ namespace OpenNos.Handler
                 default:
                     Session.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 10));
                     break;
+            }
+        }
+
+        [Packet("$Promote")]
+        public void Promote(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 2)
+            {
+                string name = packetsplit[2];
+                long accountId = DAOFactory.CharacterDAO.LoadByName(name).AccountId;
+                AccountDTO account = DAOFactory.AccountDAO.LoadById(accountId);
+                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
+                if (account != null)
+                {
+                    account.Authority = AuthorityType.Admin;
+                    DAOFactory.AccountDAO.InsertOrUpdate(ref account);
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                }
+                if (session != null)
+                {
+                    session.Account.Authority = AuthorityType.Admin;
+                    session.Character.Authority = AuthorityType.Admin;
+                    ServerManager.Instance.ChangeMap(session.Character.CharacterId);
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$Promote CHARACTERNAME", 10));
+            }
+        }
+
+        [Packet("$Demote")]
+        public void Demote(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 2)
+            {
+                string name = packetsplit[2];
+                long accountId = DAOFactory.CharacterDAO.LoadByName(name).AccountId;
+                AccountDTO account = DAOFactory.AccountDAO.LoadById(accountId);
+                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
+                if (account != null)
+                {
+                    account.Authority = AuthorityType.User;
+                    DAOFactory.AccountDAO.InsertOrUpdate(ref account);
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                }
+                if (session != null)
+                {
+                    session.Account.Authority = AuthorityType.User;
+                    session.Character.Authority = AuthorityType.User;
+                    ServerManager.Instance.ChangeMap(session.Character.CharacterId);
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$Demote CHARACTERNAME", 10));
             }
         }
 
@@ -1434,8 +1504,6 @@ namespace OpenNos.Handler
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.SpacingRules", "SA1009:ClosingParenthesisMustBeSpacedCorrectly", Justification = "Reviewed.")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.SpacingRules", "SA1022:PositiveSignsMustBeSpacedCorrectly", Justification = "Reviewed.")]
         [Packet("$Teleport")]
         public void Teleport(string packet)
         {
@@ -1489,8 +1557,6 @@ namespace OpenNos.Handler
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.SpacingRules", "SA1009:ClosingParenthesisMustBeSpacedCorrectly", Justification = "Reviewed.")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.SpacingRules", "SA1022:PositiveSignsMustBeSpacedCorrectly", Justification = "Reviewed.")]
         [Packet("$TeleportToMe")]
         public void TeleportToMe(string packet)
         {

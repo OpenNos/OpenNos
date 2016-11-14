@@ -1237,6 +1237,7 @@ namespace OpenNos.GameObject
             return $"sp {SpAdditionPoint} 1000000 {SpPoint} 10000";
         }
 
+        [Obsolete("GenerateStartupInventory is deprecated, for refreshing inventory please use GenerateInventoryAdd instead.")]
         public void GenerateStartupInventory()
         {
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
@@ -1308,7 +1309,7 @@ namespace OpenNos.GameObject
             return $"stat {Hp} {HPLoad()} {Mp} {MPLoad()} 0 {option}";
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Readability")]
         public string GenerateStatChar()
         {
             int type = 0;
@@ -1771,7 +1772,7 @@ namespace OpenNos.GameObject
             return jobxp;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Readability")]
         public int GetReputIco()
         {
             if (Reput >= 5000001)

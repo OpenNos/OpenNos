@@ -107,7 +107,7 @@ namespace OpenNos.Handler
                             Task t = Task.Factory.StartNew((Func<Task>)(async () =>
                             {
                                 CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == skillCastId - 1);
-                                if(ski.CanBeUsed())
+                                if (ski.CanBeUsed())
                                 {
                                     MapMonster mon = Session.CurrentMap.GetMonster(mapMonsterTargetId);
                                     if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && ski != null && mon.CurrentHp > 0)
@@ -1133,9 +1133,9 @@ namespace OpenNos.Handler
                     Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
                     if (grp != null)
                     {
-                        foreach(ClientSession targetSession in grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId))
+                        foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId))
                         {
-                             targetSession.Character.GenerateXp(monsterToAttack.Monster);
+                            targetSession.Character.GenerateXp(monsterToAttack.Monster);
                         }
                     }
                     else
