@@ -455,6 +455,8 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
+                    Session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
+                    Session.Character.Gold -= goldprice[this.Upgrade];
 
                     int rnd = _random.Next(100);
                     if (rnd <= upsuccess[this.Upgrade + itemToSum.Upgrade])
@@ -470,7 +472,7 @@ namespace OpenNos.GameObject
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                         Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
                         ItemInstance itemInstnace = Session.Character.Inventory.GetItemInstanceById(this.Id);
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(itemInstnace.ItemVNum, 1, itemInstnace.Type, itemInstnace.Slot, 0, 0, this.Upgrade, 0));
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(itemInstnace.ItemVNum, 1, itemInstnace.Type, itemInstnace.Slot, 0, 0, this.Upgrade, 0));                        
                     }
                     else
                     {
@@ -480,9 +482,7 @@ namespace OpenNos.GameObject
                         Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
                         Session.Character.DeleteItemByItemInstanceId(this.Id);
                     }
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
-                    Session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
-                    Session.Character.Gold -= goldprice[this.Upgrade];
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY); 
                     Session.SendPacket(Session.Character.GenerateGold());
                     Session.SendPacket("shop_end 1");
                 }
