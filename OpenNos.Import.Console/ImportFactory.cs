@@ -2065,8 +2065,7 @@ namespace OpenNos.Import.Console
 
                         // item.DesignId = Convert.ToInt16(currentLine[6]);
                         switch (item.VNum)
-                        {
-                          
+                        {                          
                             case 1906:
                                 item.Morph = 2368;
                                 item.Speed = 20;
@@ -2115,13 +2114,13 @@ namespace OpenNos.Import.Console
                                 item.WaitDelay = 3000;
                                 break;
 
-                            case 5226: //Invisible locomotion, only 5 seconds with booster
+                            case 5226: // Invisible locomotion, only 5 seconds with booster
                                 item.Morph = 1817;
                                 item.Speed = 20;
                                 item.WaitDelay = 3000;
                                 break;
 
-                            case 5228: //Invisible locoomotion, only 5 seconds with booster
+                            case 5228: // Invisible locoomotion, only 5 seconds with booster
                                 item.Morph = 1819;
                                 item.Speed = 20;
                                 item.WaitDelay = 3000;
@@ -2240,7 +2239,6 @@ namespace OpenNos.Import.Console
                                 item.Speed = 20;
                                 item.WaitDelay = 3000;
                                 break;
-
 
                             case 9055:
                                 item.Morph = 2370;

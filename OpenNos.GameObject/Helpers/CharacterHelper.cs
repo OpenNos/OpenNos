@@ -255,6 +255,7 @@ namespace OpenNos.GameObject
         public static float ExperiencePenalty(int levelDifference)
         {
             float penalty;
+
             // penalty calculation
             if (levelDifference == 6)
             {

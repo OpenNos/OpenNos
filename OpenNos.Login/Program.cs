@@ -63,7 +63,7 @@ namespace OpenNos.Login
 
                     try
                     {
-                        //register EF -> GO and GO -> EF mappings
+                        // register EF -> GO and GO -> EF mappings
                         RegisterMappings();
 
                         ServiceFactory.Instance.Initialize();

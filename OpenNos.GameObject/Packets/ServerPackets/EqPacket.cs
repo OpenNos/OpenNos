@@ -18,13 +18,10 @@ namespace OpenNos.GameObject
     [PacketHeader("eqsub")]
     public class EqSubPacket : PacketBase
     {
-
     }
 
     [PacketHeader("eqraresub")]
     public class EqRareSubPacket : PacketBase
     {
-
     }
-
 }

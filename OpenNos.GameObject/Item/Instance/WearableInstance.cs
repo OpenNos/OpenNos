@@ -161,6 +161,7 @@ namespace OpenNos.GameObject
                 rare6 = rare6 * reducedchancefactor;
                 rare7 = rare7 * reducedchancefactor;
                 rare8 = rare8 * reducedchancefactor;
+
                 // rare8 = rare8 * reducedchancefactor;
             }
             switch (mode)
@@ -437,7 +438,8 @@ namespace OpenNos.GameObject
 
         public void Sum(ClientSession Session, WearableInstance itemToSum)
         {
-            if (this.Upgrade < 6) // cannot sum higher than 5
+            // cannot sum higher than 5
+            if (this.Upgrade < 6)
             {
                 short[] upsuccess = { 100, 100, 85, 70, 50, 20 };
                 int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };

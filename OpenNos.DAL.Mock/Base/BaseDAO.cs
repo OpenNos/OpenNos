@@ -44,7 +44,7 @@ namespace OpenNos.DAL.Mock
 
         public IEnumerable<TDTO> LoadAll()
         {
-            foreach(TDTO dto in Container)
+            foreach (TDTO dto in Container)
             {
                 yield return MapEntity(dto);
             }
@@ -91,7 +91,6 @@ namespace OpenNos.DAL.Mock
                 return null;
             }
         }
-
 
         #endregion
     }
