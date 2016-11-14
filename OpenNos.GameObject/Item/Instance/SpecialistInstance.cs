@@ -408,7 +408,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 21), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 21), 11));
                     return;
                 }
             }
@@ -457,7 +457,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 41), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 41), 11));
                     return;
                 }
             }
@@ -504,7 +504,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 51), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("LVL_REQUIRED"), 51), 11));
                     return;
                 }
             }

@@ -816,7 +816,7 @@ namespace OpenNos.Handler
                         {
                             if (Session.Character.Level > 20)
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
+                                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
                                 Session.Character.Inventory.RemoveItemAmount(seed, 10);
                                 Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
                                 Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);

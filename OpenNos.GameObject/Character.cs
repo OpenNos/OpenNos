@@ -1633,11 +1633,11 @@ namespace OpenNos.GameObject
                     if ((fairy.ElementRate + fairy.Item.ElementRate) == fairy.Item.MaxElementRate)
                     {
                         fairy.XP = 0;
-                        Session.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
+                        Session.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
                     }
                     else
                     {
-                        Session.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
+                        Session.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
                     }
                     Session.SendPacket(GeneratePairy());
                 }
@@ -1864,7 +1864,7 @@ namespace OpenNos.GameObject
 
         public void GiftAdd(short itemVNum, byte amount)
         {
-            ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, amount);
+            ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, Session.Character.CharacterId, amount);
             if (newItem != null)
             {
                 if (newItem.Item.ItemType == ItemType.Armor || newItem.Item.ItemType == ItemType.Weapon || newItem.Item.ItemType == ItemType.Shell)
@@ -2171,11 +2171,11 @@ namespace OpenNos.GameObject
             }
             if (i > 0)
             {
-                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("GIFTED"), i), 11));
+                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("GIFTED"), i), 11));
             }
             if (j > 0)
             {
-                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"), j), 10));
+                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"), j), 10));
             }
 
             LastMailRefresh = DateTime.Now;

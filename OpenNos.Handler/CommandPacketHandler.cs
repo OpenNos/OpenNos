@@ -233,7 +233,7 @@ namespace OpenNos.Handler
                     fairylevel -= fairy.Item.ElementRate;
                     fairy.ElementRate = fairylevel;
                     fairy.XP = 0;
-                    Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVEL_CHANGED"), fairy.Item.Name), 10));
+                    Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVEL_CHANGED"), fairy.Item.Name), 10));
                     Session.SendPacket(Session.Character.GeneratePairy());
                 }
             }

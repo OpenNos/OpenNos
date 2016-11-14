@@ -139,7 +139,7 @@ namespace OpenNos.Import.Console
                 }
             }
             DAOFactory.MapNpcDAO.Insert(npcs);
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
         }
 
         public void ImportMaps()
@@ -232,7 +232,7 @@ namespace OpenNos.Import.Console
                 i++;
             }
             DAOFactory.MapDAO.Insert(maps);
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
         }
 
         public void ImportMapType()
@@ -614,7 +614,7 @@ namespace OpenNos.Import.Console
             }
 
             DAOFactory.MapMonsterDAO.Insert(monsters);
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERS_PARSED"), monsterCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERS_PARSED"), monsterCounter));
         }
 
         public void ImportNpcMonsters()
@@ -883,7 +883,7 @@ namespace OpenNos.Import.Console
                 }
                 DAOFactory.NpcMonsterDAO.Insert(npcs);
                 DAOFactory.NpcMonsterSkillDAO.Insert(skills);
-                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
 
@@ -1319,7 +1319,7 @@ namespace OpenNos.Import.Console
             DAOFactory.PortalDAO.Insert(listPortals2.Where(portal => !DAOFactory.PortalDAO.LoadByMap(portal.SourceMapId).Any(
                 s => s.DestinationMapId == portal.DestinationMapId && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY)).ToList());
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), portalCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), portalCounter));
         }
 
         public void ImportRecipe()
@@ -1389,7 +1389,7 @@ namespace OpenNos.Import.Console
                     item = -1;
                 }
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_PARSED"), count));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPES_PARSED"), count));
         }
 
         public void ImportShopItems()
@@ -1451,7 +1451,7 @@ namespace OpenNos.Import.Console
             }
 
             DAOFactory.ShopItemDAO.Insert(shopitems);
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), itemCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), itemCounter));
         }
 
         public void ImportShops()
@@ -1488,7 +1488,7 @@ namespace OpenNos.Import.Console
             }
 
             DAOFactory.ShopDAO.Insert(shops);
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
         }
 
         public void ImportShopSkills()
@@ -1536,7 +1536,7 @@ namespace OpenNos.Import.Console
             }
 
             DAOFactory.ShopSkillDAO.Insert(shopskills);
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_PARSED"), itemCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_PARSED"), itemCounter));
         }
 
         public void ImportSkills()
@@ -1926,7 +1926,7 @@ namespace OpenNos.Import.Console
                 DAOFactory.SkillDAO.Insert(skills);
                 DAOFactory.ComboDAO.Insert(Combo);
 
-                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_PARSED"), counter));
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SKILLS_PARSED"), counter));
                 skillIdStream.Close();
             }
         }
@@ -1970,7 +1970,7 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_PARSED"), teleporterCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_PARSED"), teleporterCounter));
         }
 
         public void LoadMaps()
@@ -2898,7 +2898,7 @@ namespace OpenNos.Import.Console
                 }
 
                 DAOFactory.ItemDAO.Insert(items);
-                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_PARSED"), itemCounter));
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEMS_PARSED"), itemCounter));
                 npcIdStream.Close();
             }
         }

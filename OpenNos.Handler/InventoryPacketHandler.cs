@@ -716,7 +716,7 @@ namespace OpenNos.Handler
                     }
                     else if (slot == (byte)EquipmentType.Sp && !Session.Character.UseSp && timeSpanSinceLastSpUsage <= Session.Character.SpCooldown)
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
+                        Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                         return;
                     }
 
@@ -826,6 +826,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
+
                 specialistInstance.SlDamage += specialistDamage;
                 specialistInstance.SlDefence += specialistDefense;
                 specialistInstance.SlElement += specialistElement;
@@ -836,7 +837,8 @@ namespace OpenNos.Handler
                 int slDefence = CharacterHelper.SlPoint(specialistInstance.SlDefence, 1);
                 int slHit = CharacterHelper.SlPoint(specialistInstance.SlDamage, 0);
 
-                // slhit
+                #region slHit
+
                 specialistInstance.DamageMinimum = 0;
                 specialistInstance.DamageMaximum = 0;
                 specialistInstance.HitRate = 0;
@@ -901,7 +903,10 @@ namespace OpenNos.Handler
                     specialistInstance.CriticalRate += 20;
                 }
 
-                // sldef
+                #endregion
+
+                #region slDefence
+
                 if (slDefence >= 20)
                 {
                     specialistInstance.DefenceDodge += 2;
@@ -949,7 +954,10 @@ namespace OpenNos.Handler
                     specialistInstance.HP += 300;
                 }
 
-                // slele
+                #endregion
+
+                #region slElement
+
                 if (slElement >= 1)
                 {
                     specialistInstance.ElementRate += 2;
@@ -1008,8 +1016,6 @@ namespace OpenNos.Handler
                     specialistInstance.LightResistance += 6;
                     specialistInstance.DarkResistance += 6;
                 }
-
-                // slhp
                 if (slElement >= 5)
                 {
                     specialistInstance.DamageMinimum += 5;
@@ -1141,6 +1147,8 @@ namespace OpenNos.Handler
                     specialistInstance.MagicDefence += 30;
                     specialistInstance.CriticalDodge += 3;
                 }
+
+                #endregion
 
                 Session.SendPacket(Session.Character.GenerateStatChar());
                 Session.SendPacket(Session.Character.GenerateStat());
@@ -1483,6 +1491,7 @@ namespace OpenNos.Handler
             }
         }
 
-        #endregion
+#endregion
+
     }
 }
