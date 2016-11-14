@@ -461,7 +461,7 @@ namespace OpenNos.GameObject
                     return;
                 }
             }
-            else
+            else if(this.Upgrade < 15)
             {
                 if (this.SpLevel > 50)
                 {
