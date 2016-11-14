@@ -355,6 +355,7 @@ namespace OpenNos.Handler
                     Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2])) as Character;
                     if (character != null)
                     {
+                        character.Authority = Session.Account.Authority;
                         Session.SetCharacter(character);
                         Session.Character.Update();
                         Session.Character.LoadInventory();
