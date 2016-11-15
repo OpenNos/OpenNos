@@ -188,7 +188,7 @@ namespace OpenNos.GameObject
 
         public void SpreadBroadcastpacket(BroadcastPacket sentPacket)
         {
-            if (sentPacket != null)
+            if (sentPacket != null && !String.IsNullOrEmpty(sentPacket.Packet))
             {
                 switch (sentPacket.Receiver)
                 {

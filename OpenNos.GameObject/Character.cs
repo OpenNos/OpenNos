@@ -774,7 +774,7 @@ namespace OpenNos.GameObject
                 color = head.Design;
             }
 
-            return $"eq {CharacterId} {(Invisible ? 6 : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {GenerateEqRareUpgradeForPacket()}";
+            return  $"eq {CharacterId} {(Invisible ? 6 : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {(!InvisibleGm ? GenerateEqRareUpgradeForPacket() : null)}";
         }
 
         public string GenerateEqListForPacket()
@@ -975,7 +975,7 @@ namespace OpenNos.GameObject
 
         public string GenerateInvisible()
         {
-            return $"cl {CharacterId} {(Invisible ? 1 : 0)} 0";
+            return $"cl {CharacterId} {(Invisible ? 1 : 0)} {(InvisibleGm ? 1 : 0)}";
         }
 
         public string GenerateLev()
