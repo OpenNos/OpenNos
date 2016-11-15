@@ -430,51 +430,6 @@ namespace OpenNos.GameObject
             this.Add(inventory);
         }
 
-        public MapItem PutItem(byte type, short slot, byte amount, ref ItemInstance inv)
-        {
-            Logger.Debug($"type: {type} slot: {slot} amount: {amount}", Owner.Session.SessionId);
-            Guid random2 = Guid.NewGuid();
-            MapItem droppedItem = null;
-            List<GridPos> Possibilities = new List<GridPos>();
-
-            for (short x = -2; x < 3; x++)
-            {
-                for (short y = -2; y < 3; y++)
-                {
-                    Possibilities.Add(new GridPos() { x = x, y = y });
-                }
-            }
-
-            short MapX = 0;
-            short MapY = 0;
-            bool niceSpot = false;
-            foreach (GridPos possibilitie in Possibilities.OrderBy(s => _random.Next()))
-            {
-                MapX = (short)(Owner.MapX + possibilitie.x);
-                MapY = (short)(Owner.MapY + possibilitie.y);
-                if (!Owner.Session.CurrentMap.IsBlockedZone(MapX, MapY))
-                {
-                    niceSpot = true;
-                    break;
-                }
-            }
-
-            if (niceSpot)
-            {
-                if (amount > 0 && amount <= inv.Amount)
-                {
-                    ItemInstance newItemInstance = inv.DeepCopy();
-                    newItemInstance.Id = random2;
-                    newItemInstance.Amount = amount;
-                    droppedItem = new CharacterMapItem(MapX, MapY, newItemInstance);
-
-                    Owner.Session.CurrentMap.DroppedList.TryAdd(droppedItem.TransportId, droppedItem);
-                    inv.Amount -= amount;
-                }
-            }
-            return droppedItem;
-        }
-
         public void RemoveItemAmount(int vnum, int amount = 1)
         {
             Logger.Debug($"vnum: {vnum} amount: {amount}", Owner.Session.SessionId);

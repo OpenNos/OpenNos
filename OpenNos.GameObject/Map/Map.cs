@@ -222,22 +222,6 @@ namespace OpenNos.GameObject
             return UserShops.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();
         }
 
-        public void SetMapMapMonsterReference()
-        {
-            foreach (MapMonster monster in _monsters.GetAllItems())
-            {
-                monster.Map = this;
-            }
-        }
-
-        public void SetMapMapNpcReference()
-        {
-            foreach (MapNpc npc in _npcs)
-            {
-                npc.Map = this;
-            }
-        }
-
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
             return _monsters.GetAllItems().Where(s => s.Alive && s.IsInRange(mapX, mapY, distance)).ToList();
@@ -335,8 +319,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            // initialize JPS
-            // _tempgrid = ConvertToGrid(_grid);
+            // initialize JPS _tempgrid = ConvertToGrid(_grid);
             JumpPointParameters = new JumpPointParam(_grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
 
@@ -372,9 +355,70 @@ namespace OpenNos.GameObject
             }
         }
 
+        public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
+        {
+            Logger.Debug($"type: {type} slot: {slot} amount: {amount}", session.SessionId);
+            Guid random2 = Guid.NewGuid();
+            MapItem droppedItem = null;
+            List<GridPos> Possibilities = new List<GridPos>();
+
+            for (short x = -2; x < 3; x++)
+            {
+                for (short y = -2; y < 3; y++)
+                {
+                    Possibilities.Add(new GridPos() { x = x, y = y });
+                }
+            }
+
+            short mapX = 0;
+            short mapY = 0;
+            bool niceSpot = false;
+            foreach (GridPos possibilitie in Possibilities.OrderBy(s => _random.Next()))
+            {
+                mapX = (short)(session.Character.MapX + possibilitie.x);
+                mapY = (short)(session.Character.MapY + possibilitie.y);
+                if (!IsBlockedZone(mapX, mapY))
+                {
+                    niceSpot = true;
+                    break;
+                }
+            }
+
+            if (niceSpot)
+            {
+                if (amount > 0 && amount <= inv.Amount)
+                {
+                    ItemInstance newItemInstance = inv.DeepCopy();
+                    newItemInstance.Id = random2;
+                    newItemInstance.Amount = amount;
+                    droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance);
+
+                    DroppedList.TryAdd(droppedItem.TransportId, droppedItem);
+                    inv.Amount -= amount;
+                }
+            }
+            return droppedItem;
+        }
+
         public void RemoveMonster(MapMonster monsterToRemove)
         {
             _monsters.Remove(monsterToRemove.MapMonsterId);
+        }
+
+        public void SetMapMapMonsterReference()
+        {
+            foreach (MapMonster monster in _monsters.GetAllItems())
+            {
+                monster.Map = this;
+            }
+        }
+
+        public void SetMapMapNpcReference()
+        {
+            foreach (MapNpc npc in _npcs)
+            {
+                npc.Map = this;
+            }
         }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)

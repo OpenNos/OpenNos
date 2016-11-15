@@ -641,48 +641,45 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("put")]
-        public void PutItem(string packet)
+        /// <summary>
+        /// put
+        /// </summary>
+        /// <param name="packet"></param>
+        public void PutItem(PutPacket packet)
         {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            byte type, amount;
-            short slot;
-            if (packetsplit.Count() > 4)
+            Logger.Debug(packet.ToString(), Session.SessionId);
+            lock(Session.Character.Inventory)
             {
-                if (byte.TryParse(packetsplit[4], out amount) && byte.TryParse(packetsplit[2], out type) && short.TryParse(packetsplit[3], out slot))
+                ItemInstance invitem = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.InventoryType);
+                if (invitem != null && invitem.Item.IsDroppable && invitem.Item.IsTradable && !Session.Character.InExchangeOrTrade)
                 {
-                    ItemInstance invitem = Session.Character.Inventory.LoadBySlotAndType(slot, (InventoryType)type);
-                    if (invitem != null && invitem.Item.IsDroppable && invitem.Item.IsTradable && !Session.Character.InExchangeOrTrade)
+                    if (packet.Amount > 0 && packet.Amount < 100)
                     {
-                        if (amount > 0 && amount < 100)
+                        MapItem droppedItem = Session.CurrentMap.PutItem(packet.InventoryType, packet.Slot, packet.Amount, ref invitem, Session);
+                        if (droppedItem == null)
                         {
-                            MapItem droppedItem = Session.Character.Inventory.PutItem(type, slot, amount, ref invitem);
-                            if (droppedItem == null)
-                            {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
-                                return;
-                            }
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemVNum, invitem.Amount, (InventoryType)type, invitem.Slot, invitem.Rare, invitem.Design, invitem.Upgrade, 0));
-
-                            if (invitem.Amount == 0)
-                            {
-                                Session.Character.DeleteItem(invitem.Type, invitem.Slot);
-                            }
-                            if (droppedItem != null)
-                            {
-                                Session.CurrentMap?.Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.Amount} 0 -1");
-                            }
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
+                            return;
                         }
-                        else
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemVNum, invitem.Amount, packet.InventoryType, invitem.Slot, invitem.Rare, invitem.Design, invitem.Upgrade, 0));
+
+                        if (invitem.Amount == 0)
                         {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DROP_AMOUNT"), 0));
+                            Session.Character.DeleteItem(invitem.Type, invitem.Slot);
+                        }
+                        if (droppedItem != null)
+                        {
+                            Session.CurrentMap?.Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.Amount} 0 -1");
                         }
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE"), 0));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DROP_AMOUNT"), 0));
                     }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE"), 0));
                 }
             }
         }

@@ -142,7 +142,7 @@
     <Compile Include="Packets\ServerPackets\MovePacket.cs" />
     <Compile Include="Packets\ServerPackets\MviPacket.cs" />
     <Compile Include="Packets\ServerPackets\NcifPacket.cs" />
-    <Compile Include="Packets\ServerPackets\PutPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PutPacket.cs" />
     <Compile Include="Packets\ServerPackets\RemovePacket.cs" />
     <Compile Include="Packets\ServerPackets\SayPacket.cs" />
     <Compile Include="Packets\ServerPackets\SelectPacket.cs" />
