@@ -222,6 +222,12 @@ namespace OpenNos.GameObject
 
                     this.Rare = 8;
                     SetRarityPoint();
+                    ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(this.Id);
+                    if (inventory != null)
+                    {
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.Rare, 0, inventory.Upgrade, 0));
+                    }
+                    return;
                 }
             }
             if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
