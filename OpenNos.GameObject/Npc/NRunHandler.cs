@@ -112,7 +112,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 1000 * type)
                             {
-                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                                 Session.Character.Gold -= 1000 * type;
                                 Session.SendPacket(Session.Character.GenerateGold());
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
@@ -133,7 +133,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 5000 * type)
                             {
-                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                                 Session.Character.Gold -= 5000 * type;
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
@@ -153,7 +153,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 500)
                             {
-                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                                 Session.Character.Gold -= 500;
                                 Session.SendPacket(Session.Character.GenerateGold());
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
@@ -172,7 +172,7 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
@@ -184,7 +184,7 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
@@ -197,7 +197,7 @@ namespace OpenNos.GameObject
                         if (tp != null)
                         {
                             Session.SendPacket("it 3");
-                            ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
@@ -209,7 +209,7 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }

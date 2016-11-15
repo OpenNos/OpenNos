@@ -1557,6 +1557,11 @@ namespace OpenNos.Handler
                 Session.Character.Dispose();
             }
 
+            if(Session.Character.IsChangingMap)
+            {
+                return;
+            }
+
             if (packetsplit.Length > 4)
             {
                 verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
@@ -1570,7 +1575,7 @@ namespace OpenNos.Handler
                     short? mapy = ServerManager.Instance.GetProperty<short?>(name, nameof(Character.MapY));
                     if (mapy != null && mapx != null && mapId != null)
                     {
-                        ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                         Session.Character.MapId = (short)mapId;
                         Session.Character.MapX = (short)((short)(mapx) + 1);
                         Session.Character.MapY = (short)((short)(mapy) + 1);
@@ -1585,7 +1590,7 @@ namespace OpenNos.Handler
                 case 5:
                     if (verify)
                     {
-                        ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, arg[0], arg[1], arg[2]);
                     }
                     break;
@@ -1616,41 +1621,44 @@ namespace OpenNos.Handler
                         // clear any shop or trade on target character
                         session.Character.Dispose();
 
-                        ServerManager.Instance.MapOut(session.Character.CharacterId);
-
-                        List<MapCell> possibilities = new List<MapCell>();
-                        for (short x = -6; x < 6; x++)
+                        if(!session.Character.IsChangingMap)
                         {
-                            for (short y = -6; y < 6; y++)
-                            {
-                                possibilities.Add(new MapCell() { X = x, Y = y });
-                            }
-                        }
+                            ServerManager.Instance.LeaveMap(session.Character.CharacterId);
 
-                        short mapXPossibility = Session.Character.MapX;
-                        short mapYPossibility = Session.Character.MapY;
-                        foreach (MapCell possibility in possibilities.OrderBy(s => random.Next()))
-                        {
-                            mapXPossibility = (short)(Session.Character.MapX + possibility.X);
-                            mapYPossibility = (short)(Session.Character.MapY + possibility.Y);
-                            if (!Session.CurrentMap.IsBlockedZone(mapXPossibility, mapYPossibility))
+                            List<MapCell> possibilities = new List<MapCell>();
+                            for (short x = -6; x < 6; x++)
                             {
-                                break;
+                                for (short y = -6; y < 6; y++)
+                                {
+                                    possibilities.Add(new MapCell() { X = x, Y = y });
+                                }
                             }
+
+                            short mapXPossibility = Session.Character.MapX;
+                            short mapYPossibility = Session.Character.MapY;
+                            foreach (MapCell possibility in possibilities.OrderBy(s => random.Next()))
+                            {
+                                mapXPossibility = (short)(Session.Character.MapX + possibility.X);
+                                mapYPossibility = (short)(Session.Character.MapY + possibility.Y);
+                                if (!Session.CurrentMap.IsBlockedZone(mapXPossibility, mapYPossibility))
+                                {
+                                    break;
+                                }
+                            }
+                            ServerManager.Instance.ChangeMap(session.Character.CharacterId, Session.Character.MapId, mapXPossibility, mapYPossibility);
                         }
-                        ServerManager.Instance.ChangeMap(session.Character.CharacterId, Session.Character.MapId, mapXPossibility, mapYPossibility);
                     }
                 }
                 else
                 {
                     ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(name);
 
-                    if (targetSession != null)
+                    if (targetSession != null && !targetSession.Character.IsChangingMap)
                     {
                         // clear any shop or trade on target character
                         targetSession.Character.Dispose();
 
-                        ServerManager.Instance.MapOut(targetSession.Character.CharacterId);
+                        ServerManager.Instance.LeaveMap(targetSession.Character.CharacterId);
                         targetSession.Character.IsSitting = false;
                         ServerManager.Instance.ChangeMap(targetSession.Character.CharacterId, Session.Character.MapId, (short)((Session.Character.MapX) + (short)1), (short)((Session.Character.MapY) + (short)1));
                     }

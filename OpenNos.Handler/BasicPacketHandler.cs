@@ -746,7 +746,7 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                     }
-                    ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                    ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                     Session.Character.LastPortal = currentRunningSeconds;
                     ServerManager.Instance.ChangeMap(Session.Character.CharacterId, portal.DestinationMapId, portal.DestinationX, portal.DestinationY);
                     break;

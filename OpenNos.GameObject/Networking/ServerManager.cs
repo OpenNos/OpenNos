@@ -712,7 +712,7 @@ namespace OpenNos.GameObject
         }
 
         // Map
-        public void MapOut(long id)
+        public void LeaveMap(long id)
         {
             ClientSession session = GetSessionByCharacterId(id);
             if (session == null)
@@ -744,7 +744,7 @@ namespace OpenNos.GameObject
             if (session != null && session.Character.Hp <= 0)
             {
                 Random rnd = new Random();
-                MapOut(session.Character.CharacterId);
+                LeaveMap(session.Character.CharacterId);
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
                 short x = (short)(80 + rnd.Next(-5, 5));
