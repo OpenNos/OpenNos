@@ -555,6 +555,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 12));
             Session.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME(*)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Unban CHARACTERNAME", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Undercover", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
@@ -1557,7 +1558,7 @@ namespace OpenNos.Handler
                 Session.Character.Dispose();
             }
 
-            if(Session.Character.IsChangingMap)
+            if (Session.Character.IsChangingMap)
             {
                 return;
             }
@@ -1621,7 +1622,7 @@ namespace OpenNos.Handler
                         // clear any shop or trade on target character
                         session.Character.Dispose();
 
-                        if(!session.Character.IsChangingMap)
+                        if (!session.Character.IsChangingMap)
                         {
                             ServerManager.Instance.LeaveMap(session.Character.CharacterId);
 
@@ -1706,6 +1707,21 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$Unban CHARACTERNAME", 10));
+            }
+        }
+
+        /// <summary>
+        /// $Undercover Command
+        /// </summary>
+        /// <param name="packet"></param>
+        [Packet("$Undercover")]
+        public void Undercover(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            if (Session.Character.State != CharacterState.Inactive && Session.Character.State != CharacterState.Unknown)
+            {
+                Session.Character.State = Session.Character.State == CharacterState.Active ? CharacterState.Undercover : CharacterState.Active;
+                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
             }
         }
 

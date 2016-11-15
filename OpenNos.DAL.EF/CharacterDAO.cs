@@ -37,13 +37,13 @@ namespace OpenNos.DAL.EF
                 {
                     // actually a Character wont be deleted, it just will be disabled for future traces
                     byte state = (byte)CharacterState.Active;
-                    Character Character = context.Character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot) && c.State.Equals(state));
+                    Character character = context.Character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot) && (c.State.Equals(state) || c.State.Equals((byte)CharacterState.Undercover)));
 
-                    if (Character != null)
+                    if (character != null)
                     {
                         byte obsoleteState = (byte)CharacterState.Inactive;
-                        Character.State = obsoleteState;
-                        Update(Character, _mapper.Map<CharacterDTO>(Character), context);
+                        character.State = obsoleteState;
+                        Update(character, _mapper.Map<CharacterDTO>(character), context);
                     }
 
                     return DeleteResult.Deleted;
@@ -157,7 +157,7 @@ namespace OpenNos.DAL.EF
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                return context.Character.Where(c => c.AccountId.Equals(accountId) && c.State.Equals(state)).OrderByDescending(c => c.Slot).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.AccountId.Equals(accountId) && (c.State.Equals(state) || c.State.Equals((byte)CharacterState.Undercover))).OrderByDescending(c => c.Slot).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
             }
         }
 
@@ -184,7 +184,7 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     byte state = (byte)CharacterState.Active;
-                    return _mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
+                    return _mapper.Map<CharacterDTO>(context.Character.SingleOrDefault(c => c.Name.Equals(name) && (c.State.Equals(state) || c.State.Equals((byte)CharacterState.Undercover))));
                 }
             }
             catch (Exception e)
@@ -201,7 +201,7 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     byte state = (byte)CharacterState.Active;
-                    return _mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot) && c.State.Equals(state)));
+                    return _mapper.Map<CharacterDTO>(context.Character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot) && (c.State.Equals(state) || c.State.Equals((byte)CharacterState.Undercover))));
                 }
             }
             catch (Exception e)
