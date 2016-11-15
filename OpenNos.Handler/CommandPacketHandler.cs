@@ -915,7 +915,6 @@ namespace OpenNos.Handler
                     session.Account.Authority = AuthorityType.Admin;
                     session.Character.Authority = AuthorityType.Admin;
                     ServerManager.Instance.ChangeMap(session.Character.CharacterId);
-                    Session.SendPacket(Session.Character.GenerateFd());
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
             }
@@ -940,7 +939,6 @@ namespace OpenNos.Handler
                 {
                     account.Authority = AuthorityType.User;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
-                    Session.SendPacket(Session.Character.GenerateFd());
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
                 else
