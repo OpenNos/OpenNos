@@ -762,7 +762,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$DropRate VALUE", 10));
             }
         }
 
@@ -804,7 +804,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$FairyXpRate VALUE", 10));
             }
         }
 
@@ -922,7 +922,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$GoldRate RATE", 10));
             }
         }
 
@@ -1826,7 +1826,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$XpRate RATE", 10));
             }
         }
 
