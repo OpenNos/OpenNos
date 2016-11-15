@@ -20,6 +20,8 @@ using OpenNos.Data;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.Import.Console
 {
@@ -208,12 +210,12 @@ namespace OpenNos.Import.Console
                     }
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("DONE")}");
-                System.Threading.Thread.Sleep(5000);
+                Thread.Sleep(5000);
             }
             catch (System.IO.FileNotFoundException)
             {
                 Logger.Log.Error(Language.Instance.GetMessageFromKey("AT_LEAST_ONE_FILE_MISSING"));
-                System.Threading.Thread.Sleep(5000);
+                Thread.Sleep(5000);
             }
         }
 

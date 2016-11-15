@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -77,7 +78,7 @@ namespace OpenNos.GameObject
                         }
 
                         // wait to complete all active actions
-                        Task.Delay(5000);
+                        Thread.Sleep(3000);
 
                         session.Character.Save();
 

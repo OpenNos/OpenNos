@@ -11,6 +11,7 @@ using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.Test
@@ -69,7 +70,7 @@ namespace OpenNos.Test
             List<string> gameStartPacketsSecondPart = WaitForPackets(client, "p_clear");
 
             // wait 100 milliseconds to be sure initialization has been finished
-            Task.Delay(100);
+            Thread.Sleep(100);
 
             return client;
         }
