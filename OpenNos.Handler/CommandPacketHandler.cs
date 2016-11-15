@@ -1291,7 +1291,7 @@ namespace OpenNos.Handler
             MapMonster monst = Session.CurrentMap.GetMonster(Session.Character.LastMonsterId);
             if (monst != null)
             {
-                if (monst.Alive)
+                if (monst.IsAlive)
                 {
                     Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {6000} 3 0");
                     Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MONSTER_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));

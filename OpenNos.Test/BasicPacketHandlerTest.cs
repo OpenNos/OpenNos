@@ -69,7 +69,7 @@ namespace OpenNos.Test
             FakeNetworkClient clientA = HandlerTestHelper.InitializeTestEnvironment();
             FakeNetworkClient clientB = HandlerTestHelper.CreateFakeNetworkClient();
 
-            Task.Delay(1000);
+            Thread.Sleep(1000);
 
             // client A asks client B for group
             PJoinPacket pjoinPacketRequest = new PJoinPacket()

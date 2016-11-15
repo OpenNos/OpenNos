@@ -224,7 +224,7 @@ namespace OpenNos.GameObject
 
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
-            return _monsters.GetAllItems().Where(s => s.Alive && s.IsInRange(mapX, mapY, distance)).ToList();
+            return _monsters.GetAllItems().Where(s => s.IsAlive && s.IsInRange(mapX, mapY, distance)).ToList();
         }
 
         public MapMonster GetMonster(long mapMonsterId)
@@ -644,7 +644,7 @@ namespace OpenNos.GameObject
 
         private void RemoveDeadMonsters()
         {
-            foreach (MapMonster monster in _monsters.GetAllItems().Where(s => !s.Alive && !s.Respawn.Value))
+            foreach (MapMonster monster in _monsters.GetAllItems().Where(s => !s.IsAlive && !s.Respawn.Value))
             {
                 RemoveMonster(monster);
             }

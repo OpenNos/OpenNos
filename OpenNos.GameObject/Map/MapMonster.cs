@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public bool Alive { get; set; }
+        public bool IsAlive { get; set; }
 
         public int CurrentHp { get; set; }
 
@@ -84,7 +84,7 @@ namespace OpenNos.GameObject
 
         public string GenerateIn3()
         {
-            if (Alive && !IsDisabled)
+            if (IsAlive && !IsDisabled)
             {
                 return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {(int)(((float)CurrentMp / (float)Monster.MaxMP) * 100)} 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
             }
@@ -112,7 +112,7 @@ namespace OpenNos.GameObject
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
             Path = new List<GridPos>();
-            Alive = true;
+            IsAlive = true;
             Respawn = (Respawn.HasValue ? Respawn.Value : true);
             Monster = ServerManager.GetNpc(MonsterVNum);
             CurrentHp = Monster.MaxHP;
@@ -140,13 +140,13 @@ namespace OpenNos.GameObject
         internal void MonsterLife()
         {
             // Respawn
-            if (!Alive && Respawn.Value)
+            if (!IsAlive && Respawn.Value)
             {
                 double timeDeath = (DateTime.Now - Death).TotalSeconds;
                 if (timeDeath >= Monster.RespawnTime / 10)
                 {
                     DamageList = new Dictionary<long, long>();
-                    Alive = true;
+                    IsAlive = true;
                     Target = -1;
                     CurrentHp = Monster.MaxHP;
                     CurrentMp = Monster.MaxMP;
@@ -161,7 +161,7 @@ namespace OpenNos.GameObject
             else if (Target == -1)
             {
                 // Normal Move Mode
-                if (!Alive)
+                if (!IsAlive)
                 {
                     return;
                 }

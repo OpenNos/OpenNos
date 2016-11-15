@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -530,7 +531,7 @@ namespace OpenNos.GameObject
             if (IsLagMode)
             {
                 // most devilish thing i can imagine
-                Task.Delay(_random.Next(1000, 2000));
+                Thread.Sleep(_random.Next(1000, 2000));
             }
 
             long currentPacketReceive = e.ReceivedTimestamp.Ticks;
@@ -541,7 +542,7 @@ namespace OpenNos.GameObject
             {
                 taskPacketReceived = Task.Factory.StartNew(async () =>
                 {
-                    await Task.Delay(1000);
+                    await Thread.Sleep(1000);
                     countPacketReceived = 0;
                 });
             }
