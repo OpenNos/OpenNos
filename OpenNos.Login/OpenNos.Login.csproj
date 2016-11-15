@@ -72,6 +72,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>
+    </DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -183,7 +185,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalizedResources.pl.resx</DependentUpon>
     </Compile>
-	    <Compile Include="Resource\LocalizedResources.it.Designer.cs">
+    <Compile Include="Resource\LocalizedResources.it.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalizedResources.it.resx</DependentUpon>
@@ -203,8 +205,8 @@
       <IsTransformFile>True</IsTransformFile>
     </None>
     <None Include="App.IT.config">
-      <DependentUpon>App.config</DependentUpon> 
-	  <IsTransformFile>True</IsTransformFile>
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
     </None>
     <None Include="App.PL.config">
       <DependentUpon>App.config</DependentUpon>
@@ -297,7 +299,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource\LocalizedResources.it.resx">
-	  <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedResources.it.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
