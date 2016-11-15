@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace OpenNos.GameObject.Packets.ServerPackets
 {
     [PacketHeader("Char_NEW")]
-    public class CharacterCreatePacket : PacketBase
+    public class CharacterCreatePacket : PacketDefinition
     {
         #region Properties
 

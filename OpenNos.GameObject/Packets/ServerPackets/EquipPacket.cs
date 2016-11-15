@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace OpenNos.GameObject
 {
     [PacketHeader("equip")]
-    public class EquipPacket : PacketBase
+    public class EquipPacket : PacketDefinition
     {
         #region Properties
 
@@ -26,7 +26,7 @@ namespace OpenNos.GameObject
     }
 
     [PacketHeader("sub_equipment")] // actually no header rendered, avoid error
-    public class EquipSubPacket : PacketBase
+    public class EquipSubPacket : PacketDefinition
     {
         #region Properties
 

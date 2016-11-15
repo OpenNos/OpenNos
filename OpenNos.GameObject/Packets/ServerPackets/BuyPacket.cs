@@ -5,7 +5,7 @@ using OpenNos.Domain;
 namespace OpenNos.GameObject
 {
     [PacketHeader("buy")]
-    public class BuyPacket : PacketBase
+    public class BuyPacket : PacketDefinition
     {
         #region Properties
 

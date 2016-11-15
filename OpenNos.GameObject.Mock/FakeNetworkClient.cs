@@ -146,7 +146,7 @@ namespace OpenNos.GameObject.Mock
         /// Send a packet to the Server as the Fake client receives it and triggers a Handler method.
         /// </summary>
         /// <param name="packet">Packet created thru PacketFactory.</param>
-        public void ReceivePacket(PacketBase packet)
+        public void ReceivePacket(PacketDefinition packet)
         {
             ReceivePacket(PacketFactory.Serialize(packet));
         }

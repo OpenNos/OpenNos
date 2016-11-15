@@ -126,7 +126,7 @@
     <Compile Include="Networking\WireProtocol.cs" />
     <Compile Include="Networking\WireProtocolFactory.cs" />
     <Compile Include="Serializing\PacketHeaderAttribute.cs" />
-    <Compile Include="Serializing\PacketBase.cs" />
+    <Compile Include="Serializing\PacketDefinition.cs" />
     <Compile Include="Serializing\PacketFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializing\PacketIndexAttribute.cs" />

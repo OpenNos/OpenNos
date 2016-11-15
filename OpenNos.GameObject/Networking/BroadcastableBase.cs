@@ -86,17 +86,17 @@ namespace OpenNos.GameObject
             Broadcast(packets.Select(p => new BroadcastPacket(null, p, ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate)));
         }
 
-        public void Broadcast(PacketBase packet)
+        public void Broadcast(PacketDefinition packet)
         {
             Broadcast(null, packet);
         }
 
-        public void Broadcast(PacketBase packet, int xRangeCoordinate, int yRangeCoordinate)
+        public void Broadcast(PacketDefinition packet, int xRangeCoordinate, int yRangeCoordinate)
         {
             Broadcast(new BroadcastPacket(null, PacketFactory.Serialize(packet), ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate));
         }
 
-        public void Broadcast(ClientSession client, PacketBase packet, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
+        public void Broadcast(ClientSession client, PacketDefinition packet, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
         {
             Broadcast(client, PacketFactory.Serialize(packet), receiver, characterName, characterId);
         }

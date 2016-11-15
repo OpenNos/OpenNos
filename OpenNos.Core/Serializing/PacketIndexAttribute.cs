@@ -12,7 +12,7 @@ namespace OpenNos.Core
         /// <param name="index">The zero based index starting from header (exclusive).</param>
         /// <param name="isReturnPacket">Adds an # to the Header and replaces Spaces with ^ if set to true.</param>
         /// <param name="serializeToEnd">Defines if everything from this index should be serialized into the underlying property</param>
-        /// <param name="removeSeparator">Removes the separator (.) for List<PacketBase> packets.</param>
+        /// <param name="removeSeparator">Removes the separator (.) for List<PacketDefinition> packets.</param>
         public PacketIndexAttribute(int index, bool isReturnPacket = false, bool serializeToEnd = false, bool removeSeparator = false)
         {
             Index = index;
@@ -41,7 +41,7 @@ namespace OpenNos.Core
         public bool SerializeToEnd { get; set; }
 
         /// <summary>
-        /// Removes the separator (.) for List<PacketBase> packets.
+        /// Removes the separator (.) for List<PacketDefinition> packets.
         /// </summary>
         public bool RemoveSeparator { get; set; }
 

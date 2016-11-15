@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace OpenNos.GameObject
 {
     [PacketHeader("in")]
-    public class InPacket : PacketBase
+    public class InPacket : PacketDefinition
     {
         #region Properties
 

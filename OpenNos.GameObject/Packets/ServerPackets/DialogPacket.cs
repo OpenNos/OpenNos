@@ -4,9 +4,9 @@ using OpenNos.Core;
 namespace OpenNos.GameObject
 {
     [PacketHeader("dlg")]
-    public class DialogPacket<TAnswerYesPacket, TAnswerNoPacket> : PacketBase
-        where TAnswerYesPacket : PacketBase
-        where TAnswerNoPacket : PacketBase
+    public class DialogPacket<TAnswerYesPacket, TAnswerNoPacket> : PacketDefinition
+        where TAnswerYesPacket : PacketDefinition
+        where TAnswerNoPacket : PacketDefinition
     {
         [PacketIndex(0, true)]
         public TAnswerYesPacket AnswerYesReturnPacket { get; set; }

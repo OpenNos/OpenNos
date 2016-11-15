@@ -33,8 +33,8 @@ namespace OpenNos.Core
         {
             HandlerMethod = handlerMethod;
             ParentHandler = parentHandler;
-            PacketBaseParameterType = packetBaseParameterType;
-            Identification = ((PacketHeaderAttribute)PacketBaseParameterType.GetCustomAttributes(true).FirstOrDefault(ca => ca.GetType().Equals(typeof(PacketHeaderAttribute)))).Identification;
+            PacketDefinitionParameterType = packetBaseParameterType;
+            Identification = ((PacketHeaderAttribute)PacketDefinitionParameterType.GetCustomAttributes(true).FirstOrDefault(ca => ca.GetType().Equals(typeof(PacketHeaderAttribute)))).Identification;
         }
 
         #endregion
@@ -50,7 +50,7 @@ namespace OpenNos.Core
         /// </summary>
         public string Identification { get; set; }
 
-        public Type PacketBaseParameterType { get; set; }
+        public Type PacketDefinitionParameterType { get; set; }
 
         public IPacketHandler ParentHandler { get; set; }
 

@@ -24,7 +24,7 @@ namespace OpenNos.Core
         #region Methods
 
         /// <summary>
-        /// Deserializes a string into a PacketBase
+        /// Deserializes a string into a PacketDefinition
         /// </summary>
         /// <param name="packetContent">The content to deseralize</param>
         /// <param name="packetType">The type of the packet to deserialize to</param>
@@ -51,7 +51,7 @@ namespace OpenNos.Core
         }
 
         /// <summary>
-        /// Deserializes a string into a PacketBase
+        /// Deserializes a string into a PacketDefinition
         /// </summary>
         /// <param name="packetContent">The content to deseralize</param>
         /// <param name="includesKeepAliveIdentity">
@@ -59,7 +59,7 @@ namespace OpenNos.Core
         /// </param>
         /// <returns>The deserialized packet.</returns>
         public static TPacket Deserialize<TPacket>(string packetContent, bool includesKeepAliveIdentity = false)
-            where TPacket : PacketBase
+            where TPacket : PacketDefinition
         {
             try
             {
@@ -83,7 +83,7 @@ namespace OpenNos.Core
         /// </summary>
         /// <typeparam name="TBaseType">The BaseType to generate serialization informations</typeparam>
         public static void Initialize<TBaseType>()
-                    where TBaseType : PacketBase
+                    where TBaseType : PacketDefinition
         {
             if (!IsInitialized)
             {
@@ -93,13 +93,13 @@ namespace OpenNos.Core
         }
 
         /// <summary>
-        /// Serializes a PacketBase to string.
+        /// Serializes a PacketDefinition to string.
         /// </summary>
-        /// <typeparam name="TPacket">The type of the PacketBase</typeparam>
-        /// <param name="packet">The object reference of the PacketBase</param>
+        /// <typeparam name="TPacket">The type of the PacketDefinition</typeparam>
+        /// <param name="packet">The object reference of the PacketDefinition</param>
         /// <returns>The serialized string.</returns>
         public static string Serialize<TPacket>(TPacket packet)
-                                    where TPacket : PacketBase
+                                    where TPacket : PacketDefinition
         {
             try
             {
@@ -267,13 +267,13 @@ namespace OpenNos.Core
                     // bool is 0 or 1 not True or False
                     return Convert.ToBoolean(value) ? " 1" : " 0";
                 }
-                else if (propertyType.BaseType.Equals(typeof(PacketBase)))
+                else if (propertyType.BaseType.Equals(typeof(PacketDefinition)))
                 {
                     var subpacketSerializationInfo = GetSerializationInformation(propertyType);
                     return DeserializeSubpacket(value, subpacketSerializationInfo, packetIndexAttribute?.IsReturnPacket ?? false, packetIndexAttribute?.RemoveSeparator ?? false);
                 }
                 else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))
-                    && propertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketBase)))
+                    && propertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketDefinition)))
                 {
                     return DeserializeSubpackets((IList)value, propertyType, packetIndexAttribute?.RemoveSeparator ?? false);
                 }
@@ -290,13 +290,13 @@ namespace OpenNos.Core
             return String.Empty;
         }
 
-        private static void GenerateSerializationInformations<TPacketBase>()
-                    where TPacketBase : PacketBase
+        private static void GenerateSerializationInformations<TPacketDefinition>()
+                    where TPacketDefinition : PacketDefinition
         {
             _packetSerializationInformations = new Dictionary<Tuple<Type, String>, Dictionary<PacketIndexAttribute, PropertyInfo>>();
 
-            // Iterate thru all PacketBase implementations
-            foreach (Type packetBaseType in typeof(TPacketBase).Assembly.GetTypes().Where(p => !p.IsInterface && typeof(TPacketBase).BaseType.IsAssignableFrom(p)))
+            // Iterate thru all PacketDefinition implementations
+            foreach (Type packetBaseType in typeof(TPacketDefinition).Assembly.GetTypes().Where(p => !p.IsInterface && typeof(TPacketDefinition).BaseType.IsAssignableFrom(p)))
             {
                 // add to serialization informations
                 KeyValuePair<Tuple<Type, String>, Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformations =
@@ -466,13 +466,13 @@ namespace OpenNos.Core
             {
                 return currentValue == "0" ? false : true;
             }
-            else if (packetPropertyType.BaseType.Equals(typeof(PacketBase))) // subpacket
+            else if (packetPropertyType.BaseType.Equals(typeof(PacketDefinition))) // subpacket
             {
                 var subpacketSerializationInfo = GetSerializationInformation(packetPropertyType);
                 return SerializeSubpacket(currentValue, packetPropertyType, subpacketSerializationInfo, packetIndexAttribute?.IsReturnPacket ?? false);
             }
             else if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)) // subpacket list
-                && packetPropertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketBase)))
+                && packetPropertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketDefinition)))
             {
                 return SerializeSubpackets(currentValue, packetPropertyType, packetIndexAttribute?.RemoveSeparator ?? false, packetMatches, packetIndexAttribute?.Index);
             }

@@ -4,7 +4,7 @@ using OpenNos.Core;
 namespace OpenNos.GameObject.Packets.ServerPackets
 {
     [PacketHeader("withdraw")]
-    public class WithDrawPacket : PacketBase
+    public class WithDrawPacket : PacketDefinition
     {
         #region Properties
 

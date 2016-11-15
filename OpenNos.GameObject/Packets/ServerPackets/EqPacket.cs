@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 namespace OpenNos.GameObject
 {
     [PacketHeader("eq")]
-    public class EqPacket : PacketBase
+    public class EqPacket : PacketDefinition
     {
         [PacketIndex(0)]
         public long Id { get; set; }
     }
 
     [PacketHeader("eqsub")]
-    public class EqSubPacket : PacketBase
+    public class EqSubPacket : PacketDefinition
     {
     }
 
     [PacketHeader("eqraresub")]
-    public class EqRareSubPacket : PacketBase
+    public class EqRareSubPacket : PacketDefinition
     {
     }
 }

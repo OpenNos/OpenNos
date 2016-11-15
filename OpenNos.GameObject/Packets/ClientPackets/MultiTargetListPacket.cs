@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace OpenNos.GameObject
 {
     [PacketHeader("mtlist")]
-    public class MultiTargetListPacket : PacketBase
+    public class MultiTargetListPacket : PacketDefinition
     {
         #region Properties
 

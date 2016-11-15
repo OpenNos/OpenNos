@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Resource {
+namespace OpenNos.World.Resource {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Resource {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Resource.LocalizedResources", typeof(LocalizedResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OpenNos.World.Resource.LocalizedResources", typeof(LocalizedResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1249,6 +1249,15 @@ namespace Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t drop that item!.
+        /// </summary>
+        internal static string ITEM_NOT_DROPPABLE_HERE {
+            get {
+                return ResourceManager.GetString("ITEM_NOT_DROPPABLE_HERE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Item not found!.
         /// </summary>
         internal static string ITEM_NOT_FOUND {
@@ -1699,6 +1708,15 @@ namespace Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You need to wear fairy to do that.
+        /// </summary>
+        internal static string NO_FAIRY {
+            get {
+                return ResourceManager.GetString("NO_FAIRY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No handler found for this item in class {0}.
         /// </summary>
         internal static string NO_HANDLER_ITEM {
@@ -2037,6 +2055,15 @@ namespace Resource {
         internal static string PLAYER_IN_BATTLE {
             get {
                 return ResourceManager.GetString("PLAYER_IN_BATTLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specialist points reseted!.
+        /// </summary>
+        internal static string POINTS_RESET {
+            get {
+                return ResourceManager.GetString("POINTS_RESET", resourceCulture);
             }
         }
         
@@ -2469,6 +2496,15 @@ namespace Resource {
         internal static string SPEAKER {
             get {
                 return ResourceManager.GetString("SPEAKER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t use speaker under penalty..
+        /// </summary>
+        internal static string SPEAKER_CANT_BE_USED {
+            get {
+                return ResourceManager.GetString("SPEAKER_CANT_BE_USED", resourceCulture);
             }
         }
         

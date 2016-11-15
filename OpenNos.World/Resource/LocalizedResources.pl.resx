@@ -1048,4 +1048,16 @@
   <data name="GM_BLOCK_DISABLE" xml:space="preserve">
     <value>Odblokowano prywatne wiadomości!</value>
   </data>
+  <data name="POINTS_RESET" xml:space="preserve">
+    <value>Punkty specjalisty zresetowane!</value>
+  </data>
+  <data name="SPEAKER_CANT_BE_USED" xml:space="preserve">
+    <value>Nie możesz używać głośników posiadając karę!</value>
+  </data>
+  <data name="ITEM_NOT_DROPPABLE_HERE" xml:space="preserve">
+    <value>Nie możesz upuścić tego przedmiotu!</value>
+  </data>
+  <data name="NO_FAIRY" xml:space="preserve">
+    <value>Musisz ubrać swoją wróżkę aby to zrobić!</value>
+  </data>
 </root>

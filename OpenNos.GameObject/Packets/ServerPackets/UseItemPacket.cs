@@ -4,7 +4,7 @@ using OpenNos.Core;
 namespace OpenNos.GameObject.Packets.ServerPackets
 {
     [PacketHeader("u_i")]
-    public class UseItemPacket : PacketBase
+    public class UseItemPacket : PacketDefinition
     {
         #region Properties
 

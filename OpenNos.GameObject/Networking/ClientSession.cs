@@ -273,7 +273,7 @@ namespace OpenNos.GameObject
             IsAuthenticated = true;
         }
 
-        // [Obsolete("Primitive string operations will be removed in future, use PacketBase
+        // [Obsolete("Primitive string operations will be removed in future, use PacketDefinition
         // SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
         public void SendPacket(string packet, byte priority = 10)
         {
@@ -283,7 +283,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SendPacket(PacketBase packet, byte priority = 10)
+        public void SendPacket(PacketDefinition packet, byte priority = 10)
         {
             if (!IsDisposing)
             {
@@ -354,12 +354,12 @@ namespace OpenNos.GameObject
             {
                 IPacketHandler handler = (IPacketHandler)Activator.CreateInstance(handlerType, new object[] { this });
 
-                // include PacketBase
-                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any() || x.GetParameters().FirstOrDefault()?.ParameterType?.BaseType == typeof(PacketBase))) 
+                // include PacketDefinition
+                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any() || x.GetParameters().FirstOrDefault()?.ParameterType?.BaseType == typeof(PacketDefinition))) 
                 {
                     PacketAttribute packetAttribute = methodInfo.GetCustomAttributes(false).OfType<PacketAttribute>().FirstOrDefault();
 
-                    // assume PacketBase based handler method
+                    // assume PacketDefinition based handler method
                     if (packetAttribute == null) 
                     {
                         HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, methodInfo.GetParameters().FirstOrDefault()?.ParameterType);
@@ -581,9 +581,9 @@ namespace OpenNos.GameObject
                         if (HasSelectedCharacter || methodReference.ParentHandler.GetType().Name == "CharacterScreenPacketHandler" || methodReference.ParentHandler.GetType().Name == "LoginPacketHandler")
                         {
                             // call actual handler method
-                            if (methodReference.PacketBaseParameterType != null)
+                            if (methodReference.PacketDefinitionParameterType != null)
                             {
-                                object serializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketBaseParameterType, true);
+                                object serializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, true);
 
                                 if (serializedPacket != null)
                                 {

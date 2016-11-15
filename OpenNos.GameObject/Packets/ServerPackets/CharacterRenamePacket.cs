@@ -4,7 +4,7 @@ using OpenNos.Core;
 namespace OpenNos.GameObject.Packets.ServerPackets
 {
     [PacketHeader("Char_REN")]
-    public class CharacterRenamePacket : PacketBase
+    public class CharacterRenamePacket : PacketDefinition
     {
         #region Properties
 

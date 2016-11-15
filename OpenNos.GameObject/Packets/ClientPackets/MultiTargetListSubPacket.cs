@@ -4,7 +4,7 @@ using OpenNos.Core;
 namespace OpenNos.GameObject
 {
     [PacketHeader("multi_target_list_sub_packet")] // header will be ignored for serializing just sub list packets
-    public class MultiTargetListSubPacket : PacketBase
+    public class MultiTargetListSubPacket : PacketDefinition
     {
         [PacketIndex(0)]
         public int SkillCastId { get; set; }
