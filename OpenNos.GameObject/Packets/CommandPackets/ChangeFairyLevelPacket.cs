@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$FLvl")]
+    [PacketHeader("$FLvl", PassNonParseablePacket = true)]
     public class ChangeFairyLevelPacket : PacketDefinition
     {
         #region Properties

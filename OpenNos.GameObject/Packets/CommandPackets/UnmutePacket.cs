@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Unmute")]
+    [PacketHeader("$Unmute", PassNonParseablePacket = true)]
     public class UnmutePacket : PacketDefinition
     {
         #region Properties

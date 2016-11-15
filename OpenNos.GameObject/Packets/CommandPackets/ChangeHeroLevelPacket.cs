@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$HeroLvl")]
+    [PacketHeader("$HeroLvl", PassNonParseablePacket = true)]
     public class ChangeHeroLevelPacket : PacketDefinition
     {
         #region Properties

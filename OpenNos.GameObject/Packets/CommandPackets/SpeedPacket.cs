@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Speed")]
+    [PacketHeader("$Speed", PassNonParseablePacket = true)]
     public class SpeedPacket : PacketDefinition
     {
         #region Properties

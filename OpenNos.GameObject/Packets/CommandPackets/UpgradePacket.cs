@@ -4,7 +4,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Upgrade")]
+    [PacketHeader("$Upgrade", PassNonParseablePacket = true)]
     public class UpgradePacket : PacketDefinition
     {
         #region Properties

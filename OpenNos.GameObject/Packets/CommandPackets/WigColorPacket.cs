@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$WigColor")]
+    [PacketHeader("$WigColor", PassNonParseablePacket = true)]
     public class WigColorPacket : PacketDefinition
     {
         #region Properties

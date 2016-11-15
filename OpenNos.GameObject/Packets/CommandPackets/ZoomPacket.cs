@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Zoom")]
+    [PacketHeader("$Zoom", PassNonParseablePacket = true)]
     public class ZoomPacket : PacketDefinition
     {
         #region Properties

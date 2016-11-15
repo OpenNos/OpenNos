@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$JLvl")]
+    [PacketHeader("$JLvl", PassNonParseablePacket = true)]
     public class ChangeJobLevelPacket : PacketDefinition
     {
         #region Properties

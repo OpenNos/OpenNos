@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Music")]
+    [PacketHeader("$Music", PassNonParseablePacket = true)]
     public class MusicPacket : PacketDefinition
     {
         #region Properties

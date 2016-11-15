@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$TeleportToMe")]
+    [PacketHeader("$TeleportToMe", PassNonParseablePacket = true)]
     public class TeleportToMePacket : PacketDefinition
     {
         #region Properties

@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Unban")]
+    [PacketHeader("$Unban", PassNonParseablePacket = true)]
     public class UnbanPacket : PacketDefinition
     {
         #region Properties

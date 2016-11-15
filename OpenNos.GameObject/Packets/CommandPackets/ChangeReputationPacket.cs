@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$ChangeReput")]
+    [PacketHeader("$ChangeReput", PassNonParseablePacket = true)]
     public class ChangeReputationPacket : PacketDefinition
     {
         #region Properties

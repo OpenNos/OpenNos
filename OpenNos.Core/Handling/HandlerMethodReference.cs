@@ -27,6 +27,7 @@ namespace OpenNos.Core
             ParentHandler = parentHandler;
             HandlerMethodAttribute = handlerMethodAttribute;
             Identification = HandlerMethodAttribute.Header;
+            PassNonParseablePacket = false;
         }
 
         public HandlerMethodReference(Action<object, object> handlerMethod, IPacketHandler parentHandler, Type packetBaseParameterType)
@@ -34,7 +35,9 @@ namespace OpenNos.Core
             HandlerMethod = handlerMethod;
             ParentHandler = parentHandler;
             PacketDefinitionParameterType = packetBaseParameterType;
-            Identification = ((PacketHeaderAttribute)PacketDefinitionParameterType.GetCustomAttributes(true).FirstOrDefault(ca => ca.GetType().Equals(typeof(PacketHeaderAttribute)))).Identification;
+            PacketHeaderAttribute headerAttribute = ((PacketHeaderAttribute)PacketDefinitionParameterType.GetCustomAttributes(true).FirstOrDefault(ca => ca.GetType().Equals(typeof(PacketHeaderAttribute))));
+            Identification = headerAttribute?.Identification;
+            PassNonParseablePacket = headerAttribute?.PassNonParseablePacket ?? false;
         }
 
         #endregion
@@ -53,6 +56,8 @@ namespace OpenNos.Core
         public Type PacketDefinitionParameterType { get; set; }
 
         public IPacketHandler ParentHandler { get; set; }
+
+        public bool PassNonParseablePacket { get; set; }
 
         #endregion
     }

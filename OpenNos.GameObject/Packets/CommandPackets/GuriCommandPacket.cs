@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Guri")]
+    [PacketHeader("$Guri", PassNonParseablePacket = true)]
     public class GuriCommandPacket : PacketDefinition
     {
         #region Properties

@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Promote")]
+    [PacketHeader("$Promote", PassNonParseablePacket = true)]
     public class PromotePacket : PacketDefinition
     {
         #region Properties

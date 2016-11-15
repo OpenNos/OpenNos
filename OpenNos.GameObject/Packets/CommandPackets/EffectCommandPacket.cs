@@ -2,7 +2,7 @@
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Effect")]
+    [PacketHeader("$Effect", PassNonParseablePacket = true)]
     public class EffectCommandPacket : PacketDefinition
     {
         #region Properties

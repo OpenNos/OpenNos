@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$AddMonster")]
+    [PacketHeader("$AddMonster", PassNonParseablePacket = true)]
     public class AddMonsterPacket : PacketDefinition
     {
         #region Properties

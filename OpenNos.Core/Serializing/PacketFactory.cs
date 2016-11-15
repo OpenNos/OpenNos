@@ -45,7 +45,7 @@ namespace OpenNos.Core
             }
             catch (Exception e)
             {
-                Logger.Log.Warn($"The serialized packet has the wrong format. Packet: {packetContent}", e);
+                Logger.Log.Warn($"The serialized packet has the wrong format. Packet: {packetContent}");
                 return null;
             }
         }

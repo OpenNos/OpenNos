@@ -4,7 +4,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$PortalTo")]
+    [PacketHeader("$PortalTo", PassNonParseablePacket = true)]
     public class PortalToPacket : PacketDefinition
     {
         #region Properties

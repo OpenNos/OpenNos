@@ -4,7 +4,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Rarify")]
+    [PacketHeader("$Rarify", PassNonParseablePacket = true)]
     public class RarifyPacket : PacketDefinition
     {
         #region Properties

@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$SPLvl")]
+    [PacketHeader("$SPLvl", PassNonParseablePacket = true)]
     public class ChangeSpecialistLevelPacket : PacketDefinition
     {
         #region Properties

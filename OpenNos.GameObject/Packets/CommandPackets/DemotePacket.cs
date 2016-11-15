@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Demote")]
+    [PacketHeader("$Demote", PassNonParseablePacket = true)]
     public class DemotePacket : PacketDefinition
     {
         #region Properties

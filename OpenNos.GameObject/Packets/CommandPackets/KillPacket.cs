@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Kill")]
+    [PacketHeader("$Kill", PassNonParseablePacket = true)]
     public class KillPacket : PacketDefinition
     {
         #region Properties

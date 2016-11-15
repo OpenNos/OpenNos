@@ -50,6 +50,7 @@ namespace OpenNos.GameObject
         #endregion
 
         // private Task taskPacketReceived;
+
         #region Instantiation
 
         public ClientSession(INetworkClient client)
@@ -189,6 +190,8 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool IsLagMode { get; private set; }
+
         public bool IsLocalhost
         {
             get
@@ -209,7 +212,6 @@ namespace OpenNos.GameObject
 
         public int SessionId { get; set; }
 
-        public bool IsLagMode { get; private set; }
         #endregion
 
         #region Methods
@@ -230,8 +232,7 @@ namespace OpenNos.GameObject
             {
                 Character.Dispose();
 
-                // TODO Check why ExchangeInfo.TargetCharacterId is null
-                // Character.CloseTrade();
+                // TODO Check why ExchangeInfo.TargetCharacterId is null Character.CloseTrade();
                 // disconnect client
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
 
@@ -355,12 +356,12 @@ namespace OpenNos.GameObject
                 IPacketHandler handler = (IPacketHandler)Activator.CreateInstance(handlerType, new object[] { this });
 
                 // include PacketDefinition
-                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any() || x.GetParameters().FirstOrDefault()?.ParameterType?.BaseType == typeof(PacketDefinition))) 
+                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any() || x.GetParameters().FirstOrDefault()?.ParameterType?.BaseType == typeof(PacketDefinition)))
                 {
                     PacketAttribute packetAttribute = methodInfo.GetCustomAttributes(false).OfType<PacketAttribute>().FirstOrDefault();
 
                     // assume PacketDefinition based handler method
-                    if (packetAttribute == null) 
+                    if (packetAttribute == null)
                     {
                         HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, methodInfo.GetParameters().FirstOrDefault()?.ParameterType);
                         HandlerMethods.Add(methodReference.Identification, methodReference);
@@ -585,7 +586,7 @@ namespace OpenNos.GameObject
                             {
                                 object serializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, true);
 
-                                if (serializedPacket != null)
+                                if (serializedPacket != null || methodReference.PassNonParseablePacket)
                                 {
                                     methodReference.HandlerMethod(methodReference.ParentHandler, serializedPacket);
                                 }

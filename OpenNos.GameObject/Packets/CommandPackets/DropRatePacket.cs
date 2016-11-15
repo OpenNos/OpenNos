@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$DropRate")]
+    [PacketHeader("$DropRate", PassNonParseablePacket = true)]
     public class DropRatePacket : PacketDefinition
     {
         #region Properties

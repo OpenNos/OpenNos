@@ -3,7 +3,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Kick")]
+    [PacketHeader("$Kick", PassNonParseablePacket = true)]
     public class KickPacket : PacketDefinition
     {
         #region Properties
