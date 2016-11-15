@@ -2112,7 +2112,7 @@ namespace OpenNos.GameObject
             }
 
             // reload vehicle speed after opening an shop for instance
-            if (IsVehicled) 
+            if (IsVehicled)
             {
                 Speed = VehicleSpeed;
             }
@@ -2311,16 +2311,23 @@ namespace OpenNos.GameObject
         {
             Item it = ServerManager.GetItem((short)vnum);
             int color = (byte)HairColor;
-            if (it.ItemType != ItemType.Weapon && it.ItemType != ItemType.Armor)
+            if (it.ItemType != ItemType.Weapon && it.ItemType != ItemType.Armor && it.ItemType != ItemType.Specialist)
+            {
+                upgrade = 0;
+            }
+            else if (it.ItemType != ItemType.Weapon && it.ItemType != ItemType.Armor)
             {
                 rare = 0;
-                upgrade = 0;
             }
             if (rare > 8 || rare < -2)
             {
                 rare = 0;
             }
-            if (upgrade < 0 || upgrade > 10)
+            if ((upgrade < 0 || upgrade > 10) && it.ItemType != ItemType.Specialist)
+            {
+                upgrade = 0;
+            }
+            else if (it.ItemType == ItemType.Specialist && (upgrade < 0 || upgrade > 15))
             {
                 upgrade = 0;
             }
