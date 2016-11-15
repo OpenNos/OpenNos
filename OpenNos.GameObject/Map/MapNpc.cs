@@ -15,6 +15,7 @@
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -52,6 +53,7 @@ namespace OpenNos.GameObject
         public List<Recipe> Recipes { get; set; }
 
         public Shop Shop { get; set; }
+        public int Target { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
 
@@ -65,6 +67,18 @@ namespace OpenNos.GameObject
             if (npc != null)
             {
                 return $"eff 2 {MapNpcId} {Effect}";
+            }
+            else
+            {
+                return String.Empty;
+            }
+        }
+        public string GenerateEff(short effect)
+        {
+            NpcMonster npc = ServerManager.GetNpc(this.NpcVNum);
+            if (npc != null)
+            {
+                return $"eff 2 {MapNpcId} {effect}";
             }
             else
             {
@@ -105,6 +119,7 @@ namespace OpenNos.GameObject
             FirstY = MapY;
             _movetime = _random.Next(500, 3000);
             Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
+            Target = -1;
             Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
             Shop shop = ServerManager.Instance.GetShopByMapNpcId(MapNpcId);
             if (shop != null)
@@ -147,6 +162,81 @@ namespace OpenNos.GameObject
                     LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Npc.Speed));
                     Map.Broadcast(new BroadcastPacket(null, GenerateMv2(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                 }
+            }
+            if(Target == -1)
+            {
+                if (this.Npc.IsHostile)
+                {
+                    MapMonster monster = this.Map.Monsters.FirstOrDefault(s => MapId == s.MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.MapX, Y = s.MapY }) < Npc.NoticeRange / 2);
+                    if (monster != null)
+                    {
+                        Target = monster.MapMonsterId;
+                    }
+                }
+            }
+            else if(Target != -1)
+            {
+                MapMonster monster = this.Map.Monsters.FirstOrDefault(s => s.MapMonsterId == Target);
+                if(monster == null || monster.CurrentHp < 1)
+                {
+                    Target = -1;
+                    return;
+                }
+                NpcMonsterSkill npcMonsterSkill = null;
+                if (_random.Next(10) > 8)
+                {
+                    npcMonsterSkill = Npc.Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
+                }
+
+                short damage = 100;
+                int distance = Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = monster.MapX, Y = monster.MapY });
+                if (monster != null && monster.CurrentHp > 0 && ((npcMonsterSkill != null && distance < npcMonsterSkill.Skill.Range) || (distance <= Npc.BasicRange)))
+                {
+
+                    if (((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Npc.BasicCooldown * 200 && !Npc.Skills.Any()) || npcMonsterSkill != null)
+                    {
+                        if (npcMonsterSkill != null)
+                        {
+                            npcMonsterSkill.LastSkillUse = DateTime.Now;
+                            Map.Broadcast($"ct 2 {MapNpcId} 3 {Target} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
+                        }
+
+                        if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
+                        {
+                            Map.Broadcast(GenerateEff());
+                        }
+
+                        monster.CurrentHp -= damage;
+
+                        if (npcMonsterSkill != null)
+                        {
+                            Map.Broadcast($"su 2 {MapNpcId} 3 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} { (int)(monster.CurrentHp / monster.Monster.MaxHP * 100) } {damage} 0 0");
+                        }
+                        else
+                        {
+                            Map.Broadcast($"su 2 {MapNpcId} 3 {Target} 0 {Npc.BasicCooldown} 11 {Npc.BasicSkill} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} { (int)(monster.CurrentHp / monster.Monster.MaxHP * 100) } {damage} 0 0");
+                        }
+
+                        LastEffect = DateTime.Now;
+                        if (monster.CurrentHp  < 1)
+                        {
+                            monster.Alive = false;
+                            monster.CurrentHp = 0;
+                            monster.CurrentMp = 0;
+                            monster.Death = DateTime.Now;
+                            Target = -1;
+                        }                        
+                    }
+                }
+                else
+                {
+                    int maxdistance = Npc.NoticeRange / 2;
+                    if(distance >= maxdistance )
+                    {
+                        Target = -1;
+                    }
+                }
+
             }
         }
 
