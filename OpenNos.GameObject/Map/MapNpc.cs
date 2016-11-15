@@ -175,10 +175,6 @@ namespace OpenNos.GameObject
                     if (monster != null)
                     {
                         Target = monster.MapMonsterId;
-                        if(!Npc.NoAggresiveIcon)
-                        {
-                            Map.Broadcast(GenerateEff(5003));
-                        }
                     }
                 }
             }
@@ -250,7 +246,7 @@ namespace OpenNos.GameObject
                     int maxdistance = (Npc.NoticeRange > 5 ? Npc.NoticeRange / 2 : Npc.NoticeRange);
                     if (IsMoving)
                     {
-                        short maxDistance = 22;
+                        short maxDistance = 5;
                         if (Path.Count() == 0 && monster != null && distance > 1 && distance < maxDistance)
                         {
                             short xoffset = (short)_random.Next(-1, 1);
