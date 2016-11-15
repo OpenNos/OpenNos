@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using EpPathFinding.cs;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,8 @@ namespace OpenNos.GameObject
         public DateTime LastMove { get; private set; }
 
         public Map Map { get; set; }
+
+        public List<GridPos> Path { get; set; }
 
         public List<Recipe> Recipes { get; set; }
 
@@ -118,6 +121,7 @@ namespace OpenNos.GameObject
             FirstX = MapX;
             FirstY = MapY;
             _movetime = _random.Next(500, 3000);
+            Path = new List<GridPos>();
             Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
             Target = -1;
             Teleporters = ServerManager.Instance.GetTeleportersByNpcVNum((short)MapNpcId);
@@ -167,10 +171,14 @@ namespace OpenNos.GameObject
             {
                 if (this.Npc.IsHostile)
                 {
-                    MapMonster monster = this.Map.Monsters.FirstOrDefault(s => MapId == s.MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.MapX, Y = s.MapY }) < Npc.NoticeRange / 2);
+                    MapMonster monster = this.Map.Monsters.FirstOrDefault(s => MapId == s.MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.MapX, Y = s.MapY }) < (Npc.NoticeRange > 5? Npc.NoticeRange / 2 : Npc.NoticeRange));
                     if (monster != null)
                     {
                         Target = monster.MapMonsterId;
+                        if(!Npc.NoAggresiveIcon)
+                        {
+                            Map.Broadcast(GenerateEff(5003));
+                        }
                     }
                 }
             }
@@ -220,6 +228,15 @@ namespace OpenNos.GameObject
                         LastEffect = DateTime.Now;
                         if (monster.CurrentHp  < 1)
                         {
+                            if (IsMoving)
+                            {
+                                Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
+                                if (!Path.Any())
+                                {
+                                    Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
+                                }
+                            }
+
                             monster.Alive = false;
                             monster.CurrentHp = 0;
                             monster.CurrentMp = 0;
@@ -230,10 +247,59 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    int maxdistance = Npc.NoticeRange / 2;
-                    if(distance >= maxdistance )
+                    int maxdistance = (Npc.NoticeRange > 5 ? Npc.NoticeRange / 2 : Npc.NoticeRange);
+                    if (IsMoving)
                     {
-                        Target = -1;
+                        short maxDistance = 22;
+                        if (Path.Count() == 0 && monster != null && distance > 1 && distance < maxDistance)
+                        {
+                            short xoffset = (short)_random.Next(-1, 1);
+                            short yoffset = (short)_random.Next(-1, 1);
+
+                            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
+                            if (!Path.Any())
+                            {
+                                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
+                            }
+                        }
+                        if (DateTime.Now > LastMove && Npc.Speed > 0 && Path.Any())
+                        {
+                            short mapX;
+                            short mapY;
+                            int maxindex = Path.Count > Npc.Speed / 2 ? Npc.Speed / 2 : Path.Count;
+                            mapX = (short)Path.ElementAt(maxindex - 1).x;
+                            mapY = (short)Path.ElementAt(maxindex - 1).y;
+                            double waitingtime = (double)(Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId })) / (double)(Npc.Speed);
+                            Map.Broadcast(new BroadcastPacket(null, $"mv 2 {this.MapNpcId} {mapX} {mapY} {Npc.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
+                            LastMove = DateTime.Now.AddSeconds((waitingtime > 1 ? 1 : waitingtime));
+                            Task.Factory.StartNew(async () =>
+                            {
+                                await Task.Delay((int)((waitingtime > 1 ? 1 : waitingtime) * 1000));
+                                this.MapX = mapX;
+                                this.MapY = mapY;
+                            });
+
+                            for (int j = maxindex; j > 0; j--)
+                            {
+                                Path.RemoveAt(0);
+                            }
+                        }
+                        if (Path.Count() == 0 && (monster == null || MapId != monster.MapId || distance > maxDistance))
+                        {
+                            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
+                            if (!Path.Any())
+                            {
+                                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
+                            }
+                            Target = -1;
+                        }
+                    }
+                    else
+                    {
+                        if(distance > maxdistance)
+                        {
+                            Target = -1;
+                        }
                     }
                 }
 
