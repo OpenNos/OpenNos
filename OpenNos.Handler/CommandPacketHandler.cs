@@ -99,6 +99,64 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// $AddSkill Command
+        /// </summary>
+        /// <param name="addSkillPacket"></param>
+        public void AddSkill(AddSkillPacket addSkillPacket)
+        {
+            Logger.Debug("Add Skill Command", Session.SessionId);
+            if (addSkillPacket != null)
+            {
+                short skillVNum = addSkillPacket.SkillVnum;
+                Skill skillinfo = ServerManager.GetSkill(skillVNum);
+                if (skillinfo == null)
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_DOES_NOT_EXIST"), 11));
+                    return;
+                }
+
+                if (skillinfo.SkillVNum < 200)
+                {
+                    foreach (var skill in Session.Character.Skills.GetAllItems())
+                    {
+                        if ((skillinfo.CastId == skill.Skill.CastId) && (skill.Skill.SkillVNum < 200))
+                        {
+                            Session.Character.Skills.Remove(skill.SkillVNum);
+                        }
+                    }
+                }
+                else
+                {
+                    if (Session.Character.Skills.ContainsKey(skillVNum))
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_ALREADY_EXIST"), 11));
+                        return;
+                    }
+
+                    if (skillinfo.UpgradeSkill != 0)
+                    {
+                        CharacterSkill oldupgrade = Session.Character.Skills.GetAllItems().FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
+                        if (oldupgrade != null)
+                        {
+                            Session.Character.Skills.Remove(oldupgrade.SkillVNum);
+                        }
+                    }
+                }
+
+                Session.Character.Skills[skillVNum] = new CharacterSkill() { SkillVNum = skillVNum, CharacterId = Session.Character.CharacterId };
+
+                Session.SendPacket(Session.Character.GenerateSki());
+                Session.SendPackets(Session.Character.GenerateQuicklist());
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+                Session.SendPacket(Session.Character.GenerateLev());
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
+        }
+
         [Packet("$ArenaWinner")]
         public void ArenaWinner(string packet)
         {
@@ -439,6 +497,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
             Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$AddSkill SKILLID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ArenaWinner", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Backpack", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
@@ -454,12 +513,15 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$DropRate VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$FairyXpRate VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME(*) VNUM AMOUNT RARE UPGRADE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift VNUM AMOUNT RARE UPGRADE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$GodMode", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$GoldRate Value", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 12));
@@ -470,17 +532,13 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$MapDance", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Music BGM", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME TIME REASON ", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Music BGM", 12));
             Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Position", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RemoveMob", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
@@ -490,7 +548,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME(%)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SkillAdd SKILLID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Stat", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 12));
@@ -501,6 +558,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$XpRate VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
         }
@@ -676,11 +734,35 @@ namespace OpenNos.Handler
                 {
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                 }
-
             }
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$Demote CHARACTERNAME", 10));
+            }
+        }
+
+        /// <summary>
+        /// $DropRate Command
+        /// </summary>
+        /// <param name="dropRatePacket"></param>
+        public void DropRate(DropRatePacket dropRatePacket)
+        {
+            Logger.Debug("DropRate Changed", Session.SessionId);
+            if (dropRatePacket != null)
+            {
+                if (dropRatePacket.Value <= 1000)
+                {
+                    ServerManager.DropRate = dropRatePacket.Value;
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_RATE_CHANGED"), 0));
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 10));
             }
         }
 
@@ -698,6 +780,31 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
+            }
+        }
+
+        /// <summary>
+        /// $FairyXPRate Command
+        /// </summary>
+        /// <param name="fairyXpRatePacket"></param>
+        public void FairyXpRate(FairyXpRatePacket fairyXpRatePacket)
+        {
+            Logger.Debug("Fairy Xp Rate Changed", Session.SessionId);
+            if (fairyXpRatePacket != null)
+            {
+                if (fairyXpRatePacket.Value <= 1000)
+                {
+                    ServerManager.FairyXpRate = fairyXpRatePacket.Value;
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAIRYXP_RATE_CHANGED"), 0));
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 10));
             }
         }
 
@@ -790,6 +897,49 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
+            }
+        }
+
+        /// <summary>
+        /// $GoldRate
+        /// </summary>
+        /// <param name="goldRatePacket"></param>
+        public void GoldRate(GoldRatePacket goldRatePacket)
+        {
+            Logger.Debug("Gold Rate Changed", Session.SessionId);
+            if (goldRatePacket != null)
+            {
+                if (goldRatePacket.Value <= 1000)
+                {
+                    ServerManager.GoldRate = goldRatePacket.Value;
+
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_RATE_CHANGED"), 0));
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
+            }
+        }
+
+        /// <summary>
+        /// $Guri Command
+        /// </summary>
+        /// <param name="packet"></param>
+        public void Guri(GuriCommandPacket guriCommandPacket)
+        {
+            Logger.Debug("Guri Command", Session.SessionId);
+            if (guriCommandPacket != null)
+            {
+                Session.SendPacket(Session.Character.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, guriCommandPacket.Value));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
             }
         }
 
@@ -975,6 +1125,26 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// $Music Command
+        /// </summary>
+        /// <param name="musicPacket"></param>
+        public void Music(MusicPacket musicPacket)
+        {
+            Logger.Debug("Music Command", Session.SessionId);
+            if (musicPacket != null)
+            {
+                if (musicPacket.Music > -1)
+                {
+                    Session.CurrentMap?.Broadcast($"bgm {musicPacket.Music}");
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$Music BGM", 10));
+            }
+        }
+
         [Packet("$Mute")]
         public void Mute(string packet)
         {
@@ -1046,26 +1216,6 @@ namespace OpenNos.Handler
             }
         }
 
-        /// <summary>
-        /// $Music Command
-        /// </summary>
-        /// <param name="musicPacket"></param>
-        public void Music(MusicPacket musicPacket)
-        {
-            Logger.Debug("Music Command", Session.SessionId);
-            if (musicPacket != null)
-            {
-                if (musicPacket.Music > -1)
-                {
-                    Session.CurrentMap?.Broadcast($"bgm {musicPacket.Music}");
-                }
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay("$Music BGM", 10));
-            }
-        }
-
         [Packet("$Position")]
         public void Position(string packet)
         {
@@ -1130,108 +1280,6 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 10));
-            }
-        }
-
-        /// <summary>
-        /// $DropRate Command
-        /// </summary>
-        /// <param name="dropRatePacket"></param>
-        public void DropRate(DropRatePacket dropRatePacket)
-        {
-            Logger.Debug("DropRate Changed", Session.SessionId);
-            if (dropRatePacket != null)
-            {
-                if (dropRatePacket.Value <= 1000)
-                {
-                    ServerManager.DropRate = dropRatePacket.Value;
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_RATE_CHANGED"), 0));
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-                }
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 10));
-            }
-        }
-
-        /// <summary>
-        /// $FairyXPRate Command
-        /// </summary>
-        /// <param name="fairyXpRatePacket"></param>
-        public void FairyXpRate(FairyXpRatePacket fairyXpRatePacket)
-        {
-            Logger.Debug("Fairy Xp Rate Changed", Session.SessionId);
-            if (fairyXpRatePacket != null)
-            {
-                if (fairyXpRatePacket.Value <= 1000)
-                {
-                    ServerManager.FairyXpRate = fairyXpRatePacket.Value;
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAIRYXP_RATE_CHANGED"), 0));
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-                }
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 10));
-            }
-        }
-
-        /// <summary>
-        /// $GoldRate
-        /// </summary>
-        /// <param name="goldRatePacket"></param>
-        public void GoldRate(GoldRatePacket goldRatePacket)
-        {
-            Logger.Debug("Gold Rate Changed", Session.SessionId);
-            if (goldRatePacket != null)
-            {
-                if (goldRatePacket.Value <= 1000)
-                {
-                    ServerManager.GoldRate = goldRatePacket.Value;
-
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_RATE_CHANGED"), 0));
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-                }
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
-            }
-        }
-
-        /// <summary>
-        /// $XpRate Command
-        /// </summary>
-        /// <param name="xpRatePacket"></param>
-        public void XpRate(XpRatePacket xpRatePacket)
-        {
-            Logger.Debug("Xp Rate Changed", Session.SessionId);
-            if (xpRatePacket != null)
-            {
-                if (xpRatePacket.Value <= 1000)
-                {
-                    ServerManager.XPRate = xpRatePacket.Value;
-
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_RATE_CHANGED"), 0));
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-                }
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
             }
         }
 
@@ -1389,64 +1437,6 @@ namespace OpenNos.Handler
             {
                 ServerManager.Instance.TaskShutdown = new Task(ShutdownTask);
                 ServerManager.Instance.TaskShutdown.Start();
-            }
-        }
-
-        /// <summary>
-        /// $AddSkill Command
-        /// </summary>
-        /// <param name="addSkillPacket"></param>
-        public void AddSkill(AddSkillPacket addSkillPacket)
-        {
-            Logger.Debug("Add Skill Command", Session.SessionId);
-            if (addSkillPacket != null)
-            {
-                short skillVNum = addSkillPacket.SkillVnum;
-                Skill skillinfo = ServerManager.GetSkill(skillVNum);
-                if (skillinfo == null)
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_DOES_NOT_EXIST"), 11));
-                    return;
-                }
-
-                if (skillinfo.SkillVNum < 200)
-                {
-                    foreach (var skill in Session.Character.Skills.GetAllItems())
-                    {
-                        if ((skillinfo.CastId == skill.Skill.CastId) && (skill.Skill.SkillVNum < 200))
-                        {
-                            Session.Character.Skills.Remove(skill.SkillVNum);
-                        }
-                    }
-                }
-                else
-                {
-                    if (Session.Character.Skills.ContainsKey(skillVNum))
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_ALREADY_EXIST"), 11));
-                        return;
-                    }
-
-                    if (skillinfo.UpgradeSkill != 0)
-                    {
-                        CharacterSkill oldupgrade = Session.Character.Skills.GetAllItems().FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
-                        if (oldupgrade != null)
-                        {
-                            Session.Character.Skills.Remove(oldupgrade.SkillVNum);
-                        }
-                    }
-                }
-
-                Session.Character.Skills[skillVNum] = new CharacterSkill() { SkillVNum = skillVNum, CharacterId = Session.Character.CharacterId };
-
-                Session.SendPacket(Session.Character.GenerateSki());
-                Session.SendPackets(Session.Character.GenerateQuicklist());
-                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                Session.SendPacket(Session.Character.GenerateLev());
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
         }
 
@@ -1677,23 +1667,6 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Guri Command
-        /// </summary>
-        /// <param name="packet"></param>
-        public void Guri(GuriCommandPacket guriCommandPacket)
-        {
-            Logger.Debug("Guri Command", Session.SessionId);
-            if (guriCommandPacket != null)
-            {
-                Session.SendPacket(Session.Character.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, guriCommandPacket.Value));
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
-            }
-        }
-
-        /// <summary>
         /// $Unban Command
         /// </summary>
         /// <param name="unbanPacket"></param>
@@ -1828,6 +1801,32 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 10));
+            }
+        }
+
+        /// <summary>
+        /// $XpRate Command
+        /// </summary>
+        /// <param name="xpRatePacket"></param>
+        public void XpRate(XpRatePacket xpRatePacket)
+        {
+            Logger.Debug("Xp Rate Changed", Session.SessionId);
+            if (xpRatePacket != null)
+            {
+                if (xpRatePacket.Value <= 1000)
+                {
+                    ServerManager.XPRate = xpRatePacket.Value;
+
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_RATE_CHANGED"), 0));
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
             }
         }
 
