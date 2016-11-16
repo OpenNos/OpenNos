@@ -757,7 +757,7 @@
     <value>{0} ist der Gruppe beigetreten.</value>
   </data>
   <data name="IN_BATTLE" xml:space="preserve">
-    <value>Du kanns Spieler während eines Kampfes nicht einladen!</value>
+    <value>Du kannst den Spieler während eines Kampfes nicht einladen!</value>
   </data>
   <data name="PLAYER_IN_BATTLE" xml:space="preserve">
     <value>Der Spieler {0} befindet sich in einem Kampf.</value>
@@ -775,7 +775,7 @@
     <value>Nicht genügend Punkte vorhanden.</value>
   </data>
   <data name="SPEAKER" xml:space="preserve">
-    <value>Lautsprecher</value>
+    <value>Gesamt</value>
   </data>
   <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
     <value>Du mussst Transformiert sein, um die SP-Punkte zurückzusetzen.</value>
@@ -793,7 +793,7 @@
     <value>Möchtest du das Item benutzen? Das Item wird dann an deinem Charackter gebunden sein.</value>
   </data>
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
-    <value>Frühlings^Melodie</value>
+    <value>Frühlings-Melodie</value>
   </data>
   <data name="MEMORY" xml:space="preserve">
     <value>Aktueller Verbrauch: </value>
@@ -934,7 +934,7 @@
     <value>Du trägst keine angemessene Waffe!</value>
   </data>
   <data name="NO_WIG" xml:space="preserve">
-    <value>Du trägst garnicht den coolen Afro. ;)</value>
+    <value>Du musst eine Afroperücke tragen.</value>
   </data>
   <data name="QNA_ITEM" xml:space="preserve">
     <value>Möchtest du dieses Item benutzen?</value>
