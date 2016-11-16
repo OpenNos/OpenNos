@@ -582,7 +582,8 @@ namespace OpenNos.Handler
             if (type == 1)
             {
                 MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-                if (npc != null)
+                int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = npc.MapX, Y = npc.MapY });
+                if (npc != null && npc.MapId == Session.CurrentMap.MapId && distance <= 5)
                 {
                     Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
                     if (rec != null && rec.Amount > 0)
@@ -603,7 +604,8 @@ namespace OpenNos.Handler
             else
             {
                 MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-                int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapX }, new MapCell() { X = npc.MapX, Y = npc.MapY });
+
+                int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = npc.MapX, Y = npc.MapY });
                 if (npc != null && npc.MapId == Session.CurrentMap.MapId && distance <= 5)
                 {
                     Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
