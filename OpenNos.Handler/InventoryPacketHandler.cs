@@ -484,19 +484,19 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("get")]
-        public void GetItem(string packet)
+        /// <summary>
+        /// get
+        /// </summary>
+        /// <param name="packet"></param>
+        public void GetItem(GetPacket packet)
         {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            long transportId;
+            Logger.Debug(packet.ToString(), Session.SessionId);
             MapItem mapItem = new MonsterMapItem(0, 0, 0, 0);
-
             if (Session.Character.LastSkillUse.AddSeconds(1) > DateTime.Now || Session.Character.IsVehicled)
             {
                 return;
             }
-            if (long.TryParse(packetsplit[4], out transportId) && Session.CurrentMap.DroppedList.TryGetValue(transportId, out mapItem))
+            if (Session.CurrentMap.DroppedList.TryGetValue(packet.TransportId, out mapItem))
             {
                 if (mapItem.PositionX < Session.Character.MapX + 3 && mapItem.PositionX > Session.Character.MapX - 3 && mapItem.PositionY < Session.Character.MapY + 3 && mapItem.PositionY > Session.Character.MapY - 3)
                 {
@@ -523,23 +523,26 @@ namespace OpenNos.Handler
                         if (mapItem.GetItemInstance().Item.ItemType == ItemType.Map)
                         {
                             MapItem removeItem;
-                            Session.CurrentMap.DroppedList.TryRemove(transportId, out removeItem);
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
+                            Session.CurrentMap.DroppedList.TryRemove(packet.TransportId, out removeItem);
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                         }
                         else
                         {
-                            ItemInstance newInv = Session.Character.Inventory.AddToInventory(mapItem.GetItemInstance());
-                            if (newInv != null)
+                            lock (Session.Character.Inventory)
                             {
-                                MapItem removeItem;
-                                Session.CurrentMap.DroppedList.TryRemove(transportId, out removeItem);
-                                Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
-                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.Item.Name} x {mapItem.Amount}", 12));
-                            }
-                            else
-                            {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                                ItemInstance newInv = Session.Character.Inventory.AddToInventory(mapItem.GetItemInstance());
+                                if (newInv != null)
+                                {
+                                    MapItem removeItem;
+                                    Session.CurrentMap.DroppedList.TryRemove(packet.TransportId, out removeItem);
+                                    Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
+                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                                    Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.Item.Name} x {mapItem.Amount}", 12));
+                                }
+                                else
+                                {
+                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                                }
                             }
                         }
                     }
@@ -559,23 +562,23 @@ namespace OpenNos.Handler
                         }
                         Session.SendPacket(Session.Character.GenerateGold());
                         MapItem removeMapItem;
-                        Session.CurrentMap.DroppedList.TryRemove(transportId, out removeMapItem);
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
+                        Session.CurrentMap.DroppedList.TryRemove(packet.TransportId, out removeMapItem);
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                     }
                 }
             }
         }
 
-        [Packet("mve")]
-        public void MoveEquipment(string packet)
+        /// <summary>
+        /// mve
+        /// </summary>
+        /// <param name="packet"></param>
+        public void MoveEquipment(MvePacket packet)
         {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            byte type, destinationType;
-            short slot, destinationSlot;
-            if (byte.TryParse(packetsplit[2], out type) && byte.TryParse(packetsplit[4], out destinationType) && short.TryParse(packetsplit[3], out slot) && short.TryParse(packetsplit[5], out destinationSlot))
+            Logger.Debug(packet.ToString(), Session.SessionId);
+            lock (Session.Character.Inventory)
             {
-                if (destinationSlot > 48 + (Session.Character.BackPack * 12))
+                if (packet.DestinationSlot > 48 + (Session.Character.BackPack * 12))
                 {
                     return;
                 }
@@ -583,35 +586,33 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-
-                ItemInstance sourceItem = Session.Character.Inventory.LoadBySlotAndType(slot, (InventoryType)type);
-
+                ItemInstance sourceItem = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.InventoryType);
                 if ((sourceItem != null && sourceItem.Item.ItemType == ItemType.Specialist) || (sourceItem != null && sourceItem.Item.ItemType == ItemType.Fashion))
                 {
-                    ItemInstance inv = Session.Character.Inventory.MoveInInventory(slot, (InventoryType)type, (InventoryType)destinationType, destinationSlot, false);
+                    ItemInstance inv = Session.Character.Inventory.MoveInInventory(packet.Slot, packet.InventoryType, packet.DestinationInventoryType, packet.DestinationSlot, false);
                     if (inv != null)
                     {
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, (InventoryType)destinationType, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, (InventoryType)type, slot, 0, 0, 0, 0));
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, packet.DestinationInventoryType, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, packet.InventoryType, packet.Slot, 0, 0, 0, 0));
                     }
                 }
             }
         }
 
-        [Packet("mvi")]
-        public void MoveItem(string packet)
+        /// <summary>
+        /// mvi
+        /// </summary>
+        /// <param name="packet"></param>
+        public void MoveItem(MviPacket packet)
         {
-            Logger.Debug(packet, Session.SessionId);
-            string[] moveItemPacket = packet.Split(' ');
-            byte type, amount;
-            short slot, destinationSlot;
-            if (byte.TryParse(moveItemPacket[2], out type) && byte.TryParse(moveItemPacket[4], out amount) && short.TryParse(moveItemPacket[3], out slot) && short.TryParse(moveItemPacket[5], out destinationSlot))
+            Logger.Debug(packet.ToString(), Session.SessionId);
+            lock (Session.Character.Inventory)
             {
                 ItemInstance previousInventory;
                 ItemInstance newInventory;
 
                 // check if the destination slot is out of range
-                if (destinationSlot > 48 + (Session.Character.BackPack * 12))
+                if (packet.DestinationSlot > 48 + (Session.Character.BackPack * 12))
                 {
                     return;
                 }
@@ -623,20 +624,20 @@ namespace OpenNos.Handler
                 }
 
                 // actually move the item from source to destination
-                Session.Character.Inventory.MoveItem((InventoryType)type, slot, amount, destinationSlot, out previousInventory, out newInventory);
+                Session.Character.Inventory.MoveItem(packet.InventoryType, packet.Slot, packet.Amount, packet.DestinationSlot, out previousInventory, out newInventory);
                 if (newInventory == null)
                 {
                     return;
                 }
-                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInventory.ItemVNum, newInventory.Amount, (InventoryType)type, newInventory.Slot, newInventory.Rare, newInventory.Design, newInventory.Upgrade, 0));
+                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInventory.ItemVNum, newInventory.Amount, packet.InventoryType, newInventory.Slot, newInventory.Rare, newInventory.Design, newInventory.Upgrade, 0));
 
                 if (previousInventory != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(previousInventory.ItemVNum, previousInventory.Amount, (InventoryType)type, previousInventory.Slot, previousInventory.Rare, previousInventory.Design, previousInventory.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(previousInventory.ItemVNum, previousInventory.Amount, packet.InventoryType, previousInventory.Slot, previousInventory.Rare, previousInventory.Design, previousInventory.Upgrade, 0));
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, (InventoryType)type, slot, 0, 0, 0, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, packet.InventoryType, packet.Slot, 0, 0, 0, 0));
                 }
             }
         }
@@ -648,7 +649,7 @@ namespace OpenNos.Handler
         public void PutItem(PutPacket packet)
         {
             Logger.Debug(packet.ToString(), Session.SessionId);
-            lock(Session.Character.Inventory)
+            lock (Session.Character.Inventory)
             {
                 ItemInstance invitem = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.InventoryType);
                 if (invitem != null && invitem.Item.IsDroppable && invitem.Item.IsTradable && !Session.Character.InExchangeOrTrade)
@@ -1488,6 +1489,6 @@ namespace OpenNos.Handler
             }
         }
 
-#endregion
+        #endregion
     }
 }
