@@ -1027,4 +1027,10 @@ Veux-tu le porter ?</value>
   <data name="ITEM_UNFIXED" xml:space="preserve">
     <value>Tu ne peux pas l'utiliser. Ton objet ne remplis pas les conditions</value>
   </data>
+  <data name="BOT_MESSAGE_4" xml:space="preserve">
+    <value>Ne^donnez^JAMAIS^vos^identifiants^de^connexion^!</value>
+  </data>
+  <data name="BOT_MESSAGE_5" xml:space="preserve">
+    <value>Un^GM^ne^vous^demandera^jamais^vos^identifiants^!</value>
+  </data>
 </root>
