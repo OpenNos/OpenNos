@@ -861,6 +861,7 @@ namespace OpenNos.Handler
                 totalDamage -= ushort.MaxValue;
             }
 
+            monsterToAttack.LastEffect = DateTime.Now;
             damage = Convert.ToUInt16(totalDamage);
             if (monsterToAttack.IsMoving)
             {
