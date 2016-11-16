@@ -1710,20 +1710,20 @@ namespace OpenNos.Handler
             }
         }
 
-        /// <summary>
-        /// $Undercover Command
-        /// </summary>
-        /// <param name="packet"></param>
-        [Packet("$Undercover")]
-        public void Undercover(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            if (Session.Character.State != CharacterState.Inactive && Session.Character.State != CharacterState.Unknown)
-            {
-                Session.Character.State = Session.Character.State == CharacterState.Active ? CharacterState.Undercover : CharacterState.Active;
-                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
-            }
-        }
+        ///// <summary>
+        ///// $Undercover Command
+        ///// </summary>
+        ///// <param name="packet"></param>
+        //[Packet("$Undercover")]
+        //public void Undercover(string packet)
+        //{
+        //    Logger.Debug(packet, Session.SessionId);
+        //    if (Session.Character.State != CharacterState.Inactive && Session.Character.State != CharacterState.Unknown)
+        //    {
+        //        Session.Character.State = Session.Character.State == CharacterState.Active ? CharacterState.Undercover : CharacterState.Active;
+        //        ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+        //    }
+        //}
 
         /// <summary>
         /// $Unmute Command
