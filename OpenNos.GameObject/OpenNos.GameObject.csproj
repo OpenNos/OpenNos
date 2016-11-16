@@ -131,6 +131,7 @@
     <Compile Include="Packets\CommandPackets\WigColorPacket.cs" />
     <Compile Include="Packets\CommandPackets\XpRatePacket.cs" />
     <Compile Include="Packets\CommandPackets\ZoomPacket.cs" />
+    <Compile Include="Packets\ServerPackets\BfPacket.cs" />
     <Compile Include="Packets\ServerPackets\BuyPacket.cs" />
     <Compile Include="Packets\ServerPackets\CharacterCreatePacket.cs" />
     <Compile Include="Packets\ServerPackets\CharacterDeletePacket.cs" />

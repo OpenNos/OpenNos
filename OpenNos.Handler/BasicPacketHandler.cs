@@ -317,6 +317,10 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateStatChar());
         }
 
+        /// <summary>
+        /// pjoin
+        /// </summary>
+        /// <param name="pjoinPacket"></param>
         public void GroupJoin(PJoinPacket pjoinPacket)
         {
             Logger.Debug("Joining group", Session.SessionId);
