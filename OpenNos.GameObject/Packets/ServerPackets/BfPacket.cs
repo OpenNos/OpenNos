@@ -17,7 +17,7 @@ namespace OpenNos.GameObject.Packets.ServerPackets
         public List<BuffSubPacket> BuffEntries { get; set; }
 
         [PacketIndex(3)]
-        public int BuffEffect { get; set; } // ? // bf 1 617968 0.88.1800 51
+        public int BuffEffect { get; set; } // ? // bf 1 617968 0.88.1800 51 bf 1 617968 0.89.3000 51 bf 1 617968 0.139.1800 61 bf 1 617968 0.138.1800 61
 
     }
 
@@ -25,7 +25,7 @@ namespace OpenNos.GameObject.Packets.ServerPackets
     public class BuffSubPacket : PacketDefinition
     {
         [PacketIndex(0)]
-        public int unknown { get; set; } // always 0?
+        public int Value { get; set; } // uses left of buff, used for example for rarifying
 
         [PacketIndex(1)]
         public int BuffId { get; set; }
