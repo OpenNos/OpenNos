@@ -25,7 +25,7 @@ namespace OpenNos.GameObject
 
         private ThreadSafeSortedList<long, ClientSession> _characters;
         private bool _disposed;
-        private int order;
+        private int _order;
 
         #endregion
 
@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
         {
             _characters = new ThreadSafeSortedList<long, ClientSession>();
             GroupId = ServerManager.Instance.GetNextGroupId();
-            order = 0;
+            _order = 0;
         }
 
         #endregion
@@ -87,6 +87,18 @@ namespace OpenNos.GameObject
             return str;
         }
 
+        public long GetNextOrderedCharacterId(Character character)
+        {
+            _order++;
+            List<ClientSession> sessions = Characters.Where(s => Map.GetDistance(s.Character, character) < 50).ToList();
+            if (sessions.Count() >= _order)
+            {
+                _order = 0;
+            }
+
+            return sessions[_order].Character.CharacterId;
+        }
+
         public bool IsMemberOfGroup(long characterId)
         {
             return _characters.ContainsKey(characterId);
@@ -116,18 +128,6 @@ namespace OpenNos.GameObject
         {
             session.Character.Group = null;
             _characters.Remove(session.Character.CharacterId);
-        }
-
-        public long OrderedCharacterId(Character Character)
-        {
-            order++;
-            IEnumerable<ClientSession> lst = Characters.Where(s => Map.GetDistance(s.Character, Character) < 50);
-            if (order > lst.Count() - 1)
-            {
-                order = 0;
-            }
-
-            return lst.ElementAt(order).Character.CharacterId;
         }
 
         protected virtual void Dispose(bool disposing)

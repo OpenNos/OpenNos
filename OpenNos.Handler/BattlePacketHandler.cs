@@ -920,7 +920,7 @@ namespace OpenNos.Handler
                                 {
                                     if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                                     {
-                                        Owner = group.OrderedCharacterId(Session.Character);
+                                        Owner = group.GetNextOrderedCharacterId(Session.Character);
                                         group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)Owner).Character.Name, drop.Amount), 10)));
                                     }
                                     else
@@ -965,7 +965,7 @@ namespace OpenNos.Handler
                         {
                             if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                             {
-                                Owner = group.OrderedCharacterId(Session.Character);
+                                Owner = group.GetNextOrderedCharacterId(Session.Character);
                                 group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop2.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)Owner).Character.Name, drop2.Amount), 10)));
                             }
                             else
