@@ -543,12 +543,12 @@ namespace OpenNos.GameObject
             }
         }
 
-        private short GetFreeSlot(InventoryType type, int backPack, short? excludeSlot = null)
+        private short GetFreeSlot(InventoryType type, int backPack)
         {
             ItemInstance result;
             for (short i = 0; i < 48 + (backPack * 12); i++)
             {
-                result = this.GetAllItems().SingleOrDefault(c => c.Type == type && (c.Slot.Equals(i) || c.Slot == excludeSlot));
+                result = this.GetAllItems().SingleOrDefault(c => c.Type == type && c.Slot.Equals(i));
                 if (result == null)
                 {
                     return i;
