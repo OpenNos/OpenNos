@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ALREADY_CONNECTED" xml:space="preserve">
-    <value>Cet ID est déjà utilisé.</value>
+    <value>Cet ID est déjà utilisé.                                                                                                                                                                                                                                                                    </value>
   </data>
   <data name="BANNED" xml:space="preserve">
     <value>Échec. Votre compte à été banni. Veuillez contacter l'équipe du jeu. Raison : {0} | Durée de la sanction : {1}</value>
