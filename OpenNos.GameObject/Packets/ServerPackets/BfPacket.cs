@@ -18,7 +18,6 @@ namespace OpenNos.GameObject.Packets.ServerPackets
 
         [PacketIndex(3)]
         public int CharacterLevel { get; set; }
-
     }
 
     [PacketHeader("sub_buff")]

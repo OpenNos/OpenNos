@@ -367,8 +367,8 @@ namespace OpenNos.GameObject
                             {
                                 Path.RemoveAt(0);
                             }
-                            
                         }
+
                         if (Path.Count() == 0 && (DateTime.Now - LastEffect).Seconds > 20 && (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance))
                         {
                             Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });

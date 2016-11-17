@@ -1578,9 +1578,9 @@ namespace OpenNos.Handler
                     {
                         ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                         Session.Character.MapId = (short)mapId;
-                        Session.Character.MapX = (short)((short)(mapx) + 1);
-                        Session.Character.MapY = (short)((short)(mapy) + 1);
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, (short)mapId, (short)((short)(mapx) + 1), (short)((short)(mapy) + 1));
+                        Session.Character.MapX = (short)((short)(mapx)+1);
+                        Session.Character.MapY = (short)((short)(mapy)+1);
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, (short)mapId, (short)((short)(mapx)+1), (short)((short)(mapy)+1));
                     }
                     else
                     {

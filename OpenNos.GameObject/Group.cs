@@ -95,7 +95,7 @@ namespace OpenNos.GameObject
             {
                 _order = 0;
             }
-            else if(!sessions.Any())
+            else if (!sessions.Any())
             {
                 return 0;
             }

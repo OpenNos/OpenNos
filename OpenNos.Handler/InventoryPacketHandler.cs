@@ -492,7 +492,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet.ToString(), Session.SessionId);
 
-            if(!Session.CurrentMap.DroppedList.ContainsKey(packet.TransportId))
+            if (!Session.CurrentMap.DroppedList.ContainsKey(packet.TransportId))
             {
                 return;
             }

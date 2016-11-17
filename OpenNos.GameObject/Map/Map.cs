@@ -657,7 +657,7 @@ namespace OpenNos.GameObject
             {
                 List<MapItem> dropsToRemove = DroppedList.GetAllItems().Where(dl => dl.CreatedDate.AddMinutes(3) < DateTime.Now).ToList();
 
-                foreach(MapItem drop in dropsToRemove)
+                foreach (MapItem drop in dropsToRemove)
                 {
                     Broadcast(drop.GenerateOut(drop.TransportId));
                     DroppedList.Remove(drop.TransportId);

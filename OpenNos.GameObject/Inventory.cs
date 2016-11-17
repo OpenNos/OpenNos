@@ -427,7 +427,7 @@ namespace OpenNos.GameObject
         /// <param name="inventory"></param>
         public void PutInventory(ItemInstance inventory)
         {
-            this[inventory.Id]= inventory;
+            this[inventory.Id] = inventory;
         }
 
         public void RemoveItemAmount(int vnum, int amount = 1)

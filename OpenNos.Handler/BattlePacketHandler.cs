@@ -223,7 +223,7 @@ namespace OpenNos.Handler
                                         damage = GenerateDamage(monsterToAttack.MapMonsterId, ski.Skill, ref hitmode);
 
                                         ski.LastUse = DateTime.Now;
-                                        Task.Factory.StartNew(() => { GenerateKillBonus(monsterToAttack.MapMonsterId); } );
+                                        Task.Factory.StartNew(() => { GenerateKillBonus(monsterToAttack.MapMonsterId); });
                                         notcancel = true;
                                         if (!Session.Character.HasGodMode)
                                         {

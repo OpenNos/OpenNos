@@ -56,6 +56,7 @@ namespace OpenNos.GameObject
         public List<Recipe> Recipes { get; set; }
 
         public Shop Shop { get; set; }
+
         public int Target { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
@@ -76,6 +77,7 @@ namespace OpenNos.GameObject
                 return String.Empty;
             }
         }
+
         public string GenerateEff(short effect)
         {
             NpcMonster npc = ServerManager.GetNpc(this.NpcVNum);
@@ -167,21 +169,21 @@ namespace OpenNos.GameObject
                     Map.Broadcast(new BroadcastPacket(null, GenerateMv2(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                 }
             }
-            if(Target == -1)
+            if (Target == -1)
             {
                 if (this.Npc.IsHostile)
                 {
-                    MapMonster monster = this.Map.Monsters.FirstOrDefault(s => MapId == s.MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.MapX, Y = s.MapY }) < (Npc.NoticeRange > 5? Npc.NoticeRange / 2 : Npc.NoticeRange));
+                    MapMonster monster = this.Map.Monsters.FirstOrDefault(s => MapId == s.MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.MapX, Y = s.MapY }) < (Npc.NoticeRange > 5 ? Npc.NoticeRange / 2 : Npc.NoticeRange));
                     if (monster != null)
                     {
                         Target = monster.MapMonsterId;
                     }
                 }
             }
-            else if(Target != -1)
+            else if (Target != -1)
             {
                 MapMonster monster = this.Map.Monsters.FirstOrDefault(s => s.MapMonsterId == Target);
-                if(monster == null || monster.CurrentHp < 1)
+                if (monster == null || monster.CurrentHp < 1)
                 {
                     Target = -1;
                     return;
@@ -196,7 +198,6 @@ namespace OpenNos.GameObject
                 int distance = Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = monster.MapX, Y = monster.MapY });
                 if (monster != null && monster.CurrentHp > 0 && ((npcMonsterSkill != null && distance < npcMonsterSkill.Skill.Range) || (distance <= Npc.BasicRange)))
                 {
-
                     if (((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Npc.BasicCooldown * 200 && !Npc.Skills.Any()) || npcMonsterSkill != null)
                     {
                         if (npcMonsterSkill != null)
@@ -292,13 +293,12 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        if(distance > maxdistance)
+                        if (distance > maxdistance)
                         {
                             Target = -1;
                         }
                     }
                 }
-
             }
         }
 
