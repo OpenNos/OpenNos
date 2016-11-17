@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
         {
             PositionX = x;
             PositionY = y;
-            CreateDate = DateTime.Now;
+            CreatedDate = DateTime.Now;
             TransportId = 0;
         }
 
@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
 
         public abstract byte Amount { get; set; }
 
-        public DateTime CreateDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public abstract short ItemVNum { get; set; }
 

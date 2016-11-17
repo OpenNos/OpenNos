@@ -665,7 +665,7 @@ namespace OpenNos.GameObject
 
         public List<string> GenerateDroppedItem()
         {
-            return ServerManager.GetMap(MapId).DroppedList.Select(item => $"in 9 {item.Value.ItemVNum} {item.Key} {item.Value.PositionX} {item.Value.PositionY} {(item.Value is MonsterMapItem && ((MonsterMapItem)item.Value).GoldAmount > 1 ? ((MonsterMapItem)item.Value).GoldAmount : item.Value.Amount)} 0 0 -1").ToList();
+            return ServerManager.GetMap(MapId).DroppedList.GetAllItems().Select(item => $"in 9 {item.ItemVNum} {item.TransportId} {item.PositionX} {item.PositionY} {(item is MonsterMapItem && ((MonsterMapItem)item).GoldAmount > 1 ? ((MonsterMapItem)item).GoldAmount : item.Amount)} 0 0 -1").ToList();
         }
 
         public EffectPacket GenerateEff(int effectid, byte effecttype = 1)
@@ -1878,23 +1878,26 @@ namespace OpenNos.GameObject
 
         public void GiftAdd(short itemVNum, byte amount)
         {
-            ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, Session.Character.CharacterId, amount);
-            if (newItem != null)
+            lock(Inventory)
             {
-                if (newItem.Item.ItemType == ItemType.Armor || newItem.Item.ItemType == ItemType.Weapon || newItem.Item.ItemType == ItemType.Shell)
+                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, Session.Character.CharacterId, amount);
+                if (newItem != null)
                 {
-                    ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
-                }
-                ItemInstance newInv = Inventory.AddToInventory(newItem);
-                if (newInv != null)
-                {
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
-                    Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
-                }
-                else
-                {
-                    SendGift(CharacterId, itemVNum, amount, newItem.Rare, newItem.Upgrade, false);
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_BY_THE_GIANT_MONSTER"), 0));
+                    if (newItem.Item.ItemType == ItemType.Armor || newItem.Item.ItemType == ItemType.Weapon || newItem.Item.ItemType == ItemType.Shell)
+                    {
+                        ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+                    }
+                    ItemInstance newInv = Inventory.AddToInventory(newItem);
+                    if (newInv != null)
+                    {
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
+                    }
+                    else
+                    {
+                        SendGift(CharacterId, itemVNum, amount, newItem.Rare, newItem.Upgrade, false);
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_BY_THE_GIANT_MONSTER"), 0));
+                    }
                 }
             }
         }

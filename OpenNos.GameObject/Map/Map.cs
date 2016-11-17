@@ -55,7 +55,7 @@ namespace OpenNos.GameObject
             Data = data;
             LoadZone();
             IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId).ToList();
-            DroppedList = new ConcurrentDictionary<long, MapItem>();
+            DroppedList = new ThreadSafeSortedList<long, MapItem>();
 
             MapTypes = new List<MapTypeDTO>();
             foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId).ToList())
@@ -83,7 +83,7 @@ namespace OpenNos.GameObject
 
         public bool Disabled { get; internal set; }
 
-        public ConcurrentDictionary<long, MapItem> DroppedList { get; set; }
+        public ThreadSafeSortedList<long, MapItem> DroppedList { get; set; }
 
         public bool IsDancing { get; set; }
 
@@ -207,7 +207,7 @@ namespace OpenNos.GameObject
 
                 droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, Owner ?? -1);
 
-                DroppedList.TryAdd(droppedItem.TransportId, droppedItem);
+                DroppedList[droppedItem.TransportId] = droppedItem;
 
                 Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
             }
@@ -393,7 +393,7 @@ namespace OpenNos.GameObject
                     newItemInstance.Amount = amount;
                     droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance);
 
-                    DroppedList.TryAdd(droppedItem.TransportId, droppedItem);
+                    DroppedList[droppedItem.TransportId] = droppedItem;
                     inv.Amount -= amount;
                 }
             }
@@ -655,13 +655,12 @@ namespace OpenNos.GameObject
             // take the data from list to remove it without having enumeration problems (ToList)
             try
             {
-                IEnumerable<KeyValuePair<long, MapItem>> dropsToRemove = DroppedList.Where(dl => dl.Value.CreateDate.AddMinutes(3) < DateTime.Now).ToList();
+                List<MapItem> dropsToRemove = DroppedList.GetAllItems().Where(dl => dl.CreatedDate.AddMinutes(3) < DateTime.Now).ToList();
 
-                foreach (KeyValuePair<long, MapItem> drop in dropsToRemove)
+                foreach(MapItem drop in dropsToRemove)
                 {
-                    Broadcast(drop.Value.GenerateOut(drop.Key));
-                    MapItem mapItem;
-                    DroppedList.TryRemove(drop.Key, out mapItem);
+                    Broadcast(drop.GenerateOut(drop.TransportId));
+                    DroppedList.Remove(drop.TransportId);
                 }
             }
             catch (Exception e)
