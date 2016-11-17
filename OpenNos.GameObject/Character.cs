@@ -1861,8 +1861,8 @@ namespace OpenNos.GameObject
             xpcalculation = levelDifference < 5 ? monster.XP : monster.XP / 3 * 2;
 
             // xp calculation / penalty * rate
-            xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
-
+                xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
+           
             // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal
             // to 4
             if (Level <= 5 && levelDifference < -4)
@@ -1875,6 +1875,11 @@ namespace OpenNos.GameObject
             {
                 xp = (long)Math.Round(xp / (Level * partyPenalty));
             }
+            else if (monster.Level >= 75)
+            {
+                xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate * 2);
+            }
+
 
             return xp;
         }
@@ -2322,60 +2327,64 @@ namespace OpenNos.GameObject
 
         public void SendGift(long id, short vnum, byte amount, sbyte rare, byte upgrade, bool isNosmall)
         {
-            Item it = ServerManager.GetItem((short)vnum);
+            Item it = ServerManager.GetItem(vnum);
             int color = (byte)HairColor;
-            if (it.ItemType != ItemType.Weapon && it.ItemType != ItemType.Armor && it.ItemType != ItemType.Specialist)
-            {
-                upgrade = 0;
-            }
-            else if (it.ItemType != ItemType.Weapon && it.ItemType != ItemType.Armor)
-            {
-                rare = 0;
-            }
-            if (rare > 8 || rare < -2)
-            {
-                rare = 0;
-            }
-            if ((upgrade < 0 || upgrade > 10) && it.ItemType != ItemType.Specialist)
-            {
-                upgrade = 0;
-            }
-            else if (it.ItemType == ItemType.Specialist && (upgrade < 0 || upgrade > 15))
-            {
-                upgrade = 0;
-            }
 
-            // maximum size of the amount is 99
-            if (amount > 99)
+            if (it != null)
             {
-                amount = 99;
-            }
+                if (it.ItemType != ItemType.Weapon && it.ItemType != ItemType.Armor && it.ItemType != ItemType.Specialist)
+                {
+                    upgrade = 0;
+                }
+                else if (it.ItemType != ItemType.Weapon && it.ItemType != ItemType.Armor)
+                {
+                    rare = 0;
+                }
+                if (rare > 8 || rare < -2)
+                {
+                    rare = 0;
+                }
+                if ((upgrade < 0 || upgrade > 10) && it.ItemType != ItemType.Specialist)
+                {
+                    upgrade = 0;
+                }
+                else if (it.ItemType == ItemType.Specialist && (upgrade < 0 || upgrade > 15))
+                {
+                    upgrade = 0;
+                }
 
-            MailDTO mail = new MailDTO()
-            {
-                AttachmentAmount = (it.Type == InventoryType.Etc || it.Type == InventoryType.Main) ? amount : (byte)1,
-                IsOpened = false,
-                Date = DateTime.Now,
-                ReceiverId = id,
-                SenderId = id,
-                AttachmentRarity = (byte)rare,
-                AttachmentUpgrade = upgrade,
-                IsSenderCopy = false,
-                Title = isNosmall ? "NOSMALL" : "NOSTALE",
-                AttachmentVNum = vnum,
-                SenderClass = Session.Character.Class,
-                SenderGender = Session.Character.Gender,
-                SenderHairColor = Session.Character.HairColor,
-                SenderHairStyle = Session.Character.HairStyle,
-                EqPacket = Session.Character.GenerateEqListForPacket(),
-                SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
-            };
-            DAOFactory.MailDAO.InsertOrUpdate(ref mail);
-            if (id == CharacterId)
-            {
-                Session.Character.MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
-                Session.SendPacket(GenerateParcel(mail));
-                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")} {mail.AttachmentAmount}", 12));
+                // maximum size of the amount is 99
+                if (amount > 99)
+                {
+                    amount = 99;
+                }
+
+                MailDTO mail = new MailDTO()
+                {
+                    AttachmentAmount = (it.Type == InventoryType.Etc || it.Type == InventoryType.Main) ? amount : (byte)1,
+                    IsOpened = false,
+                    Date = DateTime.Now,
+                    ReceiverId = id,
+                    SenderId = id,
+                    AttachmentRarity = (byte)rare,
+                    AttachmentUpgrade = upgrade,
+                    IsSenderCopy = false,
+                    Title = isNosmall ? "NOSMALL" : "NOSTALE",
+                    AttachmentVNum = vnum,
+                    SenderClass = Session.Character.Class,
+                    SenderGender = Session.Character.Gender,
+                    SenderHairColor = Session.Character.HairColor,
+                    SenderHairStyle = Session.Character.HairStyle,
+                    EqPacket = Session.Character.GenerateEqListForPacket(),
+                    SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
+                };
+                DAOFactory.MailDAO.InsertOrUpdate(ref mail);
+                if (id == CharacterId)
+                {
+                    Session.Character.MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
+                    Session.SendPacket(GenerateParcel(mail));
+                    Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")} {mail.AttachmentAmount}", 12));
+                }
             }
         }
 
