@@ -347,8 +347,7 @@ namespace OpenNos.GameObject
                             }
                         }
                         if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
-                        {
-                            /*
+                        {                           
                             short mapX;
                             short mapY;
                             int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
@@ -368,23 +367,7 @@ namespace OpenNos.GameObject
                             {
                                 Path.RemoveAt(0);
                             }
-                            */
-                            short mapX, mapY;
-                            Task.Factory.StartNew(async () =>
-                            {
-                                foreach(GridPos node in Path)
-                                {
-                                    int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                                    mapX = (short)Path.ElementAt(maxindex - 1).x;
-                                    mapY = (short)Path.ElementAt(maxindex - 1).y;
-                                    this.MapX = mapX;
-                                    this.MapY = mapY;
-                                    Map.Broadcast(new BroadcastPacket(null, $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
-                                    Path.Remove(node);
-                                    LastMove = DateTime.Now;
-                                    await Task.Delay(Monster.Speed * 250);
-                                }
-                            });
+                            
                         }
                         if (Path.Count() == 0 && (DateTime.Now - LastEffect).Seconds > 20 && (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance))
                         {
