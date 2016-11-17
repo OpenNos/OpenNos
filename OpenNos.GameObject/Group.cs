@@ -95,6 +95,10 @@ namespace OpenNos.GameObject
             {
                 _order = 0;
             }
+            else if(!sessions.Any())
+            {
+                return 0;
+            }
 
             return sessions[_order].Character.CharacterId;
         }
