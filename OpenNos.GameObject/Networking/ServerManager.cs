@@ -244,7 +244,7 @@ namespace OpenNos.GameObject
                     {
                         session.SendPacket("bc 0 0 0");
                     }
-                        if (!session.Character.InvisibleGm)
+                    if (!session.Character.InvisibleGm)
                     {
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     }

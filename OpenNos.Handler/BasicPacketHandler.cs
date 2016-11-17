@@ -1118,6 +1118,10 @@ namespace OpenNos.Handler
             Session.SendPacket("rage 0 250000");
             Session.SendPacket("rank_cool 0 0 18000");
             SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((short)8, InventoryType.Wear);
+            if (Session.Character.MapId == 138)
+            {
+                Session.SendPacket("bc 0 0 0");
+            }
             if (specialistInstance != null)
             {
                 Session.SendPacket(Session.Character.GenerateSpPoint());
