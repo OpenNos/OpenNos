@@ -45,7 +45,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (!Session.Character.Inventory.Where(i => i.Type == InventoryType.Wear).Any())
+                    if (!Session.Character.Inventory.GetAllItems().Where(i => i.Type == InventoryType.Wear).Any())
                     {
                         Session.Character.Inventory.AddNewToInventory((short)(4 + type * 14), type: InventoryType.Wear);
                         Session.Character.Inventory.AddNewToInventory((short)(81 + type * 13), type: InventoryType.Wear);

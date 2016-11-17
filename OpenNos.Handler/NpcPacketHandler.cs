@@ -373,7 +373,7 @@ namespace OpenNos.Handler
             else
             {
                 // remove equipment
-                shopOwnerSession.Character.Inventory.Remove(shopitem.ItemInstance);
+                shopOwnerSession.Character.Inventory.Remove(shopitem.ItemInstance.Id);
 
                 // send empty slot to owners inventory
                 shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, shopitem.ItemInstance.Type, shopitem.ItemInstance.Slot, 0, 0, 0, 0));

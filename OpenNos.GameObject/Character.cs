@@ -577,31 +577,24 @@ namespace OpenNos.GameObject
 
         public void DeleteTimeout()
         {
-            for (int i = Inventory.Count() - 1; i >= 0; i--)
+            foreach(ItemInstance item in Inventory.GetAllItems())
             {
-                ItemInstance item = Inventory[i];
-                if (item != null)
+                if (((ItemInstance)item).IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                 {
-                    if (((ItemInstance)item).IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
-                    {
-                        Inventory.DeleteById(item.Id);
-                        Session.SendPacket(GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0, 0));
-                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
-                    }
+                    Inventory.DeleteById(item.Id);
+                    Session.SendPacket(GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0, 0));
+                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                 }
             }
-            for (int i = Inventory.Count() - 1; i >= 0; i--)
-            {
-                ItemInstance item = Inventory[i];
-                if (item != null)
+
+            foreach(ItemInstance item in Inventory.GetAllItems())
+            { 
+                if (((ItemInstance)item).IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                 {
-                    if (((ItemInstance)item).IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
-                    {
-                        Inventory.DeleteById(item.Id);
-                        Session.SendPacket(GenerateEquipment());
-                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
-                    }
-                }
+                    Inventory.DeleteById(item.Id);
+                    Session.SendPacket(GenerateEquipment());
+                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
+                }       
             }
         }
 
@@ -1258,7 +1251,7 @@ namespace OpenNos.GameObject
         public void GenerateStartupInventory()
         {
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
-            foreach (ItemInstance inv in Inventory)
+            foreach (ItemInstance inv in Inventory.GetAllItems())
             {
                 switch (inv.Type)
                 {
@@ -2047,7 +2040,7 @@ namespace OpenNos.GameObject
 
         public IEnumerable<ItemInstance> LoadBySlotAllowed(short itemVNum, int amount)
         {
-            return Inventory.Where(i => i.ItemVNum.Equals(itemVNum) && i.Amount + amount < 100);
+            return Inventory.GetAllItems().Where(i => i.ItemVNum.Equals(itemVNum) && i.Amount + amount < 100);
         }
 
         public void LoadInventory()
@@ -2062,11 +2055,11 @@ namespace OpenNos.GameObject
 
                 if (inventory.Type != InventoryType.Wear)
                 {
-                    Inventory.Add((ItemInstance)inventory);
+                    Inventory[inventory.Id]= (ItemInstance)inventory;
                 }
                 else
                 {
-                    Inventory.Add((ItemInstance)inventory);
+                    Inventory[inventory.Id] = (ItemInstance)inventory;
                 }
             }
         }
@@ -2250,8 +2243,7 @@ namespace OpenNos.GameObject
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
                 // load and concat inventory with equipment
-                Inventory copiedInventory = Inventory.DeepCopy();
-                List<ItemInstanceDTO> inventories = copiedInventory.Concat(Inventory).Select(i => i as ItemInstanceDTO).ToList();
+                List<ItemInstance> inventories = Inventory.GetAllItems();
                 IList<Guid> currentlySavedInventoryIds = DAOFactory.ItemInstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
 
                 // remove all which are saved but not in our current enumerable

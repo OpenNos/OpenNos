@@ -308,7 +308,7 @@ namespace OpenNos.GameObject
             }
             foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
             {
-                ItemInstance invtemp = c2Session.Character.Inventory.FirstOrDefault(s => s.Id == item.Id);
+                ItemInstance invtemp = c2Session.Character.Inventory.GetItemInstanceById(item.Id);
                 short slot = invtemp.Slot;
                 InventoryType type = invtemp.Type;
 

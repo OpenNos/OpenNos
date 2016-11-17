@@ -417,7 +417,7 @@ namespace OpenNos.Handler
                                                 foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                                                 {
                                                     // Delete items from their owners
-                                                    ItemInstance invtemp = Session.Character.Inventory.FirstOrDefault(s => s.Id == item.Id);
+                                                    ItemInstance invtemp = Session.Character.Inventory.GetItemInstanceById(item.Id);
                                                     short slot = invtemp.Slot;
                                                     InventoryType type = invtemp.Type;
                                                     ItemInstance inv = Session.Character.Inventory.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
