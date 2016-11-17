@@ -133,7 +133,7 @@
     <value>La configuration a été chargée.</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
-    <value>CONNECTION {0} Connecté -- session:{1}</value>
+    <value>Connection {0} Connecté -- Session : {1}</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>La base de données a été initialisée !</value>
@@ -172,7 +172,7 @@
     <value>Votre base de donnée n'est pas pas à jour. S'il vous plaît envisager de mettre à jour votre base de données.</value>
   </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
-    <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1} </value>
+    <value>Le packet avec le header {0} est corrompu ou la définition du packet est invalide. Contenu : {1} </value>
   </data>
   <data name="IDERROR" xml:space="preserve">
     <value>Erreur : Votre identifiant ou mot de passe est incorrect. La saisie répétée de données incorrectes entrainera un blocage temporaire de votre compte.                                                                                                                                                                               </value>

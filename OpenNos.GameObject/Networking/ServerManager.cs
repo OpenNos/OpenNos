@@ -240,7 +240,11 @@ namespace OpenNos.GameObject
                     session.SendPackets(session.Character.GenerateDroppedItem());
                     session.SendPackets(session.Character.GenerateShopOnMap());
                     session.SendPackets(session.Character.GeneratePlayerShopOnMap());
-                    if (!session.Character.InvisibleGm)
+                    if (mapId == 138)
+                    {
+                        session.SendPacket("bc 0 0 0");
+                    }
+                        if (!session.Character.InvisibleGm)
                     {
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     }

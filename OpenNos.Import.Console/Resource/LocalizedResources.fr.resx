@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AT_LEAST_ONE_FILE_MISSING" xml:space="preserve">
-    <value>Au moins un fichier manquant.</value>
+    <value>Au moins un fichier est manquant. Vérifiez que tout soit bien présent.</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>La base de données a été initialisée !</value>
@@ -226,7 +226,7 @@
     <value>{0} Magasins analysés ! </value>
   </data>
   <data name="SKILLS_PARSED" xml:space="preserve">
-    <value>{0} Coméptences analysées !</value>
+    <value>{0} Compétences analysées !</value>
   </data>
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
     <value>{0} Téléporteurs analysés !</value>
