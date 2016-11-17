@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -34,7 +33,6 @@ namespace OpenNos.GameObject
         private byte _cmapcount = 0;
         private int _direction;
         private Inventory _inventory;
-        private bool _undercover;
         private bool _invisible;
         private bool _isDancing;
         private bool _issitting;
@@ -47,6 +45,7 @@ namespace OpenNos.GameObject
         private ClientSession _session;
         private int _size = 10;
         private byte _speed;
+        private bool _undercover;
 
         #endregion
 
@@ -167,18 +166,6 @@ namespace OpenNos.GameObject
                 _inventory = value;
             }
         }
-        public bool Undercover
-        {
-            get
-            {
-                return _undercover;
-            }
-
-            set
-            {
-                _undercover = value;
-            }
-        }
 
         public bool Invisible
         {
@@ -240,8 +227,6 @@ namespace OpenNos.GameObject
         public DateTime LastMailRefresh { get; set; }
 
         public DateTime LastMapObject { get; set; }
-
-        public int TimesUsed { get; set; }
 
         public int LastMonsterId { get; set; }
 
@@ -399,6 +384,21 @@ namespace OpenNos.GameObject
                 {
                     _speed = value;
                 }
+            }
+        }
+
+        public int TimesUsed { get; set; }
+
+        public bool Undercover
+        {
+            get
+            {
+                return _undercover;
+            }
+
+            set
+            {
+                _undercover = value;
             }
         }
 
@@ -577,7 +577,7 @@ namespace OpenNos.GameObject
 
         public void DeleteTimeout()
         {
-            foreach(ItemInstance item in Inventory.GetAllItems())
+            foreach (ItemInstance item in Inventory.GetAllItems())
             {
                 if (((ItemInstance)item).IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                 {
@@ -587,14 +587,14 @@ namespace OpenNos.GameObject
                 }
             }
 
-            foreach(ItemInstance item in Inventory.GetAllItems())
-            { 
+            foreach (ItemInstance item in Inventory.GetAllItems())
+            {
                 if (((ItemInstance)item).IsBound && item.ItemDeleteTime != null && item.ItemDeleteTime < DateTime.Now)
                 {
                     Inventory.DeleteById(item.Id);
                     Session.SendPacket(GenerateEquipment());
                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
-                }       
+                }
             }
         }
 
@@ -1878,7 +1878,7 @@ namespace OpenNos.GameObject
 
         public void GiftAdd(short itemVNum, byte amount)
         {
-            lock(Inventory)
+            lock (Inventory)
             {
                 ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, Session.Character.CharacterId, amount);
                 if (newItem != null)
@@ -2058,7 +2058,7 @@ namespace OpenNos.GameObject
 
                 if (inventory.Type != InventoryType.Wear)
                 {
-                    Inventory[inventory.Id]= (ItemInstance)inventory;
+                    Inventory[inventory.Id] = (ItemInstance)inventory;
                 }
                 else
                 {
@@ -2375,7 +2375,7 @@ namespace OpenNos.GameObject
                 DAOFactory.MailDAO.InsertOrUpdate(ref mail);
                 if (id == CharacterId)
                 {
-                    Session.Character.MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
+                    Session.Character.MailList.Add(((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1), mail);
                     Session.SendPacket(GenerateParcel(mail));
                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")} {mail.AttachmentAmount}", 12));
                 }

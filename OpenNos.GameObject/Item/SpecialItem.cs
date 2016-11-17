@@ -127,12 +127,12 @@ namespace OpenNos.GameObject
                     {
                         if (!Session.Character.IsVehicled)
                         {
+                            Session.Character.Speed = Speed;
                             Session.Character.IsVehicled = true;
                             Session.Character.VehicleSpeed = Speed;
                             Session.Character.MorphUpgrade = 0;
                             Session.Character.MorphUpgrade2 = 0;
-                            Session.Character.Morph = Morph + (byte)Session.Character.Gender;
-                            Session.Character.Speed = Speed;
+                            Session.Character.Morph = Morph + (byte)Session.Character.Gender;                      
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196), Session.Character.MapX, Session.Character.MapY);
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                             Session.SendPacket(Session.Character.GenerateCond());
