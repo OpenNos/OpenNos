@@ -126,7 +126,7 @@
     <StartupObject>OpenNos.Login.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>on-logo-icon.ico</ApplicationIcon>
+    <ApplicationIcon>Sans_titre.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -320,6 +320,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="on-logo-icon.ico" />
+    <Content Include="Sans_titre.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

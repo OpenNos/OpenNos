@@ -54,7 +54,7 @@
     <OutputPath>bin\TH\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>on-logo-icon.ico</ApplicationIcon>
+    <ApplicationIcon>Sans_titre.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>OpenNos.Import.Console.Program</StartupObject>
@@ -210,6 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="on-logo-icon.ico" />
+    <Content Include="Sans_titre.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" Label="SlowCheetah" />
