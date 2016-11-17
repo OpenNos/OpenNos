@@ -1861,13 +1861,17 @@ namespace OpenNos.GameObject
             xpcalculation = levelDifference < 5 ? monster.XP : monster.XP / 3 * 2;
 
             // xp calculation / penalty * rate
-                xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
-           
+            xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
+
             // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal
             // to 4
             if (Level <= 5 && levelDifference < -4)
             {
                 xp += xp / 2;
+            }
+            if (monster.Level >= 75)
+            {
+                xp *= 2;
             }
 
             // divide exp by multiplication of partyPenalty with level e.g. 57 * 0,014...
@@ -1875,11 +1879,6 @@ namespace OpenNos.GameObject
             {
                 xp = (long)Math.Round(xp / (Level * partyPenalty));
             }
-            else if (monster.Level >= 75)
-            {
-                xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate * 2);
-            }
-
 
             return xp;
         }
