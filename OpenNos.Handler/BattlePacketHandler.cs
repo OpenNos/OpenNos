@@ -880,7 +880,7 @@ namespace OpenNos.Handler
             else
             {
                 // wait for the mob to die
-                await Task.Delay(500);
+                await Task.Delay(350);
             }
 
             Random random = new Random(DateTime.Now.Millisecond & monsterid);
@@ -935,7 +935,7 @@ namespace OpenNos.Handler
                 }
 
                 int goldRate = ServerManager.GoldRate;
-                int dropIt = ((random.Next(0, Session.Character.Level) < monsterToAttack.Monster.Level) ? 1 : 0);
+                int dropIt = ((random.Next(0, Session.Character.Level) < monsterToAttack.Monster.Level / 6) ? 1 : 0);
                 int lowBaseGold = random.Next(6 * monsterToAttack.Monster.Level, 12 * monsterToAttack.Monster.Level);
                 int isAct52 = (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1);
                 int gold = Convert.ToInt32(dropIt * lowBaseGold * goldRate * isAct52);
