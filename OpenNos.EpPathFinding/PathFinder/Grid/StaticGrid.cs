@@ -103,11 +103,11 @@ namespace EpPathFinding
                 {
                     if (iMatrix[widthTrav][heightTrav])
                     {
-                        tNodes[widthTrav][heightTrav].walkable = true;
+                        tNodes[widthTrav][heightTrav].walkable = 0;
                     }
                     else
                     {
-                        tNodes[widthTrav][heightTrav].walkable = false;
+                        tNodes[widthTrav][heightTrav].walkable = 1;
                     }
                 }
             }
@@ -121,7 +121,7 @@ namespace EpPathFinding
 
         public override bool IsWalkableAt(int iX, int iY)
         {
-            return isInside(iX, iY) && this.m_nodes[iX][iY].walkable;
+            return isInside(iX, iY) && (this.m_nodes[iX][iY].walkable == 0 || this.m_nodes[iX][iY].walkable == 2 || (this.m_nodes[iX][iY].walkable >= 16 && this.m_nodes[iX][iY].walkable <= 19));
         }
 
         protected bool isInside(int iX, int iY)
@@ -129,7 +129,7 @@ namespace EpPathFinding
             return (iX >= 0 && iX < width) && (iY >= 0 && iY < height);
         }
 
-        public override bool SetWalkableAt(int iX, int iY, bool iWalkable)
+        public override bool SetWalkableAt(int iX, int iY, byte iWalkable)
         {
             this.m_nodes[iX][iY].walkable = iWalkable;
             return true;
@@ -150,7 +150,7 @@ namespace EpPathFinding
             return IsWalkableAt(iPos.x, iPos.y);
         }
 
-        public override bool SetWalkableAt(GridPos iPos, bool iWalkable)
+        public override bool SetWalkableAt(GridPos iPos, byte iWalkable)
         {
             return SetWalkableAt(iPos.x, iPos.y, iWalkable);
         }
@@ -185,11 +185,11 @@ namespace EpPathFinding
                 {
                     if (iMatrix[widthTrav][heightTrav])
                     {
-                        m_nodes[widthTrav][heightTrav].walkable = true;
+                        m_nodes[widthTrav][heightTrav].walkable = 0;
                     }
                     else
                     {
-                        m_nodes[widthTrav][heightTrav].walkable = false;
+                        m_nodes[widthTrav][heightTrav].walkable = 1;
                     }
                 }
             }

@@ -74,9 +74,9 @@ namespace EpPathFinding
             m_startNode = m_searchGrid.GetNodeAt(iStartPos.x, iStartPos.y);
             m_endNode = m_searchGrid.GetNodeAt(iEndPos.x, iEndPos.y);
             if (m_startNode == null)
-                m_startNode = new Node(iStartPos.x, iStartPos.y, true);
+                m_startNode = new Node(iStartPos.x, iStartPos.y, 0);
             if (m_endNode == null)
-                m_endNode = new Node(iEndPos.x, iEndPos.y, true);
+                m_endNode = new Node(iEndPos.x, iEndPos.y, 0);
             m_useRecursive = false;
         }
 
@@ -162,9 +162,9 @@ namespace EpPathFinding
             m_startNode = m_searchGrid.GetNodeAt(iStartPos.x, iStartPos.y);
             m_endNode = m_searchGrid.GetNodeAt(iEndPos.x, iEndPos.y);
             if (m_startNode == null)
-                m_startNode = new Node(iStartPos.x, iStartPos.y, true);
+                m_startNode = new Node(iStartPos.x, iStartPos.y, 0);
             if (m_endNode == null)
-                m_endNode = new Node(iEndPos.x, iEndPos.y, true);
+                m_endNode = new Node(iEndPos.x, iEndPos.y, 0);
         }
 
         public bool CrossAdjacentPoint
@@ -323,7 +323,7 @@ namespace EpPathFinding
 
             if (iParam.AllowEndNodeUnWalkable && !iParam.SearchGrid.IsWalkableAt(tEndNode.x, tEndNode.y))
             {
-                iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, true);
+                iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, 0);
                 revertEndNodeWalkable = true;
             }
 
@@ -340,7 +340,7 @@ namespace EpPathFinding
                 {
                     if (revertEndNodeWalkable)
                     {
-                        iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, false);
+                        iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, 1);
                     }
                     return Node.Backtrace(tNode); // rebuilding path
                 }
@@ -350,7 +350,7 @@ namespace EpPathFinding
 
             if (revertEndNodeWalkable)
             {
-                iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, false);
+                iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, 1);
             }
 
             // fail to find the path

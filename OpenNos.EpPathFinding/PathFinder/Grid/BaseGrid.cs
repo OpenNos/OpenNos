@@ -45,7 +45,7 @@ namespace EpPathFinding
     {
         public int x;
         public int y;
-        public bool walkable;
+        public byte walkable;
         public float heuristicStartToEndLen; // which passes current node
         public float startToCurNodeLen;
         public float? heuristicCurNodeToEndLen;
@@ -53,11 +53,11 @@ namespace EpPathFinding
         public bool isClosed;
         public Object parent;
 
-        public Node(int iX, int iY, bool? iWalkable = null)
+        public Node(int iX, int iY, byte? iWalkable = null)
         {
             this.x = iX;
             this.y = iY;
-            this.walkable = (iWalkable.HasValue ? iWalkable.Value : false);
+            this.walkable = (iWalkable.HasValue ? iWalkable.Value : (byte)1);
             this.heuristicStartToEndLen = 0;
             this.startToCurNodeLen = 0;
             this.heuristicCurNodeToEndLen = null;
@@ -79,7 +79,7 @@ namespace EpPathFinding
             this.parent = b.parent;
         }
 
-        public void Reset(bool? iWalkable = null)
+        public void Reset(byte? iWalkable = null)
         {
             if (iWalkable.HasValue)
                 walkable = iWalkable.Value;
@@ -204,13 +204,13 @@ namespace EpPathFinding
 
         public abstract bool IsWalkableAt(int iX, int iY);
 
-        public abstract bool SetWalkableAt(int iX, int iY, bool iWalkable);
+        public abstract bool SetWalkableAt(int iX, int iY, byte iWalkable);
 
         public abstract Node GetNodeAt(GridPos iPos);
 
         public abstract bool IsWalkableAt(GridPos iPos);
 
-        public abstract bool SetWalkableAt(GridPos iPos, bool iWalkable);
+        public abstract bool SetWalkableAt(GridPos iPos, byte iWalkable);
 
         public List<Node> GetNeighbors(Node iNode, bool iCrossCorners, bool iCrossAdjacentPoint)
         {

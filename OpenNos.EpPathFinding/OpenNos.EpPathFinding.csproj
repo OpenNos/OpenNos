@@ -43,9 +43,6 @@
     <Compile Include="PathFinder\GridPos.cs" />
     <Compile Include="PathFinder\GridRect.cs" />
     <Compile Include="PathFinder\Grid\BaseGrid.cs" />
-    <Compile Include="PathFinder\Grid\DynamicGrid.cs" />
-    <Compile Include="PathFinder\Grid\DynamicGridWPool.cs" />
-    <Compile Include="PathFinder\Grid\PartialGridWPool.cs" />
     <Compile Include="PathFinder\Grid\StaticGrid.cs" />
     <Compile Include="PathFinder\Heuristic.cs" />
     <Compile Include="PathFinder\JumpPointFinder.cs" />
