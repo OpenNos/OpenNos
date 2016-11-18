@@ -315,7 +315,7 @@ namespace OpenNos.GameObject
                 for (int t = 0; t < XLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
-                    _grid.SetWalkableAt(new GridPos(t, i), Convert.ToBoolean(Convert.ToInt16(bytes[0]) != 1 ? true : false));
+                    _grid.SetWalkableAt(new GridPos(t, i), Convert.ToBoolean(Convert.ToInt16(bytes[0]) == 0 ? true : false));
                 }
             }
 
