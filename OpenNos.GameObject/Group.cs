@@ -89,20 +89,10 @@ namespace OpenNos.GameObject
 
         public long GetNextOrderedCharacterId(Character character)
         {
-            /*
-             * order++;
-            IEnumerable<ClientSession> lst = Characters.Where(s => Map.GetDistance(s.Character, Character) < 50);
-            if (order > lst.Count() - 1)
-            {
-                order = 0;
-            }
-
-            return lst.ElementAt(order).Character.CharacterId;
-            */
 
             _order++;
             List<ClientSession> sessions = Characters.Where(s => Map.GetDistance(s.Character, character) < 50).ToList();
-            if (_order > sessions.Count() - 1 || _order < 0)
+            if (_order > sessions.Count() - 1)
             {
                 _order = 0;
             }
