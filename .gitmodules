@@ -1,3 +1,0 @@
-[submodule "EpPathFinding"]
-	path = EpPathFinding
-	url = git://github.com/OpenNos/EpPathFinding.git
