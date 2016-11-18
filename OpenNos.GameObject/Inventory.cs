@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-using EpPathFinding.cs;
+using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.Domain;
 using System;

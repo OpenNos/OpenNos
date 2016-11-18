@@ -12,13 +12,12 @@
  * GNU General Public License for more details.
  */
 
-using EpPathFinding.cs;
+using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -219,7 +218,7 @@ namespace OpenNos.GameObject
 
         internal void RemoveMonstersTarget(long characterId)
         {
-            foreach(MapMonster monster in Monsters.Where(m => m.Target == characterId))
+            foreach (MapMonster monster in Monsters.Where(m => m.Target == characterId))
             {
                 monster.RemoveTarget();
             }

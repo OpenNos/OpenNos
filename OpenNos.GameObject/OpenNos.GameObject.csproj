@@ -37,10 +37,6 @@
       <HintPath>..\packages\AutoMapper.5.1.1\lib\net45\AutoMapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EpPathFinding.cs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\EpPathFinding.cs.1.1.4\lib\EpPathFinding.cs.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -179,6 +175,10 @@
     <Compile Include="Item\Instance\WearableInstance.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EpPathFinding\EpPathFinding.csproj">
+      <Project>{4bc2b4b0-2a38-4274-98a2-37cef5f03b42}</Project>
+      <Name>EpPathFinding</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
       <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
       <Name>OpenNos.Core</Name>
