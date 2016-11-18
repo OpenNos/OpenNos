@@ -12,10 +12,10 @@ namespace OpenNos.GameObject
         [PacketIndex(0)]
         public short Slot { get; set; }
 
-        [PacketIndex(2)]
+        [PacketIndex(1)]
         public UpgradeMode Mode { get; set; }
 
-        [PacketIndex(3)]
+        [PacketIndex(2)]
         public UpgradeProtection Protection { get; set; }
 
         #endregion
