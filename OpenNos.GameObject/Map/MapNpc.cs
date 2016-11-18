@@ -171,10 +171,12 @@ namespace OpenNos.GameObject
             }
             if (Target == -1)
             {
-                if (this.Npc.IsHostile)
+                if (this.Npc.IsHostile && this.Shop == null)
                 {
                     MapMonster monster = this.Map.Monsters.FirstOrDefault(s => MapId == s.MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.MapX, Y = s.MapY }) < (Npc.NoticeRange > 5 ? Npc.NoticeRange / 2 : Npc.NoticeRange));
-                    if (monster != null)
+                    ClientSession session = this.Map.Sessions.FirstOrDefault(s => MapId == s.Character.MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY }) < Npc.NoticeRange);
+
+                    if (monster != null && session != null)
                     {
                         Target = monster.MapMonsterId;
                     }
