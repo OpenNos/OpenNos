@@ -217,6 +217,14 @@ namespace OpenNos.GameObject
             }
         }
 
+        internal void RemoveMonstersTarget(long characterId)
+        {
+            foreach(MapMonster monster in Monsters.Where(m => m.Target == characterId))
+            {
+                monster.RemoveTarget();
+            }
+        }
+
         public IEnumerable<string> GenerateUserShops()
         {
             return UserShops.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();

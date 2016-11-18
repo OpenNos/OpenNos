@@ -41,8 +41,6 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public bool IsAlive { get; set; }
-
         public int CurrentHp { get; set; }
 
         public int CurrentMp { get; set; }
@@ -56,6 +54,8 @@ namespace OpenNos.GameObject
         public short FirstY { get; set; }
 
         public bool InWaiting { get; set; }
+
+        public bool IsAlive { get; set; }
 
         public DateTime LastEffect { get; set; }
 
@@ -230,15 +230,12 @@ namespace OpenNos.GameObject
             {
                 ClientSession targetSession = Map.GetSessionByCharacterId(Target);
 
+                // remove target in some situations
                 if (targetSession == null || targetSession.Character.Invisible || targetSession.Character.Hp <= 0)
                 {
-                    Target = -1;
-                    Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
-                    if (!Path.Any())
-                    {
-                        Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
-                    }
+                    RemoveTarget();
                 }
+
                 NpcMonsterSkill npcMonsterSkill = null;
                 if (_random.Next(10) > 8)
                 {
@@ -292,12 +289,7 @@ namespace OpenNos.GameObject
                         {
                             Thread.Sleep(1000);
                             ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
-                            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
-                            if (!Path.Any())
-                            {
-                                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
-                            }
-                            Target = -1;
+                            RemoveTarget();
                         }
                         if (npcMonsterSkill != null && (npcMonsterSkill.Skill.Range > 0 || npcMonsterSkill.Skill.TargetRange > 0))
                         {
@@ -347,7 +339,7 @@ namespace OpenNos.GameObject
                             }
                         }
                         if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
-                        {                           
+                        {
                             short mapX;
                             short mapY;
                             int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
@@ -371,16 +363,21 @@ namespace OpenNos.GameObject
 
                         if (Path.Count() == 0 && (DateTime.Now - LastEffect).Seconds > 20 && (targetSession == null || MapId != targetSession.Character.MapId || distance > maxDistance))
                         {
-                            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
-                            if (!Path.Any())
-                            {
-                                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
-                            }
-                            Target = -1;
+                            RemoveTarget();
                         }
                     }
                 }
             }
+        }
+
+        internal void RemoveTarget()
+        {
+            Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
+            if (!Path.Any())
+            {
+                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
+            }
+            Target = -1;
         }
 
         #endregion

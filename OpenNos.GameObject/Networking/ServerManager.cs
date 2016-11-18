@@ -196,6 +196,8 @@ namespace OpenNos.GameObject
                 try
                 {
                     session.Character.IsChangingMap = true;
+
+                    session.CurrentMap.RemoveMonstersTarget(session.Character.CharacterId);
                     session.CurrentMap.UnregisterSession(session.Character.CharacterId);
 
                     // cleanup sending queue to avoid sending uneccessary packets to it
