@@ -987,8 +987,9 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             Session.Character.Invisible = !Session.Character.Invisible;
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateInvisible());
             Session.Character.InvisibleGm = !Session.Character.InvisibleGm;
+            Session.CurrentMap?.Broadcast(Session.Character.GenerateInvisible());
+
             Session.SendPacket(Session.Character.GenerateEq());
             if (Session.Character.InvisibleGm)
             {
