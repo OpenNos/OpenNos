@@ -886,11 +886,11 @@ namespace OpenNos.Handler
             Random random = new Random(DateTime.Now.Millisecond & monsterid);
 
             // owner set
-            long? Owner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?)null;
+            long? dropOwner = monsterToAttack.DamageList.Any() ? monsterToAttack.DamageList.First().Key : (long?)null;
             Group group = null;
-            if (Owner != null)
+            if (dropOwner != null)
             {
-                group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)Owner));
+                group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)dropOwner));
             }
 
             // end owner set
@@ -920,15 +920,18 @@ namespace OpenNos.Handler
                                 {
                                     if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                                     {
-                                        Owner = group.GetNextOrderedCharacterId(Session.Character);
-                                        group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)Owner).Character.Name, drop.Amount), 10)));
+                                        dropOwner = group.GetNextOrderedCharacterId(Session.Character);
+                                        if(dropOwner.HasValue)
+                                        {
+                                            group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop.Amount), 10)));
+                                        }
                                     }
                                     else
                                     {
                                         group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop.ItemVNum).Name, drop.Amount), 10)));
                                     }
                                 }
-                                Session.CurrentMap.DropItemByMonster(Owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                                Session.CurrentMap.DropItemByMonster(dropOwner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
                             }
                         }
                     }
@@ -965,15 +968,19 @@ namespace OpenNos.Handler
                         {
                             if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                             {
-                                Owner = group.GetNextOrderedCharacterId(Session.Character);
-                                group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop2.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)Owner).Character.Name, drop2.Amount), 10)));
+                                dropOwner = group.GetNextOrderedCharacterId(Session.Character);
+
+                                if(dropOwner.HasValue)
+                                {
+                                    group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop2.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop2.Amount), 10)));
+                                }
                             }
                             else
                             {
                                 group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop2.ItemVNum).Name, drop2.Amount), 10)));
                             }
                         }
-                        Session.CurrentMap.DropItemByMonster(Owner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
+                        Session.CurrentMap.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
                     }
                 }
                 if (Session.Character.Hp > 0)

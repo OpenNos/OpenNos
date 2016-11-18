@@ -87,18 +87,18 @@ namespace OpenNos.GameObject
             return str;
         }
 
-        public long GetNextOrderedCharacterId(Character character)
+        public long? GetNextOrderedCharacterId(Character character)
         {
-
             _order++;
             List<ClientSession> sessions = Characters.Where(s => Map.GetDistance(s.Character, character) < 50).ToList();
-            if (_order > sessions.Count() - 1)
+            if (_order > sessions.Count() - 1) // if order wents out of amount of ppl, reset it -> zero based index
             {
                 _order = 0;
             }
-            else if (!sessions.Any())
+
+            if (!sessions.Any()) // group seems to be empty
             {
-                return 0;
+                return null;
             }
 
             return sessions[_order].Character.CharacterId;
