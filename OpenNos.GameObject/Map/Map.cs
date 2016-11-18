@@ -154,19 +154,6 @@ namespace OpenNos.GameObject
             _monsters[monster.MapMonsterId] = monster;
         }
 
-        public BaseGrid ConvertToGrid(short[,] _grid)
-        {
-            BaseGrid grid = new StaticGrid(XLength, YLength);
-            for (int y = 0; y < YLength; ++y)
-            {
-                for (int x = 0; x < XLength; ++x)
-                {
-                    grid.SetWalkableAt(x, y, !IsBlockedZone(x, y));
-                }
-            }
-            return grid;
-        }
-
         public override void Dispose()
         {
             if (!_disposed)
@@ -322,7 +309,7 @@ namespace OpenNos.GameObject
                 for (int t = 0; t < XLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
-                    _grid.SetWalkableAt(new GridPos(t, i), Convert.ToBoolean(Convert.ToInt16(bytes[0]) == 0 ? true : false));
+                    _grid.SetWalkableAt(new GridPos(t, i), bytes[0]);
                 }
             }
 
