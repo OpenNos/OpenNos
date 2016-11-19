@@ -549,6 +549,23 @@ namespace OpenNos.Handler
                 case 2:
                     monsterDefence = monsterToAttack.Monster.MagicDefence;
                     break;
+                case 3:
+                    switch (Session.Character.Class)
+                    {
+                        case ClassType.Swordman:
+                            monsterDefence = monsterToAttack.Monster.CloseDefence;
+                            break;
+                        case ClassType.Archer:
+                            monsterDefence = monsterToAttack.Monster.DistanceDefence;
+                            break;
+                        case ClassType.Magician:
+                            monsterDefence = monsterToAttack.Monster.MagicDefence;
+                            break;
+                        case ClassType.Adventurer:
+                            monsterDefence = monsterToAttack.Monster.CloseDefence;
+                            break;
+                    }
+                    break;
             }
 
             #endregion
