@@ -855,6 +855,34 @@ namespace OpenNos.Handler
             {
                 monsterResistance = 0;
             }
+            if(skill.Element == 0)
+            {
+                if(elementalBoost == 0.5)
+                {
+                    elementalBoost = 0;
+                }
+                else if (elementalBoost == 1)
+                {
+                    elementalBoost = 0.05;
+                }
+                else if (elementalBoost == 1.3)
+                {
+                    elementalBoost = 0;
+                }
+                else if (elementalBoost == 1.5)
+                {
+                    elementalBoost = 0.15;
+                }
+                else if (elementalBoost == 2)
+                {
+                    elementalBoost = 0.2;
+                }
+            }
+            else if(skill.Element != Session.Character.Element)
+            {
+                elementalBoost = 0;
+            }
+
             elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * (((Session.Character.ElementRate + Session.Character.ElementRateSP) / 100D) + 1))) * elementalBoost);
             elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
 
