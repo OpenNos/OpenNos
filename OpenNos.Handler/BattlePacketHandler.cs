@@ -613,6 +613,11 @@ namespace OpenNos.Handler
 
             int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
             baseDamage += (skill.Damage / 4);
+            if(Session.Character.Class == ClassType.Adventurer)
+            {
+                //HACK: Damage is ~10 lower in OpenNos than in official. Fix this...
+                baseDamage += 10;
+            }
             int elementalDamage = 0; // placeholder for BCard etc...
             elementalDamage += (skill.ElementalDamage / 4);
             switch (mainUpgrade)
