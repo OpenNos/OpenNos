@@ -608,7 +608,7 @@ namespace OpenNos.Handler
             {
                 chance = 1;
             }
-            if (Session.Character.Class != ClassType.Magician && !Session.Character.HasGodMode)
+            if ((skill.Type == 0 || skill.Type == 1) && !Session.Character.HasGodMode)
             {
                 if (random.Next(0, 100) <= chance)
                 {
