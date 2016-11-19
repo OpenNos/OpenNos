@@ -1090,7 +1090,7 @@ namespace OpenNos.Handler
             Random random = new Random(DateTime.Now.Millisecond + mapMonster.MapMonsterId);
             int lowBaseGold = random.Next(6 * mapMonster?.Monster?.Level ?? 1, 12 * mapMonster?.Monster?.Level ?? 1);
             int actMultiplier = Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
-            int gold = (int)(lowBaseGold * ServerManager.DropRate * actMultiplier);
+            int gold = (int)(lowBaseGold * ServerManager.GoldRate * actMultiplier);
             return gold;
         }
 
