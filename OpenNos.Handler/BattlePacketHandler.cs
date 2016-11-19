@@ -572,15 +572,6 @@ namespace OpenNos.Handler
 
             #region Basic Damage Data Calculation
 
-            if (specialistInstance != null)
-            {
-                mainMinDmg += specialistInstance.DamageMinimum;
-                mainMaxDmg += specialistInstance.DamageMaximum;
-                mainCritHit += specialistInstance.CriticalRate;
-                mainCritChance += specialistInstance.CriticalLuckRate;
-                mainHitRate += specialistInstance.HitRate;
-            }
-
 #warning TODO: Implement BCard damage boosts, see Issue
 
             mainUpgrade -= monsterToAttack.Monster.DefenceUpgrade;
@@ -796,7 +787,7 @@ namespace OpenNos.Handler
                             break;
 
                         case 4:
-                            elementalBoost = 2;
+                            elementalBoost = 3;
                             break;
                     }
                     break;
@@ -818,7 +809,7 @@ namespace OpenNos.Handler
                             break;
 
                         case 3:
-                            elementalBoost = 2;
+                            elementalBoost = 3;
                             break;
 
                         case 4:
@@ -853,6 +844,10 @@ namespace OpenNos.Handler
                     elementalBoost = 0.15;
                 }
                 else if (elementalBoost == 2)
+                {
+                    elementalBoost = 0.2;
+                }
+                else if (elementalBoost == 3)
                 {
                     elementalBoost = 0.2;
                 }
