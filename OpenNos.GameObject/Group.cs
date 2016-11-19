@@ -109,12 +109,12 @@ namespace OpenNos.GameObject
 
         public bool IsMemberOfGroup(long characterId)
         {
-            return _characters.ContainsKey(characterId);
+            return _characters != null && _characters.ContainsKey(characterId);
         }
 
         public bool IsMemberOfGroup(ClientSession session)
         {
-            return _characters.ContainsKey(session.Character.CharacterId);
+            return _characters != null && _characters.ContainsKey(session.Character.CharacterId);
         }
 
         public void JoinGroup(long characterId)
