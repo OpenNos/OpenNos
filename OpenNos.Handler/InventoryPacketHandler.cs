@@ -235,6 +235,14 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
+            ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
+            if(Session.Character.HasShopOpened || (targetSession != null && targetSession.Character.HasShopOpened))
+            {
+                CloseExchange(Session, targetSession);
+                return;
+            }
+
             for (int j = 6, i = 0; j <= packetsplit.Length; j += 3, i++)
             {
                 byte.TryParse(packetsplit[j - 3], out type[i]);
@@ -308,16 +316,16 @@ namespace OpenNos.Handler
                                 return;
                             }
 
-                            if (targetSession.Character.ExchangeBlocked || Session.Character.ExchangeBlocked)
+                            if (Session.Character.HasShopOpened || targetSession.Character.HasShopOpened)
                             {
-                                if (Session.Character.HasShopOpened || targetSession.Character.HasShopOpened)
-                                {
-                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
-                                }
-                                else
-                                {
-                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
-                                }
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
+                                return;
+                            }
+
+                            if (targetSession.Character.ExchangeBlocked || Session.Character.ExchangeBlocked)
+                            { 
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
+                                return;
                             }
                             else
                             {
@@ -1418,16 +1426,17 @@ namespace OpenNos.Handler
 
         private void CloseExchange(ClientSession session, ClientSession targetSession)
         {
-            if (targetSession == null)
+            if(targetSession != null && targetSession.Character.ExchangeInfo != null)
             {
-                return;
+                targetSession.SendPacket("exc_close 0");
+                targetSession.Character.ExchangeInfo = null;
             }
 
-            session.SendPacket("exc_close 0");
-            targetSession.SendPacket("exc_close 0");
-
-            targetSession.Character.ExchangeInfo = null;
-            session.Character.ExchangeInfo = null;
+            if(session != null & session.Character.ExchangeInfo != null)
+            {
+                session.SendPacket("exc_close 0");
+                session.Character.ExchangeInfo = null;
+            }
         }
 
         private void Exchange(ClientSession sourceSession, ClientSession targetSession)
