@@ -460,6 +460,7 @@ namespace OpenNos.Handler
 
             // int miss_chance = 20;
             int monsterDefence = 0;
+            int monsterDodge = 0;
 
             short mainUpgrade = 0;
             int mainCritChance = 4;
@@ -523,6 +524,7 @@ namespace OpenNos.Handler
             {
                 case 0:
                     monsterDefence = monsterToAttack.Monster.CloseDefence;
+                    monsterDodge = monsterToAttack.Monster.DefenceDodge;
                     if (Session.Character.Class == ClassType.Archer)
                     {
                         mainCritHit = secCritHit;
@@ -536,6 +538,7 @@ namespace OpenNos.Handler
 
                 case 1:
                     monsterDefence = monsterToAttack.Monster.DistanceDefence;
+                    monsterDodge = monsterToAttack.Monster.DistanceDefenceDodge;
                     if (Session.Character.Class == ClassType.Swordman || Session.Character.Class == ClassType.Adventurer)
                     {
                         mainCritHit = secCritHit;
@@ -576,10 +579,31 @@ namespace OpenNos.Handler
             {
                 mainUpgrade = 10;
             }
-            
+
             #endregion
 
             #region Detailed Calculation
+
+            #region Dodge
+            double multiplier = monsterDodge / mainHitRate;
+            if (multiplier > 5)
+            {
+                multiplier = 5;
+            }
+            double chance = -0.25 * Math.Pow(multiplier, 3) - 0.57 * Math.Pow(multiplier, 2) + 25.3 * multiplier - 1.41;
+            if (chance <= 1)
+            {
+                chance = 1;
+            }
+            if (Session.Character.Class != ClassType.Magician && !Session.Character.HasGodMode)
+            {
+                if (random.Next(0, 100) <= chance)
+                {
+                    hitmode = 1;
+                    return 0;
+                }
+            }
+            #endregion
 
             #region Base Damage
 
