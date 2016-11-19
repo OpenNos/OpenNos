@@ -77,9 +77,6 @@ namespace OpenNos.GameObject
                             ServerManager.Instance.GroupLeave(session);
                         }
 
-                        // wait to complete all active actions
-                        Thread.Sleep(3000);
-
                         session.Character.Save();
 
                         // only remove the character from map if the character has been set
