@@ -549,6 +549,23 @@ namespace OpenNos.Handler
                 case 2:
                     monsterDefence = monsterToAttack.Monster.MagicDefence;
                     break;
+                case 3:
+                    switch (Session.Character.Class)
+                    {
+                        case ClassType.Swordman:
+                            monsterDefence = monsterToAttack.Monster.CloseDefence;
+                            break;
+                        case ClassType.Archer:
+                            monsterDefence = monsterToAttack.Monster.DistanceDefence;
+                            break;
+                        case ClassType.Magician:
+                            monsterDefence = monsterToAttack.Monster.MagicDefence;
+                            break;
+                        case ClassType.Adventurer:
+                            monsterDefence = monsterToAttack.Monster.CloseDefence;
+                            break;
+                    }
+                    break;
             }
 
             #endregion
@@ -591,7 +608,7 @@ namespace OpenNos.Handler
             {
                 chance = 1;
             }
-            if (Session.Character.Class != ClassType.Magician && !Session.Character.HasGodMode)
+            if ((skill.Type == 0 || skill.Type == 1) && !Session.Character.HasGodMode)
             {
                 if (random.Next(0, 100) <= chance)
                 {
@@ -704,12 +721,12 @@ namespace OpenNos.Handler
                 }
                 else if (skill.Type == 3 && Session.Character.Class != ClassType.Magician)
                 {
-                    baseDamage = (int)(baseDamage * ((mainCritHit / 100D) + 1));
+                    baseDamage = (int)(baseDamage * ((mainCritHit / 100D)));
                     hitmode = 3;
                 }
                 else
                 {
-                    baseDamage = (int)(baseDamage * ((mainCritHit / 100D) + 1));
+                    baseDamage = (int)(baseDamage * ((mainCritHit / 100D)));
                     hitmode = 3;
                 }
             }
