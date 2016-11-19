@@ -365,7 +365,6 @@ namespace OpenNos.Handler
 
                                                 bool @continue = true;
                                                 bool goldmax = false;
-                                                bool notsold = false;
                                                 if (!Session.Character.Inventory.GetFreeSlotAmount(targetExchange.ExchangeList, Session.Character.BackPack))
                                                 {
                                                     @continue = false;
@@ -401,22 +400,17 @@ namespace OpenNos.Handler
                                                 }
                                                 else
                                                 {
-                                                    foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
+                                                    if (Session.Character.ExchangeInfo.ExchangeList.Any(ei => !(ei.Item.IsTradable || ei.IsBound)))
                                                     {
-                                                        ItemInstance inv = Session.Character.Inventory.GetItemInstanceById(item.Id);
-                                                        if (inv != null && !(inv.Item.IsTradable || inv.IsBound))
-                                                        {
-                                                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
-                                                            Session.SendPacket("exc_close 0");
-                                                            targetSession.SendPacket("exc_close 0");
+                                                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
+                                                        Session.SendPacket("exc_close 0");
+                                                        targetSession.SendPacket("exc_close 0");
 
-                                                            targetSession.Character.ExchangeInfo = null;
-                                                            Session.Character.ExchangeInfo = null;
-                                                            notsold = true;
-                                                            break;
-                                                        }
+                                                        targetSession.Character.ExchangeInfo = null;
+                                                        Session.Character.ExchangeInfo = null;
+                                                        break;
                                                     }
-                                                    if (!notsold)
+                                                    else // all items can be traded
                                                     {
                                                         foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                                                         {
