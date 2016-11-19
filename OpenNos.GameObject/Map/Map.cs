@@ -213,7 +213,7 @@ namespace OpenNos.GameObject
 
         public IEnumerable<string> GenerateUserShops()
         {
-            return UserShops.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();
+            return UserShops.Select(shop => $"shop 1 {shop.Value.OwnerId} 1 3 0 {shop.Value.Name}").ToList();
         }
 
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
