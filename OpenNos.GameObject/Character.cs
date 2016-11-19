@@ -1289,9 +1289,6 @@ namespace OpenNos.GameObject
                         var costumeInstance = inv as WearableInstance;
                         inv7 += $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
                         break;
-
-                    case InventoryType.Wear:
-                        break;
                 }
             }
             Session.SendPacket(inv0);
@@ -1594,9 +1591,9 @@ namespace OpenNos.GameObject
             }
             if ((Class == 0 && JobLevel < 20) || (Class != 0 && JobLevel < 80))
             {
-                if (specialist != null && UseSp && specialist.SpLevel < 99)
+                if (specialist != null && UseSp && specialist.SpLevel < 99 && specialist.SpLevel > 19)
                 {
-                    JobLevelXp += (int)(GetJXP(monsterinfo, grp) / 100d * specialist.SpLevel);
+                    JobLevelXp += GetJXP(monsterinfo, grp) / 2;
                 }
                 else
                 {
@@ -1605,7 +1602,8 @@ namespace OpenNos.GameObject
             }
             if (specialist != null && UseSp && specialist.SpLevel < 99)
             {
-                specialist.XP += GetJXP(monsterinfo, grp) * (100 - specialist.SpLevel);
+                int multiplier = specialist.SpLevel < 10 ? 10 : specialist.SpLevel < 19 ? 5 : 1;
+                specialist.XP += GetJXP(monsterinfo, grp) * multiplier;
             }
             double t = XPLoad();
             while (LevelXp >= t)
