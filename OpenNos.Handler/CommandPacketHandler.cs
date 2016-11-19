@@ -522,6 +522,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$GodMode", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$GoldRate Value", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$GoldDropRate Value", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 12));
@@ -898,6 +899,31 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
+            }
+        }
+
+        /// <summary>
+        /// $GoldDropRate Command
+        /// </summary>
+        /// <param name="goldDropRatePacket"></param>
+        public void GoldDropRate(GoldDropRatePacket goldDropRatePacket)
+        {
+            Logger.Debug("GoldDropRate Changed", Session.SessionId);
+            if (goldDropRatePacket != null)
+            {
+                if (goldDropRatePacket.Value <= 1000)
+                {
+                    ServerManager.GoldDropRate = goldDropRatePacket.Value;
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_DROP_RATE_CHANGED"), 0));
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$GoldDropRate VALUE", 10));
             }
         }
 
@@ -1579,9 +1605,9 @@ namespace OpenNos.Handler
                     {
                         ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                         Session.Character.MapId = (short)mapId;
-                        Session.Character.MapX = (short)((short)(mapx)+1);
-                        Session.Character.MapY = (short)((short)(mapy)+1);
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, (short)mapId, (short)((short)(mapx)+1), (short)((short)(mapy)+1));
+                        Session.Character.MapX = (short)((short)(mapx) + 1);
+                        Session.Character.MapY = (short)((short)(mapy) + 1);
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, (short)mapId, (short)((short)(mapx) + 1), (short)((short)(mapy) + 1));
                     }
                     else
                     {

@@ -105,6 +105,7 @@
     <Compile Include="Packets\CommandPackets\DropRatePacket.cs" />
     <Compile Include="Packets\CommandPackets\EffectCommandPacket.cs" />
     <Compile Include="Packets\CommandPackets\FairyXpRatePacket.cs" />
+    <Compile Include="Packets\CommandPackets\GoldDropRatePacket.cs" />
     <Compile Include="Packets\CommandPackets\GoldPacket.cs" />
     <Compile Include="Packets\CommandPackets\GoldRatePacket.cs" />
     <Compile Include="Packets\CommandPackets\GuriCommandPacket.cs" />

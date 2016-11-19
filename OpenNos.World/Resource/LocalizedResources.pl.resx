@@ -1060,4 +1060,7 @@
   <data name="NO_FAIRY" xml:space="preserve">
     <value>Musisz ubrać swoją wróżkę aby to zrobić!</value>
   </data>
+  <data name="GOLD_DROP_RATE_CHANGED" xml:space="preserve">
+    <value>Szansa wypadnięcia złota zmieniona!</value>
+  </data>
 </root>

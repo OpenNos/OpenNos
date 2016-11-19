@@ -90,6 +90,8 @@ namespace OpenNos.GameObject
 
         public static int FairyXpRate { get; set; }
 
+        public static int GoldDropRate { get; set; }
+
         public static int GoldRate { get; set; }
 
         public static int XPRate { get; set; }
@@ -456,6 +458,7 @@ namespace OpenNos.GameObject
             // parse rates
             XPRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXp"]);
             DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
+            GoldDropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["GoldRateDrop"]);
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
             FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
 

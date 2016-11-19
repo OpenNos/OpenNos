@@ -945,6 +945,15 @@ namespace OpenNos.World.Resource {
         /// <summary>
         ///   Looks up a localized string similar to Gold drop rate changed!.
         /// </summary>
+        internal static string GOLD_DROP_RATE_CHANGED {
+            get {
+                return ResourceManager.GetString("GOLD_DROP_RATE_CHANGED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gold drop rate changed!.
+        /// </summary>
         internal static string GOLD_RATE_CHANGED {
             get {
                 return ResourceManager.GetString("GOLD_RATE_CHANGED", resourceCulture);

@@ -18,7 +18,6 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -451,7 +450,7 @@ namespace OpenNos.Handler
             if (monsterToAttack == null)
             {
                 return 0;
-            }                
+            }
 
             short distanceX = (short)(Session.Character.MapX - monsterToAttack.MapX);
             short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
@@ -475,12 +474,9 @@ namespace OpenNos.Handler
             int secMaxDmg = 0;
             int secHitRate = 0;
 
-            // int CritChance = 4;
-            // int CritHit = 70;
-            // int MinDmg = 0;
-            // int MaxDmg = 0;
-            // int HitRate = 0;
+            // int CritChance = 4; int CritHit = 70; int MinDmg = 0; int MaxDmg = 0; int HitRate = 0;
             // sbyte Upgrade = 0;
+
             #endregion
 
             #region Sp
@@ -576,7 +572,7 @@ namespace OpenNos.Handler
             {
                 mainUpgrade = 10;
             }
-            
+
             #endregion
 
             #region Detailed Calculation
@@ -898,16 +894,17 @@ namespace OpenNos.Handler
             List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMap.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || (s.MapTypeId == null)).ToList();
             if (monsterToAttack.Monster.MonsterType != MonsterType.Special)
             {
-                int RateDrop = ServerManager.DropRate;
-                int x = 0;
+                #region item drop
 
+                int dropRate = ServerManager.DropRate;
+                int x = 0;
                 foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
                 {
                     if (x < 4)
                     {
                         i++;
                         double rndamount = random.Next(0, 100) * random.NextDouble();
-                        if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
+                        if (rndamount <= ((double)drop.DropChance * dropRate) / 5000.000)
                         {
                             x++;
                             if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
@@ -921,7 +918,7 @@ namespace OpenNos.Handler
                                     if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                                     {
                                         dropOwner = group.GetNextOrderedCharacterId(Session.Character);
-                                        if(dropOwner.HasValue)
+                                        if (dropOwner.HasValue)
                                         {
                                             group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop.Amount), 10)));
                                         }
@@ -937,13 +934,16 @@ namespace OpenNos.Handler
                     }
                 }
 
-                int goldRate = ServerManager.GoldRate;
-                int dropIt = ((random.Next(0, Session.Character.Level) < monsterToAttack.Monster.Level) ? 1 : 0);
-                int lowBaseGold = random.Next(6 * monsterToAttack.Monster.Level, 12 * monsterToAttack.Monster.Level);
-                int isAct52 = (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1);
-                int gold = Convert.ToInt32(dropIt * lowBaseGold * goldRate * isAct52);
+                #endregion
+
+                #region gold drop
+
+                // gold calculation
+                int gold = GetGold(monsterToAttack);
                 gold = gold > 1000000000 ? 1000000000 : gold;
-                if (gold != 0)
+                double randChance = random.Next(0, 100) * random.NextDouble();
+                int levelDifference = Session.Character.Level - monsterToAttack.Monster.Level;
+                if (gold > 0 && randChance <= (int)((ServerManager.GoldDropRate * 10) * CharacterHelper.GoldPenalty(levelDifference)))
                 {
                     DropDTO drop2 = new DropDTO()
                     {
@@ -970,7 +970,7 @@ namespace OpenNos.Handler
                             {
                                 dropOwner = group.GetNextOrderedCharacterId(Session.Character);
 
-                                if(dropOwner.HasValue)
+                                if (dropOwner.HasValue)
                                 {
                                     group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUND_TO"), ServerManager.GetItem(drop2.ItemVNum).Name, group.Characters.Single(c => c.Character.CharacterId == (long)dropOwner).Character.Name, drop2.Amount), 10)));
                                 }
@@ -983,6 +983,11 @@ namespace OpenNos.Handler
                         Session.CurrentMap.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
                     }
                 }
+
+                #endregion
+
+                #region exp
+
                 if (Session.Character.Hp > 0)
                 {
                     Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
@@ -999,7 +1004,18 @@ namespace OpenNos.Handler
                     }
                     Session.Character.GenerateDignity(monsterToAttack.Monster);
                 }
+
+                #endregion
             }
+        }
+
+        private int GetGold(MapMonster mapMonster)
+        {
+            Random random = new Random(DateTime.Now.Millisecond + mapMonster.MapMonsterId);
+            int lowBaseGold = random.Next(6 * mapMonster.Monster.Level, 12 * mapMonster.Monster.Level);
+            int actMultiplier = Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1;
+            int gold = (int)(lowBaseGold * ServerManager.DropRate * actMultiplier);
+            return gold;
         }
 
         private void ZoneHit(int Castingid, short x, short y)
