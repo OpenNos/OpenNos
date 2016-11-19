@@ -408,6 +408,11 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; set; }
 
+        /// <summary>
+        /// Defines if the Character Is currently sending or getting items thru exchange.
+        /// </summary>
+        public bool IsExchanging { get; set; }
+
         #endregion
 
         #region Methods
@@ -2237,6 +2242,12 @@ namespace OpenNos.GameObject
             {
                 CharacterDTO character = this.DeepCopy();
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
+
+                // wait for any exchange to be finished
+                while(IsExchanging)
+                {
+                    // do nothing and wait until Exchange has been finished
+                }
 
                 // be sure that noone tries to edit while saving is currently editing
                 lock(Inventory)

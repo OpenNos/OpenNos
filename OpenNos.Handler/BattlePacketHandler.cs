@@ -114,7 +114,7 @@ namespace OpenNos.Handler
                                         Session.Character.LastSkillUse = DateTime.Now;
                                         damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
                                         Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.IsAlive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 0 {ski.Skill.SkillType - 1}");
-                                        Task.Factory.StartNew(() => { GenerateKillBonus(mon.MapMonsterId); });
+                                        GenerateKillBonus(mon.MapMonsterId);
                                     }
 
                                     await Task.Delay((ski.Skill.Cooldown) * 100);
@@ -196,7 +196,7 @@ namespace OpenNos.Handler
                                 {
                                     damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
                                     broadcastPackets.Add($"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} {(mmon.IsAlive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)mon.Monster.MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
-                                    Task.Factory.StartNew(() => { GenerateKillBonus(mon.MapMonsterId); });
+                                    GenerateKillBonus(mon.MapMonsterId);
                                 }
                             }
                         }
@@ -222,7 +222,7 @@ namespace OpenNos.Handler
                                         damage = GenerateDamage(monsterToAttack.MapMonsterId, ski.Skill, ref hitmode);
 
                                         ski.LastUse = DateTime.Now;
-                                        Task.Factory.StartNew(() => { GenerateKillBonus(monsterToAttack.MapMonsterId); });
+                                        GenerateKillBonus(monsterToAttack.MapMonsterId);
                                         notcancel = true;
                                         if (!Session.Character.HasGodMode)
                                         {
@@ -272,7 +272,7 @@ namespace OpenNos.Handler
                                             {
                                                 damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
                                                 broadcastPackets.Add($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} {(mon.IsAlive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
-                                                Task.Factory.StartNew(() => { GenerateKillBonus(mon.MapMonsterId); });
+                                                GenerateKillBonus(mon.MapMonsterId);
                                             }
                                         }
                                     }
@@ -613,6 +613,11 @@ namespace OpenNos.Handler
 
             int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
             baseDamage += (skill.Damage / 4);
+            if(Session.Character.Class == ClassType.Adventurer)
+            {
+                //HACK: Damage is ~10 lower in OpenNos than in official. Fix this...
+                baseDamage += 10;
+            }
             int elementalDamage = 0; // placeholder for BCard etc...
             elementalDamage += (skill.ElementalDamage / 4);
             switch (mainUpgrade)
@@ -857,7 +862,7 @@ namespace OpenNos.Handler
                 elementalBoost = 0;
             }
 
-            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * (((Session.Character.ElementRate + Session.Character.ElementRateSP) / 100D)))) * elementalBoost);
+            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * ((Session.Character.ElementRate  / 100D) * (Session.Character.ElementRateSP / 100D)))) * elementalBoost);
             elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
 
             #endregion
@@ -930,17 +935,12 @@ namespace OpenNos.Handler
             return damage;
         }
 
-        private async void GenerateKillBonus(int monsterid)
+        private void GenerateKillBonus(int monsterid)
         {
             MapMonster monsterToAttack = Session.CurrentMap.GetMonster(monsterid);
             if (monsterToAttack == null || monsterToAttack.IsAlive)
             {
                 return;
-            }
-            else
-            {
-                // wait for the mob to die
-                await Task.Delay(350);
             }
 
             Random random = new Random(DateTime.Now.Millisecond & monsterid);
@@ -992,7 +992,13 @@ namespace OpenNos.Handler
                                         group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop.ItemVNum).Name, drop.Amount), 10)));
                                     }
                                 }
-                                Session.CurrentMap.DropItemByMonster(dropOwner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+
+                                // delayed Drop
+                                Task.Factory.StartNew(async () =>
+                                {
+                                    await Task.Delay(500);
+                                    Session.CurrentMap.DropItemByMonster(dropOwner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                                });
                             }
                         }
                     }
@@ -1044,7 +1050,13 @@ namespace OpenNos.Handler
                                 group.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop2.ItemVNum).Name, drop2.Amount), 10)));
                             }
                         }
-                        Session.CurrentMap.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
+
+                        // delayed Drop
+                        Task.Factory.StartNew(async () =>
+                        {
+                            await Task.Delay(500);
+                            Session.CurrentMap.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
+                        });
                     }
                 }
 
@@ -1117,7 +1129,7 @@ namespace OpenNos.Handler
                         {
                             damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
                             Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {x} {y} {(mon.IsAlive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
-                            Task.Factory.StartNew(() => { GenerateKillBonus(mon.MapMonsterId); });
+                            GenerateKillBonus(mon.MapMonsterId);
                         }
 
                         await Task.Delay((ski.Skill.Cooldown) * 100);

@@ -289,12 +289,12 @@ namespace OpenNos.GameObject
         public T LoadBySlotAndType<T>(short slot, InventoryType type)
                     where T : ItemInstance
         {
-            return (T)this.GetAllItems().SingleOrDefault(i => i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type);
+            return (T)this.GetAllItems().SingleOrDefault(i => i != null && i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type);
         }
 
         public ItemInstance LoadBySlotAndType(short slot, InventoryType type)
         {
-            return this.GetAllItems().SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
+            return this.GetAllItems().SingleOrDefault(i => i != null && i.Slot.Equals(slot) && i.Type.Equals(type));
         }
 
         /// <summary> Moves one item from one Inventory to another. Example: Equipment <-> Wear,

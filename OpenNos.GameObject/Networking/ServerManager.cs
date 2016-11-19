@@ -301,52 +301,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        // PacketHandler
-        public void ExchangeValidate(ClientSession c1Session, long charId)
-        {
-            ClientSession c2Session = GetSessionByCharacterId(charId);
-
-            if (c2Session == null || c2Session.Character.ExchangeInfo == null)
-            {
-                return;
-            }
-            foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
-            {
-                ItemInstance invtemp = c2Session.Character.Inventory.GetItemInstanceById(item.Id);
-                short slot = invtemp.Slot;
-                InventoryType type = invtemp.Type;
-
-                ItemInstance inv = c2Session.Character.Inventory.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
-                if (inv != null)
-                {
-                    // Send reduced-amount to owners inventory
-                    c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
-                }
-                else
-                {
-                    // Send empty slot to owners inventory
-                    c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
-                }
-            }
-
-            foreach (ItemInstance item in c1Session.Character.ExchangeInfo.ExchangeList)
-            {
-                ItemInstance item2 = item.DeepCopy();
-                item2.Id = Guid.NewGuid();
-                ItemInstance inv = c2Session.Character.Inventory.AddToInventory(item2);
-                if (inv == null || inv.Slot == -1)
-                {
-                    continue;
-                }
-                c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
-            }
-
-            c2Session.Character.Gold = c2Session.Character.Gold - c2Session.Character.ExchangeInfo.Gold + c1Session.Character.ExchangeInfo.Gold;
-            c2Session.SendPacket(c2Session.Character.GenerateGold());
-            c1Session.Character.ExchangeInfo = null;
-            c2Session.Character.ExchangeInfo = null;
-        }
-
         public List<DropDTO> GetDropsByMonsterVNum(short monsterVNum)
         {
             if (_monsterDrops.ContainsKey(monsterVNum))
