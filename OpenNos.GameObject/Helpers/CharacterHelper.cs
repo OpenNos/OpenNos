@@ -215,15 +215,97 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static long LoadFairyXpData(long i)
+        public static float ExperiencePenalty(int levelDifference)
         {
-            if (i < 40)
+            float penalty;
+
+            // penalty calculation
+            if (levelDifference == 6)
             {
-                return i * i + 50;
+                penalty = 0.9f;
+            }
+            else if (levelDifference == 7)
+            {
+                penalty = 0.7f;
+            }
+            else if (levelDifference == 8)
+            {
+                penalty = 0.5f;
+            }
+            else if (levelDifference == 9)
+            {
+                penalty = 0.3f;
+            }
+            else if (levelDifference > 9)
+            {
+                penalty = 0.1f;
+            }
+            else if (levelDifference > 18 && levelDifference < 19)
+            {
+                penalty = 0.05f;
             }
             else
             {
-                return i * i * 3 + 50;
+                penalty = 1f;
+            }
+
+            return penalty;
+        }
+
+        public static float GoldPenalty(int levelDifference)
+        {
+            float penalty;
+
+            // penalty calculation
+            if (levelDifference == 5)
+            {
+                penalty = 0.9f;
+            }
+            else if (levelDifference == 6)
+            {
+                penalty = 0.7f;
+            }
+            else if (levelDifference == 7)
+            {
+                penalty = 0.5f;
+            }
+            else if (levelDifference == 8)
+            {
+                penalty = 0.3f;
+            }
+            else if (levelDifference == 9)
+            {
+                penalty = 0.2f;
+            }
+            else if (levelDifference > 9 && levelDifference < 19)
+            {
+                penalty = 0.1f;
+            }
+            else if (levelDifference > 18 && levelDifference < 30)
+            {
+                penalty = 0.05f;
+            }
+            else if (levelDifference > 30)
+            {
+                penalty = 0f;
+            }
+            else
+            {
+                penalty = 1f;
+            }
+
+            return penalty;
+        }
+
+        public static long LoadFairyXpData(long elementRate)
+        {
+            if (elementRate < 40)
+            {
+                return elementRate * elementRate + 50;
+            }
+            else
+            {
+                return elementRate * elementRate * 3 + 50;
             }
         }
 
@@ -250,43 +332,6 @@ namespace OpenNos.GameObject
         public static int MinHit(ClassType @class, byte level)
         {
             return minHit[(int)@class, level];
-        }
-
-        public static float ExperiencePenalty(int levelDifference)
-        {
-            float penalty;
-
-            // penalty calculation
-            if (levelDifference == 6)
-            {
-                penalty = 0.9f;
-            }
-            else if (levelDifference == 7)
-            {
-                penalty = 0.7f;
-            }
-            else if (levelDifference == 8)
-            {
-                penalty = 0.5f;
-            }
-            else if (levelDifference == 9)
-            {
-                penalty = 0.3f;
-            }
-            else if (levelDifference > 9 && levelDifference < 19)
-            {
-                penalty = 0.1f;
-            }
-            else if (levelDifference > 18)
-            {
-                penalty = 0.05f;
-            }
-            else
-            {
-                penalty = 1f;
-            }
-
-            return penalty;
         }
 
         public static int RarityPoint(short rarity, short lvl)

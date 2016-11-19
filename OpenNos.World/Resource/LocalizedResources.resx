@@ -1054,4 +1054,7 @@
   <data name="NO_FAIRY" xml:space="preserve">
     <value>You need to wear fairy to do that</value>
   </data>
+  <data name="GOLD_DROP_RATE_CHANGED" xml:space="preserve">
+    <value>Gold drop rate changed!</value>
+  </data>
 </root>
