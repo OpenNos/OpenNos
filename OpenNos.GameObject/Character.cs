@@ -2524,9 +2524,21 @@ namespace OpenNos.GameObject
         /// <param name="xCoordinate">The x coordinate of the object to check.</param>
         /// <param name="yCoordinate">The y coordinate of the object to check.</param>
         /// <returns>True if the object is in Range, False if not.</returns>
-        internal bool IsInRange(int xCoordinate, int yCoordinate)
+        public bool IsInRange(int xCoordinate, int yCoordinate)
         {
             return Math.Abs(MapX - xCoordinate) <= 50 && Math.Abs(MapY - yCoordinate) <= 50;
+        }
+
+        /// <summary>
+        /// Checks if the current character is in range of the given position
+        /// </summary>
+        /// <param name="xCoordinate">The x coordinate of the object to check.</param>
+        /// <param name="yCoordinate">The y coordinate of the object to check.</param>
+        /// <param name="range">The range of the coordinates to be maximal distanced.</param>
+        /// <returns>True if the object is in Range, False if not.</returns>
+        public bool IsInRange(int xCoordinate, int yCoordinate, int range)
+        {
+            return Math.Abs(MapX - xCoordinate) <= range && Math.Abs(MapY - yCoordinate) <= range;
         }
 
         internal void SetSession(ClientSession clientSession)

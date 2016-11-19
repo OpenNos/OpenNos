@@ -25,6 +25,8 @@ namespace OpenNos.GameObject
 
         private Random _random;
 
+        private long _transportId;
+
         #endregion
 
         #region Instantiation
@@ -90,6 +92,28 @@ namespace OpenNos.GameObject
         public byte SpStoneUpgrade { get; set; }
 
         public byte SpWater { get; set; }
+
+        public long TransportId
+        {
+            get
+            {
+                if (_transportId == 0)
+                {
+                    // create transportId thru factory
+                    _transportId = TransportFactory.Instance.GenerateTransportId();
+                }
+
+                return _transportId;
+            }
+
+            set
+            {
+                if (value != _transportId)
+                {
+                    _transportId = value;
+                }
+            }
+        }
 
         #endregion
 

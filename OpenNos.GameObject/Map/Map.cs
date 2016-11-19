@@ -655,6 +655,7 @@ namespace OpenNos.GameObject
                 {
                     Broadcast(drop.GenerateOut(drop.TransportId));
                     DroppedList.Remove(drop.TransportId);
+                    TransportFactory.Instance.RemoveTransportId(drop.TransportId);
                 }
             }
             catch (Exception e)

@@ -59,9 +59,8 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return ItemInstance.TransportId;
+                return base.TransportId;
             }
-
             set
             {
                 // cannot set TransportId
