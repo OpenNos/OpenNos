@@ -736,7 +736,7 @@ namespace OpenNos.Handler
                             break;
 
                         case 3:
-                            elementalBoost = 0.5;
+                            elementalBoost = 1;
                             break;
 
                         case 4:
@@ -766,7 +766,7 @@ namespace OpenNos.Handler
                             break;
 
                         case 4:
-                            elementalBoost = 0.5;
+                            elementalBoost = 1;
                             break;
                     }
                     break;
@@ -784,7 +784,7 @@ namespace OpenNos.Handler
                             break;
 
                         case 2:
-                            elementalBoost = 0.5;
+                            elementalBoost = 1;
                             break;
 
                         case 3:
@@ -806,7 +806,7 @@ namespace OpenNos.Handler
                             break;
 
                         case 1:
-                            elementalBoost = 0.5;
+                            elementalBoost = 1;
                             break;
 
                         case 2:
@@ -862,7 +862,7 @@ namespace OpenNos.Handler
                 elementalBoost = 0;
             }
 
-            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * ((Session.Character.ElementRate + Session.Character.ElementRateSP) / 100D))) * elementalBoost);
+            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * ((Session.Character.ElementRate  / 100D + 0.25) * (Session.Character.ElementRateSP / 100D + 0.25)))) * elementalBoost);
             elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
 
             #endregion
