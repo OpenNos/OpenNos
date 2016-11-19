@@ -712,27 +712,6 @@ namespace OpenNos.Handler
 
             #endregion
 
-            #region Critical Damage
-
-            if (random.Next(100) <= mainCritChance)
-            {
-                if (skill.Type == 2)
-                {
-                }
-                else if (skill.Type == 3 && Session.Character.Class != ClassType.Magician)
-                {
-                    baseDamage = (int)(baseDamage * ((mainCritHit / 100D)));
-                    hitmode = 3;
-                }
-                else
-                {
-                    baseDamage = (int)(baseDamage * ((mainCritHit / 100D)));
-                    hitmode = 3;
-                }
-            }
-
-            #endregion
-
             #region Elementary Damage
 
             #region Calculate Elemental Boost + Rate
@@ -855,9 +834,9 @@ namespace OpenNos.Handler
             {
                 monsterResistance = 0;
             }
-            if(skill.Element == 0)
+            if (skill.Element == 0)
             {
-                if(elementalBoost == 0.5)
+                if (elementalBoost == 0.5)
                 {
                     elementalBoost = 0;
                 }
@@ -878,13 +857,34 @@ namespace OpenNos.Handler
                     elementalBoost = 0.2;
                 }
             }
-            else if(skill.Element != Session.Character.Element)
+            else if (skill.Element != Session.Character.Element)
             {
                 elementalBoost = 0;
             }
 
             elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * (((Session.Character.ElementRate + Session.Character.ElementRateSP) / 100D)))) * elementalBoost);
             elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
+
+            #endregion
+
+            #region Critical Damage
+
+            if (random.Next(100) <= mainCritChance)
+            {
+                if (skill.Type == 2)
+                {
+                }
+                else if (skill.Type == 3 && Session.Character.Class != ClassType.Magician)
+                {
+                    baseDamage = (int)(baseDamage * ((mainCritHit / 100D)));
+                    hitmode = 3;
+                }
+                else
+                {
+                    baseDamage = (int)(baseDamage * ((mainCritHit / 100D)));
+                    hitmode = 3;
+                }
+            }
 
             #endregion
 
