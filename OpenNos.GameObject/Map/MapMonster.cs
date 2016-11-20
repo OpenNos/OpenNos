@@ -307,13 +307,16 @@ namespace OpenNos.GameObject
                                     Map.Broadcast(characterInRange.GenerateRest());
                                     Thread.Sleep(500);
                                 }
-                                damage = chara.HasGodMode ? 0 : 100;
-                                bool AlreadyDead2 = chara.Hp <= 0;
-                                chara.GetDamage(damage);
-                                chara.LastDefence = DateTime.Now;
-                                Map.Broadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, "", chara.CharacterId);
-                                Map.Broadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} { (int)(chara.Hp / chara.HPLoad() * 100) } {damage} {hitmode} 0");
-                                if (chara.Hp <= 0 && !AlreadyDead2)
+                                if (characterInRange.HasGodMode)
+                                {
+                                    damage = 0;
+                                }
+                                bool AlreadyDead2 = characterInRange.Hp <= 0;
+                                characterInRange.GetDamage(damage);
+                                characterInRange.LastDefence = DateTime.Now;
+                                Map.Broadcast(null, characterInRange.GenerateStat(), ReceiverType.OnlySomeone, "", characterInRange.CharacterId);
+                                Map.Broadcast($"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} { (int)(characterInRange.Hp / characterInRange.HPLoad() * 100) } {damage} {hitmode} 0");
+                                if (characterInRange.Hp <= 0 && !AlreadyDead2)
                                 damage = characterInRange.HasGodMode ? 0 : 100;
                                 bool alreadyDead = characterInRange.Hp <= 0;
                                 characterInRange.GetDamage(damage);
