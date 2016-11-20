@@ -413,7 +413,7 @@ namespace OpenNos.GameObject
             }
 
             short mainUpgrade = Monster.AttackUpgrade;
-            int mainCritChance = Monster.CriticalLuckRate;
+            int mainCritChance = Monster.CriticalChance;
             int mainCritHit = Monster.CriticalRate;
             int mainMinDmg = Monster.DamageMinimum;
             int mainMaxDmg = Monster.DamageMaximum;
