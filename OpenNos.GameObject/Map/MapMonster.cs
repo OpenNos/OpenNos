@@ -418,9 +418,13 @@ namespace OpenNos.GameObject
             int mainMinDmg = Monster.DamageMinimum;
             int mainMaxDmg = Monster.DamageMaximum;
             int mainHitRate = Monster.Concentrate; //probably missnamed, check later
-            if(mainHitRate == 0)
+            if(mainMaxDmg == 0)
             {
-                mainHitRate = 1;
+                mainMinDmg = Monster.Level * 8;
+                mainMaxDmg = Monster.Level * 12;
+                mainCritChance = 10;
+                mainCritHit = 120;
+                mainHitRate = (Monster.Level / 2) + 1;
             }
             #endregion
 
