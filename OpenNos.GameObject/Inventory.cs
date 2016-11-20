@@ -275,11 +275,6 @@ namespace OpenNos.GameObject
             return this[id];
         }
 
-        public bool IsEmpty()
-        {
-            return !this.GetAllItems().Any();
-        }
-
         public T LoadByItemInstance<T>(Guid id)
                     where T : ItemInstance
         {
@@ -474,11 +469,12 @@ namespace OpenNos.GameObject
                 inv.Amount -= amount;
                 if (inv.Amount <= 0)
                 {
+                    Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0, 0));
                     this.Remove(inv.Id);
                     return null;
                 }
             }
-
+            Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, inv.Type == InventoryType.Specialist ? ((SpecialistInstance)inv).SpStoneUpgrade : (byte)0));
             return inv;
         }
 
@@ -545,7 +541,7 @@ namespace OpenNos.GameObject
         private short? GetFreeSlot(InventoryType type, int backPack)
         {
             IEnumerable<int> itemInstanceSlotsByType = this.GetAllItems().Where(i => i.Type == type).OrderBy(i => i.Slot).Select(i => (int)i.Slot);
-            int nextFreeSlot = itemInstanceSlotsByType.Any() 
+            int nextFreeSlot = itemInstanceSlotsByType.Any()
                                 ? Enumerable.Range(0, (DEFAULT_BACKPACK_SIZE + (backPack * 12) + 1)).Except(itemInstanceSlotsByType).FirstOrDefault()
                                 : 0;
             return (short?)nextFreeSlot < (DEFAULT_BACKPACK_SIZE + (backPack * 12)) ? (short?)nextFreeSlot : null;

@@ -74,7 +74,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public override void Use(ClientSession session, ref ItemInstance Inv, bool DelayUsed = false, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
         {
             if ((DateTime.Now - session.Character.LastPotion).TotalMilliseconds < 750)
             {
@@ -84,7 +84,7 @@ namespace OpenNos.GameObject
             {
                 session.Character.LastPotion = DateTime.Now;
             }
-            Item item = Inv.Item;
+            Item item = inv.Item;
             switch (Effect)
             {
                 default:
@@ -108,16 +108,7 @@ namespace OpenNos.GameObject
                         }
                         Thread workerThread = new Thread(() => Regenerate(session, item));
                         workerThread.Start();
-                        Inv.Amount--;
-                        if (Inv.Amount > 0)
-                        {
-                            session.SendPacket(session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
-                        else
-                        {
-                            session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                            session.SendPacket(session.Character.GenerateInventoryAdd(1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     else
                     {
