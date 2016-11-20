@@ -447,7 +447,7 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
+        internal IEnumerable<Character> GetCharactersInRange(short mapX, short mapY, byte distance)
         {
             List<Character> characters = new List<Character>();
             IEnumerable<ClientSession> cl = Sessions.Where(s => s.HasSelectedCharacter && s.Character.Hp > 0);
@@ -637,7 +637,7 @@ namespace OpenNos.GameObject
 
         private void RemoveDeadMonsters()
         {
-            foreach (MapMonster monster in _monsters.GetAllItems().Where(s => !s.IsAlive && !s.Respawn.Value))
+            foreach (MapMonster monster in _monsters.GetAllItems().Where(s => !s.IsAlive && !s.ShouldRespawn.Value))
             {
                 RemoveMonster(monster);
             }

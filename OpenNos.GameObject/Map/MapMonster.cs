@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
 
         public List<GridPos> Path { get; set; }
 
-        public bool? Respawn { get; set; }
+        public bool? ShouldRespawn { get; set; }
 
         public List<NpcMonsterSkill> Skills { get; set; }
 
@@ -113,7 +113,7 @@ namespace OpenNos.GameObject
             Target = -1;
             Path = new List<GridPos>();
             IsAlive = true;
-            Respawn = (Respawn.HasValue ? Respawn.Value : true);
+            ShouldRespawn = (ShouldRespawn.HasValue ? ShouldRespawn.Value : true);
             Monster = ServerManager.GetNpc(MonsterVNum);
             CurrentHp = Monster.MaxHP;
             CurrentMp = Monster.MaxMP;
@@ -140,25 +140,16 @@ namespace OpenNos.GameObject
         internal void MonsterLife()
         {
             // Respawn
-            if (!IsAlive && Respawn.Value)
+            if (!IsAlive && ShouldRespawn.Value)
             {
                 double timeDeath = (DateTime.Now - Death).TotalSeconds;
                 if (timeDeath >= Monster.RespawnTime / 10)
                 {
-                    DamageList = new Dictionary<long, long>();
-                    IsAlive = true;
-                    Target = -1;
-                    CurrentHp = Monster.MaxHP;
-                    CurrentMp = Monster.MaxMP;
-                    MapX = FirstX;
-                    MapY = FirstY;
-                    Path = new List<GridPos>();
-                    Map.Broadcast(GenerateIn3());
-                    Map.Broadcast(GenerateEff(7), MapX, MapY);
+                    Respawn();
                 }
                 return;
             }
-            else if (Target == -1)
+            else if (Target == -1) // normal movement
             {
                 // Normal Move Mode
                 if (!IsAlive)
@@ -213,6 +204,7 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
+
                 if (Monster.IsHostile)
                 {
                     Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapId == MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY }) < Monster.NoticeRange)?.Character;
@@ -226,7 +218,7 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-            else
+            else // target following
             {
                 ClientSession targetSession = Map.GetSessionByCharacterId(Target);
 
@@ -293,24 +285,25 @@ namespace OpenNos.GameObject
                         }
                         if (npcMonsterSkill != null && (npcMonsterSkill.Skill.Range > 0 || npcMonsterSkill.Skill.TargetRange > 0))
                         {
-                            foreach (Character chara in Map.GetListPeopleInRange(npcMonsterSkill.Skill.TargetRange == 0 ? this.MapX : targetSession.Character.MapX, npcMonsterSkill.Skill.TargetRange == 0 ? this.MapY : targetSession.Character.MapY, npcMonsterSkill.Skill.TargetRange).Where(s => s.CharacterId != Target && s.Hp > 0))
+                            foreach (Character characterInRange in Map.GetCharactersInRange(npcMonsterSkill.Skill.TargetRange == 0 ? this.MapX : targetSession.Character.MapX, npcMonsterSkill.Skill.TargetRange == 0 ? this.MapY : targetSession.Character.MapY, npcMonsterSkill.Skill.TargetRange).Where(s => s.CharacterId != Target && s.Hp > 0))
                             {
-                                if (chara.IsSitting)
+                                if (characterInRange.IsSitting)
                                 {
-                                    chara.IsSitting = false;
-                                    Map.Broadcast(chara.GenerateRest());
+                                    characterInRange.IsSitting = false;
+                                    Map.Broadcast(characterInRange.GenerateRest());
                                     Thread.Sleep(500);
                                 }
-                                damage = chara.HasGodMode ? 0 : 100;
-                                bool AlreadyDead2 = chara.Hp <= 0;
-                                chara.GetDamage(damage);
-                                chara.LastDefence = DateTime.Now;
-                                Map.Broadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, "", chara.CharacterId);
-                                Map.Broadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} { (int)(chara.Hp / chara.HPLoad() * 100) } {damage} 0 0");
-                                if (chara.Hp <= 0 && !AlreadyDead2)
+                                damage = characterInRange.HasGodMode ? 0 : 100;
+                                bool alreadyDead = characterInRange.Hp <= 0;
+                                characterInRange.GetDamage(damage);
+                                characterInRange.LastDefence = DateTime.Now;
+                                characterInRange.Session.SendPacket(characterInRange.GenerateStat());
+
+                                Map.Broadcast($"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} { (int)(characterInRange.Hp / characterInRange.HPLoad() * 100) } {damage} 0 0");
+                                if (characterInRange.Hp <= 0 && !alreadyDead)
                                 {
                                     Thread.Sleep(1000);
-                                    ServerManager.Instance.AskRevive(chara.CharacterId);
+                                    ServerManager.Instance.AskRevive(characterInRange.CharacterId);
                                 }
                             }
                         }
@@ -370,7 +363,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal void RemoveTarget()
+        private void RemoveTarget()
         {
             Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
             if (!Path.Any())
@@ -378,6 +371,20 @@ namespace OpenNos.GameObject
                 Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
             }
             Target = -1;
+        }
+
+        private void Respawn()
+        {
+            DamageList = new Dictionary<long, long>();
+            IsAlive = true;
+            Target = -1;
+            CurrentHp = Monster.MaxHP;
+            CurrentMp = Monster.MaxMP;
+            MapX = FirstX;
+            MapY = FirstY;
+            Path = new List<GridPos>();
+            Map.Broadcast(GenerateIn3());
+            Map.Broadcast(GenerateEff(7), MapX, MapY);
         }
 
         #endregion
