@@ -724,23 +724,23 @@ namespace OpenNos.Handler
                     switch (monsterToAttack.Monster.Element)
                     {
                         case 0:
-                            elementalBoost = 1.3;
+                            elementalBoost = 1.3; // Damage vs no element
                             break;
 
                         case 1:
-                            elementalBoost = 1;
+                            elementalBoost = 1; // Damage vs fire
                             break;
 
                         case 2:
-                            elementalBoost = 2;
+                            elementalBoost = 2; // Damage vs water
                             break;
 
                         case 3:
-                            elementalBoost = 1;
+                            elementalBoost = 1; // Damage vs light
                             break;
 
                         case 4:
-                            elementalBoost = 1.5;
+                            elementalBoost = 1.5; // Damage vs darkness
                             break;
                     }
                     break;
