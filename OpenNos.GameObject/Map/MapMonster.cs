@@ -363,7 +363,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void RemoveTarget()
+        internal void RemoveTarget()
         {
             Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
             if (!Path.Any())
