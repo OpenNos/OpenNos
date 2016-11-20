@@ -912,6 +912,7 @@ namespace OpenNos.Handler
                 monsterToAttack.CurrentHp = 0;
                 monsterToAttack.CurrentMp = 0;
                 monsterToAttack.Death = DateTime.Now;
+                monsterToAttack.LastMove = DateTime.Now;
             }
             else
             {

@@ -237,6 +237,7 @@ namespace OpenNos.GameObject
                             }
 
                             monster.IsAlive = false;
+                            monster.LastMove = DateTime.Now;
                             monster.CurrentHp = 0;
                             monster.CurrentMp = 0;
                             monster.Death = DateTime.Now;
