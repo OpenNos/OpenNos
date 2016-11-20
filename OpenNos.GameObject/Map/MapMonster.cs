@@ -234,6 +234,7 @@ namespace OpenNos.GameObject
                 if (targetSession == null || targetSession.Character.Invisible || targetSession.Character.Hp <= 0)
                 {
                     RemoveTarget();
+                    return;
                 }
 
                 NpcMonsterSkill npcMonsterSkill = null;
@@ -242,7 +243,17 @@ namespace OpenNos.GameObject
                     npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
                 }
 
-                int damage = 100;
+                int damage = 0;
+                int hitmode = 0;
+
+                if (npcMonsterSkill != null)
+                {
+                    damage = GenerateDamage(targetSession.Character, npcMonsterSkill.Skill, ref hitmode);
+                }
+                else
+                {
+                    damage = GenerateDamage(targetSession.Character, null, ref hitmode);
+                }
 
                 if (targetSession != null && !targetSession.Character.InvisibleGm && !targetSession.Character.Invisible && targetSession.Character.Hp > 0 && ((npcMonsterSkill != null && CurrentMp - npcMonsterSkill.Skill.MpCost >= 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
                 {
@@ -257,7 +268,10 @@ namespace OpenNos.GameObject
                         LastMove = DateTime.Now;
 
                         // deal 0 damage to GM with GodMode
-                        damage = targetSession.Character.HasGodMode ? 0 : 100;
+                        if (targetSession.Character.HasGodMode)
+                        {
+                            damage = 0;
+                        }
                         if (targetSession.Character.IsSitting)
                         {
                             targetSession.Character.IsSitting = false;
@@ -277,11 +291,11 @@ namespace OpenNos.GameObject
 
                         if (npcMonsterSkill != null)
                         {
-                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} 0 0");
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} {hitmode} 0");
                         }
                         else
                         {
-                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} 0 0");
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} { (int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100) } {damage} {hitmode} 0");
                         }
 
                         LastEffect = DateTime.Now;
@@ -306,7 +320,7 @@ namespace OpenNos.GameObject
                                 chara.GetDamage(damage);
                                 chara.LastDefence = DateTime.Now;
                                 Map.Broadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, "", chara.CharacterId);
-                                Map.Broadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} { (int)(chara.Hp / chara.HPLoad() * 100) } {damage} 0 0");
+                                Map.Broadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} { (int)(chara.Hp / chara.HPLoad() * 100) } {damage} {hitmode} 0");
                                 if (chara.Hp <= 0 && !AlreadyDead2)
                                 {
                                     Thread.Sleep(1000);
@@ -368,6 +382,384 @@ namespace OpenNos.GameObject
                     }
                 }
             }
+        }
+
+        internal int GenerateDamage(Character targetCharacter, Skill skill, ref int hitmode)
+        {
+            //Warning: This code contains a huge amount of copypasta!
+            #region Definitions
+
+            if (targetCharacter == null)
+            {
+                return 0;
+            }
+
+            short distanceX = (short)(MapX - targetCharacter.MapX);
+            short distanceY = (short)(MapY - targetCharacter.MapY);
+            Random random = new Random();
+            int generated = random.Next(0, 100);
+
+            int playerDefense = 0;
+            byte playerDefenseUpgrade = 0;
+            int playerDodge = 0;
+
+            WearableInstance playerArmor = targetCharacter.Inventory.LoadBySlotAndType<WearableInstance>((byte)Domain.EquipmentType.Armor, Domain.InventoryType.Wear);
+            if (playerArmor != null)
+            {
+                playerDefenseUpgrade = playerArmor.Upgrade;
+            }
+
+            short mainUpgrade = Monster.AttackUpgrade;
+            int mainCritChance = Monster.CriticalLuckRate;
+            int mainCritHit = Monster.CriticalRate;
+            int mainMinDmg = Monster.DamageMinimum;
+            int mainMaxDmg = Monster.DamageMaximum;
+            int mainHitRate = Monster.Concentrate; //probably missnamed, check later
+
+            #endregion
+
+            #region Get Player defense
+
+            switch (Monster.AttackClass)
+            {
+                case 0:
+                    playerDefense = targetCharacter.Defence;
+                    playerDodge = targetCharacter.DefenceRate;
+                    break;
+
+                case 1:
+                    playerDefense = targetCharacter.DistanceDefence;
+                    playerDodge = targetCharacter.DistanceDefenceRate;
+                    break;
+
+                case 2:
+                    playerDefense = targetCharacter.MagicalDefence;
+                    break;
+                default:
+                    throw new Exception(String.Format("Monster.AttackClass {0} not implemented", Monster.AttackClass));
+            }
+
+            #endregion
+
+            #region Basic Damage Data Calculation
+
+#warning TODO: Implement BCard damage boosts, see Issue
+
+            mainUpgrade -= playerDefenseUpgrade;
+            if (mainUpgrade < -10)
+            {
+                mainUpgrade = -10;
+            }
+            else if (mainUpgrade > 10)
+            {
+                mainUpgrade = 10;
+            }
+
+            #endregion
+
+            #region Detailed Calculation
+
+            #region Dodge
+
+            double multiplier = playerDodge / mainHitRate;
+            if (multiplier > 5)
+            {
+                multiplier = 5;
+            }
+            double chance = -0.25 * Math.Pow(multiplier, 3) - 0.57 * Math.Pow(multiplier, 2) + 25.3 * multiplier - 1.41;
+            if (chance <= 1)
+            {
+                chance = 1;
+            }
+            if (Monster.AttackClass == 0 || Monster.AttackClass == 1)
+            {
+                if (random.Next(0, 100) <= chance)
+                {
+                    hitmode = 1;
+                    return 0;
+                }
+            }
+
+            #endregion
+
+            #region Base Damage
+
+            int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
+            int elementalDamage = 0; // placeholder for BCard etc...
+
+            if (skill != null)
+            {
+                baseDamage += (skill.Damage / 4);
+                elementalDamage += (skill.ElementalDamage / 4);
+            }
+
+            switch (mainUpgrade)
+            {
+                case -10:
+                    playerDefense += (int)(playerDefense * 2);
+                    break;
+
+                case -9:
+                    playerDefense += (int)(playerDefense * 1.2);
+                    break;
+
+                case -8:
+                    playerDefense += (int)(playerDefense * 0.9);
+                    break;
+
+                case -7:
+                    playerDefense += (int)(playerDefense * 0.65);
+                    break;
+
+                case -6:
+                    playerDefense += (int)(playerDefense * 0.54);
+                    break;
+
+                case -5:
+                    playerDefense += (int)(playerDefense * 0.43);
+                    break;
+
+                case -4:
+                    playerDefense += (int)(playerDefense * 0.32);
+                    break;
+
+                case -3:
+                    playerDefense += (int)(playerDefense * 0.22);
+                    break;
+
+                case -2:
+                    playerDefense += (int)(playerDefense * 0.15);
+                    break;
+
+                case -1:
+                    playerDefense += (int)(playerDefense * 0.1);
+                    break;
+
+                case 0:
+                    break;
+
+                case 1:
+                    baseDamage += (int)(baseDamage * 0.1);
+                    break;
+
+                case 2:
+                    baseDamage += (int)(baseDamage * 0.15);
+                    break;
+
+                case 3:
+                    baseDamage += (int)(baseDamage * 0.22);
+                    break;
+
+                case 4:
+                    baseDamage += (int)(baseDamage * 0.32);
+                    break;
+
+                case 5:
+                    baseDamage += (int)(baseDamage * 0.43);
+                    break;
+
+                case 6:
+                    baseDamage += (int)(baseDamage * 0.54);
+                    break;
+
+                case 7:
+                    baseDamage += (int)(baseDamage * 0.65);
+                    break;
+
+                case 8:
+                    baseDamage += (int)(baseDamage * 0.9);
+                    break;
+
+                case 9:
+                    baseDamage += (int)(baseDamage * 1.2);
+                    break;
+
+                case 10:
+                    baseDamage += (int)(baseDamage * 2);
+                    break;
+            }
+
+            #endregion
+
+            #region Elementary Damage
+
+            #region Calculate Elemental Boost + Rate
+
+            double elementalBoost = 0;
+            int playerRessistance = 0;
+            switch (Monster.Element)
+            {
+                case 0:
+                    break;
+
+                case 1:
+                    playerRessistance = targetCharacter.FireResistance;
+                    switch (targetCharacter.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3; // Damage vs no element
+                            break;
+
+                        case 1:
+                            elementalBoost = 1; // Damage vs fire
+                            break;
+
+                        case 2:
+                            elementalBoost = 2; // Damage vs water
+                            break;
+
+                        case 3:
+                            elementalBoost = 1; // Damage vs light
+                            break;
+
+                        case 4:
+                            elementalBoost = 1.5; // Damage vs darkness
+                            break;
+                    }
+                    break;
+
+                case 2:
+                    playerRessistance = targetCharacter.WaterResistance;
+                    switch (targetCharacter.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+
+                        case 1:
+                            elementalBoost = 2;
+                            break;
+
+                        case 2:
+                            elementalBoost = 1;
+                            break;
+
+                        case 3:
+                            elementalBoost = 1.5;
+                            break;
+
+                        case 4:
+                            elementalBoost = 1;
+                            break;
+                    }
+                    break;
+
+                case 3:
+                    playerRessistance = targetCharacter.LightResistance;
+                    switch (targetCharacter.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+
+                        case 1:
+                            elementalBoost = 1.5;
+                            break;
+
+                        case 2:
+                            elementalBoost = 1;
+                            break;
+
+                        case 3:
+                            elementalBoost = 1;
+                            break;
+
+                        case 4:
+                            elementalBoost = 3;
+                            break;
+                    }
+                    break;
+
+                case 4:
+                    playerRessistance = targetCharacter.DarkResistance;
+                    switch (targetCharacter.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+
+                        case 1:
+                            elementalBoost = 1;
+                            break;
+
+                        case 2:
+                            elementalBoost = 1.5;
+                            break;
+
+                        case 3:
+                            elementalBoost = 3;
+                            break;
+
+                        case 4:
+                            elementalBoost = 1;
+                            break;
+                    }
+                    break;
+            }
+
+            #endregion;
+            if (Monster.Element == 0)
+            {
+                if (elementalBoost == 0.5)
+                {
+                    elementalBoost = 0;
+                }
+                else if (elementalBoost == 1)
+                {
+                    elementalBoost = 0.05;
+                }
+                else if (elementalBoost == 1.3)
+                {
+                    elementalBoost = 0;
+                }
+                else if (elementalBoost == 1.5)
+                {
+                    elementalBoost = 0.15;
+                }
+                else if (elementalBoost == 2)
+                {
+                    elementalBoost = 0.2;
+                }
+                else if (elementalBoost == 3)
+                {
+                    elementalBoost = 0.2;
+                }
+            }
+
+            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * ((Monster.ElementRate) / 100D))) * elementalBoost);
+            elementalDamage = elementalDamage / 100 * (100 - playerRessistance);
+
+            #endregion
+
+            #region Critical Damage
+
+            if (random.Next(100) <= mainCritChance)
+            {
+                if (Monster.AttackClass == 2)
+                {
+                }
+                else
+                {
+                    baseDamage += (int)(baseDamage * ((mainCritHit / 100D)));
+                    hitmode = 3;
+                }
+            }
+
+            #endregion
+
+            #region Total Damage
+
+            int totalDamage = baseDamage + elementalDamage - playerDefense;
+            if (totalDamage < 5)
+            {
+                totalDamage = random.Next(1, 6);
+            }
+
+            #endregion
+
+            #endregion
+
+            return totalDamage;
         }
 
         internal void RemoveTarget()
