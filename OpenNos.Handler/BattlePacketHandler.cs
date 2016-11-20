@@ -860,7 +860,7 @@ namespace OpenNos.Handler
                 elementalBoost = 0;
             }
 
-            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * ((Session.Character.ElementRate / 100D + 0.25) * (Session.Character.ElementRateSP / 100D + 0.25)))) * elementalBoost);
+            elementalDamage = (int)((elementalDamage + ((elementalDamage + baseDamage) * ((Session.Character.ElementRate + Session.Character.ElementRateSP) / 100D))) * elementalBoost);
             elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
 
             #endregion
