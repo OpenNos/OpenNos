@@ -825,11 +825,6 @@ namespace OpenNos.Handler
             }
 
             #endregion;
-
-            if (monsterResistance < 0)
-            {
-                monsterResistance = 0;
-            }
             if (skill.Element == 0)
             {
                 if (elementalBoost == 0.5)
