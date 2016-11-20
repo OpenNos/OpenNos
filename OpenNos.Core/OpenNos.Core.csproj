@@ -122,7 +122,7 @@
     <Compile Include="Language.cs" />
     <Compile Include="EncryptionBase.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="PacketAttribute.cs" />
+    <Compile Include="Handling\PacketAttribute.cs" />
     <Compile Include="Networking\WireProtocol.cs" />
     <Compile Include="Networking\WireProtocolFactory.cs" />
     <Compile Include="Serializing\PacketHeaderAttribute.cs" />

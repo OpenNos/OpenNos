@@ -45,10 +45,10 @@ namespace OpenNos.GameObject
         public long GenerateTransportId()
         {
 
-            long newTransportId = _random.Next(1, Int32.MaxValue);
+            long newTransportId = _random.Next(1, 9999999);
             while(_transportIds.Contains(newTransportId))
             {
-                newTransportId = _random.Next(1, Int32.MaxValue);
+                newTransportId = _random.Next(1, 9999999);
             }
 
             _transportIds.Add(newTransportId);
