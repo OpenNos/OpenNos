@@ -987,4 +987,7 @@
   <data name="SP_RESURRECTED" xml:space="preserve">
     <value>Die Seele deiner Spezialistenkarte wurde wiederhergestellt!</value>
   </data>
+  <data name="POINTS_RESET" xml:space="preserve">
+    <value>Deine Punkte wurden zurückgesetzt.</value>
+  </data>
 </root>
