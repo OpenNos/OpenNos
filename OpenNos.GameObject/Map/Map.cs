@@ -321,7 +321,6 @@ namespace OpenNos.GameObject
         {
             try
             {
-                List<Task> MonsterLifeTask = new List<Task>();
                 RemoveDeadMonsters();
                 foreach (MapMonster monster in Monsters.OrderBy(i => _random.Next()))
                 {
@@ -448,7 +447,7 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
+        internal IEnumerable<Character> GetCharactersInRange(short mapX, short mapY, byte distance)
         {
             List<Character> characters = new List<Character>();
             IEnumerable<ClientSession> cl = Sessions.Where(s => s.HasSelectedCharacter && s.Character.Hp > 0);
@@ -466,14 +465,14 @@ namespace OpenNos.GameObject
         {
             try
             {
-                List<Task> MapTasks = new List<Task>();
-                MapTasks.Add(new Task(() => NpcLifeManager()));
-                MapTasks.Add(new Task(() => MonsterLifeManager()));
-                MapTasks.Add(new Task(() => CharacterLifeManager()));
-                MapTasks.Add(new Task(() => RemoveMapItem()));
+                List<Task> mapTasks = new List<Task>();
+                mapTasks.Add(new Task(() => NpcLifeManager()));
+                mapTasks.Add(new Task(() => MonsterLifeManager()));
+                mapTasks.Add(new Task(() => CharacterLifeManager()));
+                mapTasks.Add(new Task(() => RemoveMapItem()));
 
-                MapTasks.ForEach(s => s.Start());
-                Task.WaitAll(MapTasks.ToArray());
+                mapTasks.ForEach(s => s.Start());
+                Task.WaitAll(mapTasks.ToArray());
             }
             catch (Exception e)
             {
@@ -638,7 +637,7 @@ namespace OpenNos.GameObject
 
         private void RemoveDeadMonsters()
         {
-            foreach (MapMonster monster in _monsters.GetAllItems().Where(s => !s.IsAlive && !s.Respawn.Value))
+            foreach (MapMonster monster in _monsters.GetAllItems().Where(s => !s.IsAlive && !s.ShouldRespawn.Value))
             {
                 RemoveMonster(monster);
             }

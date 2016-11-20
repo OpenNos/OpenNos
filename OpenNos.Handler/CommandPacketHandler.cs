@@ -1559,7 +1559,7 @@ namespace OpenNos.Handler
                             }
                         }
 
-                        MapMonster monster = new MapMonster() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapMonsterId = Session.CurrentMap.GetNextMonsterId(), Respawn = false };
+                        MapMonster monster = new MapMonster() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapMonsterId = Session.CurrentMap.GetNextMonsterId(), ShouldRespawn = false };
                         monster.Initialize(currentMap);
                         currentMap?.AddMonster(monster);
                         currentMap?.Broadcast(monster.GenerateIn3());
