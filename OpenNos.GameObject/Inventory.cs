@@ -546,7 +546,7 @@ namespace OpenNos.GameObject
         {
             IEnumerable<int> itemInstanceSlotsByType = this.GetAllItems().Where(i => i.Type == type).OrderBy(i => i.Slot).Select(i => (int)i.Slot);
             int nextFreeSlot = itemInstanceSlotsByType.Any() 
-                                ? Enumerable.Range(itemInstanceSlotsByType.Min(), (DEFAULT_BACKPACK_SIZE + (backPack * 12) + 1)).Except(itemInstanceSlotsByType).FirstOrDefault()
+                                ? Enumerable.Range(0, (DEFAULT_BACKPACK_SIZE + (backPack * 12) + 1)).Except(itemInstanceSlotsByType).FirstOrDefault()
                                 : 0;
             return (short?)nextFreeSlot < (DEFAULT_BACKPACK_SIZE + (backPack * 12)) ? (short?)nextFreeSlot : null;
         }

@@ -235,6 +235,14 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
+            ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
+            if(Session.Character.HasShopOpened || (targetSession != null && targetSession.Character.HasShopOpened))
+            {
+                CloseExchange(Session, targetSession);
+                return;
+            }
+
             for (int j = 6, i = 0; j <= packetsplit.Length; j += 3, i++)
             {
                 byte.TryParse(packetsplit[j - 3], out type[i]);
@@ -308,16 +316,16 @@ namespace OpenNos.Handler
                                 return;
                             }
 
-                            if (targetSession.Character.ExchangeBlocked || Session.Character.ExchangeBlocked)
+                            if (Session.Character.HasShopOpened || targetSession.Character.HasShopOpened)
                             {
-                                if (Session.Character.HasShopOpened || targetSession.Character.HasShopOpened)
-                                {
-                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
-                                }
-                                else
-                                {
-                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
-                                }
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
+                                return;
+                            }
+
+                            if (targetSession.Character.ExchangeBlocked || Session.Character.ExchangeBlocked)
+                            { 
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
+                                return;
                             }
                             else
                             {
@@ -861,11 +869,21 @@ namespace OpenNos.Handler
                 }
                 if (slHit >= 80)
                 {
-                    specialistInstance.CriticalLuckRate += 2;
+                    specialistInstance.CriticalLuckRate += 3;
                 }
                 if (slHit >= 90)
                 {
                     specialistInstance.CriticalRate += 20;
+                }
+                if (slHit >= 100)
+                {
+                    specialistInstance.CriticalLuckRate += 3;
+                    specialistInstance.CriticalRate += 20;
+                    specialistInstance.HP += 200;
+                    specialistInstance.MP += 200;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                    specialistInstance.HitRate += 20;
                 }
 
                 #endregion
@@ -973,6 +991,7 @@ namespace OpenNos.Handler
                     specialistInstance.WaterResistance += 4;
                     specialistInstance.LightResistance += 4;
                     specialistInstance.DarkResistance += 4;
+                    specialistInstance.ElementRate += 2;
                 }
                 if (slElement == 100)
                 {
@@ -980,138 +999,11 @@ namespace OpenNos.Handler
                     specialistInstance.WaterResistance += 6;
                     specialistInstance.LightResistance += 6;
                     specialistInstance.DarkResistance += 6;
+                    specialistInstance.MagicDefence += 5;
+                    specialistInstance.MP += 200;
+                    specialistInstance.ElementRate += 2;
                 }
-                if (slElement >= 5)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 10)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 15)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 20)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                    specialistInstance.CloseDefence += 10;
-                    specialistInstance.DistanceDefence += 10;
-                    specialistInstance.MagicDefence += 10;
-                }
-                if (slElement >= 25)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 30)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 35)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 40)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                    specialistInstance.CloseDefence += 15;
-                    specialistInstance.DistanceDefence += 15;
-                    specialistInstance.MagicDefence += 15;
-                }
-                if (slElement >= 45)
-                {
-                    specialistInstance.DamageMinimum += 10;
-                    specialistInstance.DamageMaximum += 10;
-                }
-                if (slElement >= 50)
-                {
-                    specialistInstance.DamageMinimum += 10;
-                    specialistInstance.DamageMaximum += 10;
-                    specialistInstance.FireResistance += 2;
-                    specialistInstance.WaterResistance += 2;
-                    specialistInstance.LightResistance += 2;
-                    specialistInstance.DarkResistance += 2;
-                }
-                if (slElement >= 60)
-                {
-                    specialistInstance.DamageMinimum += 10;
-                    specialistInstance.DamageMaximum += 10;
-                }
-                if (slElement >= 65)
-                {
-                    specialistInstance.DamageMinimum += 10;
-                    specialistInstance.DamageMaximum += 10;
-                }
-                if (slElement >= 70)
-                {
-                    specialistInstance.DamageMinimum += 10;
-                    specialistInstance.DamageMaximum += 10;
-                    specialistInstance.CloseDefence += 45;
-                    specialistInstance.DistanceDefence += 45;
-                    specialistInstance.MagicDefence += 45;
-                }
-                if (slElement >= 75)
-                {
-                    specialistInstance.DamageMinimum += 15;
-                    specialistInstance.DamageMaximum += 15;
-                }
-                if (slElement >= 80)
-                {
-                    specialistInstance.DamageMinimum += 15;
-                    specialistInstance.DamageMaximum += 15;
-                }
-                if (slElement >= 85)
-                {
-                    specialistInstance.DamageMinimum += 15;
-                    specialistInstance.DamageMaximum += 15;
-                    specialistInstance.CriticalDodge += 1;
-                }
-                if (slElement >= 86)
-                {
-                    specialistInstance.CriticalDodge += 1;
-                }
-                if (slElement >= 87)
-                {
-                    specialistInstance.CriticalDodge += 1;
-                }
-                if (slElement >= 88)
-                {
-                    specialistInstance.CriticalDodge += 1;
-                }
-                if (slElement >= 90)
-                {
-                    specialistInstance.DamageMinimum += 15;
-                    specialistInstance.DamageMaximum += 15;
-                    specialistInstance.DefenceDodge += (short)((slElement - 90) * 2);
-                    specialistInstance.DistanceDefenceDodge += (short)((slElement - 90) * 2);
-                }
-                if (slElement >= 95)
-                {
-                    specialistInstance.DamageMinimum += 15;
-                    specialistInstance.DamageMaximum += 15;
-                }
-                if (slElement >= 100)
-                {
-                    specialistInstance.DamageMinimum += 20;
-                    specialistInstance.DamageMaximum += 20;
-                    specialistInstance.FireResistance += 3;
-                    specialistInstance.WaterResistance += 3;
-                    specialistInstance.LightResistance += 3;
-                    specialistInstance.DarkResistance += 3;
-                    specialistInstance.CloseDefence += 30;
-                    specialistInstance.DistanceDefence += 30;
-                    specialistInstance.MagicDefence += 30;
-                    specialistInstance.CriticalDodge += 3;
-                }
+               
 
                 #endregion
 
@@ -1418,16 +1310,17 @@ namespace OpenNos.Handler
 
         private void CloseExchange(ClientSession session, ClientSession targetSession)
         {
-            if (targetSession == null)
+            if(targetSession != null && targetSession.Character.ExchangeInfo != null)
             {
-                return;
+                targetSession.SendPacket("exc_close 0");
+                targetSession.Character.ExchangeInfo = null;
             }
 
-            session.SendPacket("exc_close 0");
-            targetSession.SendPacket("exc_close 0");
-
-            targetSession.Character.ExchangeInfo = null;
-            session.Character.ExchangeInfo = null;
+            if(session != null & session.Character.ExchangeInfo != null)
+            {
+                session.SendPacket("exc_close 0");
+                session.Character.ExchangeInfo = null;
+            }
         }
 
         private void Exchange(ClientSession sourceSession, ClientSession targetSession)
