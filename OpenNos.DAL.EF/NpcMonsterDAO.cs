@@ -13,9 +13,11 @@
  */
 
 using OpenNos.Core;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +36,34 @@ namespace OpenNos.DAL.EF
                 {
                     yield return _mapper.Map<NpcMonsterDTO>(NpcMonster);
                 }
+            }
+        }
+
+        public SaveResult InsertOrUpdate(ref NpcMonsterDTO npcMonster)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    short npcMonsterVNum = npcMonster.NpcMonsterVNum;
+                    NpcMonster entity = context.NpcMonster.FirstOrDefault(c => c.NpcMonsterVNum.Equals(npcMonsterVNum));
+
+                    if (entity == null)
+                    {
+                        npcMonster = Insert(npcMonster, context);
+                        return SaveResult.Inserted;
+                    }
+                    else
+                    {
+                        npcMonster = Update(entity, npcMonster, context);
+                        return SaveResult.Updated;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_NPCMONSTER_ERROR"), npcMonster.NpcMonsterVNum, e.Message), e);
+                return SaveResult.Error;
             }
         }
 
@@ -89,7 +119,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public NpcMonsterDTO LoadByVnum(short vnum)
+        public NpcMonsterDTO LoadByVNum(short vnum)
         {
             try
             {
@@ -103,6 +133,24 @@ namespace OpenNos.DAL.EF
                 Logger.Error(e);
                 return null;
             }
+        }
+
+        private NpcMonsterDTO Insert(NpcMonsterDTO npcMonster, OpenNosContext context)
+        {
+            NpcMonster entity = _mapper.Map<NpcMonster>(npcMonster);
+            context.NpcMonster.Add(entity);
+            context.SaveChanges();
+            return _mapper.Map<NpcMonsterDTO>(entity);
+        }
+
+        private NpcMonsterDTO Update(NpcMonster entity, NpcMonsterDTO npcMonster, OpenNosContext context)
+        {
+            if (entity != null)
+            {
+                _mapper.Map(npcMonster, entity);
+                context.SaveChanges();
+            }
+            return _mapper.Map<NpcMonsterDTO>(entity);
         }
 
         #endregion

@@ -106,6 +106,7 @@ namespace OpenNos.Import.Console
                     factory.ImportItems();
                     factory.ImportSkills();
                     factory.ImportNpcMonsters();
+                    factory.ImportNpcMonsterData();
                     factory.ImportMapNpcs();
                     factory.ImportMonsters();
                     factory.ImportShops();
@@ -154,11 +155,17 @@ namespace OpenNos.Import.Console
                     {
                         factory.ImportItems();
                     }
-                    System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_NPCS")} [Y/n]");
+                    System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_NPCMONSTERS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportNpcMonsters();
+                    }
+                    System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_NPCMONSTERDATA")} [Y/n]");
+                    key = System.Console.ReadKey(true);
+                    if (key.KeyChar != 'n')
+                    {
+                        factory.ImportNpcMonsterData();
                     }
                     System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SKILLS")} [Y/n]");
                     key = System.Console.ReadKey(true);

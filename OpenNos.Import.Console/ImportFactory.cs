@@ -129,7 +129,7 @@ namespace OpenNos.Import.Console
                     npctest.IsSitting = currentPacket[13] != "1";
                     npctest.IsDisabled = false;
 
-                    if (DAOFactory.NpcMonsterDAO.LoadByVnum(npctest.NpcVNum) == null || DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null || npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0)
+                    if (DAOFactory.NpcMonsterDAO.LoadByVNum(npctest.NpcVNum) == null || DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null || npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0)
                     {
                         continue;
                     }
@@ -603,7 +603,7 @@ namespace OpenNos.Import.Console
                     };
                     monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
 
-                    if (DAOFactory.NpcMonsterDAO.LoadByVnum(monster.MonsterVNum) == null || DAOFactory.MapMonsterDAO.LoadById(monster.MapMonsterId) != null || monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0)
+                    if (DAOFactory.NpcMonsterDAO.LoadByVNum(monster.MonsterVNum) == null || DAOFactory.MapMonsterDAO.LoadById(monster.MapMonsterId) != null || monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0)
                     {
                         continue;
                     }
@@ -615,6 +615,45 @@ namespace OpenNos.Import.Console
 
             DAOFactory.MapMonsterDAO.Insert(monsters);
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERS_PARSED"), monsterCounter));
+        }
+
+        public void ImportNpcMonsterData()
+        {
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("e_info") && o[1].Equals("10")))
+            {
+                if (currentPacket.Length > 25)
+                {
+                    short vnum = short.Parse(currentPacket[2]);
+                    if (DAOFactory.NpcMonsterDAO.LoadByVNum(vnum) != null)
+                    {
+                        NpcMonsterDTO npcMonster = new NpcMonsterDTO()
+                        {
+                            NpcMonsterVNum = vnum,
+                            AttackClass = byte.Parse(currentPacket[5]),
+                            AttackUpgrade = byte.Parse(currentPacket[7]),
+                            DamageMinimum = short.Parse(currentPacket[8]),
+                            DamageMaximum = short.Parse(currentPacket[9]),
+                            Concentrate = short.Parse(currentPacket[10]),
+                            CriticalChance = byte.Parse(currentPacket[11]),
+                            CriticalRate = short.Parse(currentPacket[12]),
+                            DefenceUpgrade = byte.Parse(currentPacket[13]),
+                            CloseDefence = short.Parse(currentPacket[14]),
+                            DefenceDodge = short.Parse(currentPacket[15]),
+                            DistanceDefence = short.Parse(currentPacket[16]),
+                            DistanceDefenceDodge = short.Parse(currentPacket[17]),
+                            MagicDefence = short.Parse(currentPacket[18]),
+                            FireResistance = sbyte.Parse(currentPacket[19]),
+                            WaterResistance = sbyte.Parse(currentPacket[20]),
+                            LightResistance = sbyte.Parse(currentPacket[21]),
+                            DarkResistance = sbyte.Parse(currentPacket[22]),
+
+                            // BCard Buff parse :D
+                        };
+                        DAOFactory.NpcMonsterDAO.InsertOrUpdate(ref npcMonster);
+                    }
+                    continue;
+                }
+            }
         }
 
         public void ImportNpcMonsters()
@@ -753,7 +792,7 @@ namespace OpenNos.Import.Console
                             npc.DamageMinimum = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 4) + 32 + Convert.ToInt16(currentLine[4]) + Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
                             npc.DamageMaximum = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 6) + 40 + Convert.ToInt16(currentLine[5]) - Math.Round(Convert.ToDecimal((npc.Level - 1) / 5)));
                             npc.Concentrate = Convert.ToInt16(((Convert.ToInt16(currentLine[2]) - 1) * 5) + 27 + Convert.ToInt16(currentLine[6]));
-                            npc.CriticalLuckRate = Convert.ToByte(4 + Convert.ToInt16(currentLine[7]));
+                            npc.CriticalChance = Convert.ToByte(4 + Convert.ToInt16(currentLine[7]));
                             npc.CriticalRate = Convert.ToInt16(70 + Convert.ToInt16(currentLine[8]));
                         }
                         else if (currentLine[3] == "2")
@@ -854,7 +893,7 @@ namespace OpenNos.Import.Console
                     {
                         // TODO: add missing general drop if found
                         // TODO: add map dependant drops eg. angel wings.
-                        if (DAOFactory.NpcMonsterDAO.LoadByVnum(npc.NpcMonsterVNum) == null)
+                        if (DAOFactory.NpcMonsterDAO.LoadByVNum(npc.NpcMonsterVNum) == null)
                         {
                             npcs.Add(npc);
                             counter++;
@@ -2059,7 +2098,7 @@ namespace OpenNos.Import.Console
 
                         // item.DesignId = Convert.ToInt16(currentLine[6]);
                         switch (item.VNum)
-                        {                          
+                        {
                             case 1906:
                                 item.Morph = 2368;
                                 item.Speed = 20;
@@ -2358,7 +2397,7 @@ namespace OpenNos.Import.Console
                                 item.Morph = 2942;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
-                                break;            
+                                break;
 
                             default:
                                 if (item.EquipmentSlot.Equals(EquipmentType.Amulet))

@@ -2,6 +2,7 @@
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL.Mock
 {
@@ -14,7 +15,12 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public NpcMonsterDTO LoadByVnum(short MapId)
+        public SaveResult InsertOrUpdate(ref NpcMonsterDTO npcMonster)
+        {
+            throw new NotImplementedException();
+        }
+
+        public NpcMonsterDTO LoadByVNum(short MapId)
         {
             throw new NotImplementedException();
         }

@@ -38,7 +38,7 @@ namespace OpenNos.Data
 
         public short Concentrate { get; set; }
 
-        public byte CriticalLuckRate { get; set; }
+        public byte CriticalChance { get; set; }
 
         public short CriticalRate { get; set; }
 

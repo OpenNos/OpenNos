@@ -277,11 +277,20 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse NpcMonsterData?.
+        /// </summary>
+        internal static string PARSE_NPCMONSTERDATA {
+            get {
+                return ResourceManager.GetString("PARSE_NPCMONSTERDATA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to parse Npcs?.
         /// </summary>
-        internal static string PARSE_NPCS {
+        internal static string PARSE_NPCMONSTERS {
             get {
-                return ResourceManager.GetString("PARSE_NPCS", resourceCulture);
+                return ResourceManager.GetString("PARSE_NPCMONSTERS", resourceCulture);
             }
         }
         
