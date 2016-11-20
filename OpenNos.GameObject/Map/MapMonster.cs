@@ -418,7 +418,10 @@ namespace OpenNos.GameObject
             int mainMinDmg = Monster.DamageMinimum;
             int mainMaxDmg = Monster.DamageMaximum;
             int mainHitRate = Monster.Concentrate; //probably missnamed, check later
-
+            if(mainHitRate == 0)
+            {
+                mainHitRate = 1;
+            }
             #endregion
 
             #region Get Player defense

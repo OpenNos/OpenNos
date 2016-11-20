@@ -186,7 +186,7 @@
   <data name="PARSE_MONSTERS" xml:space="preserve">
     <value>Voulez-vous analyser les monstres ?</value>
   </data>
-  <data name="PARSE_NPCS" xml:space="preserve">
+  <data name="PARSE_NPCMONSTERS" xml:space="preserve">
     <value>Voulez-vous analyser les pnj ?</value>
   </data>
   <data name="PARSE_PORTALS" xml:space="preserve">

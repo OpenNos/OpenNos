@@ -186,7 +186,7 @@
   <data name="PARSE_MONSTERS" xml:space="preserve">
     <value>Czy chcesz wprowadzić NpcMonster?</value>
   </data>
-  <data name="PARSE_NPCS" xml:space="preserve">
+  <data name="PARSE_NPCMONSTERS" xml:space="preserve">
     <value>Czy chcesz wprowadzić Npc?</value>
   </data>
   <data name="PARSE_PORTALS" xml:space="preserve">
@@ -233,5 +233,8 @@
   </data>
   <data name="PARSE_MAPTYPEMAPS" xml:space="preserve">
     <value>Czy chcesz wprowadzić MapTypeMaps?</value>
+  </data>
+  <data name="PARSE_NPCMONSTERDATA" xml:space="preserve">
+    <value>Czy chesz wprowadzić dane NpcMonster?</value>
   </data>
 </root>

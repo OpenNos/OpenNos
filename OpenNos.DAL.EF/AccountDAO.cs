@@ -214,8 +214,14 @@ namespace OpenNos.DAL.EF
         private AccountDTO Update(Account entity, AccountDTO account, OpenNosContext context)
         {
             if (entity != null)
-            {
-                _mapper.Map(account, entity);
+            { 
+                entity = _mapper.Map<Account>(account);
+
+                if (entity.LastCompliment == DateTime.MinValue)
+                {
+                    entity.LastCompliment = DateTime.Now;
+                }
+     
                 context.SaveChanges();
             }
             return _mapper.Map<AccountDTO>(entity);
