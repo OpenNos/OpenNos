@@ -869,11 +869,21 @@ namespace OpenNos.Handler
                 }
                 if (slHit >= 80)
                 {
-                    specialistInstance.CriticalLuckRate += 2;
+                    specialistInstance.CriticalLuckRate += 3;
                 }
                 if (slHit >= 90)
                 {
                     specialistInstance.CriticalRate += 20;
+                }
+                if (slHit >= 100)
+                {
+                    specialistInstance.CriticalLuckRate += 3;
+                    specialistInstance.CriticalRate += 20;
+                    specialistInstance.HP += 200;
+                    specialistInstance.MP += 200;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                    specialistInstance.HitRate += 20;
                 }
 
                 #endregion
@@ -981,6 +991,7 @@ namespace OpenNos.Handler
                     specialistInstance.WaterResistance += 4;
                     specialistInstance.LightResistance += 4;
                     specialistInstance.DarkResistance += 4;
+                    specialistInstance.ElementRate += 2;
                 }
                 if (slElement == 100)
                 {
@@ -988,138 +999,11 @@ namespace OpenNos.Handler
                     specialistInstance.WaterResistance += 6;
                     specialistInstance.LightResistance += 6;
                     specialistInstance.DarkResistance += 6;
+                    specialistInstance.MagicDefence += 5;
+                    specialistInstance.MP += 200;
+                    specialistInstance.ElementRate += 2;
                 }
-                if (slElement >= 5)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 10)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 15)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 20)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                    specialistInstance.CloseDefence += 10;
-                    specialistInstance.DistanceDefence += 10;
-                    specialistInstance.MagicDefence += 10;
-                }
-                if (slElement >= 25)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 30)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 35)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                }
-                if (slElement >= 40)
-                {
-                    specialistInstance.DamageMinimum += 5;
-                    specialistInstance.DamageMaximum += 5;
-                    specialistInstance.CloseDefence += 15;
-                    specialistInstance.DistanceDefence += 15;
-                    specialistInstance.MagicDefence += 15;
-                }
-                if (slElement >= 45)
-                {
-                    specialistInstance.DamageMinimum += 10;
-                    specialistInstance.DamageMaximum += 10;
-                }
-                if (slElement >= 50)
-                {
-                    specialistInstance.DamageMinimum += 10;
-                    specialistInstance.DamageMaximum += 10;
-                    specialistInstance.FireResistance += 2;
-                    specialistInstance.WaterResistance += 2;
-                    specialistInstance.LightResistance += 2;
-                    specialistInstance.DarkResistance += 2;
-                }
-                if (slElement >= 60)
-                {
-                    specialistInstance.DamageMinimum += 10;
-                    specialistInstance.DamageMaximum += 10;
-                }
-                if (slElement >= 65)
-                {
-                    specialistInstance.DamageMinimum += 10;
-                    specialistInstance.DamageMaximum += 10;
-                }
-                if (slElement >= 70)
-                {
-                    specialistInstance.DamageMinimum += 10;
-                    specialistInstance.DamageMaximum += 10;
-                    specialistInstance.CloseDefence += 45;
-                    specialistInstance.DistanceDefence += 45;
-                    specialistInstance.MagicDefence += 45;
-                }
-                if (slElement >= 75)
-                {
-                    specialistInstance.DamageMinimum += 15;
-                    specialistInstance.DamageMaximum += 15;
-                }
-                if (slElement >= 80)
-                {
-                    specialistInstance.DamageMinimum += 15;
-                    specialistInstance.DamageMaximum += 15;
-                }
-                if (slElement >= 85)
-                {
-                    specialistInstance.DamageMinimum += 15;
-                    specialistInstance.DamageMaximum += 15;
-                    specialistInstance.CriticalDodge += 1;
-                }
-                if (slElement >= 86)
-                {
-                    specialistInstance.CriticalDodge += 1;
-                }
-                if (slElement >= 87)
-                {
-                    specialistInstance.CriticalDodge += 1;
-                }
-                if (slElement >= 88)
-                {
-                    specialistInstance.CriticalDodge += 1;
-                }
-                if (slElement >= 90)
-                {
-                    specialistInstance.DamageMinimum += 15;
-                    specialistInstance.DamageMaximum += 15;
-                    specialistInstance.DefenceDodge += (short)((slElement - 90) * 2);
-                    specialistInstance.DistanceDefenceDodge += (short)((slElement - 90) * 2);
-                }
-                if (slElement >= 95)
-                {
-                    specialistInstance.DamageMinimum += 15;
-                    specialistInstance.DamageMaximum += 15;
-                }
-                if (slElement >= 100)
-                {
-                    specialistInstance.DamageMinimum += 20;
-                    specialistInstance.DamageMaximum += 20;
-                    specialistInstance.FireResistance += 3;
-                    specialistInstance.WaterResistance += 3;
-                    specialistInstance.LightResistance += 3;
-                    specialistInstance.DarkResistance += 3;
-                    specialistInstance.CloseDefence += 30;
-                    specialistInstance.DistanceDefence += 30;
-                    specialistInstance.MagicDefence += 30;
-                    specialistInstance.CriticalDodge += 3;
-                }
+               
 
                 #endregion
 
