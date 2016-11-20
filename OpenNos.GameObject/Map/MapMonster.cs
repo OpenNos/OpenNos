@@ -191,7 +191,7 @@ namespace OpenNos.GameObject
                     }
                     else if (time > _movetime)
                     {
-                        _movetime = _random.Next(400, 3200);
+                        _movetime = _random.Next(600, 3000);
                         byte point = (byte)_random.Next(2, 4);
                         byte fpoint = (byte)_random.Next(0, 2);
 
