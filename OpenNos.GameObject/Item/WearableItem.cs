@@ -32,38 +32,38 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance itemToWear, bool DelayUsed = false, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
         {
             switch (Effect)
             {
                 default:
-                    short slot = itemToWear.Slot;
-                    InventoryType itemToWearType = itemToWear.Type;
+                    short slot = inv.Slot;
+                    InventoryType itemToWearType = inv.Type;
 
-                    if (itemToWear == null)
+                    if (inv == null)
                     {
                         return;
                     }
-                    if (ItemValidTime > 0 && itemToWear.IsBound)
+                    if (ItemValidTime > 0 && inv.IsBound)
                     {
-                        itemToWear.ItemDeleteTime = DateTime.Now.AddSeconds(ItemValidTime);
+                        inv.ItemDeleteTime = DateTime.Now.AddSeconds(ItemValidTime);
                     }
-                    if (!itemToWear.IsBound)
+                    if (!inv.IsBound)
                     {
-                        if (!DelayUsed && ((EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80)) || (EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit || EquipmentSlot == EquipmentType.WeaponSkin)))
+                        if (!delay && ((EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80)) || (EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit || EquipmentSlot == EquipmentType.WeaponSkin)))
                         {
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)itemToWearType}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                             return;
                         }
-                        else if (DelayUsed)
+                        else if (delay)
                         {
-                            itemToWear.BoundCharacterId = session.Character.CharacterId;
+                            inv.BoundCharacterId = session.Character.CharacterId;
                         }
                     }
 
                     double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds - session.Character.LastSp;
 
-                    if (EquipmentSlot == EquipmentType.Sp && itemToWear.Rare == -2)
+                    if (EquipmentSlot == EquipmentType.Sp && inv.Rare == -2)
                     {
                         session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_EQUIP_DESTROYED_SP"), 0));
                         return;
@@ -113,13 +113,13 @@ namespace OpenNos.GameObject
                     if (EquipmentSlot == EquipmentType.Amulet)
                     {
                         session.SendPacket(session.Character.GenerateEff(39));
-                        itemToWear.BoundCharacterId = session.Character.CharacterId;
+                        inv.BoundCharacterId = session.Character.CharacterId;
                     }
 
                     if (currentlyEquippedItem == null)
                     {
                         // move from equipment to wear
-                        session.Character.Inventory.MoveInInventory(itemToWear.Slot, itemToWearType, InventoryType.Wear);
+                        session.Character.Inventory.MoveInInventory(inv.Slot, itemToWearType, InventoryType.Wear);
                         session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, itemToWearType, slot, 0, 0, 0, 0));
                         session.SendPacket(session.Character.GenerateStatChar());
                         session.CurrentMap?.Broadcast(session.Character.GenerateEq());
@@ -129,7 +129,7 @@ namespace OpenNos.GameObject
                     else
                     {
                         // move from wear to equipment and back
-                        session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, InventoryType.Wear, itemToWearType, itemToWear.Slot);
+                        session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, InventoryType.Wear, itemToWearType, inv.Slot);
 
                         session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, itemToWearType, slot, 0, 0, 0, 0));
                         session.SendPacket(session.Character.GenerateInventoryAdd(currentlyEquippedItem.ItemVNum, currentlyEquippedItem.Amount,

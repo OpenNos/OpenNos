@@ -32,114 +32,95 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession Session, ref ItemInstance inventory, bool DelayUsed = false, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
         {
             switch (Effect)
             {
                 // wings
                 case 650:
-                    SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-                    if (Session.Character.UseSp && specialistInstance != null)
+                    SpecialistInstance specialistInstance = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                    if (session.Character.UseSp && specialistInstance != null)
                     {
-                        if (!DelayUsed)
+                        if (!delay)
                         {
-                            Session.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
+                            session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
                         }
                         else
                         {
                             specialistInstance.Design = (byte)EffectValue;
-                            Session.Character.MorphUpgrade2 = EffectValue;
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-                            Session.SendPacket(Session.Character.GenerateStat());
-                            Session.SendPacket(Session.Character.GenerateStatChar());
-
-                            inventory.Amount--;
-                            if (inventory.Amount > 0)
-                            {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inventory.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
-                            }
-                            else
-                            {
-                                Session.Character.Inventory.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
-                            }
+                            session.Character.MorphUpgrade2 = EffectValue;
+                            session.CurrentMap?.Broadcast(session.Character.GenerateCMode());
+                            session.SendPacket(session.Character.GenerateStat());
+                            session.SendPacket(session.Character.GenerateStatChar());
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         }
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                     }
                     break;
 
                 // presentation messages
                 case 203:
-                    if (this != null && !Session.Character.IsVehicled)
+                    if (this != null && !session.Character.IsVehicled)
                     {
-                        if (!DelayUsed)
+                        if (!delay)
                         {
-                            Session.SendPacket(Session.Character.GenerateGuri(10, 2, 1));
+                            session.SendPacket(session.Character.GenerateGuri(10, 2, 1));
                         }
                     }
                     break;
 
                 // magic lamps
                 case 651:
-                    if (!Session.Character.Inventory.GetAllItems().Where(i => i.Type == InventoryType.Wear).Any())
+                    if (!session.Character.Inventory.GetAllItems().Where(i => i.Type == InventoryType.Wear).Any())
                     {
-                        if (!DelayUsed)
+                        if (!delay)
                         {
-                            Session.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
+                            session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
                         }
                         else
                         {
-                            Session.Character.ChangeSex();
-                            inventory.Amount--;
-                            if (inventory.Amount > 0)
-                            {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inventory.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
-                            }
-                            else
-                            {
-                                Session.Character.Inventory.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
-                            }
+                            session.Character.ChangeSex();
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         }
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
                     }
                     break;
 
                 // vehicles
                 case 1000:
 
-                    if (!DelayUsed && !Session.Character.IsVehicled)
+                    if (!delay && !session.Character.IsVehicled)
                     {
-                        if (Session.Character.IsSitting)
+                        if (session.Character.IsSitting)
                         {
-                            Session.Character.IsSitting = false;
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
+                            session.Character.IsSitting = false;
+                            session.CurrentMap?.Broadcast(session.Character.GenerateRest());
                         }
-                        Session.SendPacket(Session.Character.GenerateDelay(3000, 3, $"#u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^2"));
+                        session.SendPacket(session.Character.GenerateDelay(3000, 3, $"#u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2"));
                     }
                     else
                     {
-                        if (!Session.Character.IsVehicled)
+                        if (!session.Character.IsVehicled)
                         {
-                            Session.Character.Speed = Speed;
-                            Session.Character.IsVehicled = true;
-                            Session.Character.VehicleSpeed = Speed;
-                            Session.Character.MorphUpgrade = 0;
-                            Session.Character.MorphUpgrade2 = 0;
-                            Session.Character.Morph = Morph + (byte)Session.Character.Gender;                      
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196), Session.Character.MapX, Session.Character.MapY);
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-                            Session.SendPacket(Session.Character.GenerateCond());
+                            session.Character.Speed = Speed;
+                            session.Character.IsVehicled = true;
+                            session.Character.VehicleSpeed = Speed;
+                            session.Character.MorphUpgrade = 0;
+                            session.Character.MorphUpgrade2 = 0;
+                            session.Character.Morph = Morph + (byte)session.Character.Gender;                      
+                            session.CurrentMap?.Broadcast(session.Character.GenerateEff(196), session.Character.MapX, session.Character.MapY);
+                            session.CurrentMap?.Broadcast(session.Character.GenerateCMode());
+                            session.SendPacket(session.Character.GenerateCond());
                         }
                         else
                         {
-                            Session.Character.RemoveVehicle();
+                            session.Character.RemoveVehicle();
                         }
                     }
                     break;

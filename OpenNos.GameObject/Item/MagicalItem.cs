@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession Session, ref ItemInstance Inv, bool DelayUsed = false, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
         {
             Random random = new Random();
             switch (Effect)
@@ -40,170 +40,112 @@ namespace OpenNos.GameObject
                 case 0:
                     if (this != null && this.ItemType == Domain.ItemType.Event)
                     {
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(EffectValue));
+                        session.CurrentMap?.Broadcast(session.Character.GenerateEff(EffectValue));
                         if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))
                         {
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(19, 1, MappingHelper.GuriItemEffects[EffectValue]), Session.Character.MapX, Session.Character.MapY);
+                            session.CurrentMap?.Broadcast(session.Character.GenerateGuri(19, 1, MappingHelper.GuriItemEffects[EffectValue]), session.Character.MapX, session.Character.MapY);
                         }
-
-                        Inv.Amount--;
-                        if (Inv.Amount > 0)
-                        {
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
-                        else
-                        {
-                            Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     break;
 
-                // dyes
+                // dyes or waxes
                 case 10:
-                    if (this != null && !Session.Character.IsVehicled)
-                    {
-                        if (EffectValue == 99)
-                        {
-                            byte nextValue = (byte)random.Next(0, 127);
-                            Session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), (byte)nextValue) ? (HairColorType)nextValue : 0;
-                        }
-                        else
-                        {
-                            Session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), (byte)EffectValue) ? (HairColorType)EffectValue : 0;
-                        }
-                        Session.SendPacket(Session.Character.GenerateEq());
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
-                        Inv.Amount--;
-                        if (Inv.Amount > 0)
-                        {
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
-                        else
-                        {
-                            Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
-                    }
-                    break;
-
-                // waxes
                 case 11:
-                    if (this != null && !Session.Character.IsVehicled)
+                    if (this != null && !session.Character.IsVehicled)
                     {
-                        if (Session.Character.Class == (byte)ClassType.Adventurer && EffectValue > 1)
+                        if (Effect == 10)
                         {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
-                        }
-                        else
-                        {
-                            // TODO better handling of waxes combined with hairstyle
-                            Session.Character.HairStyle = Enum.IsDefined(typeof(HairStyleType), (byte)EffectValue) ? (HairStyleType)EffectValue : 0;
-                            Session.SendPacket(Session.Character.GenerateEq());
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
-                            Inv.Amount--;
-                            if (Inv.Amount > 0)
+                            if (EffectValue == 99)
                             {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                byte nextValue = (byte)random.Next(0, 127);
+                                session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), (byte)nextValue) ? (HairColorType)nextValue : 0;
                             }
                             else
                             {
-                                Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), (byte)EffectValue) ? (HairColorType)EffectValue : 0;
                             }
                         }
+                        else
+                        {
+                            if (session.Character.Class == (byte)ClassType.Adventurer && EffectValue > 1)
+                            {
+                                session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
+                                return;
+                            }
+                            else
+                            {
+                                session.Character.HairStyle = Enum.IsDefined(typeof(HairStyleType), (byte)EffectValue) ? (HairStyleType)EffectValue : 0;
+                            }
+                        }
+                        session.SendPacket(session.Character.GenerateEq());
+                        session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.All);
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     break;
 
                 // dignity restoration
                 case 14:
-                    if ((EffectValue == 100 || EffectValue == 200) && Session.Character.Dignity < 100 && !Session.Character.IsVehicled)
+                    if ((EffectValue == 100 || EffectValue == 200) && session.Character.Dignity < 100 && !session.Character.IsVehicled)
                     {
-                        Session.Character.Dignity += EffectValue;
-                        if (Session.Character.Dignity > 100)
+                        session.Character.Dignity += EffectValue;
+                        if (session.Character.Dignity > 100)
                         {
-                            Session.Character.Dignity = 100;
+                            session.Character.Dignity = 100;
                         }
-                        Session.SendPacket(Session.Character.GenerateFd());
-                        Session.SendPacket(Session.Character.GenerateEff(48));
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                        Inv.Amount--;
-                        if (Inv.Amount > 0)
-                        {
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
-                        else
-                        {
-                            Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
+                        session.SendPacket(session.Character.GenerateFd());
+                        session.SendPacket(session.Character.GenerateEff(48));
+                        session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
-                    else if (EffectValue == 2000 && Session.Character.Dignity < 100 && !Session.Character.IsVehicled)
+                    else if (EffectValue == 2000 && session.Character.Dignity < 100 && !session.Character.IsVehicled)
                     {
-                        Session.Character.Dignity = 100;
-                        Session.SendPacket(Session.Character.GenerateFd());
-                        Session.SendPacket(Session.Character.GenerateEff(48));
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                        Inv.Amount--;
-                        if (Inv.Amount > 0)
-                        {
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
-                        else
-                        {
-                            Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                        }
+                        session.Character.Dignity = 100;
+                        session.SendPacket(session.Character.GenerateFd());
+                        session.SendPacket(session.Character.GenerateEff(48));
+                        session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     break;
 
                 // speakers
                 case 15:
-                    if (this != null && !Session.Character.IsVehicled)
+                    if (this != null && !session.Character.IsVehicled)
                     {
-                        if (!DelayUsed)
+                        if (!delay)
                         {
-                            Session.SendPacket(Session.Character.GenerateGuri(10, 3, 1));
+                            session.SendPacket(session.Character.GenerateGuri(10, 3, 1));
                         }
                     }
                     break;
 
                 // bubbles
                 case 16:
-                    if (this != null && !Session.Character.IsVehicled)
+                    if (this != null && !session.Character.IsVehicled)
                     {
-                        if (!DelayUsed)
+                        if (!delay)
                         {
-                            Session.SendPacket(Session.Character.GenerateGuri(10, 4, 1));
+                            session.SendPacket(session.Character.GenerateGuri(10, 4, 1));
                         }
                     }
                     break;
 
                 // wigs
                 case 30:
-                    if (this != null && !Session.Character.IsVehicled)
+                    if (this != null && !session.Character.IsVehicled)
                     {
-                        WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
+                        WearableInstance wig = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                         if (wig != null)
                         {
                             wig.Design = (byte)random.Next(0, 15);
-                            Session.SendPacket(Session.Character.GenerateEq());
-                            Session.SendPacket(Session.Character.GenerateEquipment());
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
-                            Inv.Amount--;
-                            if (Inv.Amount > 0)
-                            {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemVNum, Inv.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                            }
-                            else
-                            {
-                                Session.Character.Inventory.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                            }
+                            session.SendPacket(session.Character.GenerateEq());
+                            session.SendPacket(session.Character.GenerateEquipment());
+                            session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.All);
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         }
                         else
                         {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"), 0));
+                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"), 0));
                             return;
                         }
                     }

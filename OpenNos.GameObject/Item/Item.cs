@@ -105,7 +105,7 @@ namespace OpenNos.GameObject
             this.WaterResistance = item.WaterResistance;
         }
 
-        public abstract void Use(ClientSession Session, ref ItemInstance Inv, bool DelayUsed = false, string[] packetsplit = null);
+        public abstract void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null);
 
         #endregion
     }

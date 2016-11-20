@@ -353,22 +353,10 @@ namespace OpenNos.Handler
             if (shopitem.ItemInstance.Type != InventoryType.Equipment)
             {
                 // remove sold amount of items
-                ItemInstance inv = shopOwnerSession.Character.Inventory.RemoveItemAmountFromInventory(amount, id);
+                shopOwnerSession.Character.Inventory.RemoveItemAmountFromInventory(amount, id);
 
                 // remove sold amount from sellamount
                 shopitem.SellAmount -= amount;
-
-                // Send reduced-amount to owners inventory
-                if (inv == null)
-                {
-                    // Send empty slot to owners inventory
-                    shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, shopitem.ItemInstance.Type, shopitem.ItemInstance.Slot, 0, 0, 0, 0));
-                }
-                else
-                {
-                    // remove items from inventory
-                    shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
-                }
             }
             else
             {
@@ -698,17 +686,7 @@ namespace OpenNos.Handler
                 Session.Character.Gold += price * amount;
                 Session.SendPacket(Session.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), inv.Item.Name, amount)));
 
-                inv = Session.Character.Inventory.RemoveItemAmountFromInventory(amount, inv.Id);
-                if (inv != null)
-                {
-                    // Send reduced-amount to owners inventory
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
-                }
-                else
-                {
-                    // Send empty slot to owners inventory
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
-                }
+                Session.Character.Inventory.RemoveItemAmountFromInventory(amount, inv.Id);
                 Session.SendPacket(Session.Character.GenerateGold());
             }
             else if (packetsplit.Length == 5)

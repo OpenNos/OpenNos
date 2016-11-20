@@ -1336,18 +1336,7 @@ namespace OpenNos.Handler
                 ItemInstance invtemp = sourceSession.Character.Inventory.GetItemInstanceById(item.Id);
                 short slot = invtemp.Slot;
                 InventoryType type = invtemp.Type;
-
-                ItemInstance inv = sourceSession.Character.Inventory.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
-                if (inv != null)
-                {
-                    // Send reduced-amount to owners inventory
-                    sourceSession.SendPacket(sourceSession.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
-                }
-                else
-                {
-                    // Send empty slot to owners inventory
-                    sourceSession.SendPacket(sourceSession.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
-                }
+                sourceSession.Character.Inventory.RemoveItemAmountFromInventory(item.Amount, invtemp.Id);
             }
 
             // add all items to target session
