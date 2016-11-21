@@ -624,35 +624,32 @@ namespace OpenNos.Import.Console
                 if (currentPacket.Length > 25)
                 {
                     short vnum = short.Parse(currentPacket[2]);
-                    if (DAOFactory.NpcMonsterDAO.LoadByVNum(vnum) != null)
+                    NpcMonsterDTO npcMonster = DAOFactory.NpcMonsterDAO.LoadByVNum(vnum);
+                    if (npcMonster != null)
                     {
-                        NpcMonsterDTO npcMonster = new NpcMonsterDTO()
-                        {
-                            NpcMonsterVNum = vnum,
-                            AttackClass = byte.Parse(currentPacket[5]),
-                            AttackUpgrade = byte.Parse(currentPacket[7]),
-                            DamageMinimum = short.Parse(currentPacket[8]),
-                            DamageMaximum = short.Parse(currentPacket[9]),
-                            Concentrate = short.Parse(currentPacket[10]),
-                            CriticalChance = byte.Parse(currentPacket[11]),
-                            CriticalRate = short.Parse(currentPacket[12]),
-                            DefenceUpgrade = byte.Parse(currentPacket[13]),
-                            CloseDefence = short.Parse(currentPacket[14]),
-                            DefenceDodge = short.Parse(currentPacket[15]),
-                            DistanceDefence = short.Parse(currentPacket[16]),
-                            DistanceDefenceDodge = short.Parse(currentPacket[17]),
-                            MagicDefence = short.Parse(currentPacket[18]),
-                            FireResistance = sbyte.Parse(currentPacket[19]),
-                            WaterResistance = sbyte.Parse(currentPacket[20]),
-                            LightResistance = sbyte.Parse(currentPacket[21]),
-                            DarkResistance = sbyte.Parse(currentPacket[22]),
+                        npcMonster.AttackClass = byte.Parse(currentPacket[5]);
+                        npcMonster.AttackUpgrade = byte.Parse(currentPacket[7]);
+                        npcMonster.DamageMinimum = short.Parse(currentPacket[8]);
+                        npcMonster.DamageMaximum = short.Parse(currentPacket[9]);
+                        npcMonster.Concentrate = short.Parse(currentPacket[10]);
+                        npcMonster.CriticalChance = byte.Parse(currentPacket[11]);
+                        npcMonster.CriticalRate = short.Parse(currentPacket[12]);
+                        npcMonster.DefenceUpgrade = byte.Parse(currentPacket[13]);
+                        npcMonster.CloseDefence = short.Parse(currentPacket[14]);
+                        npcMonster.DefenceDodge = short.Parse(currentPacket[15]);
+                        npcMonster.DistanceDefence = short.Parse(currentPacket[16]);
+                        npcMonster.DistanceDefenceDodge = short.Parse(currentPacket[17]);
+                        npcMonster.MagicDefence = short.Parse(currentPacket[18]);
+                        npcMonster.FireResistance = sbyte.Parse(currentPacket[19]);
+                        npcMonster.WaterResistance = sbyte.Parse(currentPacket[20]);
+                        npcMonster.LightResistance = sbyte.Parse(currentPacket[21]);
+                        npcMonster.DarkResistance = sbyte.Parse(currentPacket[22]);
 
-                            // BCard Buff parse :D
-                        };
-                        DAOFactory.NpcMonsterDAO.InsertOrUpdate(ref npcMonster);
+                        // TODO: BCard Buff parsing
                     }
-                    continue;
+                    DAOFactory.NpcMonsterDAO.InsertOrUpdate(ref npcMonster);
                 }
+                continue;
             }
         }
 
