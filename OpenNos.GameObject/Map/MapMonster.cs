@@ -541,6 +541,33 @@ namespace OpenNos.GameObject
 
             #endregion
 
+            #region Minimum damage
+            if(Monster.Level < 45)
+            {
+                //no minimum damage
+            }
+            else if (Monster.Level < 55)
+            {
+                totalDamage += Monster.Level;
+            }
+            else if (Monster.Level < 60)
+            {
+                totalDamage += Monster.Level * 2;
+            }
+            else if (Monster.Level < 65)
+            {
+                totalDamage += Monster.Level * 3;
+            }
+            else if (Monster.Level < 70)
+            {
+                totalDamage += Monster.Level * 4;
+            }
+            else
+            {
+                totalDamage += Monster.Level * 5;
+            }
+            #endregion
+
             return totalDamage;
         }
 

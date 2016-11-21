@@ -616,6 +616,7 @@ namespace OpenNos.Handler
 
             int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
             baseDamage += (skill.Damage / 4);
+            baseDamage += Session.Character.Level; //Morale
             if (Session.Character.Class == ClassType.Adventurer)
             {
                 //HACK: Damage is ~10 lower in OpenNos than in official. Fix this...
