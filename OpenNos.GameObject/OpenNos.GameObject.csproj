@@ -76,6 +76,7 @@
     <Compile Include="Map\MapMonster.cs" />
     <Compile Include="Map\MonsterMapItem.cs" />
     <Compile Include="Networking\BroadcastableBase.cs" />
+    <Compile Include="Networking\HitRequest.cs" />
     <Compile Include="Networking\SessionManager.cs" />
     <Compile Include="Networking\TransportFactory.cs" />
     <Compile Include="NpcMonsterSkill.cs" />
