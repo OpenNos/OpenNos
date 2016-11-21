@@ -590,23 +590,25 @@ namespace OpenNos.Handler
             #region Detailed Calculation
 
             #region Dodge
-
-            double multiplier = monsterDodge / mainHitRate;
-            if (multiplier > 5)
+            if (Session.Character.Class != ClassType.Magician)
             {
-                multiplier = 5;
-            }
-            double chance = -0.25 * Math.Pow(multiplier, 3) - 0.57 * Math.Pow(multiplier, 2) + 25.3 * multiplier - 1.41;
-            if (chance <= 1)
-            {
-                chance = 1;
-            }
-            if ((skill.Type == 0 || skill.Type == 1) && !Session.Character.HasGodMode)
-            {
-                if (random.Next(0, 100) <= chance)
+                double multiplier = monsterDodge / (mainHitRate + 1);
+                if (multiplier > 5)
                 {
-                    hitmode = 1;
-                    return 0;
+                    multiplier = 5;
+                }
+                double chance = -0.25 * Math.Pow(multiplier, 3) - 0.57 * Math.Pow(multiplier, 2) + 25.3 * multiplier - 1.41;
+                if (chance <= 1)
+                {
+                    chance = 1;
+                }
+                if ((skill.Type == 0 || skill.Type == 1) && !Session.Character.HasGodMode)
+                {
+                    if (random.Next(0, 100) <= chance)
+                    {
+                        hitmode = 1;
+                        return 0;
+                    }
                 }
             }
 
