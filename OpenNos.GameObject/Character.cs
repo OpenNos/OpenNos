@@ -1472,7 +1472,7 @@ namespace OpenNos.GameObject
                     {
                         p = 50 + (point - 50) * 2;
                     }
-                    ElementRateSP += p;
+                    ElementRateSP += p;                    
                 }
             }
 
@@ -1529,12 +1529,16 @@ namespace OpenNos.GameObject
                     FireResistance += specialist.SpFire;
                     LightResistance += specialist.SpLight;
                     WaterResistance += specialist.SpWater;
-                    DarkResistance += specialist.SpWater;
+                    DarkResistance += specialist.SpDark;
+
                     Defence += specialist.SpDefence * 10;
                     DistanceDefence += specialist.SpDefence * 10;
+                    MagicalDefence += specialist.SpDefence * 10;
 
                     MinHit += specialist.SpDamage * 10;
                     MaxHit += specialist.SpDamage * 10;
+
+                    ElementRateSP += specialist.SpElement;
                 }
             }
 
