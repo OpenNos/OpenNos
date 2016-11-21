@@ -100,7 +100,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _highPriorityBuffer = new ConcurrentQueue<byte[]>();
             _lowPriorityBuffer = new ConcurrentQueue<byte[]>();
             CancellationToken cancellationToken = _sendCancellationToken.Token;
-            _sendTask = StartSending(SendInterval, new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 10), cancellationToken);
+            _sendTask = StartSending(SendInterval, new TimeSpan(0, 0, 0, 0, isLagMode ? 1000 : 20), cancellationToken);
         }
 
         #endregion
