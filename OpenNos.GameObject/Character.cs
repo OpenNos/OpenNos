@@ -53,6 +53,7 @@ namespace OpenNos.GameObject
 
         public Character()
         {
+            GroupSentRequestCharacterIds = new List<long>();
         }
 
         #endregion
@@ -233,6 +234,8 @@ namespace OpenNos.GameObject
         public DateTime LastMove { get; set; }
 
         public short LastNRunId { get; set; }
+
+        public List<long> GroupSentRequestCharacterIds { get; set; }
 
         public double LastPortal
         {
@@ -610,6 +613,7 @@ namespace OpenNos.GameObject
         {
             CloseShop();
             CloseExchangeOrTrade();
+            GroupSentRequestCharacterIds.Clear();
         }
 
         public string GenerateAt()

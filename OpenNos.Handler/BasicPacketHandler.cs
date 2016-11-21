@@ -330,6 +330,7 @@ namespace OpenNos.Handler
                 if (pjoinPacket.CharacterId == 0)
                 {
                     return;
+
                 }
 
                 if (ServerManager.Instance.IsCharactersGroupFull(pjoinPacket.CharacterId))
@@ -356,8 +357,11 @@ namespace OpenNos.Handler
                         }
                         else
                         {
+                            // save sent group request to current character
+                            Session.Character.GroupSentRequestCharacterIds.Add(targetSession.Character.CharacterId);
+
                             Session.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), targetSession.Character.Name)));
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, targetSession.Character.Name);
+                            targetSession.SendPacket(Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"));
                         }
                     }
                 }
@@ -382,10 +386,14 @@ namespace OpenNos.Handler
 
                 ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(pjoinPacket.CharacterId);
 
-                if (targetSession == null)
+                if (targetSession == null || !targetSession.Character.GroupSentRequestCharacterIds.Contains(Session.Character.CharacterId))
                 {
-                    // target session with character id does not exist
+                    // target session with character id does not exist or invalid request packet
                     return;
+                }
+                else
+                {
+                    targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
                 }
 
                 // accepted, join the group
