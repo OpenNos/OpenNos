@@ -37,6 +37,7 @@ namespace OpenNos.GameObject
 
         public MapMonster()
         {
+            HitQueue = new ConcurrentQueue<HitRequest>();
         }
 
         #endregion
@@ -542,7 +543,8 @@ namespace OpenNos.GameObject
             #endregion
 
             #region Minimum damage
-            if(Monster.Level < 45)
+
+            if (Monster.Level < 45)
             {
                 //no minimum damage
             }
@@ -566,6 +568,7 @@ namespace OpenNos.GameObject
             {
                 totalDamage += Monster.Level * 5;
             }
+
             #endregion
 
             return totalDamage;
@@ -574,8 +577,69 @@ namespace OpenNos.GameObject
         /// <summary>
         /// Handle any kind of Monster interaction
         /// </summary>
-        internal void MonsterLife()
+        internal async void MonsterLife()
         {
+            // handle hit queue
+            HitRequest hitRequest = null;
+            while (HitQueue.TryDequeue(out hitRequest))
+            {
+                if (IsAlive)
+                {
+                    int hitmode = 0;
+
+                    // calculate damage
+                    int damage = hitRequest.Session.Character.GenerateDamage(this, hitRequest.Skill, ref hitmode);
+
+                    switch (hitRequest.TargetHitType)
+                    {
+                        case Domain.TargetHitType.SingleTargetHit:
+                            {
+                                // Target Hit
+                                Map?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {(hitRequest.Skill.Effect)} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                                break;
+                            }
+                        case Domain.TargetHitType.SingleTargetHitCombo:
+                            {
+                                // Taget Hit Combo
+                                Map?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.SkillCombo.Animation} {hitRequest.SkillCombo.Effect} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                                break;
+                            }
+                        case Domain.TargetHitType.SingleAOETargetHit:
+                            {
+                                // Target Hit Single AOE
+                                Map?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {(hitRequest.Skill.Effect)} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {damage} 5 {hitRequest.Skill.SkillType - 1}");
+                                break;
+                            }
+                        case Domain.TargetHitType.AOETargetHit:
+                            {
+                                // Target Hit AOE
+                                Map?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {(hitRequest.Skill.Effect)} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {damage} 5 {hitRequest.Skill.SkillType - 1}");
+                                break;
+                            }
+                        case Domain.TargetHitType.ZoneHit:
+                            {
+                                // Zone HIT
+                                Map?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.Skill.Effect} {hitRequest.MapX} {hitRequest.MapY} {(IsAlive ? 1 : 0)} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {damage} 5 {hitRequest.Skill.SkillType - 1}");
+                                break;
+                            }
+                        case Domain.TargetHitType.SpecialZoneHit:
+                            {
+                                // Special Zone hit
+                                Map?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.Skill.Effect} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {damage} 0 {hitRequest.Skill.SkillType - 1}");
+                                break;
+                            }
+                    }
+
+                    // generate the kill bonus
+                    hitRequest.Session.Character.GenerateKillBonus(this);
+                }
+                else
+                {
+                    // monster already has been killed, send cancel
+                    hitRequest.Session.SendPacket($"cancel 2 {MapMonsterId}");
+                }
+            }
+
             // Respawn
             if (!IsAlive && ShouldRespawn.Value)
             {
