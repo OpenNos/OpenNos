@@ -310,6 +310,7 @@ namespace OpenNos.GameObject
                                 if (characterInRange.HasGodMode)
                                 {
                                     damage = 0;
+                                    hitmode = 1;
                                 }
                                 bool AlreadyDead2 = characterInRange.Hp <= 0;
                                 characterInRange.GetDamage(damage);
