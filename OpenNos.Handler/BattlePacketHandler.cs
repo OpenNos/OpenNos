@@ -57,7 +57,7 @@ namespace OpenNos.Handler
 
 
         /// <summary>
-        /// MultiTargetListPacket
+        /// mtlist
         /// </summary>
         /// <param name="packet"></param>
         public void MultiTargetListHit(MultiTargetListPacket mutliTargetListPacket)
@@ -276,7 +276,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// UseSkillPacket
+        /// u_s
         /// </summary>
         /// <param name="useSkillPacket"></param>
         public void UseSkill(UseSkillPacket useSkillPacket)
@@ -345,7 +345,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// UseAOESkillPacket
+        /// u_as
         /// </summary>
         /// <param name="useAOESkillPacket"></param>
         public void UseZonesSkill(UseAOESkillPacket useAOESkillPacket)
