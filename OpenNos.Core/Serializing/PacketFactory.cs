@@ -162,7 +162,7 @@ namespace OpenNos.Core
                         {
                             // get the value to the end and stop deserialization
                             string valueToEnd = packetContent.Substring(matches[currentIndex].Index, packetContent.Length - matches[currentIndex].Index);
-                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, DeserializeValue(packetBasePropertyInfo.Value.PropertyType, valueToEnd, packetBasePropertyInfo.Key, matches));
+                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, DeserializeValue(packetBasePropertyInfo.Value.PropertyType, valueToEnd, packetBasePropertyInfo.Key, matches, includesKeepAliveIdentity));
                             break;
                         }
 
@@ -171,7 +171,7 @@ namespace OpenNos.Core
                         // set the value & convert currentValue
                         if (currentValue != null)
                         {
-                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, DeserializeValue(packetBasePropertyInfo.Value.PropertyType, currentValue, packetBasePropertyInfo.Key, matches));
+                            packetBasePropertyInfo.Value.SetValue(deserializedPacket, DeserializeValue(packetBasePropertyInfo.Value.PropertyType, currentValue, packetBasePropertyInfo.Key, matches, includesKeepAliveIdentity));
                         }
                         else
                         {
@@ -378,7 +378,7 @@ namespace OpenNos.Core
         /// 3.720.0.0.0 5.4912.6.0.0 9.227.0.0.0 10.803.0.0.0 to List<EquipSubPacket> </summary>
         /// <param name="currentValue">The value as String</param> <param
         /// name="packetBasePropertyType">Type of the Property to convert to</param> <returns></returns>
-        private static IList DeserializeSubpackets(string currentValue, Type packetBasePropertyType, bool shouldRemoveSeparator, MatchCollection packetMatchCollections, int? currentIndex)
+        private static IList DeserializeSubpackets(string currentValue, Type packetBasePropertyType, bool shouldRemoveSeparator, MatchCollection packetMatchCollections, int? currentIndex, bool includesKeepAliveIdentity)
         {
             // split into single values
             List<String> splittedSubpackets = currentValue.Split(' ').ToList();
@@ -404,11 +404,12 @@ namespace OpenNos.Core
                 int subPacketTypePropertiesCount = subpacketSerializationInfo.Value.Count();
 
                 // check if the amount of properties can be serialized properly
-                if (splittedSubpacketParts.Count() % subPacketTypePropertiesCount == 0) // amount of properties per subpacket does match the given value amount in % 
+                if ((splittedSubpacketParts.Count() + (includesKeepAliveIdentity ? 1 : 0)) 
+                     % subPacketTypePropertiesCount == 0) // amount of properties per subpacket does match the given value amount in % 
                 {
-                    for (int i = currentIndex.Value + 1; i < splittedSubpacketParts.Count(); i++)
+                    for (int i = (currentIndex.Value + 1 + (includesKeepAliveIdentity ? 1 : 0)); i < splittedSubpacketParts.Count(); i++)
                     {
-                        int j = 0;
+                        int j = 0; 
                         for(j = i; j < i + subPacketTypePropertiesCount;j++)
                         {
                             // add delimited value
@@ -439,7 +440,7 @@ namespace OpenNos.Core
             return subpackets;
         }
 
-        private static object DeserializeValue(Type packetPropertyType, string currentValue, PacketIndexAttribute packetIndexAttribute, MatchCollection packetMatches)
+        private static object DeserializeValue(Type packetPropertyType, string currentValue, PacketIndexAttribute packetIndexAttribute, MatchCollection packetMatches, bool includesKeepAliveIdentity = false)
         {
             // check for empty value and cast it to null
             if (currentValue == "-1" || currentValue == "-")
@@ -474,7 +475,7 @@ namespace OpenNos.Core
             else if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)) // subpacket list
                 && packetPropertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketDefinition)))
             {
-                return DeserializeSubpackets(currentValue, packetPropertyType, packetIndexAttribute?.RemoveSeparator ?? false, packetMatches, packetIndexAttribute?.Index);
+                return DeserializeSubpackets(currentValue, packetPropertyType, packetIndexAttribute?.RemoveSeparator ?? false, packetMatches, packetIndexAttribute?.Index, includesKeepAliveIdentity);
             }
             else if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) // simple list
             {
