@@ -425,7 +425,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $ChangeReput Command
+        /// $ChangeRep Command
         /// </summary>
         /// <param name="changeReputationPacket"></param>
         public void ChangeReputation(ChangeReputationPacket changeReputationPacket)
@@ -505,7 +505,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$BlockPM", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeDignity AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$ChangeReput AMOUNT", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$ChangeRep AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));

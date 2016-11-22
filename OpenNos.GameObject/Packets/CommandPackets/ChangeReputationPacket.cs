@@ -3,13 +3,13 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$ChangeReput", PassNonParseablePacket = true)]
+    [PacketHeader("$ChangeRep", PassNonParseablePacket = true)]
     public class ChangeReputationPacket : PacketDefinition
     {
         #region Properties
 
         [PacketIndex(0)]
-        public int Reputation { get; set; }
+        public long Reputation { get; set; }
 
         #endregion
     }

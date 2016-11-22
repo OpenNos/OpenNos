@@ -1781,7 +1781,7 @@ namespace OpenNos.GameObject
             double partyPenalty = 1d;
             int jobxp = 0;
             int levelSum = 0;
-            int levelDifference = Level - monster.Level;
+            int levelDifference = JobLevel - monster.Level;
 
             if (group != null)
             {
