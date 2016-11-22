@@ -187,7 +187,7 @@ namespace OpenNos.Handler
                         {
                             foreach (MapMonster mon in Session.CurrentMap.GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange).Where(s => s.CurrentHp > 0))
                             {
-                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill));
+                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill, skillEffect: (skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)));
                             }
                         }
                     }
@@ -259,7 +259,7 @@ namespace OpenNos.Handler
                                             IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
                                             foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
                                             {
-                                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill));
+                                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill, skillEffect: (characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)));
                                             }
                                         }
                                     }
