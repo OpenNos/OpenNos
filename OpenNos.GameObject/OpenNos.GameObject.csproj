@@ -91,7 +91,8 @@
     <Compile Include="Packets\ClientPackets\MviPacket.cs" />
     <Compile Include="Packets\ClientPackets\PJoinPacket.cs" />
     <Compile Include="Packets\ClientPackets\MultiTargetListPacket.cs" />
-    <Compile Include="Packets\ClientPackets\SkillZonePacket.cs" />
+    <Compile Include="Packets\ClientPackets\UseAOESkillPacket.cs" />
+    <Compile Include="Packets\ClientPackets\UseSkillPacket.cs" />
     <Compile Include="Packets\ClientPackets\WalkPacket.cs" />
     <Compile Include="Packets\CommandPackets\AddMonsterPacket.cs" />
     <Compile Include="Packets\CommandPackets\ChangeClassPacket.cs" />
@@ -150,8 +151,7 @@
     <Compile Include="Packets\ServerPackets\SelectPacket.cs" />
     <Compile Include="Packets\ServerPackets\StatPacket.cs" />
     <Compile Include="Packets\ServerPackets\UseItemPacket.cs" />
-    <Compile Include="Packets\ServerPackets\UseObjPacketcs.cs" />
-    <Compile Include="Packets\ServerPackets\UseSkillPacket.cs" />
+    <Compile Include="Packets\ServerPackets\UseObjPacket.cs" />
     <Compile Include="Packets\ServerPackets\VbPacket.cs" />
     <Compile Include="Packets\ServerPackets\WearPacket.cs" />
     <Compile Include="Packets\ServerPackets\WithDrawPacket.cs" />

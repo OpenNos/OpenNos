@@ -55,8 +55,12 @@ namespace OpenNos.Handler
 
         #region Methods
 
-        [Packet("mtlist")]
-        public void SpecialZoneHit(string packet)
+
+        /// <summary>
+        /// MultiTargetListPacket
+        /// </summary>
+        /// <param name="packet"></param>
+        public void MultiTargetListHit(MultiTargetListPacket mutliTargetListPacket)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted())
@@ -79,46 +83,30 @@ namespace OpenNos.Handler
                 Session.SendPacket("cancel 0 0");
                 return;
             }
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (packetsplit.Length > 3)
+            Logger.Debug(mutliTargetListPacket.ToString(), Session.SessionId);
+            if (mutliTargetListPacket != null && mutliTargetListPacket.TargetsAmount > 0 && mutliTargetListPacket.TargetsAmount == mutliTargetListPacket.Targets.Count())
             {
-                // get amount of mobs which are targeted
-                short mobAmount = 0;
-                short.TryParse(packetsplit[2], out mobAmount);
-                if ((packetsplit.Length - 3) / 2 != mobAmount)
-                {
-                    return;
-                }
-
-                for (int i = 3; i < packetsplit.Length - 2; i += 2)
+                foreach (MultiTargetListSubPacket subpacket in mutliTargetListPacket.Targets)
                 {
                     List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
                     if (skills != null)
                     {
-                        short mapMonsterTargetId = -1;
-                        short skillCastId = -1;
-
-                        if (short.TryParse(packetsplit[i], out skillCastId) && short.TryParse(packetsplit[i + 1], out mapMonsterTargetId))
+                        Task t = Task.Factory.StartNew(async () =>
                         {
-                            Task t = Task.Factory.StartNew((Func<Task>)(async () =>
+                            CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == subpacket.SkillCastId - 1);
+                            if (ski.CanBeUsed())
                             {
-                                CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == skillCastId - 1);
-                                if (ski.CanBeUsed())
+                                MapMonster mon = Session.CurrentMap.GetMonster(subpacket.TargetId);
+                                if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && ski != null && mon.CurrentHp > 0)
                                 {
-                                    MapMonster mon = Session.CurrentMap.GetMonster(mapMonsterTargetId);
-                                    if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && ski != null && mon.CurrentHp > 0)
-                                    {
-                                        Session.Character.LastSkillUse = DateTime.Now;
-                                        mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SpecialZoneHit, Session, ski.Skill));
-                                    }
-
-                                    await Task.Delay((ski.Skill.Cooldown) * 100);
-                                    Session.SendPacket($"sr {skillCastId - 1}");
+                                    Session.Character.LastSkillUse = DateTime.Now;
+                                    mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SpecialZoneHit, Session, ski.Skill));
                                 }
-                            }));
-                        }
+
+                                await Task.Delay((ski.Skill.Cooldown) * 100);
+                                Session.SendPacket($"sr {subpacket.SkillCastId - 1}");
+                            }
+                        });
                     }
                 }
             }
@@ -287,8 +275,11 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("u_s")]
-        public void UseSkill(string packet)
+        /// <summary>
+        /// UseSkillPacket
+        /// </summary>
+        /// <param name="useSkillPacket"></param>
+        public void UseSkill(UseSkillPacket useSkillPacket)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted())
@@ -309,26 +300,14 @@ namespace OpenNos.Handler
                 }
                 return;
             }
-            if (Session.Character.CanFight)
+            if (Session.Character.CanFight && useSkillPacket != null)
             {
-                Logger.Debug(packet, Session.SessionId);
-                string[] packetsplit = packet.Split(' ');
-                if (packetsplit.Length > 6)
+                Logger.Debug(useSkillPacket.ToString(), Session.SessionId);
+                if (useSkillPacket.MapX.HasValue && useSkillPacket.MapY.HasValue)
                 {
-                    short MapX = -1, MapY = -1;
-                    if (!short.TryParse(packetsplit[5], out MapX) || !short.TryParse(packetsplit[6], out MapY))
-                    {
-                        return;
-                    }
-                    Session.Character.MapX = MapX;
-                    Session.Character.MapY = MapY;
+                    Session.Character.MapX = useSkillPacket.MapX.Value;
+                    Session.Character.MapY = useSkillPacket.MapY.Value;
                 }
-                byte usrType;
-                if (!byte.TryParse(packetsplit[3], out usrType))
-                {
-                    return;
-                }
-                byte usertype = usrType;
                 if (Session.Character.IsSitting)
                 {
                     Session.Character.Rest();
@@ -338,29 +317,23 @@ namespace OpenNos.Handler
                     Session.SendPacket("cancel 0 0");
                     return;
                 }
-                switch (usertype)
+                switch (useSkillPacket.UserType)
                 {
-                    case (byte)UserType.Monster:
-                        if (packetsplit.Length > 4)
+                    case UserType.Monster:
+                        if (Session.Character.Hp > 0)
                         {
-                            if (Session.Character.Hp > 0)
-                            {
-                                TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[4]));
-                            }
+                            TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId);
                         }
                         break;
 
-                    case (byte)UserType.Player:
-                        if (packetsplit.Length > 4)
+                    case UserType.Player:
+                        if (Session.Character.Hp > 0 && useSkillPacket.MapMonsterId == Session.Character.CharacterId)
                         {
-                            if (Session.Character.Hp > 0 && Convert.ToInt64(packetsplit[4]) == Session.Character.CharacterId)
-                            {
-                                TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[4]));
-                            }
-                            else
-                            {
-                                Session.SendPacket("cancel 2 0");
-                            }
+                            TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId);
+                        }
+                        else
+                        {
+                            Session.SendPacket("cancel 2 0");
                         }
                         break;
 
@@ -371,8 +344,11 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("u_as")]
-        public void UseZonesSkill(string packet)
+        /// <summary>
+        /// UseAOESkillPacket
+        /// </summary>
+        /// <param name="useAOESkillPacket"></param>
+        public void UseZonesSkill(UseAOESkillPacket useAOESkillPacket)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
             if (Session.Character.IsMuted())
@@ -405,23 +381,12 @@ namespace OpenNos.Handler
                     Session.SendPacket("cancel 0 0");
                     return;
                 }
-                Logger.Debug(packet, Session.SessionId);
-                if (Session.Character.CanFight)
+                Logger.Debug(useAOESkillPacket.ToString(), Session.SessionId);
+                if (Session.Character.CanFight && useAOESkillPacket != null)
                 {
-                    string[] packetsplit = packet.Split(' ');
-                    if (packetsplit.Length > 4)
+                    if (Session.Character.Hp > 0)
                     {
-                        if (Session.Character.Hp > 0)
-                        {
-                            int CastingId;
-                            short x = -1;
-                            short y = -1;
-                            if (!int.TryParse(packetsplit[2], out CastingId) || !short.TryParse(packetsplit[3], out x) || !short.TryParse(packetsplit[4], out y))
-                            {
-                                return;
-                            }
-                            ZoneHit(CastingId, x, y);
-                        }
+                        ZoneHit(useAOESkillPacket.CastId, useAOESkillPacket.MapX, useAOESkillPacket.MapY);
                     }
                 }
             }
