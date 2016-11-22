@@ -14,6 +14,7 @@
 
 using EpPathFinding;
 using OpenNos.Data;
+using OpenNos.Domain;
 using OpenNos.GameObject.Networking;
 using System;
 using System.Collections.Concurrent;
@@ -91,7 +92,7 @@ namespace OpenNos.GameObject
         {
             if (IsAlive && !IsDisabled)
             {
-                return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {(int)(((float)CurrentMp / (float)Monster.MaxMP) * 100)} 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
+                return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {(int)(((float)CurrentMp / (float)Monster.MaxMP) * 100)} 0 0 0 -1 {(byte)InRespawnType.TeleportationEffect} 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
             }
             else
             {
@@ -840,7 +841,6 @@ namespace OpenNos.GameObject
             MapY = FirstY;
             Path = new List<GridPos>();
             Map.Broadcast(GenerateIn3());
-            Map.Broadcast(GenerateEff(7), MapX, MapY);
         }
 
         /// <summary>
