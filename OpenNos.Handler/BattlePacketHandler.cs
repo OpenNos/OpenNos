@@ -55,7 +55,6 @@ namespace OpenNos.Handler
 
         #region Methods
 
-
         /// <summary>
         /// mtlist
         /// </summary>
@@ -128,19 +127,10 @@ namespace OpenNos.Handler
             {
                 CharacterSkill ski = skills.FirstOrDefault(s => s.Skill?.CastId == castingId && s.Skill?.UpgradeSkill == 0);
                 Session.SendPacket("ms_c 0");
-                if (!Session.Character.WeaponLoaded(ski))
+                if (!Session.Character.WeaponLoaded(ski) || !ski.CanBeUsed())
                 {
                     Session.SendPacket("cancel 2 0");
                     return;
-                }
-                for (int i = 0; i < 10 && !ski.CanBeUsed(); i++)
-                {
-                    Thread.Sleep(100);
-                    if (i == 10)
-                    {
-                        Session.SendPacket("cancel 2 0");
-                        return;
-                    }
                 }
 
                 if (ski != null && Session.Character.Mp >= ski.Skill.MpCost)
@@ -192,7 +182,7 @@ namespace OpenNos.Handler
                                     short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
 
                                     if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY },
-                                                        new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + (DateTime.Now - monsterToAttack.LastMove).TotalSeconds * 2 * (monsterToAttack.Monster.Speed == 0 ? 1 : monsterToAttack.Monster.Speed) || ski.Skill.TargetRange != 0)
+                                                        new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= (ski.Skill.Range) + monsterToAttack.Monster.BasicArea)
                                     {
                                         Session.Character.LastSkillUse = DateTime.Now;
                                         ski.LastUse = DateTime.Now;
@@ -228,6 +218,7 @@ namespace OpenNos.Handler
                                             Thread.Sleep(ski.Skill.CastTime * 100);
                                         }
 
+                                        // handle skill combo
                                         ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
                                         if (skillCombo != null)
                                         {
@@ -239,15 +230,18 @@ namespace OpenNos.Handler
                                         }
                                         else
                                         {
-                                            monsterToAttack.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill));
-                                        }
-
-                                        if (ski.Skill.TargetRange != 0)
-                                        {
-                                            IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
-                                            foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
+                                            // handle single AOE Target Hits
+                                            if (ski.Skill.TargetRange != 0)
                                             {
-                                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill, skillEffect: (characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)));
+                                                IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
+                                                foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
+                                                {
+                                                    mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill, skillEffect: (characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                monsterToAttack.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill));
                                             }
                                         }
                                     }
@@ -281,28 +275,30 @@ namespace OpenNos.Handler
         /// <param name="useSkillPacket"></param>
         public void UseSkill(UseSkillPacket useSkillPacket)
         {
-            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
-            if (Session.Character.IsMuted())
-            {
-                if (Session.Character.Gender == GenderType.Female)
-                {
-                    Session.SendPacket("cancel 0 0");
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
-                }
-                else
-                {
-                    Session.SendPacket("cancel 0 0");
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
-                }
-                return;
-            }
             if (Session.Character.CanFight && useSkillPacket != null)
             {
+                PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
+                if (Session.Character.IsMuted())
+                {
+                    if (Session.Character.Gender == GenderType.Female)
+                    {
+                        Session.SendPacket("cancel 0 0");
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
+                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                    }
+                    else
+                    {
+                        Session.SendPacket("cancel 0 0");
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                    }
+                    return;
+                }
+
                 Logger.Debug(useSkillPacket.ToString(), Session.SessionId);
+
                 if (useSkillPacket.MapX.HasValue && useSkillPacket.MapY.HasValue)
                 {
                     Session.Character.MapX = useSkillPacket.MapX.Value;

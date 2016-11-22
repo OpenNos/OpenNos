@@ -24,6 +24,11 @@ namespace OpenNos.GameObject
         [PacketIndex(4)]
         public short? MapY { get; set; }
 
+        public override string ToString()
+        {
+            return $"{CastId} {UserType} {MapMonsterId} {MapX} {MapY}";
+        }
+
         #endregion
     }
 }
