@@ -1241,11 +1241,14 @@ namespace OpenNos.GameObject
             {
                 skill = "-1";
             }
+            short firstskillvnum = skillsSp[0].SkillVNum;
+
             for (int i = 1; i < 11; i++)
             {
                 if (skillsSp.Count >= i + 1)
                 {
-                    skill += $"{skillsSp[i].SkillVNum}.";
+                    if(skillsSp[i].SkillVNum <= firstskillvnum + 10)
+                        skill += $"{skillsSp[i].SkillVNum}.";
                 }
             }
 
