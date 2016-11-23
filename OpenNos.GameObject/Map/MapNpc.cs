@@ -266,7 +266,7 @@ namespace OpenNos.GameObject
                         {
                             short mapX;
                             short mapY;
-                            int maxindex = Path.Count > Npc.Speed / 2 ? Npc.Speed / 2 : Path.Count;
+                            int maxindex = (Path.Count > Npc.Speed / 2 && Npc.Speed > 1) ? Npc.Speed / 2 : Path.Count;
                             mapX = (short)Path.ElementAt(maxindex - 1).x;
                             mapY = (short)Path.ElementAt(maxindex - 1).y;
                             double waitingtime = (double)(Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId })) / (double)(Npc.Speed);
