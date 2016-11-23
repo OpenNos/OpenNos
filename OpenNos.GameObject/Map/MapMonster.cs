@@ -608,7 +608,7 @@ namespace OpenNos.GameObject
                         case Domain.TargetHitType.SingleAOETargetHit:
                             {
                                 // Target Hit Single AOE
-                                Map?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {(hitRequest.SkillEffect)} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {damage} 5 {hitRequest.Skill.SkillType - 1}");
+                                Map?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 3 {MapMonsterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {(hitRequest.SkillEffect)} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
                                 break;
                             }
                         case Domain.TargetHitType.AOETargetHit:

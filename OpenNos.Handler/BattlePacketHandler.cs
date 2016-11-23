@@ -218,26 +218,42 @@ namespace OpenNos.Handler
                                             Thread.Sleep(ski.Skill.CastTime * 100);
                                         }
 
-                                        // handle skill combo
-                                        ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
-                                        if (skillCombo != null)
+                                        if (ski.Skill.TargetRange != 0) // check if we will hit mutltiple targets
                                         {
-                                            if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit == ski.Hit)
+                                            ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
+                                            if (skillCombo != null)
                                             {
-                                                ski.Hit = 0;
+                                                if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit == ski.Hit)
+                                                {
+                                                    ski.Hit = 0;
+                                                }
+                                                IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
+                                                foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
+                                                {
+                                                    mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill
+                                                        , skillCombo : skillCombo));
+                                                }
                                             }
-                                            monsterToAttack.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo));
-                                        }
-                                        else
-                                        {
-                                            // handle single AOE Target Hits
-                                            if (ski.Skill.TargetRange != 0)
+                                            else
                                             {
                                                 IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
                                                 foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
                                                 {
-                                                    mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill, skillEffect: (characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)));
+                                                    mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
+                                                        , skillEffect: (characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)));
                                                 }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
+                                            if (skillCombo != null)
+                                            {
+                                                if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit == ski.Hit)
+                                                {
+                                                    ski.Hit = 0;
+                                                }
+                                                monsterToAttack.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo));
                                             }
                                             else
                                             {
