@@ -166,6 +166,8 @@ namespace OpenNos.Handler
                             AccountDTO account = Session.Account;
                             account.LastCompliment = DateTime.Now;
                             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
+
+                            
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
                         }
                         else

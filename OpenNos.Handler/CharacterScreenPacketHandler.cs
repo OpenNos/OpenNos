@@ -357,6 +357,7 @@ namespace OpenNos.Handler
                     {
                         character.Authority = Session.Account.Authority;
                         Session.SetCharacter(character);
+                        Session.Character.LastLogin = DateTime.Now;
                         Session.Character.Update();
                         Session.Character.LoadInventory();
                         Session.Character.LoadQuicklists();
