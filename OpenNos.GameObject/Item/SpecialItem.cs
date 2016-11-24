@@ -94,35 +94,43 @@ namespace OpenNos.GameObject
 
                 // vehicles
                 case 1000:
-
-                    if (!delay && !session.Character.IsVehicled)
+                    if (Morph > 0)
                     {
-                        if (session.Character.IsSitting)
+                        if (!delay && !session.Character.IsVehicled)
                         {
-                            session.Character.IsSitting = false;
-                            session.CurrentMap?.Broadcast(session.Character.GenerateRest());
-                        }
-                        session.SendPacket(session.Character.GenerateDelay(3000, 3, $"#u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2"));
-                    }
-                    else
-                    {
-                        if (!session.Character.IsVehicled)
-                        {
-                            session.Character.Speed = Speed;
-                            session.Character.IsVehicled = true;
-                            session.Character.VehicleSpeed = Speed;
-                            session.Character.MorphUpgrade = 0;
-                            session.Character.MorphUpgrade2 = 0;
-                            session.Character.Morph = Morph + (byte)session.Character.Gender;                      
-                            session.CurrentMap?.Broadcast(session.Character.GenerateEff(196), session.Character.MapX, session.Character.MapY);
-                            session.CurrentMap?.Broadcast(session.Character.GenerateCMode());
-                            session.SendPacket(session.Character.GenerateCond());
+                            if (session.Character.IsSitting)
+                            {
+                                session.Character.IsSitting = false;
+                                session.CurrentMap?.Broadcast(session.Character.GenerateRest());
+                            }
+                            session.SendPacket(session.Character.GenerateDelay(3000, 3, $"#u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2"));
                         }
                         else
                         {
-                            session.Character.RemoveVehicle();
+                            if (!session.Character.IsVehicled)
+                            {
+                                session.Character.Speed = Speed;
+                                session.Character.IsVehicled = true;
+                                session.Character.VehicleSpeed = Speed;
+                                session.Character.MorphUpgrade = 0;
+                                session.Character.MorphUpgrade2 = 0;
+                                session.Character.Morph = Morph + (byte)session.Character.Gender;
+                                session.CurrentMap?.Broadcast(session.Character.GenerateEff(196), session.Character.MapX, session.Character.MapY);
+                                session.CurrentMap?.Broadcast(session.Character.GenerateCMode());
+                                session.SendPacket(session.Character.GenerateCond());
+                            }
+                            else
+                            {
+                                session.Character.RemoveVehicle();
+                            }
                         }
                     }
+                    break;
+
+                case 69:
+                    session.Character.Reput += ReputPrice;
+                    session.SendPacket(session.Character.GenerateFd());
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
 
                 default:

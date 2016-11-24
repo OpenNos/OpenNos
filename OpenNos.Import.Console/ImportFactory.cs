@@ -2415,7 +2415,9 @@ namespace OpenNos.Import.Console
                                     }
                                 }
                                 else
+                                {
                                     item.Morph = Convert.ToInt16(currentLine[7]);
+                                }
                                 break;
                         }
                     }
@@ -2721,7 +2723,14 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     default:
-                                        item.Effect = Convert.ToInt16(currentLine[2]);
+                                        if (item.VNum > 5891 && item.VNum < 5900)
+                                        {
+                                            item.Effect = 69;
+                                        }
+                                        else
+                                        {
+                                            item.Effect = Convert.ToInt16(currentLine[2]);
+                                        }
                                         break;
                                 }
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
