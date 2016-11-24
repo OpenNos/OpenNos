@@ -266,6 +266,7 @@ namespace OpenNos.GameObject
             #region Base Damage
 
             int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
+            baseDamage += Monster.Level - targetCharacter.Level;
             int elementalDamage = 0; // placeholder for BCard etc...
 
             if (skill != null)
