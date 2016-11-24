@@ -390,7 +390,7 @@ namespace OpenNos.Core
             var subpacketSerializationInfo = GetSerializationInformation(subPacketType);
 
             // handle subpackets with separator
-            if(shouldRemoveSeparator)
+            if (shouldRemoveSeparator)
             {
                 if (!currentIndex.HasValue || packetMatchCollections == null)
                 {
@@ -409,7 +409,7 @@ namespace OpenNos.Core
                     for (int i = currentIndex.Value + 1; i < splittedSubpacketParts.Count(); i++)
                     {
                         int j = 0;
-                        for(j = i; j < i + subPacketTypePropertiesCount;j++)
+                        for (j = i; j < i + subPacketTypePropertiesCount; j++)
                         {
                             // add delimited value
                             generatedPseudoDelimitedString += splittedSubpacketParts[j] + ".";
@@ -453,8 +453,10 @@ namespace OpenNos.Core
                 object convertedValue = null;
                 try
                 {
-                    if(packetPropertyType.IsEnumDefined(currentValue))
-                      convertedValue = Enum.Parse(packetPropertyType, currentValue);
+                    if (packetPropertyType.IsEnumDefined(Enum.Parse(packetPropertyType, currentValue)))
+                    {
+                        convertedValue = Enum.Parse(packetPropertyType, currentValue);
+                    }
                 }
                 catch (Exception)
                 {
