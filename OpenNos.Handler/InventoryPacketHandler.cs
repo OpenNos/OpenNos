@@ -892,13 +892,11 @@ namespace OpenNos.Handler
                 if (slDefence >= 10)
                 {
                     specialistInstance.DefenceDodge += 5;
-                    specialistInstance.DistanceDefence += 5;
+                    specialistInstance.DistanceDefenceDodge += 5;
                 }
                 if (slDefence >= 20)
                 {
-                    //Need to be remove to replace by reduce critical damage +2
-                    specialistInstance.DefenceDodge += 2;
-                    specialistInstance.DistanceDefence += 2;
+                    specialistInstance.CriticalDodge += 2;
                 }
                 if (slDefence >= 30)
                 {
@@ -906,14 +904,12 @@ namespace OpenNos.Handler
                 }
                 if (slDefence >= 40)
                 {
-                    specialistInstance.DefenceDodge += 2;
-                    specialistInstance.DistanceDefenceDodge += 2;
-                    //remove it and add damage critical reduction +2
+                    specialistInstance.CriticalDodge += 2;
                 }
                 if (slDefence >= 50)
                 {
                     specialistInstance.DefenceDodge += 5;
-                    specialistInstance.DistanceDefence += 5;
+                    specialistInstance.DistanceDefenceDodge += 5;
                 }
                 if (slDefence >= 60)
                 {
@@ -921,9 +917,7 @@ namespace OpenNos.Handler
                 }
                 if (slDefence >= 70)
                 {
-                    specialistInstance.DefenceDodge += 3;
-                    specialistInstance.DistanceDefenceDodge += 3;
-                    //Remove that and add critical reduction +3
+                    specialistInstance.CriticalDodge += 3;
                 }
                 if (slDefence >= 75)
                 {
@@ -936,7 +930,7 @@ namespace OpenNos.Handler
                 {
                     specialistInstance.DefenceDodge += 10;
                     specialistInstance.DistanceDefenceDodge += 10;
-                    //+ reduce critical damage to add (+3%).
+                    specialistInstance.CriticalDodge += 3;
                 }
                 if (slDefence >= 90)
                 {
@@ -1004,14 +998,14 @@ namespace OpenNos.Handler
                 {
                     specialistInstance.DamageMinimum += 5;
                     specialistInstance.DamageMaximum += 5;
+                    specialistInstance.CloseDefence += 15;
+                    specialistInstance.DistanceDefence += 15;
+                    specialistInstance.MagicDefence += 15;
                 }
                 if (slHp >= 45)
                 {
                     specialistInstance.DamageMinimum += 10;
                     specialistInstance.DamageMaximum += 10;
-                    specialistInstance.CloseDefence += 15;
-                    specialistInstance.DistanceDefence += 15;
-                    specialistInstance.MagicDefence += 15;
                 }
                 if (slHp >= 50)
                 {
@@ -1057,26 +1051,26 @@ namespace OpenNos.Handler
                 }
                 if (slHp >= 85)
                 {
-                    specialistInstance.DamageMinimum += 10;
-                    specialistInstance.DamageMaximum += 10;
-                    //Need to add luck to suffered to a critical hit
+                    specialistInstance.DamageMinimum += 15;
+                    specialistInstance.DamageMaximum += 15;
+                    specialistInstance.CriticalDodge += 1;
                 }
                 if (slHp >= 86)
                 {
-                    //Need to add luck to suffered to a critical hit +1%
+                    specialistInstance.CriticalDodge += 1;
                 }
                 if (slHp >= 87)
                 {
-                    //Need to add luck to suffered to a critical hit +1%
+                    specialistInstance.CriticalDodge += 1;
                 }
                 if (slHp >= 88)
                 {
-                    //Need to add luck to suffered to a critical hit
+                    specialistInstance.CriticalDodge += 1;
                 }
                 if (slHp >= 90)
                 {
-                    specialistInstance.DamageMinimum += 20;
-                    specialistInstance.DamageMaximum += 20;
+                    specialistInstance.DamageMinimum += 15;
+                    specialistInstance.DamageMaximum += 15;
                     specialistInstance.CloseDefence += 25;
                     specialistInstance.DistanceDefence += 25;
                     specialistInstance.MagicDefence += 25;
@@ -1134,14 +1128,14 @@ namespace OpenNos.Handler
                     specialistInstance.WaterResistance += 3;
                     specialistInstance.LightResistance += 3;
                     specialistInstance.DarkResistance += 3;
-                    specialistInstance.CloseDefence += 35;
-                    specialistInstance.DistanceDefence += 35;
-                    specialistInstance.MagicDefence += 35;
+                    specialistInstance.CloseDefence += 30;
+                    specialistInstance.DistanceDefence += 30;
+                    specialistInstance.MagicDefence += 30;
                     specialistInstance.DamageMinimum += 20;
                     specialistInstance.DamageMaximum += 20;
                     specialistInstance.DefenceDodge += 2;
                     specialistInstance.DistanceDefenceDodge += 2;
-                    //reduce damage critical +1% need to be add
+                    specialistInstance.CriticalDodge += 1;
                 }
 
                 #endregion

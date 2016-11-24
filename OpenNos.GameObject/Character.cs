@@ -1395,6 +1395,27 @@ namespace OpenNos.GameObject
                 SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (specialist != null)
                 {
+                    MinHit += specialist.DamageMinimum;
+                    MaxHit += specialist.DamageMaximum;
+                    MinDistance += specialist.DamageMinimum;
+                    MaxDistance += specialist.DamageMaximum;
+                    HitCriticalRate += specialist.CriticalLuckRate;
+                    HitCritical += specialist.CriticalRate;
+                    DistanceCriticalRate += specialist.CriticalLuckRate;
+                    DistanceCritical += specialist.CriticalRate;
+                    HitRate += specialist.HitRate;
+                    DistanceRate += specialist.HitRate;
+                    DefenceRate += specialist.DefenceDodge;
+                    DistanceDefenceRate += specialist.DistanceDefenceDodge;
+                    FireResistance += specialist.FireResistance;
+                    WaterResistance += specialist.WaterResistance;
+                    LightResistance += specialist.LightResistance;
+                    DarkResistance += specialist.DarkResistance;
+                    ElementRateSP += specialist.ElementRate;
+                    Defence += specialist.CloseDefence;
+                    DistanceDefence += specialist.DistanceDefence;
+                    MagicalDefence += specialist.MagicDefence;
+
                     int point = CharacterHelper.SlPoint(specialist.SlDamage, 0);
 
                     int p = 0;
