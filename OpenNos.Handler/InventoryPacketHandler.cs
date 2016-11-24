@@ -1065,10 +1065,6 @@ namespace OpenNos.Handler
                 {
                     //Need to add luck to suffered to a critical hit +1%
                 }
-                if (slHp >= 86)
-                {
-                    //Need to add luck to suffered to a critical hit +1%
-                }
                 if (slHp >= 87)
                 {
                     //Need to add luck to suffered to a critical hit +1%
@@ -1132,7 +1128,7 @@ namespace OpenNos.Handler
                     specialistInstance.DefenceDodge += 2;
                     specialistInstance.DistanceDefenceDodge += 2;
                 }
-                if (slHp== 100)
+                if (slHp >= 100)
                 {
                     specialistInstance.FireResistance += 3;
                     specialistInstance.WaterResistance += 3;
@@ -1204,7 +1200,7 @@ namespace OpenNos.Handler
                     specialistInstance.DarkResistance += 4;
                     specialistInstance.ElementRate += 2;
                 }
-                if (slElement == 100)
+                if (slElement >= 100)
                 {
                     specialistInstance.FireResistance += 6;
                     specialistInstance.WaterResistance += 6;
