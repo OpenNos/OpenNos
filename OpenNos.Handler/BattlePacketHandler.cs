@@ -711,7 +711,11 @@ namespace OpenNos.Handler
                     baseDamage += (int)(baseDamage * 2);
                     break;
             }
-
+            if (skill.Type == 1)
+            {
+                if (Math.Abs(monsterToAttack.MapX - Session.Character.MapX) < 4 && Math.Abs(monsterToAttack.MapY - Session.Character.MapY) < 4)
+                    baseDamage = (int)(baseDamage * 0.7);
+            }
             #endregion
 
             #region Elementary Damage
