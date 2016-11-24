@@ -883,12 +883,18 @@ namespace OpenNos.Handler
                 }
                 else if (skill.Type == 3 && Session.Character.Class != ClassType.Magician)
                 {
-                    baseDamage += (int)(baseDamage * ((mainCritHit / 100D)));
+                    double multiplier = (mainCritHit / 100D);
+                    if (multiplier > 3)
+                        multiplier = 3;
+                    baseDamage += (int)(baseDamage * multiplier);
                     hitmode = 3;
                 }
                 else
                 {
-                     baseDamage += (int)(baseDamage * ((mainCritHit / 100D)));
+                     double multiplier = (mainCritHit / 100D);
+                     if (multiplier > 3)
+                        multiplier = 3;
+                    baseDamage += (int)(baseDamage * multiplier);
                     hitmode = 3;
                 }
             }
