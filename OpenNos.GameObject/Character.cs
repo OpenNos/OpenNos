@@ -992,8 +992,7 @@ namespace OpenNos.GameObject
                 int gold = GetGold(monsterToAttack);
                 gold = gold > 1000000000 ? 1000000000 : gold;
                 double randChance = random.Next(0, 100) * random.NextDouble();
-                int levelDifference = Level - monsterToAttack.Monster.Level;
-                if (gold > 0 && randChance <= (int)((ServerManager.GoldDropRate * 10) * CharacterHelper.GoldPenalty(levelDifference)))
+                if (gold > 0 && randChance <= (int)((ServerManager.GoldDropRate * 10) * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
                 {
                     DropDTO drop2 = new DropDTO()
                     {
@@ -2422,7 +2421,6 @@ namespace OpenNos.GameObject
             double partyPenalty = 1d;
             int jobxp = 0;
             int levelSum = 0;
-            int levelDifference = Level - monster.Level;
 
             if (group != null)
             {
@@ -2432,7 +2430,7 @@ namespace OpenNos.GameObject
             }
 
             // monster jobxp / penalty * rate
-            jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
+            jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.XPRate);
 
             // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
             if (partySize > 1 && group != null)
@@ -2515,7 +2513,7 @@ namespace OpenNos.GameObject
             xpcalculation = levelDifference < 5 ? monster.XP : monster.XP / 3 * 2;
 
             // xp calculation / penalty * rate
-            xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(levelDifference) * ServerManager.XPRate);
+            xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.XPRate);
 
             // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal
             // to 4
@@ -2902,13 +2900,13 @@ namespace OpenNos.GameObject
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
                 // wait for any exchange to be finished
-                while(IsExchanging)
+                while (IsExchanging)
                 {
                     // do nothing and wait until Exchange has been finished
                 }
 
                 // be sure that noone tries to edit while saving is currently editing
-                lock(Inventory)
+                lock (Inventory)
                 {
                     // load and concat inventory with equipment
                     List<ItemInstance> inventories = Inventory.GetAllItems();

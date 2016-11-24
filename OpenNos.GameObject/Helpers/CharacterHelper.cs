@@ -215,32 +215,33 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static float ExperiencePenalty(int levelDifference)
+        public static float ExperiencePenalty(byte playerLevel, byte monsterLevel)
         {
+            int leveldifference = playerLevel - monsterLevel;
             float penalty;
 
             // penalty calculation
-            if (levelDifference == 6)
+            if (leveldifference == 6)
             {
                 penalty = 0.9f;
             }
-            else if (levelDifference == 7)
+            else if (leveldifference == 7)
             {
                 penalty = 0.7f;
             }
-            else if (levelDifference == 8)
+            else if (leveldifference == 8)
             {
                 penalty = 0.5f;
             }
-            else if (levelDifference == 9)
+            else if (leveldifference == 9)
             {
                 penalty = 0.3f;
             }
-            else if (levelDifference > 9)
+            else if (leveldifference > 9)
             {
                 penalty = 0.1f;
             }
-            else if (levelDifference > 18 && levelDifference < 19)
+            else if (leveldifference > 18 && leveldifference < 19)
             {
                 penalty = 0.05f;
             }
@@ -252,40 +253,41 @@ namespace OpenNos.GameObject
             return penalty;
         }
 
-        public static float GoldPenalty(int levelDifference)
+        public static float GoldPenalty(byte playerLevel, byte monsterLevel)
         {
+            int leveldifference = playerLevel - monsterLevel;
             float penalty;
 
             // penalty calculation
-            if (levelDifference == 5)
+            if (leveldifference == 5)
             {
                 penalty = 0.9f;
             }
-            else if (levelDifference == 6)
+            else if (leveldifference == 6)
             {
                 penalty = 0.7f;
             }
-            else if (levelDifference == 7)
+            else if (leveldifference == 7)
             {
                 penalty = 0.5f;
             }
-            else if (levelDifference == 8)
+            else if (leveldifference == 8)
             {
                 penalty = 0.3f;
             }
-            else if (levelDifference == 9)
+            else if (leveldifference == 9)
             {
                 penalty = 0.2f;
             }
-            else if (levelDifference > 9 && levelDifference < 19)
+            else if (leveldifference > 9 && leveldifference < 19)
             {
                 penalty = 0.1f;
             }
-            else if (levelDifference > 18 && levelDifference < 30)
+            else if (leveldifference > 18 && leveldifference < 30)
             {
                 penalty = 0.05f;
             }
-            else if (levelDifference > 30)
+            else if (leveldifference > 30)
             {
                 penalty = 0f;
             }
