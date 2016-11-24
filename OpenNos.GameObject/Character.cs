@@ -1104,7 +1104,7 @@ namespace OpenNos.GameObject
         {
             CharacterDTO sender = DAOFactory.CharacterDAO.LoadById(mailDTO.SenderId);
 
-            return $"post 5 {type} {MailList.First(s => s.Value == (mailDTO)).Key} 0 0 {mailDTO.SenderClass} {mailDTO.SenderGender} {mailDTO.SenderMorphId} {mailDTO.SenderHairStyle} {mailDTO.SenderHairColor} {mailDTO.EqPacket} {sender.Name} {mailDTO.Title} {mailDTO.Message}";
+            return $"post 5 {type} {MailList.First(s => s.Value == (mailDTO)).Key} 0 0 {(byte)mailDTO.SenderClass} {(byte)mailDTO.SenderGender} {mailDTO.SenderMorphId} {(byte)mailDTO.SenderHairStyle} {(byte)mailDTO.SenderHairColor} {mailDTO.EqPacket} {sender.Name} {mailDTO.Title} {mailDTO.Message}";
         }
 
         public string GeneratePslInfo(SpecialistInstance inventoryItem, int type)

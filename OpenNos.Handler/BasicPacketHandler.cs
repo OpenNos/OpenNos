@@ -946,10 +946,8 @@ namespace OpenNos.Handler
                             EqPacket = Session.Character.GenerateEqListForPacket(),
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
                         };
-                        if (mailcopy.SenderId != mail.SenderId)
-                        {
-                            DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
-                        }
+                        
+                        DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
                         DAOFactory.MailDAO.InsertOrUpdate(ref mail);
 
                         Session.Character.MailList.Add((Session.Character.MailList.Any() ? Session.Character.MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mailcopy);
