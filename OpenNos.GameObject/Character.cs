@@ -1452,14 +1452,26 @@ namespace OpenNos.GameObject
 
                     point = CharacterHelper.SlPoint(specialist.SlDefence, 1);
                     p = 0;
-                    if (point <= 50)
-                    {
+                    if (point <= 10)
                         p = point;
-                    }
-                    else
-                    {
-                        p = 50 + (point - 50) * 2;
-                    }
+                    else if (point <= 20)
+                        p = 10 + (point - 10) * 2;
+                    else if (point <= 30)
+                        p = 30 + (point - 20) * 3;
+                    else if (point <= 40)
+                        p = 60 + (point - 30) * 4;
+                    else if (point <= 50)
+                        p = 100 + (point - 40) * 5;
+                    else if (point <= 60)
+                        p = 150 + (point - 50) * 6;
+                    else if (point <= 70)
+                        p = 210 + (point - 60) * 7;
+                    else if (point <= 80)
+                        p = 280 + (point - 70) * 8;
+                    else if (point <= 90)
+                        p = 360 + (point - 80) * 9;
+                    else if (point <= 100)
+                        p = 450 + (point - 90) * 10;
                     Defence += p;
                     MagicalDefence += p;
                     DistanceDefence += p;
