@@ -36,12 +36,6 @@ namespace OpenNos.DAL.Mock
         {
             return Container.SingleOrDefault(m => m.MailId == mailId);
         }
-
-
-        public IEnumerable<MailDTO> LoadAll()
-        {
-            return Container;
-        }
         #endregion
     }
 }
