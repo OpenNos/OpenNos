@@ -1228,7 +1228,7 @@ namespace OpenNos.GameObject
 
             string skill = String.Empty;
             List<CharacterSkill> skillsSp = new List<CharacterSkill>();
-            foreach (Skill ski in ServerManager.GetAllSkill().Where(ski => ski.Class == inventoryItem.Item.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel && !skillsSp.Any(s => s.Skill.MpCost == ski.MpCost && s.Skill.Cooldown == ski.Cooldown && s.Skill.Duration == ski.Duration)))
+            foreach (Skill ski in ServerManager.GetAllSkill().Where(ski => ski.Class == inventoryItem.Item.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel))
             {
                 skillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
             }

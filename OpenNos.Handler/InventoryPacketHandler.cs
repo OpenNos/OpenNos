@@ -889,11 +889,16 @@ namespace OpenNos.Handler
                 #endregion
 
                 #region slDefence
-
+                if (slDefence >= 10)
+                {
+                    specialistInstance.DefenceDodge += 5;
+                    specialistInstance.DistanceDefence += 5;
+                }
                 if (slDefence >= 20)
                 {
+                    //Need to be remove to replace by reduce critical damage +2
                     specialistInstance.DefenceDodge += 2;
-                    specialistInstance.DistanceDefenceDodge += 2;
+                    specialistInstance.DistanceDefence += 2;
                 }
                 if (slDefence >= 30)
                 {
@@ -903,6 +908,12 @@ namespace OpenNos.Handler
                 {
                     specialistInstance.DefenceDodge += 2;
                     specialistInstance.DistanceDefenceDodge += 2;
+                    //remove it and add damage critical reduction +2
+                }
+                if (slDefence >= 50)
+                {
+                    specialistInstance.DefenceDodge += 5;
+                    specialistInstance.DistanceDefence += 5;
                 }
                 if (slDefence >= 60)
                 {
@@ -912,6 +923,7 @@ namespace OpenNos.Handler
                 {
                     specialistInstance.DefenceDodge += 3;
                     specialistInstance.DistanceDefenceDodge += 3;
+                    //Remove that and add critical reduction +3
                 }
                 if (slDefence >= 75)
                 {
@@ -922,8 +934,9 @@ namespace OpenNos.Handler
                 }
                 if (slDefence >= 80)
                 {
-                    specialistInstance.DefenceDodge += 3;
-                    specialistInstance.DistanceDefenceDodge += 3;
+                    specialistInstance.DefenceDodge += 10;
+                    specialistInstance.DistanceDefenceDodge += 10;
+                    //+ reduce critical damage to add (+3%).
                 }
                 if (slDefence >= 90)
                 {
@@ -935,6 +948,200 @@ namespace OpenNos.Handler
                 if (slDefence >= 95)
                 {
                     specialistInstance.HP += 300;
+                }
+                if (slDefence >= 100)
+                {
+                    specialistInstance.DefenceDodge += 20;
+                    specialistInstance.DistanceDefenceDodge += 20;
+                    specialistInstance.FireResistance += 5;
+                    specialistInstance.WaterResistance += 5;
+                    specialistInstance.LightResistance += 5;
+                    specialistInstance.DarkResistance += 5;
+                }
+                #endregion
+
+                #region slHp
+
+                if (slHp >= 5)
+                {
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                }
+                if (slHp >= 10)
+                {
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                }
+                if (slHp >= 15)
+                {
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                }
+                if (slHp >= 20)
+                {
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                    specialistInstance.CloseDefence += 10;
+                    specialistInstance.DistanceDefence += 10;
+                    specialistInstance.MagicDefence += 10;
+                }
+                if (slHp >= 25)
+                {
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                }
+                if (slHp >= 30)
+                {
+                        specialistInstance.DamageMinimum += 5;
+                        specialistInstance.DamageMaximum += 5;
+                }
+                if (slHp >= 35)
+                {
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                }
+                if (slHp >= 40)
+                {
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                }
+                if (slHp >= 45)
+                {
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
+                    specialistInstance.CloseDefence += 15;
+                    specialistInstance.DistanceDefence += 15;
+                    specialistInstance.MagicDefence += 15;
+                }
+                if (slHp >= 50)
+                {
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
+                    specialistInstance.FireResistance += 2;
+                    specialistInstance.WaterResistance += 2;
+                    specialistInstance.LightResistance += 2;
+                    specialistInstance.DarkResistance += 2;
+                }
+                if (slHp >= 55)
+                {
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
+                }
+                if (slHp >= 60)
+                {
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
+                }
+                if (slHp >= 65)
+                {
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
+                }
+                if (slHp >= 70)
+                {
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
+                    specialistInstance.CloseDefence += 20;
+                    specialistInstance.DistanceDefence += 20;
+                    specialistInstance.MagicDefence += 20;
+                }
+                if (slHp >= 75)
+                {
+                    specialistInstance.DamageMinimum += 15;
+                    specialistInstance.DamageMaximum += 15;
+                }
+                if (slHp >= 80)
+                {
+                    specialistInstance.DamageMinimum += 15;
+                    specialistInstance.DamageMaximum += 15;
+                }
+                if (slHp >= 85)
+                {
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
+                    //Need to add luck to suffered to a critical hit
+                }
+                if (slHp >= 86)
+                {
+                    //Need to add luck to suffered to a critical hit +1%
+                }
+                if (slHp >= 87)
+                {
+                    //Need to add luck to suffered to a critical hit +1%
+                }
+                if (slHp >= 88)
+                {
+                    //Need to add luck to suffered to a critical hit
+                }
+                if (slHp >= 90)
+                {
+                    specialistInstance.DamageMinimum += 20;
+                    specialistInstance.DamageMaximum += 20;
+                    specialistInstance.CloseDefence += 25;
+                    specialistInstance.DistanceDefence += 25;
+                    specialistInstance.MagicDefence += 25;
+                }
+                if (slHp >= 91)
+                { 
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
+                }
+                if (slHp >= 92)
+                {
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
+                }
+                if (slHp >= 93)
+                {
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
+                }
+                if (slHp >= 94)
+                {
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
+                }
+                if (slHp >= 95)
+                {
+                    specialistInstance.DamageMinimum += 20;
+                    specialistInstance.DamageMaximum += 20;
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
+                }
+                if (slHp >= 96)
+                {
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
+                }
+                if (slHp >= 97)
+                {
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
+                }
+                if (slHp >= 98)
+                {
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
+                }
+                if (slHp >= 99)
+                {
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
+                }
+                if (slHp >= 100)
+                {
+                    specialistInstance.FireResistance += 3;
+                    specialistInstance.WaterResistance += 3;
+                    specialistInstance.LightResistance += 3;
+                    specialistInstance.DarkResistance += 3;
+                    specialistInstance.CloseDefence += 35;
+                    specialistInstance.DistanceDefence += 35;
+                    specialistInstance.MagicDefence += 35;
+                    specialistInstance.DamageMinimum += 20;
+                    specialistInstance.DamageMaximum += 20;
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
+                    //reduce damage critical +1% need to be add
                 }
 
                 #endregion
@@ -993,7 +1200,7 @@ namespace OpenNos.Handler
                     specialistInstance.DarkResistance += 4;
                     specialistInstance.ElementRate += 2;
                 }
-                if (slElement == 100)
+                if (slElement >= 100)
                 {
                     specialistInstance.FireResistance += 6;
                     specialistInstance.WaterResistance += 6;
@@ -1003,7 +1210,7 @@ namespace OpenNos.Handler
                     specialistInstance.MP += 200;
                     specialistInstance.ElementRate += 2;
                 }
-               
+
 
                 #endregion
 
