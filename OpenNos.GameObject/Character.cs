@@ -2118,7 +2118,7 @@ namespace OpenNos.GameObject
 
         public void LoadSentMail()
         {
-            foreach (MailDTO mail in DAOFactory.MailDAO.LoadBySenderId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)))
+            foreach (MailDTO mail in ServerManager.Mails.Where(s => s.SenderId == CharacterId && !MailList.Any(m => m.Value.MailId == s.MailId)))
             {
                 MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mail);
 
@@ -2208,7 +2208,7 @@ namespace OpenNos.GameObject
         {
             int i = 0;
             int j = 0;
-            List<MailDTO> mails = DAOFactory.MailDAO.LoadByReceiverId(CharacterId).Where(s => !MailList.Any(m => m.Value.MailId == s.MailId)).ToList();
+            List<MailDTO> mails = ServerManager.Mails.Where(s => s.ReceiverId == CharacterId && !MailList.Any(m => m.Value.MailId == s.MailId)).ToList();
             for (int x = 0; x < mails.Count; x++)
             {
                 MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mails.ElementAt(x));

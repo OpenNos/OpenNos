@@ -547,10 +547,6 @@ namespace OpenNos.GameObject
                 for (int i = Sessions.Where(s => s.HasSelectedCharacter).Count() - 1; i >= 0; i--)
                 {
                     ClientSession Session = Sessions.Where(s => s?.Character != null).ElementAt(i);
-                    if (Session.Character.LastMailRefresh.AddSeconds(30) < DateTime.Now)
-                    {
-                        Session.Character.RefreshMail();
-                    }
                     int x = 1;
                     bool change = false;
                     if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)

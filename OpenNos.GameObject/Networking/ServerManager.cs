@@ -76,10 +76,23 @@ namespace OpenNos.GameObject
             Task BotTask = new Task(() => BotProcess());
             BotTask.Start();
 
+            Task MailTask = new Task(() => MailProcess());
+            MailTask.Start();
+
             Task TaskController = new Task(() => TaskLauncherProcess());
             TaskController.Start();
 
             lastGroupId = 1;
+        }
+
+        private async void MailProcess()
+        {
+            while (true)
+            {
+                Mails = DAOFactory.MailDAO.LoadAll().ToList();
+                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
+                await Task.Delay(30000);
+            }
         }
 
         #endregion
@@ -87,6 +100,8 @@ namespace OpenNos.GameObject
         #region Properties
 
         public static int DropRate { get; set; }
+
+        public static List<MailDTO> Mails { get; set; }
 
         public static int FairyXpRate { get; set; }
 

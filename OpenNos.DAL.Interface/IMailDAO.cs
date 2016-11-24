@@ -28,9 +28,7 @@ namespace OpenNos.DAL.Interface
 
         MailDTO LoadById(long mailId);
 
-        IEnumerable<MailDTO> LoadByReceiverId(long receiverId);
-
-        IEnumerable<MailDTO> LoadBySenderId(long senderId);
+        IEnumerable<MailDTO> LoadAll();
 
         #endregion
     }

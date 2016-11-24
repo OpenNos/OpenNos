@@ -97,28 +97,16 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<MailDTO> LoadByReceiverId(long receiverId)
+        public IEnumerable<MailDTO> LoadAll()
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Mail mail in context.Mail.Where(i => i.ReceiverId.Equals(receiverId) && i.IsSenderCopy.Equals(false)))
+                foreach (Mail mail in context.Mail)
                 {
                     yield return _mapper.Map<MailDTO>(mail);
                 }
             }
         }
-
-        public IEnumerable<MailDTO> LoadBySenderId(long senderId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Mail mail in context.Mail.Where(i => i.SenderId.Equals(senderId) && i.IsSenderCopy.Equals(true)))
-                {
-                    yield return _mapper.Map<MailDTO>(mail);
-                }
-            }
-        }
-
         private MailDTO Insert(MailDTO mail, OpenNosContext context)
         {
             try
