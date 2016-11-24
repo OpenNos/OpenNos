@@ -459,8 +459,8 @@ namespace OpenNos.Handler
             int monsterDodge = 0;
 
             short mainUpgrade = 0;
-            int mainCritChance = 4;
-            int mainCritHit = 70;
+            int mainCritChance = 0;
+            int mainCritHit = 0;
             int mainMinDmg = 0;
             int mainMaxDmg = 0;
             int mainHitRate = 0;
@@ -616,7 +616,7 @@ namespace OpenNos.Handler
 
             #region Base Damage
 
-            int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
+             int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
             baseDamage += (skill.Damage / 4);
             baseDamage += Session.Character.Level - monsterToAttack.Monster.Level; //Morale
             if (Session.Character.Class == ClassType.Adventurer)
@@ -874,6 +874,8 @@ namespace OpenNos.Handler
 
             #region Critical Damage
 
+            baseDamage -= monsterDefence;
+
             if (random.Next(100) <= mainCritChance)
             {
                 if (skill.Type == 2)
@@ -886,7 +888,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    baseDamage += (int)(baseDamage * ((mainCritHit / 100D)));
+                     baseDamage += (int)(baseDamage * ((mainCritHit / 100D)));
                     hitmode = 3;
                 }
             }
@@ -895,7 +897,7 @@ namespace OpenNos.Handler
 
             #region Total Damage
 
-            int totalDamage = baseDamage + elementalDamage - monsterDefence;
+            int totalDamage = baseDamage + elementalDamage;
             if (totalDamage < 5)
             {
                 totalDamage = random.Next(1, 6);
