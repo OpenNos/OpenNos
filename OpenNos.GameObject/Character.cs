@@ -1447,30 +1447,8 @@ namespace OpenNos.GameObject
                         p = 940 + (point - 97) * 20;
                     MaxHit += p;
                     MinHit += p;
-
-                    p = 0;
-                    if (point <= 10)
-                        p = point;
-                    else if (point <= 20)
-                        p = 10 + (point - 10) * 2;
-                    else if (point <= 30)
-                        p = 30 + (point - 10) * 3;
-                    else if (point <= 40)
-                        p = 60 + (point - 10) * 4;
-                    else if (point <= 50)
-                        p = 100 + (point - 10) * 5;
-                    else if (point <= 60)
-                        p = 150 + (point - 10) * 6;
-                    else if (point <= 70)
-                        p = 210 + (point - 10) * 7;
-                    else if (point <= 80)
-                        p = 280 + (point - 10) * 8;
-                    else if (point <= 90)
-                        p = 360 + (point - 10) * 9;
-                    else if (point <= 100)
-                        p = 450 + (point - 10) * 10;
-                    MinDistance += p;
                     MaxDistance += p;
+                    MinDistance += p;
 
                     point = CharacterHelper.SlPoint(specialist.SlDefence, 1);
                     p = 0;
