@@ -453,7 +453,8 @@ namespace OpenNos.Core
                 object convertedValue = null;
                 try
                 {
-                    convertedValue = Enum.Parse(packetPropertyType, currentValue);
+                    if(packetPropertyType.IsEnumDefined(currentValue))
+                      convertedValue = Enum.Parse(packetPropertyType, currentValue);
                 }
                 catch (Exception)
                 {

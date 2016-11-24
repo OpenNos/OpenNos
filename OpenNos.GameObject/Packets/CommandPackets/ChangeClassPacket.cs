@@ -4,7 +4,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$ChangeClass", PassNonParseablePacket = false)]
+    [PacketHeader("$ChangeClass", PassNonParseablePacket = true)]
     public class ChangeClassPacket : PacketDefinition
     {
         #region Properties
