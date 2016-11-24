@@ -532,7 +532,7 @@ namespace OpenNos.Handler
                 case 1:
                     monsterDefence = monsterToAttack.Monster.DistanceDefence;
                     monsterDodge = monsterToAttack.Monster.DistanceDefenceDodge;
-                    if (Session.Character.Class == ClassType.Swordman || Session.Character.Class == ClassType.Adventurer)
+                    if (Session.Character.Class == ClassType.Swordman || Session.Character.Class == ClassType.Adventurer || Session.Character.Class == ClassType.Magician)
                     {
                         mainCritHit = secCritHit;
                         mainCritChance = secCritChance;
@@ -565,6 +565,19 @@ namespace OpenNos.Handler
                         case ClassType.Adventurer:
                             monsterDefence = monsterToAttack.Monster.CloseDefence;
                             break;
+                    }
+                    break;
+                case 5:
+                    monsterDefence = monsterToAttack.Monster.CloseDefence;
+                    monsterDodge = monsterToAttack.Monster.DefenceDodge;
+                    if (Session.Character.Class == ClassType.Archer)
+                    {
+                        mainCritHit = secCritHit;
+                        mainCritChance = secCritChance;
+                        mainHitRate = secHitRate;
+                        mainMaxDmg = secMaxDmg;
+                        mainMinDmg = secMinDmg;
+                        mainUpgrade = secUpgrade;
                     }
                     break;
             }
