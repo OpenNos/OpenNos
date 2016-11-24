@@ -1129,9 +1129,9 @@ namespace OpenNos.GameObject
             return pktQs;
         }
 
-        public string GenerateRc(int v)
+        public string GenerateRc(int characterHealth)
         {
-            return $"rc 1 {CharacterId} {v} 0";
+            return $"rc 1 {CharacterId} {characterHealth} 0";
         }
 
         public string GenerateReqInfo()
