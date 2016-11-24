@@ -94,7 +94,7 @@ namespace OpenNos.GameObject
 
                 // vehicles
                 case 1000:
-                    if (!session.Character.HasShopOpened)
+                    if (Morph > 0)
                     {
                         if (!delay && !session.Character.IsVehicled)
                         {
@@ -125,6 +125,12 @@ namespace OpenNos.GameObject
                             }
                         }
                     }
+                    break;
+
+                case 69:
+                    session.Character.Reput += ReputPrice;
+                    session.SendPacket(session.Character.GenerateFd());
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
 
                 default:
