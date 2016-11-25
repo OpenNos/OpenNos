@@ -223,8 +223,6 @@ namespace OpenNos.GameObject
 
         public DateTime LastHealth { get; set; }
 
-        public DateTime LastLogin { get; set; }
-
         public DateTime LastMailRefresh { get; set; }
 
         public DateTime LastMapObject { get; set; }
