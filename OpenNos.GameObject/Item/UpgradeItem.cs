@@ -28,90 +28,93 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
         {
-            if (EffectValue != 0)
+            if (Effect == 0)
             {
-                if (session.Character.IsSitting)
+                if (EffectValue != 0)
                 {
-                    session.Character.IsSitting = false;
-                    session.SendPacket(session.Character.GenerateRest());
-                }
-                session.SendPacket(session.Character.GenerateGuri(12, 1, EffectValue));
-            }
-            else if (EffectValue == 0)
-            {
-                if (packetsplit != null)
-                {
-                    byte TypeEquip = 0;
-                    short SlotEquip = -1;
-
-                    if (byte.TryParse(packetsplit[8], out TypeEquip) && short.TryParse(packetsplit[9], out SlotEquip))
+                    if (session.Character.IsSitting)
                     {
-                        if (session.Character.IsSitting)
+                        session.Character.IsSitting = false;
+                        session.SendPacket(session.Character.GenerateRest());
+                    }
+                    session.SendPacket(session.Character.GenerateGuri(12, 1, EffectValue));
+                }
+                else if (EffectValue == 0)
+                {
+                    if (packetsplit != null)
+                    {
+                        byte TypeEquip = 0;
+                        short SlotEquip = -1;
+
+                        if (byte.TryParse(packetsplit[8], out TypeEquip) && short.TryParse(packetsplit[9], out SlotEquip))
                         {
-                            session.Character.IsSitting = false;
-                            session.SendPacket(session.Character.GenerateRest());
-                        }
-                        if (delay)
-                        {
-                            bool isUsed = false;
-                            switch (inv.ItemVNum)
+                            if (session.Character.IsSitting)
                             {
-                                case 1219:
-                                    WearableInstance equip = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
-                                    if (equip != null && equip.IsFixed)
-                                    {
-                                        equip.IsFixed = false;
-                                        session.SendPacket(session.Character.GenerateEff(3003));
-                                        session.SendPacket(session.Character.GenerateGuri(17, 1, SlotEquip));
-                                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
-                                        isUsed = true;
-                                    }
-                                    break;
-
-                                case 1365:
-                                    SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
-                                    if (specialist != null && specialist.Rare == -2)
-                                    {
-                                        specialist.Rare = 0;
-                                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
-                                        session.CurrentMap?.Broadcast(session.Character.GenerateGuri(13, 1, 1), session.Character.MapX, session.Character.MapY);
-                                        session.Character.SpPoint = 10000;
-                                        session.SendPacket(session.Character.GenerateSpPoint());
-                                        session.SendPacket(session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (Domain.InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
-                                        isUsed = true;
-                                    }
-                                    break;
+                                session.Character.IsSitting = false;
+                                session.SendPacket(session.Character.GenerateRest());
                             }
-
-                            switch (inv.ItemVNum)
+                            if (delay)
                             {
-                                case 9039:
-                                    SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
-                                    if (specialist != null && specialist.Rare == -2)
-                                    {
-                                        specialist.Rare = 0;
-                                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
-                                        session.CurrentMap?.Broadcast(session.Character.GenerateGuri(13, 1, 1), session.Character.MapX, session.Character.MapY);
-                                        session.Character.SpPoint = 10000;
-                                        session.SendPacket(session.Character.GenerateSpPoint());
-                                        session.SendPacket(session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (Domain.InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
-                                        isUsed = true;
-                                    }
-                                    break;
-                            }
+                                bool isUsed = false;
+                                switch (inv.ItemVNum)
+                                {
+                                    case 1219:
+                                        WearableInstance equip = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
+                                        if (equip != null && equip.IsFixed)
+                                        {
+                                            equip.IsFixed = false;
+                                            session.SendPacket(session.Character.GenerateEff(3003));
+                                            session.SendPacket(session.Character.GenerateGuri(17, 1, SlotEquip));
+                                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
+                                            isUsed = true;
+                                        }
+                                        break;
 
-                            if (!isUsed)
-                            {
-                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_NOT_FIXED"), 11));
+                                    case 1365:
+                                        SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
+                                        if (specialist != null && specialist.Rare == -2)
+                                        {
+                                            specialist.Rare = 0;
+                                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
+                                            session.CurrentMap?.Broadcast(session.Character.GenerateGuri(13, 1, 1), session.Character.MapX, session.Character.MapY);
+                                            session.Character.SpPoint = 10000;
+                                            session.SendPacket(session.Character.GenerateSpPoint());
+                                            session.SendPacket(session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (Domain.InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                            isUsed = true;
+                                        }
+                                        break;
+                                }
+
+                                switch (inv.ItemVNum)
+                                {
+                                    case 9039:
+                                        SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
+                                        if (specialist != null && specialist.Rare == -2)
+                                        {
+                                            specialist.Rare = 0;
+                                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
+                                            session.CurrentMap?.Broadcast(session.Character.GenerateGuri(13, 1, 1), session.Character.MapX, session.Character.MapY);
+                                            session.Character.SpPoint = 10000;
+                                            session.SendPacket(session.Character.GenerateSpPoint());
+                                            session.SendPacket(session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (Domain.InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                            isUsed = true;
+                                        }
+                                        break;
+                                }
+
+                                if (!isUsed)
+                                {
+                                    session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_NOT_FIXED"), 11));
+                                }
+                                else
+                                {
+                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                }
                             }
                             else
                             {
-                                session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^0^1^{TypeEquip}^{SlotEquip} {Language.Instance.GetMessageFromKey("QNA_ITEM")}");
                             }
-                        }
-                        else
-                        {
-                            session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^0^1^{TypeEquip}^{SlotEquip} {Language.Instance.GetMessageFromKey("QNA_ITEM")}");
                         }
                     }
                 }
