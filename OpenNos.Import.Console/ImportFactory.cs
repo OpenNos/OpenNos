@@ -1648,7 +1648,7 @@ namespace OpenNos.Import.Console
                         skill.LevelMinimum = currentLine[2] != "-1" ? byte.Parse(currentLine[2]) : (byte)0;
                         if (skill.Class > 31)
                         {
-                            SkillDTO firstskill = skills.FirstOrDefault(s=>s.Class == skill.Class);
+                            SkillDTO firstskill = skills.FirstOrDefault(s => s.Class == skill.Class);
                             if (firstskill == null || skill.SkillVNum <= firstskill.ItemVNum + 10)
                             {
                                 switch (skill.Class)
@@ -2737,7 +2737,32 @@ namespace OpenNos.Import.Console
                                         }
                                         break;
                                 }
-                                item.EffectValue = Convert.ToInt32(currentLine[4]);
+                                switch (item.Effect)
+                                {
+                                    case 151:
+                                    case 150:
+                                        if (Convert.ToInt32(currentLine[4]) == 1)
+                                        {
+                                            item.EffectValue = 30000;
+                                        }
+                                        else if (Convert.ToInt32(currentLine[4]) == 2)
+                                        {
+                                            item.EffectValue = 70000;
+                                        }
+                                        else if (Convert.ToInt32(currentLine[4]) == 3)
+                                        {
+                                            item.EffectValue = 180000;
+                                        }
+                                        break;
+
+                                    case 204:
+                                        item.EffectValue = 10000;
+                                        break;
+
+                                    default:
+                                        item.EffectValue = Convert.ToInt32(currentLine[4]);
+                                        break;
+                                }
                                 item.WaitDelay = 5000;
                                 break;
 

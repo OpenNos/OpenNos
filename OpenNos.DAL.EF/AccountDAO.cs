@@ -206,6 +206,7 @@ namespace OpenNos.DAL.EF
             }
 
             Account entity = _mapper.Map<Account>(account);
+            entity.LastCompliment = DateTime.Now.AddDays(-1);
             context.Account.Add(entity);
             context.SaveChanges();
             return _mapper.Map<AccountDTO>(entity);
