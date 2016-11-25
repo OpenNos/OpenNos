@@ -39,22 +39,7 @@ namespace OpenNos.GameObject
                 // sp point potions
                 case 150:
                 case 151:
-                    if (EffectValue == 1)
-                    {
-                        session.Character.SpAdditionPoint += 30000;
-                    }
-                    else if (EffectValue == 2)
-                    {
-                        session.Character.SpAdditionPoint += 70000;
-                    }
-                    else if (EffectValue == 3)
-                    {
-                        session.Character.SpAdditionPoint += 180000;
-                    }
-                    else
-                    {
-                        session.Character.SpAdditionPoint += EffectValue;
-                    }
+                    session.Character.SpAdditionPoint += EffectValue;
                     if (session.Character.SpAdditionPoint > 1000000)
                     {
                         session.Character.SpAdditionPoint = 1000000;
@@ -64,8 +49,8 @@ namespace OpenNos.GameObject
                     break;
 
                 case 204:
-                    session.Character.SpPoint += 10000;
-                    session.Character.SpAdditionPoint += 30000;
+                    session.Character.SpPoint += EffectValue;
+                    session.Character.SpAdditionPoint += EffectValue * 3;
                     if (session.Character.SpAdditionPoint > 1000000)
                     {
                         session.Character.SpAdditionPoint = 1000000;
