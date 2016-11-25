@@ -60,30 +60,24 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
             }
-
-            return new List<CharacterDTO>();
         }
 
         public IList<CharacterDTO> GetTopPoints()
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
             }
-
-            return new List<CharacterDTO>();
         }
 
         public IList<CharacterDTO> GetTopReputation()
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
             }
-
-            return new List<CharacterDTO>();
         }
 
         public SaveResult InsertOrUpdate(ref CharacterDTO character)
