@@ -459,7 +459,7 @@ namespace OpenNos.GameObject
             return characters;
         }
 
-        internal void MapTaskManager()
+        internal void MapEventManager()
         {
             if (!(!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now))
             {
