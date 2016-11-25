@@ -493,8 +493,18 @@ namespace OpenNos.Handler
 
                     if (mapItem.ItemVNum != 1046)
                     {
-                        if (mapItem.GetItemInstance().Item.ItemType == ItemType.Map)
+                        ItemInstance mapItemInstance = mapItem.GetItemInstance();
+                        if (mapItemInstance.Item.ItemType == ItemType.Map)
                         {
+                            if (mapItemInstance.Item.Effect == 71)
+                            {
+                                Session.Character.SpPoint += mapItem.GetItemInstance().Item.EffectValue;
+                                if (Session.Character.SpPoint > 10000)
+                                {
+                                    Session.Character.SpPoint = 10000;
+                                }
+                                Session.SendPacket(Session.Character.GenerateSpPoint());
+                            }
                             MapItem removeItem = Session.CurrentMap.DroppedList[packet.TransportId];
                             Session.CurrentMap.DroppedList.Remove(packet.TransportId);
                             TransportFactory.Instance.RemoveTransportId(packet.TransportId);
@@ -504,7 +514,7 @@ namespace OpenNos.Handler
                         {
                             lock (Session.Character.Inventory)
                             {
-                                ItemInstance newInv = Session.Character.Inventory.AddToInventory(mapItem.GetItemInstance());
+                                ItemInstance newInv = Session.Character.Inventory.AddToInventory(mapItemInstance);
                                 if (newInv != null)
                                 {
                                     MapItem removeItem = Session.CurrentMap.DroppedList[packet.TransportId];

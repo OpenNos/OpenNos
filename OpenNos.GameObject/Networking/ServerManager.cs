@@ -201,11 +201,12 @@ namespace OpenNos.GameObject
                 Session.SendPacket("eff_ob -1 -1 0 4269");
                 Session.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
 
-                Task.Factory.StartNew(async () =>
+
+                Parallel.Invoke(delegate ()
                 {
                     for (int i = 1; i <= 30; i++)
                     {
-                        await Task.Delay(1000);
+                        Thread.Sleep(1000);
                         if (Session.Character.Hp > 0)
                         {
                             return;
@@ -213,6 +214,7 @@ namespace OpenNos.GameObject
                     }
                     Instance.ReviveFirstPosition(Session.Character.CharacterId);
                 });
+              
             }
         }
 
