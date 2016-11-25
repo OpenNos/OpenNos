@@ -472,7 +472,10 @@ namespace OpenNos.GameObject
             } 
             else
             {
-                _grid = null;
+                if (_grid != null)
+                {
+                    _grid = null;
+                }
             }
         }
 
