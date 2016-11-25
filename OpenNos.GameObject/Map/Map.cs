@@ -463,8 +463,17 @@ namespace OpenNos.GameObject
         {
             if (!(!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now))
             {
+                if (_grid == null)
+                {
+                    LoadZone();
+                }
                 Parallel.Invoke(() => NpcLifeManager(), () => MonsterLifeManager(), () => CharacterLifeManager(), () => RemoveMapItem());
+                
             } 
+            else
+            {
+                _grid = null;
+            }
         }
 
         internal List<GridPos> StraightPath(GridPos mapCell1, GridPos mapCell2)
