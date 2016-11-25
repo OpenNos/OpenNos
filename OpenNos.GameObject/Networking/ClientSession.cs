@@ -20,6 +20,7 @@ using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -48,8 +49,6 @@ namespace OpenNos.GameObject
         private long lastPacketReceive;
 
         #endregion
-
-        // private Task taskPacketReceived;
 
         #region Instantiation
 
@@ -307,7 +306,15 @@ namespace OpenNos.GameObject
                 _client.SendPackets(packets, priority);
             }
         }
-
+        public void SendPacketAfterWait(string packet, int Millisecond)
+        {
+            Observable.Timer(TimeSpan.FromMilliseconds(Millisecond))
+            .Subscribe(
+             o =>
+             {
+                 SendPacket(packet);
+             });
+        }
         public void SetCharacter(Character character)
         {
             Character = character;
@@ -534,25 +541,6 @@ namespace OpenNos.GameObject
             }
 
             long currentPacketReceive = e.ReceivedTimestamp.Ticks;
-            /*
-            TimeSpan elapsedSpan = new TimeSpan(currentPacketReceive - lastPacketReceive);
-            countPacketReceived++;
-            if ((taskPacketReceived == null) || (taskPacketReceived.IsCompleted))
-            {
-                taskPacketReceived = Task.Factory.StartNew(async () =>
-                {
-                    await Thread.Sleep(1000);
-                    countPacketReceived = 0;
-                });
-            }
-
-            if (IsAuthenticated && !IsLocalhost && countPacketReceived > 15)
-            {
-                Logger.Log.Warn($"[AntiSpam]: Packet has been ignored, access was too fast. Last: {lastPacketReceive}, Current: {currentPacketReceive}, Difference: {currentPacketReceive - lastPacketReceive}, SessionId: {SessionId}");
-                Disconnect();
-                return;
-            }
-             */
 
             if (message.MessageData.Any() && message.MessageData.Length > 2)
             {

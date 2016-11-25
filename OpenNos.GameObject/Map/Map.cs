@@ -530,7 +530,6 @@ namespace OpenNos.GameObject
         {
             try
             {
-                List<Task> NpcLifeTask = new List<Task>();
                 for (int i = Sessions.Where(s => s.HasSelectedCharacter).Count() - 1; i >= 0; i--)
                 {
                     ClientSession Session = Sessions.Where(s => s?.Character != null).ElementAt(i);

@@ -18,7 +18,7 @@ using OpenNos.GameObject;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reactive.Linq;
 
 namespace OpenNos.Handler
 {
@@ -695,7 +695,7 @@ namespace OpenNos.Handler
                             return;
                         }
                         Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-                        new Task(() => RemoveSP(inventory.ItemVNum)).Start();
+                        RemoveSP(inventory.ItemVNum);
                     }
                     else if (slot == (byte)EquipmentType.Sp && !Session.Character.UseSp && timeSpanSinceLastSpUsage <= Session.Character.SpCooldown)
                     {
@@ -1246,7 +1246,7 @@ namespace OpenNos.Handler
                 if (Session.Character.UseSp)
                 {
                     Session.Character.LastSp = currentRunningSeconds;
-                    new Task(() => RemoveSP(specialistInstance.ItemVNum)).Start();
+                    RemoveSP(specialistInstance.ItemVNum);
                 }
                 else
                 {
@@ -1573,7 +1573,7 @@ namespace OpenNos.Handler
             sourceSession.Character.ExchangeInfo = null;
         }
 
-        private async void RemoveSP(short vnum)
+        private void RemoveSP(short vnum)
         {
             if (Session != null && Session.HasSession)
             {
@@ -1607,9 +1607,14 @@ namespace OpenNos.Handler
                 Session.SendPackets(Session.Character.GenerateQuicklist());
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateStatChar());
-                await Task.Delay(Session.Character.SpCooldown * 1000);
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
-                Session.SendPacket("sd 0");
+                Observable.Timer(TimeSpan.FromMilliseconds(Session.Character.SpCooldown * 1000))
+                           .Subscribe(
+                           o =>
+                           {
+                               Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
+                               Session.SendPacket("sd 0");
+                           });
+             
             }
         }
 

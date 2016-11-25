@@ -871,8 +871,8 @@ namespace OpenNos.GameObject
 
         internal void StopServer()
         {
-            ServerManager.Instance.ShutdownStop = true;
-            ServerManager.Instance.TaskShutdown = null;
+            Instance.ShutdownStop = true;
+            Instance.TaskShutdown = null;
         }
 
         protected override void Dispose(bool disposing)
