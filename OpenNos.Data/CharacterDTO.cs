@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Domain;
+using System;
 
 namespace OpenNos.Data
 {
@@ -77,6 +78,8 @@ namespace OpenNos.Data
         public byte JobLevel { get; set; }
 
         public long JobLevelXp { get; set; }
+
+        public DateTime LastLogin { get; set; }
 
         public byte Level { get; set; }
 
