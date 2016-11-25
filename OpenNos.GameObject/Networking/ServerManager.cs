@@ -67,28 +67,29 @@ namespace OpenNos.GameObject
         private ServerManager()
         {
             _groups = new ThreadSafeSortedList<long, Group>();
+            Mails = DAOFactory.MailDAO.LoadAll().ToList();
 
-            Observable.Timer(TimeSpan.FromMinutes(5)).Subscribe(x =>
+            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
            {
                SaveAllProcess();
            });
 
-            Observable.Timer(TimeSpan.FromMinutes(2)).Subscribe(x =>
+            Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x =>
             {
                 GroupProcess();
             });
 
-            Observable.Timer(TimeSpan.FromHours(3)).Subscribe(x =>
+            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
             {
                 BotProcess();
             });
 
-            Observable.Timer(TimeSpan.FromSeconds(30)).Subscribe(x =>
+            Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
             {
                 MailProcess();
             });
 
-            Observable.Timer(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
+            Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
             {
                 TaskLauncherProcess();
             });
