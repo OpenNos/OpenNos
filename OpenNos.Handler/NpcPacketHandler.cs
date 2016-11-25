@@ -612,6 +612,8 @@ namespace OpenNos.Handler
                         }
 
                         ItemInstance inv = Session.Character.Inventory.AddNewToInventory(rec.ItemVNum, rec.Amount);
+                        if (inv == null)
+                            return;
                         if (inv.GetType().Equals(typeof(WearableInstance)))
                         {
                             WearableInstance item = inv as WearableInstance;
