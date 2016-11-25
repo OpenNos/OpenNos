@@ -24,6 +24,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Reactive.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -67,32 +68,39 @@ namespace OpenNos.GameObject
         {
             _groups = new ThreadSafeSortedList<long, Group>();
 
-            Task autosave = new Task(SaveAllProcess);
-            autosave.Start();
+            Observable.Timer(TimeSpan.FromMinutes(5)).Subscribe(x =>
+           {
+               SaveAllProcess();
+           });
 
-            Task GroupTask = new Task(() => GroupProcess());
-            GroupTask.Start();
+            Observable.Timer(TimeSpan.FromMinutes(2)).Subscribe(x =>
+            {
+                GroupProcess();
+            });
 
-            Task BotTask = new Task(() => BotProcess());
-            BotTask.Start();
+            Observable.Timer(TimeSpan.FromHours(3)).Subscribe(x =>
+            {
+                BotProcess();
+            });
 
-            Task MailTask = new Task(() => MailProcess());
-            MailTask.Start();
+            Observable.Timer(TimeSpan.FromSeconds(30)).Subscribe(x =>
+            {
+                MailProcess();
+            });
 
-            Task TaskController = new Task(() => TaskLauncherProcess());
-            TaskController.Start();
+            Observable.Timer(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
+            {
+                TaskLauncherProcess();
+            });
 
             lastGroupId = 1;
         }
 
-        private async void MailProcess()
+        private void MailProcess()
         {
-            while (true)
-            {
-                Mails = DAOFactory.MailDAO.LoadAll().ToList();
-                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
-                await Task.Delay(30000);
-            }
+            Mails = DAOFactory.MailDAO.LoadAll().ToList();
+            Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
+
         }
 
         #endregion
@@ -872,39 +880,32 @@ namespace OpenNos.GameObject
         }
 
         // Server
-        private async void BotProcess()
+        private void BotProcess()
         {
             Random rnd = new Random();
-            while (true)
-            {
-                Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{ rnd.Next(0, 5) }"));
-                await Task.Delay(60000 * 180);
-            }
+            Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{ rnd.Next(0, 5) }"));
+
         }
 
-        private async void GroupProcess()
+        private void GroupProcess()
         {
-            while (true)
+            try
             {
-                try
+                foreach (Group grp in Groups)
                 {
-                    foreach (Group grp in Groups)
+                    foreach (ClientSession session in grp.Characters)
                     {
-                        foreach (ClientSession session in grp.Characters)
+                        foreach (string str in grp.GeneratePst())
                         {
-                            foreach (string str in grp.GeneratePst())
-                            {
-                                session.SendPacket(str);
-                            }
+                            session.SendPacket(str);
                         }
                     }
                 }
-                catch (Exception)
-                {
-                }
-
-                await Task.Delay(2000);
             }
+            catch (Exception)
+            {
+            }
+
         }
 
         private void RemoveGroup(Group grp)
@@ -913,36 +914,29 @@ namespace OpenNos.GameObject
         }
 
         // Server
-        private async void SaveAllProcess()
+        private void SaveAllProcess()
         {
-            while (true)
-            {
-                await Task.Delay(60000 * 4);
-                Logger.Log.Info(Language.Instance.GetMessageFromKey("SAVING_ALL"));
-                SaveAll();
-            }
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("SAVING_ALL"));
+            SaveAll();
         }
 
         // Map ??
         private void TaskLauncherProcess()
         {
             List<Task> TaskMaps = null;
-            while (true)
+
+            TaskMaps = new List<Task>();
+            foreach (var map in _maps.Where(s => s.Value.Sessions.Any()))
             {
-                TaskMaps = new List<Task>();
-                foreach (var map in _maps.Where(s => s.Value.Sessions.Any()))
-                {
-                    TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
-                    map.Value.Disabled = false;
-                }
-                foreach (var map in _maps.Where(s => !s.Value.Disabled && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
-                {
-                    map.Value.Disabled = true;
-                }
-                TaskMaps.ForEach(s => s.Start());
-                Task.WaitAll(TaskMaps.ToArray());
-                Thread.Sleep(300);
+                TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
+                map.Value.Disabled = false;
             }
+            foreach (var map in _maps.Where(s => !s.Value.Disabled && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
+            {
+                map.Value.Disabled = true;
+            }
+            TaskMaps.ForEach(s => s.Start());
+
         }
 
         #endregion
