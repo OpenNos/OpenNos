@@ -641,10 +641,10 @@ namespace OpenNos.Import.Console
                     npcMonster.DistanceDefence = short.Parse(currentPacket[16]);
                     npcMonster.DistanceDefenceDodge = short.Parse(currentPacket[17]);
                     npcMonster.MagicDefence = short.Parse(currentPacket[18]);
-                    npcMonster.FireResistance = sbyte.Parse(currentPacket[19]);
-                    npcMonster.WaterResistance = sbyte.Parse(currentPacket[20]);
-                    npcMonster.LightResistance = sbyte.Parse(currentPacket[21]);
-                    npcMonster.DarkResistance = sbyte.Parse(currentPacket[22]);
+                    npcMonster.FireResistance = sbyte.Parse(currentPacket[20]);
+                    npcMonster.WaterResistance = sbyte.Parse(currentPacket[21]);
+                    npcMonster.LightResistance = sbyte.Parse(currentPacket[22]);
+                    npcMonster.DarkResistance = sbyte.Parse(currentPacket[23]);
 
                     // TODO: BCard Buff parsing
                     DAOFactory.NpcMonsterDAO.InsertOrUpdate(ref npcMonster);
