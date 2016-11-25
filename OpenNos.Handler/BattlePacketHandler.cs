@@ -860,7 +860,7 @@ namespace OpenNos.Handler
                 }
                 else if (elementalBoost == 1.3)
                 {
-                    elementalBoost = 0;
+                    elementalBoost = 0.15;
                 }
                 else if (elementalBoost == 1.5)
                 {
