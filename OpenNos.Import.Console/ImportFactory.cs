@@ -628,7 +628,7 @@ namespace OpenNos.Import.Console
                     {
                         continue;
                     }
-                    npcMonster.AttackClass = byte.Parse(currentPacket[5]);
+                    npcMonster.AttackClass = byte.Parse(currentPacket[6]);
                     npcMonster.AttackUpgrade = byte.Parse(currentPacket[8]);
                     npcMonster.DamageMinimum = short.Parse(currentPacket[9]);
                     npcMonster.DamageMaximum = short.Parse(currentPacket[10]);
