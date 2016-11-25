@@ -21,7 +21,6 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenNos.Import.Console
 {

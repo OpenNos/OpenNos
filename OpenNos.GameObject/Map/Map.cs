@@ -80,8 +80,6 @@ namespace OpenNos.GameObject
 
         public byte[] Data { get; set; }
 
-        public bool Disabled { get; internal set; }
-
         public ThreadSafeSortedList<long, MapItem> DroppedList { get; set; }
 
         public bool IsDancing { get; set; }
@@ -463,21 +461,10 @@ namespace OpenNos.GameObject
 
         internal void MapTaskManager()
         {
-            try
+            if (!(!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now))
             {
-                List<Task> mapTasks = new List<Task>();
-                mapTasks.Add(new Task(() => NpcLifeManager()));
-                mapTasks.Add(new Task(() => MonsterLifeManager()));
-                mapTasks.Add(new Task(() => CharacterLifeManager()));
-                mapTasks.Add(new Task(() => RemoveMapItem()));
-
-                mapTasks.ForEach(s => s.Start());
-                Task.WaitAll(mapTasks.ToArray());
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
+                Parallel.Invoke(() => NpcLifeManager(), () => MonsterLifeManager(), () => CharacterLifeManager(), () => RemoveMapItem());
+            } 
         }
 
         internal List<GridPos> StraightPath(GridPos mapCell1, GridPos mapCell2)

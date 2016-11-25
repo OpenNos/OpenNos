@@ -89,10 +89,13 @@ namespace OpenNos.GameObject
                 MailProcess();
             });
 
-            Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
+            foreach (var map in _maps.Where(s => s.Value.Sessions.Any()))
             {
-                TaskLauncherProcess();
-            });
+                Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
+                {
+                    map.Value.MapTaskManager();
+                });
+            }
 
             lastGroupId = 1;
         }
@@ -919,25 +922,6 @@ namespace OpenNos.GameObject
         {
             Logger.Log.Info(Language.Instance.GetMessageFromKey("SAVING_ALL"));
             SaveAll();
-        }
-
-        // Map ??
-        private void TaskLauncherProcess()
-        {
-            List<Task> TaskMaps = null;
-
-            TaskMaps = new List<Task>();
-            foreach (var map in _maps.Where(s => s.Value.Sessions.Any()))
-            {
-                TaskMaps.Add(new Task(() => map.Value.MapTaskManager()));
-                map.Value.Disabled = false;
-            }
-            foreach (var map in _maps.Where(s => !s.Value.Disabled && (!s.Value.Sessions.Any() && s.Value.LastUnregister.AddSeconds(30) < DateTime.Now)))
-            {
-                map.Value.Disabled = true;
-            }
-            TaskMaps.ForEach(s => s.Start());
-
         }
 
         #endregion

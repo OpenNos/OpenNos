@@ -5,7 +5,6 @@ using OpenNos.GameObject;
 using OpenNos.GameObject.Mock;
 using OpenNos.GameObject.Packets.ServerPackets;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenNos.Test
 {
