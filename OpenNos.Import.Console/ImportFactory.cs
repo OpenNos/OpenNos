@@ -2727,7 +2727,7 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     default:
-                                        if (item.VNum > 5891 && item.VNum < 5900)
+                                        if (item.VNum > 5891 && item.VNum < 5900 && item.VNum > 9100 && item.VNum < 9109)
                                         {
                                             item.Effect = 69;
                                         }
