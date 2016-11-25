@@ -36,6 +36,48 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
+                // sp point potions
+                case 150:
+                case 151:
+                    if (EffectValue == 1)
+                    {
+                        session.Character.SpAdditionPoint += 30000;
+                    }
+                    else if (EffectValue == 2)
+                    {
+                        session.Character.SpAdditionPoint += 70000;
+                    }
+                    else if (EffectValue == 3)
+                    {
+                        session.Character.SpAdditionPoint += 180000;
+                    }
+                    else
+                    {
+                        session.Character.SpAdditionPoint += EffectValue;
+                    }
+                    if (session.Character.SpAdditionPoint > 1000000)
+                    {
+                        session.Character.SpAdditionPoint = 1000000;
+                    }
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    session.SendPacket(session.Character.GenerateSpPoint());
+                    break;
+
+                case 204:
+                    session.Character.SpPoint += 10000;
+                    session.Character.SpAdditionPoint += 30000;
+                    if (session.Character.SpAdditionPoint > 1000000)
+                    {
+                        session.Character.SpAdditionPoint = 1000000;
+                    }
+                    if (session.Character.SpPoint > 10000)
+                    {
+                        session.Character.SpPoint = 10000;
+                    }
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    session.SendPacket(session.Character.GenerateSpPoint());
+                    break;
+
                 // wings
                 case 650:
                     SpecialistInstance specialistInstance = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
