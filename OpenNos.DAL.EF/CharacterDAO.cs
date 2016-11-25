@@ -221,7 +221,7 @@ namespace OpenNos.DAL.EF
 
         private CharacterDTO Update(Character entity, CharacterDTO character, OpenNosContext context)
         {
-            if(entity != null);
+            if (entity != null)
             {
                 _mapper.Map(character, entity);
                 context.SaveChanges();
