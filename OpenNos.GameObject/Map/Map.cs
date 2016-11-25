@@ -52,7 +52,6 @@ namespace OpenNos.GameObject
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
             Data = data;
-            LoadZone();
             IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId).ToList();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
 
