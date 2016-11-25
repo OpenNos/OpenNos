@@ -66,13 +66,18 @@ namespace OpenNos.GameObject
 
         private ServerManager()
         {
+           
+            
+        }
+
+        public void LaunchEvents()
+        {
             _groups = new ThreadSafeSortedList<long, Group>();
-            Mails = DAOFactory.MailDAO.LoadAll().ToList();
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
-           {
-               SaveAllProcess();
-           });
+            {
+                SaveAllProcess();
+            });
 
             Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x =>
             {
@@ -96,10 +101,8 @@ namespace OpenNos.GameObject
                     map.Value.MapEventManager();
                 });
             }
-
             lastGroupId = 1;
         }
-
         private void MailProcess()
         {
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
@@ -445,6 +448,8 @@ namespace OpenNos.GameObject
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
             FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
 
+            Mails = DAOFactory.MailDAO.LoadAll().ToList();
+
             // load explicite type of ItemDTO
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
@@ -679,6 +684,7 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.Error("General Error", ex);
             }
+            LaunchEvents();
         }
 
         public bool IsCharacterMemberOfGroup(long characterId)
