@@ -61,6 +61,7 @@ namespace OpenNos.GameObject
             {
                 return base.TransportId;
             }
+
             set
             {
                 // cannot set TransportId

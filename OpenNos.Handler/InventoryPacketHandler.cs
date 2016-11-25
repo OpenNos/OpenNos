@@ -237,7 +237,7 @@ namespace OpenNos.Handler
             }
 
             ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
-            if(Session.Character.HasShopOpened || (targetSession != null && targetSession.Character.HasShopOpened))
+            if (Session.Character.HasShopOpened || (targetSession != null && targetSession.Character.HasShopOpened))
             {
                 CloseExchange(Session, targetSession);
                 return;
@@ -411,7 +411,6 @@ namespace OpenNos.Handler
                                                     }
                                                     else // all items can be traded
                                                     {
-
                                                         Session.Character.IsExchanging = targetSession.Character.IsExchanging = true;
 
                                                         // exchange all items from target to source
@@ -1214,8 +1213,6 @@ namespace OpenNos.Handler
                     specialistInstance.MP += 200;
                     specialistInstance.ElementRate += 2;
                 }
-
-
                 #endregion
 
                 Session.SendPacket(Session.Character.GenerateStatChar());
@@ -1521,13 +1518,13 @@ namespace OpenNos.Handler
 
         private void CloseExchange(ClientSession session, ClientSession targetSession)
         {
-            if(targetSession != null && targetSession.Character.ExchangeInfo != null)
+            if (targetSession != null && targetSession.Character.ExchangeInfo != null)
             {
                 targetSession.SendPacket("exc_close 0");
                 targetSession.Character.ExchangeInfo = null;
             }
 
-            if(session != null & session.Character.ExchangeInfo != null)
+            if (session != null & session.Character.ExchangeInfo != null)
             {
                 session.SendPacket("exc_close 0");
                 session.Character.ExchangeInfo = null;
@@ -1613,8 +1610,7 @@ namespace OpenNos.Handler
                            {
                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
                                Session.SendPacket("sd 0");
-                           });
-             
+                           });     
             }
         }
 

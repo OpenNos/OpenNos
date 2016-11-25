@@ -114,8 +114,6 @@ namespace OpenNos.Handler
                                     Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.IsAlive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 0 {ski.Skill.SkillType - 1}");
                                     GenerateKillBonus(mon.MapMonsterId);
                                 }
-
-
                                 Session.SendPacketAfterWait($"sr {skillCastId - 1}", ski.Skill.Cooldown * 100);
                             }
                         }
@@ -277,7 +275,6 @@ namespace OpenNos.Handler
                         }
                     }
                     Session.SendPacketAfterWait($"sr {castingId}", ski.Skill.Cooldown * 100);
-
 
                 }
                 else
@@ -1028,7 +1025,6 @@ namespace OpenNos.Handler
                                {
                                    Session.CurrentMap.DropItemByMonster(dropOwner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
                                });
-
                             }
                         }
                     }
@@ -1070,7 +1066,6 @@ namespace OpenNos.Handler
                                 alreadyGifted.Add(charId);
                             }
                         }
-
                     }
                     else
                     {
@@ -1092,7 +1087,6 @@ namespace OpenNos.Handler
                         }
 
                         // delayed Drop
-
 
                         Observable.Timer(TimeSpan.FromMilliseconds(500))
                               .Subscribe(
@@ -1176,12 +1170,8 @@ namespace OpenNos.Handler
                                  Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {x} {y} {(mon.IsAlive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {ski.Skill.SkillType - 1}");
                                  GenerateKillBonus(mon.MapMonsterId);
                              }
-
-
                              Session.SendPacketAfterWait($"sr {Castingid}", ski.Skill.Cooldown * 100);
                          });
-
-
                 }
                 else
                 {

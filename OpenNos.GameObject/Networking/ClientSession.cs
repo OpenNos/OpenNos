@@ -306,6 +306,7 @@ namespace OpenNos.GameObject
                 _client.SendPackets(packets, priority);
             }
         }
+
         public void SendPacketAfterWait(string packet, int Millisecond)
         {
             Observable.Timer(TimeSpan.FromMilliseconds(Millisecond))

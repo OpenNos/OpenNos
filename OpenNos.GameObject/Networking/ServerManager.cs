@@ -66,8 +66,6 @@ namespace OpenNos.GameObject
 
         private ServerManager()
         {
-           
-            
         }
 
         public void LaunchEvents()
@@ -103,11 +101,11 @@ namespace OpenNos.GameObject
             }
             lastGroupId = 1;
         }
+
         private void MailProcess()
         {
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
             Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
-
         }
 
         #endregion
@@ -204,8 +202,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket("eff_ob -1 -1 0 4269");
                 Session.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
 
-
-                Parallel.Invoke(delegate ()
+                Parallel.Invoke(delegate()
                 {
                     for (int i = 1; i <= 30; i++)
                     {
@@ -217,7 +214,6 @@ namespace OpenNos.GameObject
                     }
                     Instance.ReviveFirstPosition(Session.Character.CharacterId);
                 });
-              
             }
         }
 
@@ -896,7 +892,6 @@ namespace OpenNos.GameObject
         {
             Random rnd = new Random();
             Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{ rnd.Next(0, 5) }"));
-
         }
 
         private void GroupProcess()
@@ -919,7 +914,6 @@ namespace OpenNos.GameObject
             }
 
         }
-
         private void RemoveGroup(Group grp)
         {
             _groups.Remove(grp.GroupId);
