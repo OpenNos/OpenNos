@@ -89,11 +89,11 @@ namespace OpenNos.GameObject
                 MailProcess();
             });
 
-            foreach (var map in _maps.Where(s => s.Value.Sessions.Any()))
+            foreach (var map in _maps)
             {
                 Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
                 {
-                    map.Value.MapTaskManager();
+                    map.Value.MapEventManager();
                 });
             }
 
