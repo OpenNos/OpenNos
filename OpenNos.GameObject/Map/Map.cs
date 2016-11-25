@@ -622,6 +622,44 @@ namespace OpenNos.GameObject
                                 }
                             }
                         }
+                        if (Session.Character.UseSp)
+                        {
+                            if (Session.Character.LastSpGaugeRemove <= new DateTime(0001, 01, 01, 00, 00, 00))
+                                Session.Character.LastSpGaugeRemove = DateTime.Now;
+                            if (Session.Character.LastSkillUse.AddSeconds(15) >= DateTime.Now && Session.Character.LastSpGaugeRemove.AddSeconds(1) <= DateTime.Now)
+                            {
+                                SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                                byte spType = 0;
+
+                                if((specialist.Item.Morph > 1 && specialist.Item.Morph < 8) || (specialist.Item.Morph > 9 && specialist.Item.Morph < 16))
+                                    spType = 3;
+                                else if(specialist.Item.Morph > 16 && specialist.Item.Morph < 29)
+                                    spType = 2;
+                                else if(specialist.Item.Morph == 9)
+                                    spType = 1;
+                                if(Session.Character.SpPoint >= spType)
+                                {
+                                    Session.Character.SpPoint -= spType;
+                                }
+                                else if(Session.Character.SpPoint < spType && Session.Character.SpPoint != 0)
+                                {
+                                    spType -= (byte)Session.Character.SpPoint;
+                                    Session.Character.SpAdditionPoint -= spType;
+                                }
+                                else if(Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint >= spType)
+                                {
+                                    Session.Character.SpAdditionPoint -= spType;
+                                }
+                                else if(Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint < spType)
+                                {
+                                    Session.Character.SpAdditionPoint = 0;
+                                    
+                                    // Todo: Untransform SP
+                                }
+                                Session.SendPacket(Session.Character.GenerateSpPoint());
+                                Session.Character.LastSpGaugeRemove = DateTime.Now;
+                            }
+                        }
                     }
                 }
             }

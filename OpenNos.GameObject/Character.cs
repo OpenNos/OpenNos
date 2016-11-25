@@ -269,6 +269,8 @@ namespace OpenNos.GameObject
 
         public double LastSp { get; set; }
 
+        public DateTime LastSpGaugeRemove { get; set; }
+
         public DateTime LastTransform { get; set; }
 
         public int LightResistance { get; set; }

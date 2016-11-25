@@ -357,7 +357,13 @@ namespace OpenNos.Handler
                     {
                         character.Authority = Session.Account.Authority;
                         Session.SetCharacter(character);
+                        if(Session.Character.LastLogin.Date != DateTime.Now.Date)
+                        {
+                            Session.Character.SpAdditionPoint += Session.Character.SpPoint;
+                            Session.Character.SpPoint = 10000;
+                        }
                         Session.Character.LastLogin = DateTime.Now;
+                        
                         Session.Character.Update();
                         Session.Character.LoadInventory();
                         Session.Character.LoadQuicklists();
