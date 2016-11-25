@@ -17,7 +17,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reactive.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -159,12 +159,14 @@ namespace OpenNos.GameObject
 
                 if (Map.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                 {
-                    Task.Factory.StartNew(async () =>
-                    {
-                        await Task.Delay(1000 * (xpoint + ypoint) / (2 * Npc.Speed));
-                        this.MapX = mapX;
-                        this.MapY = mapY;
-                    });
+                    Observable.Timer(TimeSpan.FromMilliseconds(1000 * (xpoint + ypoint) / (2 * Npc.Speed)))
+                      .Subscribe(
+                          x =>
+                          {
+                              this.MapX = mapX;
+                              this.MapY = mapY;
+                          });
+
                     LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Npc.Speed));
                     Map.Broadcast(new BroadcastPacket(null, GenerateMv2(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                 }
@@ -225,7 +227,7 @@ namespace OpenNos.GameObject
                         }
 
                         LastEffect = DateTime.Now;
-                        if (monster.CurrentHp  < 1)
+                        if (monster.CurrentHp < 1)
                         {
                             if (IsMoving)
                             {
@@ -242,7 +244,7 @@ namespace OpenNos.GameObject
                             monster.CurrentMp = 0;
                             monster.Death = DateTime.Now;
                             Target = -1;
-                        }                        
+                        }
                     }
                 }
                 else
@@ -272,12 +274,15 @@ namespace OpenNos.GameObject
                             double waitingtime = (double)(Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId })) / (double)(Npc.Speed);
                             Map.Broadcast(new BroadcastPacket(null, $"mv 2 {this.MapNpcId} {mapX} {mapY} {Npc.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                             LastMove = DateTime.Now.AddSeconds((waitingtime > 1 ? 1 : waitingtime));
-                            Task.Factory.StartNew(async () =>
-                            {
-                                await Task.Delay((int)((waitingtime > 1 ? 1 : waitingtime) * 1000));
-                                this.MapX = mapX;
-                                this.MapY = mapY;
-                            });
+
+                            Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000)))
+                            .Subscribe(
+                                x =>
+                                {
+                                    this.MapX = mapX;
+                                    this.MapY = mapY;
+                                });
+
 
                             for (int j = maxindex; j > 0; j--)
                             {

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -543,7 +544,7 @@ namespace OpenNos.GameObject
             #endregion
 
             #region Minimum damage
-            if(Monster.Level < 45)
+            if (Monster.Level < 45)
             {
                 //no minimum damage
             }
@@ -675,12 +676,14 @@ namespace OpenNos.GameObject
                     double waitingtime = (double)(Map.GetDistance(new MapCell() { X = mapX, Y = mapY, MapId = MapId }, new MapCell() { X = MapX, Y = MapY, MapId = MapId })) / (double)(Monster.Speed);
                     Map.Broadcast(new BroadcastPacket(null, $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                     LastMove = DateTime.Now.AddSeconds((waitingtime > 1 ? 1 : waitingtime));
-                    Task.Factory.StartNew(async () =>
-                    {
-                        await Task.Delay((int)((waitingtime > 1 ? 1 : waitingtime) * 1000));
-                        this.MapX = mapX;
-                        this.MapY = mapY;
-                    });
+
+                    Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000)))
+                     .Subscribe(
+                         x =>
+                         {
+                             this.MapX = mapX;
+                             this.MapY = mapY;
+                         });
 
                     for (int j = maxindex; j > 0; j--)
                     {
@@ -740,12 +743,14 @@ namespace OpenNos.GameObject
                     short mapY = FirstY;
                     if (Map?.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint) ?? false)
                     {
-                        Task.Factory.StartNew(async () =>
-                        {
-                            await Task.Delay(1000 * (xpoint + ypoint) / (2 * Monster.Speed));
-                            this.MapX = mapX;
-                            this.MapY = mapY;
-                        });
+                        Observable.Timer(TimeSpan.FromMilliseconds(1000 * (xpoint + ypoint) / (2 * Monster.Speed)))
+                      .Subscribe(
+                          x =>
+                          {
+                              this.MapX = mapX;
+                              this.MapY = mapY;
+                          });
+
                         LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Monster.Speed));
                         Map.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                     }
