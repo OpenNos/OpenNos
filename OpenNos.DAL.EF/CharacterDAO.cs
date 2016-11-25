@@ -208,6 +208,7 @@ namespace OpenNos.DAL.EF
         private CharacterDTO Insert(CharacterDTO character, OpenNosContext context)
         {
             Character entity = _mapper.Map<Character>(character);
+            entity.LastLogin = DateTime.Now;
             context.Character.Add(entity);
             context.SaveChanges();
             return _mapper.Map<CharacterDTO>(entity);
