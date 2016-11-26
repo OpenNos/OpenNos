@@ -1698,14 +1698,17 @@ namespace OpenNos.GameObject
                             if (!alreadyGifted.Contains(charId))
                             {
                                 ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
-                                session.Character.Gold += drop2.Amount;
-                                if (session.Character.Gold > 1000000000)
+                                if (session != null)
                                 {
-                                    session.Character.Gold = 1000000000;
-                                    session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                                    session.Character.Gold += drop2.Amount;
+                                    if (session.Character.Gold > 1000000000)
+                                    {
+                                        session.Character.Gold = 1000000000;
+                                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                                    }
+                                    session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
+                                    session.SendPacket(session.Character.GenerateGold());
                                 }
-                                session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
-                                session.SendPacket(session.Character.GenerateGold());
                                 alreadyGifted.Add(charId);
                             }
                         }
