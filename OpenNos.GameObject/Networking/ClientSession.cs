@@ -14,7 +14,6 @@
 
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Threading;
 using OpenNos.Domain;
 using OpenNos.ServiceRef.Internal;
 using System;
@@ -23,7 +22,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 
 namespace OpenNos.GameObject
 {
@@ -38,8 +36,9 @@ namespace OpenNos.GameObject
         private Character _character;
         private INetworkClient _client;
         private IDictionary<string, HandlerMethodReference> _handlerMethods;
-        private SequentialItemProcessor<byte[]> _queue;
         private Random _random;
+        private Queue<byte[]> _receiveQueue;
+        private object _receiveQueueObservable;
         private IList<String> _waitForPacketList = new List<String>();
 
         // Packetwait Packets
@@ -61,7 +60,7 @@ namespace OpenNos.GameObject
             _random = new Random((int)client.ClientId);
 
             // initialize lagging mode
-            IsLagMode = System.Configuration.ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
+            bool isLagMode = System.Configuration.ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
 
             // initialize network client
             _client = client;
@@ -72,9 +71,10 @@ namespace OpenNos.GameObject
             // register for NetworkClient events
             _client.MessageReceived += OnNetworkClientMessageReceived;
 
-            // start queue
-            _queue = new SequentialItemProcessor<byte[]>(HandlePacket);
-            _queue.Start();
+            // start observer for receiving packets
+            _receiveQueue = new Queue<byte[]>();
+            _receiveQueueObservable = Observable.Interval(new TimeSpan(0, 0, 0, 0, (isLagMode ? 1000 : 10)))
+                .Subscribe(x => HandlePackets());
         }
 
         #endregion
@@ -189,8 +189,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool IsLagMode { get; private set; }
-
         public bool IsLocalhost
         {
             get
@@ -249,7 +247,7 @@ namespace OpenNos.GameObject
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }
 
-            _queue.ClearQueue();
+            _receiveQueue.Clear();
         }
 
         public void Disconnect()
@@ -291,6 +289,19 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void SendPacketAfterWait(string packet, int Millisecond)
+        {
+            if (!IsDisposing)
+            {
+                Observable.Timer(TimeSpan.FromMilliseconds(Millisecond))
+                .Subscribe(
+                 o =>
+                 {
+                     SendPacket(packet);
+                 });
+            }
+        }
+
         public void SendPacketFormat(string packet, params object[] param)
         {
             if (!IsDisposing)
@@ -307,15 +318,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SendPacketAfterWait(string packet, int Millisecond)
-        {
-            Observable.Timer(TimeSpan.FromMilliseconds(Millisecond))
-            .Subscribe(
-             o =>
-             {
-                 SendPacket(packet);
-             });
-        }
         public void SetCharacter(Character character)
         {
             Character = character;
@@ -388,135 +390,140 @@ namespace OpenNos.GameObject
         /// Handle the packet received by the Client.
         /// </summary>
         /// <param name="packetData"></param>
-        private void HandlePacket(byte[] packetData)
+        private void HandlePackets()
         {
-            // determine first packet
-            if (_encryptor.HasCustomParameter && this.SessionId == 0)
+            while (_receiveQueue.Any())
             {
-                string sessionPacket = _encryptor.DecryptCustomParameter(packetData);
+                byte[] packetData = _receiveQueue.Dequeue();
 
-                string[] sessionParts = sessionPacket.Split(' ');
-                if (sessionParts.Count() < 1)
+                // determine first packet
+                if (_encryptor.HasCustomParameter && this.SessionId == 0)
                 {
-                    return;
-                }
-                this.LastKeepAliveIdentity = Convert.ToInt32(sessionParts[0]);
+                    string sessionPacket = _encryptor.DecryptCustomParameter(packetData);
 
-                // set the SessionId if Session Packet arrives
-                if (sessionParts.Count() < 2)
-                {
-                    return;
-                }
-                this.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
-                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), this.SessionId);
-
-                if (!_waitForPacketsAmount.HasValue)
-                {
-                    TriggerHandler("OpenNos.EntryPoint", String.Empty, false);
-                }
-
-                return;
-            }
-
-            string packetConcatenated = _encryptor.Decrypt(packetData, (int)this.SessionId);
-
-            foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                string[] packetsplit = packet.Split(' ', '^');
-
-                if (packetsplit.Length > 1 && packetsplit[1] != "0")
-                {
-                    if (packetsplit[1] == "$.*")
+                    string[] sessionParts = sessionPacket.Split(' ');
+                    if (sessionParts.Count() < 1)
                     {
-                        ServerManager.Instance.Broadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
                         return;
                     }
-                }
+                    this.LastKeepAliveIdentity = Convert.ToInt32(sessionParts[0]);
 
-                if (_encryptor.HasCustomParameter)
-                {
-                    // keep alive
-                    string nextKeepAliveRaw = packetsplit[0];
-                    Int32 nextKeepaliveIdentity;
-                    if (!Int32.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) && nextKeepaliveIdentity != (this.LastKeepAliveIdentity + 1))
+                    // set the SessionId if Session Packet arrives
+                    if (sessionParts.Count() < 2)
                     {
-                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"), _client.ClientId);
-                        _client.Disconnect();
                         return;
                     }
-                    else if (nextKeepaliveIdentity == 0)
+                    this.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
+                    Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), this.SessionId);
+
+                    if (!_waitForPacketsAmount.HasValue)
                     {
-                        if (LastKeepAliveIdentity == UInt16.MaxValue)
-                        {
-                            LastKeepAliveIdentity = nextKeepaliveIdentity;
-                        }
-                    }
-                    else
-                    {
-                        LastKeepAliveIdentity = nextKeepaliveIdentity;
+                        TriggerHandler("OpenNos.EntryPoint", String.Empty, false);
                     }
 
-                    if (_waitForPacketsAmount.HasValue)
+                    return;
+                }
+
+                string packetConcatenated = _encryptor.Decrypt(packetData, (int)this.SessionId);
+
+                foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    string[] packetsplit = packet.Split(' ', '^');
+
+                    if (packetsplit.Length > 1 && packetsplit[1] != "0")
                     {
-                        if (_waitForPacketList.Count != _waitForPacketsAmount - 1)
+                        if (packetsplit[1] == "$.*")
                         {
-                            _waitForPacketList.Add(packet);
-                        }
-                        else
-                        {
-                            _waitForPacketList.Add(packet);
-                            _waitForPacketsAmount = null;
-                            string queuedPackets = String.Join(" ", _waitForPacketList.ToArray());
-                            string header = queuedPackets.Split(' ', '^')[1];
-                            TriggerHandler(header, queuedPackets, true);
-                            _waitForPacketList.Clear();
+                            ServerManager.Instance.Broadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
                             return;
                         }
                     }
-                    else
+
+                    if (_encryptor.HasCustomParameter)
                     {
-                        string[] packetHeader = packet.Split(new char[] { ' ', '^' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        // 1 is a keep alive packet with no content to handle
-                        int permit = 1;
-                        if (packetHeader.Length > 1)
+                        // keep alive
+                        string nextKeepAliveRaw = packetsplit[0];
+                        Int32 nextKeepaliveIdentity;
+                        if (!Int32.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) && nextKeepaliveIdentity != (this.LastKeepAliveIdentity + 1))
                         {
-                            if (packetHeader[1][0] == '$')
+                            Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"), _client.ClientId);
+                            _client.Disconnect();
+                            return;
+                        }
+                        else if (nextKeepaliveIdentity == 0)
+                        {
+                            if (LastKeepAliveIdentity == UInt16.MaxValue)
                             {
-                                if (Account.Authority != AuthorityType.Admin)
-                                {
-                                    permit = 0;
-                                }
+                                LastKeepAliveIdentity = nextKeepaliveIdentity;
                             }
+                        }
+                        else
+                        {
+                            LastKeepAliveIdentity = nextKeepaliveIdentity;
+                        }
 
-                            if (packetHeader[1][0] == '/' || packetHeader[1][0] == ':' || packetHeader[1][0] == ';')
+                        if (_waitForPacketsAmount.HasValue)
+                        {
+                            if (_waitForPacketList.Count != _waitForPacketsAmount - 1)
                             {
-                                TriggerHandler(packetHeader[1][0].ToString(), packet, false);
+                                _waitForPacketList.Add(packet);
                             }
                             else
                             {
-                                if (permit == 1)
+                                _waitForPacketList.Add(packet);
+                                _waitForPacketsAmount = null;
+                                string queuedPackets = String.Join(" ", _waitForPacketList.ToArray());
+                                string header = queuedPackets.Split(' ', '^')[1];
+                                TriggerHandler(header, queuedPackets, true);
+                                _waitForPacketList.Clear();
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            string[] packetHeader = packet.Split(new char[] { ' ', '^' }, StringSplitOptions.RemoveEmptyEntries);
+
+                            // 1 is a keep alive packet with no content to handle
+                            int permit = 1;
+                            if (packetHeader.Length > 1)
+                            {
+                                if (packetHeader[1][0] == '$')
                                 {
-                                    if (packetHeader[1] != "0")
+                                    if (Account.Authority != AuthorityType.Admin)
                                     {
-                                        TriggerHandler(packetHeader[1], packet, false);
+                                        permit = 0;
+                                    }
+                                }
+
+                                if (packetHeader[1][0] == '/' || packetHeader[1][0] == ':' || packetHeader[1][0] == ';')
+                                {
+                                    TriggerHandler(packetHeader[1][0].ToString(), packet, false);
+                                }
+                                else
+                                {
+                                    if (permit == 1)
+                                    {
+                                        if (packetHeader[1] != "0")
+                                        {
+                                            TriggerHandler(packetHeader[1], packet, false);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                else
-                {
-                    // simple messaging
-                    string packetHeader = packet.Split(' ')[0];
-                    if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
-                    {
-                        TriggerHandler(packetHeader[0].ToString(), packet, false);
-                    }
                     else
                     {
-                        TriggerHandler(packetHeader, packet, false);
+                        // simple messaging
+                        string packetHeader = packet.Split(' ')[0];
+                        if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
+                        {
+                            TriggerHandler(packetHeader[0].ToString(), packet, false);
+                        }
+                        else
+                        {
+                            TriggerHandler(packetHeader, packet, false);
+                        }
                     }
                 }
             }
@@ -535,17 +542,11 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            if (IsLagMode)
-            {
-                // most devilish thing i can imagine
-                Thread.Sleep(_random.Next(1000, 2000));
-            }
-
             long currentPacketReceive = e.ReceivedTimestamp.Ticks;
 
             if (message.MessageData.Any() && message.MessageData.Length > 2)
             {
-                _queue.EnqueueMessage(message.MessageData);
+                _receiveQueue.Enqueue(message.MessageData);
             }
 
             lastPacketReceive = e.ReceivedTimestamp.Ticks;
