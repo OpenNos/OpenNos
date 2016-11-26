@@ -26,6 +26,7 @@ namespace OpenNos.Import.Console
 {
     public class ImportFactory
     {
+
         #region Members
 
         private readonly string _folder;
@@ -565,58 +566,6 @@ namespace OpenNos.Import.Console
                 }
             }
             DAOFactory.MapTypeMapDAO.Insert(maptypemaps);
-        }
-
-        //Need fix
-        public void ImportRespawnMapType()
-        {
-            List<RespawnMapTypeDTO> respawnmaptypemaps = new List<RespawnMapTypeDTO>();
-            short respawnMapTypeId = 1;
-            short defaultX = 0;
-            short defaultY = 0;
-            bool objectset;
-            for (int i = 1; i < 300; i++)
-            {
-                objectset = false;
-                if (i == 1)
-                {
-                    //NosVille
-                    respawnMapTypeId = 1;
-                    defaultX = 0;
-                    defaultY = 0;
-                    objectset = true;
-                }
-                else if (i == 20)
-                {
-                    // Mont Krem
-                    respawnMapTypeId = 2;
-                    defaultX = 0;
-                    defaultY = 0;
-                    objectset = true;
-                }
-                else if (i == 145)
-                {
-                    // Alveus
-                    respawnMapTypeId = 3;
-                    defaultX = 0;
-                    defaultY = 0;
-                    objectset = true;
-                }
-                else if (i == 170)
-                {
-                    // Acte 5
-                    respawnMapTypeId = 4;
-                    defaultX = 0;
-                    defaultY = 0;
-                    objectset = true;
-                }
-                if (objectset && DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.MapTypeMapDAO.LoadByMapAndMapType((short)i, respawnMapTypeId) == null)
-                {
-                    respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = (short)i, RespawnMapTypeId = respawnMapTypeId, DefaultX = defaultX, DefaultY = defaultY });
-                }
-                DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
-            }
-            Logger.Log.Info(Language.Instance.GetMessageFromKey("RESPAWNTYPE_PARSED"));
         }
 
         public void ImportMonsters()
@@ -1474,6 +1423,58 @@ namespace OpenNos.Import.Console
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPES_PARSED"), count));
         }
 
+        //Need fix
+        public void ImportRespawnMapType()
+        {
+            List<RespawnMapTypeDTO> respawnmaptypemaps = new List<RespawnMapTypeDTO>();
+            short respawnMapTypeId = 1;
+            short defaultX = 0;
+            short defaultY = 0;
+            string name = String.Empty;
+            bool objectset;
+            for (int i = 1; i < 300; i++)
+            {
+                objectset = false;
+                if (i == 1)
+                {
+                    name = "NosVille";
+                    respawnMapTypeId = 1;
+                    defaultX = 0;
+                    defaultY = 0;
+                    objectset = true;
+                }
+                else if (i == 20)
+                {
+                    name = "Mount Krem";
+                    respawnMapTypeId = 2;
+                    defaultX = 0;
+                    defaultY = 0;
+                    objectset = true;
+                }
+                else if (i == 145)
+                {
+                    name = "Port Avelus";
+                    respawnMapTypeId = 3;
+                    defaultX = 0;
+                    defaultY = 0;
+                    objectset = true;
+                }
+                else if (i == 170)
+                {
+                    name = "Act5";
+                    respawnMapTypeId = 4;
+                    defaultX = 0;
+                    defaultY = 0;
+                    objectset = true;
+                }
+                if (objectset && DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.RespawnMapTypeDAO.LoadByMapId((short)i) == null)
+                {
+                    respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = (short)i, RespawnMapTypeId = respawnMapTypeId, DefaultX = defaultX, DefaultY = defaultY, Name = name });
+                }
+                DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
+            }
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("RESPAWNTYPE_PARSED"));
+        }
         public void ImportShopItems()
         {
             List<ShopItemDTO> shopitems = new List<ShopItemDTO>();
@@ -3020,5 +3021,6 @@ namespace OpenNos.Import.Console
         }
 
         #endregion
+
     }
 }
