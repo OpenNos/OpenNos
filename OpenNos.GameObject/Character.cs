@@ -431,7 +431,6 @@ namespace OpenNos.GameObject
                                 respawn.DefaultMapId = defaultresp.DefaultMapId;
                                 respawn.RespawnMapTypeId = (long)respawnmaptype;
                             }
-
                         }
                         else
                         {
@@ -443,7 +442,6 @@ namespace OpenNos.GameObject
                     }
                 }
                 return respawn;
-
             }
         }
         public bool UseSp { get; set; }
@@ -471,7 +469,6 @@ namespace OpenNos.GameObject
                                 respawn.DefaultMapId = defaultresp.DefaultMapId;
                                 respawn.RespawnMapTypeId = (long)respawnmaptype;
                             }
-
                         }
                         else
                         {
