@@ -913,8 +913,8 @@ namespace OpenNos.GameObject
             catch (Exception)
             {
             }
-
         }
+
         private void RemoveGroup(Group grp)
         {
             _groups.Remove(grp.GroupId);

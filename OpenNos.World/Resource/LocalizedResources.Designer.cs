@@ -2482,6 +2482,42 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have no SP Points left! You can&apos;t transform now!.
+        /// </summary>
+        internal static string SP_NOPOINTS {
+            get {
+                return ResourceManager.GetString("SP_NOPOINTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The transformation got canceled! You have no SP Points left!.
+        /// </summary>
+        internal static string SP_NOPOINTSCANCELED {
+            get {
+                return ResourceManager.GetString("SP_NOPOINTSCANCELED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You received {0} SP Points!.
+        /// </summary>
+        internal static string SP_POINTSADDED {
+            get {
+                return ResourceManager.GetString("SP_POINTSADDED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You received {0} basic and {1} additional SP Points!.
+        /// </summary>
+        internal static string SP_POINTSADDEDBOTH {
+            get {
+                return ResourceManager.GetString("SP_POINTSADDEDBOTH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specialist point set!.
         /// </summary>
         internal static string SP_REFILL {
@@ -2838,6 +2874,15 @@ namespace OpenNos.World.Resource {
         internal static string WRONG_VALUE {
             get {
                 return ResourceManager.GetString("WRONG_VALUE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Since you didn&apos;t made the first hit, you only get a part of the XP.
+        /// </summary>
+        internal static string XP_NOTFIRSTHIT {
+            get {
+                return ResourceManager.GetString("XP_NOTFIRSTHIT", resourceCulture);
             }
         }
         

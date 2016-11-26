@@ -1063,4 +1063,19 @@
   <data name="GOLD_DROP_RATE_CHANGED" xml:space="preserve">
     <value>Szansa wypadnięcia złota zmieniona!</value>
   </data>
+  <data name="SP_NOPOINTS" xml:space="preserve">
+    <value>Nie masz wystarczającej ilości punktów SP, aby rozpocząć transformacje!</value>
+  </data>
+  <data name="SP_POINTSADDED" xml:space="preserve">
+    <value>Otrzymałeś {0} punktów SP.</value>
+  </data>
+  <data name="SP_POINTSADDEDBOTH" xml:space="preserve">
+    <value>Otrzymałeś {0} podstawowych i {1} dodatkowych punktów SP.</value>
+  </data>
+  <data name="SP_NOPOINTSCANCELED" xml:space="preserve">
+    <value>Twoja transformacja została zakończona z powodu braku punktów SP.</value>
+  </data>
+  <data name="XP_NOTFIRSTHIT" xml:space="preserve">
+    <value>Ponieważ nie zadałeś pierwszego ciosu, otrzymasz tylko część XP.</value>
+  </data>
 </root>

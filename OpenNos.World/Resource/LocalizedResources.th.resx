@@ -173,7 +173,7 @@
     <comment>[WAIT]</comment>
   </data>
   <data name="BAD_DIGNITY" xml:space="preserve">
-    <value>Bad Dignity Value!</value>
+    <value>ค่าเกียรติยศไม่ถูกต้อง</value>
   </data>
   <data name="BAD_DROP_AMOUNT" xml:space="preserve">
     <value>คุณไม่สามารถทิ้ง Item นี้ได้</value>
@@ -200,7 +200,7 @@
     <value>การขายไอดี,เงินในเกม,ไอเทมเป็นเงินจริงระงับไอดีถาวร</value>
   </data>
   <data name="BN4" xml:space="preserve">
-    <value>BETA-TEST</value>
+    <value>พัฒนาโดย^Opennos^Team</value>
   </data>
   <data name="BN5" xml:space="preserve">
     <value>อยู่ในช่วงทดสอบระบบ</value>
@@ -209,7 +209,7 @@
     <value>ยินดีต้อนรับสู่ครอบครัวนอสเทล</value>
   </data>
   <data name="BN7" xml:space="preserve">
-    <value>พัฒนาโดย^Opennos^Team</value>
+    <value>Opennos^Team^:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^Martazza,^KrisYiu,^Uppermost</value>
   </data>
   <data name="BN8" xml:space="preserve">
     <value>เร็ว^ๆ^นี้เตรียมพบกับอัพเดทครั้งยิ่งใหญ่!!^เจอกัน</value>
@@ -254,12 +254,10 @@
     <value>{0} เข้าสู่เกม</value>
   </data>
   <data name="CHARACTER_LOGGED_OUT" xml:space="preserve">
-    <value>{0} has logged out.</value>
-    <comment>[ONONLY]</comment>
+    <value>{0} ออกจากเกม</value>
   </data>
   <data name="CLASS_CHANGED" xml:space="preserve">
-    <value>Your class has been changed.</value>
-    <comment>[ONONLY]</comment>
+    <value>อาชีพคุณได้ถูกเปลี่ยนเรียบร้อยแล้ว</value>
   </data>
   <data name="CLIENTSESSION_DISPOSING" xml:space="preserve">
     <value>Clientsession is currently disposing, the packet wont be handled.</value>
@@ -324,28 +322,24 @@
     <comment>[ONONLY]</comment>
   </data>
   <data name="DIGNITY_CHANGED" xml:space="preserve">
-    <value>Dignity Changed!</value>
-    <comment>[ONONLY]</comment>
+    <value>เกียรติยศได้ถูกเปลี่ยน</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
     <value>Client disconnected! ClientId = </value>
     <comment>[ONONLY]</comment>
   </data>
   <data name="DONE" xml:space="preserve">
-    <value>Done!</value>
-    <comment>[ONONLY]</comment>
+    <value>สำเร็จ!</value>
   </data>
   <data name="DROPPED_ITEM" xml:space="preserve">
     <value>dropped {0} x {1}</value>
     <comment>[ONONLY]</comment>
   </data>
   <data name="DROP_RATE_CHANGED" xml:space="preserve">
-    <value>Drop rate have been changed!</value>
-    <comment>[ONONLY]</comment>
+    <value>อัตราการดรอปไอเทมได้ถูกเปลี่ยน</value>
   </data>
   <data name="DROP_RATE_NOW" xml:space="preserve">
-    <value>Drop rate</value>
-    <comment>[ONONLY]</comment>
+    <value>อัตราการดรอป</value>
   </data>
   <data name="EMO_BLOCKED" xml:space="preserve">
     <value>จากนี้ไปคุณจะไม่เห็นการแสดงอารมณ์ต่างๆ</value>
@@ -370,23 +364,19 @@
     <comment>[WAIT]</comment>
   </data>
   <data name="FAIRYSTATS" xml:space="preserve">
-    <value>Fairy XP: {0}/{1}</value>
-    <comment>[ONONLY]</comment>
+    <value>XP ของแฟรี่ : {0}/{1}</value>
   </data>
   <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
-    <value>Fairy xp rate changed!</value>
-    <comment>[ONONLY]</comment>
+    <value>อัตราการเพิ่มเลเวลของแฟรี่ได้ถูกเปลี่ยน</value>
   </data>
   <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
-    <value>Fairy exp rate</value>
-    <comment>[ONONLY]</comment>
+    <value>อัตรการเพิ่มเลเวลของแฟรี่</value>
   </data>
   <data name="FAIRY_LEVELUP" xml:space="preserve">
     <value>{0} พลังเพิ่มขึ้น</value>
   </data>
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
-    <value>Level of your {0} has been changed</value>
-    <comment>[ONONLY]</comment>
+    <value>พลังของ {0} ได้ถูกเปลี่ยน</value>
   </data>
   <data name="FAMILY_REQ_LOCKED" xml:space="preserve">
     <value>คุณจะถูกปิดการชวนเข้า Family ตั้งแต่นี้เป็นต้นไป</value>
@@ -411,23 +401,19 @@
     <value>คุณได้รับพลัง Demon จาก Lateor's Egg</value>
   </data>
   <data name="GIFTED" xml:space="preserve">
-    <value>You received {0} gift/s!</value>
-    <comment>[UNKNOW]</comment>
+    <value>คุณได้รับพัสดุจำนวน {0} ชิ้น</value>
   </data>
   <data name="GIFT_SENDED" xml:space="preserve">
     <value>พัสดุใหม่มาถึงแล้ว</value>
   </data>
   <data name="GOLD_RATE_CHANGED" xml:space="preserve">
-    <value>Gold drop rate changed!</value>
-    <comment>[ONONLY]</comment>
+    <value>อัตรการดรอปของเงินได้ถูกเปลี่ยน</value>
   </data>
   <data name="GOLD_RATE_NOW" xml:space="preserve">
-    <value>Gold drop amount rate</value>
-    <comment>[ONONLY]</comment>
+    <value>อัตรการดรอปของเงิน</value>
   </data>
   <data name="GOLD_SET" xml:space="preserve">
-    <value>Gold changed!</value>
-    <comment>[ONONLY]</comment>
+    <value>เงินในกระเป๋าคุณได้ถูกเปลี่ยน</value>
   </data>
   <data name="GROUP_ADMIN" xml:space="preserve">
     <value>คุณคือหัวหน้า Party</value>
@@ -469,8 +455,7 @@
     <value>คุณไม่สามารถตั้งร้านค้าที่นี่ได้</value>
   </data>
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
-    <value>Hero level has been changed!</value>
-    <comment>[ONONLY]</comment>
+    <value>เลเวลฮีโร่ได้ถูกเปลี่ยน</value>
   </data>
   <data name="HERO_CHAT_BLOCKED" xml:space="preserve">
     <value>จากนี้ไป คุณจะไม่ได้ยินเสียงจากลำโพง</value>
@@ -535,8 +520,7 @@
     <value>คุณไม่สามารถทิ้ง Item นี้ได้</value>
   </data>
   <data name="ITEM_NOT_FOUND" xml:space="preserve">
-    <value>Item not found!</value>
-    <comment>[ONONLY]</comment>
+    <value>ไม่สามารถหาไอเทมนี้ได้</value>
   </data>
   <data name="ITEM_NOT_SOLDABLE" xml:space="preserve">
     <value>==&gt; คุณไม่สามารถขาย Item นี้ได้</value>
@@ -553,8 +537,7 @@
     <value>Item ถูกจำกัดระดับ ได้ถูกแก้ไขแล้ว</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
-    <value>Your job level has been changed!</value>
-    <comment>[ONONLY]</comment>
+    <value>เลเวลของอาชีพได้ถูกเปลี่ยน</value>
   </data>
   <data name="JOB_LEVELUP" xml:space="preserve">
     <value>Job level เพิ่มขึ้น</value>
@@ -570,8 +553,7 @@
     <value>ระดับการต่อสู้ของคุณเพิ่มขึ้น</value>
   </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
-    <value>Your level has been changed!</value>
-    <comment>[ONONLY]</comment>
+    <value>เลเวลได้ถูกเปลี่ยน</value>
   </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>ค่าเกียรติยศ ลดลง : {0}</value>
@@ -606,8 +588,7 @@
     <comment>[WAIT]</comment>
   </data>
   <data name="MEMORY" xml:space="preserve">
-    <value>Used memory</value>
-    <comment>[ONONLY]</comment>
+    <value>ใช้แรมไปทั้งหมด</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Message received {0} on client {1}</value>
@@ -626,16 +607,14 @@
     <comment>[ONONLY]</comment>
   </data>
   <data name="MONSTER_REMOVED" xml:space="preserve">
-    <value>Mob removed(MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
-    <comment>[ONONLY]</comment>
+    <value>มอนสเตอร์ได้ถูกลบ(IDของมอนสเตอร์ในแผนที่: {0}, ชื่อ: {1}, แผนที่: {2}, แกนX: {3}, แกนY: {4})</value>
   </data>
   <data name="MAPMONSTERS_LOADED" xml:space="preserve">
     <value>{0} MapMonsters Loaded!</value>
     <comment>[ONONLY]</comment>
   </data>
   <data name="MONSTER_NOT_FOUND" xml:space="preserve">
-    <value>Impossible to find this monster.</value>
-    <comment>[ONONLY]</comment>
+    <value>ไม่สามารถหามอนสเตอร์นี้ได้</value>
   </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>ปิดโชว์เมาส์</value>
@@ -671,8 +650,7 @@
     <comment>[WAIT][ONONLY]</comment>
   </data>
   <data name="NEAREST_PORTAL" xml:space="preserve">
-    <value>Nearest Portal(MapID: {0}, MapX: {1}, MapY: {2})  has been removed!</value>
-    <comment>[ONONLY]</comment>
+    <value>เทเลพอร์ตที่ใกล้คุณที่สุดได้ถูกลบ(แผนที่: {0}, แกนX: {1}, แกนY: {2})</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>Client connected. ClientId = </value>
@@ -850,8 +828,7 @@
     <value>การเดิมพันสำเร็จ! ได้รับ Rare Level : {0}</value>
   </data>
   <data name="RATEGOLD_NOW" xml:space="preserve">
-    <value>Gold amount drop rate</value>
-    <comment>[ONONLY]</comment>
+    <value>อัตราจำนวนเงินที่ดรอปได้</value>
   </data>
   <data name="RECEIVED_ITEM" xml:space="preserve">
     <value>You received: {0}</value>
@@ -871,12 +848,10 @@
     <value>คุณสามารถใช้ ฟื้นฟูนี้เท่านั้น เมื่อคุณแปลงร่างเป็น Rider แล้ว</value>
   </data>
   <data name="REPUT_DECREASED" xml:space="preserve">
-    <value>Reputation decreased!</value>
-    <comment>[ONONLY]</comment>
+    <value>ค่าชื่อเสียงลดลง</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
-    <value>Reputation changed</value>
-    <comment>[ONONLY]</comment>
+    <value>ค่าชื่อเสียงได้ถูกเปลี่ยน</value>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value>ค่าเกียรติยศสูงสุด</value>
@@ -896,7 +871,7 @@
     <comment>[ONONLY]</comment>
   </data>
   <data name="SERVER_WORKING_TIME" xml:space="preserve">
-    <value>Server working time</value>
+    <value>เวลาการทำงานของเซิร์ฟเวอร์ในขณะนี้</value>
     <comment>[ONONLY]</comment>
   </data>
   <data name="SEX_CHANGED" xml:space="preserve">
@@ -933,12 +908,10 @@
     <value>เปิดร้านขายของส่วนตัว</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
-    <value>Server will be shutdown in {0} Minutes.</value>
-    <comment>[ONONLY]</comment>
+    <value>ระบบจะถูกปิดภายใน{0}นาทีโปรดออกจากเกมเพื่อป้องกันการสูญหายของข้อมูล</value>
   </data>
   <data name="SHUTDOWN_SEC" xml:space="preserve">
-    <value>Server will be shutdown in {0} Seconds.</value>
-    <comment>[ONONLY]</comment>
+    <value>ระบบจะถูกปิดภายใน{0}วินาทีโปรดออกจากเกมเพื่อป้องกันการสูญหายของข้อมูล</value>
   </data>
   <data name="SKILLS_IN_LOADING" xml:space="preserve">
     <value>จะสามารถเปลี่ยนร่างได้อีกครั้งหลังจากหน่วงเวลาของ Skill ทั้งหมดสิ้นสุดลง</value>
@@ -951,8 +924,7 @@
     <value>ความสามารถนี้ถูกลบไปแล้ว</value>
   </data>
   <data name="SKILL_CANT_LEARN" xml:space="preserve">
-    <value>You can't learn this skill.</value>
-    <comment>[ONONLY]</comment>
+    <value>คุณไม่สามารถเรียนสกิวนั้นได้</value>
   </data>
   <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
     <value>ไม่สามารถลบได้ หากมันถูกเชื่อมต่อกับ plus skill</value>
@@ -964,8 +936,7 @@
     <value>ถึงทุกคน</value>
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
-    <value>Specialist level has been changed!</value>
-    <comment>[ONONLY]</comment>
+    <value>เลเวลของการ์ดได้ถูกเปลี่ยน</value>
   </data>
   <data name="SPUSE_NEEDED" xml:space="preserve">
     <value>You need to transform into specialist to accept point change!</value>
@@ -1012,8 +983,7 @@
     <comment>[ONONLY]</comment>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>Total number of sessions</value>
-    <comment>[ONONLY]</comment>
+    <value>จำนวนผู้เล่นที่ออนไลน์</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>ผู้เล่นตั้งค่าระงับการแลกเปลี่ยนไว้</value>
@@ -1064,8 +1034,7 @@
     <value>การอัพเกรด Item สำเร็จ</value>
   </data>
   <data name="USER_NOT_BANNED" xml:space="preserve">
-    <value>User is not banned.</value>
-    <comment>[ONONLY]</comment>
+    <value>ผู้ใช้ไม่ถูกแบน</value>
   </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
     <value>ไม่สามารถพูดคุยกับเพื่อนที่ Offline อยู่ได้</value>
@@ -1077,8 +1046,7 @@
     <value>เพียง3 อันดับเท่านั้นที่จะใช้ได้</value>
   </data>
   <data name="USER_NOT_MUTED" xml:space="preserve">
-    <value>User is not muted.</value>
-    <comment>[ONONLY]</comment>
+    <value>ผู้ใช้ไม่ถูกลงโทษ</value>
   </data>
   <data name="USER_WHISPER_BLOCKED" xml:space="preserve">
     <value>เป้าหมายไม่ต้องการที่จะรับการกระซิบ</value>
@@ -1094,16 +1062,14 @@
     <value>คุณจะเปิดรับการกระซิบ ตั้งแต่นี้เป็นต้นไป</value>
   </data>
   <data name="WRONG_VALUE" xml:space="preserve">
-    <value>Wrong value!</value>
+    <value>ค่าที่คุณกรอกผิดพลาด</value>
     <comment>[ONONLY]</comment>
   </data>
   <data name="XP_RATE_CHANGED" xml:space="preserve">
-    <value>XP rate changed!</value>
-    <comment>[ONONLY]</comment>
+    <value>อัตราการเพิ่มของเลเวลได้ถูกเปลี่ยน</value>
   </data>
   <data name="XP_RATE_NOW" xml:space="preserve">
-    <value>Exp rate</value>
-    <comment>[ONONLY]</comment>
+    <value>อัตรการเพิ่มของเลเวล</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>คุณได้ขอทำการแลกเปลี่ยนกับ {0}</value>

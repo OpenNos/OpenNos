@@ -160,7 +160,6 @@ namespace OpenNos.GameObject
         internal int GenerateDamage(Character targetCharacter, Skill skill, ref int hitmode)
         {
             //Warning: This code contains a huge amount of copypasta!
-
             #region Definitions
 
             if (targetCharacter == null)
@@ -699,7 +698,7 @@ namespace OpenNos.GameObject
 
                 // check if target is in range
                 if (targetSession != null && !targetSession.Character.InvisibleGm && !targetSession.Character.Invisible && targetSession.Character.Hp > 0
-                    && ((npcMonsterSkill != null && CurrentMp - npcMonsterSkill.Skill.MpCost >= 0 &&
+                    && ((npcMonsterSkill != null && CurrentMp >= npcMonsterSkill.Skill.MpCost &&
                            Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY },
                                            new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range)
                                            || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY },
@@ -709,8 +708,10 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    if(targetSession != null)
+                    if (targetSession != null)
+                    {
                         FollowTarget(targetSession);
+                    }
                 }
             }
         }
@@ -751,7 +752,15 @@ namespace OpenNos.GameObject
                     Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
                     if (!Path.Any())
                     {
-                        Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
+                        try
+                        {
+                            Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
+                        }
+                        catch(Exception ex)
+                        {
+                            OpenNos.Core.Logger.Log.Error($"Pathfinding using JPSPlus failed. Map: {MapId} StartX: {MapX} StartY: {MapY} TargetX: {(short)(targetSession.Character.MapX + xoffset)} TargetY: {(short)(targetSession.Character.MapY + yoffset)}", ex);
+                            RemoveTarget();
+                        }
                     }
                 }
                 if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
@@ -813,7 +822,7 @@ namespace OpenNos.GameObject
                             MapX = (short)mapX;
                             MapY = (short)mapY;
                         });
-                        
+
                         LastMove = DateTime.Now;
                         Map.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                         return;
@@ -884,7 +893,6 @@ namespace OpenNos.GameObject
             {
                 int damage = 0;
                 int hitmode = 0;
-
                 if (npcMonsterSkill != null)
                 {
                     damage = GenerateDamage(targetSession.Character, npcMonsterSkill.Skill, ref hitmode);
@@ -896,8 +904,13 @@ namespace OpenNos.GameObject
 
                 if (npcMonsterSkill != null)
                 {
+                    if (CurrentMp < npcMonsterSkill.Skill.MpCost)
+                    {
+                        FollowTarget(targetSession);
+                        return;
+                    }
                     npcMonsterSkill.LastSkillUse = DateTime.Now;
-                    CurrentMp -= npcMonsterSkill.Skill.MpCost;
+                    this.CurrentMp -= npcMonsterSkill.Skill.MpCost;
                     Map.Broadcast($"ct 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
                 }
                 LastMove = DateTime.Now;
@@ -955,13 +968,15 @@ namespace OpenNos.GameObject
                             damage = 0;
                             hitmode = 1;
                         }
-                        bool AlreadyDead2 = characterInRange.Hp <= 0;
+                        bool alreadyDead2 = characterInRange.Hp <= 0;
                         characterInRange.GetDamage(damage);
                         characterInRange.LastDefence = DateTime.Now;
                         Map.Broadcast(null, characterInRange.GenerateStat(), ReceiverType.OnlySomeone, "", characterInRange.CharacterId);
                         Map.Broadcast($"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} { (int)(characterInRange.Hp / characterInRange.HPLoad() * 100) } {damage} {hitmode} 0");
-                        if (characterInRange.Hp <= 0 && !AlreadyDead2)
-                            damage = characterInRange.HasGodMode ? 0 : 100;
+                        if (characterInRange.Hp <= 0 && !alreadyDead2)
+                        {
+                            damage = characterInRange.HasGodMode ? 0 : damage;
+                        }
                         bool alreadyDead = characterInRange.Hp <= 0;
                         characterInRange.GetDamage(damage);
                         characterInRange.LastDefence = DateTime.Now;
@@ -972,6 +987,7 @@ namespace OpenNos.GameObject
                         {
                             Thread.Sleep(1000);
                             ServerManager.Instance.AskRevive(characterInRange.CharacterId);
+                            RemoveTarget();
                         }
                     }
                 }

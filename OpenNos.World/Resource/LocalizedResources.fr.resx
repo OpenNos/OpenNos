@@ -1033,4 +1033,19 @@ Veux-tu le porter ?</value>
   <data name="BOT_MESSAGE_5" xml:space="preserve">
     <value>Un^GM^ne^vous^demandera^jamais^vos^identifiants^!</value>
   </data>
+  <data name="SP_NOPOINTS" xml:space="preserve">
+    <value>Tu n'as plus assez de point assez, tu ne peux plus te transformer !</value>
+  </data>
+  <data name="SP_POINTSADDED" xml:space="preserve">
+    <value>Tu as reçu {0} points de spécialiste.</value>
+  </data>
+  <data name="SP_POINTSADDEDBOTH" xml:space="preserve">
+    <value>Tu as reçu {0} points basique et {0} points additionnels pour ta SP.</value>
+  </data>
+  <data name="SP_NOPOINTSCANCELED" xml:space="preserve">
+    <value>La transformation a été annulée, tu n'as plus assez de point SP.</value>
+  </data>
+  <data name="XP_NOTFIRSTHIT" xml:space="preserve">
+    <value>Vu que tu n'as pas attaqué le premier,  tu n'obtiens qu'une partie des points d'EXP.</value>
+  </data>
 </root>
