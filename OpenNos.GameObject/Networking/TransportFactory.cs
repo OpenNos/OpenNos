@@ -45,10 +45,9 @@ namespace OpenNos.GameObject
 
         public long GenerateTransportId()
         {
-
             _lastTransportId++;
 
-            if(_lastTransportId > 999999)
+            if (_lastTransportId > 999999)
             {
                 _lastTransportId = 1;
             }

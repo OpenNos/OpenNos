@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -718,13 +717,14 @@ namespace OpenNos.GameObject
                         int mapX = Path.ElementAt(0).x;
                         int mapY = Path.ElementAt(0).y;
                         Path.RemoveAt(0);
-
-                        Task.Factory.StartNew(async () =>
+                        Observable.Timer(TimeSpan.FromMilliseconds(timetowalk))
+                        .Subscribe(
+                        x =>
                         {
-                            await Task.Delay(timetowalk);
                             MapX = (short)mapX;
                             MapY = (short)mapY;
                         });
+                        
                         LastMove = DateTime.Now;
                         Map.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                         return;

@@ -636,7 +636,7 @@ namespace OpenNos.GameObject
 
                 int rnd = _random.Next(1, 100);
 
-                if(this.Rare == 8)
+                if (this.Rare == 8)
                 {                    
                     if (rnd <= upsuccess[this.Upgrade])
                     {

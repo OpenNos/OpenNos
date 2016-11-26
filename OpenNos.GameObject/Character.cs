@@ -1251,7 +1251,7 @@ namespace OpenNos.GameObject
             {
                 if (skillsSp.Count >= i + 1)
                 {
-                    if(skillsSp[i].SkillVNum <= firstskillvnum + 10)
+                    if (skillsSp[i].SkillVNum <= firstskillvnum + 10)
                         skill += $"{skillsSp[i].SkillVNum}.";
                 }
             }
@@ -2279,13 +2279,13 @@ namespace OpenNos.GameObject
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
                 // wait for any exchange to be finished
-                while(IsExchanging)
+                while (IsExchanging)
                 {
                     // do nothing and wait until Exchange has been finished
                 }
 
                 // be sure that noone tries to edit while saving is currently editing
-                lock(Inventory)
+                lock (Inventory)
                 {
                     // load and concat inventory with equipment
                     List<ItemInstance> inventories = Inventory.GetAllItems();

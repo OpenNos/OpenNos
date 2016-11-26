@@ -7,6 +7,5 @@ namespace OpenNos.GameObject
     [PacketHeader("u_as")]
     public class UseAOESkillPacket : PacketDefinition
     {
-
     }
 }

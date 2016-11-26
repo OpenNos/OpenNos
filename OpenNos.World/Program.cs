@@ -85,8 +85,7 @@ namespace OpenNos.World
                 RegisterMappings();
 
                 // initialilize maps
-                ServerManager.Instance.Initialize();
-                
+                ServerManager.Instance.Initialize();    
             }
             else
             {

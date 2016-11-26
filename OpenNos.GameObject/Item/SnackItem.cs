@@ -16,7 +16,6 @@ using OpenNos.Core;
 using OpenNos.Data;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
