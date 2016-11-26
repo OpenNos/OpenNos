@@ -2727,7 +2727,7 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     default:
-                                        if (item.VNum > 5891 && item.VNum < 5900 && item.VNum > 9100 && item.VNum < 9109)
+                                        if ((item.VNum > 5891 && item.VNum < 5900) || (item.VNum > 9100 && item.VNum < 9109))
                                         {
                                             item.Effect = 69;
                                         }
@@ -2741,11 +2741,7 @@ namespace OpenNos.Import.Console
                                 {
                                     case 150:
                                     case 151:
-                                        if (Convert.ToInt32(currentLine[4]) == 0)
-                                        {
-                                            item.EffectValue = 10000;
-                                        }
-                                        else if (Convert.ToInt32(currentLine[4]) == 1)
+                                        if (Convert.ToInt32(currentLine[4]) == 1)
                                         {
                                             item.EffectValue = 30000;
                                         }
@@ -2756,6 +2752,10 @@ namespace OpenNos.Import.Console
                                         else if (Convert.ToInt32(currentLine[4]) == 3)
                                         {
                                             item.EffectValue = 180000;
+                                        }
+                                        else
+                                        {
+                                            item.EffectValue = Convert.ToInt32(currentLine[4]);
                                         }
                                         break;
 
@@ -2784,7 +2784,8 @@ namespace OpenNos.Import.Console
 
                             case ItemType.Specialist:
 
-                                // item.isSpecialist = Convert.ToByte(currentLine[2]); item.Unknown = Convert.ToInt16(currentLine[3]);
+                                // item.isSpecialist = Convert.ToByte(currentLine[2]); 
+                                // item.Unknown = Convert.ToInt16(currentLine[3]);
                                 item.ElementRate = Convert.ToInt16(currentLine[4]);
                                 item.Speed = Convert.ToByte(currentLine[5]);
                                 item.SpType = Convert.ToByte(currentLine[13]);
@@ -2823,7 +2824,7 @@ namespace OpenNos.Import.Console
                                     item.SecondaryElement = (byte)elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
                                 }
 
-                                // need to hardcode...
+                                // needs to be hardcoded
                                 if (item.VNum == 901)
                                 {
                                     item.Element = 1;
@@ -2917,7 +2918,8 @@ namespace OpenNos.Import.Console
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
 
-                                // item.PetLoyality = Convert.ToInt16(linesave[4]); item.PetFood = Convert.ToInt16(linesave[7]);
+                                // item.PetLoyality = Convert.ToInt16(linesave[4]); 
+                                // item.PetFood = Convert.ToInt16(linesave[7]);
                                 break;
 
                             case ItemType.Part:
@@ -2952,14 +2954,6 @@ namespace OpenNos.Import.Console
                             item.LightResistance = Convert.ToByte(currentLine[9]);
                             item.DarkResistance = Convert.ToByte(currentLine[11]);
                         }
-
-                        /*
-                        else // thanks to this sometimes we have 0 where we shouldnt, add verification on where you need it.
-                        {
-                            item.Effect = Convert.ToInt16(currentLine[2]);
-                            item.EffectValue = Convert.ToInt32(currentLine[8]);
-                        }
-                        */
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "BUFF")
                     {
