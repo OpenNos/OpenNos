@@ -35,7 +35,7 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     long CharacterId = respawn.CharacterId;
-                    short RespawnMapTypeId = respawn.RespawnMapTypeId;
+                    long RespawnMapTypeId = respawn.RespawnMapTypeId;
                     Respawn entity = context.Respawn.FirstOrDefault(c => c.RespawnMapTypeId.Equals(RespawnMapTypeId) && c.CharacterId.Equals(CharacterId));
 
                     if (entity == null)
