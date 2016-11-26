@@ -98,9 +98,9 @@ namespace OpenNos.Import.Console
                 {
                     factory.ImportMaps();
                     factory.LoadMaps();
+                    factory.ImportRespawnMapType();
                     factory.ImportMapType();
                     factory.ImportMapTypeMap();
-                    factory.ImportRespawnMapType();
                     factory.ImportAccounts();
                     factory.ImportPortals();
                     factory.ImportItems();
