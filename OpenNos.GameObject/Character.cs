@@ -1600,7 +1600,11 @@ namespace OpenNos.GameObject
                                 {
                                     if (!alreadyGifted.Contains(charId))
                                     {
-                                        ServerManager.Instance.GetSessionByCharacterId(charId).Character.GiftAdd(drop.ItemVNum, (byte)drop.Amount);
+                                        ClientSession giftsession = ServerManager.Instance.GetSessionByCharacterId(charId);
+                                        if (giftsession != null)
+                                        {
+                                            giftsession.Character.GiftAdd(drop.ItemVNum, (byte)drop.Amount);
+                                        }
                                         alreadyGifted.Add(charId);
                                     }
                                 }
