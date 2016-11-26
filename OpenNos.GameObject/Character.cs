@@ -451,7 +451,41 @@ namespace OpenNos.GameObject
         public byte VehicleSpeed { get; internal set; }
 
         public int WaterResistance { get; set; }
-        public RespawnMapTypeDTO Return { get; set; }
+        public RespawnMapTypeDTO Return {
+            get
+            {
+                RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
+                if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
+                {
+                    long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).ReturnMapTypeId;
+                    if (respawnmaptype != null)
+                    {
+                        RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                        if (resp == null)
+                        {
+                            RespawnMapTypeDTO defaultresp = Session.CurrentMap.DefaultRespawn;
+                            if (defaultresp != null)
+                            {
+                                respawn.DefaultX = defaultresp.DefaultX;
+                                respawn.DefaultY = defaultresp.DefaultY;
+                                respawn.DefaultMapId = defaultresp.DefaultMapId;
+                                respawn.RespawnMapTypeId = (long)respawnmaptype;
+                            }
+
+                        }
+                        else
+                        {
+                            respawn.DefaultX = resp.X;
+                            respawn.DefaultY = resp.Y;
+                            respawn.DefaultMapId = resp.MapId;
+                            respawn.RespawnMapTypeId = (long)respawnmaptype;
+                        }
+                    }
+                }
+                return respawn;
+
+            }
+        }
 
         #endregion
 
