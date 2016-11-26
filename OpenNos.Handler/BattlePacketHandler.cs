@@ -240,6 +240,7 @@ namespace OpenNos.Handler
                                             else
                                             {
                                                 IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
+                                                Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)} 0 0 {(monsterToAttack.IsAlive ? 1 : 0)} {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 0 {ski.Skill.SkillType - 1}");
                                                 foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
                                                 {
                                                     mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
