@@ -695,7 +695,7 @@ namespace OpenNos.Handler
                     DestinationMapId = portalToPacket.DestinationMapId,
                     DestinationX = portalToPacket.DestinationX,
                     DestinationY = portalToPacket.DestinationY,
-                    Type = (short)portalToPacket.PortalType
+                    Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
                 };
                 Session.CurrentMap.Portals.Add(portal);
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateGp(portal));
