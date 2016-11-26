@@ -451,7 +451,8 @@ namespace OpenNos.GameObject
         public byte VehicleSpeed { get; internal set; }
 
         public int WaterResistance { get; set; }
-        public RespawnMapTypeDTO Return {
+        public RespawnMapTypeDTO Return
+        {
             get
             {
                 RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
@@ -1238,6 +1239,56 @@ namespace OpenNos.GameObject
                 monsterToAttack.Target = Session.Character.CharacterId;
             }
             return damage;
+        }
+
+        public void SetReturnPoint(short MapId, short MapX, short MapY)
+        {
+            RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
+            if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
+            {
+                long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).ReturnMapTypeId;
+                if (respawnmaptype != null)
+                {
+                    RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                    if (resp == null)
+                    {
+
+                        resp = new RespawnDTO() { CharacterId = CharacterId, MapId = MapId, X = MapX, Y = MapY, RespawnMapTypeId = (long)respawnmaptype };
+                    }
+                    else
+                    {
+                        resp.X = resp.X;
+                        resp.Y = resp.Y;
+                        resp.MapId = resp.MapId;
+                    }
+                    Respawns.Add(resp);
+                }
+            }
+        }
+
+        public void SetRespawnPoint(short MapId, short MapX, short MapY)
+        {
+            RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
+            if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
+            {
+                long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).RespawnMapTypeId;
+                if (respawnmaptype != null)
+                {
+                    RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                    if (resp == null)
+                    {
+
+                        resp = new RespawnDTO() { CharacterId = CharacterId, MapId = MapId, X = MapX, Y = MapY, RespawnMapTypeId = (long)respawnmaptype };
+                    }
+                    else
+                    {
+                        resp.X = resp.X;
+                        resp.Y = resp.Y;
+                        resp.MapId = resp.MapId;
+                    }
+                    Respawns.Add(resp);
+                }
+            }
         }
 
         public string GenerateDelay(int delay, int type, string argument)
@@ -3145,6 +3196,12 @@ namespace OpenNos.GameObject
                     {
                         DAOFactory.PenaltyLogDAO.Update(penalty);
                     }
+                }
+
+                foreach (RespawnDTO Resp in Session.Character.Respawns)
+                {
+                    RespawnDTO res = Resp;
+                    DAOFactory.RespawnDAO.InsertOrUpdate(ref res);
                 }
             }
             catch (Exception e)
