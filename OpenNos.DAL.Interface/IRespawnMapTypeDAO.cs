@@ -25,8 +25,6 @@ namespace OpenNos.DAL.Interface
         SaveResult InsertOrUpdate(ref RespawnMapTypeDTO respawnMapType);
 
         IEnumerable<RespawnMapTypeDTO> LoadByMapId(short mapId);
-
-        IEnumerable<RespawnMapTypeDTO> LoadByMapTypeId(short MapTypeId);
        
         RespawnMapTypeDTO LoadById(long respawnMapTypeId);
 
