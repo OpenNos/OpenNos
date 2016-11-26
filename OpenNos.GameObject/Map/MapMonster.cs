@@ -621,7 +621,8 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    FollowTarget(targetSession);
+                    if(targetSession != null)
+                        FollowTarget(targetSession);
                 }
             }
         }
