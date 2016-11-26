@@ -11,7 +11,7 @@ namespace OpenNos.DAL.EF.Migrations
                 "dbo.RespawnMapType",
                 c => new
                     {
-                        RespawnMapTypeId = c.Long(nullable: false, identity: true),
+                        RespawnMapTypeId = c.Long(nullable: false),
                         DefaultMapId = c.Short(nullable: false),
                         DefaultX = c.Short(nullable: false),
                         DefaultY = c.Short(nullable: false),
