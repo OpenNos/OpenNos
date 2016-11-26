@@ -323,7 +323,7 @@ namespace OpenNos.Handler
                             }
 
                             if (targetSession.Character.ExchangeBlocked || Session.Character.ExchangeBlocked)
-                            { 
+                            {
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
                                 return;
                             }
@@ -350,6 +350,12 @@ namespace OpenNos.Handler
 
                                 if (targetSession == null)
                                 {
+                                    return;
+                                }
+
+                                if (Session.IsDisposing || targetSession.IsDisposing)
+                                {
+                                    CloseExchange(Session, targetSession);
                                     return;
                                 }
 
@@ -899,6 +905,7 @@ namespace OpenNos.Handler
                 #endregion
 
                 #region slDefence
+
                 if (slDefence >= 10)
                 {
                     specialistInstance.DefenceDodge += 5;
@@ -962,6 +969,7 @@ namespace OpenNos.Handler
                     specialistInstance.LightResistance += 5;
                     specialistInstance.DarkResistance += 5;
                 }
+
                 #endregion
 
                 #region slHp
@@ -996,8 +1004,8 @@ namespace OpenNos.Handler
                 }
                 if (slHp >= 30)
                 {
-                        specialistInstance.DamageMinimum += 5;
-                        specialistInstance.DamageMaximum += 5;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
                 }
                 if (slHp >= 35)
                 {
@@ -1086,7 +1094,7 @@ namespace OpenNos.Handler
                     specialistInstance.MagicDefence += 25;
                 }
                 if (slHp >= 91)
-                { 
+                {
                     specialistInstance.DefenceDodge += 2;
                     specialistInstance.DistanceDefenceDodge += 2;
                 }
@@ -1214,6 +1222,7 @@ namespace OpenNos.Handler
                     specialistInstance.MP += 200;
                     specialistInstance.ElementRate += 2;
                 }
+
                 #endregion
 
                 Session.SendPacket(Session.Character.GenerateStatChar());
@@ -1615,7 +1624,7 @@ namespace OpenNos.Handler
                            {
                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
                                Session.SendPacket("sd 0");
-                           });     
+                           });
             }
         }
 
