@@ -93,7 +93,7 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (RespawnMapType Respawnobject in context.RespawnMapType.Where(i => i.MapType.Equals(MapTypeId)))
+                foreach (RespawnMapType Respawnobject in context.RespawnMapType.Where(i => i.MapTypes.Equals(MapTypeId)))
                 {
                     yield return _mapper.Map<RespawnMapTypeDTO>(Respawnobject);
                 }
