@@ -1753,7 +1753,7 @@ namespace OpenNos.GameObject
                     {
                         foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId))
                         {
-                            if (monsterToAttack.DamageList.FirstOrDefault().Key == Session.Character.CharacterId)
+                            if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
                             {
                                 targetSession.Character.GenerateXp(monsterToAttack.Monster, true);
                             }
