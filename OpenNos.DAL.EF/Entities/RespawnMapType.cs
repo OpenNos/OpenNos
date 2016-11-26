@@ -20,6 +20,7 @@ namespace OpenNos.DAL.EF
 {
     public class RespawnMapType
     {
+        #region Instantiation
 
         public RespawnMapType()
         {
@@ -27,25 +28,27 @@ namespace OpenNos.DAL.EF
             MapType = new HashSet<MapType>();
         }
 
+        #endregion
+
         #region Properties
 
-        public virtual ICollection<Respawn> Respawn { get; set; }
-
-        public virtual Map Map { get; set; }
-
-        public ICollection<MapType> MapType { get; set; }
-
         public short DefaultMapId { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public long RespawnMapTypeId { get; set; }
 
         public short DefaultX { get; set; }
 
         public short DefaultY { get; set; }
 
+        public virtual Map Map { get; set; }
+
+        public ICollection<MapType> MapType { get; set; }
+
         [MaxLength(255)]
         public string Name { get; set; }
+
+        public virtual ICollection<Respawn> Respawn { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public long RespawnMapTypeId { get; set; }
 
         #endregion
     }

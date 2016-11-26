@@ -24,7 +24,7 @@ namespace OpenNos.Data
 
         public short PotionDelay { get; set; }
 
-        public long RespawnMapTypeId { get; set; }
+        public long? RespawnMapTypeId { get; set; }
 
         #endregion
     }
