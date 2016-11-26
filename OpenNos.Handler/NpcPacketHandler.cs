@@ -494,11 +494,11 @@ namespace OpenNos.Handler
                             shopname = StringHelper.Truncate(shopname, 20);
                             myShop.OwnerId = Session.Character.CharacterId;
                             myShop.Name = shopname;
-                            Session.CurrentMap.UserShops.Add(Session.CurrentMap.UserShops.Count(), myShop);
+                            Session.CurrentMap.UserShops.Add(Session.CurrentMap.LastUserShopId++, myShop);
 
                             Session.Character.HasShopOpened = true;
 
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.LastUserShopId), ReceiverType.AllExceptMe);
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateShop(shopname));
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
 
@@ -612,6 +612,8 @@ namespace OpenNos.Handler
                         }
 
                         ItemInstance inv = Session.Character.Inventory.AddNewToInventory(rec.ItemVNum, rec.Amount);
+                        if (inv == null)
+                            return;
                         if (inv.GetType().Equals(typeof(WearableInstance)))
                         {
                             WearableInstance item = inv as WearableInstance;

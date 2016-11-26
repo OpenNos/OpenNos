@@ -283,7 +283,6 @@ namespace OpenNos.GameObject
                                     this.MapY = mapY;
                                 });
 
-
                             for (int j = maxindex; j > 0; j--)
                             {
                                 Path.RemoveAt(0);

@@ -45,6 +45,7 @@ namespace OpenNos.GameObject
 
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
+            LastUserShopId = 0;
             _random = new Random();
             MapId = mapId;
             ShopAllowed = true;
@@ -52,7 +53,6 @@ namespace OpenNos.GameObject
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
             Data = data;
-            LoadZone();
             IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId).ToList();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
 
@@ -132,6 +132,7 @@ namespace OpenNos.GameObject
         public int XLength { get; set; }
 
         public int YLength { get; set; }
+        public long LastUserShopId { get; set; }
 
         #endregion
 
@@ -463,8 +464,19 @@ namespace OpenNos.GameObject
         {
             if (!(!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now))
             {
+                if (_grid == null)
+                {
+                    LoadZone();
+                }
                 Parallel.Invoke(() => NpcLifeManager(), () => MonsterLifeManager(), () => CharacterLifeManager(), () => RemoveMapItem());
             } 
+         else
+            {
+                if (_grid != null)
+                {
+                    _grid = null;
+                }
+            }
         }
 
         internal List<GridPos> StraightPath(GridPos mapCell1, GridPos mapCell2)
@@ -530,7 +542,6 @@ namespace OpenNos.GameObject
         {
             try
             {
-                List<Task> NpcLifeTask = new List<Task>();
                 for (int i = Sessions.Where(s => s.HasSelectedCharacter).Count() - 1; i >= 0; i--)
                 {
                     ClientSession Session = Sessions.Where(s => s?.Character != null).ElementAt(i);
@@ -618,26 +629,26 @@ namespace OpenNos.GameObject
                                 SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                                 byte spType = 0;
 
-                                if((specialist.Item.Morph > 1 && specialist.Item.Morph < 8) || (specialist.Item.Morph > 9 && specialist.Item.Morph < 16))
+                                if ((specialist.Item.Morph > 1 && specialist.Item.Morph < 8) || (specialist.Item.Morph > 9 && specialist.Item.Morph < 16))
                                     spType = 3;
-                                else if(specialist.Item.Morph > 16 && specialist.Item.Morph < 29)
+                                else if (specialist.Item.Morph > 16 && specialist.Item.Morph < 29)
                                     spType = 2;
-                                else if(specialist.Item.Morph == 9)
+                                else if (specialist.Item.Morph == 9)
                                     spType = 1;
-                                if(Session.Character.SpPoint >= spType)
+                                if (Session.Character.SpPoint >= spType)
                                 {
                                     Session.Character.SpPoint -= spType;
                                 }
-                                else if(Session.Character.SpPoint < spType && Session.Character.SpPoint != 0)
+                                else if (Session.Character.SpPoint < spType && Session.Character.SpPoint != 0)
                                 {
                                     spType -= (byte)Session.Character.SpPoint;
                                     Session.Character.SpAdditionPoint -= spType;
                                 }
-                                else if(Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint >= spType)
+                                else if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint >= spType)
                                 {
                                     Session.Character.SpAdditionPoint -= spType;
                                 }
-                                else if(Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint < spType)
+                                else if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint < spType)
                                 {
                                     Session.Character.SpAdditionPoint = 0;
                                     
