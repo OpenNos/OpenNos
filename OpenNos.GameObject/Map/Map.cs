@@ -67,6 +67,7 @@ namespace OpenNos.GameObject
                 if (MapTypes.ElementAt(0).RespawnMapTypeId != null)
                 {
                     DefaultRespawn = DAOFactory.RespawnMapTypeDAO.LoadById((long)MapTypes.ElementAt(0).RespawnMapTypeId);
+                    DefaultReturn = DAOFactory.RespawnMapTypeDAO.LoadById((long)MapTypes.ElementAt(0).ReturnMapTypeId);
                 }
             }
             _portals = new List<PortalDTO>();
@@ -95,6 +96,10 @@ namespace OpenNos.GameObject
         public short MapId { get; set; }
 
         public RespawnMapTypeDTO DefaultRespawn
+        {
+            get; set;
+        }
+        public RespawnMapTypeDTO DefaultReturn
         {
             get; set;
         }

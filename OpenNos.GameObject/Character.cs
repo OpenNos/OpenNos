@@ -463,7 +463,7 @@ namespace OpenNos.GameObject
                         RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
                         if (resp == null)
                         {
-                            RespawnMapTypeDTO defaultresp = Session.CurrentMap.DefaultRespawn;
+                            RespawnMapTypeDTO defaultresp = Session.CurrentMap.DefaultReturn;
                             if (defaultresp != null)
                             {
                                 respawn.DefaultX = defaultresp.DefaultX;
