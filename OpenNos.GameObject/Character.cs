@@ -331,7 +331,7 @@ namespace OpenNos.GameObject
                 _morphUpgrade2 = value;
             }
         }
-
+        public List<RespawnDTO> Respawns { get; set; }
         public List<QuicklistEntryDTO> QuicklistEntries { get; set; }
 
         public short SaveX { get; set; }
@@ -410,7 +410,42 @@ namespace OpenNos.GameObject
                 _undercover = value;
             }
         }
+        public RespawnMapTypeDTO Respawn
+        {
+            get
+            {
+                RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
+                if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
+                {
+                    long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).RespawnMapTypeId;
+                    if (respawnmaptype != null)
+                    {
+                        RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                        if (resp == null)
+                        {
+                            RespawnMapTypeDTO defaultresp = Session.CurrentMap.DefaultRespawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                            if (defaultresp != null)
+                            {
+                                respawn.DefaultX = defaultresp.DefaultX;
+                                respawn.DefaultY = defaultresp.DefaultY;
+                                respawn.DefaultMapId = defaultresp.DefaultMapId;
+                                respawn.RespawnMapTypeId = (long)respawnmaptype;
+                            }
 
+                        }
+                        else
+                        {
+                            respawn.DefaultX = resp.X;
+                            respawn.DefaultY = resp.Y;
+                            respawn.DefaultMapId = resp.MapId;
+                            respawn.RespawnMapTypeId = (long)respawnmaptype;
+                        }
+                    }
+                }
+                return respawn;
+
+            }
+        }
         public bool UseSp { get; set; }
 
         public byte VehicleSpeed { get; internal set; }
