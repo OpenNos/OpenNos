@@ -714,7 +714,6 @@ namespace OpenNos.GameObject
                                                            Session.SendPacket("sd 0");
                                                        });
                                         }
-
                                     }
                                 }
                                 Session.SendPacket(Session.Character.GenerateSpPoint());

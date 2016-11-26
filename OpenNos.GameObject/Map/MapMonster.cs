@@ -160,7 +160,6 @@ namespace OpenNos.GameObject
         internal int GenerateDamage(Character targetCharacter, Skill skill, ref int hitmode)
         {
             //Warning: This code contains a huge amount of copypasta!
-
             #region Definitions
 
             if (targetCharacter == null)
