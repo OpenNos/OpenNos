@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -652,6 +653,7 @@ namespace OpenNos.GameObject
                                 else if (Session.Character.SpPoint < spType && Session.Character.SpPoint != 0)
                                 {
                                     spType -= (byte)Session.Character.SpPoint;
+                                    Session.Character.SpPoint = 0;
                                     Session.Character.SpAdditionPoint -= spType;
                                 }
                                 else if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint >= spType)
@@ -662,7 +664,53 @@ namespace OpenNos.GameObject
                                 {
                                     Session.Character.SpAdditionPoint = 0;
 
-                                    // Todo: Untransform SP
+                                    double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+
+                                    if (Session.Character.UseSp)
+                                    {
+                                        Session.Character.LastSp = currentRunningSeconds;
+                                        if (Session != null && Session.HasSession)
+                                        {
+                                            if (Session.Character.IsVehicled)
+                                            {
+                                                return;
+                                            }
+                                            Logger.Debug(specialist.ItemVNum.ToString(), Session.SessionId);
+                                            Session.Character.UseSp = false;
+                                            Session.Character.LoadSpeed();
+                                            Session.SendPacket(Session.Character.GenerateCond());
+                                            Session.SendPacket(Session.Character.GenerateLev());
+                                            Session.Character.SpCooldown = 30;
+                                            if (Session.Character != null && Session.Character.SkillsSp != null)
+                                            {
+                                                foreach (CharacterSkill ski in Session.Character.SkillsSp.GetAllItems().Where(s => !s.CanBeUsed()))
+                                                {
+                                                    short time = ski.Skill.Cooldown;
+                                                    double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
+                                                    temp /= 1000;
+                                                    Session.Character.SpCooldown = temp > Session.Character.SpCooldown ? (int)temp : (int)Session.Character.SpCooldown;
+                                                }
+                                            }
+                                            Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
+                                            Session.SendPacket($"sd {Session.Character.SpCooldown}");
+                                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
+
+                                            // ms_c
+                                            Session.SendPacket(Session.Character.GenerateSki());
+                                            Session.SendPackets(Session.Character.GenerateQuicklist());
+                                            Session.SendPacket(Session.Character.GenerateStat());
+                                            Session.SendPacket(Session.Character.GenerateStatChar());
+                                            Observable.Timer(TimeSpan.FromMilliseconds(Session.Character.SpCooldown * 1000))
+                                                       .Subscribe(
+                                                       o =>
+                                                       {
+                                                           Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
+                                                           Session.SendPacket("sd 0");
+                                                       });
+                                        }
+
+                                    }
                                 }
                                 Session.SendPacket(Session.Character.GenerateSpPoint());
                                 Session.Character.LastSpGaugeRemove = DateTime.Now;

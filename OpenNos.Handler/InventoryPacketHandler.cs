@@ -502,6 +502,7 @@ namespace OpenNos.Handler
                                 {
                                     Session.Character.SpPoint = 10000;
                                 }
+                                Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
                                 Session.SendPacket(Session.Character.GenerateSpPoint());
                             }
                             MapItem removeItem = Session.CurrentMap.DroppedList[packet.TransportId];
@@ -1250,6 +1251,10 @@ namespace OpenNos.Handler
                     if (Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkillUse.AddSeconds(2) >= DateTime.Now)
                     {
                         return;
+                    }
+                    if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint == 0)
+                    {
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_NOPOINTS"), 0));
                     }
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
                     if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)

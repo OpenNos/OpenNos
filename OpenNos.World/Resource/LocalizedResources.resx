@@ -1057,4 +1057,16 @@
   <data name="GOLD_DROP_RATE_CHANGED" xml:space="preserve">
     <value>Gold drop rate changed!</value>
   </data>
+  <data name="SP_NOPOINTS" xml:space="preserve">
+    <value>You have no SP Points left! You can't transform now!</value>
+  </data>
+  <data name="SP_POINTSADDED" xml:space="preserve">
+    <value>You received {0} SP Points!</value>
+  </data>
+  <data name="SP_POINTSADDEDBOTH" xml:space="preserve">
+    <value>You received {0} basic and {1} additional SP Points!</value>
+  </data>
+  <data name="SP_NOPOINTSCANCELED" xml:space="preserve">
+    <value>The transformation got canceled! You have no SP Points left!</value>
+  </data>
 </root>
