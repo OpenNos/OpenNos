@@ -567,7 +567,6 @@ namespace OpenNos.Import.Console
             DAOFactory.MapTypeMapDAO.Insert(maptypemaps);
         }
 
-        //Need fix
         public void ImportRespawnMapType()
         {
             List<RespawnMapTypeDTO> respawnmaptypemaps = new List<RespawnMapTypeDTO>();
