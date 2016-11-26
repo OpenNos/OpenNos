@@ -1428,10 +1428,11 @@ namespace OpenNos.Import.Console
             List<RespawnMapTypeDTO> respawnmaptypemaps = new List<RespawnMapTypeDTO>();
             //NosVille X79 Y116
             //Port(Acte 5) X86 Y48
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 1, RespawnMapTypeId = 1, DefaultX = 79, DefaultY = 116, Name = "Default" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 1, RespawnMapTypeId = 1, DefaultX = 86, DefaultY = 48, Name = "DefaultAct5" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 0, RespawnMapTypeId = 0, DefaultX = 0, DefaultY = 0, Name = "Return" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 0, RespawnMapTypeId = 0, DefaultX = 0, DefaultY = 0, Name = "ReturnAct5" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = 1, DefaultMapId = 1, DefaultX = 79, DefaultY = 116, Name = "Default" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = 2, DefaultMapId = 1, DefaultX = 86, DefaultY = 48, Name = "DefaultAct5" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = 3, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "Return" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = 4, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "ReturnAct5" });
+
             DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
             Logger.Log.Info(Language.Instance.GetMessageFromKey("RESPAWNTYPE_PARSED"));
         }
