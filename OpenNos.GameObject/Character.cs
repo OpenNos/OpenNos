@@ -1750,12 +1750,28 @@ namespace OpenNos.GameObject
                     {
                         foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId))
                         {
-                            targetSession.Character.GenerateXp(monsterToAttack.Monster);
+                            if (monsterToAttack.DamageList.FirstOrDefault().Key == Session.Character.CharacterId)
+                            {
+                                targetSession.SendPacket(targetSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
+                                targetSession.Character.GenerateXp(monsterToAttack.Monster, true);
+                            }
+                            else
+                            {
+                                targetSession.Character.GenerateXp(monsterToAttack.Monster, false);
+                            }
                         }
                     }
                     else
                     {
-                        Session.Character.GenerateXp(monsterToAttack.Monster);
+                        if (monsterToAttack.DamageList.FirstOrDefault().Key == Session.Character.CharacterId)
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
+                            Session.Character.GenerateXp(monsterToAttack.Monster, true);
+                        }
+                        else
+                        {
+                            Session.Character.GenerateXp(monsterToAttack.Monster, false);
+                        }
                     }
                     Session.Character.GenerateDignity(monsterToAttack.Monster);
                 }
@@ -2374,7 +2390,7 @@ namespace OpenNos.GameObject
             return new string[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
         }
 
-        public void GenerateXp(NpcMonster monsterinfo)
+        public void GenerateXp(NpcMonster monsterinfo, bool isMonsterOwner)
         {
             int partySize = 1;
             Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
@@ -2395,7 +2411,14 @@ namespace OpenNos.GameObject
 
             if (Level < 99)
             {
-                LevelXp += GetXP(monsterinfo, grp);
+                if (isMonsterOwner)
+                {
+                    LevelXp += GetXP(monsterinfo, grp);
+                }
+                else
+                {
+                    LevelXp += GetXP(monsterinfo, grp) / 3;
+                }
             }
             if ((Class == 0 && JobLevel < 20) || (Class != 0 && JobLevel < 80))
             {
