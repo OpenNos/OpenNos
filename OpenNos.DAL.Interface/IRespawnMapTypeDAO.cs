@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify
@@ -12,29 +12,21 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.DAL.EF
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using System.Collections.Generic;
+
+namespace OpenNos.DAL.Interface
 {
-    public class Respawn
+    public interface IRespawnMapTypeDAO : IMappingBaseDAO
     {
-        #region Properties
+        #region Methods
 
-        public virtual Character Character { get; set; }
+        SaveResult InsertOrUpdate(ref RespawnMapTypeDTO respawnMapType);
 
-        public virtual Map Map { get; set; }
+        IEnumerable<RespawnMapTypeDTO> LoadByMapId(short mapId);
 
-        public virtual RespawnMapType RespawnMapType { get; set; }
-
-        public long CharacterId { get; set; }
-
-        public short MapId { get; set; }
-
-        public long RespawnId { get; set; }
-
-        public long RespawnMapTypeId { get; set; }
-
-        public short X { get; set; }
-
-        public short Y { get; set; }
+        RespawnMapTypeDTO LoadById(long respawnMapTypeId);
 
         #endregion
     }

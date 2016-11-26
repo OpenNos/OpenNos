@@ -24,7 +24,7 @@ namespace OpenNos.Data
 
         public long RespawnId { get; set; }
 
-        public byte RespawnType { get; set; }
+        public byte RespawnMapTypeId { get; set; }
 
         public short X { get; set; }
 

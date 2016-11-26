@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify
@@ -12,29 +12,34 @@
  * GNU General Public License for more details.
  */
 
+using System.Collections.Generic;
+
 namespace OpenNos.DAL.EF
 {
-    public class Respawn
+    public class RespawnMapType
     {
+
+        public RespawnMapType()
+        {
+            Respawn = new HashSet<Respawn>();
+            MapType = new HashSet<MapType>();
+        }
+
         #region Properties
 
-        public virtual Character Character { get; set; }
+        public virtual ICollection<Respawn> Respawn { get; set; }
 
         public virtual Map Map { get; set; }
 
-        public virtual RespawnMapType RespawnMapType { get; set; }
+        public ICollection<MapType> MapType { get; set; }
 
-        public long CharacterId { get; set; }
-
-        public short MapId { get; set; }
-
-        public long RespawnId { get; set; }
+        public short DefaultMapId { get; set; }
 
         public long RespawnMapTypeId { get; set; }
 
-        public short X { get; set; }
+        public short DefaultX { get; set; }
 
-        public short Y { get; set; }
+        public short DefaultY { get; set; }
 
         #endregion
     }

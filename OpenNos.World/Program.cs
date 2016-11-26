@@ -147,6 +147,7 @@ namespace OpenNos.World
             DAOFactory.RecipeDAO.RegisterMapping(typeof(Recipe)).InitializeMapper();
             DAOFactory.RecipeItemDAO.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();
             DAOFactory.RespawnDAO.RegisterMapping(typeof(RespawnDTO)).InitializeMapper();
+            DAOFactory.RespawnMapTypeDAO.RegisterMapping(typeof(RespawnMapTypeDTO)).InitializeMapper();
             DAOFactory.ShopDAO.RegisterMapping(typeof(Shop)).InitializeMapper();
             DAOFactory.ShopItemDAO.RegisterMapping(typeof(ShopItemDTO)).InitializeMapper();
             DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
