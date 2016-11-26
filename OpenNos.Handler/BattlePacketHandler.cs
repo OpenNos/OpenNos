@@ -90,26 +90,29 @@ namespace OpenNos.Handler
                     List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
                     if (skills != null)
                     {
-                        Task t = Task.Factory.StartNew(async () =>
+                        CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == subpacket.SkillCastId - 1);
+                        if (ski.CanBeUsed())
                         {
-                            CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == subpacket.SkillCastId - 1);
-                            if (ski.CanBeUsed())
+                            MapMonster mon = Session.CurrentMap.GetMonster(subpacket.TargetId);
+                            if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && ski != null && mon.CurrentHp > 0)
                             {
-                                MapMonster mon = Session.CurrentMap.GetMonster(subpacket.TargetId);
-                                if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && ski != null && mon.CurrentHp > 0)
-                                {
-                                    Session.Character.LastSkillUse = DateTime.Now;
-                                    mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SpecialZoneHit, Session, ski.Skill));
-                                }
-
-                                await Task.Delay((ski.Skill.Cooldown) * 100);
-                                Session.SendPacket($"sr {subpacket.SkillCastId - 1}");
+                                Session.Character.LastSkillUse = DateTime.Now;
+                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SpecialZoneHit, Session, ski.Skill));
                             }
-                        });
+
+                            Observable.Timer(TimeSpan.FromMilliseconds(ski.Skill.CastTime * 100))
+                                 .Subscribe(
+                                 o =>
+                                 {
+                                     Session.SendPacket($"sr {subpacket.SkillCastId - 1}");
+                                 }
+                            );
+                        }
                     }
                 }
             }
         }
+
 
         public void TargetHit(int castingId, int targetId)
         {
@@ -231,7 +234,7 @@ namespace OpenNos.Handler
                                                 foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
                                                 {
                                                     mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill
-                                                        , skillCombo : skillCombo));
+                                                        , skillCombo: skillCombo));
                                                 }
                                             }
                                             else
@@ -265,7 +268,6 @@ namespace OpenNos.Handler
                             }
                         }
                     }
-
                 }
                 else
                 {
@@ -413,17 +415,18 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Mp >= characterSkill.Skill.MpCost)
                 {
-                    Task t = Task.Factory.StartNew(async () =>
+                    Session.CurrentMap?.Broadcast($"ct_n 1 {Session.Character.CharacterId} 3 -1 {characterSkill.Skill.CastAnimation} {characterSkill.Skill.CastEffect} {characterSkill.Skill.SkillVNum}");
+                    characterSkill.LastUse = DateTime.Now;
+                    if (!Session.Character.HasGodMode)
                     {
-                        Session.CurrentMap?.Broadcast($"ct_n 1 {Session.Character.CharacterId} 3 -1 {characterSkill.Skill.CastAnimation} {characterSkill.Skill.CastEffect} {characterSkill.Skill.SkillVNum}");
-                        characterSkill.LastUse = DateTime.Now;
-                        if (!Session.Character.HasGodMode)
-                        {
-                            Session.Character.Mp -= characterSkill.Skill.MpCost;
-                        }
-                        Session.SendPacket(Session.Character.GenerateStat());
-                        characterSkill.LastUse = DateTime.Now;
-                        await Task.Delay(characterSkill.Skill.CastTime * 100);
+                        Session.Character.Mp -= characterSkill.Skill.MpCost;
+                    }
+                    Session.SendPacket(Session.Character.GenerateStat());
+                    characterSkill.LastUse = DateTime.Now;
+                    Observable.Timer(TimeSpan.FromMilliseconds(characterSkill.Skill.CastTime * 100))
+                    .Subscribe(
+                    o =>
+                    {
                         Session.Character.LastSkillUse = DateTime.Now;
 
                         Session.CurrentMap?.Broadcast($"bs 1 {Session.Character.CharacterId} {x} {y} {characterSkill.Skill.SkillVNum} {characterSkill.Skill.Cooldown} {characterSkill.Skill.AttackAnimation} {characterSkill.Skill.Effect} 0 0 1 1 0 0 0");
@@ -433,8 +436,12 @@ namespace OpenNos.Handler
                         {
                             mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y));
                         }
+                    });
 
-                        await Task.Delay((characterSkill.Skill.Cooldown) * 100);
+                    Observable.Timer(TimeSpan.FromMilliseconds(characterSkill.Skill.CastTime * 100))
+                    .Subscribe(
+                    o =>
+                    {
                         Session.SendPacket($"sr {Castingid}");
                     });
                 }

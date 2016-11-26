@@ -21,6 +21,7 @@ using OpenNos.GameObject.Packets.ServerPackets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -440,8 +441,8 @@ namespace OpenNos.GameObject
             int monsterDodge = 0;
 
             short mainUpgrade = 0;
-            int mainCritChance = 4;
-            int mainCritHit = 70;
+            int mainCritChance = 0;
+            int mainCritHit = 0;
             int mainMinDmg = 0;
             int mainMaxDmg = 0;
             int mainHitRate = 0;
@@ -513,7 +514,7 @@ namespace OpenNos.GameObject
                 case 1:
                     monsterDefence = monsterToAttack.Monster.DistanceDefence;
                     monsterDodge = monsterToAttack.Monster.DistanceDefenceDodge;
-                    if (Session.Character.Class == ClassType.Swordman || Session.Character.Class == ClassType.Adventurer)
+                    if (Session.Character.Class == ClassType.Swordman || Session.Character.Class == ClassType.Adventurer || Session.Character.Class == ClassType.Magician)
                     {
                         mainCritHit = secCritHit;
                         mainCritChance = secCritChance;
@@ -548,6 +549,19 @@ namespace OpenNos.GameObject
                             break;
                     }
                     break;
+                case 5:
+                    monsterDefence = monsterToAttack.Monster.CloseDefence;
+                    monsterDodge = monsterToAttack.Monster.DefenceDodge;
+                    if (Session.Character.Class == ClassType.Archer)
+                    {
+                        mainCritHit = secCritHit;
+                        mainCritChance = secCritChance;
+                        mainHitRate = secHitRate;
+                        mainMaxDmg = secMaxDmg;
+                        mainMinDmg = secMinDmg;
+                        mainUpgrade = secUpgrade;
+                    }
+                    break;
             }
 
             #endregion
@@ -571,23 +585,25 @@ namespace OpenNos.GameObject
             #region Detailed Calculation
 
             #region Dodge
-
-            double multiplier = monsterDodge / mainHitRate;
-            if (multiplier > 5)
+            if (Session.Character.Class != ClassType.Magician)
             {
-                multiplier = 5;
-            }
-            double chance = -0.25 * Math.Pow(multiplier, 3) - 0.57 * Math.Pow(multiplier, 2) + 25.3 * multiplier - 1.41;
-            if (chance <= 1)
-            {
-                chance = 1;
-            }
-            if ((skill.Type == 0 || skill.Type == 1) && !Session.Character.HasGodMode)
-            {
-                if (random.Next(0, 100) <= chance)
+                double multiplier = monsterDodge / (mainHitRate + 1);
+                if (multiplier > 5)
                 {
-                    hitmode = 1;
-                    return 0;
+                    multiplier = 5;
+                }
+                double chance = -0.25 * Math.Pow(multiplier, 3) - 0.57 * Math.Pow(multiplier, 2) + 25.3 * multiplier - 1.41;
+                if (chance <= 1)
+                {
+                    chance = 1;
+                }
+                if ((skill.Type == 0 || skill.Type == 1) && !Session.Character.HasGodMode)
+                {
+                    if (random.Next(0, 100) <= chance)
+                    {
+                        hitmode = 1;
+                        return 0;
+                    }
                 }
             }
 
@@ -597,7 +613,7 @@ namespace OpenNos.GameObject
 
             int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
             baseDamage += (skill.Damage / 4);
-            baseDamage += Session.Character.Level; //Morale
+            baseDamage += Session.Character.Level - monsterToAttack.Monster.Level; //Morale
             if (Session.Character.Class == ClassType.Adventurer)
             {
                 //HACK: Damage is ~10 lower in OpenNos than in official. Fix this...
@@ -690,7 +706,11 @@ namespace OpenNos.GameObject
                     baseDamage += (int)(baseDamage * 2);
                     break;
             }
-
+            if (skill.Type == 1)
+            {
+                if (Math.Abs(monsterToAttack.MapX - Session.Character.MapX) < 4 && Math.Abs(monsterToAttack.MapY - Session.Character.MapY) < 4)
+                    baseDamage = (int)(baseDamage * 0.7);
+            }
             #endregion
 
             #region Elementary Damage
@@ -822,7 +842,7 @@ namespace OpenNos.GameObject
                 }
                 else if (elementalBoost == 1.3)
                 {
-                    elementalBoost = 0;
+                    elementalBoost = 0.15;
                 }
                 else if (elementalBoost == 1.5)
                 {
@@ -849,6 +869,8 @@ namespace OpenNos.GameObject
 
             #region Critical Damage
 
+            baseDamage -= monsterDefence;
+
             if (random.Next(100) <= mainCritChance)
             {
                 if (skill.Type == 2)
@@ -856,12 +878,18 @@ namespace OpenNos.GameObject
                 }
                 else if (skill.Type == 3 && Session.Character.Class != ClassType.Magician)
                 {
-                    baseDamage += (int)(baseDamage * ((mainCritHit / 100D)));
+                    double multiplier = (mainCritHit / 100D);
+                    if (multiplier > 3)
+                        multiplier = 3;
+                    baseDamage += (int)(baseDamage * multiplier);
                     hitmode = 3;
                 }
                 else
                 {
-                    baseDamage += (int)(baseDamage * ((mainCritHit / 100D)));
+                    double multiplier = (mainCritHit / 100D);
+                    if (multiplier > 3)
+                        multiplier = 3;
+                    baseDamage += (int)(baseDamage * multiplier);
                     hitmode = 3;
                 }
             }
@@ -870,7 +898,7 @@ namespace OpenNos.GameObject
 
             #region Total Damage
 
-            int totalDamage = baseDamage + elementalDamage - monsterDefence;
+            int totalDamage = baseDamage + elementalDamage;
             if (totalDamage < 5)
             {
                 totalDamage = random.Next(1, 6);
@@ -917,7 +945,7 @@ namespace OpenNos.GameObject
         }
 
         public void GenerateKillBonus(MapMonster monsterToAttack)
-        {
+        { 
             if (monsterToAttack == null || monsterToAttack.IsAlive)
             {
                 return;
@@ -953,7 +981,15 @@ namespace OpenNos.GameObject
                             x++;
                             if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                             {
-                                GiftAdd(drop.ItemVNum, (byte)drop.Amount);
+                                List<long> alreadyGifted = new List<long>();
+                                foreach (long charId in monsterToAttack.DamageList.Keys)
+                                {
+                                    if (!alreadyGifted.Contains(charId))
+                                    {
+                                        ServerManager.Instance.GetSessionByCharacterId(charId).Character.GiftAdd(drop.ItemVNum, (byte)drop.Amount);
+                                        alreadyGifted.Add(charId);
+                                    }
+                                }
                             }
                             else
                             {
@@ -973,12 +1009,12 @@ namespace OpenNos.GameObject
                                     }
                                 }
 
-                                // delayed Drop
-                                Task.Factory.StartNew(async () =>
-                                {
-                                    await Task.Delay(500);
-                                    Session.CurrentMap.DropItemByMonster(dropOwner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
-                                });
+                                Observable.Timer(TimeSpan.FromMilliseconds(500))
+                               .Subscribe(
+                               o =>
+                               {
+                                   Session.CurrentMap.DropItemByMonster(dropOwner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                               });
                             }
                         }
                     }
@@ -992,7 +1028,8 @@ namespace OpenNos.GameObject
                 int gold = GetGold(monsterToAttack);
                 gold = gold > 1000000000 ? 1000000000 : gold;
                 double randChance = random.Next(0, 100) * random.NextDouble();
-                if (gold > 0 && randChance <= (int)((ServerManager.GoldDropRate * 10) * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
+
+                if (gold > 0 && randChance <= (int)((ServerManager.GoldDropRate * 10) * CharacterHelper.GoldPenalty(Session.Character.Level, monsterToAttack.Monster.Level)))
                 {
                     DropDTO drop2 = new DropDTO()
                     {
@@ -1002,14 +1039,23 @@ namespace OpenNos.GameObject
 
                     if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                     {
-                        Gold += drop2.Amount;
-                        if (Gold > 1000000000)
+                        List<long> alreadyGifted = new List<long>();
+                        foreach (long charId in monsterToAttack.DamageList.Keys)
                         {
-                            Gold = 1000000000;
-                            Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                            if (!alreadyGifted.Contains(charId))
+                            {
+                                ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
+                                session.Character.Gold += drop2.Amount;
+                                if (session.Character.Gold > 1000000000)
+                                {
+                                    session.Character.Gold = 1000000000;
+                                    session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                                }
+                                session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
+                                session.SendPacket(session.Character.GenerateGold());
+                                alreadyGifted.Add(charId);
+                            }
                         }
-                        Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
-                        Session.SendPacket(GenerateGold());
                     }
                     else
                     {
@@ -1031,11 +1077,12 @@ namespace OpenNos.GameObject
                         }
 
                         // delayed Drop
-                        Task.Factory.StartNew(async () =>
-                        {
-                            await Task.Delay(500);
-                            Session.CurrentMap.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
-                        });
+                        Observable.Timer(TimeSpan.FromMilliseconds(500))
+                              .Subscribe(
+                              o =>
+                              {
+                                  Session.CurrentMap.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
+                              });
                     }
                 }
 
@@ -1043,21 +1090,21 @@ namespace OpenNos.GameObject
 
                 #region exp
 
-                if (Hp > 0)
+                if (Session.Character.Hp > 0)
                 {
-                    Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
+                    Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
                     if (grp != null)
                     {
-                        foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapId == MapId))
+                        foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId))
                         {
                             targetSession.Character.GenerateXp(monsterToAttack.Monster);
                         }
                     }
                     else
                     {
-                        GenerateXp(monsterToAttack.Monster);
+                        Session.Character.GenerateXp(monsterToAttack.Monster);
                     }
-                    GenerateDignity(monsterToAttack.Monster);
+                    Session.Character.GenerateDignity(monsterToAttack.Monster);
                 }
 
                 #endregion
