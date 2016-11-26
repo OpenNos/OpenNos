@@ -2793,11 +2793,7 @@ namespace OpenNos.Import.Console
                                 {
                                     case 150:
                                     case 151:
-                                        if (Convert.ToInt32(currentLine[4]) == 0)
-                                        {
-                                            item.EffectValue = 10000;
-                                        }
-                                        else if (Convert.ToInt32(currentLine[4]) == 1)
+                                        if (Convert.ToInt32(currentLine[4]) == 1)
                                         {
                                             item.EffectValue = 30000;
                                         }
@@ -2808,6 +2804,10 @@ namespace OpenNos.Import.Console
                                         else if (Convert.ToInt32(currentLine[4]) == 3)
                                         {
                                             item.EffectValue = 180000;
+                                        }
+                                        else
+                                        {
+                                            item.EffectValue = Convert.ToInt32(currentLine[4]);
                                         }
                                         break;
 

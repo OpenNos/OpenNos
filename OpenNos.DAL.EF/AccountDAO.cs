@@ -216,8 +216,8 @@ namespace OpenNos.DAL.EF
         {
             if (entity != null)
             {
-                //The Mapper breaks context.SaveChanges(), so we need to "map" the data by hand...
-                //entity = _mapper.Map<Account>(account);
+                // The Mapper breaks context.SaveChanges(), so we need to "map" the data by hand...
+                // entity = _mapper.Map<Account>(account);
                 entity.Authority = account.Authority;
                 entity.LastCompliment = account.LastCompliment;
                 entity.LastSession = account.LastSession;

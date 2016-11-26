@@ -133,6 +133,10 @@
     <Compile Include="Migrations\201611261126484_Ares5.Designer.cs">
       <DependentUpon>201611261126484_Ares5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611261148074_Ares6.cs" />
+    <Compile Include="Migrations\201611261148074_Ares6.Designer.cs">
+      <DependentUpon>201611261148074_Ares6.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
     <Compile Include="DB\OpenNosContext.cs" />
@@ -221,6 +225,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611261126484_Ares5.resx">
       <DependentUpon>201611261126484_Ares5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611261148074_Ares6.resx">
+      <DependentUpon>201611261148074_Ares6.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

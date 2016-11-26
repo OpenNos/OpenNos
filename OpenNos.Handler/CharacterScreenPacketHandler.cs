@@ -7,6 +7,7 @@ using OpenNos.GameObject;
 using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.Handler
 {
@@ -363,7 +364,7 @@ namespace OpenNos.Handler
                             Session.Character.SpPoint = 10000;
                         }
                         Session.Character.LastLogin = DateTime.Now;
-                        
+                        Session.Character.Respawns = DAOFactory.RespawnDAO.LoadByCharacter(Session.Character.CharacterId).ToList();
                         Session.Character.Update();
                         Session.Character.LoadInventory();
                         Session.Character.LoadQuicklists();

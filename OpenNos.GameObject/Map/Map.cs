@@ -55,7 +55,6 @@ namespace OpenNos.GameObject
             Data = data;
             IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId).ToList();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
-
             MapTypes = new List<MapTypeDTO>();
             foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId).ToList())
             {
@@ -63,6 +62,10 @@ namespace OpenNos.GameObject
                 MapTypes.Add(maptype);
             }
 
+            if (MapTypes.Any())
+            {
+                DefaultRespawns = DAOFactory.RespawnMapTypeDAO.LoadByMapTypeId((short)MapTypes.ElementAt(0).MapTypeId).ToList();
+            }
             _portals = new List<PortalDTO>();
             foreach (PortalDTO portal in portals)
             {
@@ -88,6 +91,10 @@ namespace OpenNos.GameObject
 
         public short MapId { get; set; }
 
+        public List<RespawnMapTypeDTO> DefaultRespawns
+        {
+            get; set;
+        }
         public List<MapTypeDTO> MapTypes
         {
             get; set;
@@ -469,8 +476,8 @@ namespace OpenNos.GameObject
                     LoadZone();
                 }
                 Parallel.Invoke(() => NpcLifeManager(), () => MonsterLifeManager(), () => CharacterLifeManager(), () => RemoveMapItem());
-            } 
-         else
+            }
+            else
             {
                 if (_grid != null)
                 {
@@ -651,7 +658,7 @@ namespace OpenNos.GameObject
                                 else if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint < spType)
                                 {
                                     Session.Character.SpAdditionPoint = 0;
-                                    
+
                                     // Todo: Untransform SP
                                 }
                                 Session.SendPacket(Session.Character.GenerateSpPoint());
