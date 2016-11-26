@@ -268,6 +268,9 @@ namespace OpenNos.Handler
                             }
                         }
                     }
+
+                    Session.SendPacketAfterWait($"sr {castingId}", ski.Skill.Cooldown * 100);
+
                 }
                 else
                 {
