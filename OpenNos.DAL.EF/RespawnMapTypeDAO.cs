@@ -57,6 +57,28 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public void Insert(List<RespawnMapTypeDTO> respawnMapType)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (RespawnMapTypeDTO RespawnMapType in respawnMapType)
+                    {
+                        RespawnMapType entity = _mapper.Map<RespawnMapType>(RespawnMapType);
+                        context.RespawnMapType.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
         public IEnumerable<RespawnMapTypeDTO> LoadByMapId(short mapId)
         {
             using (var context = DataAccessHelper.CreateContext())

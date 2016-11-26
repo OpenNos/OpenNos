@@ -567,6 +567,58 @@ namespace OpenNos.Import.Console
             DAOFactory.MapTypeMapDAO.Insert(maptypemaps);
         }
 
+        //Need fix
+        public void ImportRespawnMapType()
+        {
+            List<RespawnMapTypeDTO> respawnmaptypemaps = new List<RespawnMapTypeDTO>();
+            short respawnMapTypeId = 1;
+            short defaultX = 0;
+            short defaultY = 0;
+            bool objectset;
+            for (int i = 1; i < 300; i++)
+            {
+                objectset = false;
+                if (i == 1)
+                {
+                    //NosVille
+                    respawnMapTypeId = 1;
+                    defaultX = 0;
+                    defaultY = 0;
+                    objectset = true;
+                }
+                else if (i == 20)
+                {
+                    // Mont Krem
+                    respawnMapTypeId = 2;
+                    defaultX = 0;
+                    defaultY = 0;
+                    objectset = true;
+                }
+                else if (i == 145)
+                {
+                    // Alveus
+                    respawnMapTypeId = 3;
+                    defaultX = 0;
+                    defaultY = 0;
+                    objectset = true;
+                }
+                else if (i == 170)
+                {
+                    // Acte 5
+                    respawnMapTypeId = 4;
+                    defaultX = 0;
+                    defaultY = 0;
+                    objectset = true;
+                }
+                if (objectset && DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.MapTypeMapDAO.LoadByMapAndMapType((short)i, respawnMapTypeId) == null)
+                {
+                    respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = (short)i, RespawnMapTypeId = respawnMapTypeId, DefaultX = defaultX, DefaultY = defaultY });
+                }
+                DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
+            }
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("RESPAWNTYPE_PARSED"));
+        }
+
         public void ImportMonsters()
         {
             int monsterCounter = 0;

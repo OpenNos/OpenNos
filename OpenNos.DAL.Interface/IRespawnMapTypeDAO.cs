@@ -28,6 +28,8 @@ namespace OpenNos.DAL.Interface
 
         RespawnMapTypeDTO LoadById(long respawnMapTypeId);
 
+        void Insert(List<RespawnMapTypeDTO> respawnmaptypemaps);
+
         #endregion
     }
 }

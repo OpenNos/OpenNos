@@ -8,6 +8,10 @@ namespace OpenNos.DAL.Mock
 {
     public class RespawnMapTypeDAO : BaseDAO<RespawnMapTypeDAO>, IRespawnMapTypeDAO
     {
+        public void Insert(List<RespawnMapTypeDTO> respawnmaptypemaps)
+        {
+            throw new NotImplementedException();
+        }
         #region Methods
 
         public SaveResult InsertOrUpdate(ref RespawnMapTypeDTO respawnMapType)
