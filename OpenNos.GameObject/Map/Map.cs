@@ -250,9 +250,12 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (!_grid.IsWalkableAt(new GridPos(x, y)))
+            if (_grid != null)
             {
-                return true;
+                if (!_grid.IsWalkableAt(new GridPos(x, y)))
+                {
+                    return true;
+                }
             }
             return false;
         }
