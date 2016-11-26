@@ -284,7 +284,7 @@ namespace OpenNos.GameObject
             JumpPointParameters.Reset(cell1, cell2);
             List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
             lpath = JumpPointFinder.GetFullPath(resultPathList);
-            Debug.WriteLine($"From X: {cell1.x} Y: {cell1.y}, To X: {cell2.x} Y: {cell2.y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
+            Debug.WriteLine($"Map: {MapId} From X: {cell1.x} Y: {cell1.y}, To X: {cell2.x} Y: {cell2.y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
             return lpath;
         }
 
