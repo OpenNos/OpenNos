@@ -115,6 +115,42 @@ namespace OpenNos.GameObject
             }
         }
 
+        public RespawnMapTypeDTO Respawn
+        {
+            get
+            {
+                RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
+                if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
+                {
+                    long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).RespawnMapTypeId;
+                    if (respawnmaptype != null)
+                    {
+                        RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                        if (resp == null)
+                        {
+                            RespawnMapTypeDTO defaultresp = Session.CurrentMap.DefaultRespawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                            if (defaultresp != null)
+                            {
+                                respawn.DefaultX = defaultresp.DefaultX;
+                                respawn.DefaultY = defaultresp.DefaultY;
+                                respawn.DefaultMapId = defaultresp.DefaultMapId;
+                                respawn.RespawnMapTypeId = (long)respawnmaptype;
+                            }
+
+                        }
+                        else
+                        {
+                            respawn.DefaultX = resp.X;
+                            respawn.DefaultY = resp.Y;
+                            respawn.DefaultMapId = resp.MapId;
+                            respawn.RespawnMapTypeId = (long)respawnmaptype;
+                        }
+                    }
+                }
+                return respawn;
+
+            }
+        }
         public int DistanceCritical { get; set; }
 
         public int DistanceCriticalRate { get; set; }
@@ -234,6 +270,8 @@ namespace OpenNos.GameObject
         public DateTime LastMove { get; set; }
 
         public short LastNRunId { get; set; }
+
+        public List<RespawnDTO> Respawns { get; set; }
 
         public List<long> GroupSentRequestCharacterIds { get; set; }
 
@@ -945,7 +983,7 @@ namespace OpenNos.GameObject
         }
 
         public void GenerateKillBonus(MapMonster monsterToAttack)
-        { 
+        {
             if (monsterToAttack == null || monsterToAttack.IsAlive)
             {
                 return;
@@ -2190,7 +2228,7 @@ namespace OpenNos.GameObject
                     {
                         p = 50 + (point - 50) * 2;
                     }
-                    ElementRateSP += p;                    
+                    ElementRateSP += p;
                 }
             }
 

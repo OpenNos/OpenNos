@@ -67,7 +67,16 @@ namespace OpenNos.DAL.EF
                 }
             }
         }
-
+        public IEnumerable<RespawnMapTypeDTO> LoadByMapTypeId(short MapTypeId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (RespawnMapType Respawnobject in context.RespawnMapType.Where(i => i.MapType.Equals(MapTypeId)))
+                {
+                    yield return _mapper.Map<RespawnMapTypeDTO>(Respawnobject);
+                }
+            }
+        }
         public RespawnMapTypeDTO LoadById(long respawnMapTypeId)
         {
             try
