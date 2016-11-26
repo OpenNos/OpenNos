@@ -23,7 +23,7 @@ namespace OpenNos.DAL.EF.Migrations
             DropForeignKey("dbo.MapType", "RespawnMapTypeId", "dbo.RespawnMapType");
             DropForeignKey("dbo.Respawn", "RespawnMapTypeId", "dbo.RespawnMapType");
             DropPrimaryKey("dbo.RespawnMapType");
-            AlterColumn("dbo.RespawnMapType", "RespawnMapTypeId", c => c.Long(nullable: false, identity: true));
+            AlterColumn("dbo.RespawnMapType", "RespawnMapTypeId", c => c.Long(nullable: false, identity: false));
             AddPrimaryKey("dbo.RespawnMapType", "RespawnMapTypeId");
             RenameIndex(table: "dbo.MapType", name: "IX_RespawnMapTypeId", newName: "IX_RespawnMapType_RespawnMapTypeId");
             RenameColumn(table: "dbo.MapType", name: "RespawnMapTypeId", newName: "RespawnMapType_RespawnMapTypeId");

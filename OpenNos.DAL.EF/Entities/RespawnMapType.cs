@@ -50,6 +50,9 @@ namespace OpenNos.DAL.EF
         public virtual ICollection<Respawn> Respawn { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public long RespawnMapTypeI { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long RespawnMapTypeId { get; set; }
 
         #endregion
