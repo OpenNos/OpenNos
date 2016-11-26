@@ -17,6 +17,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Domain;
 using OpenNos.ServiceRef.Internal;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -37,7 +38,7 @@ namespace OpenNos.GameObject
         private INetworkClient _client;
         private IDictionary<string, HandlerMethodReference> _handlerMethods;
         private Random _random;
-        private Queue<byte[]> _receiveQueue;
+        private ConcurrentQueue<byte[]> _receiveQueue;
         private object _receiveQueueObservable;
         private IList<String> _waitForPacketList = new List<String>();
 
@@ -72,7 +73,7 @@ namespace OpenNos.GameObject
             _client.MessageReceived += OnNetworkClientMessageReceived;
 
             // start observer for receiving packets
-            _receiveQueue = new Queue<byte[]>();
+            _receiveQueue = new ConcurrentQueue<byte[]>();
             _receiveQueueObservable = Observable.Interval(new TimeSpan(0, 0, 0, 0, (isLagMode ? 1000 : 10)))
                 .Subscribe(x => HandlePackets());
         }
@@ -247,7 +248,7 @@ namespace OpenNos.GameObject
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }
 
-            _receiveQueue.Clear();
+            ClearReceiveQueue();
         }
 
         public void Disconnect()
@@ -333,6 +334,13 @@ namespace OpenNos.GameObject
             Character.SetSession(this);
         }
 
+        private void ClearReceiveQueue()
+        {
+            byte[] outPacket;
+            while (_receiveQueue.TryDequeue(out outPacket))
+            { }
+        }
+
         private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)
         {
             // TODO: filter for friendlist
@@ -392,10 +400,9 @@ namespace OpenNos.GameObject
         /// <param name="packetData"></param>
         private void HandlePackets()
         {
-            while (_receiveQueue.Any())
+            byte[] packetData = null;
+            while (_receiveQueue.TryDequeue(out packetData))
             {
-                byte[] packetData = _receiveQueue.Dequeue();
-
                 // determine first packet
                 if (_encryptor.HasCustomParameter && this.SessionId == 0)
                 {
