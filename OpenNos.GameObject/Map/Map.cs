@@ -45,6 +45,7 @@ namespace OpenNos.GameObject
 
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
+            LastUserShopId = 0;
             _random = new Random();
             MapId = mapId;
             ShopAllowed = true;
@@ -131,6 +132,7 @@ namespace OpenNos.GameObject
         public int XLength { get; set; }
 
         public int YLength { get; set; }
+        public long LastUserShopId { get; set; }
 
         #endregion
 
