@@ -52,6 +52,7 @@
     <Compile Include="BuyShopType.cs" />
     <Compile Include="CharacterState.cs" />
     <Compile Include="GroupRequestType.cs" />
+    <Compile Include="InRespawnType.cs" />
     <Compile Include="InType.cs" />
     <Compile Include="MapTypeEnum.cs" />
     <Compile Include="GroupSharingType.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="PenaltyType.cs" />
     <Compile Include="PortalType.cs" />
     <Compile Include="RequestExchangeType.cs" />
+    <Compile Include="TargetHitType.cs" />
     <Compile Include="UpgradeProtection.cs" />
     <Compile Include="RarifyProtection.cs" />
     <Compile Include="RarifyMode.cs" />
