@@ -361,47 +361,50 @@ namespace EpPathFinding
         {
             HeuristicDelegate tHeuristic = iParam.HeuristicFunc;
             List<Node> tOpenList = iParam.openList;
-            int tEndX = iParam.EndNode.x;
-            int tEndY = iParam.EndNode.y;
-            GridPos tNeighbor;
-            GridPos tJumpPoint;
-            Node tJumpNode;
-
-            List<GridPos> tNeighbors = findNeighbors(iParam, iNode);
-            for (int i = 0; i < tNeighbors.Count; i++)
+            if (iParam.EndNode != null)
             {
-                tNeighbor = tNeighbors[i];
-                if (iParam.UseRecursive)
-                    tJumpPoint = jump(iParam, tNeighbor.x, tNeighbor.y, iNode.x, iNode.y);
-                else
-                    tJumpPoint = jumpLoop(iParam, tNeighbor.x, tNeighbor.y, iNode.x, iNode.y);
-                if (tJumpPoint != null)
+                int tEndX = iParam.EndNode.x;
+                int tEndY = iParam.EndNode.y;
+                GridPos tNeighbor;
+                GridPos tJumpPoint;
+                Node tJumpNode;
+
+                List<GridPos> tNeighbors = findNeighbors(iParam, iNode);
+                for (int i = 0; i < tNeighbors.Count; i++)
                 {
-                    tJumpNode = iParam.SearchGrid.GetNodeAt(tJumpPoint.x, tJumpPoint.y);
-                    if (tJumpNode == null)
+                    tNeighbor = tNeighbors[i];
+                    if (iParam.UseRecursive)
+                        tJumpPoint = jump(iParam, tNeighbor.x, tNeighbor.y, iNode.x, iNode.y);
+                    else
+                        tJumpPoint = jumpLoop(iParam, tNeighbor.x, tNeighbor.y, iNode.x, iNode.y);
+                    if (tJumpPoint != null)
                     {
-                        if (iParam.EndNode.x == tJumpPoint.x && iParam.EndNode.y == tJumpPoint.y)
-                            tJumpNode = iParam.SearchGrid.GetNodeAt(tJumpPoint);
-                    }
-                    if (tJumpNode.isClosed)
-                    {
-                        continue;
-                    }
-                    // include distance, as parent may not be immediately adjacent:
-                    float tCurNodeToJumpNodeLen = tHeuristic(Math.Abs(tJumpPoint.x - iNode.x), Math.Abs(tJumpPoint.y - iNode.y));
-                    float tStartToJumpNodeLen = iNode.startToCurNodeLen + tCurNodeToJumpNodeLen; // next `startToCurNodeLen` value
-
-                    if (!tJumpNode.isOpened || tStartToJumpNodeLen < tJumpNode.startToCurNodeLen)
-                    {
-                        tJumpNode.startToCurNodeLen = tStartToJumpNodeLen;
-                        tJumpNode.heuristicCurNodeToEndLen = (tJumpNode.heuristicCurNodeToEndLen == null ? tHeuristic(Math.Abs(tJumpPoint.x - tEndX), Math.Abs(tJumpPoint.y - tEndY)) : tJumpNode.heuristicCurNodeToEndLen);
-                        tJumpNode.heuristicStartToEndLen = tJumpNode.startToCurNodeLen + tJumpNode.heuristicCurNodeToEndLen.Value;
-                        tJumpNode.parent = iNode;
-
-                        if (!tJumpNode.isOpened)
+                        tJumpNode = iParam.SearchGrid.GetNodeAt(tJumpPoint.x, tJumpPoint.y);
+                        if (tJumpNode == null)
                         {
-                            tOpenList.Add(tJumpNode);
-                            tJumpNode.isOpened = true;
+                            if (iParam.EndNode.x == tJumpPoint.x && iParam.EndNode.y == tJumpPoint.y)
+                                tJumpNode = iParam.SearchGrid.GetNodeAt(tJumpPoint);
+                        }
+                        if (tJumpNode.isClosed)
+                        {
+                            continue;
+                        }
+                        // include distance, as parent may not be immediately adjacent:
+                        float tCurNodeToJumpNodeLen = tHeuristic(Math.Abs(tJumpPoint.x - iNode.x), Math.Abs(tJumpPoint.y - iNode.y));
+                        float tStartToJumpNodeLen = iNode.startToCurNodeLen + tCurNodeToJumpNodeLen; // next `startToCurNodeLen` value
+
+                        if (!tJumpNode.isOpened || tStartToJumpNodeLen < tJumpNode.startToCurNodeLen)
+                        {
+                            tJumpNode.startToCurNodeLen = tStartToJumpNodeLen;
+                            tJumpNode.heuristicCurNodeToEndLen = (tJumpNode.heuristicCurNodeToEndLen == null ? tHeuristic(Math.Abs(tJumpPoint.x - tEndX), Math.Abs(tJumpPoint.y - tEndY)) : tJumpNode.heuristicCurNodeToEndLen);
+                            tJumpNode.heuristicStartToEndLen = tJumpNode.startToCurNodeLen + tJumpNode.heuristicCurNodeToEndLen.Value;
+                            tJumpNode.parent = iNode;
+
+                            if (!tJumpNode.isOpened)
+                            {
+                                tOpenList.Add(tJumpNode);
+                                tJumpNode.isOpened = true;
+                            }
                         }
                     }
                 }
