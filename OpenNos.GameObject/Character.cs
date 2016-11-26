@@ -1251,14 +1251,15 @@ namespace OpenNos.GameObject
                     {
 
                         resp = new RespawnDTO() { CharacterId = CharacterId, MapId = MapId, X = MapX, Y = MapY, RespawnMapTypeId = (long)respawnmaptype };
+                        Respawns.Add(resp);
                     }
                     else
                     {
-                        resp.X = resp.X;
-                        resp.Y = resp.Y;
-                        resp.MapId = resp.MapId;
+                        resp.X = MapX;
+                        resp.Y = MapY;
+                        resp.MapId = MapId;
                     }
-                    Respawns.Add(resp);
+
                 }
             }
         }
@@ -1274,16 +1275,16 @@ namespace OpenNos.GameObject
                     RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
                     if (resp == null)
                     {
-
                         resp = new RespawnDTO() { CharacterId = CharacterId, MapId = MapId, X = MapX, Y = MapY, RespawnMapTypeId = (long)respawnmaptype };
+                        Respawns.Add(resp);
                     }
                     else
                     {
-                        resp.X = resp.X;
-                        resp.Y = resp.Y;
-                        resp.MapId = resp.MapId;
+                        resp.X = MapX;
+                        resp.Y = MapY;
+                        resp.MapId = MapId;
                     }
-                    Respawns.Add(resp);
+
                 }
             }
         }

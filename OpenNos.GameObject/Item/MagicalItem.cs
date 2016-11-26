@@ -57,7 +57,8 @@ namespace OpenNos.GameObject
                             RespawnMapTypeDTO resp = session.Character.Respawn;
                             if (resp != default(RespawnMapTypeDTO))
                             {
-                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, resp.DefaultX, resp.DefaultY);
+                                Random rnd = new Random();
+                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, (short)(resp.DefaultX + rnd.Next(-5, 5)), (short)(resp.DefaultY + rnd.Next(-5, 5)));
                             }
                             break;
                         case 1:
