@@ -38,6 +38,8 @@ namespace OpenNos.DAL.EF
 
         public virtual RespawnMapType RespawnMapType { get; set; }
 
+        public long? RespawnMapTypeId { get; set; }
+
         public string MapTypeName { get; set; }
 
         public short PotionDelay { get; set; }
