@@ -112,8 +112,8 @@ namespace OpenNos.World
         private static bool ExitHandler(CtrlType sig)
         {
             ServerManager.Instance.Shout(String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
-            Thread.Sleep(5000);
             ServerManager.Instance.SaveAll();
+            Thread.Sleep(5000);
             return false;
         }
 
