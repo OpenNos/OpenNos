@@ -100,6 +100,7 @@ namespace OpenNos.Import.Console
                     factory.LoadMaps();
                     factory.ImportMapType();
                     factory.ImportMapTypeMap();
+                    factory.ImportRespawnMapType();
                     factory.ImportAccounts();
                     factory.ImportPortals();
                     factory.ImportItems();

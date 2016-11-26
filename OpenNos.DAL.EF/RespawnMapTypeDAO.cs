@@ -28,6 +28,28 @@ namespace OpenNos.DAL.EF
     {
         #region Methods
 
+        public void Insert(List<RespawnMapTypeDTO> respawnMapType)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (RespawnMapTypeDTO RespawnMapType in respawnMapType)
+                    {
+                        RespawnMapType entity = _mapper.Map<RespawnMapType>(RespawnMapType);
+                        context.RespawnMapType.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
         public SaveResult InsertOrUpdate(ref RespawnMapTypeDTO respawnMapType)
         {
             try
@@ -57,38 +79,6 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public void Insert(List<RespawnMapTypeDTO> respawnMapType)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (RespawnMapTypeDTO RespawnMapType in respawnMapType)
-                    {
-                        RespawnMapType entity = _mapper.Map<RespawnMapType>(RespawnMapType);
-                        context.RespawnMapType.Add(entity);
-                    }
-                    context.Configuration.AutoDetectChangesEnabled = true;
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
-        public IEnumerable<RespawnMapTypeDTO> LoadByMapId(short mapId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (RespawnMapType Respawnobject in context.RespawnMapType.Where(i => i.DefaultMapId.Equals(mapId)))
-                {
-                    yield return _mapper.Map<RespawnMapTypeDTO>(Respawnobject);
-                }
-            }
-        }
         public RespawnMapTypeDTO LoadById(long respawnMapTypeId)
         {
             try
@@ -102,6 +92,17 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
                 return null;
+            }
+        }
+
+        public IEnumerable<RespawnMapTypeDTO> LoadByMapId(short mapId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (RespawnMapType Respawnobject in context.RespawnMapType.Where(i => i.DefaultMapId.Equals(mapId)))
+                {
+                    yield return _mapper.Map<RespawnMapTypeDTO>(Respawnobject);
+                }
             }
         }
 

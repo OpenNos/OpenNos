@@ -1427,52 +1427,13 @@ namespace OpenNos.Import.Console
         public void ImportRespawnMapType()
         {
             List<RespawnMapTypeDTO> respawnmaptypemaps = new List<RespawnMapTypeDTO>();
-            short respawnMapTypeId = 1;
-            short defaultX = 0;
-            short defaultY = 0;
-            string name = String.Empty;
-            bool objectset;
-            for (int i = 1; i < 300; i++)
-            {
-                objectset = false;
-                if (i == 1)
-                {
-                    name = "NosVille";
-                    respawnMapTypeId = 1;
-                    defaultX = 0;
-                    defaultY = 0;
-                    objectset = true;
-                }
-                else if (i == 20)
-                {
-                    name = "Mount Krem";
-                    respawnMapTypeId = 2;
-                    defaultX = 0;
-                    defaultY = 0;
-                    objectset = true;
-                }
-                else if (i == 145)
-                {
-                    name = "Port Avelus";
-                    respawnMapTypeId = 3;
-                    defaultX = 0;
-                    defaultY = 0;
-                    objectset = true;
-                }
-                else if (i == 170)
-                {
-                    name = "Act5";
-                    respawnMapTypeId = 4;
-                    defaultX = 0;
-                    defaultY = 0;
-                    objectset = true;
-                }
-                if (objectset && DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.RespawnMapTypeDAO.LoadByMapId((short)i) == null)
-                {
-                    respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = (short)i, RespawnMapTypeId = respawnMapTypeId, DefaultX = defaultX, DefaultY = defaultY, Name = name });
-                }
-                DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
-            }
+            //NosVille X79 Y116
+            //Port(Acte 5) X86 Y48
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 1, RespawnMapTypeId = 1, DefaultX = 79, DefaultY = 116, Name = "Default" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 1, RespawnMapTypeId = 1, DefaultX = 86, DefaultY = 48, Name = "DefaultAct5" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 0, RespawnMapTypeId = 0, DefaultX = 0, DefaultY = 0, Name = "Return" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 0, RespawnMapTypeId = 0, DefaultX = 0, DefaultY = 0, Name = "ReturnAct5" });
+            DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
             Logger.Log.Info(Language.Instance.GetMessageFromKey("RESPAWNTYPE_PARSED"));
         }
         public void ImportShopItems()

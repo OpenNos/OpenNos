@@ -26,6 +26,8 @@ namespace OpenNos.Data
 
         public long? RespawnMapTypeId { get; set; }
 
+        public long? ReturnMapTypeId { get; set; }
+
         #endregion
     }
 }

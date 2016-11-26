@@ -25,7 +25,8 @@ namespace OpenNos.DAL.EF
         public RespawnMapType()
         {
             Respawn = new HashSet<Respawn>();
-            MapType = new HashSet<MapType>();
+            MapTypes = new HashSet<MapType>();
+            MapTypes1 = new HashSet<MapType>();
         }
 
         #endregion
@@ -40,7 +41,8 @@ namespace OpenNos.DAL.EF
 
         public virtual Map Map { get; set; }
 
-        public ICollection<MapType> MapType { get; set; }
+        public ICollection<MapType> MapTypes { get; set; }
+        public ICollection<MapType> MapTypes1 { get; set; }
 
         [MaxLength(255)]
         public string Name { get; set; }

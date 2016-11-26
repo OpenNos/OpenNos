@@ -229,7 +229,14 @@ namespace OpenNos.DAL.EF.DB
 
             modelBuilder.Entity<MapType>()
                 .HasOptional(e => e.RespawnMapType)
-                .WithMany(e => e.MapType)
+                .WithMany(e => e.MapTypes)
+                .HasForeignKey(e => e.RespawnMapTypeId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<MapType>()
+                .HasOptional(e => e.ReturnMapType)
+                .WithMany(e => e.MapTypes1)
+                .HasForeignKey(e => e.ReturnMapTypeId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Map>()
