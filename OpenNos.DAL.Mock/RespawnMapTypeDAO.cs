@@ -29,10 +29,6 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public IEnumerable<RespawnMapTypeDTO> LoadByMapTypeId(short MapTypeId)
-        {
-            throw new NotImplementedException();
-        }
         #endregion
     }
 }

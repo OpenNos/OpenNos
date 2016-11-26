@@ -567,7 +567,17 @@ namespace OpenNos.Handler
         [Packet("$Respawn")]
         public void Respawn(string packet)
         {
-            Session.SendPacket(Session.Character.GenerateSay($"X : ", 10));
+            RespawnMapTypeDTO resp = Session.Character.Respawn;
+            RespawnMapTypeDTO ret = Session.Character.Return;
+            if (resp.DefaultMapId == 0)
+            {
+                Session.SendPacket(Session.Character.GenerateSay($"Pas de point de respawn trouvé", 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay($"Respawn : MapId : {resp.DefaultMapId} - X : {resp.DefaultX} - Y : {resp.DefaultY}", 10));
+                Session.SendPacket(Session.Character.GenerateSay($"Return : MapId : {ret.DefaultMapId} - X : {ret.DefaultX} - Y : {ret.DefaultY}", 10));
+            }
         }
         [Packet("$CreateItem")]
         public void CreateItem(string packet)

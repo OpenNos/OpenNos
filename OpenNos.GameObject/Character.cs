@@ -423,7 +423,7 @@ namespace OpenNos.GameObject
                         RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
                         if (resp == null)
                         {
-                            RespawnMapTypeDTO defaultresp = Session.CurrentMap.DefaultRespawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                            RespawnMapTypeDTO defaultresp = Session.CurrentMap.DefaultRespawn;
                             if (defaultresp != null)
                             {
                                 respawn.DefaultX = defaultresp.DefaultX;
@@ -451,6 +451,7 @@ namespace OpenNos.GameObject
         public byte VehicleSpeed { get; internal set; }
 
         public int WaterResistance { get; set; }
+        public RespawnMapTypeDTO Return { get; set; }
 
         #endregion
 
