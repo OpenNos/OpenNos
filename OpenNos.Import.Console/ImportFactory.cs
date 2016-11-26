@@ -2739,9 +2739,13 @@ namespace OpenNos.Import.Console
                                 }
                                 switch (item.Effect)
                                 {
-                                    case 151:
                                     case 150:
-                                        if (Convert.ToInt32(currentLine[4]) == 1)
+                                    case 151:
+                                        if (Convert.ToInt32(currentLine[4]) == 0)
+                                        {
+                                            item.EffectValue = 10000;
+                                        }
+                                        else if (Convert.ToInt32(currentLine[4]) == 1)
                                         {
                                             item.EffectValue = 30000;
                                         }
