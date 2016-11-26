@@ -1752,11 +1752,11 @@ namespace OpenNos.GameObject
                         {
                             if (monsterToAttack.DamageList.FirstOrDefault().Key == Session.Character.CharacterId)
                             {
-                                targetSession.SendPacket(targetSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
                                 targetSession.Character.GenerateXp(monsterToAttack.Monster, true);
                             }
                             else
                             {
+                                targetSession.SendPacket(targetSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
                                 targetSession.Character.GenerateXp(monsterToAttack.Monster, false);
                             }
                         }
@@ -1765,11 +1765,11 @@ namespace OpenNos.GameObject
                     {
                         if (monsterToAttack.DamageList.FirstOrDefault().Key == Session.Character.CharacterId)
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
                             Session.Character.GenerateXp(monsterToAttack.Monster, true);
                         }
                         else
                         {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
                             Session.Character.GenerateXp(monsterToAttack.Monster, false);
                         }
                     }
