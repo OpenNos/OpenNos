@@ -8,7 +8,7 @@ namespace OpenNos.GameObject.Networking
     {
         #region Instantiation
 
-        public HitRequest(TargetHitType targetHitType,ClientSession session, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null)
+        public HitRequest(TargetHitType targetHitType, ClientSession session, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null)
         {
             HitTimestamp = DateTime.Now;
             Session = session;

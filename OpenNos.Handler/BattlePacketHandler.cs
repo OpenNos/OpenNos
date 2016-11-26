@@ -113,7 +113,6 @@ namespace OpenNos.Handler
             }
         }
 
-
         public void TargetHit(int castingId, int targetId)
         {
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
@@ -271,7 +270,6 @@ namespace OpenNos.Handler
                     }
 
                     Session.SendPacketAfterWait($"sr {castingId}", ski.Skill.Cooldown * 100);
-
                 }
                 else
                 {

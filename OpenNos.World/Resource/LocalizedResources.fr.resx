@@ -1046,6 +1046,6 @@ Veux-tu le porter ?</value>
     <value>La transformation a été annulée, tu n'as plus assez de point SP.</value>
   </data>
   <data name="XP_NOTFIRSTHIT" xml:space="preserve">
-    <value>Tu n'as fait que te défendre, tu n'obtiens donc qu'une partie de l'expérience.</value>
+    <value>Vu que tu n'as pas attaqué le premier,  tu n'obtiens qu'une partie des points d'EXP.</value>
   </data>
 </root>

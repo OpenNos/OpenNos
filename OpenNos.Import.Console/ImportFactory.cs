@@ -26,7 +26,6 @@ namespace OpenNos.Import.Console
 {
     public class ImportFactory
     {
-
         #region Members
 
         private readonly string _folder;
@@ -1436,6 +1435,7 @@ namespace OpenNos.Import.Console
             DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
             Logger.Log.Info(Language.Instance.GetMessageFromKey("RESPAWNTYPE_PARSED"));
         }
+
         public void ImportShopItems()
         {
             List<ShopItemDTO> shopitems = new List<ShopItemDTO>();
@@ -2980,8 +2980,6 @@ namespace OpenNos.Import.Console
                 npcIdStream.Close();
             }
         }
-
         #endregion
-
     }
 }
