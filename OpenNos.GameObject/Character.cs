@@ -451,6 +451,7 @@ namespace OpenNos.GameObject
         public byte VehicleSpeed { get; internal set; }
 
         public int WaterResistance { get; set; }
+        public RespawnMapTypeDTO Return { get; set; }
 
         #endregion
 
