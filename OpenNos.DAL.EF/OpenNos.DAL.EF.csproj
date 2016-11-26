@@ -96,6 +96,7 @@
     <Compile Include="Entities\MapType.cs" />
     <Compile Include="Entities\MapTypeMap.cs" />
     <Compile Include="Entities\PenaltyLog.cs" />
+    <Compile Include="Entities\RespawnMapType.cs" />
     <Compile Include="Entities\SpecialistInstance.cs" />
     <Compile Include="Entities\UsableInstance.cs" />
     <Compile Include="Entities\WearableInstance.cs" />
@@ -124,6 +125,10 @@
     <Compile Include="Migrations\201611251602305_Ares3.Designer.cs">
       <DependentUpon>201611251602305_Ares3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611260925076_Ares4.cs" />
+    <Compile Include="Migrations\201611260925076_Ares4.Designer.cs">
+      <DependentUpon>201611260925076_Ares4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
     <Compile Include="DB\OpenNosContext.cs" />
@@ -140,6 +145,7 @@
     <Compile Include="GeneralLogDAO.cs" />
     <Compile Include="ItemInstanceDAO.cs" />
     <Compile Include="Entities\Shop.cs" />
+    <Compile Include="RespawnMapTypeDAO.cs" />
     <Compile Include="ShopDAO.cs" />
     <Compile Include="Entities\ShopItem.cs" />
     <Compile Include="ShopItemDAO.cs" />
@@ -205,6 +211,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611251602305_Ares3.resx">
       <DependentUpon>201611251602305_Ares3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611260925076_Ares4.resx">
+      <DependentUpon>201611260925076_Ares4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

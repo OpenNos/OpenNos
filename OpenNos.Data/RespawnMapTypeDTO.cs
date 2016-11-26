@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify
@@ -12,29 +12,19 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.Data
 {
-    public class Respawn
+    public class RespawnMapTypeDTO : MappingBaseDTO
     {
         #region Properties
 
-        public virtual Character Character { get; set; }
+        public short DefaultMapId { get; set; }
 
-        public virtual Map Map { get; set; }
+        public short DefaultX { get; set; }
 
-        public virtual RespawnMapType RespawnMapType { get; set; }
-
-        public long CharacterId { get; set; }
-
-        public short MapId { get; set; }
-
-        public long RespawnId { get; set; }
+        public short DefaultY { get; set; }
 
         public long RespawnMapTypeId { get; set; }
-
-        public short X { get; set; }
-
-        public short Y { get; set; }
 
         #endregion
     }

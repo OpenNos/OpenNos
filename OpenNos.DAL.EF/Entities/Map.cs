@@ -31,6 +31,8 @@ namespace OpenNos.DAL.EF
             Portal1 = new HashSet<Portal>();
             Teleporter = new HashSet<Teleporter>();
             MapTypeMap = new HashSet<MapTypeMap>();
+            Respawn = new HashSet<Respawn>();
+            RespawnMapType = new HashSet<RespawnMapType>();
         }
 
         #endregion
@@ -47,6 +49,10 @@ namespace OpenNos.DAL.EF
         public virtual ICollection<MapMonster> MapMonster { get; set; }
 
         public virtual ICollection<MapNpc> MapNpc { get; set; }
+
+        public virtual ICollection<Respawn>Respawn { get; set; }
+
+        public virtual ICollection<RespawnMapType> RespawnMapType { get; set; }
 
         public virtual ICollection<MapTypeMap> MapTypeMap { get; set; }
 

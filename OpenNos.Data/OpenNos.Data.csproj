@@ -65,6 +65,7 @@
     <Compile Include="RecipeDTO.cs" />
     <Compile Include="RecipeItemDTO.cs" />
     <Compile Include="RespawnDTO.cs" />
+    <Compile Include="RespawnMapTypeDTO.cs" />
     <Compile Include="ShopItemDTO.cs" />
     <Compile Include="ShopDTO.cs" />
     <Compile Include="ItemInstanceDTO.cs" />

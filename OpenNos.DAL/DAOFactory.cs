@@ -45,6 +45,7 @@ namespace OpenNos.DAL
         private static IRecipeDAO _recipeDAO;
         private static IRecipeItemDAO _recipeitemDAO;
         private static IRespawnDAO _respawnDAO;
+        private static IRespawnMapTypeDAO _respawnMapTypeDAO;
         private static IShopDAO _shopDAO;
         private static IShopItemDAO _shopitemDAO;
         private static IShopSkillDAO _shopskillDAO;
@@ -534,6 +535,26 @@ namespace OpenNos.DAL
                 }
 
                 return _respawnDAO;
+            }
+        }
+
+        public static IRespawnMapTypeDAO RespawnMapTypeDAO
+        {
+            get
+            {
+                if (_respawnMapTypeDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _respawnMapTypeDAO = new Mock.RespawnMapTypeDAO();
+                    }
+                    else
+                    {
+                        _respawnMapTypeDAO = new EF.RespawnMapTypeDAO();
+                    }
+                }
+
+                return _respawnMapTypeDAO;
             }
         }
 

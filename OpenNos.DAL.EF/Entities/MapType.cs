@@ -36,6 +36,8 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<MapTypeMap> MapTypeMap { get; set; }
 
+        public virtual RespawnMapType RespawnMapType { get; set; }
+
         public string MapTypeName { get; set; }
 
         public short PotionDelay { get; set; }

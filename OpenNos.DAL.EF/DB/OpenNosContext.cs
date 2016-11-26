@@ -80,6 +80,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Respawn> Respawn { get; set; }
 
+        public virtual DbSet<RespawnMapType> RespawnMapType { get; set; }
+
         public virtual DbSet<Shop> Shop { get; set; }
 
         public virtual DbSet<ShopItem> ShopItem { get; set; }
@@ -131,10 +133,10 @@ namespace OpenNos.DAL.EF.DB
                 .IsUnicode(false);
 
             modelBuilder.Entity<Character>()
-            .HasMany(e => e.Inventory)
-            .WithRequired(e => e.Character)
-            .HasForeignKey(e => e.CharacterId)
-            .WillCascadeOnDelete(false);
+                .HasMany(e => e.Inventory)
+                .WithRequired(e => e.Character)
+                .HasForeignKey(e => e.CharacterId)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
                 .HasMany(e => e.CharacterSkill)
@@ -205,6 +207,29 @@ namespace OpenNos.DAL.EF.DB
             modelBuilder.Entity<Map>()
                 .HasMany(e => e.MapMonster)
                 .WithRequired(e => e.Map)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Respawn>()
+                .HasRequired(e => e.Map)
+                .WithMany(e => e.Respawn)
+                .HasForeignKey(e => e.MapId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Respawn>()
+                .HasRequired(e => e.RespawnMapType)
+                .WithMany(e => e.Respawn)
+                .HasForeignKey(e => e.RespawnMapTypeId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<RespawnMapType>()
+                .HasRequired(e => e.Map)
+                .WithMany(e => e.RespawnMapType)
+                .HasForeignKey(e => e.DefaultMapId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<MapType>()
+                .HasOptional(e => e.RespawnMapType)
+                .WithMany(e => e.MapType)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Map>()
