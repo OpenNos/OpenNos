@@ -1466,19 +1466,21 @@ namespace OpenNos.GameObject
         public string GenerateEqListForPacket()
         {
             string[] invarray = new string[16];
-            for (short i = 0; i < 16; i++)
+            if (Inventory != null)
             {
-                ItemInstance inv = Inventory.LoadBySlotAndType(i, InventoryType.Wear);
-                if (inv != null)
+                for (short i = 0; i < 16; i++)
                 {
-                    invarray[i] = inv.ItemVNum.ToString();
-                }
-                else
-                {
-                    invarray[i] = "-1";
+                    ItemInstance inv = Inventory.LoadBySlotAndType(i, InventoryType.Wear);
+                    if (inv != null)
+                    {
+                        invarray[i] = inv.ItemVNum.ToString();
+                    }
+                    else
+                    {
+                        invarray[i] = "-1";
+                    }
                 }
             }
-
             return $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuit]}.{invarray[(byte)EquipmentType.CostumeHat]}.{invarray[(byte)EquipmentType.WeaponSkin]}";
         }
 
@@ -1488,20 +1490,24 @@ namespace OpenNos.GameObject
             byte weaponUpgrade = 0;
             sbyte armorRare = 0;
             byte armorUpgrade = 0;
-            for (short i = 0; i < 15; i++)
+            if (Inventory != null)
             {
-                WearableInstance wearable = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
-                if (wearable != null)
+                for (short i = 0; i < 15; i++)
                 {
-                    if (wearable.Item.EquipmentSlot == EquipmentType.Armor)
+
+                    WearableInstance wearable = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
+                    if (wearable != null)
                     {
-                        armorRare = wearable.Rare;
-                        armorUpgrade = wearable.Upgrade;
-                    }
-                    else if (wearable.Item.EquipmentSlot == EquipmentType.MainWeapon)
-                    {
-                        weaponRare = wearable.Rare;
-                        weaponUpgrade = wearable.Upgrade;
+                        if (wearable.Item.EquipmentSlot == EquipmentType.Armor)
+                        {
+                            armorRare = wearable.Rare;
+                            armorUpgrade = wearable.Upgrade;
+                        }
+                        else if (wearable.Item.EquipmentSlot == EquipmentType.MainWeapon)
+                        {
+                            weaponRare = wearable.Rare;
+                            weaponUpgrade = wearable.Upgrade;
+                        }
                     }
                 }
             }

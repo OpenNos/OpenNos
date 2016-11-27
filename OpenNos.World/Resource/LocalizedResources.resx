@@ -1072,4 +1072,7 @@
   <data name="XP_NOTFIRSTHIT" xml:space="preserve">
     <value>Since you didn't made the first hit, you only get a part of the XP</value>
   </data>
+  <data name="DROP_MAP_FULL" xml:space="preserve">
+    <value>There are too many items on this map! Try again later!</value>
+  </data>
 </root>

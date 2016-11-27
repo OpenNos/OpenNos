@@ -19,6 +19,7 @@ namespace OpenNos.Domain
         DefaultAct1 = 0,
         ReturnAct1 = 1,
         DefaultAct5 = 2,
-        ReturnAct5 = 3
+        ReturnAct5 = 3,
+        DefaultAct6 = 4
     }
 }

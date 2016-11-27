@@ -661,7 +661,14 @@ namespace OpenNos.Handler
                         }
                         if (droppedItem != null)
                         {
-                            Session.CurrentMap?.Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.Amount} 0 -1");
+                            if (ServerManager.GetMap(Session.Character.MapId).DroppedList.GetAllItems().Count > 200)
+                            {
+                                Session.CurrentMap?.Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.Amount} 0 -1");
+                            }
+                            else
+                            {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_MAP_FULL"), 0));
+                            }
                         }
                     }
                     else
