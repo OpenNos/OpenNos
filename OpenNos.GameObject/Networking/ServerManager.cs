@@ -744,7 +744,7 @@ namespace OpenNos.GameObject
                 RespawnMapTypeDTO resp = session.Character.Respawn;
                 short x = (short)(resp.DefaultX + rnd.Next(-5, 5));
                 short y = (short)(resp.DefaultY + rnd.Next(-5, 5));
-                ChangeMap(session.Character.CharacterId, 1, x, y);
+                ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
                 session.CurrentMap?.Broadcast(session, session.Character.GenerateTp(), ReceiverType.All);
                 session.CurrentMap?.Broadcast(session.Character.GenerateRevive());
                 session.SendPacket(session.Character.GenerateStat());
