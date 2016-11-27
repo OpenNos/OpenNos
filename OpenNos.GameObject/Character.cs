@@ -171,6 +171,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string GenerateRp(int mapid, int x, int y, string parametter)
+        {
+            return $"rp {mapid} {x} {y} {parametter}";
+        }
+
         public bool Invisible
         {
             get

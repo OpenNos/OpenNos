@@ -119,7 +119,7 @@ namespace OpenNos.Handler
             {
                 if (Convert.ToInt32(packetsplit[4]) == 1)
                 {
-                    Session.SendPacket(Session.Character.GenerateDialog($"#b_i^{type}^{slot}^2 #b_i^0^0^5 {Language.Instance.GetMessageFromKey("SURE_TO_DELETE")}"));
+                    Session.SendPacket(Session.Character.GenerateDialog($"#b_i^{type}^{slot}^2 #b_i^{type}^{slot}^5 {Language.Instance.GetMessageFromKey("SURE_TO_DELETE")}"));
                 }
                 else if (Convert.ToInt32(packetsplit[4]) == 2)
                 {
