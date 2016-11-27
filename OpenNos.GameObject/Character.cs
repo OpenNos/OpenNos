@@ -146,19 +146,22 @@ namespace OpenNos.GameObject
 
         internal void RefreshValidity()
         {
-            foreach (var suit in Enum.GetValues(typeof(EquipmentType)))
+            if (Inventory != null)
             {
-                WearableInstance item = Inventory.LoadBySlotAndType<WearableInstance>((byte)suit, InventoryType.Wear);
-                if (item != null && item.DurabilityPoint > 0)
+                foreach (var suit in Enum.GetValues(typeof(EquipmentType)))
                 {
-                    item.DurabilityPoint--;
-                    if (item.DurabilityPoint == 0)
+                    WearableInstance item = Inventory.LoadBySlotAndType<WearableInstance>((byte)suit, InventoryType.Wear);
+                    if (item != null && item.DurabilityPoint > 0)
                     {
-                        Inventory.DeleteById(item.Id);
-                        Session.SendPacket(Session.Character.GenerateStatChar());
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
-                        Session.SendPacket(Session.Character.GenerateEquipment());
-                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
+                        item.DurabilityPoint--;
+                        if (item.DurabilityPoint == 0)
+                        {
+                            Inventory.DeleteById(item.Id);
+                            Session.SendPacket(Session.Character.GenerateStatChar());
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
+                            Session.SendPacket(Session.Character.GenerateEquipment());
+                            Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
+                        }
                     }
                 }
             }
