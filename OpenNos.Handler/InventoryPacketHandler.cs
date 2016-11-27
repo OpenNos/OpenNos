@@ -661,7 +661,7 @@ namespace OpenNos.Handler
                         }
                         if (droppedItem != null)
                         {
-                            if (ServerManager.GetMap(Session.Character.MapId).DroppedList.GetAllItems().Count > 200)
+                            if (ServerManager.GetMap(Session.Character.MapId).DroppedList.GetAllItems().Count < 200)
                             {
                                 Session.CurrentMap?.Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.Amount} 0 -1");
                             }
