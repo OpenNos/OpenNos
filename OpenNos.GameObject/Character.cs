@@ -144,6 +144,26 @@ namespace OpenNos.GameObject
 
         public bool HasShopOpened { get; set; }
 
+        internal void RefreshValidity()
+        {
+            foreach (var suit in Enum.GetValues(typeof(EquipmentType)))
+            {
+                WearableInstance item = Inventory.LoadBySlotAndType<WearableInstance>((byte)suit, InventoryType.Wear);
+                if (item != null && item.DurabilityPoint > 0)
+                {
+                    item.DurabilityPoint--;
+                    if (item.DurabilityPoint == 0)
+                    {
+                        Inventory.DeleteById(item.Id);
+                        Session.SendPacket(Session.Character.GenerateStatChar());
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
+                        Session.SendPacket(Session.Character.GenerateEquipment());
+                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
+                    }
+                }
+            }
+        }
+
         public int HitCritical { get; set; }
 
         public int HitCriticalRate { get; set; }

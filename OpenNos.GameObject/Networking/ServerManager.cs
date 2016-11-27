@@ -92,6 +92,11 @@ namespace OpenNos.GameObject
                 MailProcess();
             });
 
+            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
+            {
+                RemoveItemProcess();
+            });
+
             foreach (var map in _maps)
             {
                 Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
@@ -99,7 +104,13 @@ namespace OpenNos.GameObject
                     map.Value.MapEventManager();
                 });
             }
+
             lastGroupId = 1;
+        }
+
+        private void RemoveItemProcess()
+        {
+            Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshValidity());
         }
 
         private void MailProcess()
@@ -202,7 +213,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket("eff_ob -1 -1 0 4269");
                 Session.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
 
-                Parallel.Invoke(delegate()
+                Parallel.Invoke(delegate ()
                 {
                     for (int i = 1; i <= 30; i++)
                     {

@@ -94,6 +94,8 @@ namespace OpenNos.Data
 
         public long ItemValidTime { get; set; }
 
+        public int DurabilityPoint { get; set; }
+
         public byte LevelJobMinimum { get; set; }
 
         public byte LevelMinimum { get; set; }
