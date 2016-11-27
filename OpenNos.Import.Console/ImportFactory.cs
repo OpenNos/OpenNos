@@ -1462,8 +1462,8 @@ namespace OpenNos.Import.Console
         {
             List<RespawnMapTypeDTO> respawnmaptypemaps = new List<RespawnMapTypeDTO>();
             respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct1, DefaultMapId = 1, DefaultX = 79, DefaultY = 116, Name = "Default" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.ReturnAct1, DefaultMapId = 1, DefaultX = 86, DefaultY = 48, Name = "Return" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct5, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "DefaultAct5" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.ReturnAct1, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "Return" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct5, DefaultMapId = 1, DefaultX = 86, DefaultY = 48, Name = "DefaultAct5" });
             respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.ReturnAct5, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "ReturnAct5" });
             DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
             Logger.Log.Info(Language.Instance.GetMessageFromKey("RESPAWNTYPE_PARSED"));
