@@ -1048,4 +1048,7 @@ Veux-tu le porter ?</value>
   <data name="XP_NOTFIRSTHIT" xml:space="preserve">
     <value>Vu que tu n'as pas attaqué le premier,  tu n'obtiens qu'une partie des points d'EXP.</value>
   </data>
+  <data name="WANT_TO_SAVE_POSITION" xml:space="preserve">
+    <value>Souhaites-tu enregistrer ta position actuelle et retourner au village ?</value>
+  </data>
 </root>

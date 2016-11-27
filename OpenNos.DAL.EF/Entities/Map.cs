@@ -50,7 +50,7 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<MapNpc> MapNpc { get; set; }
 
-        public virtual ICollection<Respawn>Respawn { get; set; }
+        public virtual ICollection<Respawn> Respawn { get; set; }
 
         public virtual ICollection<RespawnMapType> RespawnMapType { get; set; }
 
