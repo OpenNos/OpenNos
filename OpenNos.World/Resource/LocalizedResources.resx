@@ -1069,4 +1069,7 @@
   <data name="SP_NOPOINTSCANCELED" xml:space="preserve">
     <value>The transformation got canceled! You have no SP Points left!</value>
   </data>
+  <data name="XP_NOTFIRSTHIT" xml:space="preserve">
+    <value>Since you didn't made the first hit, you only get a part of the XP</value>
+  </data>
 </root>

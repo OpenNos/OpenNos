@@ -48,7 +48,28 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     break;
-
+                //respawn objects
+                case 1:
+                    switch (EffectValue)
+                    {
+                        case 0:
+                            session.Character.SetReturnPoint(session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                            RespawnMapTypeDTO resp = session.Character.Respawn;
+                            if (resp != default(RespawnMapTypeDTO))
+                            {
+                                Random rnd = new Random();
+                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, (short)(resp.DefaultX + rnd.Next(-5, 5)), (short)(resp.DefaultY + rnd.Next(-5, 5)));
+                            }
+                            break;
+                        case 1:
+                            RespawnMapTypeDTO ret = session.Character.Return;
+                            if (ret != default(RespawnMapTypeDTO))
+                            {
+                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, ret.DefaultMapId, ret.DefaultX, ret.DefaultY);
+                            }
+                            break;
+                    }
+                    break;
                 // dyes or waxes
                 case 10:
                 case 11:

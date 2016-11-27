@@ -26,7 +26,6 @@ namespace OpenNos.Import.Console
 {
     public class ImportFactory
     {
-
         #region Members
 
         private readonly string _folder;
@@ -243,7 +242,10 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Act1,
                 MapTypeName = "Act1",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1,
+
             };
             if (!list.Any(s => s.MapTypeId == mt1.MapTypeId))
             {
@@ -253,7 +255,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Act2,
                 MapTypeName = "Act2",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt2.MapTypeId))
             {
@@ -263,7 +267,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Act3,
                 MapTypeName = "Act3",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt3.MapTypeId))
             {
@@ -283,7 +289,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Act51,
                 MapTypeName = "Act5.1",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct5,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct5
             };
             if (!list.Any(s => s.MapTypeId == mt5.MapTypeId))
             {
@@ -293,7 +301,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Act52,
                 MapTypeName = "Act5.2",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct5,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct5
             };
             if (!list.Any(s => s.MapTypeId == mt6.MapTypeId))
             {
@@ -303,7 +313,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Act61,
                 MapTypeName = "Act6.1",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt7.MapTypeId))
             {
@@ -313,7 +325,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Act62,
                 MapTypeName = "Act6.2",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt8.MapTypeId))
             {
@@ -323,7 +337,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Act61a,
                 MapTypeName = "Act6.1a", // angel camp
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt9.MapTypeId))
             {
@@ -333,7 +349,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Act61d,
                 MapTypeName = "Act6.1d", // demon camp
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt10.MapTypeId))
             {
@@ -343,7 +361,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.CometPlain,
                 MapTypeName = "CometPlain",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt11.MapTypeId))
             {
@@ -353,7 +373,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Mine1,
                 MapTypeName = "Mine1",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt12.MapTypeId))
             {
@@ -363,7 +385,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Mine2,
                 MapTypeName = "Mine2",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt13.MapTypeId))
             {
@@ -373,7 +397,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.MeadowOfMine,
                 MapTypeName = "MeadownOfPlain",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt14.MapTypeId))
             {
@@ -383,7 +409,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.SunnyPlain,
                 MapTypeName = "SunnyPlain",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt15.MapTypeId))
             {
@@ -393,7 +421,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Fernon,
                 MapTypeName = "Fernon",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt16.MapTypeId))
             {
@@ -403,7 +433,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.FernonF,
                 MapTypeName = "FernonF",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt17.MapTypeId))
             {
@@ -413,7 +445,9 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = (short)MapTypeEnum.Cliff,
                 MapTypeName = "Cliff",
-                PotionDelay = 300
+                PotionDelay = 300,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt18.MapTypeId))
             {
@@ -1427,15 +1461,14 @@ namespace OpenNos.Import.Console
         public void ImportRespawnMapType()
         {
             List<RespawnMapTypeDTO> respawnmaptypemaps = new List<RespawnMapTypeDTO>();
-            //NosVille X79 Y116
-            //Port(Acte 5) X86 Y48
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 1, RespawnMapTypeId = 1, DefaultX = 79, DefaultY = 116, Name = "Default" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 1, RespawnMapTypeId = 1, DefaultX = 86, DefaultY = 48, Name = "DefaultAct5" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 0, RespawnMapTypeId = 0, DefaultX = 0, DefaultY = 0, Name = "Return" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { DefaultMapId = 0, RespawnMapTypeId = 0, DefaultX = 0, DefaultY = 0, Name = "ReturnAct5" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct1, DefaultMapId = 1, DefaultX = 79, DefaultY = 116, Name = "Default" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.ReturnAct1, DefaultMapId = 1, DefaultX = 86, DefaultY = 48, Name = "Return" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct5, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "DefaultAct5" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.ReturnAct5, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "ReturnAct5" });
             DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
             Logger.Log.Info(Language.Instance.GetMessageFromKey("RESPAWNTYPE_PARSED"));
         }
+
         public void ImportShopItems()
         {
             List<ShopItemDTO> shopitems = new List<ShopItemDTO>();
@@ -2980,8 +3013,6 @@ namespace OpenNos.Import.Console
                 npcIdStream.Close();
             }
         }
-
         #endregion
-
     }
 }

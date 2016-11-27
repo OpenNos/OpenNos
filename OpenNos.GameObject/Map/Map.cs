@@ -250,9 +250,12 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (!_grid.IsWalkableAt(new GridPos(x, y)))
+            if (_grid != null)
             {
-                return true;
+                if (!_grid.IsWalkableAt(new GridPos(x, y)))
+                {
+                    return true;
+                }
             }
             return false;
         }
@@ -284,7 +287,7 @@ namespace OpenNos.GameObject
             JumpPointParameters.Reset(cell1, cell2);
             List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
             lpath = JumpPointFinder.GetFullPath(resultPathList);
-            Debug.WriteLine($"From X: {cell1.x} Y: {cell1.y}, To X: {cell2.x} Y: {cell2.y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
+            Debug.WriteLine($"Map: {MapId} From X: {cell1.x} Y: {cell1.y}, To X: {cell2.x} Y: {cell2.y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
             return lpath;
         }
 
@@ -714,7 +717,6 @@ namespace OpenNos.GameObject
                                                            Session.SendPacket("sd 0");
                                                        });
                                         }
-
                                     }
                                 }
                                 Session.SendPacket(Session.Character.GenerateSpPoint());

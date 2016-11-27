@@ -338,7 +338,8 @@ namespace OpenNos.GameObject
         {
             byte[] outPacket;
             while (_receiveQueue.TryDequeue(out outPacket))
-            { }
+            {
+            }
         }
 
         private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)

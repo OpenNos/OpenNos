@@ -2878,6 +2878,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Since you didn&apos;t made the first hit, you only get a part of the XP.
+        /// </summary>
+        internal static string XP_NOTFIRSTHIT {
+            get {
+                return ResourceManager.GetString("XP_NOTFIRSTHIT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to XP rate changed!.
         /// </summary>
         internal static string XP_RATE_CHANGED {

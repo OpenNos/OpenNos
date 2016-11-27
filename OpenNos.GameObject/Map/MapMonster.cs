@@ -160,7 +160,6 @@ namespace OpenNos.GameObject
         internal int GenerateDamage(Character targetCharacter, Skill skill, ref int hitmode)
         {
             //Warning: This code contains a huge amount of copypasta!
-
             #region Definitions
 
             if (targetCharacter == null)
@@ -753,7 +752,15 @@ namespace OpenNos.GameObject
                     Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
                     if (!Path.Any())
                     {
-                        Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
+                        try
+                        {
+                            Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
+                        }
+                        catch(Exception ex)
+                        {
+                            OpenNos.Core.Logger.Log.Error($"Pathfinding using JPSPlus failed. Map: {MapId} StartX: {MapX} StartY: {MapY} TargetX: {(short)(targetSession.Character.MapX + xoffset)} TargetY: {(short)(targetSession.Character.MapY + yoffset)}", ex);
+                            RemoveTarget();
+                        }
                     }
                 }
                 if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
