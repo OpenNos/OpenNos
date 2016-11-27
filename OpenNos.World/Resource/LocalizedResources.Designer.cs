@@ -691,6 +691,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are too many items on this map! Try again later!.
+        /// </summary>
+        internal static string DROP_MAP_FULL {
+            get {
+                return ResourceManager.GetString("DROP_MAP_FULL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Drop rate have been changed!.
         /// </summary>
         internal static string DROP_RATE_CHANGED {
