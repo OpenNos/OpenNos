@@ -100,10 +100,12 @@ namespace OpenNos.GameObject
         {
             get; set;
         }
+
         public RespawnMapTypeDTO DefaultReturn
         {
             get; set;
         }
+
         public List<MapTypeDTO> MapTypes
         {
             get; set;
@@ -148,6 +150,7 @@ namespace OpenNos.GameObject
         public int XLength { get; set; }
 
         public int YLength { get; set; }
+
         public long LastUserShopId { get; set; }
 
         #endregion

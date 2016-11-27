@@ -245,7 +245,6 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300,
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1,
-
             };
             if (!list.Any(s => s.MapTypeId == mt1.MapTypeId))
             {
@@ -314,7 +313,7 @@ namespace OpenNos.Import.Console
                 MapTypeId = (short)MapTypeEnum.Act61,
                 MapTypeName = "Act6.1",
                 PotionDelay = 300,
-                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct6,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt7.MapTypeId))
@@ -338,7 +337,7 @@ namespace OpenNos.Import.Console
                 MapTypeId = (short)MapTypeEnum.Act61a,
                 MapTypeName = "Act6.1a", // angel camp
                 PotionDelay = 300,
-                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct6,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt9.MapTypeId))
@@ -350,7 +349,7 @@ namespace OpenNos.Import.Console
                 MapTypeId = (short)MapTypeEnum.Act61d,
                 MapTypeName = "Act6.1d", // demon camp
                 PotionDelay = 300,
-                RespawnMapTypeId = (long)RespawnType.DefaultAct1,
+                RespawnMapTypeId = (long)RespawnType.DefaultAct6,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt10.MapTypeId))
@@ -1462,9 +1461,10 @@ namespace OpenNos.Import.Console
         {
             List<RespawnMapTypeDTO> respawnmaptypemaps = new List<RespawnMapTypeDTO>();
             respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct1, DefaultMapId = 1, DefaultX = 79, DefaultY = 116, Name = "Default" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.ReturnAct1, DefaultMapId = 1, DefaultX = 86, DefaultY = 48, Name = "Return" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct5, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "DefaultAct5" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.ReturnAct1, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "Return" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct5, DefaultMapId = 170, DefaultX = 86, DefaultY = 48, Name = "DefaultAct5" });
             respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.ReturnAct5, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "ReturnAct5" });
+            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct6, DefaultMapId = 228, DefaultX = 72, DefaultY = 102, Name = "DefaultAct6" });
             DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
             Logger.Log.Info(Language.Instance.GetMessageFromKey("RESPAWNTYPE_PARSED"));
         }
