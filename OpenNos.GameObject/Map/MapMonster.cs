@@ -674,12 +674,14 @@ namespace OpenNos.GameObject
                 }
                 return;
             }
-            else if (Target == -1) // normal movement
+            // normal movement
+            else if (Target == -1)
             {
                 Move();
                 return;
             }
-            else // target following
+            // target following
+            else
             {
                 ClientSession targetSession = Map.GetSessionByCharacterId(Target);
 
@@ -756,7 +758,7 @@ namespace OpenNos.GameObject
                         {
                             Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             OpenNos.Core.Logger.Log.Error($"Pathfinding using JPSPlus failed. Map: {MapId} StartX: {MapX} StartY: {MapY} TargetX: {(short)(targetSession.Character.MapX + xoffset)} TargetY: {(short)(targetSession.Character.MapY + yoffset)}", ex);
                             RemoveTarget();

@@ -1037,7 +1037,7 @@ Veux-tu le porter ?</value>
     <value>Tu n'as plus assez de point assez, tu ne peux plus te transformer !</value>
   </data>
   <data name="SP_POINTSADDED" xml:space="preserve">
-    <value>Tu as reçu {0} points de spécialiste.</value>
+    <value>Les points de base SP ont été augmenté de  {0}.</value>
   </data>
   <data name="SP_POINTSADDEDBOTH" xml:space="preserve">
     <value>Tu as reçu {0} points basique et {0} points additionnels pour ta SP.</value>

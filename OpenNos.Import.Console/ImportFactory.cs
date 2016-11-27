@@ -245,7 +245,6 @@ namespace OpenNos.Import.Console
                 PotionDelay = 300,
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1,
-
             };
             if (!list.Any(s => s.MapTypeId == mt1.MapTypeId))
             {

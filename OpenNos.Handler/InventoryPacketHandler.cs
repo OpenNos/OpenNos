@@ -322,7 +322,7 @@ namespace OpenNos.Handler
                                 return;
                             }
 
-                            if (targetSession.Character.ExchangeBlocked )//|| Session.Character.ExchangeBlocked)
+                            if (targetSession.Character.ExchangeBlocked) //|| Session.Character.ExchangeBlocked)
                             {
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
                                 return;
