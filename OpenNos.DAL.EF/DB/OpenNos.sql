@@ -627,7 +627,7 @@ END
 IF @CurrentMigration < '201611260925076_Ares4'
 BEGIN
     CREATE TABLE [dbo].[RespawnMapType] (
-        [RespawnMapTypeId] [bigint] NOT NULL,
+        [RespawnMapTypeId] [bigint] NOT NULL IDENTITY,
         [DefaultMapId] [smallint] NOT NULL,
         [DefaultX] [smallint] NOT NULL,
         [DefaultY] [smallint] NOT NULL,
