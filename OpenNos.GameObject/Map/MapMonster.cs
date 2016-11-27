@@ -577,8 +577,12 @@ namespace OpenNos.GameObject
         /// <summary>
         /// Handle any kind of Monster interaction
         /// </summary>
-        internal async void MonsterLife()
+        internal void MonsterLife()
         {
+            if (Monster == null)
+            {
+                return;
+            }
             // handle hit queue
             HitRequest hitRequest = null;
             while (HitQueue.TryDequeue(out hitRequest))
@@ -693,7 +697,7 @@ namespace OpenNos.GameObject
                 }
 
                 NpcMonsterSkill npcMonsterSkill = null;
-                if (_random.Next(10) > 8)
+                if (_random.Next(10) > 8 && Skills != null)
                 {
                     npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
                 }
@@ -765,7 +769,7 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-                if (DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
+                if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
                 {
                     short mapX;
                     short mapY;
@@ -800,7 +804,7 @@ namespace OpenNos.GameObject
         private void Move()
         {
             // Normal Move Mode
-            if (!IsAlive)
+            if (Monster == null || !IsAlive)
             {
                 return;
             }
@@ -873,15 +877,18 @@ namespace OpenNos.GameObject
 
         private void Respawn()
         {
-            DamageList = new Dictionary<long, long>();
-            IsAlive = true;
-            Target = -1;
-            CurrentHp = Monster.MaxHP;
-            CurrentMp = Monster.MaxMP;
-            MapX = FirstX;
-            MapY = FirstY;
-            Path = new List<GridPos>();
-            Map.Broadcast(GenerateIn3());
+            if (Monster != null)
+            {
+                DamageList = new Dictionary<long, long>();
+                IsAlive = true;
+                Target = -1;
+                CurrentHp = Monster.MaxHP;
+                CurrentMp = Monster.MaxMP;
+                MapX = FirstX;
+                MapY = FirstY;
+                Path = new List<GridPos>();
+                Map.Broadcast(GenerateIn3());
+            }
         }
 
         /// <summary>
@@ -891,7 +898,7 @@ namespace OpenNos.GameObject
         /// <param name="npcMonsterSkill"></param>
         private void TargetHit(ClientSession targetSession, NpcMonsterSkill npcMonsterSkill)
         {
-            if (((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 200 && !Skills.Any()) || npcMonsterSkill != null)
+            if (Monster != null && (((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 200 && !Skills.Any()) || npcMonsterSkill != null))
             {
                 int damage = 0;
                 int hitmode = 0;

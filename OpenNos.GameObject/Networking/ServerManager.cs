@@ -304,18 +304,21 @@ namespace OpenNos.GameObject
                         session.Character.IsDancing = false;
                         session.CurrentMap?.Broadcast("dance");
                     }
-                    foreach (Group g in Groups)
+                    if (Groups != null)
                     {
-                        foreach (ClientSession groupSession in g.Characters)
+                        foreach (Group g in Groups)
                         {
-                            ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMap.MapId == groupSession.CurrentMap.MapId);
-                            if (chara != null)
+                            foreach (ClientSession groupSession in g.Characters)
                             {
-                                groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                            }
-                            if (groupSession.Character.CharacterId == groupSession.Character.CharacterId)
-                            {
-                                session.CurrentMap?.Broadcast(groupSession, groupSession.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                                ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMap.MapId == groupSession.CurrentMap.MapId);
+                                if (chara != null)
+                                {
+                                    groupSession.SendPacket(groupSession.Character.GeneratePinit());
+                                }
+                                if (groupSession.Character.CharacterId == groupSession.Character.CharacterId)
+                                {
+                                    session.CurrentMap?.Broadcast(groupSession, groupSession.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                                }
                             }
                         }
                     }
@@ -352,7 +355,11 @@ namespace OpenNos.GameObject
 
         public Group GetGroupByCharacterId(long characterId)
         {
-            return Groups.SingleOrDefault(g => g.IsMemberOfGroup(characterId));
+            if (Groups != null)
+            {
+                return Groups.SingleOrDefault(g => g.IsMemberOfGroup(characterId));
+            }
+            else return null;
         }
 
         public long GetNextGroupId()
@@ -410,39 +417,41 @@ namespace OpenNos.GameObject
 
         public void GroupLeave(ClientSession session)
         {
-            Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId));
-            if (grp != null)
+            if (Groups != null)
             {
-                if (grp.CharacterCount == 3)
+                Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId));
+                if (grp != null)
                 {
-                    if (grp.Characters.ElementAt(0) == session)
+                    if (grp.CharacterCount == 3)
                     {
-                        Broadcast(session, session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, String.Empty, grp.Characters.ElementAt(1).Character.CharacterId);
+                        if (grp.Characters.ElementAt(0) == session)
+                        {
+                            Broadcast(session, session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, String.Empty, grp.Characters.ElementAt(1).Character.CharacterId);
+                        }
+                        grp.LeaveGroup(session);
+                        foreach (ClientSession groupSession in grp.Characters)
+                        {
+                            ClientSession sess = GetSessionByCharacterId(groupSession.Character.CharacterId);
+                            sess.SendPacket(sess.Character.GeneratePinit());
+                            sess.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
+                        }
+                        session.SendPacket("pinit 0");
+                        Broadcast(session.Character.GeneratePidx(true));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                     }
-                    grp.LeaveGroup(session);
-                    foreach (ClientSession groupSession in grp.Characters)
+                    else
                     {
-                        ClientSession sess = GetSessionByCharacterId(groupSession.Character.CharacterId);
-                        sess.SendPacket(sess.Character.GeneratePinit());
-                        sess.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
+                        foreach (ClientSession targetSession in grp.Characters)
+                        {
+                            targetSession.SendPacket("pinit 0");
+                            targetSession.SendPacket(targetSession.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
+                            Broadcast(targetSession.Character.GeneratePidx(true));
+                            grp.LeaveGroup(targetSession);
+                        }
+                        RemoveGroup(grp);
                     }
-                    session.SendPacket("pinit 0");
-                    Broadcast(session.Character.GeneratePidx(true));
-                    session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
+                    session.Character.Group = null;
                 }
-                else
-                {
-                    foreach (ClientSession targetSession in grp.Characters)
-                    {
-                        targetSession.SendPacket("pinit 0");
-                        targetSession.SendPacket(targetSession.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
-                        Broadcast(targetSession.Character.GeneratePidx(true));
-                        grp.LeaveGroup(targetSession);
-                    }
-                    RemoveGroup(grp);
-                }
-
-                session.Character.Group = null;
             }
         }
 
@@ -696,12 +705,20 @@ namespace OpenNos.GameObject
 
         public bool IsCharacterMemberOfGroup(long characterId)
         {
-            return Groups.Any(g => g.IsMemberOfGroup(characterId));
+            if (Groups != null)
+            {
+                return Groups.Any(g => g.IsMemberOfGroup(characterId));
+            }
+            else return false;
         }
 
         public bool IsCharactersGroupFull(long characterId)
         {
-            return (Groups.Any(g => g.IsMemberOfGroup(characterId) && g.CharacterCount == 3));
+            if (Groups != null)
+            {
+                return Groups.Any(g => g.IsMemberOfGroup(characterId) && g.CharacterCount == 3);
+            }
+            else return false;
         }
 
         // Server
@@ -790,23 +807,26 @@ namespace OpenNos.GameObject
         {
             try
             {
-                Group myGroup = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId));
-                if (myGroup == null)
+                if (Groups != null)
                 {
-                    return;
-                }
-                string str = $"pinit {myGroup.Characters.Count()}";
-                int i = 0;
-                IList<ClientSession> groupMembers = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters;
-                foreach (ClientSession session in groupMembers)
-                {
-                    i++;
-                    str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{(byte)session.Character.Gender}|{(byte)session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{(session.Character.IsVehicled ? 1 : 0)}|{session.Character.HeroLevel}";
-                }
+                    Group myGroup = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId));
+                    if (myGroup == null)
+                    {
+                        return;
+                    }
+                    string str = $"pinit {myGroup.Characters.Count()}";
+                    int i = 0;
+                    IList<ClientSession> groupMembers = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters;
+                    foreach (ClientSession session in groupMembers)
+                    {
+                        i++;
+                        str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{(byte)session.Character.Gender}|{(byte)session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{(session.Character.IsVehicled ? 1 : 0)}|{session.Character.HeroLevel}";
+                    }
 
-                foreach (ClientSession session in myGroup.Characters)
-                {
-                    session.SendPacket(str);
+                    foreach (ClientSession session in myGroup.Characters)
+                    {
+                        session.SendPacket(str);
+                    }
                 }
             }
             catch (Exception e)
@@ -910,19 +930,23 @@ namespace OpenNos.GameObject
         {
             try
             {
-                foreach (Group grp in Groups)
+                if (Groups != null)
                 {
-                    foreach (ClientSession session in grp.Characters)
+                    foreach (Group grp in Groups)
                     {
-                        foreach (string str in grp.GeneratePst())
+                        foreach (ClientSession session in grp.Characters)
                         {
-                            session.SendPacket(str);
+                            foreach (string str in grp.GeneratePst())
+                            {
+                                session.SendPacket(str);
+                            }
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Error(e);
             }
         }
 
