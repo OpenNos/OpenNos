@@ -336,6 +336,7 @@ namespace OpenNos.GameObject
                 _morphUpgrade2 = value;
             }
         }
+
         public List<RespawnDTO> Respawns { get; set; }
         public List<QuicklistEntryDTO> QuicklistEntries { get; set; }
 
@@ -415,6 +416,7 @@ namespace OpenNos.GameObject
                 _undercover = value;
             }
         }
+
         public RespawnMapTypeDTO Respawn
         {
             get
@@ -449,6 +451,7 @@ namespace OpenNos.GameObject
                 return respawn;
             }
         }
+
         public bool UseSp { get; set; }
 
         public byte VehicleSpeed { get; internal set; }
@@ -486,7 +489,6 @@ namespace OpenNos.GameObject
                     }
                 }
                 return respawn;
-
             }
         }
 

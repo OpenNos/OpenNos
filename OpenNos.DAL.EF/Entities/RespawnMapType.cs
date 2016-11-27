@@ -42,6 +42,7 @@ namespace OpenNos.DAL.EF
         public virtual Map Map { get; set; }
 
         public ICollection<MapType> MapTypes { get; set; }
+
         public ICollection<MapType> MapTypes1 { get; set; }
 
         [MaxLength(255)]

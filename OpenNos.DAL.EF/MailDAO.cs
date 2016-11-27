@@ -107,6 +107,7 @@ namespace OpenNos.DAL.EF
                 }
             }
         }
+
         private MailDTO Insert(MailDTO mail, OpenNosContext context)
         {
             try
