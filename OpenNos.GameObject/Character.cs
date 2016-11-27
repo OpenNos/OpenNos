@@ -3293,23 +3293,26 @@ namespace OpenNos.GameObject
                     // do nothing and wait until Exchange has been finished
                 }
 
-                // be sure that noone tries to edit while saving is currently editing
-                lock (Inventory)
+                if (Inventory != null)
                 {
-                    // load and concat inventory with equipment
-                    List<ItemInstance> inventories = Inventory.GetAllItems();
-                    IList<Guid> currentlySavedInventoryIds = DAOFactory.ItemInstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
-
-                    // remove all which are saved but not in our current enumerable
-                    foreach (var inventoryToDeleteId in currentlySavedInventoryIds.Except(inventories.Select(i => i.Id)))
+                    // be sure that noone tries to edit while saving is currently editing
+                    lock (Inventory)
                     {
-                        DAOFactory.ItemInstanceDAO.Delete(inventoryToDeleteId);
-                    }
+                        // load and concat inventory with equipment
+                        List<ItemInstance> inventories = Inventory.GetAllItems();
+                        IList<Guid> currentlySavedInventoryIds = DAOFactory.ItemInstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
 
-                    // create or update all which are new or do still exist
-                    foreach (ItemInstanceDTO itemInstance in inventories)
-                    {
-                        DAOFactory.ItemInstanceDAO.InsertOrUpdate(itemInstance);
+                        // remove all which are saved but not in our current enumerable
+                        foreach (var inventoryToDeleteId in currentlySavedInventoryIds.Except(inventories.Select(i => i.Id)))
+                        {
+                            DAOFactory.ItemInstanceDAO.Delete(inventoryToDeleteId);
+                        }
+
+                        // create or update all which are new or do still exist
+                        foreach (ItemInstanceDTO itemInstance in inventories)
+                        {
+                            DAOFactory.ItemInstanceDAO.InsertOrUpdate(itemInstance);
+                        }
                     }
                 }
 
