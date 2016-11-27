@@ -110,7 +110,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                RespawnMapType entity = new RespawnMapType() { DefaultMapId = respawnMapType.DefaultMapId };
+                RespawnMapType entity = _mapper.Map<RespawnMapType>(respawnMapType);
                 context.RespawnMapType.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<RespawnMapTypeDTO>(entity);

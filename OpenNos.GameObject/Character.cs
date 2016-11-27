@@ -2770,25 +2770,28 @@ namespace OpenNos.GameObject
 
         public void GiftAdd(short itemVNum, byte amount)
         {
-            lock (Inventory)
+            if (Inventory != null)
             {
-                ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, Session.Character.CharacterId, amount);
-                if (newItem != null)
+                lock (Inventory)
                 {
-                    if (newItem.Item.ItemType == ItemType.Armor || newItem.Item.ItemType == ItemType.Weapon || newItem.Item.ItemType == ItemType.Shell)
+                    ItemInstance newItem = Inventory.InstantiateItemInstance(itemVNum, Session.Character.CharacterId, amount);
+                    if (newItem != null)
                     {
-                        ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
-                    }
-                    ItemInstance newInv = Inventory.AddToInventory(newItem);
-                    if (newInv != null)
-                    {
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
-                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
-                    }
-                    else
-                    {
-                        SendGift(CharacterId, itemVNum, amount, newItem.Rare, newItem.Upgrade, false);
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_BY_THE_GIANT_MONSTER"), 0));
+                        if (newItem.Item.ItemType == ItemType.Armor || newItem.Item.ItemType == ItemType.Weapon || newItem.Item.ItemType == ItemType.Shell)
+                        {
+                            ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+                        }
+                        ItemInstance newInv = Inventory.AddToInventory(newItem);
+                        if (newInv != null)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
+                        }
+                        else
+                        {
+                            SendGift(CharacterId, itemVNum, amount, newItem.Rare, newItem.Upgrade, false);
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_BY_THE_GIANT_MONSTER"), 0));
+                        }
                     }
                 }
             }
@@ -3079,33 +3082,40 @@ namespace OpenNos.GameObject
         {
             int i = 0;
             int j = 0;
-            List<MailDTO> mails = ServerManager.Mails.Where(s => s.ReceiverId == CharacterId && !s.IsSenderCopy && !MailList.Any(m => m.Value.MailId == s.MailId)).Take(50).ToList();
-            for (int x = 0; x < mails.Count; x++)
+            try
             {
-                MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mails.ElementAt(x));
-                if (mails.ElementAt(x).AttachmentVNum != null)
+                List<MailDTO> mails = ServerManager.Mails.Where(s => s.ReceiverId == CharacterId && !s.IsSenderCopy && !MailList.Any(m => m.Value.MailId == s.MailId)).Take(50).ToList();
+                for (int x = 0; x < mails.Count; x++)
                 {
-                    i++;
-                    Session.SendPacket(GenerateParcel(mails.ElementAt(x)));
-                }
-                else
-                {
-                    if (!mails.ElementAt(x).IsOpened)
+                    MailList.Add((MailList.Any() ? MailList.OrderBy(s => s.Key).Last().Key : 0) + 1, mails.ElementAt(x));
+                    if (mails.ElementAt(x).AttachmentVNum != null)
                     {
-                        j++;
+                        i++;
+                        Session.SendPacket(GenerateParcel(mails.ElementAt(x)));
                     }
-                    Session.SendPacket(Session.Character.GeneratePost(mails.ElementAt(x), 1));
+                    else
+                    {
+                        if (!mails.ElementAt(x).IsOpened)
+                        {
+                            j++;
+                        }
+                        Session.SendPacket(Session.Character.GeneratePost(mails.ElementAt(x), 1));
+                    }
                 }
-            }
-            if (i > 0)
-            {
-                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("GIFTED"), i), 11));
-            }
-            if (j > 0)
-            {
-                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"), j), 10));
-            }
+                if (i > 0)
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("GIFTED"), i), 11));
+                }
+                if (j > 0)
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"), j), 10));
+                }
 
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Debug("Error while refreshing mail: " + ex.Message);
+            }
             LastMailRefresh = DateTime.Now;
         }
 
@@ -3236,7 +3246,10 @@ namespace OpenNos.GameObject
                 foreach (RespawnDTO Resp in Session.Character.Respawns)
                 {
                     RespawnDTO res = Resp;
-                    DAOFactory.RespawnDAO.InsertOrUpdate(ref res);
+                    if (Resp.MapId != 0 && Resp.X != 0 && Resp.Y != 0)
+                    {
+                        DAOFactory.RespawnDAO.InsertOrUpdate(ref res);
+                    }
                 }
             }
             catch (Exception e)
