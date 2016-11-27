@@ -338,6 +338,7 @@ namespace OpenNos.GameObject
         }
 
         public List<RespawnDTO> Respawns { get; set; }
+
         public List<QuicklistEntryDTO> QuicklistEntries { get; set; }
 
         public short SaveX { get; set; }
@@ -457,6 +458,7 @@ namespace OpenNos.GameObject
         public byte VehicleSpeed { get; internal set; }
 
         public int WaterResistance { get; set; }
+
         public RespawnMapTypeDTO Return
         {
             get
@@ -753,7 +755,6 @@ namespace OpenNos.GameObject
 
             // int CritChance = 4; int CritHit = 70; int MinDmg = 0; int MaxDmg = 0; int HitRate = 0;
             // sbyte Upgrade = 0;
-
             #endregion
 
             #region Sp
@@ -1256,7 +1257,6 @@ namespace OpenNos.GameObject
                     RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
                     if (resp == null)
                     {
-
                         resp = new RespawnDTO() { CharacterId = CharacterId, MapId = MapId, X = MapX, Y = MapY, RespawnMapTypeId = (long)respawnmaptype };
                         Respawns.Add(resp);
                     }
@@ -1266,7 +1266,6 @@ namespace OpenNos.GameObject
                         resp.Y = MapY;
                         resp.MapId = MapId;
                     }
-
                 }
             }
         }
@@ -1291,7 +1290,6 @@ namespace OpenNos.GameObject
                         resp.Y = MapY;
                         resp.MapId = MapId;
                     }
-
                 }
             }
         }

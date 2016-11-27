@@ -137,7 +137,8 @@ namespace OpenNos.Handler
 
                 if (ski != null && Session.Character.Mp >= ski.Skill.MpCost)
                 {
-                    if (ski.Skill.TargetType == 1 && ski.Skill.HitType == 1) // AOE Target hit
+                    // AOE Target hit
+                    if (ski.Skill.TargetType == 1 && ski.Skill.HitType == 1) 
                     {
                         Session.Character.LastSkillUse = DateTime.Now;
                         if (!Session.Character.HasGodMode)
@@ -171,7 +172,8 @@ namespace OpenNos.Handler
                             }
                         }
                     }
-                    else if (ski.Skill.TargetType == 0) // monster target
+                    else if (ski.Skill.TargetType == 0)
+                    // monster target
                     {
                         MapMonster monsterToAttack = Session.CurrentMap.GetMonster(targetId);
                         if (monsterToAttack != null && monsterToAttack.IsAlive)
@@ -182,7 +184,6 @@ namespace OpenNos.Handler
                                 {
                                     short distanceX = (short)(Session.Character.MapX - monsterToAttack.MapX);
                                     short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
-
                                     if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY },
                                                         new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= (ski.Skill.Range) + monsterToAttack.Monster.BasicArea)
                                     {
@@ -219,8 +220,8 @@ namespace OpenNos.Handler
                                         {
                                             Thread.Sleep(ski.Skill.CastTime * 100);
                                         }
-
-                                        if (ski.Skill.TargetRange != 0) // check if we will hit mutltiple targets
+                                        // check if we will hit mutltiple targets
+                                        if (ski.Skill.TargetRange != 0)
                                         {
                                             ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
                                             if (skillCombo != null)
