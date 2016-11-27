@@ -3234,7 +3234,10 @@ namespace OpenNos.GameObject
                 foreach (RespawnDTO Resp in Session.Character.Respawns)
                 {
                     RespawnDTO res = Resp;
-                    DAOFactory.RespawnDAO.InsertOrUpdate(ref res);
+                    if (Resp.MapId != 0 && Resp.X != 0 && Resp.Y != 0)
+                    {
+                        DAOFactory.RespawnDAO.InsertOrUpdate(ref res);
+                    }
                 }
             }
             catch (Exception e)
