@@ -539,6 +539,8 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Position", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Promote CHARACTERNAME", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Demote CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RemoveMob", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
@@ -1746,7 +1748,8 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             Session.Character.Undercover = !Session.Character.Undercover;
-            ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+            Session.SendPacket(Session.Character.GenerateEq());
+            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
         }
 
         /// <summary>
