@@ -1448,19 +1448,21 @@ namespace OpenNos.GameObject
         public string GenerateEqListForPacket()
         {
             string[] invarray = new string[16];
-            for (short i = 0; i < 16; i++)
+            if (Inventory != null)
             {
-                ItemInstance inv = Inventory.LoadBySlotAndType(i, InventoryType.Wear);
-                if (inv != null)
+                for (short i = 0; i < 16; i++)
                 {
-                    invarray[i] = inv.ItemVNum.ToString();
-                }
-                else
-                {
-                    invarray[i] = "-1";
+                    ItemInstance inv = Inventory.LoadBySlotAndType(i, InventoryType.Wear);
+                    if (inv != null)
+                    {
+                        invarray[i] = inv.ItemVNum.ToString();
+                    }
+                    else
+                    {
+                        invarray[i] = "-1";
+                    }
                 }
             }
-
             return $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuit]}.{invarray[(byte)EquipmentType.CostumeHat]}.{invarray[(byte)EquipmentType.WeaponSkin]}";
         }
 
