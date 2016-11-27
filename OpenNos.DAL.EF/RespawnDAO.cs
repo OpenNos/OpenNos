@@ -89,7 +89,7 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                Respawn entity = new Respawn() { CharacterId = respawn.CharacterId };
+                Respawn entity = _mapper.Map<Respawn>(respawn);
                 context.Respawn.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<RespawnDTO>(entity);
