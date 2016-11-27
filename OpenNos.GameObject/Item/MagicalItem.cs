@@ -79,7 +79,7 @@ namespace OpenNos.GameObject
                                             case 3:
                                                 session.Character.SetReturnPoint(session.Character.MapId, session.Character.MapX, session.Character.MapY);
                                                 RespawnMapTypeDTO resp = session.Character.Respawn;
-                                                if (resp != default(RespawnMapTypeDTO))
+                                                if (resp.DefaultX != 0 && resp.DefaultY != 0 && resp.DefaultMapId != 0)
                                                 {
                                                     Random rnd = new Random();
                                                     ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, (short)(resp.DefaultX + rnd.Next(-5, 5)), (short)(resp.DefaultY + rnd.Next(-5, 5)));
@@ -87,7 +87,7 @@ namespace OpenNos.GameObject
                                                 break;
                                             case 4:
                                                 RespawnMapTypeDTO respa = session.Character.Respawn;
-                                                if (respa != default(RespawnMapTypeDTO))
+                                                if (respa.DefaultX != 0 && respa.DefaultY != 0 && respa.DefaultMapId != 0)
                                                 {
                                                     Random rnd = new Random();
                                                     ServerManager.Instance.ChangeMap(session.Character.CharacterId, respa.DefaultMapId, (short)(respa.DefaultX + rnd.Next(-5, 5)), (short)(respa.DefaultY + rnd.Next(-5, 5)));
@@ -105,8 +105,7 @@ namespace OpenNos.GameObject
                                     switch (x5)
                                     {
                                         case 0:
-
-                                            if (resp != default(RespawnMapTypeDTO))
+                                            if (resp.DefaultX != 0 && resp.DefaultY != 0 && resp.DefaultMapId != 0)
                                             {
                                                 session.SendPacket(session.Character.GenerateRp(resp.DefaultMapId, resp.DefaultX, resp.DefaultY, $"#u_i^{x1}^{x2}^{x3}^{x4}^1"));
                                             }
@@ -115,7 +114,7 @@ namespace OpenNos.GameObject
                                             session.SendPacket(session.Character.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^2"));
                                             break;
                                         case 2:
-                                            if (resp != default(RespawnMapTypeDTO))
+                                            if (resp.DefaultX != 0 && resp.DefaultY != 0 && resp.DefaultMapId != 0)
                                             {
                                                 ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, resp.DefaultX, resp.DefaultY);
                                             }
