@@ -647,28 +647,28 @@ namespace OpenNos.Handler
                 {
                     if (packet.Amount > 0 && packet.Amount < 100)
                     {
-                        MapItem droppedItem = Session.CurrentMap.PutItem(packet.InventoryType, packet.Slot, packet.Amount, ref invitem, Session);
-                        if (droppedItem == null)
+                        if (ServerManager.GetMap(Session.Character.MapId).DroppedList.GetAllItems().Count < 200)
                         {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
-                            return;
-                        }
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemVNum, invitem.Amount, packet.InventoryType, invitem.Slot, invitem.Rare, invitem.Design, invitem.Upgrade, 0));
+                            MapItem droppedItem = Session.CurrentMap.PutItem(packet.InventoryType, packet.Slot, packet.Amount, ref invitem, Session);
+                            if (droppedItem == null)
+                            {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
+                                return;
+                            }
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemVNum, invitem.Amount, packet.InventoryType, invitem.Slot, invitem.Rare, invitem.Design, invitem.Upgrade, 0));
 
-                        if (invitem.Amount == 0)
-                        {
-                            Session.Character.DeleteItem(invitem.Type, invitem.Slot);
-                        }
-                        if (droppedItem != null)
-                        {
-                            if (ServerManager.GetMap(Session.Character.MapId).DroppedList.GetAllItems().Count < 200)
+                            if (invitem.Amount == 0)
+                            {
+                                Session.Character.DeleteItem(invitem.Type, invitem.Slot);
+                            }
+                            if (droppedItem != null)
                             {
                                 Session.CurrentMap?.Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.Amount} 0 -1");
                             }
-                            else
-                            {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_MAP_FULL"), 0));
-                            }
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_MAP_FULL"), 0));
                         }
                     }
                     else
