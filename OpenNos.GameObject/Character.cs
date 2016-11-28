@@ -462,6 +462,13 @@ namespace OpenNos.GameObject
                                 respawn.DefaultMapId = defaultresp.DefaultMapId;
                                 respawn.RespawnMapTypeId = (long)respawnmaptype;
                             }
+                            else
+                            {
+                                respawn.DefaultX = 79;
+                                respawn.DefaultY = 116;
+                                respawn.DefaultMapId = 1;
+                                respawn.RespawnMapTypeId = -1;
+                            }
                         }
                         else
                         {
