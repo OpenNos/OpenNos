@@ -84,6 +84,7 @@ namespace OpenNos.GameObject
                                                     Random rnd = new Random();
                                                     ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, (short)(resp.DefaultX + rnd.Next(-5, 5)), (short)(resp.DefaultY + rnd.Next(-5, 5)));
                                                 }
+                                                session.CurrentMap?.Broadcast(session, session.Character.GenerateMapOut(), ReceiverType.AllExceptMe);
                                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                                 break;
                                             case 4:
@@ -94,6 +95,7 @@ namespace OpenNos.GameObject
                                                     ServerManager.Instance.ChangeMap(session.Character.CharacterId, respa.DefaultMapId, (short)(respa.DefaultX + rnd.Next(-5, 5)), (short)(respa.DefaultY + rnd.Next(-5, 5)));
                                                 }
                                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                                session.CurrentMap?.Broadcast(session, session.Character.GenerateMapOut(), ReceiverType.AllExceptMe);
                                                 break;
                                         }
                                     }
@@ -120,6 +122,7 @@ namespace OpenNos.GameObject
                                             {
                                                 ServerManager.Instance.ChangeMap(session.Character.CharacterId, resp.DefaultMapId, resp.DefaultX, resp.DefaultY);
                                             }
+                                            session.CurrentMap?.Broadcast(session, session.Character.GenerateMapOut(), ReceiverType.AllExceptMe);
                                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                             break;
                                     }
