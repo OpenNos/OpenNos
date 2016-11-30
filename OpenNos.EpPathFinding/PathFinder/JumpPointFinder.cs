@@ -265,9 +265,10 @@ namespace EpPathFinding
     {
         public static List<GridPos> GetFullPath(List<GridPos> routeFound)
         {
-            if (routeFound == null)
-                return null;
+
             List<GridPos> consecutiveGridList = new List<GridPos>();
+            if (routeFound == null)
+            { return consecutiveGridList; }
             if (routeFound.Count > 1)
                 consecutiveGridList.Add(routeFound[0]);
             for (int routeTrav = 0; routeTrav < routeFound.Count - 1; routeTrav++)
