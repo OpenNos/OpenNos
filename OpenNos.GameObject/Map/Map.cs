@@ -304,8 +304,7 @@ namespace OpenNos.GameObject
         public List<GridPos> JPSPlus(JumpPointParam JumpPointParameters, GridPos cell1, GridPos cell2)
         {
             List<GridPos> lpath = new List<GridPos>();
-
-            JumpPointParameters.Reset(cell1, cell2);
+            JumpPointParameters?.Reset(cell1, cell2);
             List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
             lpath = JumpPointFinder.GetFullPath(resultPathList);
             Debug.WriteLine($"Map: {MapId} From X: {cell1.x} Y: {cell1.y}, To X: {cell2.x} Y: {cell2.y}, Paths: {resultPathList.Count}, LPath: {lpath.Count}");
