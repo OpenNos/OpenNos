@@ -961,7 +961,7 @@ namespace OpenNos.GameObject
             if (Class == ClassType.Adventurer)
             {
                 //HACK: Damage is ~10 lower in OpenNos than in official. Fix this...
-                baseDamage += 10;
+                baseDamage += 20;
             }
             int elementalDamage = 0; // placeholder for BCard etc...
             elementalDamage += (skill.ElementalDamage / 4);
