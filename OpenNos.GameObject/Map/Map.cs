@@ -322,35 +322,35 @@ namespace OpenNos.GameObject
 
         public void LoadZone()
         {
-            Stream stream = new MemoryStream(Data);
-
-            byte[] bytes = new byte[stream.Length];
-            int numBytesToRead = 1;
-            int numBytesRead = 0;
-
-            byte[] xlength = new byte[2];
-            byte[] ylength = new byte[2];
-            stream.Read(bytes, numBytesRead, numBytesToRead);
-            xlength[0] = bytes[0];
-            stream.Read(bytes, numBytesRead, numBytesToRead);
-            xlength[1] = bytes[0];
-            stream.Read(bytes, numBytesRead, numBytesToRead);
-            ylength[0] = bytes[0];
-            stream.Read(bytes, numBytesRead, numBytesToRead);
-            ylength[1] = bytes[0];
-            YLength = BitConverter.ToInt16(ylength, 0);
-            XLength = BitConverter.ToInt16(xlength, 0);
-
-            Grid = new StaticGrid(XLength, YLength);
-            for (int i = 0; i < YLength; ++i)
+            using (Stream stream = new MemoryStream(Data))
             {
-                for (int t = 0; t < XLength; ++t)
+                byte[] bytes = new byte[stream.Length];
+                int numBytesToRead = 1;
+                int numBytesRead = 0;
+
+                byte[] xlength = new byte[2];
+                byte[] ylength = new byte[2];
+                stream.Read(bytes, numBytesRead, numBytesToRead);
+                xlength[0] = bytes[0];
+                stream.Read(bytes, numBytesRead, numBytesToRead);
+                xlength[1] = bytes[0];
+                stream.Read(bytes, numBytesRead, numBytesToRead);
+                ylength[0] = bytes[0];
+                stream.Read(bytes, numBytesRead, numBytesToRead);
+                ylength[1] = bytes[0];
+                YLength = BitConverter.ToInt16(ylength, 0);
+                XLength = BitConverter.ToInt16(xlength, 0);
+
+                Grid = new StaticGrid(XLength, YLength);
+                for (int i = 0; i < YLength; ++i)
                 {
-                    stream.Read(bytes, numBytesRead, numBytesToRead);
-                    Grid.SetWalkableAt(new GridPos(t, i), bytes[0]);
+                    for (int t = 0; t < XLength; ++t)
+                    {
+                        stream.Read(bytes, numBytesRead, numBytesToRead);
+                        Grid.SetWalkableAt(new GridPos(t, i), bytes[0]);
+                    }
                 }
             }
-            stream.Close();
         }
 
 
