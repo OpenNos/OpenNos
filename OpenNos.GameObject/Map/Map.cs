@@ -405,6 +405,7 @@ namespace OpenNos.GameObject
             foreach (MapNpc npc in _npcs)
             {
                 npc.Map = this;
+                npc.JumpPointParameters = new JumpPointParam(Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
             }
         }
 

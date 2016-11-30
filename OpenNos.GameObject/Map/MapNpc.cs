@@ -135,7 +135,7 @@ namespace OpenNos.GameObject
                 shop.Initialize();
                 Shop = shop;
             }
-            JumpPointParameters = new JumpPointParam(Map.Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
+          
         }
 
         internal void NpcLife()
