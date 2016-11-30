@@ -532,13 +532,13 @@
     <value>Magasin ouvert.</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
-    <value>Le serveur sera déconnecté dans {0} minutes.</value>
+    <value>Le serveur sera déconnecté dans {0} minute(s).</value>
   </data>
   <data name="SHUTDOWN_SEC" xml:space="preserve">
     <value>Le serveur sera déconnecté dans {0} secondes.</value>
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
-    <value>Le niveau de votre carte spécialiste a bien été changé.</value>
+    <value>Le niveau de votre Carte de Spécialiste a bien été changé.</value>
   </data>
   <data name="SPUSE_NEEDED" xml:space="preserve">
     <value>Vous devez vous transformer en spécialiste pour accepter les changements de points.</value>
@@ -562,10 +562,10 @@
     <value>Escrimeur</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
-    <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
+    <value>Le message est trop gros ({0} bytes). La taille maximum autorisée est  {1} bytes.</value>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>Connecté(s)  </value>
+    <value>[Sessions en ligne] : </value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>L'utilisateur a bloqué les demandes d'échanges.</value>
@@ -709,7 +709,7 @@
     <value>Tu ne peux pas encore l'utiliser.</value>
   </data>
   <data name="LVL_REQUIRED" xml:space="preserve">
-    <value>{0} niveaux sont nécessaire pour améliorer la carte spécialiste.</value>
+    <value>{0} niveaux sont nécessaire pour améliorer la Carte de Spécialiste.</value>
   </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
     <value>L'amélioration de la carte spécialiste a échoué.</value>
