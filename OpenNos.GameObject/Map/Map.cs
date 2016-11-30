@@ -53,7 +53,6 @@ namespace OpenNos.GameObject
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
             Data = data;
-            LoadZone();
             IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId).ToList();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
             MapTypes = new List<MapTypeDTO>();
@@ -104,7 +103,7 @@ namespace OpenNos.GameObject
             {
                 if (!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now)
                 {
-                    Grid = null;
+                    Grid.Reset();
                     return true;
                 }
                 else
