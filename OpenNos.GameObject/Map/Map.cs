@@ -98,7 +98,13 @@ namespace OpenNos.GameObject
         {
             get; set;
         }
-
+        public Boolean isSleeping
+        {
+            get
+            {
+                return (!(!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now));
+            }
+        }
         public RespawnMapTypeDTO DefaultReturn
         {
             get; set;

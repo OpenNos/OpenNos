@@ -101,14 +101,20 @@ namespace OpenNos.GameObject
             {
                 Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
                 {
-                    map.Value.RemoveMapItem();
+                    if (!map.Value.isSleeping)
+                    {
+                        map.Value.RemoveMapItem();
+                    }
                 });
 
                 foreach (MapNpc npc in map.Value.Npcs)
                 {
                     Observable.Interval(TimeSpan.FromMilliseconds(500)).Subscribe(x =>
                     {
-                        npc.NpcLife();
+                        if (!map.Value.isSleeping)
+                        {
+                            npc.NpcLife();
+                        }
                     });
                 }
 
@@ -116,7 +122,7 @@ namespace OpenNos.GameObject
                 {
                     Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
                     {
-                        if (monster != null)
+                        if (monster != null && !map.Value.isSleeping)
                         {
                             monster.MonsterLife();
                         }
@@ -124,7 +130,10 @@ namespace OpenNos.GameObject
                 }
                 Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
                 {
-                    map.Value.RemoveMapItem();
+                    if (!map.Value.isSleeping)
+                    {
+                        map.Value.RemoveMapItem();
+                    }
                 });
             }
 
