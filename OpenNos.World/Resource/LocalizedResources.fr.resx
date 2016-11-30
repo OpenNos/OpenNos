@@ -523,10 +523,10 @@
     <value>{0} Magasins chargés !</value>
   </data>
   <data name="SHOP_EMPTY" xml:space="preserve">
-    <value>Aucun objet ne peut être vendu.</value>
+    <value>Tu ne peux pas ouvrir un magasin si il est vide.</value>
   </data>
   <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
-    <value>Tu ne peux pas ouvrir le magasin près du portail.</value>
+    <value>Ton magasin ne peut pas être ouvert, tu es trop près du portail.</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Magasin ouvert.</value>
@@ -565,7 +565,7 @@
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>Connectés </value>
+    <value>Connecté(s)  </value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>L'utilisateur a bloqué les demandes d'échanges.</value>
@@ -592,10 +592,10 @@
     <value>L'amélioration au niveau suivant a réussi avec succès !</value>
   </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
-    <value>Ce joueur n'est pas connecté.</value>
+    <value>L'utilisateur est hors ligne.</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
-    <value>Seuls les héros peuvent utiliser des messages de héros.</value>
+    <value>Seul les héros peuvent utiliser ce message.</value>
   </data>
   <data name="USER_WHISPER_BLOCKED" xml:space="preserve">
     <value>Ce joueur ne veut pas qu'on lui chuchote des choses.</value>
@@ -607,7 +607,7 @@
     <value>À partir de maintenant, tu débloques les chuchotements.</value>
   </data>
   <data name="WRONG_VALUE" xml:space="preserve">
-    <value>La quantité n'est pas valide.</value>
+    <value>Valeur invalide.</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Tu as fait une demande d'échange avec {0}</value>
@@ -643,7 +643,7 @@
     <value>La connexion au serveur a été perdue.</value>
   </data>
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
-    <value>Ton niveau héroïque a bien été changé !</value>
+    <value>Ton niveau héroïque a été changé !</value>
   </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>Dignité réduite : --{0}</value>
@@ -667,7 +667,7 @@
     <value>Tu as refusé la demande d'échange.</value>
   </data>
   <data name="SP_REFILL" xml:space="preserve">
-    <value>Les points de spécialiste ont bien été ajoutés !</value>
+    <value>Les points de spécialiste ont été ajoutés !</value>
   </data>
   <data name="USER_NOT_FOUND" xml:space="preserve">
     <value>L'utilisateur est introuvable.</value>
@@ -724,13 +724,13 @@
     <value>Bienvenue.</value>
   </data>
   <data name="DROP_RATE_NOW" xml:space="preserve">
-    <value>Taux de drop </value>
+    <value>[Taux d'apparition d'objets] : </value>
   </data>
   <data name="GOLD_RATE_NOW" xml:space="preserve">
-    <value>Taux d'or </value>
+    <value>[Taux d'or] : </value>
   </data>
   <data name="XP_RATE_NOW" xml:space="preserve">
-    <value>Taux d'expérience </value>
+    <value>[Taux d'expérience] : </value>
   </data>
   <data name="SP_LEVELUP" xml:space="preserve">
     <value>Le niveau spécialiste est augmenté.</value>
@@ -745,7 +745,7 @@
     <value>Le taux d'expérience des fées a bien été modifié.</value>
   </data>
   <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
-    <value>Taux d'expérience des fées </value>
+    <value>[Taux d'expérience féerique] : </value>
   </data>
   <data name="FAIRYMAX" xml:space="preserve">
     <value>Ta fée a atteint le niveau maximum !</value>
@@ -811,7 +811,7 @@
     <value>Tu ne portes pas de coiffures spéciales</value>
   </data>
   <data name="SERVER_WORKING_TIME" xml:space="preserve">
-    <value>Serveur connecté depuis </value>
+    <value>[Le serveur est en ligne depuis] : </value>
   </data>
   <data name="LEVELUP" xml:space="preserve">
     <value>Ton niveau de combat a augmenté !</value>
@@ -872,7 +872,7 @@ Veux-tu le porter ?</value>
     <value>La tentative a échoué !</value>
   </data>
   <data name="TRY_FAILED_WAIT" xml:space="preserve">
-    <value>Ça ne marche pas ! Essaie à nouveau dans {0}</value>
+    <value>Ça ne marche pas ! Essaie à nouveau dans {0} secondes.</value>
   </data>
   <data name="NOT_ENOUGH_POINTS" xml:space="preserve">
     <value>Tu n'as pas assez de points.</value>
@@ -917,7 +917,7 @@ Veux-tu le porter ?</value>
     <value>Tu ne peux pas apprendre cette compétence.</value>
   </data>
   <data name="MEMORY" xml:space="preserve">
-    <value>Mémoire utilisée </value>
+    <value>[Mémoire en cours d'utilisation] : </value>
   </data>
   <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
     <value>Tu ne peux pas ouvrir de magasin dans cette zone.</value>
@@ -1019,7 +1019,7 @@ Veux-tu le porter ?</value>
     <value>Ce Maître du Jeu n'accepte pas de reçevoir des messages privés.</value>
   </data>
   <data name="SPEAKER_CANT_BE_USED" xml:space="preserve">
-    <value>Tu subis une sanction. par conséquant, tu ne peux pas utiliser cet objet.</value>
+    <value>Tu n'es pas autorisé à utiliser cet objet lorsque tu subis une sanction.</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE_HERE" xml:space="preserve">
     <value>L'objet ne peut pas être jeté ici.</value>
@@ -1040,7 +1040,7 @@ Veux-tu le porter ?</value>
     <value>Les points de base SP ont été augmenté de  {0}.</value>
   </data>
   <data name="SP_POINTSADDEDBOTH" xml:space="preserve">
-    <value>Tu as reçu {0} points basique et {0} points additionnels pour ta SP.</value>
+    <value>Tu as reçu {0} points basique et {0} points additionnels pour ta carte SP.</value>
   </data>
   <data name="SP_NOPOINTSCANCELED" xml:space="preserve">
     <value>La transformation a été annulée, tu n'as plus assez de point SP.</value>
