@@ -351,6 +351,7 @@ namespace OpenNos.GameObject
                     Grid.SetWalkableAt(new GridPos(t, i), bytes[0]);
                 }
             }
+            stream.Close();
         }
 
 
