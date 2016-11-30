@@ -323,9 +323,9 @@ namespace OpenNos.GameObject
         {
             using (Stream stream = new MemoryStream(Data))
             {
-                byte[] bytes = new byte[stream.Length];
                 int numBytesToRead = 1;
                 int numBytesRead = 0;
+                byte[] bytes = new byte[numBytesToRead];
 
                 byte[] xlength = new byte[2];
                 byte[] ylength = new byte[2];
