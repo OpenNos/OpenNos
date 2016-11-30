@@ -33,7 +33,6 @@ namespace OpenNos.GameObject
 
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
         private bool _disposed;
-        private StaticGrid _grid;
         private List<int> _mapMonsterIds;
         private List<MapNpc> _npcs;
         private List<PortalDTO> _portals;
@@ -93,8 +92,6 @@ namespace OpenNos.GameObject
 
         public bool IsDancing { get; set; }
 
-        public JumpPointParam JumpPointParameters { get; set; }
-
         public short MapId { get; set; }
 
         public RespawnMapTypeDTO DefaultRespawn
@@ -127,6 +124,8 @@ namespace OpenNos.GameObject
         public int Music { get; set; }
 
         public string Name { get; set; }
+
+        public StaticGrid Grid { get; set; }
 
         public List<MapNpc> Npcs
         {
@@ -254,9 +253,9 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (_grid != null)
+            if (Grid != null)
             {
-                if (!_grid.IsWalkableAt(new GridPos(x, y)))
+                if (!Grid.IsWalkableAt(new GridPos(x, y)))
                 {
                     return true;
                 }
@@ -284,7 +283,7 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        public List<GridPos> JPSPlus(GridPos cell1, GridPos cell2)
+        public List<GridPos> JPSPlus(JumpPointParam JumpPointParameters, GridPos cell1, GridPos cell2)
         {
             List<GridPos> lpath = new List<GridPos>();
 
@@ -325,18 +324,15 @@ namespace OpenNos.GameObject
             YLength = BitConverter.ToInt16(ylength, 0);
             XLength = BitConverter.ToInt16(xlength, 0);
 
-            _grid = new StaticGrid(XLength, YLength);
+            Grid = new StaticGrid(XLength, YLength);
             for (int i = 0; i < YLength; ++i)
             {
                 for (int t = 0; t < XLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
-                    _grid.SetWalkableAt(new GridPos(t, i), bytes[0]);
+                    Grid.SetWalkableAt(new GridPos(t, i), bytes[0]);
                 }
-            }
-
-            // initialize JPS _tempgrid = ConvertToGrid(_grid);
-            JumpPointParameters = new JumpPointParam(_grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
+            } 
         }
 
    
