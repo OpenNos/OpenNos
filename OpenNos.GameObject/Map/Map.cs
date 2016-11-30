@@ -102,7 +102,19 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return (!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now);
+                if (!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now)
+                {
+                    Grid = null;
+                    return true;
+                }
+                else
+                {
+                    if (Grid == null)
+                    {
+                        LoadZone();
+                    }
+                    return false;
+                }
             }
         }
         public RespawnMapTypeDTO DefaultReturn
@@ -338,10 +350,10 @@ namespace OpenNos.GameObject
                     stream.Read(bytes, numBytesRead, numBytesToRead);
                     Grid.SetWalkableAt(new GridPos(t, i), bytes[0]);
                 }
-            } 
+            }
         }
 
-   
+
         public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
         {
             Logger.Debug($"type: {type} slot: {slot} amount: {amount}", session.SessionId);
@@ -517,7 +529,7 @@ namespace OpenNos.GameObject
             }
         }
 
-    
+
         public void RemoveMapItem()
         {
             // take the data from list to remove it without having enumeration problems (ToList)
