@@ -104,7 +104,7 @@ namespace OpenNos.GameObject
             {
                 if (!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now)
                 {
-                    Grid.Reset();
+                    Grid = new StaticGrid(0, 0);
                     return true;
                 }
                 else
