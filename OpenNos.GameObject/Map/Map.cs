@@ -102,7 +102,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return (!(!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now));
+                return (!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now);
             }
         }
         public RespawnMapTypeDTO DefaultReturn
