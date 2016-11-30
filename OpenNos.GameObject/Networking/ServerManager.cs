@@ -99,9 +99,41 @@ namespace OpenNos.GameObject
 
             foreach (var map in _maps)
             {
-                Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
+                Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
                 {
-                    map.Value.MapEventManager();
+                    if (!map.Value.isSleeping)
+                    {
+                        map.Value.RemoveMapItem();
+                    }
+                });
+
+                foreach (MapNpc npc in map.Value.Npcs)
+                {
+                    Observable.Interval(TimeSpan.FromMilliseconds(500)).Subscribe(x =>
+                    {
+                        if (!map.Value.isSleeping)
+                        {
+                            npc.NpcLife();
+                        }
+                    });
+                }
+
+                foreach (MapMonster monster in map.Value.Monsters)
+                {
+                    Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
+                    {
+                        if (monster != null && !map.Value.isSleeping)
+                        {
+                            monster.MonsterLife();
+                        }
+                    });
+                }
+                Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
+                {
+                    if (!map.Value.isSleeping)
+                    {
+                        map.Value.RemoveMapItem();
+                    }
                 });
             }
 

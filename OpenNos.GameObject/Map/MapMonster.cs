@@ -38,13 +38,13 @@ namespace OpenNos.GameObject
 
         public MapMonster()
         {
-            HitQueue = new ConcurrentQueue<HitRequest>();
+            HitQueue = new ConcurrentQueue<HitRequest>();       
         }
 
         #endregion
 
         #region Properties
-
+        public JumpPointParam JumpPointParameters { get; set; }
         public int CurrentHp { get; set; }
 
         public int CurrentMp { get; set; }
@@ -109,6 +109,7 @@ namespace OpenNos.GameObject
         {
             Map = currentMap;
             Initialize();
+            JumpPointParameters = new JumpPointParam(Map.Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
 
         public override void Initialize()
@@ -730,7 +731,7 @@ namespace OpenNos.GameObject
             Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
             if (!Path.Any())
             {
-                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
+                Path = Map.JPSPlus(JumpPointParameters, new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
             }
             Target = -1;
         }
@@ -760,7 +761,7 @@ namespace OpenNos.GameObject
                     {
                         try
                         {
-                            Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
+                            Path = Map.JPSPlus(JumpPointParameters,new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
                         }
                         catch (Exception ex)
                         {
