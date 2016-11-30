@@ -8,6 +8,7 @@ using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 
 namespace OpenNos.Handler
 {
@@ -368,6 +369,10 @@ namespace OpenNos.Handler
                         Session.Character.Update();
                         Session.Character.LoadInventory();
                         Session.Character.LoadQuicklists();
+                        Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
+                        {
+                            Session.Character.CharacterLife();
+                        });
                         DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.IpAddress, Session.Character.CharacterId, "Connection", "World");
                         Session.SendPacket("OK");
 

@@ -54,6 +54,7 @@ namespace OpenNos.GameObject
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
             Data = data;
+            LoadZone();
             IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId).ToList();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
             MapTypes = new List<MapTypeDTO>();
@@ -338,37 +339,7 @@ namespace OpenNos.GameObject
             JumpPointParameters = new JumpPointParam(_grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
 
-        public void MonsterLifeManager()
-        {
-            try
-            {
-                RemoveDeadMonsters();
-                foreach (MapMonster monster in Monsters.OrderBy(i => _random.Next()))
-                {
-                    monster.MonsterLife();
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
-        public void NpcLifeManager()
-        {
-            try
-            {
-                foreach (MapNpc npc in Npcs.OrderBy(i => _random.Next()))
-                {
-                    npc.NpcLife();
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
+   
         public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
         {
             Logger.Debug($"type: {type} slot: {slot} amount: {amount}", session.SessionId);
@@ -482,24 +453,7 @@ namespace OpenNos.GameObject
             return characters;
         }
 
-        internal void MapEventManager()
-        {
-            if (!(!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now))
-            {
-                if (_grid == null)
-                {
-                    LoadZone();
-                }
-                Parallel.Invoke(() => NpcLifeManager(), () => MonsterLifeManager(), () => CharacterLifeManager(), () => RemoveMapItem());
-            }
-            else
-            {
-                if (_grid != null)
-                {
-                    _grid = null;
-                }
-            }
-        }
+
 
         internal List<GridPos> StraightPath(GridPos mapCell1, GridPos mapCell2)
         {
@@ -560,190 +514,8 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void CharacterLifeManager()
-        {
-            try
-            {
-                for (int i = Sessions.Where(s => s.HasSelectedCharacter).Count() - 1; i >= 0; i--)
-                {
-                    ClientSession Session = Sessions.Where(s => s?.Character != null).ElementAt(i);
-                    int x = 1;
-                    bool change = false;
-                    if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)
-                    {
-                        Session.Character.Mp = 0;
-                        Session.SendPacket(Session.Character.GenerateStat());
-                        Session.Character.LastHealth = DateTime.Now;
-                    }
-                    else
-                    {
-                        WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
-                        if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
-                        {
-                            if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
-                            {
-                                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == ClassType.Adventurer ? 0 : (byte)Session.Character.Class - 1)), Session.Character.MapX, Session.Character.MapY);
-                            }
-                            else
-                            {
-                                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue), Session.Character.MapX, Session.Character.MapY);
-                            }
-                            Session.Character.LastEffect = DateTime.Now;
-                        }
-
-                        if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
-                        {
-                            Session.Character.LastHealth = DateTime.Now;
-                            if (Session.HealthStop)
-                            {
-                                Session.HealthStop = false;
-                                return;
-                            }
-
-                            if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkillUse.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
-                            {
-                                if (x == 0)
-                                {
-                                    x = 1;
-                                }
-                                if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
-                                {
-                                    change = true;
-                                    Session.Character.Hp += Session.Character.HealthHPLoad();
-                                }
-                                else
-                                {
-                                    if (Session.Character.Hp != (int)Session.Character.HPLoad())
-                                    {
-                                        change = true;
-                                    }
-                                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                                }
-                                if (x == 1)
-                                {
-                                    if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
-                                    {
-                                        Session.Character.Mp += Session.Character.HealthMPLoad();
-                                        change = true;
-                                    }
-                                    else
-                                    {
-                                        if (Session.Character.Mp != (int)Session.Character.MPLoad())
-                                        {
-                                            change = true;
-                                        }
-                                        Session.Character.Mp = (int)Session.Character.MPLoad();
-                                    }
-                                    x = 0;
-                                }
-                                if (change)
-                                {
-                                    Session.SendPacket(Session.Character.GenerateStat());
-                                }
-                            }
-                        }
-                        if (Session.Character.UseSp)
-                        {
-                            if (Session.Character.LastSpGaugeRemove <= new DateTime(0001, 01, 01, 00, 00, 00))
-                                Session.Character.LastSpGaugeRemove = DateTime.Now;
-                            if (Session.Character.LastSkillUse.AddSeconds(15) >= DateTime.Now && Session.Character.LastSpGaugeRemove.AddSeconds(1) <= DateTime.Now)
-                            {
-                                SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-                                byte spType = 0;
-
-                                if ((specialist.Item.Morph > 1 && specialist.Item.Morph < 8) || (specialist.Item.Morph > 9 && specialist.Item.Morph < 16))
-                                    spType = 3;
-                                else if (specialist.Item.Morph > 16 && specialist.Item.Morph < 29)
-                                    spType = 2;
-                                else if (specialist.Item.Morph == 9)
-                                    spType = 1;
-                                if (Session.Character.SpPoint >= spType)
-                                {
-                                    Session.Character.SpPoint -= spType;
-                                }
-                                else if (Session.Character.SpPoint < spType && Session.Character.SpPoint != 0)
-                                {
-                                    spType -= (byte)Session.Character.SpPoint;
-                                    Session.Character.SpPoint = 0;
-                                    Session.Character.SpAdditionPoint -= spType;
-                                }
-                                else if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint >= spType)
-                                {
-                                    Session.Character.SpAdditionPoint -= spType;
-                                }
-                                else if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint < spType)
-                                {
-                                    Session.Character.SpAdditionPoint = 0;
-
-                                    double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-
-                                    if (Session.Character.UseSp)
-                                    {
-                                        Session.Character.LastSp = currentRunningSeconds;
-                                        if (Session != null && Session.HasSession)
-                                        {
-                                            if (Session.Character.IsVehicled)
-                                            {
-                                                return;
-                                            }
-                                            Logger.Debug(specialist.ItemVNum.ToString(), Session.SessionId);
-                                            Session.Character.UseSp = false;
-                                            Session.Character.LoadSpeed();
-                                            Session.SendPacket(Session.Character.GenerateCond());
-                                            Session.SendPacket(Session.Character.GenerateLev());
-                                            Session.Character.SpCooldown = 30;
-                                            if (Session.Character != null && Session.Character.SkillsSp != null)
-                                            {
-                                                foreach (CharacterSkill ski in Session.Character.SkillsSp.GetAllItems().Where(s => !s.CanBeUsed()))
-                                                {
-                                                    short time = ski.Skill.Cooldown;
-                                                    double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
-                                                    temp /= 1000;
-                                                    Session.Character.SpCooldown = temp > Session.Character.SpCooldown ? (int)temp : (int)Session.Character.SpCooldown;
-                                                }
-                                            }
-                                            Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
-                                            Session.SendPacket($"sd {Session.Character.SpCooldown}");
-                                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-                                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
-
-                                            // ms_c
-                                            Session.SendPacket(Session.Character.GenerateSki());
-                                            Session.SendPackets(Session.Character.GenerateQuicklist());
-                                            Session.SendPacket(Session.Character.GenerateStat());
-                                            Session.SendPacket(Session.Character.GenerateStatChar());
-                                            Observable.Timer(TimeSpan.FromMilliseconds(Session.Character.SpCooldown * 1000))
-                                                       .Subscribe(
-                                                       o =>
-                                                       {
-                                                           Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
-                                                           Session.SendPacket("sd 0");
-                                                       });
-                                        }
-                                    }
-                                }
-                                Session.SendPacket(Session.Character.GenerateSpPoint());
-                                Session.Character.LastSpGaugeRemove = DateTime.Now;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
-        private void RemoveDeadMonsters()
-        {
-            foreach (MapMonster monster in _monsters.GetAllItems().Where(s => !s.IsAlive && !s.ShouldRespawn.Value))
-            {
-                RemoveMonster(monster);
-            }
-        }
-
-        private void RemoveMapItem()
+    
+        public void RemoveMapItem()
         {
             // take the data from list to remove it without having enumeration problems (ToList)
             try
