@@ -47,6 +47,8 @@ namespace OpenNos.GameObject
 
         public DateTime LastEffect { get; private set; }
 
+        public JumpPointParam JumpPointParameters { get; set; }
+
         public DateTime LastMove { get; private set; }
 
         public Map Map { get; set; }
@@ -133,6 +135,7 @@ namespace OpenNos.GameObject
                 shop.Initialize();
                 Shop = shop;
             }
+            JumpPointParameters = new JumpPointParam(Map.Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
 
         internal void NpcLife()
@@ -234,7 +237,7 @@ namespace OpenNos.GameObject
                                 Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                                 if (!Path.Any())
                                 {
-                                    Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
+                                    Path = Map.JPSPlus(JumpPointParameters, new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                                 }
                             }
 
@@ -261,7 +264,7 @@ namespace OpenNos.GameObject
                             Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
                             if (!Path.Any())
                             {
-                                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
+                                Path = Map.JPSPlus(JumpPointParameters, new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
                             }
                         }
                         if (DateTime.Now > LastMove && Npc.Speed > 0 && Path.Any())
@@ -293,7 +296,7 @@ namespace OpenNos.GameObject
                             Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                             if (!Path.Any())
                             {
-                                Path = Map.JPSPlus(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
+                                Path = Map.JPSPlus(JumpPointParameters, new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                             }
                             Target = -1;
                         }
