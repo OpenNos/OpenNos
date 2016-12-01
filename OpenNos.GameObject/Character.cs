@@ -447,6 +447,11 @@ namespace OpenNos.GameObject
             get
             {
                 RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
+                respawn.DefaultX = 79;
+                respawn.DefaultY = 116;
+                respawn.DefaultMapId = 1;
+                respawn.RespawnMapTypeId = -1;
+
                 if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
                 {
                     long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).RespawnMapTypeId;
@@ -462,13 +467,6 @@ namespace OpenNos.GameObject
                                 respawn.DefaultY = defaultresp.DefaultY;
                                 respawn.DefaultMapId = defaultresp.DefaultMapId;
                                 respawn.RespawnMapTypeId = (long)respawnmaptype;
-                            }
-                            else
-                            {
-                                respawn.DefaultX = 79;
-                                respawn.DefaultY = 116;
-                                respawn.DefaultMapId = 1;
-                                respawn.RespawnMapTypeId = -1;
                             }
                         }
                         else
