@@ -13,6 +13,7 @@
  */
 
 using EpPathFinding;
+using OpenNos.Core;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
@@ -136,7 +137,7 @@ namespace OpenNos.GameObject
                 shop.Initialize();
                 Shop = shop;
             }
-          
+
         }
 
         internal void StartLife()
@@ -145,9 +146,16 @@ namespace OpenNos.GameObject
             {
                 LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000 / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
                 {
-                    if (!Map.isSleeping)
+                    try
                     {
-                        NpcLife();
+                        if (!Map.isSleeping)
+                        {
+                            NpcLife();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
                     }
                 });
             }
