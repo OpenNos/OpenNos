@@ -231,7 +231,7 @@ namespace OpenNos.Handler
             short[] slot = new short[10];
             string packetList = String.Empty;
 
-            if (gold < 0 || gold > Session.Character.Gold || Session.Character.ExchangeInfo.ExchangeList.Any())
+            if (gold < 0 || gold > Session.Character.Gold || Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo.ExchangeList.Any())
             {
                 return;
             }

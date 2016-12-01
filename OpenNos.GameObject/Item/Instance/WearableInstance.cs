@@ -135,8 +135,12 @@ namespace OpenNos.GameObject
             byte cella = 5;
             int cellaVnum = 1014;
             int scrollVnum = 1218;
-
             int rnd;
+
+            if (!Session.HasCurrentMap)
+            {
+                return;
+            }
             if (mode != RarifyMode.Drop || this.Item.ItemType == ItemType.Shell)
             {
                 raren2 = 0;
@@ -444,6 +448,10 @@ namespace OpenNos.GameObject
 
         public void Sum(ClientSession Session, WearableInstance itemToSum)
         {
+            if (!Session.HasCurrentMap)
+            {
+                return;
+            }
             // cannot sum higher than 5
             if (this.Upgrade < 6)
             {
@@ -497,6 +505,10 @@ namespace OpenNos.GameObject
 
         public void UpgradeItem(ClientSession Session, UpgradeMode mode, UpgradeProtection protection, bool isCommand = false)
         {
+            if (!Session.HasCurrentMap)
+            {
+                return;
+            }
             if (this.Upgrade < 10)
             {
                 short[] upsuccess;

@@ -366,6 +366,10 @@ namespace OpenNos.GameObject
             short blueScrollVnum = 1363;
             short redScrollVnum = 1364;
 
+            if (!Session.HasCurrentMap)
+            {
+                return;
+            }
             if (this.IsFixed)
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
