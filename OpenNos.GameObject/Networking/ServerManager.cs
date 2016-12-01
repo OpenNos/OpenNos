@@ -101,9 +101,16 @@ namespace OpenNos.GameObject
             {
                 Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
                 {
-                    if (!map.Value.isSleeping)
+                    try
                     {
-                        map.Value.RemoveMapItem();
+                        if (!map.Value.isSleeping)
+                        {
+                            map.Value.RemoveMapItem();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
                     }
                 });
 
@@ -114,15 +121,8 @@ namespace OpenNos.GameObject
 
                 foreach (MapMonster monster in map.Value.Monsters)
                 {
-                    monster.StartLife();    
-                }
-                Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
-                {
-                    if (!map.Value.isSleeping)
-                    {
-                        map.Value.RemoveMapItem();
-                    }
-                });
+                    monster.StartLife();
+                }     
             }
 
             lastGroupId = 1;
@@ -130,13 +130,27 @@ namespace OpenNos.GameObject
 
         private void RemoveItemProcess()
         {
-            Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshValidity());
+            try
+            {
+                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshValidity());
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         private void MailProcess()
         {
-            Mails = DAOFactory.MailDAO.LoadAll().ToList();
-            Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
+            try
+            {
+                Mails = DAOFactory.MailDAO.LoadAll().ToList();
+                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         #endregion
@@ -942,8 +956,15 @@ namespace OpenNos.GameObject
         // Server
         private void BotProcess()
         {
-            Random rnd = new Random();
-            Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{ rnd.Next(0, 5) }"));
+            try
+            {
+                Random rnd = new Random();
+                Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{ rnd.Next(0, 5) }"));
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         private void GroupProcess()
@@ -967,6 +988,7 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Error(e);
+
             }
         }
 
@@ -978,8 +1000,15 @@ namespace OpenNos.GameObject
         // Server
         private void SaveAllProcess()
         {
-            Logger.Log.Info(Language.Instance.GetMessageFromKey("SAVING_ALL"));
-            SaveAll();
+            try
+            {
+                Logger.Log.Info(Language.Instance.GetMessageFromKey("SAVING_ALL"));
+                SaveAll();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         #endregion

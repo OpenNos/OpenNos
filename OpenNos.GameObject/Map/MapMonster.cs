@@ -13,6 +13,7 @@
  */
 
 using EpPathFinding;
+using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Networking;
@@ -137,9 +138,16 @@ namespace OpenNos.GameObject
             {
                 LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000 / (Monster.Speed > 0 ? Monster.Speed : 4))).Subscribe(x =>
                   {
-                      if (!Map.isSleeping)
+                      try
                       {
-                          MonsterLife();
+                          if (!Map.isSleeping)
+                          {
+                              MonsterLife();
+                          }
+                      }
+                      catch (Exception e)
+                      {
+                          Logger.Error(e);
                       }
                   });
             }
