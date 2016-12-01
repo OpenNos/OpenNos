@@ -3063,8 +3063,11 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            SendGift(CharacterId, itemVNum, amount, newItem.Rare, newItem.Upgrade, false);
-                            Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_BY_THE_GIANT_MONSTER"), 0));
+                            if (MailList.Count <= 40)
+                            {
+                                SendGift(CharacterId, itemVNum, amount, newItem.Rare, newItem.Upgrade, false);
+                                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_BY_THE_GIANT_MONSTER"), 0));
+                            }
                         }
                     }
                 }
