@@ -1,5 +1,11 @@
 [![discord](https://img.shields.io/badge/discord-OpenNos-blue.svg?style=flat)](https://discord.gg/N8eqPUh)
 
+#Information!#
+This repository is no longer our main development repository. Code is now hosted privately until we think it is somewhat stable. When it is, we push all changes back to GitHub. Before you ask: No, you won't get access to the Repository unless you are:
+* a developer that is in our team
+* a tester invited by us
+Please do not ask us for invitation. You won't get one.
+
 #Instructions to contribute#
 
 ##Disclaimer##
