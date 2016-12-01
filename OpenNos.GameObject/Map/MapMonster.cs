@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
 
         public MapMonster()
         {
-            HitQueue = new ConcurrentQueue<HitRequest>();       
+            HitQueue = new ConcurrentQueue<HitRequest>();
         }
 
         #endregion
@@ -135,13 +135,13 @@ namespace OpenNos.GameObject
         {
             if (LifeEvent == default(IDisposable))
             {
-                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
-                 {
-                     if (!Map.isSleeping)
-                     {
-                         MonsterLife();
-                     }
-                 });
+                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000 / (Monster.Speed > 0 ? Monster.Speed : 4))).Subscribe(x =>
+                  {
+                      if (!Map.isSleeping)
+                      {
+                          MonsterLife();
+                      }
+                  });
             }
         }
 
@@ -776,7 +776,7 @@ namespace OpenNos.GameObject
                     {
                         try
                         {
-                            Path = Map.JPSPlus(JumpPointParameters,new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
+                            Path = Map.JPSPlus(JumpPointParameters, new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
                         }
                         catch (Exception ex)
                         {
@@ -831,7 +831,7 @@ namespace OpenNos.GameObject
 
                 if (Path.Where(s => s != null).Any())
                 {
-                    int timetowalk = 1000 / (2 * Monster.Speed);
+                    int timetowalk = 2000 / (Monster.Speed);
                     if (time > timetowalk)
                     {
                         int mapX = Path.ElementAt(0).x;

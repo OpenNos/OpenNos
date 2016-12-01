@@ -62,6 +62,7 @@ namespace OpenNos.GameObject
         public int Target { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
+        public IDisposable LifeEvent { get; set; }
 
         #endregion
 
@@ -136,6 +137,20 @@ namespace OpenNos.GameObject
                 Shop = shop;
             }
           
+        }
+
+        internal void StartLife()
+        {
+            if (LifeEvent == default(IDisposable))
+            {
+                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000 / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
+                {
+                    if (!Map.isSleeping)
+                    {
+                        NpcLife();
+                    }
+                });
+            }
         }
 
         internal void NpcLife()
