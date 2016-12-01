@@ -69,6 +69,10 @@ namespace OpenNos.Handler
                 case BuyShopType.CharacterShop:
                     {
                         // User shop
+                        if (!Session.HasCurrentMap)
+                        {
+                            return;
+                        }
                         KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(buyPacket.OwnerId));
 
                         PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.ShopSlot.Equals(buyPacket.Slot));
@@ -95,7 +99,7 @@ namespace OpenNos.Handler
                         // check if the item has been removed successfully from previous owner and remove it
                         if (BuyValidate(Session, shop, buyPacket.Slot, amount))
                         {
-                            ItemInstance inv = item.ItemInstance.Type == InventoryType.Equipment 
+                            ItemInstance inv = item.ItemInstance.Type == InventoryType.Equipment
                                                ? Session.Character.Inventory.AddToInventory(item.ItemInstance)
                                                : Session.Character.Inventory.AddNewToInventory(item.ItemInstance.ItemVNum, amount, item.ItemInstance.Type);
 
@@ -119,6 +123,10 @@ namespace OpenNos.Handler
                 case BuyShopType.ItemShop:
                     {
                         // load shop
+                        if (!Session.HasCurrentMap)
+                        {
+                            return;
+                        }
                         MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)buyPacket.OwnerId));
                         int dist = Map.GetDistance(new MapCell() { MapId = Session.CurrentMap.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { MapId = npc.MapId, X = npc.MapX, Y = npc.MapY });
                         if (npc == null || npc.Shop == null || dist > 5)
@@ -139,7 +147,7 @@ namespace OpenNos.Handler
                             {
                                 return;
                             }
-    
+
                             if (Session.Character.Gold < skillinfo.Price)
                             {
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
@@ -327,6 +335,10 @@ namespace OpenNos.Handler
 
         private bool BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, byte amount)
         {
+            if (!clientSession.HasCurrentMap)
+            {
+                return false;
+            }
             PersonalShopItem shopitem = clientSession.CurrentMap.UserShops[shop.Key].Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
             if (shopitem == null)
             {
@@ -402,7 +414,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 2)
             {
                 short.TryParse(packetsplit[2], out typePacket);
-                if (Session.Character.HasShopOpened && typePacket != 1)
+                if ((Session.Character.HasShopOpened && typePacket != 1) || !Session.HasCurrentMap)
                 {
                     return;
                 }
@@ -557,7 +569,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Count() < 4)
+            if (packetsplit.Count() < 4 || !Session.HasCurrentMap)
             {
                 return;
             }
@@ -725,11 +737,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             byte type, typeshop = 0;
             int NpcId;
-            if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type))
-            {
-                return;
-            }
-            if (Session.Character.IsShopping)
+            if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type) || Session.Character.IsShopping || !Session.HasCurrentMap)
             {
                 return;
             }
@@ -844,7 +852,7 @@ namespace OpenNos.Handler
             int mode;
             if (packetsplit.Length > 2)
             {
-                if (!int.TryParse(packetsplit[2], out mode))
+                if (!int.TryParse(packetsplit[2], out mode) || !Session.HasCurrentMap)
                 {
                     return;
                 }
@@ -903,7 +911,7 @@ namespace OpenNos.Handler
             if (shop.Value != null && shop.Value.Items != null)
             {
                 foreach (PersonalShopItem item in shop.Value.Items)
-                { 
+                {
                     if (item != null)
                     {
                         if (item.ItemInstance.Item.Type == InventoryType.Equipment)

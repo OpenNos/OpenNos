@@ -166,7 +166,7 @@ namespace OpenNos.Handler
                             AccountDTO account = Session.Account;
                             account.LastCompliment = DateTime.Now;
                             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
-                            
+
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
                         }
                         else
@@ -278,7 +278,7 @@ namespace OpenNos.Handler
                     ServerManager.Instance.RequireBroadcastFromUser(Session, charId, "GenerateStatInfo");
                 }
             }
-            if (characterInformationPacket[2] == "2")
+            if (characterInformationPacket[2] == "2" && Session.HasCurrentMap)
             {
                 foreach (MapNpc npc in Session.CurrentMap.Npcs)
                 {
@@ -293,7 +293,7 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            if (characterInformationPacket[2] == "3")
+            if (characterInformationPacket[2] == "3" && Session.HasCurrentMap)
             {
                 foreach (MapMonster monster in Session.CurrentMap.Monsters)
                 {
@@ -637,6 +637,10 @@ namespace OpenNos.Handler
                         {
                             return;
                         }
+                        if (!Session.HasCurrentMap)
+                        {
+                            return;
+                        }
                         MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
 
@@ -731,7 +735,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            if (!(timeSpanSinceLastPortal >= 4))
+            if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMap)
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
@@ -943,7 +947,7 @@ namespace OpenNos.Handler
                             EqPacket = Session.Character.GenerateEqListForPacket(),
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)((Session.Character.Morph > short.MaxValue) ? 0 : Session.Character.Morph)
                         };
-                        
+
                         DAOFactory.MailDAO.InsertOrUpdate(ref mailcopy);
                         DAOFactory.MailDAO.InsertOrUpdate(ref mail);
 

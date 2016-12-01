@@ -91,7 +91,7 @@ namespace OpenNos.Handler
                     if (skills != null)
                     {
                         CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == subpacket.SkillCastId - 1);
-                        if (ski.CanBeUsed())
+                        if (ski.CanBeUsed() && Session.HasCurrentMap)
                         {
                             MapMonster mon = Session.CurrentMap.GetMonster(subpacket.TargetId);
                             if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && ski != null && mon.CurrentHp > 0)
@@ -164,7 +164,7 @@ namespace OpenNos.Handler
 
                         doNotCancel = true;
                         Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {ski.Skill.SkillType - 1}");
-                        if (ski.Skill.TargetRange != 0)
+                        if (ski.Skill.TargetRange != 0 && Session.HasCurrentMap)
                         {
                             foreach (MapMonster mon in Session.CurrentMap.GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange).Where(s => s.CurrentHp > 0))
                             {
@@ -172,7 +172,7 @@ namespace OpenNos.Handler
                             }
                         }
                     }
-                    else if (ski.Skill.TargetType == 0)
+                    else if (ski.Skill.TargetType == 0 && Session.HasCurrentMap)
                     // monster target
                     {
                         MapMonster monsterToAttack = Session.CurrentMap.GetMonster(targetId);
@@ -240,7 +240,7 @@ namespace OpenNos.Handler
                                             else
                                             {
                                                 IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
-                                                Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)} 0 0 {(monsterToAttack.IsAlive ? 1 : 0)} {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 0 {ski.Skill.SkillType - 1}");
+                                                Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)} 0 0 {(monsterToAttack.IsAlive ? 1 : 0)} {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 0 {ski.Skill.SkillType - 1}");
                                                 foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
                                                 {
                                                     mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
@@ -408,7 +408,7 @@ namespace OpenNos.Handler
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
             CharacterSkill characterSkill = skills.FirstOrDefault(s => s.Skill.CastId == Castingid);
-            if (!Session.Character.WeaponLoaded(characterSkill))
+            if (!Session.Character.WeaponLoaded(characterSkill) || !Session.HasCurrentMap)
             {
                 Session.SendPacket("cancel 2 0");
                 return;

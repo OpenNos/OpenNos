@@ -47,7 +47,7 @@ namespace OpenNos.Handler
         public void CreateCharacter(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            if (Session.CurrentMap != null)
+            if (Session.HasCurrentMap)
             {
                 return;
             }

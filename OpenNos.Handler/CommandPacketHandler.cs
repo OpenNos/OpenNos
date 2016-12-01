@@ -65,6 +65,10 @@ namespace OpenNos.Handler
             Logger.Debug("Add Monster Command", Session.SessionId);
             if (addMonsterPacket != null)
             {
+                if (!Session.HasCurrentMap)
+                {
+                    return;
+                }
                 NpcMonster npcmonster = ServerManager.GetNpc(addMonsterPacket.MonsterVNum);
                 if (npcmonster == null)
                 {
@@ -683,7 +687,7 @@ namespace OpenNos.Handler
             Logger.Debug("PortalTo Command", Session.SessionId);
             if (portalToPacket != null)
             {
-                if (ServerManager.GetMap(portalToPacket.DestinationMapId) == null)
+                if (ServerManager.GetMap(portalToPacket.DestinationMapId) == null || !Session.HasCurrentMap)
                 {
                     return;
                 }
@@ -841,9 +845,12 @@ namespace OpenNos.Handler
                     }
                     if (name == "*")
                     {
-                        foreach (ClientSession session in Session.CurrentMap.Sessions)
+                        if (Session.HasCurrentMap)
                         {
-                            Session.Character.SendGift((session.Character.CharacterId), vnum, amount, rare, upgrade, false);
+                            foreach (ClientSession session in Session.CurrentMap.Sessions)
+                            {
+                                Session.Character.SendGift((session.Character.CharacterId), vnum, amount, rare, upgrade, false);
+                            }
                         }
                     }
                     else
@@ -1093,16 +1100,19 @@ namespace OpenNos.Handler
         public void MapDance(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.CurrentMap.IsDancing = Session.CurrentMap.IsDancing ? false : true;
-            if (Session.CurrentMap.IsDancing)
+            if (Session.HasCurrentMap)
             {
-                Session.Character.Dance();
-                Session.CurrentMap?.Broadcast("dance 2");
-            }
-            else
-            {
-                Session.Character.Dance();
-                Session.CurrentMap?.Broadcast("dance");
+                Session.CurrentMap.IsDancing = Session.CurrentMap.IsDancing ? false : true;
+                if (Session.CurrentMap.IsDancing)
+                {
+                    Session.Character.Dance();
+                    Session.CurrentMap?.Broadcast("dance 2");
+                }
+                else
+                {
+                    Session.Character.Dance();
+                    Session.CurrentMap?.Broadcast("dance");
+                }
             }
         }
 
@@ -1318,27 +1328,30 @@ namespace OpenNos.Handler
         public void RemoveMob(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            MapMonster monst = Session.CurrentMap.GetMonster(Session.Character.LastMonsterId);
-            if (monst != null)
+            if (Session.HasCurrentMap)
             {
-                if (monst.IsAlive)
+                MapMonster monst = Session.CurrentMap.GetMonster(Session.Character.LastMonsterId);
+                if (monst != null)
                 {
-                    Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {6000} 3 0");
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MONSTER_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
-                    Session.CurrentMap.RemoveMonster(monst);
-                    if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) != null)
+                    if (monst.IsAlive)
                     {
-                        DAOFactory.MapMonsterDAO.DeleteById(monst.MapMonsterId);
+                        Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {6000} 3 0");
+                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MONSTER_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
+                        Session.CurrentMap.RemoveMonster(monst);
+                        if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) != null)
+                        {
+                            DAOFactory.MapMonsterDAO.DeleteById(monst.MapMonsterId);
+                        }
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MONSTER_NOT_ALIVE")), 11));
                     }
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MONSTER_NOT_ALIVE")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MONSTER_NOT_FOUND"), 11));
                 }
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MONSTER_NOT_FOUND"), 11));
             }
         }
 
@@ -1346,16 +1359,19 @@ namespace OpenNos.Handler
         public void RemoveNearestPortal(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            PortalDTO pt = Session.CurrentMap.Portals.FirstOrDefault(s => s.SourceMapId == Session.Character.MapId && Map.GetDistance(new MapCell { MapId = s.SourceMapId, X = s.SourceX, Y = s.SourceY }, new MapCell { MapId = Session.Character.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }) < 10);
-            if (pt != null)
+            if (Session.HasCurrentMap)
             {
-                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
-                Session.CurrentMap.Portals.Remove(pt);
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateGp(pt));
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_PORTAL_FOUND"), 11));
+                PortalDTO pt = Session.CurrentMap.Portals.FirstOrDefault(s => s.SourceMapId == Session.Character.MapId && Map.GetDistance(new MapCell { MapId = s.SourceMapId, X = s.SourceX, Y = s.SourceY }, new MapCell { MapId = Session.Character.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }) < 10);
+                if (pt != null)
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
+                    Session.CurrentMap.Portals.Remove(pt);
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateGp(pt));
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_PORTAL_FOUND"), 11));
+                }
             }
         }
 
@@ -1525,9 +1541,8 @@ namespace OpenNos.Handler
             Logger.Debug("Summon Command", Session.SessionId);
             if (summonPacket != null)
             {
-                if (Session.IsOnMap)
+                if (Session.IsOnMap && Session.HasCurrentMap)
                 {
-                    Map currentMap = Session.CurrentMap;
                     Random random = new Random();
 
                     short vnum = summonPacket.NpcMonsterVNum;
@@ -1539,7 +1554,6 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    Map map = Session.CurrentMap;
                     for (int i = 0; i < amount; i++)
                     {
                         short mapx;
@@ -1563,10 +1577,10 @@ namespace OpenNos.Handler
                         }
 
                         MapMonster monster = new MapMonster() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapMonsterId = Session.CurrentMap.GetNextMonsterId(), ShouldRespawn = false };
-                        monster.Initialize(currentMap);
+                        monster.Initialize(Session.CurrentMap);
                         monster.StartLife();
-                        currentMap?.AddMonster(monster);
-                        currentMap?.Broadcast(monster.GenerateIn3());
+                        Session.CurrentMap.AddMonster(monster);
+                        Session.CurrentMap.Broadcast(monster.GenerateIn3());
                     }
                 }
             }
@@ -1653,7 +1667,7 @@ namespace OpenNos.Handler
                         // clear any shop or trade on target character
                         session.Character.Dispose();
 
-                        if (!session.Character.IsChangingMap)
+                        if (!session.Character.IsChangingMap && Session.HasCurrentMap)
                         {
                             ServerManager.Instance.LeaveMap(session.Character.CharacterId);
 

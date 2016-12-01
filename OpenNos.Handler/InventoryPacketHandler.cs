@@ -293,6 +293,10 @@ namespace OpenNos.Handler
                 {
                     case RequestExchangeType.Requested: // send the request trade
                         {
+                            if (!Session.HasCurrentMap)
+                            {
+                                return;
+                            }
                             ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(packet.CharacterId);
 
                             if (targetSession == null)
@@ -346,6 +350,10 @@ namespace OpenNos.Handler
                             if (Session.HasCurrentMap && Session.HasSelectedCharacter
                                 && Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.TargetCharacterId != Session.Character.CharacterId)
                             {
+                                if (!Session.HasCurrentMap)
+                                {
+                                    return;
+                                }
                                 ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
 
                                 if (targetSession == null)
@@ -464,7 +472,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet.ToString(), Session.SessionId);
 
-            if (!Session.CurrentMap.DroppedList.ContainsKey(packet.TransportId))
+            if (!Session.HasCurrentMap || !Session.CurrentMap.DroppedList.ContainsKey(packet.TransportId))
             {
                 return;
             }
@@ -476,7 +484,7 @@ namespace OpenNos.Handler
             }
             if (mapItem != null)
             {
-                if (Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 3))
+                if (Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 3) && Session.HasCurrentMap)
                 {
                     if (mapItem is MonsterMapItem)
                     {
@@ -647,7 +655,7 @@ namespace OpenNos.Handler
                 {
                     if (packet.Amount > 0 && packet.Amount < 100)
                     {
-                        if (ServerManager.GetMap(Session.Character.MapId).DroppedList.GetAllItems().Count < 200)
+                        if (ServerManager.GetMap(Session.Character.MapId).DroppedList.GetAllItems().Count < 200 && Session.HasCurrentMap)
                         {
                             MapItem droppedItem = Session.CurrentMap.PutItem(packet.InventoryType, packet.Slot, packet.Amount, ref invitem, Session);
                             if (droppedItem == null)
@@ -689,7 +697,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             short slot;
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3 && Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0) && short.TryParse(packetsplit[2], out slot))
+            if (packetsplit.Length > 3 && Session.HasCurrentMap && Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0) && short.TryParse(packetsplit[2], out slot))
             {
                 ItemInstance inventory = (slot != (byte)EquipmentType.Sp) ? Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Wear) : Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Wear);
                 if (inventory != null)
@@ -1478,7 +1486,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (packetsplit.Length > 3 && Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
+            if (packetsplit.Length > 3 && Session.HasCurrentMap && Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
             {
                 InventoryType type;
                 short slot;

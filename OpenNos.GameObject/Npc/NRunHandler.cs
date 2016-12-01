@@ -27,6 +27,10 @@ namespace OpenNos.GameObject
 
         public static void NRun(ClientSession Session, byte type, short runner, short data3, short npcid)
         {
+            if (!Session.HasCurrentMap)
+            {
+                return;
+            }
             MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == npcid);
             switch (runner)
             {

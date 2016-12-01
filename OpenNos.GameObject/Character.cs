@@ -626,7 +626,7 @@ namespace OpenNos.GameObject
             {
                 long? targetSessionId = ExchangeInfo?.TargetCharacterId;
 
-                if (targetSessionId.HasValue)
+                if (targetSessionId.HasValue && Session.HasCurrentMap)
                 {
                     ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(targetSessionId.Value);
 
@@ -645,9 +645,9 @@ namespace OpenNos.GameObject
 
         public void CloseShop(bool closedByCharacter = false)
         {
-            if (HasShopOpened)
+            if (HasShopOpened && Session.HasCurrentMap)
             {
-                KeyValuePair<long, MapShop> shop = this.Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(this.CharacterId));
+                KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(this.CharacterId));
                 if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
                 {
                     Session.CurrentMap.UserShops.Remove(shop.Key);
@@ -1726,10 +1726,9 @@ namespace OpenNos.GameObject
 
             // end owner set
             int i = 1;
-            Map currentMap = Session.CurrentMap;
-            if (currentMap != null)
+            if (Session.HasCurrentMap)
             {
-                List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => currentMap.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || (s.MapTypeId == null)).ToList();
+                List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMap.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || (s.MapTypeId == null)).ToList();
                 if (monsterToAttack.Monster.MonsterType != MonsterType.Special)
                 {
                     #region item drop
