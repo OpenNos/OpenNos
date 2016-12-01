@@ -53,6 +53,7 @@ namespace OpenNos.GameObject
 
         public DateTime Death { get; set; }
 
+        IDisposable LifeEvent { get; set; }
         public short FirstX { get; set; }
 
         public short FirstY { get; set; }
@@ -128,6 +129,20 @@ namespace OpenNos.GameObject
             DamageList = new Dictionary<long, long>();
             _random = new Random(MapMonsterId);
             _movetime = _random.Next(400, 3200);
+        }
+
+        public void StartLife()
+        {
+            if (LifeEvent == default(IDisposable))
+            {
+                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
+                 {
+                     if (!Map.isSleeping)
+                     {
+                         MonsterLife();
+                     }
+                 });
+            }
         }
 
         /// <summary>

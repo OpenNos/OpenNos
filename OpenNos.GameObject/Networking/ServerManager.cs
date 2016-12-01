@@ -120,13 +120,7 @@ namespace OpenNos.GameObject
 
                 foreach (MapMonster monster in map.Value.Monsters)
                 {
-                    Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
-                    {
-                        if (monster != null && !map.Value.isSleeping)
-                        {
-                            monster.MonsterLife();
-                        }
-                    });
+                    monster.StartLife();    
                 }
                 Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
                 {
