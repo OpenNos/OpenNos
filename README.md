@@ -1,4 +1,4 @@
-[![discord](https://img.shields.io/badge/discord-OpenNos-blue.svg?style=flat)](https://discord.gg/N8eqPUh)
+[![Discord](https://img.shields.io/badge/Discord-OpenNos-blue.svg?style=flat)](https://discord.gg/qdPMDv5)
 
 #Information!#
 This repository is no longer our main development repository. Code is now hosted privately until we think it is somewhat stable. When it is, we push all changes back to GitHub. Before you ask: No, you won't get access to the Repository unless you are:
