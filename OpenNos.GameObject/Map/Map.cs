@@ -303,11 +303,15 @@ namespace OpenNos.GameObject
 
         public List<GridPos> JPSPlus(JumpPointParam JumpPointParameters, GridPos cell1, GridPos cell2)
         {
-            List<GridPos> lpath = new List<GridPos>();
-            JumpPointParameters?.Reset(cell1, cell2);
-            List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
-            lpath = JumpPointFinder.GetFullPath(resultPathList);
-            return lpath;
+            if (JumpPointParameters != null)
+            {
+                List<GridPos> lpath = new List<GridPos>();
+                JumpPointParameters.Reset(cell1, cell2);
+                List<GridPos> resultPathList = JumpPointFinder.FindPath(JumpPointParameters);
+                lpath = JumpPointFinder.GetFullPath(resultPathList);
+                return lpath;
+            }
+            return null;
         }
 
         public void LoadMonsters()
