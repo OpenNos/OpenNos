@@ -107,7 +107,7 @@ namespace OpenNos.DAL.EF
 
         public bool IsTradable { get; set; }
 
-        public bool IsWarehouse { get; set; }
+        public bool IsHolder { get; set; }
 
         public virtual ICollection<ItemInstance> ItemInstances { get; set; }
 

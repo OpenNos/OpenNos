@@ -69,7 +69,7 @@ namespace OpenNos.GameObject
             this.IsMinilandObject = item.IsMinilandObject;
             this.IsSoldable = item.IsSoldable;
             this.IsTradable = item.IsTradable;
-            this.IsWarehouse = item.IsWarehouse;
+            this.IsHolder = item.IsHolder;
             this.ItemSubType = item.ItemSubType;
             this.ItemType = item.ItemType;
             this.ItemValidTime = item.ItemValidTime;

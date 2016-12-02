@@ -86,7 +86,7 @@ namespace OpenNos.Data
 
         public bool IsTradable { get; set; }
 
-        public bool IsWarehouse { get; set; }
+        public bool IsHolder { get; set; }
 
         public byte ItemSubType { get; set; }
 

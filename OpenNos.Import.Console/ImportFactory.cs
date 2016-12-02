@@ -2491,7 +2491,7 @@ namespace OpenNos.Import.Console
                         item.IsTradable = currentLine[7] == "0";
                         item.IsBlocked = currentLine[8] == "1";
                         item.IsMinilandObject = currentLine[9] == "1";
-                        item.IsWarehouse = currentLine[10] == "1";
+                        item.IsHolder = currentLine[10] == "1";
                         item.IsColored = currentLine[16] == "1";
                         item.Sex = currentLine[18] == "1" ? (byte)1 : currentLine[17] == "1" ? (byte)2 : (byte)0;
                         if (currentLine[21] == "1")
