@@ -79,7 +79,7 @@ namespace OpenNos.DAL.EF
         [MaxLength(255)]
         public string FamilyPersonnalIntro { get; set; }
 
-        public byte FamilyMemberRank { get; set; }*/
+        public FamilyMemberRank FamilyMemberRank { get; set; }*/
 
         public bool FamilyRequestBlocked { get; set; }
 

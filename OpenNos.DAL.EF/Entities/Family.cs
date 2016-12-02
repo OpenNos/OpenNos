@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF
 
         public long FamilyExpAmount { get; set; }
 
-        public byte FamilyMemberRank { get; set; }
+        public FamilyMemberRank FamilyMemberRank { get; set; }
 
         public byte MemberAmount { get; set; }
 
