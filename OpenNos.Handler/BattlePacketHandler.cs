@@ -131,7 +131,7 @@ namespace OpenNos.Handler
                 Session.SendPacket("ms_c 0");
                 if (!Session.Character.WeaponLoaded(ski) || !ski.CanBeUsed())
                 {
-                    Session.SendPacket("cancel 2 0");
+                      Session.SendPacket("cancel 2 0");
                     return;
                 }
 
@@ -279,10 +279,11 @@ namespace OpenNos.Handler
                 }
             }
 
-            if (!doNotCancel)
+            //It cancel legit skill should be not. Disabled in waiting for a fix.
+            /*if (!doNotCancel)
             {
                 Session.SendPacket($"cancel 2 {targetId}");
-            }
+            }*/
         }
 
         /// <summary>
