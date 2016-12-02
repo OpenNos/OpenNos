@@ -87,6 +87,7 @@
     <Compile Include="ComboDAO.cs" />
     <Compile Include="Entities\Drop.cs" />
     <Compile Include="DropDAO.cs" />
+    <Compile Include="Entities\Family.cs" />
     <Compile Include="Entities\GeneralLog.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\ItemInstance.cs" />
