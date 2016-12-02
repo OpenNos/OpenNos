@@ -23,31 +23,15 @@ namespace OpenNos.DAL.EF
         #region Properties
 
         //Not complety done
-        public string Name { get; set; }
-
         public long FamilyId { get; set; }
 
-        public string FamilyOwner { get; set; }
+        public string FamilyName{ get; set; }
 
-        public byte FamilyLevel { get; set; }
+        public string FamilyMessage { get; set; }
 
-        public long FamilyExpAmount { get; set; }
+        public byte FamilyWearhouseType { get; set; }
 
-        public FamilyMemberRank FamilyMemberRank { get; set; }
-
-        public byte MemberAmount { get; set; }
-
-        public byte MemberMaxAmount { get; set; }
-
-        public DateTime FamilyEnterDate { get; set; }
-
-        [MaxLength(255)]
-        public string FamilyPersonnalIntro { get; set; }
-
-        [MaxLength(255)]
-        public string FamilyLogMessage { get; set; }
-
-        public  byte OwnerSex { get; set; }
+        public byte FamilySizeType{ get; set; }
 
         #endregion
     }
