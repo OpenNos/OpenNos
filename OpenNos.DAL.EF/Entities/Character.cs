@@ -72,15 +72,6 @@ namespace OpenNos.DAL.EF
 
         public int Faction { get; set; }
 
-        /*public long FamilyId { get; set; }
-
-        public DateTime FamilyEnterDate { get; set; }
-
-        [MaxLength(255)]
-        public string FamilyPersonnalIntro { get; set; }
-
-        public FamilyMemberRank FamilyMemberRank { get; set; }*/
-
         public bool FamilyRequestBlocked { get; set; }
 
         public bool FriendRequestBlocked { get; set; }
