@@ -788,7 +788,7 @@ namespace OpenNos.GameObject
                         }
                         catch (Exception ex)
                         {
-                            OpenNos.Core.Logger.Log.Error($"Pathfinding using JPSPlus failed. Map: {MapId} StartX: {MapX} StartY: {MapY} TargetX: {(short)(targetSession.Character.MapX + xoffset)} TargetY: {(short)(targetSession.Character.MapY + yoffset)}", ex);
+                            Logger.Log.Error($"Pathfinding using JPSPlus failed. Map: {MapId} StartX: {MapX} StartY: {MapY} TargetX: {(short)(targetSession.Character.MapX + xoffset)} TargetY: {(short)(targetSession.Character.MapY + yoffset)}", ex);
                             RemoveTarget();
                         }
                     }

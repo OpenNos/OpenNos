@@ -2729,7 +2729,10 @@ namespace OpenNos.GameObject
             int partySize = 1;
             Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
             SpecialistInstance specialist = null;
-
+            if (Hp <= 0)
+            {
+                return;
+            }
             if (grp != null)
             {
                 partySize = grp.CharacterCount;
