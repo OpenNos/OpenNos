@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF
 
         public long FamilyExpAmount { get; set; }
 
-        public byte FamilyAuthority { get; set; }
+        public byte FamilyMemberRank { get; set; }
 
         public byte MemberAmount { get; set; }
 
@@ -42,7 +42,10 @@ namespace OpenNos.DAL.EF
         public DateTime FamilyEnterDate { get; set; }
 
         [MaxLength(255)]
-        public string FamilyIntro { get; set; }
+        public string FamilyPersonnalIntro { get; set; }
+
+        [MaxLength(255)]
+        public string FamilyLogMessage { get; set; }
 
         public  byte OwnerSex { get; set; }
 
