@@ -46,6 +46,12 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Drop> Drop { get; set; }
 
+        public virtual DbSet<Family> Family { get; set; }
+
+        public virtual DbSet<FamilyCharacter> FamilyCharacter { get; set; }
+
+        public virtual DbSet<FamilyLog> FamilyLog { get; set; }
+
         public virtual DbSet<GeneralLog> GeneralLog { get; set; }
 
         public virtual DbSet<Item> Item { get; set; }
@@ -165,6 +171,24 @@ namespace OpenNos.DAL.EF.DB
                 .HasMany(e => e.Mail1)
                 .WithRequired(e => e.Receiver)
                 .HasForeignKey(e => e.ReceiverId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Family>()
+                .HasMany(e => e.FamilyLogs)
+                .WithRequired(e => e.Family)
+                .HasForeignKey(e => e.FamilyId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Character>()
+                .HasOptional(e => e.FamilyCharacter)
+                .WithMany(e => e.Character)
+                .HasForeignKey(e=>e.FamilyCharacterId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<FamilyCharacter>()
+                .HasRequired(e => e.Family)
+                .WithMany(e => e.FamilyCharacters)
+                .HasForeignKey(e => e.FamilyId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Item>()

@@ -12,44 +12,19 @@
  * GNU General Public License for more details.
  */
 
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.DAL.EF
 {
-    public class Family
+    public class FamilyLog
     {
-        #region Instantiation
-
-        public Family()
-        {
-            FamilyCharacters = new HashSet<FamilyCharacter>();
-            FamilyLogs = new HashSet<FamilyLog>();
-        }
-
-        #endregion
-
         #region Properties
 
-        public virtual ICollection<FamilyCharacter> FamilyCharacters { get; set; }
-
-        public int FamilyExperience { get; set; }
+        public virtual Family Family { get; set; }
 
         public long FamilyId { get; set; }
 
-        public byte FamilyLevel { get; set; }
-
-        public virtual ICollection<FamilyLog> FamilyLogs { get; set; }
-
-        [MaxLength(255)]
-        public string FamilyMessage { get; set; }
-
-        public byte MaxSize { get; set; }
-
-        [MaxLength(255)]
-        public string Name { get; set; }
-
-        public byte Size { get; set; }
+        public long FamilyLogId { get; set; }
 
         #endregion
     }
