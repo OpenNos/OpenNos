@@ -438,14 +438,7 @@ namespace OpenNos.GameObject
                 {
                     string[] packetsplit = packet.Split(' ', '^');
 
-                    if (packetsplit.Length > 1 && packetsplit[1] != "0")
-                    {
-                        if (packetsplit[1] == "$.*")
-                        {
-                            ServerManager.Instance.Broadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
-                            return;
-                        }
-                    }
+                 
 
                     if (_encryptor.HasCustomParameter)
                     {
