@@ -51,6 +51,7 @@
     <Compile Include="BCardType.cs" />
     <Compile Include="BuyShopType.cs" />
     <Compile Include="CharacterState.cs" />
+    <Compile Include="FamilyAuthority.cs" />
     <Compile Include="FamilyMemberRank.cs" />
     <Compile Include="GroupRequestType.cs" />
     <Compile Include="InRespawnType.cs" />

@@ -88,6 +88,8 @@
     <Compile Include="Entities\Drop.cs" />
     <Compile Include="DropDAO.cs" />
     <Compile Include="Entities\Family.cs" />
+    <Compile Include="Entities\FamilyCharacter.cs" />
+    <Compile Include="Entities\FamilyLog.cs" />
     <Compile Include="Entities\GeneralLog.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\ItemInstance.cs" />
@@ -110,41 +112,9 @@
     <Compile Include="Entities\NpcMonsterSkill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201610211827432_Ares.cs" />
-    <Compile Include="Migrations\201610211827432_Ares.Designer.cs">
-      <DependentUpon>201610211827432_Ares.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611122120497_Ares1.cs" />
-    <Compile Include="Migrations\201611122120497_Ares1.Designer.cs">
-      <DependentUpon>201611122120497_Ares1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611202028240_Ares2.cs" />
-    <Compile Include="Migrations\201611202028240_Ares2.Designer.cs">
-      <DependentUpon>201611202028240_Ares2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611251602305_Ares3.cs" />
-    <Compile Include="Migrations\201611251602305_Ares3.Designer.cs">
-      <DependentUpon>201611251602305_Ares3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611260925076_Ares4.cs" />
-    <Compile Include="Migrations\201611260925076_Ares4.Designer.cs">
-      <DependentUpon>201611260925076_Ares4.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611261126484_Ares5.cs" />
-    <Compile Include="Migrations\201611261126484_Ares5.Designer.cs">
-      <DependentUpon>201611261126484_Ares5.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611261148074_Ares6.cs" />
-    <Compile Include="Migrations\201611261148074_Ares6.Designer.cs">
-      <DependentUpon>201611261148074_Ares6.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611261440535_Ares7.cs" />
-    <Compile Include="Migrations\201611261440535_Ares7.Designer.cs">
-      <DependentUpon>201611261440535_Ares7.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612020813170_Aphrodite.cs" />
-    <Compile Include="Migrations\201612020813170_Aphrodite.Designer.cs">
-      <DependentUpon>201612020813170_Aphrodite.cs</DependentUpon>
+    <Compile Include="Migrations\201612021830097_Aphrodite.cs" />
+    <Compile Include="Migrations\201612021830097_Aphrodite.Designer.cs">
+      <DependentUpon>201612021830097_Aphrodite.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -217,32 +187,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201610211827432_Ares.resx">
-      <DependentUpon>201610211827432_Ares.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611122120497_Ares1.resx">
-      <DependentUpon>201611122120497_Ares1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611202028240_Ares2.resx">
-      <DependentUpon>201611202028240_Ares2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611251602305_Ares3.resx">
-      <DependentUpon>201611251602305_Ares3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611260925076_Ares4.resx">
-      <DependentUpon>201611260925076_Ares4.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611261126484_Ares5.resx">
-      <DependentUpon>201611261126484_Ares5.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611261148074_Ares6.resx">
-      <DependentUpon>201611261148074_Ares6.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611261440535_Ares7.resx">
-      <DependentUpon>201611261440535_Ares7.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612020813170_Aphrodite.resx">
-      <DependentUpon>201612020813170_Aphrodite.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201612021830097_Aphrodite.resx">
+      <DependentUpon>201612021830097_Aphrodite.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

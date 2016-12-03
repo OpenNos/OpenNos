@@ -49,6 +49,9 @@
     <Compile Include="CellonOptionDTO.cs" />
     <Compile Include="ComboDTO.cs" />
     <Compile Include="DropDTO.cs" />
+    <Compile Include="FamilyCharacterDTO.cs" />
+    <Compile Include="FamilyDTO.cs" />
+    <Compile Include="FamilyLogDTO.cs" />
     <Compile Include="GeneralLogDTO.cs" />
     <Compile Include="Interfaces\IMapDTO.cs" />
     <Compile Include="Interfaces\IItemInstance.cs" />
