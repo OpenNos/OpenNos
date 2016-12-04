@@ -588,7 +588,7 @@ namespace OpenNos.Handler
                 ItemInstance sourceItem = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.InventoryType);
                 if ((sourceItem != null && sourceItem.Item.ItemType == ItemType.Specialist) || (sourceItem != null && sourceItem.Item.ItemType == ItemType.Fashion))
                 {
-                    ItemInstance inv = Session.Character.Inventory.MoveInInventory(packet.Slot, packet.InventoryType, packet.DestinationInventoryType, packet.DestinationSlot, false);
+                    ItemInstance inv = Session.Character.Inventory.MoveInInventory(packet.InventoryType, packet.Slot, packet.DestinationInventoryType, packet.DestinationSlot, false);
                     if (inv != null)
                     {
                         Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, packet.DestinationInventoryType, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
@@ -724,7 +724,7 @@ namespace OpenNos.Handler
                         return;
                     }
 
-                    ItemInstance inv = Session.Character.Inventory.MoveInInventory(slot, InventoryType.Wear, InventoryType.Equipment);
+                    ItemInstance inv = Session.Character.Inventory.MoveInInventory(InventoryType.Wear, slot, InventoryType.Equipment);
 
                     if (inv == null)
                     {
