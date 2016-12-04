@@ -12,22 +12,22 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
-using OpenNos.Core.Networking.Communication.Scs.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using OpenNos.Core.Networking.Communication.Scs.Server;
 
 namespace OpenNos.GameObject
 {
-    public class NetworkManager<EncryptorT> : SessionManager
-        where EncryptorT : EncryptionBase
+    public class NetworkManager<TEncryptorT> : SessionManager
+        where TEncryptorT : EncryptionBase
     {
         #region Members
 
         private IDictionary<string, DateTime> _connectionLog;
-        private EncryptorT _encryptor;
+        private TEncryptorT _encryptor;
         private EncryptionBase _fallbackEncryptor;
         private IScsServer _server;
 
@@ -37,7 +37,7 @@ namespace OpenNos.GameObject
 
         public NetworkManager(string ipAddress, int port, Type packetHandler, Type fallbackEncryptor, bool isWorldServer) : base(packetHandler, isWorldServer)
         {
-            _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
+            _encryptor = (TEncryptorT)Activator.CreateInstance(typeof(TEncryptorT));
 
             if (fallbackEncryptor != null)
             {
@@ -49,7 +49,7 @@ namespace OpenNos.GameObject
             // Register events of the server to be informed about clients
             _server.ClientConnected += OnServerClientConnected;
             _server.ClientDisconnected += OnServerClientDisconnected;
-            _server.WireProtocolFactory = new WireProtocolFactory<EncryptorT>();
+            _server.WireProtocolFactory = new WireProtocolFactory<TEncryptorT>();
 
             // Start the server
             _server.Start();
@@ -63,22 +63,11 @@ namespace OpenNos.GameObject
 
         public IDictionary<string, DateTime> ConnectionLog
         {
-            get
-            {
-                if (_connectionLog == null)
-                {
-                    _connectionLog = new Dictionary<string, DateTime>();
-                }
-
-                return _connectionLog;
-            }
+            get { return _connectionLog ?? (_connectionLog = new Dictionary<string, DateTime>()); }
 
             set
             {
-                if (_connectionLog != value)
-                {
-                    _connectionLog = value;
-                }
+                _connectionLog = value;
             }
         }
 
@@ -101,7 +90,6 @@ namespace OpenNos.GameObject
                 client.Initialize(_fallbackEncryptor);
                 client.SendPacket($"fail {Language.Instance.GetMessageFromKey("CONNECTION_LOST")}");
                 client.Disconnect();
-                client = null;
                 return null;
             }
 
@@ -127,11 +115,8 @@ namespace OpenNos.GameObject
                 {
                     return false;
                 }
-                else
-                {
-                    ConnectionLog.Add(client.IpAddress, DateTime.Now);
-                    return true;
-                }
+                ConnectionLog.Add(client.IpAddress, DateTime.Now);
+                return true;
             }
 
             return true;

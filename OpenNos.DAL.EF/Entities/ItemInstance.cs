@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace OpenNos.DAL.EF
 {
-    using System;
-    using System.ComponentModel.DataAnnotations.Schema;
-
     public class ItemInstance : SynchronizableBaseEntity
     {
         #region Properties

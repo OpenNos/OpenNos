@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.ServiceRef.Internal.CommunicationServiceReference;
 using System;
+using OpenNos.ServiceRef.Internal.CommunicationServiceReference;
 
 namespace OpenNos.ServiceRef.Internal
 {

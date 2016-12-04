@@ -12,9 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.ServiceRef.Internal.CommunicationServiceReference;
 using System;
+using System.Configuration;
 using System.ServiceModel;
+using OpenNos.ServiceRef.Internal.CommunicationServiceReference;
 
 namespace OpenNos.ServiceRef.Internal
 {
@@ -38,7 +39,7 @@ namespace OpenNos.ServiceRef.Internal
             // callback instance will be instantiated once per process
             _instanceCallback = new CommunicationCallback();
             _instanceContext = new InstanceContext(_instanceCallback);
-            _useMock = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["UseMock"]);
+            _useMock = Convert.ToBoolean(ConfigurationManager.AppSettings["UseMock"]);
         }
 
         #endregion

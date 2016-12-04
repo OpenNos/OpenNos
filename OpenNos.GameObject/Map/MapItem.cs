@@ -64,10 +64,7 @@ namespace OpenNos.GameObject
 
             set
             {
-                if (value != _transportId)
-                {
-                    _transportId = value;
-                }
+                _transportId = value;
             }
         }
 

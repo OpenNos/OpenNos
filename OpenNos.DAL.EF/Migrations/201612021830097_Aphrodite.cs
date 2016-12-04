@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class Aphrodite : DbMigration
     {
         public override void Up()
@@ -16,7 +15,7 @@ namespace OpenNos.DAL.EF.Migrations
                         LastCompliment = c.DateTime(nullable: false),
                         LastSession = c.Int(nullable: false),
                         Name = c.String(maxLength: 255),
-                        Password = c.String(maxLength: 255, unicode: false),
+                        Password = c.String(maxLength: 255, unicode: false)
                     })
                 .PrimaryKey(t => t.AccountId);
             
@@ -76,7 +75,7 @@ namespace OpenNos.DAL.EF.Migrations
                         TalentLose = c.Int(nullable: false),
                         TalentSurrender = c.Int(nullable: false),
                         TalentWin = c.Int(nullable: false),
-                        WhisperBlocked = c.Boolean(nullable: false),
+                        WhisperBlocked = c.Boolean(nullable: false)
                     })
                 .PrimaryKey(t => t.CharacterId)
                 .ForeignKey("dbo.Map", t => t.MapId)
@@ -92,7 +91,7 @@ namespace OpenNos.DAL.EF.Migrations
                     {
                         Id = c.Guid(nullable: false),
                         CharacterId = c.Long(nullable: false),
-                        SkillVNum = c.Short(nullable: false),
+                        SkillVNum = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Skill", t => t.SkillVNum)
@@ -138,7 +137,7 @@ namespace OpenNos.DAL.EF.Migrations
                         TargetType = c.Byte(nullable: false),
                         Type = c.Byte(nullable: false),
                         UpgradeSkill = c.Short(nullable: false),
-                        UpgradeType = c.Short(nullable: false),
+                        UpgradeType = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => t.SkillVNum);
             
@@ -150,7 +149,7 @@ namespace OpenNos.DAL.EF.Migrations
                         Animation = c.Short(nullable: false),
                         Effect = c.Short(nullable: false),
                         Hit = c.Short(nullable: false),
-                        SkillVNum = c.Short(nullable: false),
+                        SkillVNum = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => t.ComboId)
                 .ForeignKey("dbo.Skill", t => t.SkillVNum)
@@ -163,7 +162,7 @@ namespace OpenNos.DAL.EF.Migrations
                         NpcMonsterSkillId = c.Long(nullable: false, identity: true),
                         NpcMonsterVNum = c.Short(nullable: false),
                         Rate = c.Short(nullable: false),
-                        SkillVNum = c.Short(nullable: false),
+                        SkillVNum = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => t.NpcMonsterSkillId)
                 .ForeignKey("dbo.NpcMonster", t => t.NpcMonsterVNum)
@@ -215,7 +214,7 @@ namespace OpenNos.DAL.EF.Migrations
                         Speed = c.Byte(nullable: false),
                         VNumRequired = c.Short(nullable: false),
                         WaterResistance = c.Short(nullable: false),
-                        XP = c.Int(nullable: false),
+                        XP = c.Int(nullable: false)
                     })
                 .PrimaryKey(t => t.NpcMonsterVNum);
             
@@ -228,7 +227,7 @@ namespace OpenNos.DAL.EF.Migrations
                         DropChance = c.Int(nullable: false),
                         ItemVNum = c.Short(nullable: false),
                         MapTypeId = c.Short(),
-                        MonsterVNum = c.Short(),
+                        MonsterVNum = c.Short()
                     })
                 .PrimaryKey(t => t.DropId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)
@@ -308,7 +307,7 @@ namespace OpenNos.DAL.EF.Migrations
                         Type = c.Byte(nullable: false),
                         WaitDelay = c.Short(nullable: false),
                         WaterElement = c.Byte(nullable: false),
-                        WaterResistance = c.Short(nullable: false),
+                        WaterResistance = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => t.VNum);
             
@@ -374,7 +373,7 @@ namespace OpenNos.DAL.EF.Migrations
                         SpLight = c.Byte(),
                         SpStoneUpgrade = c.Byte(),
                         SpWater = c.Byte(),
-                        Discriminator = c.String(nullable: false, maxLength: 128),
+                        Discriminator = c.String(nullable: false, maxLength: 128)
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Character", t => t.BoundCharacterId)
@@ -392,7 +391,7 @@ namespace OpenNos.DAL.EF.Migrations
                         Level = c.Byte(nullable: false),
                         Type = c.Byte(nullable: false),
                         Value = c.Int(nullable: false),
-                        WearableInstanceId = c.Guid(nullable: false),
+                        WearableInstanceId = c.Guid(nullable: false)
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.ItemInstance", t => t.WearableInstanceId, cascadeDelete: true)
@@ -419,7 +418,7 @@ namespace OpenNos.DAL.EF.Migrations
                         SenderHairStyle = c.Byte(nullable: false),
                         SenderId = c.Long(nullable: false),
                         SenderMorphId = c.Short(nullable: false),
-                        Title = c.String(maxLength: 255),
+                        Title = c.String(maxLength: 255)
                     })
                 .PrimaryKey(t => t.MailId)
                 .ForeignKey("dbo.Item", t => t.AttachmentVNum)
@@ -436,7 +435,7 @@ namespace OpenNos.DAL.EF.Migrations
                         RecipeId = c.Short(nullable: false, identity: true),
                         Amount = c.Byte(nullable: false),
                         ItemVNum = c.Short(nullable: false),
-                        MapNpcId = c.Int(nullable: false),
+                        MapNpcId = c.Int(nullable: false)
                     })
                 .PrimaryKey(t => t.RecipeId)
                 .ForeignKey("dbo.MapNpc", t => t.MapNpcId)
@@ -459,7 +458,7 @@ namespace OpenNos.DAL.EF.Migrations
                         MapX = c.Short(nullable: false),
                         MapY = c.Short(nullable: false),
                         NpcVNum = c.Short(nullable: false),
-                        Position = c.Byte(nullable: false),
+                        Position = c.Byte(nullable: false)
                     })
                 .PrimaryKey(t => t.MapNpcId)
                 .ForeignKey("dbo.Map", t => t.MapId)
@@ -475,7 +474,7 @@ namespace OpenNos.DAL.EF.Migrations
                         Data = c.Binary(),
                         Music = c.Int(nullable: false),
                         Name = c.String(maxLength: 255),
-                        ShopAllowed = c.Boolean(nullable: false),
+                        ShopAllowed = c.Boolean(nullable: false)
                     })
                 .PrimaryKey(t => t.MapId);
             
@@ -490,7 +489,7 @@ namespace OpenNos.DAL.EF.Migrations
                         MapX = c.Short(nullable: false),
                         MapY = c.Short(nullable: false),
                         MonsterVNum = c.Short(nullable: false),
-                        Position = c.Byte(nullable: false),
+                        Position = c.Byte(nullable: false)
                     })
                 .PrimaryKey(t => t.MapMonsterId)
                 .ForeignKey("dbo.Map", t => t.MapId)
@@ -503,7 +502,7 @@ namespace OpenNos.DAL.EF.Migrations
                 c => new
                     {
                         MapId = c.Short(nullable: false),
-                        MapTypeId = c.Short(nullable: false),
+                        MapTypeId = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => new { t.MapId, t.MapTypeId })
                 .ForeignKey("dbo.Map", t => t.MapId)
@@ -519,7 +518,7 @@ namespace OpenNos.DAL.EF.Migrations
                         RespawnMapTypeId = c.Long(),
                         ReturnMapTypeId = c.Long(),
                         MapTypeName = c.String(),
-                        PotionDelay = c.Short(nullable: false),
+                        PotionDelay = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => t.MapTypeId)
                 .ForeignKey("dbo.RespawnMapType", t => t.RespawnMapTypeId)
@@ -535,7 +534,7 @@ namespace OpenNos.DAL.EF.Migrations
                         DefaultMapId = c.Short(nullable: false),
                         DefaultX = c.Short(nullable: false),
                         DefaultY = c.Short(nullable: false),
-                        Name = c.String(maxLength: 255),
+                        Name = c.String(maxLength: 255)
                     })
                 .PrimaryKey(t => t.RespawnMapTypeId)
                 .ForeignKey("dbo.Map", t => t.DefaultMapId)
@@ -550,7 +549,7 @@ namespace OpenNos.DAL.EF.Migrations
                         MapId = c.Short(nullable: false),
                         RespawnMapTypeId = c.Long(nullable: false),
                         X = c.Short(nullable: false),
-                        Y = c.Short(nullable: false),
+                        Y = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => t.RespawnId)
                 .ForeignKey("dbo.Map", t => t.MapId)
@@ -572,7 +571,7 @@ namespace OpenNos.DAL.EF.Migrations
                         SourceMapId = c.Short(nullable: false),
                         SourceX = c.Short(nullable: false),
                         SourceY = c.Short(nullable: false),
-                        Type = c.Short(nullable: false),
+                        Type = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => t.PortalId)
                 .ForeignKey("dbo.Map", t => t.DestinationMapId)
@@ -589,7 +588,7 @@ namespace OpenNos.DAL.EF.Migrations
                         MapId = c.Short(nullable: false),
                         MapNpcId = c.Int(nullable: false),
                         MapX = c.Short(nullable: false),
-                        MapY = c.Short(nullable: false),
+                        MapY = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => t.TeleporterId)
                 .ForeignKey("dbo.Map", t => t.MapId)
@@ -605,7 +604,7 @@ namespace OpenNos.DAL.EF.Migrations
                         MapNpcId = c.Int(nullable: false),
                         MenuType = c.Byte(nullable: false),
                         Name = c.String(maxLength: 255),
-                        ShopType = c.Byte(nullable: false),
+                        ShopType = c.Byte(nullable: false)
                     })
                 .PrimaryKey(t => t.ShopId)
                 .ForeignKey("dbo.MapNpc", t => t.MapNpcId)
@@ -622,7 +621,7 @@ namespace OpenNos.DAL.EF.Migrations
                         ShopId = c.Int(nullable: false),
                         Slot = c.Byte(nullable: false),
                         Type = c.Byte(nullable: false),
-                        Upgrade = c.Byte(nullable: false),
+                        Upgrade = c.Byte(nullable: false)
                     })
                 .PrimaryKey(t => t.ShopItemId)
                 .ForeignKey("dbo.Shop", t => t.ShopId)
@@ -638,7 +637,7 @@ namespace OpenNos.DAL.EF.Migrations
                         ShopId = c.Int(nullable: false),
                         SkillVNum = c.Short(nullable: false),
                         Slot = c.Byte(nullable: false),
-                        Type = c.Byte(nullable: false),
+                        Type = c.Byte(nullable: false)
                     })
                 .PrimaryKey(t => t.ShopSkillId)
                 .ForeignKey("dbo.Shop", t => t.ShopId)
@@ -653,7 +652,7 @@ namespace OpenNos.DAL.EF.Migrations
                         RecipeItemId = c.Short(nullable: false, identity: true),
                         Amount = c.Byte(nullable: false),
                         ItemVNum = c.Short(nullable: false),
-                        RecipeId = c.Short(nullable: false),
+                        RecipeId = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => t.RecipeItemId)
                 .ForeignKey("dbo.Recipe", t => t.RecipeId)
@@ -671,7 +670,7 @@ namespace OpenNos.DAL.EF.Migrations
                         Experience = c.Int(nullable: false),
                         FamilyId = c.Long(nullable: false),
                         JoinDate = c.DateTime(nullable: false),
-                        Rank = c.Byte(nullable: false),
+                        Rank = c.Byte(nullable: false)
                     })
                 .PrimaryKey(t => t.FamilyCharacterId)
                 .ForeignKey("dbo.Family", t => t.FamilyId)
@@ -687,7 +686,7 @@ namespace OpenNos.DAL.EF.Migrations
                         FamilyMessage = c.String(maxLength: 255),
                         MaxSize = c.Byte(nullable: false),
                         Name = c.String(maxLength: 255),
-                        Size = c.Byte(nullable: false),
+                        Size = c.Byte(nullable: false)
                     })
                 .PrimaryKey(t => t.FamilyId);
             
@@ -696,7 +695,7 @@ namespace OpenNos.DAL.EF.Migrations
                 c => new
                     {
                         FamilyLogId = c.Long(nullable: false, identity: true),
-                        FamilyId = c.Long(nullable: false),
+                        FamilyId = c.Long(nullable: false)
                     })
                 .PrimaryKey(t => t.FamilyLogId)
                 .ForeignKey("dbo.Family", t => t.FamilyId)
@@ -712,7 +711,7 @@ namespace OpenNos.DAL.EF.Migrations
                         IpAddress = c.String(maxLength: 255),
                         LogData = c.String(maxLength: 255),
                         LogType = c.String(),
-                        Timestamp = c.DateTime(nullable: false),
+                        Timestamp = c.DateTime(nullable: false)
                     })
                 .PrimaryKey(t => t.LogId)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
@@ -731,7 +730,7 @@ namespace OpenNos.DAL.EF.Migrations
                         Q1 = c.Short(nullable: false),
                         Q2 = c.Short(nullable: false),
                         Slot = c.Short(nullable: false),
-                        Type = c.Short(nullable: false),
+                        Type = c.Short(nullable: false)
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
@@ -747,7 +746,7 @@ namespace OpenNos.DAL.EF.Migrations
                         DateEnd = c.DateTime(nullable: false),
                         DateStart = c.DateTime(nullable: false),
                         Penalty = c.Byte(nullable: false),
-                        Reason = c.String(maxLength: 255),
+                        Reason = c.String(maxLength: 255)
                     })
                 .PrimaryKey(t => t.PenaltyLogId)
                 .ForeignKey("dbo.Account", t => t.AccountId)

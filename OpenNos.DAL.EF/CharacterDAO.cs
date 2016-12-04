@@ -12,20 +12,20 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using OpenNos.DAL.EF.DB;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
+using OpenNos.Domain;
 
 namespace OpenNos.DAL.EF
 {
-    public class CharacterDAO : MappingBaseDAO<Character, CharacterDTO>, ICharacterDAO
+    public class CharacterDao : MappingBaseDao<Character, CharacterDTO>, ICharacterDAO
     {
         #region Methods
 
@@ -36,14 +36,14 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     // actually a Character wont be deleted, it just will be disabled for future traces
-                    byte state = (byte)CharacterState.Active;
+                    const byte state = (byte)CharacterState.Active;
                     Character character = context.Character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot) && c.State.Equals(state));
 
                     if (character != null)
                     {
-                        byte obsoleteState = (byte)CharacterState.Inactive;
+                        const byte obsoleteState = (byte)CharacterState.Inactive;
                         character.State = obsoleteState;
-                        Update(character, _mapper.Map<CharacterDTO>(character), context);
+                        Update(character, Mapper.Map<CharacterDTO>(character), context);
                     }
 
                     return DeleteResult.Deleted;
@@ -51,7 +51,7 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("DELETE_CHARACTER_ERROR"), characterSlot, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_CHARACTER_ERROR"), characterSlot, e.Message), e);
                 return DeleteResult.Error;
             }
         }
@@ -60,7 +60,7 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList().Select(c => Mapper.Map<CharacterDTO>(c)).ToList();
             }
         }
 
@@ -68,7 +68,7 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList().Select(c => Mapper.Map<CharacterDTO>(c)).ToList();
             }
         }
 
@@ -76,7 +76,7 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList().Select(c => Mapper.Map<CharacterDTO>(c)).ToList();
             }
         }
 
@@ -86,24 +86,21 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long CharacterId = character.CharacterId;
-                    Character entity = context.Character.FirstOrDefault(c => c.CharacterId.Equals(CharacterId));
+                    long characterId = character.CharacterId;
+                    Character entity = context.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId));
 
                     if (entity == null)
                     {
                         character = Insert(character, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        character = Update(entity, character, context);
-                        return SaveResult.Updated;
-                    }
+                    character = Update(entity, character, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("INSERT_ERROR"), character, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("INSERT_ERROR"), character, e.Message), e);
                 return SaveResult.Error;
             }
         }
@@ -151,7 +148,7 @@ namespace OpenNos.DAL.EF
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                return context.Character.Where(c => c.AccountId.Equals(accountId) && c.State.Equals(state)).OrderByDescending(c => c.Slot).ToList().Select(c => _mapper.Map<CharacterDTO>(c)).ToList();
+                return context.Character.Where(c => c.AccountId.Equals(accountId) && c.State.Equals(state)).OrderByDescending(c => c.Slot).ToList().Select(c => Mapper.Map<CharacterDTO>(c)).ToList();
             }
         }
 
@@ -161,7 +158,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId)));
+                    return Mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId)));
                 }
             }
             catch (Exception e)
@@ -178,7 +175,7 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     byte state = (byte)CharacterState.Active;
-                    return _mapper.Map<CharacterDTO>(context.Character.SingleOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
+                    return Mapper.Map<CharacterDTO>(context.Character.SingleOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
                 }
             }
             catch (Exception e)
@@ -195,7 +192,7 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     byte state = (byte)CharacterState.Active;
-                    return _mapper.Map<CharacterDTO>(context.Character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot) && c.State.Equals(state)));
+                    return Mapper.Map<CharacterDTO>(context.Character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot) && c.State.Equals(state)));
                 }
             }
             catch (Exception e)
@@ -207,22 +204,22 @@ namespace OpenNos.DAL.EF
 
         private CharacterDTO Insert(CharacterDTO character, OpenNosContext context)
         {
-            Character entity = _mapper.Map<Character>(character);
+            Character entity = Mapper.Map<Character>(character);
             entity.LastLogin = DateTime.Now;
             context.Character.Add(entity);
             context.SaveChanges();
-            return _mapper.Map<CharacterDTO>(entity);
+            return Mapper.Map<CharacterDTO>(entity);
         }
 
         private CharacterDTO Update(Character entity, CharacterDTO character, OpenNosContext context)
         {
             if (entity != null)
             {
-                _mapper.Map(character, entity);
+                Mapper.Map(character, entity);
                 context.SaveChanges();
             }
 
-            return _mapper.Map<CharacterDTO>(entity);
+            return Mapper.Map<CharacterDTO>(entity);
         }
 
         #endregion

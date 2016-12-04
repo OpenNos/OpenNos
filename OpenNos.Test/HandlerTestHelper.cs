@@ -1,17 +1,18 @@
-﻿using log4net;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Threading;
+using log4net;
 using NUnit.Framework;
 using OpenNos.Core;
-using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.DAL;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Mock;
 using OpenNos.Handler;
 using OpenNos.ServiceRef.Internal;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
 
 namespace OpenNos.Test
 {
@@ -31,7 +32,7 @@ namespace OpenNos.Test
             _sessionManager.AddSession(client);
 
             long id = new Random().Next(0, 999999);
-            AccountDTO account = new AccountDTO()
+            AccountDTO account = new AccountDTO
             {
                 AccountId = id,
                 Authority = AuthorityType.Admin,
@@ -76,7 +77,7 @@ namespace OpenNos.Test
 
         public static FakeNetworkClient InitializeTestEnvironment()
         {
-            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
             // initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(BasicPacketHandlerTest)));
@@ -210,7 +211,7 @@ namespace OpenNos.Test
 
         private static void CreateServerItems()
         {
-            DAOFactory.ItemDAO.Insert(new ItemDTO()
+            DAOFactory.ItemDAO.Insert(new ItemDTO
             {
                 VNum = 1,
                 Class = 1,
@@ -227,12 +228,12 @@ namespace OpenNos.Test
                 Name = "Wooden Stick",
                 Price = 70
             });
-            DAOFactory.ItemDAO.Insert(new ItemDTO()
+            DAOFactory.ItemDAO.Insert(new ItemDTO
             {
                 VNum = 8,
                 EquipmentSlot = EquipmentType.SecondaryWeapon
             });
-            DAOFactory.ItemDAO.Insert(new ItemDTO()
+            DAOFactory.ItemDAO.Insert(new ItemDTO
             {
                 VNum = 12,
                 EquipmentSlot = EquipmentType.Armor
@@ -241,7 +242,7 @@ namespace OpenNos.Test
 
         private static void CreateServerMaps()
         {
-            MapDTO testingMap = new MapDTO()
+            MapDTO testingMap = new MapDTO
             {
                 MapId = 1,
                 Music = 1,
@@ -270,20 +271,20 @@ namespace OpenNos.Test
 
         private static void CreateServerSkills()
         {
-            DAOFactory.SkillDAO.Insert(new SkillDTO()
+            DAOFactory.SkillDAO.Insert(new SkillDTO
             {
                 SkillVNum = 200,
-                CastId = 0,
+                CastId = 0
             });
-            DAOFactory.SkillDAO.Insert(new SkillDTO()
+            DAOFactory.SkillDAO.Insert(new SkillDTO
             {
                 SkillVNum = 201,
-                CastId = 1,
+                CastId = 1
             });
-            DAOFactory.SkillDAO.Insert(new SkillDTO()
+            DAOFactory.SkillDAO.Insert(new SkillDTO
             {
                 SkillVNum = 209,
-                CastId = 2,
+                CastId = 2
             });
         }
 

@@ -12,8 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using System.ComponentModel.DataAnnotations;
-
 namespace OpenNos.DAL.EF
 {
     public class FamilyLog

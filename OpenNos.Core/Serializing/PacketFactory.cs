@@ -262,29 +262,26 @@ namespace OpenNos.Core
                 {
                     return String.Format(" {0}", Convert.ToInt16(value));
                 }
-                else if (propertyType.Equals(typeof(bool)))
+                if (propertyType.Equals(typeof(bool)))
                 {
                     // bool is 0 or 1 not True or False
                     return Convert.ToBoolean(value) ? " 1" : " 0";
                 }
-                else if (propertyType.BaseType.Equals(typeof(PacketDefinition)))
+                if (propertyType.BaseType.Equals(typeof(PacketDefinition)))
                 {
                     var subpacketSerializationInfo = GetSerializationInformation(propertyType);
                     return SerializeSubpacket(value, subpacketSerializationInfo, packetIndexAttribute?.IsReturnPacket ?? false, packetIndexAttribute?.RemoveSeparator ?? false);
                 }
-                else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))
+                if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))
                     && propertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketDefinition)))
                 {
                     return SerializeSubpackets((IList)value, propertyType, packetIndexAttribute?.RemoveSeparator ?? false);
                 }
-                else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //simple list
+                if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) //simple list
                 {
                     return SerializeSimpleList((IList)value, propertyType);
                 }
-                else
-                {
-                    return String.Format(" {0}", value);
-                }
+                return String.Format(" {0}", value);
             }
 
             return String.Empty;
@@ -466,36 +463,29 @@ namespace OpenNos.Core
 
                 return convertedValue;
             }
-            else if (packetPropertyType.Equals(typeof(bool))) // handle boolean values
+            if (packetPropertyType.Equals(typeof(bool))) // handle boolean values
             {
-                return currentValue == "0" ? false : true;
+                return currentValue != "0";
             }
-            else if (packetPropertyType.BaseType.Equals(typeof(PacketDefinition))) // subpacket
+            if (packetPropertyType.BaseType.Equals(typeof(PacketDefinition))) // subpacket
             {
                 var subpacketSerializationInfo = GetSerializationInformation(packetPropertyType);
                 return DeserializeSubpacket(currentValue, packetPropertyType, subpacketSerializationInfo, packetIndexAttribute?.IsReturnPacket ?? false);
             }
-            else if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)) // subpacket list
+            if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)) // subpacket list
                 && packetPropertyType.GenericTypeArguments[0].BaseType.Equals(typeof(PacketDefinition)))
             {
                 return DeserializeSubpackets(currentValue, packetPropertyType, packetIndexAttribute?.RemoveSeparator ?? false, packetMatches, packetIndexAttribute?.Index, includesKeepAliveIdentity);
             }
-            else if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) // simple list
+            if (packetPropertyType.IsGenericType && packetPropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>))) // simple list
             {
                 return DeserializeSimpleList(currentValue, packetPropertyType);
             }
-            else if (Nullable.GetUnderlyingType(packetPropertyType) != null && String.IsNullOrEmpty(currentValue)) // empty nullable value
+            if (Nullable.GetUnderlyingType(packetPropertyType) != null && String.IsNullOrEmpty(currentValue)) // empty nullable value
             {
                 return null;
             }
-            else if (Nullable.GetUnderlyingType(packetPropertyType) != null) // nullable value
-            {
-                return Convert.ChangeType(currentValue, packetPropertyType.GenericTypeArguments[0]);
-            }
-            else
-            {
-                return Convert.ChangeType(currentValue, packetPropertyType); // cast to specified type
-            }
+            return Convert.ChangeType(currentValue, Nullable.GetUnderlyingType(packetPropertyType) != null ? packetPropertyType.GenericTypeArguments[0] : packetPropertyType);
         }
 
         #endregion

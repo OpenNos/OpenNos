@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using OpenNos.Domain;
+
 namespace OpenNos.DAL.EF
 {
-    using Domain;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
     public class Account
     {
         #region Instantiation

@@ -12,12 +12,12 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -25,86 +25,83 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public static void NRun(ClientSession Session, byte type, short runner, short data3, short npcid)
+        public static void NRun(ClientSession session, byte type, short runner, short data3, short npcid)
         {
-            if (!Session.HasCurrentMap)
+            if (!session.HasCurrentMap)
             {
                 return;
             }
-            MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == npcid);
+            MapNpc npc = session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == npcid);
             switch (runner)
             {
                 case 1:
-                    if (Session.Character.Class != (byte)ClassType.Adventurer)
+                    if (session.Character.Class != (byte)ClassType.Adventurer)
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ADVENTURER"), 0));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ADVENTURER"), 0));
                         return;
                     }
-                    if (Session.Character.Level < 15 || Session.Character.JobLevel < 20)
+                    if (session.Character.Level < 15 || session.Character.JobLevel < 20)
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                         return;
                     }
-                    if (type == (byte)Session.Character.Class)
+                    if (type == (byte)session.Character.Class)
                     {
                         return;
                     }
-                    if (!Session.Character.Inventory.GetAllItems().Where(i => i.Type == InventoryType.Wear).Any())
+                    if (session.Character.Inventory.GetAllItems().All(i => i.Type != InventoryType.Wear))
                     {
-                        Session.Character.Inventory.AddNewToInventory((short)(4 + type * 14), type: InventoryType.Wear);
-                        Session.Character.Inventory.AddNewToInventory((short)(81 + type * 13), type: InventoryType.Wear);
+                        session.Character.Inventory.AddNewToInventory((short)(4 + type * 14), type: InventoryType.Wear);
+                        session.Character.Inventory.AddNewToInventory((short)(81 + type * 13), type: InventoryType.Wear);
                         switch (type)
                         {
                             case 1:
-                                Session.Character.Inventory.AddNewToInventory(68, type: InventoryType.Wear);
-                                Session.Character.Inventory.AddNewToInventory(2082, 10);
+                                session.Character.Inventory.AddNewToInventory(68, type: InventoryType.Wear);
+                                session.Character.Inventory.AddNewToInventory(2082, 10);
                                 break;
 
                             case 2:
-                                Session.Character.Inventory.AddNewToInventory(78, type: InventoryType.Wear);
-                                Session.Character.Inventory.AddNewToInventory(2083, 10);
+                                session.Character.Inventory.AddNewToInventory(78, type: InventoryType.Wear);
+                                session.Character.Inventory.AddNewToInventory(2083, 10);
                                 break;
 
                             case 3:
-                                Session.Character.Inventory.AddNewToInventory(86, type: InventoryType.Wear);
+                                session.Character.Inventory.AddNewToInventory(86, type: InventoryType.Wear);
                                 break;
                         }
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
-                        Session.SendPacket(Session.Character.GenerateEquipment());
-                        Session.Character.ChangeClass((ClassType)type);
+                        session.CurrentMap?.Broadcast(session.Character.GenerateEq());
+                        session.SendPacket(session.Character.GenerateEquipment());
+                        session.Character.ChangeClass((ClassType)type);
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
                     }
                     break;
 
                 case 2:
-                    Session.SendPacket($"wopen 1 0");
+                    session.SendPacket("wopen 1 0");
                     break;
 
                 case 10:
-                    Session.SendPacket($"wopen 3 0");
+                    session.SendPacket("wopen 3 0");
                     break;
 
                 case 12:
-                    Session.SendPacket($"wopen {type} 0");
+                    session.SendPacket($"wopen {type} 0");
                     break;
 
                 case 14:
-                    Session.SendPacket($"wopen 27 0");
+                    session.SendPacket("wopen 27 0");
                     string recipelist = "m_list 2";
 
                     if (npc != null)
                     {
                         List<Recipe> tp = npc.Recipes;
 
-                        foreach (Recipe rec in tp.Where(s => s.Amount > 0))
-                        {
-                            recipelist += String.Format(" {0}", rec.ItemVNum);
-                        }
+                        recipelist = tp.Where(s => s.Amount > 0).Aggregate(recipelist, (current, rec) => current + $" {rec.ItemVNum}");
                         recipelist += " -100";
-                        Session.SendPacket(recipelist);
+                        session.SendPacket(recipelist);
                     }
                     break;
 
@@ -114,16 +111,16 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            if (Session.Character.Gold >= 1000 * type)
+                            if (session.Character.Gold >= 1000 * type)
                             {
-                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                                Session.Character.Gold -= 1000 * type;
-                                Session.SendPacket(Session.Character.GenerateGold());
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                                ServerManager.Instance.LeaveMap(session.Character.CharacterId);
+                                session.Character.Gold -= 1000 * type;
+                                session.SendPacket(session.Character.GenerateGold());
+                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                             }
                         }
                     }
@@ -135,15 +132,15 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            if (Session.Character.Gold >= 5000 * type)
+                            if (session.Character.Gold >= 5000 * type)
                             {
-                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                                Session.Character.Gold -= 5000 * type;
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                                ServerManager.Instance.LeaveMap(session.Character.CharacterId);
+                                session.Character.Gold -= 5000 * type;
+                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                             }
                         }
                     }
@@ -155,16 +152,16 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            if (Session.Character.Gold >= 500)
+                            if (session.Character.Gold >= 500)
                             {
-                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                                Session.Character.Gold -= 500;
-                                Session.SendPacket(Session.Character.GenerateGold());
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                                ServerManager.Instance.LeaveMap(session.Character.CharacterId);
+                                session.Character.Gold -= 500;
+                                session.SendPacket(session.Character.GenerateGold());
+                                ServerManager.Instance.ChangeMap(session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                             }
                         }
                     }
@@ -176,8 +173,8 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                            ServerManager.Instance.LeaveMap(session.Character.CharacterId);
+                            ServerManager.Instance.ChangeMap(session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
                     break;
@@ -188,8 +185,8 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                            ServerManager.Instance.LeaveMap(session.Character.CharacterId);
+                            ServerManager.Instance.ChangeMap(session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
                     break;
@@ -200,9 +197,9 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            Session.SendPacket("it 3");
-                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                            session.SendPacket("it 3");
+                            ServerManager.Instance.LeaveMap(session.Character.CharacterId);
+                            ServerManager.Instance.ChangeMap(session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
                     break;
@@ -213,8 +210,8 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
+                            ServerManager.Instance.LeaveMap(session.Character.CharacterId);
+                            ServerManager.Instance.ChangeMap(session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                         }
                     }
                     break;

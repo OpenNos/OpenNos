@@ -1,5 +1,5 @@
-﻿using OpenNos.Core;
-using System.Text;
+﻿using System.Text;
+using OpenNos.Core;
 
 namespace OpenNos.Test
 {

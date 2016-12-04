@@ -12,18 +12,18 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class PenaltyLogDAO : MappingBaseDAO<PenaltyLog, PenaltyLogDTO>, IPenaltyLogDAO
+    public class PenaltyLogDao : MappingBaseDao<PenaltyLog, PenaltyLogDTO>, IPenaltyLogDAO
     {
         #region Methods
 
@@ -33,11 +33,11 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    PenaltyLog PenaltyLog = context.PenaltyLog.FirstOrDefault(c => c.PenaltyLogId.Equals(penaltylogid));
+                    PenaltyLog penaltyLog = context.PenaltyLog.FirstOrDefault(c => c.PenaltyLogId.Equals(penaltylogid));
 
-                    if (PenaltyLog != null)
+                    if (penaltyLog != null)
                     {
-                        context.PenaltyLog.Remove(PenaltyLog);
+                        context.PenaltyLog.Remove(penaltyLog);
                         context.SaveChanges();
                     }
 
@@ -46,7 +46,7 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("DELETE_PENALTYLOG_ERROR"), penaltylogid, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_PENALTYLOG_ERROR"), penaltylogid, e.Message), e);
                 return DeleteResult.Error;
             }
         }
@@ -73,10 +73,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    PenaltyLog entity = _mapper.Map<PenaltyLog>(penaltylog);
+                    PenaltyLog entity = Mapper.Map<PenaltyLog>(penaltylog);
                     context.PenaltyLog.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<PenaltyLogDTO>(penaltylog);
+                    return Mapper.Map<PenaltyLogDTO>(penaltylog);
                 }
             }
             catch (Exception e)
@@ -90,9 +90,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (PenaltyLog PenaltyLog in context.PenaltyLog.Where(s => s.AccountId.Equals(accountId)))
+                foreach (PenaltyLog penaltyLog in context.PenaltyLog.Where(s => s.AccountId.Equals(accountId)))
                 {
-                    yield return _mapper.Map<PenaltyLogDTO>(PenaltyLog);
+                    yield return Mapper.Map<PenaltyLogDTO>(penaltyLog);
                 }
             }
         }
@@ -103,7 +103,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<PenaltyLogDTO>(context.PenaltyLog.FirstOrDefault(s => s.PenaltyLogId.Equals(penaltylogId)));
+                    return Mapper.Map<PenaltyLogDTO>(context.PenaltyLog.FirstOrDefault(s => s.PenaltyLogId.Equals(penaltylogId)));
                 }
             }
             catch (Exception e)
@@ -123,7 +123,7 @@ namespace OpenNos.DAL.EF
                     if (result != null)
                     {
                         penaltylog.PenaltyLogId = result.PenaltyLogId;
-                        _mapper.Map(penaltylog, result);
+                        Mapper.Map(penaltylog, result);
                         context.SaveChanges();
                     }
                 }

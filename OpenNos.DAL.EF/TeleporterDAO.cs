@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class TeleporterDAO : MappingBaseDAO<Teleporter, TeleporterDTO>, ITeleporterDAO
+    public class TeleporterDao : MappingBaseDao<Teleporter, TeleporterDTO>, ITeleporterDAO
     {
         #region Methods
 
@@ -32,10 +32,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Teleporter entity = _mapper.Map<Teleporter>(teleporter);
+                    Teleporter entity = Mapper.Map<Teleporter>(teleporter);
                     context.Teleporter.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<TeleporterDTO>(entity);
+                    return Mapper.Map<TeleporterDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -51,7 +51,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (Teleporter entity in context.Teleporter)
                 {
-                    yield return _mapper.Map<TeleporterDTO>(entity);
+                    yield return Mapper.Map<TeleporterDTO>(entity);
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<TeleporterDTO>(context.Teleporter.FirstOrDefault(i => i.TeleporterId.Equals(teleporterId)));
+                    return Mapper.Map<TeleporterDTO>(context.Teleporter.FirstOrDefault(i => i.TeleporterId.Equals(teleporterId)));
                 }
             }
             catch (Exception e)
@@ -78,7 +78,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (Teleporter entity in context.Teleporter.Where(c => c.MapNpcId.Equals(npcId)))
                 {
-                    yield return _mapper.Map<TeleporterDTO>(entity);
+                    yield return Mapper.Map<TeleporterDTO>(entity);
                 }
             }
         }

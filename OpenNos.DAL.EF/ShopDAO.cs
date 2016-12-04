@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class ShopDAO : MappingBaseDAO<Shop, ShopDTO>, IShopDAO
+    public class ShopDao : MappingBaseDao<Shop, ShopDTO>, IShopDAO
     {
         #region Methods
 
@@ -33,9 +33,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (ShopDTO Item in shops)
+                    foreach (ShopDTO item in shops)
                     {
-                        Shop entity = _mapper.Map<Shop>(Item);
+                        Shop entity = Mapper.Map<Shop>(item);
                         context.Shop.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -56,15 +56,12 @@ namespace OpenNos.DAL.EF
                 {
                     if (context.Shop.FirstOrDefault(c => c.MapNpcId.Equals(shop.MapNpcId)) == null)
                     {
-                        Shop entity = _mapper.Map<Shop>(shop);
+                        Shop entity = Mapper.Map<Shop>(shop);
                         context.Shop.Add(entity);
                         context.SaveChanges();
-                        return _mapper.Map<ShopDTO>(entity);
+                        return Mapper.Map<ShopDTO>(entity);
                     }
-                    else
-                    {
-                        return new ShopDTO();
-                    }
+                    return new ShopDTO();
                 }
             }
             catch (Exception e)
@@ -80,7 +77,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (Shop entity in context.Shop)
                 {
-                    yield return _mapper.Map<ShopDTO>(entity);
+                    yield return Mapper.Map<ShopDTO>(entity);
                 }
             }
         }
@@ -91,7 +88,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.ShopId.Equals(shopId)));
+                    return Mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.ShopId.Equals(shopId)));
                 }
             }
             catch (Exception e)
@@ -107,7 +104,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(mapNpcId)));
+                    return Mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(mapNpcId)));
                 }
             }
             catch (Exception e)

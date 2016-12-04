@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class MapTypeMapDAO : MappingBaseDAO<MapTypeMap, MapTypeMapDTO>, IMapTypeMapDAO
+    public class MapTypeMapDao : MappingBaseDao<MapTypeMap, MapTypeMapDTO>, IMapTypeMapDAO
     {
         #region Methods
 
@@ -33,9 +33,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (MapTypeMapDTO MapTypeMap in maptypemaps)
+                    foreach (MapTypeMapDTO mapTypeMap in maptypemaps)
                     {
-                        MapTypeMap entity = _mapper.Map<MapTypeMap>(MapTypeMap);
+                        MapTypeMap entity = Mapper.Map<MapTypeMap>(mapTypeMap);
                         context.MapTypeMap.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -52,9 +52,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapTypeMap MapTypeMap in context.MapTypeMap)
+                foreach (MapTypeMap mapTypeMap in context.MapTypeMap)
                 {
-                    yield return _mapper.Map<MapTypeMapDTO>(MapTypeMap);
+                    yield return Mapper.Map<MapTypeMapDTO>(mapTypeMap);
                 }
             }
         }
@@ -65,7 +65,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<MapTypeMapDTO>(context.MapTypeMap.FirstOrDefault(i => i.MapId.Equals(mapId) && i.MapTypeId.Equals(maptypeId)));
+                    return Mapper.Map<MapTypeMapDTO>(context.MapTypeMap.FirstOrDefault(i => i.MapId.Equals(mapId) && i.MapTypeId.Equals(maptypeId)));
                 }
             }
             catch (Exception e)
@@ -79,9 +79,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapTypeMap MapTypeMap in context.MapTypeMap.Where(c => c.MapId.Equals(mapId)))
+                foreach (MapTypeMap mapTypeMap in context.MapTypeMap.Where(c => c.MapId.Equals(mapId)))
                 {
-                    yield return _mapper.Map<MapTypeMapDTO>(MapTypeMap);
+                    yield return Mapper.Map<MapTypeMapDTO>(mapTypeMap);
                 }
             }
         }
@@ -90,9 +90,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapTypeMap MapTypeMap in context.MapTypeMap.Where(c => c.MapTypeId.Equals(maptypeId)))
+                foreach (MapTypeMap mapTypeMap in context.MapTypeMap.Where(c => c.MapTypeId.Equals(maptypeId)))
                 {
-                    yield return _mapper.Map<MapTypeMapDTO>(MapTypeMap);
+                    yield return Mapper.Map<MapTypeMapDTO>(mapTypeMap);
                 }
             }
         }

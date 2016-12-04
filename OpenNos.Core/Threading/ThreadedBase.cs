@@ -23,6 +23,7 @@ namespace OpenNos.Core.Threading
         #region Members
 
         // private Task _task;
+        private long _milliseconds;
         private Action<TValue> _action;
 
         private SequentialItemProcessor<TValue> _queue;
@@ -33,8 +34,8 @@ namespace OpenNos.Core.Threading
 
         public ThreadedBase(long milliseconds, Action<TValue> triggeredMethod)
         {
+            _milliseconds = milliseconds;
             _action = triggeredMethod;
-            var cancellationTokenSource = new CancellationTokenSource();
 
             // this will cost a lot of resource _task =
             // Repeat.Interval(TimeSpan.FromMilliseconds(milliseconds), () =>
@@ -48,15 +49,7 @@ namespace OpenNos.Core.Threading
 
         public SequentialItemProcessor<TValue> Queue
         {
-            get
-            {
-                if (_queue == null)
-                {
-                    _queue = new SequentialItemProcessor<TValue>(_action);
-                }
-
-                return _queue;
-            }
+            get { return _queue ?? (_queue = new SequentialItemProcessor<TValue>(_action)); }
 
             set
             {

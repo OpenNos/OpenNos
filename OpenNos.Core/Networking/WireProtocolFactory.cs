@@ -21,10 +21,6 @@ namespace OpenNos.Core
     {
         #region Instantiation
 
-        public WireProtocolFactory()
-        {
-        }
-
         #endregion
 
         #region Methods

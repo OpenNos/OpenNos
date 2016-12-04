@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core.Networking.Communication.Scs.Communication;
 using System;
+using OpenNos.Core.Networking.Communication.Scs.Communication;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Client
 {

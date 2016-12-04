@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenNos.Core;
 
 namespace OpenNos.World
 {
@@ -38,9 +38,9 @@ namespace OpenNos.World
             int count = 0;
             for (count = 0; count < str.Length; count++)
             {
-                if ((int)str[count] <= 0x7A)
+                if (str[count] <= 0x7A)
                 {
-                    int len = (int)str[count];
+                    int len = str[count];
 
                     for (int i = 0; i < len; i++)
                     {
@@ -58,16 +58,16 @@ namespace OpenNos.World
                 }
                 else
                 {
-                    int len = (int)str[count];
-                    len &= (int)0x7F;
+                    int len = str[count];
+                    len &= 0x7F;
 
-                    for (int i = 0; i < (int)len; i++)
+                    for (int i = 0; i < len; i++)
                     {
                         count++;
                         int highbyte = 0;
                         try
                         {
-                            highbyte = (int)str[count];
+                            highbyte = str[count];
                         }
                         catch
                         {
@@ -79,7 +79,7 @@ namespace OpenNos.World
                         int lowbyte = 0;
                         try
                         {
-                            lowbyte = (int)str[count];
+                            lowbyte = str[count];
                         }
                         catch
                         {
@@ -108,7 +108,7 @@ namespace OpenNos.World
             string encrypted_string = "";
             int session_key = session_id & 0xFF;
             byte session_number = unchecked((byte)(session_id >> 6));
-            session_number &= unchecked((byte)0xFF);
+            session_number &= 0xFF;
             session_number &= unchecked((byte)0x80000003);
 
             switch (session_number)
@@ -180,7 +180,7 @@ namespace OpenNos.World
                 }
                 string var = (str[i] - 0xF).ToString();
 
-                int firstbyte = Convert.ToInt32((int)str[i] - (int)0xF);
+                int firstbyte = Convert.ToInt32(str[i] - 0xF);
                 int secondbyte = firstbyte;
                 secondbyte &= 0xF0;
                 firstbyte = Convert.ToInt32(firstbyte - secondbyte);

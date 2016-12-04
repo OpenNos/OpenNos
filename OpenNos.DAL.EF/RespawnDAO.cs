@@ -12,19 +12,19 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using OpenNos.DAL.EF.DB;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class RespawnDAO : MappingBaseDAO<Respawn, RespawnDTO>, IRespawnDAO
+    public class RespawnDao : MappingBaseDao<Respawn, RespawnDTO>, IRespawnDAO
     {
         #region Methods
 
@@ -34,21 +34,18 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long CharacterId = respawn.CharacterId;
-                    long RespawnMapTypeId = respawn.RespawnMapTypeId;
-                    Respawn entity = context.Respawn.FirstOrDefault(c => c.RespawnMapTypeId.Equals(RespawnMapTypeId) && c.CharacterId.Equals(CharacterId));
+                    long characterId = respawn.CharacterId;
+                    long respawnMapTypeId = respawn.RespawnMapTypeId;
+                    Respawn entity = context.Respawn.FirstOrDefault(c => c.RespawnMapTypeId.Equals(respawnMapTypeId) && c.CharacterId.Equals(characterId));
 
                     if (entity == null)
                     {
                         respawn = Insert(respawn, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        respawn.RespawnId = entity.RespawnId;
-                        respawn = Update(entity, respawn, context);
-                        return SaveResult.Updated;
-                    }
+                    respawn.RespawnId = entity.RespawnId;
+                    respawn = Update(entity, respawn, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)
@@ -62,9 +59,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Respawn Respawnobject in context.Respawn.Where(i => i.CharacterId.Equals(characterId)))
+                foreach (Respawn respawnobject in context.Respawn.Where(i => i.CharacterId.Equals(characterId)))
                 {
-                    yield return _mapper.Map<RespawnDTO>(Respawnobject);
+                    yield return Mapper.Map<RespawnDTO>(respawnobject);
                 }
             }
         }
@@ -75,7 +72,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<RespawnDTO>(context.Respawn.FirstOrDefault(s => s.RespawnId.Equals(respawnId)));
+                    return Mapper.Map<RespawnDTO>(context.Respawn.FirstOrDefault(s => s.RespawnId.Equals(respawnId)));
                 }
             }
             catch (Exception e)
@@ -89,10 +86,10 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                Respawn entity = _mapper.Map<Respawn>(respawn);
+                Respawn entity = Mapper.Map<Respawn>(respawn);
                 context.Respawn.Add(entity);
                 context.SaveChanges();
-                return _mapper.Map<RespawnDTO>(entity);
+                return Mapper.Map<RespawnDTO>(entity);
             }
             catch (Exception e)
             {
@@ -105,10 +102,10 @@ namespace OpenNos.DAL.EF
         {
             if (entity != null)
             {
-                _mapper.Map(respawn, entity);
+                Mapper.Map(respawn, entity);
                 context.SaveChanges();
             }
-            return _mapper.Map<RespawnDTO>(entity);
+            return Mapper.Map<RespawnDTO>(entity);
         }
 
         #endregion

@@ -12,22 +12,22 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using AutoMapper;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using OpenNos.DAL.EF.DB;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
+using OpenNos.Domain;
 
 namespace OpenNos.DAL.EF
 {
-    public class ItemInstanceDAO : SynchronizableBaseDAO<ItemInstance, ItemInstanceDTO>, IItemInstanceDAO
+    public class ItemInstanceDao : SynchronizableBaseDao<ItemInstance, ItemInstanceDTO>, IItemInstanceDAO
     {
         #region Members
 
@@ -66,8 +66,7 @@ namespace OpenNos.DAL.EF
 
                 cfg.CreateMap(typeof(ItemInstance), typeof(ItemInstanceDTO)).As(baseType);
 
-                Type itemInstanceType = typeof(ItemInstance);
-                foreach (KeyValuePair<Type, Type> entry in _mappings)
+                foreach (KeyValuePair<Type, Type> entry in Mappings)
                 {
                     // GameObject -> Entity
                     cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
@@ -82,7 +81,7 @@ namespace OpenNos.DAL.EF
                 }
             });
 
-            _mapper = config.CreateMapper();
+            Mapper = config.CreateMapper();
         }
 
         public IEnumerable<ItemInstanceDTO> LoadByCharacterId(long characterId)
@@ -91,7 +90,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (var itemInstance in context.ItemInstance.Where(i => i.CharacterId.Equals(characterId)))
                 {
-                    yield return _mapper.Map<ItemInstanceDTO>(itemInstance);
+                    yield return Mapper.Map<ItemInstanceDTO>(itemInstance);
                 }
             }
         }
@@ -105,7 +104,7 @@ namespace OpenNos.DAL.EF
                     byte inventoryType = (byte)type;
                     byte equipmentType = (byte)slot;
                     ItemInstance entity = context.ItemInstance.FirstOrDefault(i => i.CharacterId == characterId && i.Slot == equipmentType && i.Type == inventoryType);
-                    return _mapper.Map<ItemInstanceDTO>(entity);
+                    return Mapper.Map<ItemInstanceDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -122,7 +121,7 @@ namespace OpenNos.DAL.EF
                 byte inventoryType = (byte)type;
                 foreach (var itemInstance in context.ItemInstance.Where(i => i.CharacterId == characterId && i.Type == inventoryType))
                 {
-                    yield return _mapper.Map<ItemInstanceDTO>(itemInstance);
+                    yield return Mapper.Map<ItemInstanceDTO>(itemInstance);
                 }
             }
         }
@@ -148,8 +147,7 @@ namespace OpenNos.DAL.EF
             try
             {
                 Type targetType = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(t => t.Name.Equals(gameObjectType.Name));
-                Type itemInstanceType = typeof(ItemInstance);
-                _mappings.Add(gameObjectType, targetType);
+                Mappings.Add(gameObjectType, targetType);
                 return this;
             }
             catch (Exception e)
@@ -165,14 +163,7 @@ namespace OpenNos.DAL.EF
             {
                 var entity = context.ItemInstance.FirstOrDefault(c => c.Id == itemInstance.Id);
 
-                if (entity == null)
-                {
-                    itemInstance = Insert(itemInstance, context);
-                }
-                else
-                {
-                    itemInstance = Update(entity, itemInstance, context);
-                }
+                itemInstance = entity == null ? Insert(itemInstance, context) : Update(entity, itemInstance, context);
                 return itemInstance;
             }
             catch (Exception e)
@@ -186,11 +177,11 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                var entity = _mapper.Map<ItemInstance>(dto);
-                KeyValuePair<Type, Type> targetMapping = _mappings.FirstOrDefault(k => k.Key.Equals(dto.GetType()));
+                var entity = Mapper.Map<ItemInstance>(dto);
+                KeyValuePair<Type, Type> targetMapping = Mappings.FirstOrDefault(k => k.Key == dto.GetType());
                 if (targetMapping.Key != null)
                 {
-                    entity = _mapper.Map(dto, targetMapping.Key, targetMapping.Value) as ItemInstance;
+                    entity = Mapper.Map(dto, targetMapping.Key, targetMapping.Value) as ItemInstance;
                 }
 
                 return entity;

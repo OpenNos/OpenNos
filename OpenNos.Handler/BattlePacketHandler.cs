@@ -12,8 +12,6 @@
  * GNU General Public License for more details.
  */
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +21,7 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
-
-#endregion
+using OpenNos.GameObject.Networking;
 
 namespace OpenNos.Handler
 {
@@ -112,7 +109,7 @@ namespace OpenNos.Handler
                             mon.CurrentHp > 0)
                         {
                             Session.Character.LastSkillUse = DateTime.Now;
-                            mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SpecialZoneHit,
+                            mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SpecialZoneHit,
                                 Session, ski.Skill));
                         }
 
@@ -186,7 +183,7 @@ namespace OpenNos.Handler
                         if (Session.CurrentMap != null)
                         {
                             Session.CurrentMap.Broadcast(
-                                $"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {(int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100} 0 -2 {ski.Skill.SkillType - 1}");
+                                $"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {(int)((double)Session.Character.Hp / Session.Character.HpLoad()) * 100} 0 -2 {ski.Skill.SkillType - 1}");
                             if (ski.Skill.TargetRange != 0 && Session.HasCurrentMap)
                             {
                                 foreach (
@@ -194,7 +191,7 @@ namespace OpenNos.Handler
                                     Session.CurrentMap.GetListMonsterInRange(Session.Character.MapX,
                                         Session.Character.MapY, ski.Skill.TargetRange).Where(s => s.CurrentHp > 0))
                                 {
-                                    mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(
+                                    mon.HitQueue.Enqueue(new HitRequest(
                                         TargetHitType.AOETargetHit, Session, ski.Skill,
                                         skillinfo?.Skill.Effect ?? ski.Skill.Effect));
                                 }
@@ -275,7 +272,7 @@ namespace OpenNos.Handler
                                                         MapMonster mon in monstersInAoeRange.Where(s => s.CurrentHp > 0))
                                                     {
                                                         mon.HitQueue.Enqueue(
-                                                            new GameObject.Networking.HitRequest(
+                                                            new HitRequest(
                                                                 TargetHitType.SingleTargetHitCombo, Session, ski.Skill
                                                                 , skillCombo: skillCombo));
                                                     }
@@ -286,13 +283,13 @@ namespace OpenNos.Handler
                                                     Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX,
                                                         monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
                                                 Session.CurrentMap?.Broadcast(
-                                                    $"su 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect} 0 0 {(monsterToAttack.IsAlive ? 1 : 0)} {(int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100} 0 0 {ski.Skill.SkillType - 1}");
+                                                    $"su 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect} 0 0 {(monsterToAttack.IsAlive ? 1 : 0)} {(int)((double)Session.Character.Hp / Session.Character.HpLoad()) * 100} 0 0 {ski.Skill.SkillType - 1}");
                                                 if (monstersInAoeRange != null)
                                                     foreach (
                                                         MapMonster mon in monstersInAoeRange.Where(s => s.CurrentHp > 0))
                                                     {
                                                         mon.HitQueue.Enqueue(
-                                                            new GameObject.Networking.HitRequest(
+                                                            new HitRequest(
                                                                 TargetHitType.SingleAOETargetHit, Session, ski.Skill
                                                                 ,
                                                                 characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
@@ -310,14 +307,14 @@ namespace OpenNos.Handler
                                                     ski.Hit = 0;
                                                 }
                                                 monsterToAttack.HitQueue.Enqueue(
-                                                    new GameObject.Networking.HitRequest(
+                                                    new HitRequest(
                                                         TargetHitType.SingleTargetHitCombo, Session, ski.Skill,
                                                         skillCombo: skillCombo));
                                             }
                                             else
                                             {
                                                 monsterToAttack.HitQueue.Enqueue(
-                                                    new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHit,
+                                                    new HitRequest(TargetHitType.SingleTargetHit,
                                                         Session, ski.Skill));
                                             }
                                         }
@@ -544,7 +541,7 @@ namespace OpenNos.Handler
                                             .ToList();
                                     foreach (MapMonster mon in monstersInRange.Where(s => s.CurrentHp > 0))
                                     {
-                                        mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.ZoneHit,
+                                        mon.HitQueue.Enqueue(new HitRequest(TargetHitType.ZoneHit,
                                             Session, characterSkill.Skill, x, y));
                                     }
                                 }

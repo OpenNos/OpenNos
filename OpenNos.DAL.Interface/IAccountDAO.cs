@@ -14,7 +14,6 @@
 
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using System;
 
 namespace OpenNos.DAL.Interface
 {
@@ -34,7 +33,7 @@ namespace OpenNos.DAL.Interface
 
         void UpdateLastSessionAndIp(string name, int session, string ip);
 
-        void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
+        void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData);
 
         #endregion
     }

@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -40,9 +39,9 @@ namespace OpenNos.Core
 
         public static string Sha512(string inputString)
         {
-            using (SHA512 hash = SHA512Managed.Create())
+            using (SHA512 hash = SHA512.Create())
             {
-                return String.Join(String.Empty, hash.ComputeHash(Encoding.UTF8.GetBytes(inputString)).Select(item => item.ToString("x2")));
+                return string.Join(string.Empty, hash.ComputeHash(Encoding.UTF8.GetBytes(inputString)).Select(item => item.ToString("x2")));
             }
         }
 

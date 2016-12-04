@@ -1,20 +1,20 @@
-﻿using AutoMapper;
-using OpenNos.Core;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class MappingBaseDAO<TEntity, TDTO> : IMappingBaseDAO
-        where TDTO : MappingBaseDTO
+    public class MappingBaseDao<TEntity, TDto> : IMappingBaseDAO
+        where TDto : MappingBaseDTO
     {
         #region Members
 
-        protected IMapper _mapper;
+        protected IMapper Mapper;
 
-        protected IDictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
+        protected IDictionary<Type, Type> Mappings = new Dictionary<Type, Type>();
 
         #endregion
 
@@ -24,18 +24,18 @@ namespace OpenNos.DAL.EF
         {
             var config = new MapperConfiguration(cfg =>
             {
-                foreach (KeyValuePair<Type, Type> entry in _mappings)
+                foreach (KeyValuePair<Type, Type> entry in Mappings)
                 {
                     // GameObject -> Entity
-                    cfg.CreateMap(typeof(TDTO), entry.Value);
+                    cfg.CreateMap(typeof(TDto), entry.Value);
 
                     // Entity -> GameObject
-                    cfg.CreateMap(entry.Value, typeof(TDTO))
+                    cfg.CreateMap(entry.Value, typeof(TDto))
                         .AfterMap((src, dest) => ((MappingBaseDTO)dest).Initialize()).As(entry.Key);
                 }
             });
 
-            _mapper = config.CreateMapper();
+            Mapper = config.CreateMapper();
         }
 
         public virtual IMappingBaseDAO RegisterMapping(Type gameObjectType)
@@ -43,7 +43,7 @@ namespace OpenNos.DAL.EF
             try
             {
                 Type targetType = typeof(TEntity);
-                _mappings.Add(gameObjectType, targetType);
+                Mappings.Add(gameObjectType, targetType);
                 return this;
             }
             catch (Exception e)

@@ -1078,4 +1078,16 @@
   <data name="XP_NOTFIRSTHIT" xml:space="preserve">
     <value>Ponieważ nie zadałeś pierwszego ciosu, otrzymasz tylko część XP.</value>
   </data>
+  <data name="WANT_TO_SAVE_POSITION" xml:space="preserve">
+    <value>Czy chcesz zapisać swoją aktualną pozycję?</value>
+  </data>
+  <data name="BOT_MESSAGE_4" xml:space="preserve">
+    <value>MSG4</value>
+  </data>
+  <data name="BOT_MESSAGE_5" xml:space="preserve">
+    <value>MSG5</value>
+  </data>
+  <data name="DROP_MAP_FULL" xml:space="preserve">
+    <value>Na mapie znajduje się zbyt dużo przedmiotów</value>
+  </data>
 </root>

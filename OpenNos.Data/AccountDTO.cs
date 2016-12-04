@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.Domain;
 
 namespace OpenNos.Data
@@ -24,7 +25,7 @@ namespace OpenNos.Data
 
         public AuthorityType Authority { get; set; }
 
-        public System.DateTime LastCompliment { get; set; }
+        public DateTime LastCompliment { get; set; }
 
         public int LastSession { get; set; }
 

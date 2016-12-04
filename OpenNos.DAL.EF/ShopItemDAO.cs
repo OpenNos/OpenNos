@@ -12,19 +12,18 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class ShopItemDAO : MappingBaseDAO<ShopItem, ShopItemDTO>, IShopItemDAO
+    public class ShopItemDao : MappingBaseDao<ShopItem, ShopItemDTO>, IShopItemDAO
     {
         #region Methods
 
@@ -34,11 +33,11 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    ShopItem Item = context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId));
+                    ShopItem item = context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId));
 
-                    if (Item != null)
+                    if (item != null)
                     {
-                        context.ShopItem.Remove(Item);
+                        context.ShopItem.Remove(item);
                         context.SaveChanges();
                     }
 
@@ -58,10 +57,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    ShopItem entity = _mapper.Map<ShopItem>(item);
+                    ShopItem entity = Mapper.Map<ShopItem>(item);
                     context.ShopItem.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<ShopItemDTO>(entity);
+                    return Mapper.Map<ShopItemDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -78,9 +77,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (ShopItemDTO Item in items)
+                    foreach (ShopItemDTO item in items)
                     {
-                        ShopItem entity = _mapper.Map<ShopItem>(Item);
+                        ShopItem entity = Mapper.Map<ShopItem>(item);
                         context.ShopItem.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -99,7 +98,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (ShopItem entity in context.ShopItem)
                 {
-                    yield return _mapper.Map<ShopItemDTO>(entity);
+                    yield return Mapper.Map<ShopItemDTO>(entity);
                 }
             }
         }
@@ -110,7 +109,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<ShopItemDTO>(context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId)));
+                    return Mapper.Map<ShopItemDTO>(context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId)));
                 }
             }
             catch (Exception e)
@@ -124,21 +123,11 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (ShopItem ShopItem in context.ShopItem.Where(i => i.ShopId.Equals(shopId)))
+                foreach (ShopItem shopItem in context.ShopItem.Where(i => i.ShopId.Equals(shopId)))
                 {
-                    yield return _mapper.Map<ShopItemDTO>(ShopItem);
+                    yield return Mapper.Map<ShopItemDTO>(shopItem);
                 }
             }
-        }
-
-        private ShopItemDTO Update(ShopItem entity, ShopItemDTO shopItem, OpenNosContext context)
-        {
-            if (entity != null)
-            {
-                _mapper.Map(shopItem, entity);
-                context.SaveChanges();
-            }
-            return _mapper.Map<ShopItemDTO>(entity);
         }
 
         #endregion

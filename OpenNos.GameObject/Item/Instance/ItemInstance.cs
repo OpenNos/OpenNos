@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using System;
+using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
@@ -55,14 +55,7 @@ namespace OpenNos.GameObject
 
         public Item Item
         {
-            get
-            {
-                if (item == null)
-                {
-                    item = ServerManager.GetItem(this.ItemVNum);
-                }
-                return item;
-            }
+            get { return item ?? (item = ServerManager.GetItem(ItemVNum)); }
         }
 
         #endregion
@@ -73,7 +66,7 @@ namespace OpenNos.GameObject
 
         public ItemInstance DeepCopy()
         {
-            return (ItemInstance)this.MemberwiseClone();
+            return (ItemInstance)MemberwiseClone();
         }
 
         public void Save()

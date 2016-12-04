@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class DropDAO : MappingBaseDAO<Drop, DropDTO>, IDropDAO
+    public class DropDao : MappingBaseDao<Drop, DropDTO>, IDropDAO
     {
         #region Methods
 
@@ -33,9 +33,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (DropDTO Drop in drops)
+                    foreach (DropDTO drop in drops)
                     {
-                        Drop entity = _mapper.Map<Drop>(Drop);
+                        Drop entity = Mapper.Map<Drop>(drop);
                         context.Drop.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -54,10 +54,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Drop entity = _mapper.Map<Drop>(drop);
+                    Drop entity = Mapper.Map<Drop>(drop);
                     context.Drop.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<DropDTO>(drop);
+                    return Mapper.Map<DropDTO>(drop);
                 }
             }
             catch (Exception e)
@@ -71,7 +71,7 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return context.Drop.ToList().Select(d => _mapper.Map<DropDTO>(d)).ToList();
+                return context.Drop.ToList().Select(d => Mapper.Map<DropDTO>(d)).ToList();
             }
         }
 
@@ -79,9 +79,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Drop Drop in context.Drop.Where(s => s.MonsterVNum == monsterVNum || s.MonsterVNum == null))
+                foreach (Drop drop in context.Drop.Where(s => s.MonsterVNum == monsterVNum || s.MonsterVNum == null))
                 {
-                    yield return _mapper.Map<DropDTO>(Drop);
+                    yield return Mapper.Map<DropDTO>(drop);
                 }
             }
         }

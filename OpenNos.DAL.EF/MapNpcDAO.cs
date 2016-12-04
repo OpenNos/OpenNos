@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class MapNpcDAO : MappingBaseDAO<MapNpc, MapNpcDTO>, IMapNpcDAO
+    public class MapNpcDao : MappingBaseDao<MapNpc, MapNpcDTO>, IMapNpcDAO
     {
         #region Methods
 
@@ -33,9 +33,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (MapNpcDTO Item in npcs)
+                    foreach (MapNpcDTO item in npcs)
                     {
-                        MapNpc entity = _mapper.Map<MapNpc>(Item);
+                        MapNpc entity = Mapper.Map<MapNpc>(item);
                         context.MapNpc.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -54,10 +54,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    MapNpc entity = _mapper.Map<MapNpc>(npc);
+                    MapNpc entity = Mapper.Map<MapNpc>(npc);
                     context.MapNpc.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<MapNpcDTO>(entity);
+                    return Mapper.Map<MapNpcDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -73,7 +73,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (MapNpc entity in context.MapNpc)
                 {
-                    yield return _mapper.Map<MapNpcDTO>(entity);
+                    yield return Mapper.Map<MapNpcDTO>(entity);
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<MapNpcDTO>(context.MapNpc.FirstOrDefault(i => i.MapNpcId.Equals(mapNpcId)));
+                    return Mapper.Map<MapNpcDTO>(context.MapNpc.FirstOrDefault(i => i.MapNpcId.Equals(mapNpcId)));
                 }
             }
             catch (Exception e)
@@ -100,7 +100,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (MapNpc npcobject in context.MapNpc.Where(c => c.MapId.Equals(mapId)))
                 {
-                    yield return _mapper.Map<MapNpcDTO>(npcobject);
+                    yield return Mapper.Map<MapNpcDTO>(npcobject);
                 }
             }
         }

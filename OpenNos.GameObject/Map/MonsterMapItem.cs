@@ -49,12 +49,10 @@ namespace OpenNos.GameObject
 
         public override ItemInstance GetItemInstance()
         {
-            if (_itemInstance == null)
-            {
-                _itemInstance = Inventory.InstantiateItemInstance(ItemVNum, Owner.Value, Amount);
-            }
-
-            return _itemInstance;
+            if (Owner != null)
+                return _itemInstance ??
+                       (_itemInstance = Inventory.InstantiateItemInstance(ItemVNum, Owner.Value, Amount));
+            return null;
         }
 
         public void Rarify(ClientSession session)
@@ -63,10 +61,8 @@ namespace OpenNos.GameObject
             if (instance.Item.EquipmentSlot == EquipmentType.Armor || instance.Item.EquipmentSlot == EquipmentType.MainWeapon
                 || instance.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
             {
-                if (instance is WearableInstance)
-                {
-                    ((WearableInstance)instance).RarifyItem(session, RarifyMode.Drop, RarifyProtection.None);
-                }
+                WearableInstance wearable = instance as WearableInstance;
+                wearable?.RarifyItem(session, RarifyMode.Drop, RarifyProtection.None);
             }
         }
 

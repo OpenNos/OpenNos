@@ -5,7 +5,7 @@
         #region Members
 
         private static GameObjectMockHelper instance;
-        private long nextClientId = 0;
+        private long nextClientId;
 
         #endregion
 

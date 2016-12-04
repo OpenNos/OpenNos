@@ -12,13 +12,14 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.BinarySerialization
 {
@@ -167,7 +168,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
                 // Deserialize the message
                 var binaryFormatter = new BinaryFormatter
                 {
-                    AssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple,
+                    AssemblyFormat = FormatterAssemblyStyle.Simple,
                     Binder = new DeserializationAppDomainBinder()
                 };
 

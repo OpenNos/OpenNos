@@ -12,18 +12,19 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.Data.Entity;
+using System.Linq;
 using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-using System;
-using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class AccountDAO : MappingBaseDAO<Account, AccountDTO>, IAccountDAO
+    public class AccountDao : MappingBaseDao<Account, AccountDTO>, IAccountDAO
     {
         #region Methods
 
@@ -33,11 +34,11 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Account Account = context.Account.FirstOrDefault(c => c.AccountId.Equals(accountId));
+                    Account account = context.Account.FirstOrDefault(c => c.AccountId.Equals(accountId));
 
-                    if (Account != null)
+                    if (account != null)
                     {
-                        context.Account.Remove(Account);
+                        context.Account.Remove(account);
                         context.SaveChanges();
                     }
 
@@ -46,7 +47,7 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("DELETE_ACCOUNT_ERROR"), accountId, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_ACCOUNT_ERROR"), accountId, e.Message), e);
                 return DeleteResult.Error;
             }
         }
@@ -57,24 +58,21 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long AccountId = account.AccountId;
-                    Account entity = context.Account.FirstOrDefault(c => c.AccountId.Equals(AccountId));
+                    long accountId = account.AccountId;
+                    Account entity = context.Account.FirstOrDefault(c => c.AccountId.Equals(accountId));
 
                     if (entity == null)
                     {
                         account = Insert(account, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        account = Update(entity, account, context);
-                        return SaveResult.Updated;
-                    }
+                    account = Update(entity, account, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_ACCOUNT_ERROR"), account.AccountId, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_ACCOUNT_ERROR"), account.AccountId, e.Message), e);
                 return SaveResult.Error;
             }
         }
@@ -88,7 +86,7 @@ namespace OpenNos.DAL.EF
                     Account account = context.Account.FirstOrDefault(a => a.AccountId.Equals(accountId));
                     if (account != null)
                     {
-                        return _mapper.Map<AccountDTO>(account);
+                        return Mapper.Map<AccountDTO>(account);
                     }
                 }
             }
@@ -105,10 +103,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
-                    if (Account != null)
+                    Account account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
+                    if (account != null)
                     {
-                        return _mapper.Map<AccountDTO>(Account);
+                        return Mapper.Map<AccountDTO>(account);
                     }
                 }
             }
@@ -125,10 +123,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Account Account = context.Account.FirstOrDefault(a => a.LastSession.Equals(sessionId));
-                    if (Account != null)
+                    Account account = context.Account.FirstOrDefault(a => a.LastSession.Equals(sessionId));
+                    if (account != null)
                     {
-                        return _mapper.Map<AccountDTO>(Account);
+                        return Mapper.Map<AccountDTO>(account);
                     }
                 }
             }
@@ -145,7 +143,6 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
                     context.SaveChanges();
                 }
             }
@@ -161,8 +158,8 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
-                    Account.LastSession = session;
+                    Account account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
+                    if (account != null) account.LastSession = session;
                     context.SaveChanges();
                 }
             }
@@ -172,20 +169,20 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public void WriteGeneralLog(long accountId, string ipAddress, long? CharacterId, string logType, string logData)
+        public void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    GeneralLog log = new GeneralLog()
+                    GeneralLog log = new GeneralLog
                     {
                         AccountId = accountId,
                         IpAddress = ipAddress,
                         Timestamp = DateTime.Now,
                         LogType = logType,
                         LogData = logData,
-                        CharacterId = CharacterId
+                        CharacterId = characterId
                     };
 
                     context.GeneralLog.Add(log);
@@ -205,11 +202,11 @@ namespace OpenNos.DAL.EF
                 account.LastCompliment = DateTime.Now;
             }
 
-            Account entity = _mapper.Map<Account>(account);
+            Account entity = Mapper.Map<Account>(account);
             entity.LastCompliment = DateTime.Now.AddDays(-1);
             context.Account.Add(entity);
             context.SaveChanges();
-            return _mapper.Map<AccountDTO>(entity);
+            return Mapper.Map<AccountDTO>(entity);
         }
 
         private AccountDTO Update(Account entity, AccountDTO account, OpenNosContext context)
@@ -223,10 +220,10 @@ namespace OpenNos.DAL.EF
                 entity.LastSession = account.LastSession;
                 entity.Name = account.Name;
                 entity.Password = account.Password;
-                context.Entry(entity).State = System.Data.Entity.EntityState.Modified;
+                context.Entry(entity).State = EntityState.Modified;
                 context.SaveChanges();
             }
-            return _mapper.Map<AccountDTO>(entity);
+            return Mapper.Map<AccountDTO>(entity);
         }
 
         #endregion

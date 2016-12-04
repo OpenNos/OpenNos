@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.DAL.EF
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
     public class Shop
     {
         #region Instantiation

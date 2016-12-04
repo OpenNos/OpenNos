@@ -1,17 +1,17 @@
-﻿using OpenNos.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public abstract class SynchronizableBaseDAO<TEntity, TDTO> : MappingBaseDAO<TEntity, TDTO>, ISynchronizableBaseDAO<TDTO>
-        where TDTO : SynchronizableBaseDTO
+    public abstract class SynchronizableBaseDao<TEntity, TDto> : MappingBaseDao<TEntity, TDto>, ISynchronizableBaseDAO<TDto>
+        where TDto : SynchronizableBaseDTO
         where TEntity : SynchronizableBaseEntity
     {
         #region Methods
@@ -31,14 +31,14 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<TDTO> InsertOrUpdate(IEnumerable<TDTO> dtos)
+        public IEnumerable<TDto> InsertOrUpdate(IEnumerable<TDto> dtos)
         {
             try
             {
-                IList<TDTO> results = new List<TDTO>();
+                IList<TDto> results = new List<TDto>();
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    foreach (TDTO dto in dtos)
+                    foreach (TDto dto in dtos)
                     {
                         results.Add(InsertOrUpdate(context, dto));
                     }
@@ -48,12 +48,12 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
-                return Enumerable.Empty<TDTO>();
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
+                return Enumerable.Empty<TDto>();
             }
         }
 
-        public TDTO InsertOrUpdate(TDTO dto)
+        public TDto InsertOrUpdate(TDto dto)
         {
             try
             {
@@ -64,28 +64,28 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
                 return null;
             }
         }
 
-        public TDTO LoadById(Guid id)
+        public TDto LoadById(Guid id)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return _mapper.Map<TDTO>(context.Set<TEntity>().FirstOrDefault(i => i.Id.Equals(id)));
+                return Mapper.Map<TDto>(context.Set<TEntity>().FirstOrDefault(i => i.Id.Equals(id)));
             }
         }
 
-        protected virtual TDTO Insert(TDTO dto, OpenNosContext context)
+        protected virtual TDto Insert(TDto dto, OpenNosContext context)
         {
             TEntity entity = MapEntity(dto);
             context.Set<TEntity>().Add(entity);
             context.SaveChanges();
-            return _mapper.Map<TDTO>(entity);
+            return Mapper.Map<TDto>(entity);
         }
 
-        protected virtual TDTO InsertOrUpdate(OpenNosContext context, TDTO dto)
+        protected virtual TDto InsertOrUpdate(OpenNosContext context, TDto dto)
         {
             Guid primaryKey = dto.Id;
             TEntity entity = context.Set<TEntity>().FirstOrDefault(c => c.Id == primaryKey);
@@ -101,20 +101,20 @@ namespace OpenNos.DAL.EF
             return dto;
         }
 
-        protected virtual TEntity MapEntity(TDTO dto)
+        protected virtual TEntity MapEntity(TDto dto)
         {
-            return _mapper.Map<TEntity>(dto);
+            return Mapper.Map<TEntity>(dto);
         }
 
-        protected virtual TDTO Update(TEntity entity, TDTO inventory, OpenNosContext context)
+        protected virtual TDto Update(TEntity entity, TDto inventory, OpenNosContext context)
         {
             if (entity != null)
             {
-                _mapper.Map(inventory, entity);
+                Mapper.Map(inventory, entity);
                 context.SaveChanges();
             }
 
-            return _mapper.Map<TDTO>(entity);
+            return Mapper.Map<TDto>(entity);
         }
 
         #endregion

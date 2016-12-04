@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class GeneralLogDAO : MappingBaseDAO<GeneralLog, GeneralLogDTO>, IGeneralLogDAO
+    public class GeneralLogDao : MappingBaseDao<GeneralLog, GeneralLogDTO>, IGeneralLogDAO
     {
         #region Methods
 
@@ -48,10 +48,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    GeneralLog entity = _mapper.Map<GeneralLog>(generallog);
+                    GeneralLog entity = Mapper.Map<GeneralLog>(generallog);
                     context.GeneralLog.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<GeneralLogDTO>(generallog);
+                    return Mapper.Map<GeneralLogDTO>(generallog);
                 }
             }
             catch (Exception e)
@@ -65,20 +65,20 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (GeneralLog GeneralLog in context.GeneralLog.Where(s => s.AccountId.Equals(accountId)))
+                foreach (GeneralLog generalLog in context.GeneralLog.Where(s => s.AccountId.Equals(accountId)))
                 {
-                    yield return _mapper.Map<GeneralLogDTO>(GeneralLog);
+                    yield return Mapper.Map<GeneralLogDTO>(generalLog);
                 }
             }
         }
 
-        public IEnumerable<GeneralLogDTO> LoadByLogType(string logType, Nullable<long> characterId)
+        public IEnumerable<GeneralLogDTO> LoadByLogType(string logType, long? characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 foreach (GeneralLog log in context.GeneralLog.Where(c => c.LogType.Equals(logType) && c.CharacterId == characterId))
                 {
-                    yield return _mapper.Map<GeneralLogDTO>(log);
+                    yield return Mapper.Map<GeneralLogDTO>(log);
                 }
             }
         }
@@ -102,13 +102,13 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData)
+        public void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    GeneralLog log = new GeneralLog()
+                    GeneralLog log = new GeneralLog
                     {
                         AccountId = accountId,
                         IpAddress = ipAddress,

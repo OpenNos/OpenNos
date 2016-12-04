@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class PortalDAO : MappingBaseDAO<Portal, PortalDTO>, IPortalDAO
+    public class PortalDao : MappingBaseDao<Portal, PortalDTO>, IPortalDAO
     {
         #region Methods
 
@@ -33,9 +33,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (PortalDTO Item in portals)
+                    foreach (PortalDTO item in portals)
                     {
-                        Portal entity = _mapper.Map<Portal>(Item);
+                        Portal entity = Mapper.Map<Portal>(item);
                         context.Portal.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -54,10 +54,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Portal entity = _mapper.Map<Portal>(portal);
+                    Portal entity = Mapper.Map<Portal>(portal);
                     context.Portal.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<PortalDTO>(entity);
+                    return Mapper.Map<PortalDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -71,9 +71,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Portal Portalobject in context.Portal.Where(c => c.SourceMapId.Equals(mapId)))
+                foreach (Portal portalobject in context.Portal.Where(c => c.SourceMapId.Equals(mapId)))
                 {
-                    yield return _mapper.Map<PortalDTO>(Portalobject);
+                    yield return Mapper.Map<PortalDTO>(portalobject);
                 }
             }
         }

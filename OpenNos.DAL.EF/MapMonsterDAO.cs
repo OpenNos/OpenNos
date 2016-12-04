@@ -12,18 +12,18 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class MapMonsterDAO : MappingBaseDAO<MapMonster, MapMonsterDTO>, IMapMonsterDAO
+    public class MapMonsterDao : MappingBaseDao<MapMonster, MapMonsterDTO>, IMapMonsterDAO
     {
         #region Methods
 
@@ -60,7 +60,7 @@ namespace OpenNos.DAL.EF
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (MapMonsterDTO monster in monsters)
                     {
-                        MapMonster entity = _mapper.Map<MapMonster>(monster);
+                        MapMonster entity = Mapper.Map<MapMonster>(monster);
                         context.MapMonster.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -79,10 +79,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    MapMonster entity = _mapper.Map<MapMonster>(mapMonster);
+                    MapMonster entity = Mapper.Map<MapMonster>(mapMonster);
                     context.MapMonster.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<MapMonsterDTO>(entity);
+                    return Mapper.Map<MapMonsterDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -98,7 +98,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(mapMonsterId)));
+                    return Mapper.Map<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(mapMonsterId)));
                 }
             }
             catch (Exception e)
@@ -112,9 +112,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapMonster MapMonsterobject in context.MapMonster.Where(c => c.MapId.Equals(mapId)))
+                foreach (MapMonster mapMonsterobject in context.MapMonster.Where(c => c.MapId.Equals(mapId)))
                 {
-                    yield return _mapper.Map<MapMonsterDTO>(MapMonsterobject);
+                    yield return Mapper.Map<MapMonsterDTO>(mapMonsterobject);
                 }
             }
         }

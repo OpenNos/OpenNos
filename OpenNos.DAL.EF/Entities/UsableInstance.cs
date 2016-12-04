@@ -18,9 +18,9 @@ namespace OpenNos.DAL.EF
     {
         #region Properties
 
-        public short? HP { get; set; }
+        public short? Hp { get; set; }
 
-        public short? MP { get; set; }
+        public short? Mp { get; set; }
 
         #endregion
     }

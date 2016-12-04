@@ -1,7 +1,7 @@
-﻿using OpenNos.Data;
-using OpenNos.Data.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL.Interface
 {

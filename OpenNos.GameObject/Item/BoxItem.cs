@@ -14,7 +14,6 @@
 
 using OpenNos.Core;
 using OpenNos.Data;
-using System;
 
 namespace OpenNos.GameObject
 {
@@ -35,7 +34,7 @@ namespace OpenNos.GameObject
             switch (Effect)
             {
                 default:
-                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
+                    Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;
             }
         }

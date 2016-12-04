@@ -30,6 +30,6 @@ namespace OpenNos.Domain
         BlueRaidPortal = 10,
         DarkRaidPortal = 11,
         TimeSpace = 12,
-        ShopTeleport = 20,
+        ShopTeleport = 20
     }
 }

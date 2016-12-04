@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class SkillDAO : MappingBaseDAO<Skill, SkillDTO>, ISkillDAO
+    public class SkillDao : MappingBaseDao<Skill, SkillDTO>, ISkillDAO
     {
         #region Methods
 
@@ -33,9 +33,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (SkillDTO Skill in skills)
+                    foreach (SkillDTO skill in skills)
                     {
-                        Skill entity = _mapper.Map<Skill>(Skill);
+                        Skill entity = Mapper.Map<Skill>(skill);
                         context.Skill.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -54,10 +54,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Skill entity = _mapper.Map<Skill>(skill);
+                    Skill entity = Mapper.Map<Skill>(skill);
                     context.Skill.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<SkillDTO>(entity);
+                    return Mapper.Map<SkillDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -71,9 +71,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Skill Skill in context.Skill)
+                foreach (Skill skill in context.Skill)
                 {
-                    yield return _mapper.Map<SkillDTO>(Skill);
+                    yield return Mapper.Map<SkillDTO>(skill);
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<SkillDTO>(context.Skill.FirstOrDefault(s => s.SkillVNum.Equals(skillId)));
+                    return Mapper.Map<SkillDTO>(context.Skill.FirstOrDefault(s => s.SkillVNum.Equals(skillId)));
                 }
             }
             catch (Exception e)

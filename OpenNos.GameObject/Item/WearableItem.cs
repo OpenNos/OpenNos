@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.Diagnostics;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
-using System;
-using System.Diagnostics;
 
 namespace OpenNos.GameObject
 {
@@ -55,7 +55,7 @@ namespace OpenNos.GameObject
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)itemToWearType}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                             return;
                         }
-                        else if (delay)
+                        if (delay)
                         {
                             inv.BoundCharacterId = session.Character.CharacterId;
                         }
@@ -74,13 +74,13 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage)), 0));
                         return;
                     }
-                    if ((ItemType != Domain.ItemType.Weapon
-                         && ItemType != Domain.ItemType.Armor
-                         && ItemType != Domain.ItemType.Fashion
-                         && ItemType != Domain.ItemType.Jewelery
-                         && ItemType != Domain.ItemType.Specialist)
+                    if ((ItemType != ItemType.Weapon
+                         && ItemType != ItemType.Armor
+                         && ItemType != ItemType.Fashion
+                         && ItemType != ItemType.Jewelery
+                         && ItemType != ItemType.Specialist)
                         || LevelMinimum > (IsHeroic ? session.Character.HeroLevel : session.Character.Level) || (Sex != 0 && Sex != (byte)session.Character.Gender + 1)
-                        || ((ItemType != Domain.ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves) && ((Class >> (byte)session.Character.Class) & 1) != 1))
+                        || (ItemType != ItemType.Jewelery && EquipmentSlot != EquipmentType.Boots && EquipmentSlot != EquipmentType.Gloves && ((Class >> (byte)session.Character.Class) & 1) != 1))
                     {
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                         return;
@@ -133,7 +133,7 @@ namespace OpenNos.GameObject
 
                         session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, itemToWearType, slot, 0, 0, 0, 0));
                         session.SendPacket(session.Character.GenerateInventoryAdd(currentlyEquippedItem.ItemVNum, currentlyEquippedItem.Amount,
-                            currentlyEquippedItem.Type, currentlyEquippedItem.Slot, currentlyEquippedItem.Rare, currentlyEquippedItem.Design, currentlyEquippedItem.Upgrade, currentlyEquippedItem is SpecialistInstance ? ((SpecialistInstance)currentlyEquippedItem).SpStoneUpgrade : (byte)0));
+                            currentlyEquippedItem.Type, currentlyEquippedItem.Slot, currentlyEquippedItem.Rare, currentlyEquippedItem.Design, currentlyEquippedItem.Upgrade, (currentlyEquippedItem as SpecialistInstance)?.SpStoneUpgrade ?? (byte)0));
 
                         session.SendPacket(session.Character.GenerateStatChar());
                         session.CurrentMap?.Broadcast(session.Character.GenerateEq());
@@ -144,7 +144,7 @@ namespace OpenNos.GameObject
                     if (EquipmentSlot == EquipmentType.Fairy)
                     {
                         WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
-                        session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXpData(fairy.ElementRate + fairy.Item.ElementRate)), 10));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXpData(fairy.ElementRate + fairy.Item.ElementRate)), 10));
                     }
                     break;
             }

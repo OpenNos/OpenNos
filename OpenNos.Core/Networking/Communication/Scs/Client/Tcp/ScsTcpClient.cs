@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using System.Net;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
-using System.Net;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
 {

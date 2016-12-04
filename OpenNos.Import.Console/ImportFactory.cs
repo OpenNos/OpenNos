@@ -12,15 +12,16 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL;
+using OpenNos.Domain;
 
 namespace OpenNos.Import.Console
 {
@@ -145,7 +146,7 @@ namespace OpenNos.Import.Console
         public void ImportMaps()
         {
             string fileMapIdDat = $"{_folder}\\MapIDData.dat";
-            string fileMapIdLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt";
+            string fileMapIdLang = $"{_folder}\\_code_{ConfigurationManager.AppSettings["language"]}_MapIDData.txt";
             string folderMap = $"{_folder}\\map";
             List<MapDTO> maps = new List<MapDTO>();
             Dictionary<int, string> dictionaryId = new Dictionary<int, string>();
@@ -244,7 +245,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "Act1",
                 PotionDelay = 300,
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
-                ReturnMapTypeId = (long)RespawnType.ReturnAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (!list.Any(s => s.MapTypeId == mt1.MapTypeId))
             {
@@ -683,7 +684,6 @@ namespace OpenNos.Import.Console
                     // TODO: BCard Buff parsing
                     DAOFactory.NpcMonsterDAO.InsertOrUpdate(ref npcMonster);
                 }
-                continue;
             }
         }
 
@@ -736,7 +736,7 @@ namespace OpenNos.Import.Console
             }
 
             string fileNpcId = $"{_folder}\\monster.dat";
-            string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
+            string fileNpcLang = $"{_folder}\\_code_{ConfigurationManager.AppSettings["language"]}_monster.txt";
             List<NpcMonsterDTO> npcs = new List<NpcMonsterDTO>();
 
             // Store like this: (vnum, (name, level))
@@ -844,13 +844,13 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
                         unknownData = Convert.ToInt64(currentLine[2]);
-                        if (unknownData == (long)-2147481593)
+                        if (unknownData == -2147481593)
                         {
                             npc.MonsterType = MonsterType.Special;
                         }
-                        if (unknownData == (long)-2147483616 || unknownData == (long)-2147483647 || unknownData == (long)-2147483646)
+                        if (unknownData == -2147483616 || unknownData == -2147483647 || unknownData == -2147483646)
                         {
-                            if (npc.Race == (byte)8 && npc.RaceType == (byte)0)
+                            if (npc.Race == 8 && npc.RaceType == 0)
                             {
                                 npc.NoAggresiveIcon = true;
                             }
@@ -874,7 +874,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 4 && currentLine[1] == "PETINFO")
                     {
-                        if (npc.VNumRequired == (short)0 && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681))
+                        if (npc.VNumRequired == 0 && (unknownData == -2147481593 || unknownData == -2147481599 || unknownData == -1610610681))
                         {
                             npc.VNumRequired = Convert.ToInt16(currentLine[2]);
                             npc.AmountRequired = Convert.ToByte(currentLine[3]);
@@ -1619,7 +1619,7 @@ namespace OpenNos.Import.Console
         public void ImportSkills()
         {
             string fileSkillId = $"{_folder}\\Skill.dat";
-            string fileSkillLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Skill.txt";
+            string fileSkillLang = $"{_folder}\\_code_{ConfigurationManager.AppSettings["language"]}_Skill.txt";
             List<SkillDTO> skills = new List<SkillDTO>();
 
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
@@ -1668,7 +1668,7 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 3; i < currentLine.Count() - 4; i += 3)
                         {
-                            ComboDTO comb = new ComboDTO()
+                            ComboDTO comb = new ComboDTO
                             {
                                 SkillVNum = skill.SkillVNum,
                                 Hit = short.Parse(currentLine[i]),
@@ -2027,7 +2027,7 @@ namespace OpenNos.Import.Console
                     teleporter = new TeleporterDTO
                     {
                         MapNpcId = int.Parse(currentPacket[4]),
-                        Index = short.Parse(currentPacket[2]),
+                        Index = short.Parse(currentPacket[2])
                     };
                     continue;
                 }
@@ -2062,7 +2062,7 @@ namespace OpenNos.Import.Console
         internal void ImportItems()
         {
             string fileId = $"{_folder}\\Item.dat";
-            string fileLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Item.txt";
+            string fileLang = $"{_folder}\\_code_{ConfigurationManager.AppSettings["language"]}_Item.txt";
             Dictionary<string, string> dictionaryName = new Dictionary<string, string>();
             string line;
             List<ItemDTO> items = new List<ItemDTO>();
@@ -2524,7 +2524,7 @@ namespace OpenNos.Import.Console
                                 item.CriticalLuckRate = Convert.ToByte(currentLine[6]);
                                 item.CriticalRate = Convert.ToInt16(currentLine[7]);
                                 item.BasicUpgrade = Convert.ToByte(currentLine[10]);
-                                item.MaximumAmmo = (byte)100;
+                                item.MaximumAmmo = 100;
                                 break;
 
                             case ItemType.Armor:

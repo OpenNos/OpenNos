@@ -1,8 +1,8 @@
-﻿using OpenNos.DAL.Interface;
+﻿using System;
+using System.Linq;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using System;
-using System.Linq;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.Mock
 {
@@ -23,11 +23,8 @@ namespace OpenNos.DAL.Mock
                 dto = account;
                 return SaveResult.Updated;
             }
-            else
-            {
-                Insert(account);
-                return SaveResult.Inserted;
-            }
+            Insert(account);
+            return SaveResult.Inserted;
         }
 
         public AccountDTO LoadById(long accountId)

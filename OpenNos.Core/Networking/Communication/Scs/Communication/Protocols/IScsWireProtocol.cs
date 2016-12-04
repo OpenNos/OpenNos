@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System.Collections.Generic;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols
 {

@@ -8,117 +8,123 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.CodeDom.Compiler;
+using System.Diagnostics;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.Threading.Tasks;
+
 namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference
 {
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName = "CommunicationServiceReference.ICommunicationService", CallbackContract = typeof(OpenNos.ServiceRef.Internal.CommunicationServiceReference.ICommunicationServiceCallback))]
+    [GeneratedCode("System.ServiceModel", "4.0.0.0")]
+    [ServiceContract(ConfigurationName = "CommunicationServiceReference.ICommunicationService", CallbackContract = typeof(ICommunicationServiceCallback))]
     public interface ICommunicationService
     {
         #region Methods
 
-        [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/ICommunicationService/AccountIsConnected", ReplyAction = "http://tempuri.org/ICommunicationService/AccountIsConnectedResponse")]
+        [OperationContract(Action = "http://tempuri.org/ICommunicationService/AccountIsConnected", ReplyAction = "http://tempuri.org/ICommunicationService/AccountIsConnectedResponse")]
         bool AccountIsConnected(string accountName);
 
-        [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/ICommunicationService/AccountIsConnected", ReplyAction = "http://tempuri.org/ICommunicationService/AccountIsConnectedResponse")]
-        System.Threading.Tasks.Task<bool> AccountIsConnectedAsync(string accountName);
+        [OperationContract(Action = "http://tempuri.org/ICommunicationService/AccountIsConnected", ReplyAction = "http://tempuri.org/ICommunicationService/AccountIsConnectedResponse")]
+        Task<bool> AccountIsConnectedAsync(string accountName);
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/Cleanup")]
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/Cleanup")]
         void Cleanup();
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/Cleanup")]
-        System.Threading.Tasks.Task CleanupAsync();
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/Cleanup")]
+        Task CleanupAsync();
 
-        [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/ICommunicationService/ConnectAccount", ReplyAction = "http://tempuri.org/ICommunicationService/ConnectAccountResponse")]
+        [OperationContract(Action = "http://tempuri.org/ICommunicationService/ConnectAccount", ReplyAction = "http://tempuri.org/ICommunicationService/ConnectAccountResponse")]
         bool ConnectAccount(string accountName, int sessionId);
 
-        [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/ICommunicationService/ConnectAccount", ReplyAction = "http://tempuri.org/ICommunicationService/ConnectAccountResponse")]
-        System.Threading.Tasks.Task<bool> ConnectAccountAsync(string accountName, int sessionId);
+        [OperationContract(Action = "http://tempuri.org/ICommunicationService/ConnectAccount", ReplyAction = "http://tempuri.org/ICommunicationService/ConnectAccountResponse")]
+        Task<bool> ConnectAccountAsync(string accountName, int sessionId);
 
-        [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/ICommunicationService/ConnectCharacter", ReplyAction = "http://tempuri.org/ICommunicationService/ConnectCharacterResponse")]
+        [OperationContract(Action = "http://tempuri.org/ICommunicationService/ConnectCharacter", ReplyAction = "http://tempuri.org/ICommunicationService/ConnectCharacterResponse")]
         bool ConnectCharacter(string characterName, string accountName);
 
-        [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/ICommunicationService/ConnectCharacter", ReplyAction = "http://tempuri.org/ICommunicationService/ConnectCharacterResponse")]
-        System.Threading.Tasks.Task<bool> ConnectCharacterAsync(string characterName, string accountName);
+        [OperationContract(Action = "http://tempuri.org/ICommunicationService/ConnectCharacter", ReplyAction = "http://tempuri.org/ICommunicationService/ConnectCharacterResponse")]
+        Task<bool> ConnectCharacterAsync(string characterName, string accountName);
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectAccount")]
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectAccount")]
         void DisconnectAccount(string accountName);
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectAccount")]
-        System.Threading.Tasks.Task DisconnectAccountAsync(string accountName);
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectAccount")]
+        Task DisconnectAccountAsync(string accountName);
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectCharacter")]
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectCharacter")]
         void DisconnectCharacter(string characterName);
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectCharacter")]
-        System.Threading.Tasks.Task DisconnectCharacterAsync(string characterName);
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectCharacter")]
+        Task DisconnectCharacterAsync(string characterName);
 
-        [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/ICommunicationService/HasRegisteredAccountLogin", ReplyAction = "http://tempuri.org/ICommunicationService/HasRegisteredAccountLoginResponse")]
+        [OperationContract(Action = "http://tempuri.org/ICommunicationService/HasRegisteredAccountLogin", ReplyAction = "http://tempuri.org/ICommunicationService/HasRegisteredAccountLoginResponse")]
         bool HasRegisteredAccountLogin(string name, long sessionId);
 
-        [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/ICommunicationService/HasRegisteredAccountLogin", ReplyAction = "http://tempuri.org/ICommunicationService/HasRegisteredAccountLoginResponse")]
-        System.Threading.Tasks.Task<bool> HasRegisteredAccountLoginAsync(string name, long sessionId);
+        [OperationContract(Action = "http://tempuri.org/ICommunicationService/HasRegisteredAccountLogin", ReplyAction = "http://tempuri.org/ICommunicationService/HasRegisteredAccountLoginResponse")]
+        Task<bool> HasRegisteredAccountLoginAsync(string name, long sessionId);
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/RegisterAccountLogin")]
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/RegisterAccountLogin")]
         void RegisterAccountLogin(string name, long sessionId);
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/RegisterAccountLogin")]
-        System.Threading.Tasks.Task RegisterAccountLoginAsync(string name, long sessionId);
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/RegisterAccountLogin")]
+        Task RegisterAccountLoginAsync(string name, long sessionId);
 
         #endregion
     }
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [GeneratedCode("System.ServiceModel", "4.0.0.0")]
     public interface ICommunicationServiceCallback
     {
         #region Methods
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/ConnectAccountCallback")]
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/ConnectAccountCallback")]
         void ConnectAccountCallback(string accountName, int sessionId);
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/ConnectCharacterCallback")]
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/ConnectCharacterCallback")]
         void ConnectCharacterCallback(string characterName);
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectAccountCallback")]
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectAccountCallback")]
         void DisconnectAccountCallback(string accountName);
 
-        [System.ServiceModel.OperationContractAttribute(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectCharacterCallback")]
+        [OperationContract(IsOneWay = true, Action = "http://tempuri.org/ICommunicationService/DisconnectCharacterCallback")]
         void DisconnectCharacterCallback(string characterName);
 
         #endregion
     }
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface ICommunicationServiceChannel : OpenNos.ServiceRef.Internal.CommunicationServiceReference.ICommunicationService, System.ServiceModel.IClientChannel
+    [GeneratedCode("System.ServiceModel", "4.0.0.0")]
+    public interface ICommunicationServiceChannel : ICommunicationService, IClientChannel
     {
     }
 
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class CommunicationServiceClient : System.ServiceModel.DuplexClientBase<OpenNos.ServiceRef.Internal.CommunicationServiceReference.ICommunicationService>, OpenNos.ServiceRef.Internal.CommunicationServiceReference.ICommunicationService
+    [DebuggerStepThrough()]
+    [GeneratedCode("System.ServiceModel", "4.0.0.0")]
+    public partial class CommunicationServiceClient : DuplexClientBase<ICommunicationService>, ICommunicationService
     {
         #region Instantiation
 
-        public CommunicationServiceClient(System.ServiceModel.InstanceContext callbackInstance) :
+        public CommunicationServiceClient(InstanceContext callbackInstance) :
                 base(callbackInstance)
         {
         }
 
-        public CommunicationServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) :
+        public CommunicationServiceClient(InstanceContext callbackInstance, string endpointConfigurationName) :
                 base(callbackInstance, endpointConfigurationName)
         {
         }
 
-        public CommunicationServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) :
+        public CommunicationServiceClient(InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) :
                 base(callbackInstance, endpointConfigurationName, remoteAddress)
         {
         }
 
-        public CommunicationServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) :
+        public CommunicationServiceClient(InstanceContext callbackInstance, string endpointConfigurationName, EndpointAddress remoteAddress) :
                 base(callbackInstance, endpointConfigurationName, remoteAddress)
         {
         }
 
-        public CommunicationServiceClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) :
+        public CommunicationServiceClient(InstanceContext callbackInstance, Binding binding, EndpointAddress remoteAddress) :
                 base(callbackInstance, binding, remoteAddress)
         {
         }
@@ -132,7 +138,7 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference
             return base.Channel.AccountIsConnected(accountName);
         }
 
-        public System.Threading.Tasks.Task<bool> AccountIsConnectedAsync(string accountName)
+        public Task<bool> AccountIsConnectedAsync(string accountName)
         {
             return base.Channel.AccountIsConnectedAsync(accountName);
         }
@@ -142,7 +148,7 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference
             base.Channel.Cleanup();
         }
 
-        public System.Threading.Tasks.Task CleanupAsync()
+        public Task CleanupAsync()
         {
             return base.Channel.CleanupAsync();
         }
@@ -152,7 +158,7 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference
             return base.Channel.ConnectAccount(accountName, sessionId);
         }
 
-        public System.Threading.Tasks.Task<bool> ConnectAccountAsync(string accountName, int sessionId)
+        public Task<bool> ConnectAccountAsync(string accountName, int sessionId)
         {
             return base.Channel.ConnectAccountAsync(accountName, sessionId);
         }
@@ -162,7 +168,7 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference
             return base.Channel.ConnectCharacter(characterName, accountName);
         }
 
-        public System.Threading.Tasks.Task<bool> ConnectCharacterAsync(string characterName, string accountName)
+        public Task<bool> ConnectCharacterAsync(string characterName, string accountName)
         {
             return base.Channel.ConnectCharacterAsync(characterName, accountName);
         }
@@ -172,7 +178,7 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference
             base.Channel.DisconnectAccount(accountName);
         }
 
-        public System.Threading.Tasks.Task DisconnectAccountAsync(string accountName)
+        public Task DisconnectAccountAsync(string accountName)
         {
             return base.Channel.DisconnectAccountAsync(accountName);
         }
@@ -182,7 +188,7 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference
             base.Channel.DisconnectCharacter(characterName);
         }
 
-        public System.Threading.Tasks.Task DisconnectCharacterAsync(string characterName)
+        public Task DisconnectCharacterAsync(string characterName)
         {
             return base.Channel.DisconnectCharacterAsync(characterName);
         }
@@ -192,7 +198,7 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference
             return base.Channel.HasRegisteredAccountLogin(name, sessionId);
         }
 
-        public System.Threading.Tasks.Task<bool> HasRegisteredAccountLoginAsync(string name, long sessionId)
+        public Task<bool> HasRegisteredAccountLoginAsync(string name, long sessionId)
         {
             return base.Channel.HasRegisteredAccountLoginAsync(name, sessionId);
         }
@@ -202,7 +208,7 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference
             base.Channel.RegisterAccountLogin(name, sessionId);
         }
 
-        public System.Threading.Tasks.Task RegisterAccountLoginAsync(string name, long sessionId)
+        public Task RegisterAccountLoginAsync(string name, long sessionId)
         {
             return base.Channel.RegisterAccountLoginAsync(name, sessionId);
         }

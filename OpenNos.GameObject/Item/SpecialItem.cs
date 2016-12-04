@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.Linq;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
-using System;
-using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -92,7 +92,7 @@ namespace OpenNos.GameObject
 
                 // presentation messages
                 case 203:
-                    if (this != null && !session.Character.IsVehicled)
+                    if (!session.Character.IsVehicled)
                     {
                         if (!delay)
                         {
@@ -103,7 +103,7 @@ namespace OpenNos.GameObject
 
                 // magic lamps
                 case 651:
-                    if (!session.Character.Inventory.GetAllItems().Where(i => i.Type == InventoryType.Wear).Any())
+                    if (session.Character.Inventory.GetAllItems().All(i => i.Type != InventoryType.Wear))
                     {
                         if (!delay)
                         {
@@ -163,7 +163,7 @@ namespace OpenNos.GameObject
                     break;
 
                 default:
-                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
+                    Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;
             }
         }

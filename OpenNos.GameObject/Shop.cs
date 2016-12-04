@@ -12,19 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
     public class Shop : ShopDTO
     {
         #region Instantiation
-
-        public Shop()
-        {
-        }
 
         #endregion
 

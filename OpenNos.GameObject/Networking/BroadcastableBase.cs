@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
@@ -179,16 +179,13 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            if (session != null)
-            {
-                // Create a ChatClient and store it in a collection
-                _sessions[session.Character.CharacterId] = session;
-            }
+            // Create a ChatClient and store it in a collection
+            _sessions[session.Character.CharacterId] = session;
         }
 
         public void SpreadBroadcastpacket(BroadcastPacket sentPacket)
         {
-            if (Sessions != null && sentPacket != null && !String.IsNullOrEmpty(sentPacket.Packet))
+            if (Sessions != null && !string.IsNullOrEmpty(sentPacket?.Packet))
             {
                 switch (sentPacket.Receiver)
                 {
@@ -221,11 +218,7 @@ namespace OpenNos.GameObject
                             if (sentPacket.SomeonesCharacterId > 0 || !String.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
                             {
                                 ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == sentPacket.SomeonesCharacterId || s.Character.Name == sentPacket.SomeonesCharacterName);
-
-                                if (targetSession != null)
-                                {
-                                    targetSession.SendPacket(sentPacket.Packet);
-                                }
+                                targetSession?.SendPacket(sentPacket.Packet);
                             }
 
                             break;
@@ -245,9 +238,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case ReceiverType.Group:
-                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.Group != null
-                                 && sentPacket.Sender != null && sentPacket.Sender.Character != null && sentPacket.Sender.Character.Group != null
-                                 && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId))
+                        foreach (ClientSession session in Sessions.Where(s => s.Character?.Group != null && sentPacket.Sender?.Character?.Group != null && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId))
                         {
                             session.SendPacket(sentPacket.Packet);
                         }

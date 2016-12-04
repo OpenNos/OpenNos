@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace OpenNos.DAL.EF
 {
-    using System.ComponentModel.DataAnnotations.Schema;
-
     public class MapMonster
     {
         #region Properties

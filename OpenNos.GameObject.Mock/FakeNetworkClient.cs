@@ -1,10 +1,10 @@
-﻿using OpenNos.Core;
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using OpenNos.Core;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 
 namespace OpenNos.GameObject.Mock
 {

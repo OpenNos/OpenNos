@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class RecipeItemDAO : MappingBaseDAO<RecipeItem, RecipeItemDTO>, IRecipeItemDAO
+    public class RecipeItemDao : MappingBaseDao<RecipeItem, RecipeItemDTO>, IRecipeItemDAO
     {
         #region Methods
 
@@ -32,10 +32,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    RecipeItem entity = _mapper.Map<RecipeItem>(recipeItem);
+                    RecipeItem entity = Mapper.Map<RecipeItem>(recipeItem);
                     context.RecipeItem.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<RecipeItemDTO>(entity);
+                    return Mapper.Map<RecipeItemDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -51,7 +51,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (RecipeItem recipeItem in context.RecipeItem)
                 {
-                    yield return _mapper.Map<RecipeItemDTO>(recipeItem);
+                    yield return Mapper.Map<RecipeItemDTO>(recipeItem);
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<RecipeItemDTO>(context.RecipeItem.FirstOrDefault(s => s.RecipeItemId.Equals(recipeItemId)));
+                    return Mapper.Map<RecipeItemDTO>(context.RecipeItem.FirstOrDefault(s => s.RecipeItemId.Equals(recipeItemId)));
                 }
             }
             catch (Exception e)
@@ -78,7 +78,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (RecipeItem recipeItem in context.RecipeItem.Where(s => s.RecipeId.Equals(recipeId)))
                 {
-                    yield return _mapper.Map<RecipeItemDTO>(recipeItem);
+                    yield return Mapper.Map<RecipeItemDTO>(recipeItem);
                 }
             }
         }
@@ -89,7 +89,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (RecipeItem recipeItem in context.RecipeItem.Where(s => s.ItemVNum.Equals(itemVNum) && s.RecipeId.Equals(recipeId)))
                 {
-                    yield return _mapper.Map<RecipeItemDTO>(recipeItem);
+                    yield return Mapper.Map<RecipeItemDTO>(recipeItem);
                 }
             }
         }

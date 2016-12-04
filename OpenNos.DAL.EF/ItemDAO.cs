@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class ItemDAO : MappingBaseDAO<Item, ItemDTO>, IItemDAO
+    public class ItemDao : MappingBaseDao<Item, ItemDTO>, IItemDAO
     {
         #region Methods
 
@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (Item item in context.Item.Where(s => s.Name.Contains(name)))
                 {
-                    yield return _mapper.Map<ItemDTO>(item);
+                    yield return Mapper.Map<ItemDTO>(item);
                 }
             }
         }
@@ -44,9 +44,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (ItemDTO Item in items)
+                    foreach (ItemDTO item in items)
                     {
-                        Item entity = _mapper.Map<Item>(Item);
+                        Item entity = Mapper.Map<Item>(item);
                         context.Item.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -65,10 +65,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Item entity = _mapper.Map<Item>(item);
+                    Item entity = Mapper.Map<Item>(item);
                     context.Item.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<ItemDTO>(entity);
+                    return Mapper.Map<ItemDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -84,18 +84,18 @@ namespace OpenNos.DAL.EF
             {
                 foreach (Item item in context.Item)
                 {
-                    yield return _mapper.Map<ItemDTO>(item);
+                    yield return Mapper.Map<ItemDTO>(item);
                 }
             }
         }
 
-        public ItemDTO LoadById(short ItemVnum)
+        public ItemDTO LoadById(short itemVnum)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<ItemDTO>(context.Item.FirstOrDefault(i => i.VNum.Equals(ItemVnum)));
+                    return Mapper.Map<ItemDTO>(context.Item.FirstOrDefault(i => i.VNum.Equals(itemVnum)));
                 }
             }
             catch (Exception e)

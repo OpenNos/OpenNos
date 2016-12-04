@@ -61,7 +61,7 @@ namespace OpenNos.DAL.EF
 
         public short? HitRate { get; set; }
 
-        public short? HP { get; set; }
+        public short? Hp { get; set; }
 
         public bool? IsEmpty { get; set; }
 
@@ -75,13 +75,13 @@ namespace OpenNos.DAL.EF
 
         public short? MaxElementRate { get; set; }
 
-        public short? MP { get; set; }
+        public short? Mp { get; set; }
 
         public byte? WaterElement { get; set; }
 
         public short? WaterResistance { get; set; }
 
-        public long? XP { get; set; }
+        public long? Xp { get; set; }
 
         #endregion
     }

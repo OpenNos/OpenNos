@@ -138,6 +138,7 @@ namespace OpenNos.Core.Threading
             }
             catch
             {
+                // ignored
             }
         }
 
