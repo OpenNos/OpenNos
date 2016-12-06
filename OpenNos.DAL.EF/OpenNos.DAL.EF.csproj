@@ -116,6 +116,10 @@
     <Compile Include="Migrations\201612021830097_Aphrodite.Designer.cs">
       <DependentUpon>201612021830097_Aphrodite.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612061555088_Aphrodite1.cs" />
+    <Compile Include="Migrations\201612061555088_Aphrodite1.Designer.cs">
+      <DependentUpon>201612061555088_Aphrodite1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
     <Compile Include="DB\OpenNosContext.cs" />
@@ -189,6 +193,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201612021830097_Aphrodite.resx">
       <DependentUpon>201612021830097_Aphrodite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612061555088_Aphrodite1.resx">
+      <DependentUpon>201612061555088_Aphrodite1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

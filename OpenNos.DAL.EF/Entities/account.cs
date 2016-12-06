@@ -52,6 +52,9 @@ namespace OpenNos.DAL.EF
         [MaxLength(255)]
         public string Password { get; set; }
 
+        [MaxLength(255)]
+        public string Email { get; set; }
+
         public virtual ICollection<PenaltyLog> PenaltyLog { get; set; }
 
         #endregion
