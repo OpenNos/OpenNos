@@ -16,7 +16,8 @@ namespace OpenNos.Domain
 {
     public enum AuthorityType : short
     {
-        Closed = -2,
+        Closed = -3,
+        Banned = -2,
         Unconfirmed = -1,
         User = 0,
         Admin = 2
