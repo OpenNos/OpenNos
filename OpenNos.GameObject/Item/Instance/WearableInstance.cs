@@ -137,7 +137,7 @@ namespace OpenNos.GameObject
             const int scrollVnum = 1218;
             int rnd;
 
-            if (!session.HasCurrentMap)
+            if (session == null || !session.HasCurrentMap)
             {
                 return;
             }
