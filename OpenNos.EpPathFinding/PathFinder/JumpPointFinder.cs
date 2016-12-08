@@ -329,11 +329,10 @@ namespace EpPathFinding
             }
 
             // while the open list is not empty
-            while (tOpenList.Count > 0)
+            while (tOpenList.Any())
             {
                 // pop the position of node which has the minimum `f` value.
-                tOpenList.Sort();
-                Node tNode = tOpenList[tOpenList.Count - 1];
+                Node tNode = tOpenList.Last();
                 tOpenList.RemoveAt(tOpenList.Count - 1);
                 tNode.IsClosed = true;
 
