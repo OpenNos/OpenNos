@@ -310,7 +310,7 @@ namespace OpenNos.GameObject
                     // wp 23 124 4 4 12 99
                     session.SendPackets(session.Character.GenerateIn3());
                     session.SendPackets(session.Character.GenerateIn2());
-                    session.SendPackets(session.Character.GenerateNpcShopOnMap());
+                    session.SendPackets(session.Character.GenerateNPCShopOnMap());
                     session.SendPackets(session.Character.GenerateDroppedItem());
                     session.SendPackets(session.Character.GenerateShopOnMap());
                     session.SendPackets(session.Character.GeneratePlayerShopOnMap());

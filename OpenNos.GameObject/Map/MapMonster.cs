@@ -112,7 +112,7 @@ namespace OpenNos.GameObject
         {
             Map = currentMap;
             Initialize();
-            JumpPointParameters = new JumpPointParam(Map.Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.Manhattan);
+            JumpPointParameters = new JumpPointParam(Map.Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
 
         public override void Initialize()
@@ -751,10 +751,10 @@ namespace OpenNos.GameObject
         /// </summary>
         internal void RemoveTarget()
         {
-            Path = Map.StraightPath(new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
+            Path = Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
             if (!Path.Any())
             {
-                Path = Map.JpsPlus(JumpPointParameters, new GridPos { X = MapX, Y = MapY }, new GridPos { X = FirstX, Y = FirstY });
+                Path = Map.JpsPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
             }
             Target = -1;
         }
@@ -779,12 +779,12 @@ namespace OpenNos.GameObject
                     short xoffset = (short)_random.Next(-1, 1);
                     short yoffset = (short)_random.Next(-1, 1);
 
-                    Path = Map.StraightPath(new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset) });
+                    Path = Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
                     if (!Path.Any())
                     {
                         try
                         {
-                            Path = Map.JpsPlus(JumpPointParameters, new GridPos { X = MapX, Y = MapY }, new GridPos { X = (short)(targetSession.Character.MapX + xoffset), Y = (short)(targetSession.Character.MapY + yoffset) });
+                            Path = Map.JpsPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
                         }
                         catch (Exception ex)
                         {
@@ -796,8 +796,8 @@ namespace OpenNos.GameObject
                 if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
                 {
                     int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
-                    short mapX = (short)Path.ElementAt(maxindex - 1).X;
-                    short mapY = (short)Path.ElementAt(maxindex - 1).Y;
+                    short mapX = (short)Path.ElementAt(maxindex - 1).x;
+                    short mapY = (short)Path.ElementAt(maxindex - 1).y;
                     double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY, MapId = MapId }, new MapCell { X = MapX, Y = MapY, MapId = MapId }) / (double)Monster.Speed;
                     Map.Broadcast(new BroadcastPacket(null, $"mv 3 {MapMonsterId} {mapX} {mapY} {Monster.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                     LastMove = DateTime.Now.AddSeconds((waitingtime > 1 ? 1 : waitingtime));
@@ -840,8 +840,8 @@ namespace OpenNos.GameObject
                     int timetowalk = 2000 / Monster.Speed;
                     if (time > timetowalk)
                     {
-                        int mapX = Path.ElementAt(0).X;
-                        int mapY = Path.ElementAt(0).Y;
+                        int mapX = Path.ElementAt(0).x;
+                        int mapY = Path.ElementAt(0).y;
                         Path.RemoveAt(0);
                         Observable.Timer(TimeSpan.FromMilliseconds(timetowalk))
                         .Subscribe(
@@ -960,8 +960,8 @@ namespace OpenNos.GameObject
                 Map.Broadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
                 Map.Broadcast(npcMonsterSkill != null
-                    ? $"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HpLoad() * 100)} {damage} {hitmode} 0"
-                    : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HpLoad() * 100)} {damage} {hitmode} 0");
+                    ? $"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0"
+                    : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0");
 
                 LastEffect = DateTime.Now;
                 if (targetSession.Character.Hp <= 0)
@@ -989,7 +989,7 @@ namespace OpenNos.GameObject
                         characterInRange.GetDamage(damage);
                         characterInRange.LastDefence = DateTime.Now;
                         Map.Broadcast(null, characterInRange.GenerateStat(), ReceiverType.OnlySomeone, "", characterInRange.CharacterId);
-                        Map.Broadcast($"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} { (int)(characterInRange.Hp / characterInRange.HpLoad() * 100) } {damage} {hitmode} 0");
+                        Map.Broadcast($"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} { (int)(characterInRange.Hp / characterInRange.HPLoad() * 100) } {damage} {hitmode} 0");
                         if (characterInRange.Hp <= 0 && !alreadyDead2)
                         {
                             damage = characterInRange.HasGodMode ? 0 : damage;
@@ -999,7 +999,7 @@ namespace OpenNos.GameObject
                         characterInRange.LastDefence = DateTime.Now;
                         characterInRange.Session.SendPacket(characterInRange.GenerateStat());
 
-                        Map.Broadcast($"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} { (int)(characterInRange.Hp / characterInRange.HpLoad() * 100) } {damage} {hitmode} 0");
+                        Map.Broadcast($"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} { (int)(characterInRange.Hp / characterInRange.HPLoad() * 100) } {damage} {hitmode} 0");
                         if (characterInRange.Hp <= 0 && !alreadyDead)
                         {
                             Thread.Sleep(1000);

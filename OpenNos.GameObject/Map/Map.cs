@@ -378,7 +378,7 @@ namespace OpenNos.GameObject
             {
                 for (short y = -2; y < 3; y++)
                 {
-                    possibilities.Add(new GridPos { X = x, Y = y });
+                    possibilities.Add(new GridPos { x = x, y = y });
                 }
             }
 
@@ -387,8 +387,8 @@ namespace OpenNos.GameObject
             bool niceSpot = false;
             foreach (GridPos possibilitie in possibilities.OrderBy(s => _random.Next()))
             {
-                mapX = (short)(session.Character.MapX + possibilitie.X);
-                mapY = (short)(session.Character.MapY + possibilitie.Y);
+                mapX = (short)(session.Character.MapX + possibilitie.x);
+                mapY = (short)(session.Character.MapY + possibilitie.y);
                 if (!IsBlockedZone(mapX, mapY))
                 {
                     niceSpot = true;
@@ -450,7 +450,7 @@ namespace OpenNos.GameObject
             foreach (MapNpc npc in _npcs)
             {
                 npc.Map = this;
-                npc.JumpPointParameters = new JumpPointParam(Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.Manhattan);
+                npc.JumpPointParameters = new JumpPointParam(Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
             }
         }
 
@@ -515,41 +515,41 @@ namespace OpenNos.GameObject
             List<GridPos> path = new List<GridPos> { mapCell1 };
             do
             {
-                if (path.Last().X < mapCell2.X && path.Last().Y < mapCell2.Y)
+                if (path.Last().x < mapCell2.x && path.Last().y < mapCell2.y)
                 {
-                    path.Add(new GridPos { X = (short)(path.Last().X + 1), Y = (short)(path.Last().Y + 1) });
+                    path.Add(new GridPos { x = (short)(path.Last().x + 1), y = (short)(path.Last().y + 1) });
                 }
-                else if (path.Last().X > mapCell2.X && path.Last().Y > mapCell2.Y)
+                else if (path.Last().x > mapCell2.x && path.Last().y > mapCell2.y)
                 {
-                    path.Add(new GridPos { X = (short)(path.Last().X - 1), Y = (short)(path.Last().Y - 1) });
+                    path.Add(new GridPos { x = (short)(path.Last().x - 1), y = (short)(path.Last().y - 1) });
                 }
-                else if (path.Last().X < mapCell2.X && path.Last().Y > mapCell2.Y)
+                else if (path.Last().x < mapCell2.x && path.Last().y > mapCell2.y)
                 {
-                    path.Add(new GridPos { X = (short)(path.Last().X + 1), Y = (short)(path.Last().Y - 1) });
+                    path.Add(new GridPos { x = (short)(path.Last().x + 1), y = (short)(path.Last().y - 1) });
                 }
-                else if (path.Last().X > mapCell2.X && path.Last().Y < mapCell2.Y)
+                else if (path.Last().x > mapCell2.x && path.Last().y < mapCell2.y)
                 {
-                    path.Add(new GridPos { X = (short)(path.Last().X - 1), Y = (short)(path.Last().Y + 1) });
+                    path.Add(new GridPos { x = (short)(path.Last().x - 1), y = (short)(path.Last().y + 1) });
                 }
-                else if (path.Last().X > mapCell2.X)
+                else if (path.Last().x > mapCell2.x)
                 {
-                    path.Add(new GridPos { X = (short)(path.Last().X - 1), Y = (short)(path.Last().Y) });
+                    path.Add(new GridPos { x = (short)(path.Last().x - 1), y = (short)(path.Last().y) });
                 }
-                else if (path.Last().X < mapCell2.X)
+                else if (path.Last().x < mapCell2.x)
                 {
-                    path.Add(new GridPos { X = (short)(path.Last().X + 1), Y = (short)(path.Last().Y) });
+                    path.Add(new GridPos { x = (short)(path.Last().x + 1), y = (short)(path.Last().y) });
                 }
-                else if (path.Last().Y > mapCell2.Y)
+                else if (path.Last().y > mapCell2.y)
                 {
-                    path.Add(new GridPos { X = (short)(path.Last().X), Y = (short)(path.Last().Y - 1) });
+                    path.Add(new GridPos { x = (short)(path.Last().x), y = (short)(path.Last().y - 1) });
                 }
-                else if (path.Last().Y < mapCell2.Y)
+                else if (path.Last().y < mapCell2.y)
                 {
-                    path.Add(new GridPos { X = (short)(path.Last().X), Y = (short)(path.Last().Y + 1) });
+                    path.Add(new GridPos { x = (short)(path.Last().x), y = (short)(path.Last().y + 1) });
                 }
             }
-            while ((path.Last().X != mapCell2.X || path.Last().Y != mapCell2.Y) && (!IsBlockedZone(path.Last().X, path.Last().Y)));
-            if (IsBlockedZone(path.Last().X, path.Last().Y))
+            while ((path.Last().x != mapCell2.x || path.Last().y != mapCell2.y) && (!IsBlockedZone(path.Last().x, path.Last().y)));
+            if (IsBlockedZone(path.Last().x, path.Last().y))
             {
                 if (path.Any())
                 {
