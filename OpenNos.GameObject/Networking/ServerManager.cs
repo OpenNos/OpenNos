@@ -119,10 +119,10 @@ namespace OpenNos.GameObject
                     npc.StartLife();
                 }
 
-                foreach (MapMonster monster in map.Value.Monsters)
+                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
                 {
-                    monster.StartLife();
-                }
+                    Parallel.ForEach(map.Value.Monsters, monster => { monster.StartLife(); });
+                });
             }
 
             _lastGroupId = 1;

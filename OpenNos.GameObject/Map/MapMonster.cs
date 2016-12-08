@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -155,22 +156,16 @@ namespace OpenNos.GameObject
 
         public void StartLife()
         {
-            if (LifeEvent == default(IDisposable))
+            try
             {
-                LifeEvent = Observable.Interval(new TimeSpan(0, 0, 0, 0, 400)).Subscribe(x =>
-                      {
-                          try
-                          {
-                              if (!Map.IsSleeping)
-                              {
-                                  MonsterLife();
-                              }
-                          }
-                          catch (Exception e)
-                          {
-                              Logger.Error(e);
-                          }
-                      });
+                if (!Map.IsSleeping)
+                {
+                    MonsterLife();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
