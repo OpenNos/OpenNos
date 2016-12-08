@@ -40,6 +40,9 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<Character> Character { get; set; }
 
+        [MaxLength(255)]
+        public string Email { get; set; }
+
         public virtual ICollection<GeneralLog> GeneralLog { get; set; }
 
         public DateTime LastCompliment { get; set; }
@@ -52,16 +55,13 @@ namespace OpenNos.DAL.EF
         [MaxLength(255)]
         public string Password { get; set; }
 
-        [MaxLength(255)]
-        public string Email { get; set; }
-
-        [MaxLength(32)]
-        public string VerificationToken { get; set; }
+        public virtual ICollection<PenaltyLog> PenaltyLog { get; set; }
 
         [MaxLength(45)]
         public string RegistrationIP { get; set; }
 
-        public virtual ICollection<PenaltyLog> PenaltyLog { get; set; }
+        [MaxLength(32)]
+        public string VerificationToken { get; set; }
 
         #endregion
     }

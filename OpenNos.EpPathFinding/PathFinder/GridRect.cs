@@ -40,10 +40,16 @@ namespace EpPathFinding
 {
     public class GridRect
     {
-        public int minX;
-        public int minY;
+        #region Members
+
         public int maxX;
         public int maxY;
+        public int minX;
+        public int minY;
+
+        #endregion
+
+        #region Instantiation
 
         public GridRect()
         {
@@ -69,33 +75,13 @@ namespace EpPathFinding
             maxY = b.maxY;
         }
 
-        public override int GetHashCode()
-        {
-            return minX ^ minY ^ maxX ^ maxY;
-        }
+        #endregion
 
-        public override bool Equals(System.Object obj)
-        {
-            // Unlikely to compare incorrect type so removed for performance
-            //if (!(obj.GetType() == typeof(GridRect)))
-            //    return false;
-            GridRect p = (GridRect)obj;
-            if (ReferenceEquals(null, p))
-            {
-                return false;
-            }
-            // Return true if the fields match:
-            return (minX == p.minX) && (minY == p.minY) && (maxX == p.maxX) && (maxY == p.maxY);
-        }
+        #region Methods
 
-        public bool Equals(GridRect p)
+        public static bool operator !=(GridRect a, GridRect b)
         {
-            if (ReferenceEquals(null, p))
-            {
-                return false;
-            }
-            // Return true if the fields match:
-            return (minX == p.minX) && (minY == p.minY) && (maxX == p.maxX) && (maxY == p.maxY);
+            return !(a == b);
         }
 
         public static bool operator ==(GridRect a, GridRect b)
@@ -113,13 +99,40 @@ namespace EpPathFinding
             {
                 return false;
             }
+
             // Return true if the fields match:
             return (a.minX == b.minX) && (a.minY == b.minY) && (a.maxX == b.maxX) && (a.maxY == b.maxY);
         }
 
-        public static bool operator !=(GridRect a, GridRect b)
+        public override bool Equals(System.Object obj)
         {
-            return !(a == b);
+            // Unlikely to compare incorrect type so removed for performance
+            //if (!(obj.GetType() == typeof(GridRect)))
+            //    return false;
+            GridRect p = (GridRect)obj;
+            if (ReferenceEquals(null, p))
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return (minX == p.minX) && (minY == p.minY) && (maxX == p.maxX) && (maxY == p.maxY);
+        }
+
+        public bool Equals(GridRect p)
+        {
+            if (ReferenceEquals(null, p))
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return (minX == p.minX) && (minY == p.minY) && (maxX == p.maxX) && (maxY == p.maxY);
+        }
+
+        public override int GetHashCode()
+        {
+            return minX ^ minY ^ maxX ^ maxY;
         }
 
         public GridRect Set(int iMinX, int iMinY, int iMaxX, int iMaxY)
@@ -130,5 +143,7 @@ namespace EpPathFinding
             maxY = iMaxY;
             return this;
         }
+
+        #endregion
     }
 }

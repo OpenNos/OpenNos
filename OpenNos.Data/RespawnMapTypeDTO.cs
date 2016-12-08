@@ -24,9 +24,9 @@ namespace OpenNos.Data
 
         public short DefaultY { get; set; }
 
-        public long RespawnMapTypeId { get; set; }
-
         public string Name { get; set; }
+
+        public long RespawnMapTypeId { get; set; }
 
         #endregion
     }

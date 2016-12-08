@@ -66,6 +66,10 @@ namespace OpenNos.GameObject
             }
         }
 
+        #endregion
+
+        #region Methods
+
         public bool CanBeUsed()
         {
             return Skill != null && (LastUse.AddMilliseconds((Skill.Cooldown) * 100) < DateTime.Now);

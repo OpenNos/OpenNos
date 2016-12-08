@@ -2831,8 +2831,7 @@ namespace OpenNos.Import.Console
 
                             case ItemType.Specialist:
 
-                                // item.isSpecialist = Convert.ToByte(currentLine[2]); 
-                                // item.Unknown = Convert.ToInt16(currentLine[3]);
+                                // item.isSpecialist = Convert.ToByte(currentLine[2]); item.Unknown = Convert.ToInt16(currentLine[3]);
                                 item.ElementRate = Convert.ToInt16(currentLine[4]);
                                 item.Speed = Convert.ToByte(currentLine[5]);
                                 item.SpType = Convert.ToByte(currentLine[13]);
@@ -2965,8 +2964,7 @@ namespace OpenNos.Import.Console
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
 
-                                // item.PetLoyality = Convert.ToInt16(linesave[4]); 
-                                // item.PetFood = Convert.ToInt16(linesave[7]);
+                                // item.PetLoyality = Convert.ToInt16(linesave[4]); item.PetFood = Convert.ToInt16(linesave[7]);
                                 break;
 
                             case ItemType.Part:
@@ -3013,6 +3011,7 @@ namespace OpenNos.Import.Console
                 npcIdStream.Close();
             }
         }
+
         #endregion
     }
 }

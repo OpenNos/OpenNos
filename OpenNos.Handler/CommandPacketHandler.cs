@@ -571,7 +571,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
         }
-       
+
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
         {

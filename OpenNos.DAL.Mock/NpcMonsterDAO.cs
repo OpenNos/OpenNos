@@ -1,8 +1,8 @@
 ﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
-using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL.Mock
 {

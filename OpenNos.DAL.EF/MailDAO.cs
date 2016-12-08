@@ -81,6 +81,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<MailDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Mail mail in context.Mail)
+                {
+                    yield return _mapper.Map<MailDTO>(mail);
+                }
+            }
+        }
+
         public MailDTO LoadById(long mailId)
         {
             try
@@ -94,17 +105,6 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
                 return null;
-            }
-        }
-
-        public IEnumerable<MailDTO> LoadAll()
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Mail mail in context.Mail)
-                {
-                    yield return _mapper.Map<MailDTO>(mail);
-                }
             }
         }
 

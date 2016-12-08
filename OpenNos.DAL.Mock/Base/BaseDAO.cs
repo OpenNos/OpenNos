@@ -13,6 +13,10 @@ namespace OpenNos.DAL.Mock
         protected IMapper _mapper;
         protected Dictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
 
+        #endregion
+
+        #region Instantiation
+
         public BaseDAO()
         {
             Container = new List<TDTO>();
@@ -27,6 +31,24 @@ namespace OpenNos.DAL.Mock
         #endregion
 
         #region Methods
+
+        public virtual void InitializeMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                foreach (KeyValuePair<Type, Type> entry in _mappings)
+                {
+                    // GameObject -> Entity
+                    cfg.CreateMap(typeof(TDTO), entry.Value);
+
+                    // Entity -> GameObject
+                    cfg.CreateMap(entry.Value, typeof(TDTO))
+                        .AfterMap((src, dest) => ((MappingBaseDTO)dest).Initialize()).As(entry.Key);
+                }
+            });
+
+            _mapper = config.CreateMapper();
+        }
 
         public void Insert(List<TDTO> dtos)
         {
@@ -50,34 +72,6 @@ namespace OpenNos.DAL.Mock
             }
         }
 
-        /// <summary>
-        /// Map a DTO to a GO
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        protected virtual TDTO MapEntity(TDTO dto)
-        {
-            return _mapper.Map<TDTO>(dto);
-        }
-
-        public virtual void InitializeMapper()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                foreach (KeyValuePair<Type, Type> entry in _mappings)
-                {
-                    // GameObject -> Entity
-                    cfg.CreateMap(typeof(TDTO), entry.Value);
-
-                    // Entity -> GameObject
-                    cfg.CreateMap(entry.Value, typeof(TDTO))
-                        .AfterMap((src, dest) => ((MappingBaseDTO)dest).Initialize()).As(entry.Key);
-                }
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
         public virtual IMappingBaseDAO RegisterMapping(Type gameObjectType)
         {
             try
@@ -90,6 +84,16 @@ namespace OpenNos.DAL.Mock
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Map a DTO to a GO
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        protected virtual TDTO MapEntity(TDTO dto)
+        {
+            return _mapper.Map<TDTO>(dto);
         }
 
         #endregion

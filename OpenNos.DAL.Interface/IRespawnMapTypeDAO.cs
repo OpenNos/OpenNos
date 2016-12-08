@@ -22,13 +22,13 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
+        void Insert(List<RespawnMapTypeDTO> respawnmaptypemaps);
+
         SaveResult InsertOrUpdate(ref RespawnMapTypeDTO respawnMapType);
 
-        IEnumerable<RespawnMapTypeDTO> LoadByMapId(short mapId);
-       
         RespawnMapTypeDTO LoadById(long respawnMapTypeId);
 
-        void Insert(List<RespawnMapTypeDTO> respawnmaptypemaps);
+        IEnumerable<RespawnMapTypeDTO> LoadByMapId(short mapId);
 
         #endregion
     }

@@ -131,14 +131,14 @@ namespace OpenNos.Handler
                 Session.SendPacket("ms_c 0");
                 if (!Session.Character.WeaponLoaded(ski) || !ski.CanBeUsed())
                 {
-                      Session.SendPacket("cancel 2 0");
+                    Session.SendPacket("cancel 2 0");
                     return;
                 }
 
                 if (ski != null && Session.Character.Mp >= ski.Skill.MpCost)
                 {
                     // AOE Target hit
-                    if (ski.Skill.TargetType == 1 && ski.Skill.HitType == 1) 
+                    if (ski.Skill.TargetType == 1 && ski.Skill.HitType == 1)
                     {
                         Session.Character.LastSkillUse = DateTime.Now;
                         if (!Session.Character.HasGodMode)
@@ -173,6 +173,7 @@ namespace OpenNos.Handler
                         }
                     }
                     else if (ski.Skill.TargetType == 0 && Session.HasCurrentMap)
+
                     // monster target
                     {
                         MapMonster monsterToAttack = Session.CurrentMap.GetMonster(targetId);
@@ -220,6 +221,7 @@ namespace OpenNos.Handler
                                         {
                                             Thread.Sleep(ski.Skill.CastTime * 100);
                                         }
+
                                         // check if we will hit mutltiple targets
                                         if (ski.Skill.TargetRange != 0)
                                         {

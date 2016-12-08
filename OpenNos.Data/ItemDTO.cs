@@ -50,6 +50,8 @@ namespace OpenNos.Data
 
         public short DistanceDefenceDodge { get; set; }
 
+        public int DurabilityPoint { get; set; }
+
         public short Effect { get; set; }
 
         public int EffectValue { get; set; }
@@ -80,21 +82,19 @@ namespace OpenNos.Data
 
         public bool IsHeroic { get; set; }
 
+        public bool IsHolder { get; set; }
+
         public bool IsMinilandObject { get; set; }
 
         public bool IsSoldable { get; set; }
 
         public bool IsTradable { get; set; }
 
-        public bool IsHolder { get; set; }
-
         public byte ItemSubType { get; set; }
 
         public ItemType ItemType { get; set; }
 
         public long ItemValidTime { get; set; }
-
-        public int DurabilityPoint { get; set; }
 
         public byte LevelJobMinimum { get; set; }
 

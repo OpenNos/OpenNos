@@ -145,29 +145,6 @@ namespace OpenNos.GameObject
 
         public bool HasShopOpened { get; set; }
 
-        internal void RefreshValidity()
-        {
-            if (Inventory != null)
-            {
-                foreach (var suit in Enum.GetValues(typeof(EquipmentType)))
-                {
-                    WearableInstance item = Inventory.LoadBySlotAndType<WearableInstance>((byte)suit, InventoryType.Wear);
-                    if (item != null && item.DurabilityPoint > 0)
-                    {
-                        item.DurabilityPoint--;
-                        if (item.DurabilityPoint == 0)
-                        {
-                            Inventory.DeleteById(item.Id);
-                            Session.SendPacket(GenerateStatChar());
-                            Session.CurrentMap?.Broadcast(GenerateEq());
-                            Session.SendPacket(GenerateEquipment());
-                            Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
-                        }
-                    }
-                }
-            }
-        }
-
         public int HitCritical { get; set; }
 
         public int HitCriticalRate { get; set; }
@@ -193,11 +170,6 @@ namespace OpenNos.GameObject
             {
                 _inventory = value;
             }
-        }
-
-        public string GenerateRp(int mapid, int x, int y, string parametter)
-        {
-            return $"rp {mapid} {x} {y} {parametter}";
         }
 
         public bool Invisible
@@ -361,9 +333,84 @@ namespace OpenNos.GameObject
             }
         }
 
+        public List<QuicklistEntryDTO> QuicklistEntries { get; set; }
+
+        public RespawnMapTypeDTO Respawn
+        {
+            get
+            {
+                RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
+                respawn.DefaultX = 79;
+                respawn.DefaultY = 116;
+                respawn.DefaultMapId = 1;
+                respawn.RespawnMapTypeId = -1;
+
+                if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
+                {
+                    long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).RespawnMapTypeId;
+                    if (respawnmaptype != null)
+                    {
+                        RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                        if (resp == null)
+                        {
+                            RespawnMapTypeDTO defaultresp = Session.CurrentMap.DefaultRespawn;
+                            if (defaultresp != null)
+                            {
+                                respawn.DefaultX = defaultresp.DefaultX;
+                                respawn.DefaultY = defaultresp.DefaultY;
+                                respawn.DefaultMapId = defaultresp.DefaultMapId;
+                                respawn.RespawnMapTypeId = (long)respawnmaptype;
+                            }
+                        }
+                        else
+                        {
+                            respawn.DefaultX = resp.X;
+                            respawn.DefaultY = resp.Y;
+                            respawn.DefaultMapId = resp.MapId;
+                            respawn.RespawnMapTypeId = (long)respawnmaptype;
+                        }
+                    }
+                }
+                return respawn;
+            }
+        }
+
         public List<RespawnDTO> Respawns { get; set; }
 
-        public List<QuicklistEntryDTO> QuicklistEntries { get; set; }
+        public RespawnMapTypeDTO Return
+        {
+            get
+            {
+                RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
+                if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
+                {
+                    long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).ReturnMapTypeId;
+                    if (respawnmaptype != null)
+                    {
+                        RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                        if (resp == null)
+                        {
+                            RespawnMapTypeDTO defaultresp = Session.CurrentMap.DefaultReturn;
+                            if (defaultresp != null)
+                            {
+                                respawn.DefaultX = defaultresp.DefaultX;
+                                respawn.DefaultY = defaultresp.DefaultY;
+                                respawn.DefaultMapId = defaultresp.DefaultMapId;
+                                respawn.RespawnMapTypeId = (long)respawnmaptype;
+                            }
+                        }
+                        else
+                        {
+                            respawn.DefaultX = resp.X;
+                            respawn.DefaultY = resp.Y;
+                            respawn.DefaultMapId = resp.MapId;
+                            respawn.RespawnMapTypeId = (long)respawnmaptype;
+                        }
+                    }
+                }
+                return respawn;
+            }
+        }
 
         public short SaveX { get; set; }
 
@@ -442,86 +489,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        public RespawnMapTypeDTO Respawn
-        {
-            get
-            {
-                RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
-                respawn.DefaultX = 79;
-                respawn.DefaultY = 116;
-                respawn.DefaultMapId = 1;
-                respawn.RespawnMapTypeId = -1;
-
-                if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
-                {
-                    long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).RespawnMapTypeId;
-                    if (respawnmaptype != null)
-                    {
-                        RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
-                        if (resp == null)
-                        {
-                            RespawnMapTypeDTO defaultresp = Session.CurrentMap.DefaultRespawn;
-                            if (defaultresp != null)
-                            {
-                                respawn.DefaultX = defaultresp.DefaultX;
-                                respawn.DefaultY = defaultresp.DefaultY;
-                                respawn.DefaultMapId = defaultresp.DefaultMapId;
-                                respawn.RespawnMapTypeId = (long)respawnmaptype;
-                            }
-                        }
-                        else
-                        {
-                            respawn.DefaultX = resp.X;
-                            respawn.DefaultY = resp.Y;
-                            respawn.DefaultMapId = resp.MapId;
-                            respawn.RespawnMapTypeId = (long)respawnmaptype;
-                        }
-                    }
-                }
-                return respawn;
-            }
-        }
-
         public bool UseSp { get; set; }
 
         public byte VehicleSpeed { get; internal set; }
 
         public int WaterResistance { get; set; }
-
-        public RespawnMapTypeDTO Return
-        {
-            get
-            {
-                RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
-                if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
-                {
-                    long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).ReturnMapTypeId;
-                    if (respawnmaptype != null)
-                    {
-                        RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
-                        if (resp == null)
-                        {
-                            RespawnMapTypeDTO defaultresp = Session.CurrentMap.DefaultReturn;
-                            if (defaultresp != null)
-                            {
-                                respawn.DefaultX = defaultresp.DefaultX;
-                                respawn.DefaultY = defaultresp.DefaultY;
-                                respawn.DefaultMapId = defaultresp.DefaultMapId;
-                                respawn.RespawnMapTypeId = (long)respawnmaptype;
-                            }
-                        }
-                        else
-                        {
-                            respawn.DefaultX = resp.X;
-                            respawn.DefaultY = resp.Y;
-                            respawn.DefaultMapId = resp.MapId;
-                            respawn.RespawnMapTypeId = (long)respawnmaptype;
-                        }
-                    }
-                }
-                return respawn;
-            }
-        }
 
         #endregion
 
@@ -618,6 +590,170 @@ namespace OpenNos.GameObject
             Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
             Session.CurrentMap?.Broadcast(GenerateCMode());
             Session.CurrentMap?.Broadcast(GenerateEff(196), MapX, MapY);
+        }
+
+        public void CharacterLife()
+        {
+            int x = 1;
+            bool change = false;
+            if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)
+            {
+                Session.Character.Mp = 0;
+                Session.SendPacket(Session.Character.GenerateStat());
+                Session.Character.LastHealth = DateTime.Now;
+            }
+            else
+            {
+                WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
+                if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
+                {
+                    if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
+                    {
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == ClassType.Adventurer ? 0 : (byte)Session.Character.Class - 1)), Session.Character.MapX, Session.Character.MapY);
+                    }
+                    else
+                    {
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue), Session.Character.MapX, Session.Character.MapY);
+                    }
+                    Session.Character.LastEffect = DateTime.Now;
+                }
+
+                if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
+                {
+                    Session.Character.LastHealth = DateTime.Now;
+                    if (Session.HealthStop)
+                    {
+                        Session.HealthStop = false;
+                        return;
+                    }
+
+                    if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkillUse.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
+                    {
+                        if (x == 0)
+                        {
+                            x = 1;
+                        }
+                        if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
+                        {
+                            change = true;
+                            Session.Character.Hp += Session.Character.HealthHPLoad();
+                        }
+                        else
+                        {
+                            if (Session.Character.Hp != (int)Session.Character.HPLoad())
+                            {
+                                change = true;
+                            }
+                            Session.Character.Hp = (int)Session.Character.HPLoad();
+                        }
+                        if (x == 1)
+                        {
+                            if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
+                            {
+                                Session.Character.Mp += Session.Character.HealthMPLoad();
+                                change = true;
+                            }
+                            else
+                            {
+                                if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                                {
+                                    change = true;
+                                }
+                                Session.Character.Mp = (int)Session.Character.MPLoad();
+                            }
+                            x = 0;
+                        }
+                        if (change)
+                        {
+                            Session.SendPacket(Session.Character.GenerateStat());
+                        }
+                    }
+                }
+                if (Session.Character.UseSp)
+                {
+                    if (Session.Character.LastSpGaugeRemove <= new DateTime(0001, 01, 01, 00, 00, 00))
+                        Session.Character.LastSpGaugeRemove = DateTime.Now;
+                    if (Session.Character.LastSkillUse.AddSeconds(15) >= DateTime.Now && Session.Character.LastSpGaugeRemove.AddSeconds(1) <= DateTime.Now)
+                    {
+                        SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                        byte spType = 0;
+
+                        if ((specialist.Item.Morph > 1 && specialist.Item.Morph < 8) || (specialist.Item.Morph > 9 && specialist.Item.Morph < 16))
+                            spType = 3;
+                        else if (specialist.Item.Morph > 16 && specialist.Item.Morph < 29)
+                            spType = 2;
+                        else if (specialist.Item.Morph == 9)
+                            spType = 1;
+                        if (Session.Character.SpPoint >= spType)
+                        {
+                            Session.Character.SpPoint -= spType;
+                        }
+                        else if (Session.Character.SpPoint < spType && Session.Character.SpPoint != 0)
+                        {
+                            spType -= (byte)Session.Character.SpPoint;
+                            Session.Character.SpPoint = 0;
+                            Session.Character.SpAdditionPoint -= spType;
+                        }
+                        else if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint >= spType)
+                        {
+                            Session.Character.SpAdditionPoint -= spType;
+                        }
+                        else if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint < spType)
+                        {
+                            Session.Character.SpAdditionPoint = 0;
+
+                            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+
+                            if (Session.Character.UseSp)
+                            {
+                                Session.Character.LastSp = currentRunningSeconds;
+                                if (Session != null && Session.HasSession)
+                                {
+                                    if (Session.Character.IsVehicled)
+                                    {
+                                        return;
+                                    }
+                                    Logger.Debug(specialist.ItemVNum.ToString(), Session.SessionId);
+                                    Session.Character.UseSp = false;
+                                    Session.Character.LoadSpeed();
+                                    Session.SendPacket(Session.Character.GenerateCond());
+                                    Session.SendPacket(Session.Character.GenerateLev());
+                                    Session.Character.SpCooldown = 30;
+                                    if (Session.Character != null && Session.Character.SkillsSp != null)
+                                    {
+                                        foreach (CharacterSkill ski in Session.Character.SkillsSp.GetAllItems().Where(s => !s.CanBeUsed()))
+                                        {
+                                            short time = ski.Skill.Cooldown;
+                                            double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
+                                            temp /= 1000;
+                                            Session.Character.SpCooldown = temp > Session.Character.SpCooldown ? (int)temp : (int)Session.Character.SpCooldown;
+                                        }
+                                    }
+                                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
+                                    Session.SendPacket($"sd {Session.Character.SpCooldown}");
+                                    Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                                    Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
+
+                                    // ms_c
+                                    Session.SendPacket(Session.Character.GenerateSki());
+                                    Session.SendPackets(Session.Character.GenerateQuicklist());
+                                    Session.SendPacket(Session.Character.GenerateStat());
+                                    Session.SendPacket(Session.Character.GenerateStatChar());
+                                    Observable.Timer(TimeSpan.FromMilliseconds(Session.Character.SpCooldown * 1000))
+                                               .Subscribe(
+                                               o =>
+                                               {
+                                                   Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
+                                                   Session.SendPacket("sd 0");
+                                               });
+                                }
+                            }
+                        }
+                        Session.SendPacket(Session.Character.GenerateSpPoint());
+                        Session.Character.LastSpGaugeRemove = DateTime.Now;
+                    }
+                }
+            }
         }
 
         public void CloseExchangeOrTrade()
@@ -798,6 +934,7 @@ namespace OpenNos.GameObject
 
             // int CritChance = 4; int CritHit = 70; int MinDmg = 0; int MaxDmg = 0; int HitRate = 0;
             // sbyte Upgrade = 0;
+
             #endregion
 
             #region Sp
@@ -1289,54 +1426,6 @@ namespace OpenNos.GameObject
             return damage;
         }
 
-        public void SetReturnPoint(short MapId, short MapX, short MapY)
-        {
-            RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
-            if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
-            {
-                long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).ReturnMapTypeId;
-                if (respawnmaptype != null)
-                {
-                    RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
-                    if (resp == null)
-                    {
-                        resp = new RespawnDTO() { CharacterId = CharacterId, MapId = MapId, X = MapX, Y = MapY, RespawnMapTypeId = (long)respawnmaptype };
-                        Respawns.Add(resp);
-                    }
-                    else
-                    {
-                        resp.X = MapX;
-                        resp.Y = MapY;
-                        resp.MapId = MapId;
-                    }
-                }
-            }
-        }
-
-        public void SetRespawnPoint(short MapId, short MapX, short MapY)
-        {
-            RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
-            if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
-            {
-                long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).RespawnMapTypeId;
-                if (respawnmaptype != null)
-                {
-                    RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
-                    if (resp == null)
-                    {
-                        resp = new RespawnDTO() { CharacterId = CharacterId, MapId = MapId, X = MapX, Y = MapY, RespawnMapTypeId = (long)respawnmaptype };
-                        Respawns.Add(resp);
-                    }
-                    else
-                    {
-                        resp.X = MapX;
-                        resp.Y = MapY;
-                        resp.MapId = MapId;
-                    }
-                }
-            }
-        }
-
         public string GenerateDelay(int delay, int type, string argument)
         {
             return $"delay {delay} {type} {argument}";
@@ -1492,7 +1581,6 @@ namespace OpenNos.GameObject
                 }
             }
             return $"eq {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {(!InvisibleGm ? GenerateEqRareUpgradeForPacket() : null)}";
-
         }
 
         public string GenerateEqListForPacket()
@@ -2015,169 +2103,6 @@ namespace OpenNos.GameObject
             return ServerManager.GetMap(MapId).UserShops.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
         }
 
-        public void CharacterLife()
-        {
-            int x = 1;
-            bool change = false;
-            if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)
-            {
-                Session.Character.Mp = 0;
-                Session.SendPacket(Session.Character.GenerateStat());
-                Session.Character.LastHealth = DateTime.Now;
-            }
-            else
-            {
-                WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
-                if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
-                {
-                    if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
-                    {
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == ClassType.Adventurer ? 0 : (byte)Session.Character.Class - 1)), Session.Character.MapX, Session.Character.MapY);
-                    }
-                    else
-                    {
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue), Session.Character.MapX, Session.Character.MapY);
-                    }
-                    Session.Character.LastEffect = DateTime.Now;
-                }
-
-                if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
-                {
-                    Session.Character.LastHealth = DateTime.Now;
-                    if (Session.HealthStop)
-                    {
-                        Session.HealthStop = false;
-                        return;
-                    }
-
-                    if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkillUse.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
-                    {
-                        if (x == 0)
-                        {
-                            x = 1;
-                        }
-                        if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
-                        {
-                            change = true;
-                            Session.Character.Hp += Session.Character.HealthHPLoad();
-                        }
-                        else
-                        {
-                            if (Session.Character.Hp != (int)Session.Character.HPLoad())
-                            {
-                                change = true;
-                            }
-                            Session.Character.Hp = (int)Session.Character.HPLoad();
-                        }
-                        if (x == 1)
-                        {
-                            if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
-                            {
-                                Session.Character.Mp += Session.Character.HealthMPLoad();
-                                change = true;
-                            }
-                            else
-                            {
-                                if (Session.Character.Mp != (int)Session.Character.MPLoad())
-                                {
-                                    change = true;
-                                }
-                                Session.Character.Mp = (int)Session.Character.MPLoad();
-                            }
-                            x = 0;
-                        }
-                        if (change)
-                        {
-                            Session.SendPacket(Session.Character.GenerateStat());
-                        }
-                    }
-                }
-                if (Session.Character.UseSp)
-                {
-                    if (Session.Character.LastSpGaugeRemove <= new DateTime(0001, 01, 01, 00, 00, 00))
-                        Session.Character.LastSpGaugeRemove = DateTime.Now;
-                    if (Session.Character.LastSkillUse.AddSeconds(15) >= DateTime.Now && Session.Character.LastSpGaugeRemove.AddSeconds(1) <= DateTime.Now)
-                    {
-                        SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-                        byte spType = 0;
-
-                        if ((specialist.Item.Morph > 1 && specialist.Item.Morph < 8) || (specialist.Item.Morph > 9 && specialist.Item.Morph < 16))
-                            spType = 3;
-                        else if (specialist.Item.Morph > 16 && specialist.Item.Morph < 29)
-                            spType = 2;
-                        else if (specialist.Item.Morph == 9)
-                            spType = 1;
-                        if (Session.Character.SpPoint >= spType)
-                        {
-                            Session.Character.SpPoint -= spType;
-                        }
-                        else if (Session.Character.SpPoint < spType && Session.Character.SpPoint != 0)
-                        {
-                            spType -= (byte)Session.Character.SpPoint;
-                            Session.Character.SpPoint = 0;
-                            Session.Character.SpAdditionPoint -= spType;
-                        }
-                        else if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint >= spType)
-                        {
-                            Session.Character.SpAdditionPoint -= spType;
-                        }
-                        else if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint < spType)
-                        {
-                            Session.Character.SpAdditionPoint = 0;
-
-                            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-
-                            if (Session.Character.UseSp)
-                            {
-                                Session.Character.LastSp = currentRunningSeconds;
-                                if (Session != null && Session.HasSession)
-                                {
-                                    if (Session.Character.IsVehicled)
-                                    {
-                                        return;
-                                    }
-                                    Logger.Debug(specialist.ItemVNum.ToString(), Session.SessionId);
-                                    Session.Character.UseSp = false;
-                                    Session.Character.LoadSpeed();
-                                    Session.SendPacket(Session.Character.GenerateCond());
-                                    Session.SendPacket(Session.Character.GenerateLev());
-                                    Session.Character.SpCooldown = 30;
-                                    if (Session.Character != null && Session.Character.SkillsSp != null)
-                                    {
-                                        foreach (CharacterSkill ski in Session.Character.SkillsSp.GetAllItems().Where(s => !s.CanBeUsed()))
-                                        {
-                                            short time = ski.Skill.Cooldown;
-                                            double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
-                                            temp /= 1000;
-                                            Session.Character.SpCooldown = temp > Session.Character.SpCooldown ? (int)temp : (int)Session.Character.SpCooldown;
-                                        }
-                                    }
-                                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
-                                    Session.SendPacket($"sd {Session.Character.SpCooldown}");
-                                    Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-                                    Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
-
-                                    // ms_c
-                                    Session.SendPacket(Session.Character.GenerateSki());
-                                    Session.SendPackets(Session.Character.GenerateQuicklist());
-                                    Session.SendPacket(Session.Character.GenerateStat());
-                                    Session.SendPacket(Session.Character.GenerateStatChar());
-                                    Observable.Timer(TimeSpan.FromMilliseconds(Session.Character.SpCooldown * 1000))
-                                               .Subscribe(
-                                               o =>
-                                               {
-                                                   Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
-                                                   Session.SendPacket("sd 0");
-                                               });
-                                }
-                            }
-                        }
-                        Session.SendPacket(Session.Character.GenerateSpPoint());
-                        Session.Character.LastSpGaugeRemove = DateTime.Now;
-                    }
-                }
-            }
-        }
         public string GeneratePost(MailDTO mail, byte type)
         {
             return $"post 1 {type} {MailList.First(s => s.Value.MailId == (mail.MailId)).Key} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddHHmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
@@ -2262,6 +2187,11 @@ namespace OpenNos.GameObject
         public string GenerateRevive()
         {
             return $"revive 1 {CharacterId} 0";
+        }
+
+        public string GenerateRp(int mapid, int x, int y, string parametter)
+        {
+            return $"rp {mapid} {x} {y} {parametter}";
         }
 
         public string GenerateSay(string message, int type)
@@ -2649,7 +2579,6 @@ namespace OpenNos.GameObject
                     ElementRate += fairy.ElementRate + fairy.Item.ElementRate;
                 }
             }
-
 
             // handle specialist
             if (UseSp)
@@ -3407,7 +3336,6 @@ namespace OpenNos.GameObject
                 {
                     Session.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEW_MAIL"), j), 10));
                 }
-
             }
             catch (Exception ex)
             {
@@ -3625,6 +3553,54 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void SetRespawnPoint(short MapId, short MapX, short MapY)
+        {
+            RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
+            if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
+            {
+                long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).RespawnMapTypeId;
+                if (respawnmaptype != null)
+                {
+                    RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                    if (resp == null)
+                    {
+                        resp = new RespawnDTO() { CharacterId = CharacterId, MapId = MapId, X = MapX, Y = MapY, RespawnMapTypeId = (long)respawnmaptype };
+                        Respawns.Add(resp);
+                    }
+                    else
+                    {
+                        resp.X = MapX;
+                        resp.Y = MapY;
+                        resp.MapId = MapId;
+                    }
+                }
+            }
+        }
+
+        public void SetReturnPoint(short MapId, short MapX, short MapY)
+        {
+            RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
+            if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
+            {
+                long? respawnmaptype = Session.CurrentMap.MapTypes.ElementAt(0).ReturnMapTypeId;
+                if (respawnmaptype != null)
+                {
+                    RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
+                    if (resp == null)
+                    {
+                        resp = new RespawnDTO() { CharacterId = CharacterId, MapId = MapId, X = MapX, Y = MapY, RespawnMapTypeId = (long)respawnmaptype };
+                        Respawns.Add(resp);
+                    }
+                    else
+                    {
+                        resp.X = MapX;
+                        resp.Y = MapY;
+                        resp.MapId = MapId;
+                    }
+                }
+            }
+        }
+
         public double SPXPLoad()
         {
             SpecialistInstance specialist = null;
@@ -3780,6 +3756,29 @@ namespace OpenNos.GameObject
         public double XPLoad()
         {
             return CharacterHelper.XpData[Level - 1];
+        }
+
+        internal void RefreshValidity()
+        {
+            if (Inventory != null)
+            {
+                foreach (var suit in Enum.GetValues(typeof(EquipmentType)))
+                {
+                    WearableInstance item = Inventory.LoadBySlotAndType<WearableInstance>((byte)suit, InventoryType.Wear);
+                    if (item != null && item.DurabilityPoint > 0)
+                    {
+                        item.DurabilityPoint--;
+                        if (item.DurabilityPoint == 0)
+                        {
+                            Inventory.DeleteById(item.Id);
+                            Session.SendPacket(GenerateStatChar());
+                            Session.CurrentMap?.Broadcast(GenerateEq());
+                            Session.SendPacket(GenerateEquipment());
+                            Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
+                        }
+                    }
+                }
+            }
         }
 
         internal void SetSession(ClientSession clientSession)

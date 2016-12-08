@@ -1,7 +1,6 @@
 ﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.DAL.Mock
@@ -36,6 +35,7 @@ namespace OpenNos.DAL.Mock
         {
             return Container.SingleOrDefault(m => m.MailId == mailId);
         }
+
         #endregion
     }
 }

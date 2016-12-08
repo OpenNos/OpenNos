@@ -43,6 +43,13 @@ namespace OpenNos.DAL.Interface
         void Insert(List<NpcMonsterDTO> npc);
 
         /// <summary>
+        /// Inser or Update data in entity
+        /// </summary>
+        /// <param name="npcMonster"></param>
+        /// <returns></returns>
+        SaveResult InsertOrUpdate(ref NpcMonsterDTO npcMonster);
+
+        /// <summary>
         /// Used for loading all monsters from entity
         /// </summary>
         /// <returns></returns>
@@ -54,13 +61,6 @@ namespace OpenNos.DAL.Interface
         /// <param name="npcMonsterVNum"></param>
         /// <returns></returns>
         NpcMonsterDTO LoadByVNum(short npcMonsterVNum);
-
-        /// <summary>
-        /// Inser or Update data in entity
-        /// </summary>
-        /// <param name="npcMonster"></param>
-        /// <returns></returns>
-        SaveResult InsertOrUpdate(ref NpcMonsterDTO npcMonster);
 
         #endregion
     }

@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace OpenNos.GameObject
 {
@@ -437,8 +436,6 @@ namespace OpenNos.GameObject
                 foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     string[] packetsplit = packet.Split(' ', '^');
-
-                 
 
                     if (_encryptor.HasCustomParameter)
                     {

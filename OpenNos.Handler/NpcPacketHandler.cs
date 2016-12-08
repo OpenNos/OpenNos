@@ -96,7 +96,8 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        // check if the item has been removed successfully from previous owner and remove it
+                        // check if the item has been removed successfully from previous owner and
+                        // remove it
                         if (BuyValidate(Session, shop, buyPacket.Slot, amount))
                         {
                             ItemInstance inv = item.ItemInstance.Type == InventoryType.Equipment
@@ -331,73 +332,6 @@ namespace OpenNos.Handler
                         break;
                     }
             }
-        }
-
-        private bool BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, byte amount)
-        {
-            if (!clientSession.HasCurrentMap)
-            {
-                return false;
-            }
-            PersonalShopItem shopitem = clientSession.CurrentMap.UserShops[shop.Key].Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
-            if (shopitem == null)
-            {
-                return false;
-            }
-            Guid id = shopitem.ItemInstance.Id;
-
-            ClientSession shopOwnerSession = ServerManager.Instance.GetSessionByCharacterId(shop.Value.OwnerId);
-            if (shopOwnerSession == null)
-            {
-                return false;
-            }
-
-            if (amount > shopitem.SellAmount)
-            {
-                amount = shopitem.SellAmount;
-            }
-
-            shopOwnerSession.Character.Gold += shopitem.Price * amount;
-            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateGold());
-            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), Session.Character.Name, shopitem.ItemInstance.Item.Name, amount)));
-            clientSession.CurrentMap.UserShops[shop.Key].Sell += shopitem.Price * amount;
-
-            if (shopitem.ItemInstance.Type != InventoryType.Equipment)
-            {
-                // remove sold amount of items
-                shopOwnerSession.Character.Inventory.RemoveItemAmountFromInventory(amount, id);
-
-                // remove sold amount from sellamount
-                shopitem.SellAmount -= amount;
-            }
-            else
-            {
-                // remove equipment
-                shopOwnerSession.Character.Inventory.Remove(shopitem.ItemInstance.Id);
-
-                // send empty slot to owners inventory
-                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, shopitem.ItemInstance.Type, shopitem.ItemInstance.Slot, 0, 0, 0, 0));
-
-                // remove the sell amount
-                shopitem.SellAmount = 0;
-            }
-
-            // remove item from shop if the amount the user wanted to sell has been sold
-            if (shopitem.SellAmount == 0)
-            {
-                clientSession.CurrentMap.UserShops[shop.Key].Items.Remove(shopitem);
-            }
-
-            // update currently sold item
-            shopOwnerSession.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{shopitem.SellAmount}");
-
-            // end shop 
-            if (!clientSession.CurrentMap.UserShops[shop.Key].Items.Any(s => s.SellAmount > 0))
-            {
-                shopOwnerSession.Character.CloseShop();
-            }
-
-            return true;
         }
 
         [Packet("m_shop")]
@@ -902,6 +836,73 @@ namespace OpenNos.Handler
                     }
                 }
             }
+        }
+
+        private bool BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, byte amount)
+        {
+            if (!clientSession.HasCurrentMap)
+            {
+                return false;
+            }
+            PersonalShopItem shopitem = clientSession.CurrentMap.UserShops[shop.Key].Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
+            if (shopitem == null)
+            {
+                return false;
+            }
+            Guid id = shopitem.ItemInstance.Id;
+
+            ClientSession shopOwnerSession = ServerManager.Instance.GetSessionByCharacterId(shop.Value.OwnerId);
+            if (shopOwnerSession == null)
+            {
+                return false;
+            }
+
+            if (amount > shopitem.SellAmount)
+            {
+                amount = shopitem.SellAmount;
+            }
+
+            shopOwnerSession.Character.Gold += shopitem.Price * amount;
+            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateGold());
+            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), Session.Character.Name, shopitem.ItemInstance.Item.Name, amount)));
+            clientSession.CurrentMap.UserShops[shop.Key].Sell += shopitem.Price * amount;
+
+            if (shopitem.ItemInstance.Type != InventoryType.Equipment)
+            {
+                // remove sold amount of items
+                shopOwnerSession.Character.Inventory.RemoveItemAmountFromInventory(amount, id);
+
+                // remove sold amount from sellamount
+                shopitem.SellAmount -= amount;
+            }
+            else
+            {
+                // remove equipment
+                shopOwnerSession.Character.Inventory.Remove(shopitem.ItemInstance.Id);
+
+                // send empty slot to owners inventory
+                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, shopitem.ItemInstance.Type, shopitem.ItemInstance.Slot, 0, 0, 0, 0));
+
+                // remove the sell amount
+                shopitem.SellAmount = 0;
+            }
+
+            // remove item from shop if the amount the user wanted to sell has been sold
+            if (shopitem.SellAmount == 0)
+            {
+                clientSession.CurrentMap.UserShops[shop.Key].Items.Remove(shopitem);
+            }
+
+            // update currently sold item
+            shopOwnerSession.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{shopitem.SellAmount}");
+
+            // end shop
+            if (!clientSession.CurrentMap.UserShops[shop.Key].Items.Any(s => s.SellAmount > 0))
+            {
+                shopOwnerSession.Character.CloseShop();
+            }
+
+            return true;
         }
 
         private void LoadShopItem(long owner, KeyValuePair<long, MapShop> shop)

@@ -53,9 +53,9 @@ namespace OpenNos.GameObject.Networking
 
         public Skill Skill { get; set; }
 
-        public short SkillEffect { get; set; }
-
         public ComboDTO SkillCombo { get; set; }
+
+        public short SkillEffect { get; set; }
 
         public TargetHitType TargetHitType { get; set; }
 

@@ -15,7 +15,6 @@
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 {

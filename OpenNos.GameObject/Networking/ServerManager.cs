@@ -12,6 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -21,10 +25,6 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL;
-using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -47,6 +47,7 @@ namespace OpenNos.GameObject
 
         private List<DropDTO> _generalDrops;
         private ThreadSafeSortedList<long, Group> _groups;
+        private long _lastGroupId;
         private ThreadSafeSortedList<short, List<MapNpc>> _mapNpcs;
         private ThreadSafeSortedList<short, List<DropDTO>> _monsterDrops;
         private ThreadSafeSortedList<short, List<NpcMonsterSkill>> _monsterSkills;
@@ -58,7 +59,6 @@ namespace OpenNos.GameObject
 
         private ThreadSafeSortedList<int, List<ShopSkillDTO>> _shopSkills;
         private ThreadSafeSortedList<int, List<TeleporterDTO>> _teleporters;
-        private long _lastGroupId;
 
         #endregion
 
@@ -68,104 +68,19 @@ namespace OpenNos.GameObject
         {
         }
 
-        public void LaunchEvents()
-        {
-            _groups = new ThreadSafeSortedList<long, Group>();
-
-            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
-            {
-                SaveAllProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x =>
-            {
-                GroupProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
-            {
-                BotProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
-            {
-                MailProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
-            {
-                RemoveItemProcess();
-            });
-
-            foreach (var map in _maps)
-            {
-                Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
-                {
-                    try
-                    {
-                        if (!map.Value.IsSleeping)
-                        {
-                            map.Value.RemoveMapItem();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                });
-
-                foreach (MapNpc npc in map.Value.Npcs)
-                {
-                    npc.StartLife();
-                }
-
-                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
-                {
-                    Parallel.ForEach(map.Value.Monsters, monster => { monster.StartLife(); });
-                });
-            }
-
-            _lastGroupId = 1;
-        }
-
-        private void RemoveItemProcess()
-        {
-            try
-            {
-                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshValidity());
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
-        private void MailProcess()
-        {
-            try
-            {
-                Mails = DAOFactory.MailDAO.LoadAll().ToList();
-                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
         #endregion
 
         #region Properties
 
         public static int DropRate { get; set; }
 
-        public static List<MailDTO> Mails { get; set; }
-
         public static int FairyXpRate { get; set; }
 
         public static int GoldDropRate { get; set; }
 
         public static int GoldRate { get; set; }
+
+        public static List<MailDTO> Mails { get; set; }
 
         public static int XpRate { get; set; }
 
@@ -754,6 +669,66 @@ namespace OpenNos.GameObject
             return true;
         }
 
+        public void LaunchEvents()
+        {
+            _groups = new ThreadSafeSortedList<long, Group>();
+
+            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
+            {
+                SaveAllProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x =>
+            {
+                GroupProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
+            {
+                BotProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
+            {
+                MailProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
+            {
+                RemoveItemProcess();
+            });
+
+            foreach (var map in _maps)
+            {
+                Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
+                {
+                    try
+                    {
+                        if (!map.Value.IsSleeping)
+                        {
+                            map.Value.RemoveMapItem();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                });
+
+                foreach (MapNpc npc in map.Value.Npcs)
+                {
+                    npc.StartLife();
+                }
+
+                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+                {
+                    Parallel.ForEach(map.Value.Monsters, monster => { monster.StartLife(); });
+                });
+            }
+
+            _lastGroupId = 1;
+        }
+
         // Map
         public void LeaveMap(long id)
         {
@@ -973,13 +948,37 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Error(e);
+            }
+        }
 
+        private void MailProcess()
+        {
+            try
+            {
+                Mails = DAOFactory.MailDAO.LoadAll().ToList();
+                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         private void RemoveGroup(Group grp)
         {
             _groups.Remove(grp.GroupId);
+        }
+
+        private void RemoveItemProcess()
+        {
+            try
+            {
+                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshValidity());
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         // Server

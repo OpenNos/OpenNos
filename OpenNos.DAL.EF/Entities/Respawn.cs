@@ -20,15 +20,15 @@ namespace OpenNos.DAL.EF
 
         public virtual Character Character { get; set; }
 
-        public virtual Map Map { get; set; }
-
-        public virtual RespawnMapType RespawnMapType { get; set; }
-
         public long CharacterId { get; set; }
+
+        public virtual Map Map { get; set; }
 
         public short MapId { get; set; }
 
         public long RespawnId { get; set; }
+
+        public virtual RespawnMapType RespawnMapType { get; set; }
 
         public long RespawnMapTypeId { get; set; }
 

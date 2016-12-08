@@ -42,17 +42,31 @@ namespace EpPathFinding
 {
     public class NodePool
     {
+        #region Members
+
         protected Dictionary<GridPos, Node> MNodes;
+
+        #endregion
+
+        #region Instantiation
 
         public NodePool()
         {
             MNodes = new Dictionary<GridPos, Node>();
         }
 
+        #endregion
+
+        #region Properties
+
         public Dictionary<GridPos, Node> Nodes
         {
             get { return MNodes; }
         }
+
+        #endregion
+
+        #region Methods
 
         public Node GetNode(int iX, int iY)
         {
@@ -113,5 +127,7 @@ namespace EpPathFinding
             if (MNodes.ContainsKey(iPos))
                 MNodes.Remove(iPos);
         }
+
+        #endregion
     }
 }

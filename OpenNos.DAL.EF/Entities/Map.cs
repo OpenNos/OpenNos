@@ -50,10 +50,6 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<MapNpc> MapNpc { get; set; }
 
-        public virtual ICollection<Respawn> Respawn { get; set; }
-
-        public virtual ICollection<RespawnMapType> RespawnMapType { get; set; }
-
         public virtual ICollection<MapTypeMap> MapTypeMap { get; set; }
 
         public int Music { get; set; }
@@ -64,6 +60,10 @@ namespace OpenNos.DAL.EF
         public virtual ICollection<Portal> Portal { get; set; }
 
         public virtual ICollection<Portal> Portal1 { get; set; }
+
+        public virtual ICollection<Respawn> Respawn { get; set; }
+
+        public virtual ICollection<RespawnMapType> RespawnMapType { get; set; }
 
         public bool ShopAllowed { get; set; }
 

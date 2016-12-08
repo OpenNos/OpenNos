@@ -182,7 +182,7 @@ namespace OpenNos.DAL.EF.DB
             modelBuilder.Entity<Character>()
                 .HasOptional(e => e.FamilyCharacter)
                 .WithMany(e => e.Character)
-                .HasForeignKey(e=>e.FamilyCharacterId)
+                .HasForeignKey(e => e.FamilyCharacterId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<FamilyCharacter>()

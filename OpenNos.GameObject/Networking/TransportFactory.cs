@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
@@ -9,9 +8,9 @@ namespace OpenNos.GameObject
         #region Members
 
         private static TransportFactory instance;
-        private ConcurrentBag<long> _transportIds;
-        private Random _random;
         private long _lastTransportId = 1;
+        private Random _random;
+        private ConcurrentBag<long> _transportIds;
 
         #endregion
 

@@ -1264,6 +1264,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_WHISPER_BLOCKED"), 0));
             }
         }
+
         #endregion
     }
 }

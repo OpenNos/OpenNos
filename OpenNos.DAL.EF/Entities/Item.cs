@@ -101,13 +101,13 @@ namespace OpenNos.DAL.EF
 
         public bool IsHeroic { get; set; }
 
+        public bool IsHolder { get; set; }
+
         public bool IsMinilandObject { get; set; }
 
         public bool IsSoldable { get; set; }
 
         public bool IsTradable { get; set; }
-
-        public bool IsHolder { get; set; }
 
         public virtual ICollection<ItemInstance> ItemInstances { get; set; }
 

@@ -46,11 +46,13 @@ namespace OpenNos.GameObject
 
         public short FirstY { get; set; }
 
-        public DateTime LastEffect { get; private set; }
-
         public JumpPointParam JumpPointParameters { get; set; }
 
+        public DateTime LastEffect { get; private set; }
+
         public DateTime LastMove { get; private set; }
+
+        public IDisposable LifeEvent { get; set; }
 
         public Map Map { get; set; }
 
@@ -63,7 +65,6 @@ namespace OpenNos.GameObject
         public int Target { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
-        public IDisposable LifeEvent { get; set; }
 
         #endregion
 
@@ -136,28 +137,6 @@ namespace OpenNos.GameObject
             {
                 shop.Initialize();
                 Shop = shop;
-            }
-
-        }
-
-        internal void StartLife()
-        {
-            if (LifeEvent == default(IDisposable))
-            {
-                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000 / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
-                {
-                    try
-                    {
-                        if (!Map.IsSleeping)
-                        {
-                            NpcLife();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                });
             }
         }
 
@@ -332,6 +311,27 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
+            }
+        }
+
+        internal void StartLife()
+        {
+            if (LifeEvent == default(IDisposable))
+            {
+                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000 / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
+                {
+                    try
+                    {
+                        if (!Map.IsSleeping)
+                        {
+                            NpcLife();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                });
             }
         }
 

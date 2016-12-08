@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -710,7 +709,6 @@ namespace OpenNos.GameObject
             // target following
             else
             {
-
                 if (Map != null)
                 {
                     ClientSession targetSession = Map.GetSessionByCharacterId(Target);

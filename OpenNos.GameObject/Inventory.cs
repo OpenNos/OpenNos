@@ -85,11 +85,6 @@ namespace OpenNos.GameObject
             else return null;
         }
 
-        public IEnumerable<ItemInstance> LoadBySlotAllowed(short itemVNum, int amount)
-        {
-            return this.GetAllItems().Where(i => i.ItemVNum.Equals(itemVNum) && i.Amount + amount <= MAX_ITEM_AMOUNT);
-        }
-
         public ItemInstance AddToInventory(ItemInstance newItem, InventoryType? type = null)
         {
             if (Owner != null)
@@ -305,6 +300,11 @@ namespace OpenNos.GameObject
             return (T)this[id];
         }
 
+        public IEnumerable<ItemInstance> LoadBySlotAllowed(short itemVNum, int amount)
+        {
+            return this.GetAllItems().Where(i => i.ItemVNum.Equals(itemVNum) && i.Amount + amount <= MAX_ITEM_AMOUNT);
+        }
+
         public T LoadBySlotAndType<T>(short slot, InventoryType type)
                     where T : ItemInstance
         {
@@ -358,6 +358,7 @@ namespace OpenNos.GameObject
 
                         return sourceInstance;
                     }
+
                     // check for free target slot
                     short? nextFreeSlot = targetType == InventoryType.Wear ? (LoadBySlotAndType((short)sourceInstance.Item.EquipmentSlot, InventoryType.Wear) == null
                                                                     ? (short)sourceInstance.Item.EquipmentSlot

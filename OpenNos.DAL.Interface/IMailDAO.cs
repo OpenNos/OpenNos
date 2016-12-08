@@ -26,9 +26,9 @@ namespace OpenNos.DAL.Interface
 
         SaveResult InsertOrUpdate(ref MailDTO mail);
 
-        MailDTO LoadById(long mailId);
-
         IEnumerable<MailDTO> LoadAll();
+
+        MailDTO LoadById(long mailId);
 
         #endregion
     }

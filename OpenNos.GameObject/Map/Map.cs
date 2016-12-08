@@ -12,15 +12,15 @@
  * GNU General Public License for more details.
  */
 
+using EpPathFinding;
+using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using EpPathFinding;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL;
-using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -29,9 +29,9 @@ namespace OpenNos.GameObject
         #region Members
 
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
+        private bool _disposed;
         private bool _isSleeping;
         private bool _isSleepingRequest;
-        private bool _disposed;
         private List<int> _mapMonsterIds;
         private List<MapNpc> _npcs;
         private List<PortalDTO> _portals;
@@ -132,7 +132,7 @@ namespace OpenNos.GameObject
             }
             set
             {
-                if(value == true)
+                if (value == true)
                 {
                     _isSleepingRequest = true;
                 }

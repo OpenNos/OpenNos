@@ -42,8 +42,14 @@ namespace EpPathFinding
 {
     public class GridPos : IEquatable<GridPos>
     {
+        #region Members
+
         public int x;
         public int y;
+
+        #endregion
+
+        #region Instantiation
 
         public GridPos()
         {
@@ -63,35 +69,13 @@ namespace EpPathFinding
             y = b.y;
         }
 
-        public override int GetHashCode()
+        #endregion
+
+        #region Methods
+
+        public static bool operator !=(GridPos a, GridPos b)
         {
-            return x ^ y;
-        }
-
-        public override bool Equals(object obj)
-        {
-            // Unlikely to compare incorrect type so removed for performance
-            // if (!(obj.GetType() == typeof(GridPos)))
-            //     return false;
-            GridPos p = (GridPos)obj;
-
-            if (ReferenceEquals(null, p))
-            {
-                return false;
-            }
-
-            // Return true if the fields match:
-            return (x == p.x) && (y == p.y);
-        }
-
-        public bool Equals(GridPos p)
-        {
-            if (ReferenceEquals(null, p))
-            {
-                return false;
-            }
-            // Return true if the fields match:
-            return (x == p.x) && (y == p.y);
+            return !(a == b);
         }
 
         public static bool operator ==(GridPos a, GridPos b)
@@ -109,13 +93,40 @@ namespace EpPathFinding
             {
                 return false;
             }
+
             // Return true if the fields match:
             return a.x == b.x && a.y == b.y;
         }
 
-        public static bool operator !=(GridPos a, GridPos b)
+        public override bool Equals(object obj)
         {
-            return !(a == b);
+            // Unlikely to compare incorrect type so removed for performance if (!(obj.GetType() ==
+            // typeof(GridPos))) return false;
+            GridPos p = (GridPos)obj;
+
+            if (ReferenceEquals(null, p))
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return (x == p.x) && (y == p.y);
+        }
+
+        public bool Equals(GridPos p)
+        {
+            if (ReferenceEquals(null, p))
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return (x == p.x) && (y == p.y);
+        }
+
+        public override int GetHashCode()
+        {
+            return x ^ y;
         }
 
         public GridPos Set(int iX, int iY)
@@ -124,5 +135,7 @@ namespace EpPathFinding
             y = iY;
             return this;
         }
+
+        #endregion
     }
 }

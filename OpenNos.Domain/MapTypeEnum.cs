@@ -39,6 +39,6 @@ namespace OpenNos.Domain
         LandOfTheDead = 19,
         Act32 = 20
 
-        // Future group : Raid | Time-Space | 
+        // Future group : Raid | Time-Space |
     }
 }

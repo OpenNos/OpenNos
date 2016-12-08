@@ -39,34 +39,6 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public SaveResult InsertOrUpdate(ref NpcMonsterDTO npcMonster)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    short npcMonsterVNum = npcMonster.NpcMonsterVNum;
-                    NpcMonster entity = context.NpcMonster.FirstOrDefault(c => c.NpcMonsterVNum.Equals(npcMonsterVNum));
-
-                    if (entity == null)
-                    {
-                        npcMonster = Insert(npcMonster, context);
-                        return SaveResult.Inserted;
-                    }
-                    else
-                    {
-                        npcMonster = Update(entity, npcMonster, context);
-                        return SaveResult.Updated;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_NPCMONSTER_ERROR"), npcMonster.NpcMonsterVNum, e.Message), e);
-                return SaveResult.Error;
-            }
-        }
-
         public void Insert(List<NpcMonsterDTO> npcs)
         {
             try
@@ -105,6 +77,34 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Error(e);
                 return null;
+            }
+        }
+
+        public SaveResult InsertOrUpdate(ref NpcMonsterDTO npcMonster)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    short npcMonsterVNum = npcMonster.NpcMonsterVNum;
+                    NpcMonster entity = context.NpcMonster.FirstOrDefault(c => c.NpcMonsterVNum.Equals(npcMonsterVNum));
+
+                    if (entity == null)
+                    {
+                        npcMonster = Insert(npcMonster, context);
+                        return SaveResult.Inserted;
+                    }
+                    else
+                    {
+                        npcMonster = Update(entity, npcMonster, context);
+                        return SaveResult.Updated;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_NPCMONSTER_ERROR"), npcMonster.NpcMonsterVNum, e.Message), e);
+                return SaveResult.Error;
             }
         }
 

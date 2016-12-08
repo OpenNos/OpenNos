@@ -43,8 +43,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// </summary>
         private readonly byte[] _buffer;
 
-        private Random _random = new Random();
-
         /// <summary>
         /// Socket object to send/reveice messages.
         /// </summary>
@@ -59,10 +57,9 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         private readonly object _syncLock;
 
         private bool _disposed;
-
         private ConcurrentQueue<byte[]> _highPriorityBuffer;
-
         private ConcurrentQueue<byte[]> _lowPriorityBuffer;
+        private Random _random = new Random();
 
         /// <summary>
         /// A flag to control thread's running
@@ -275,8 +272,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             }
 
             try
-            { 
-
+            {
                 var bytesRead = -1;
 
                 // Get received bytes count

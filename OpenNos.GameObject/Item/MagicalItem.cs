@@ -48,6 +48,7 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     break;
+
                 //respawn objects
                 case 1:
                     int x1;
@@ -73,9 +74,11 @@ namespace OpenNos.GameObject
                                             case 1:
                                                 session.SendPacket(session.Character.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^3"));
                                                 break;
+
                                             case 2:
                                                 session.SendPacket(session.Character.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^4"));
                                                 break;
+
                                             case 3:
                                                 session.Character.SetReturnPoint(session.Character.MapId, session.Character.MapX, session.Character.MapY);
                                                 RespawnMapTypeDTO resp = session.Character.Respawn;
@@ -87,6 +90,7 @@ namespace OpenNos.GameObject
                                                 }
                                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                                 break;
+
                                             case 4:
                                                 RespawnMapTypeDTO respa = session.Character.Respawn;
                                                 if (respa.DefaultX != 0 && respa.DefaultY != 0 && respa.DefaultMapId != 0)
@@ -114,9 +118,11 @@ namespace OpenNos.GameObject
                                                 session.SendPacket(session.Character.GenerateRp(resp.DefaultMapId, resp.DefaultX, resp.DefaultY, $"#u_i^{x1}^{x2}^{x3}^{x4}^1"));
                                             }
                                             break;
+
                                         case 1:
                                             session.SendPacket(session.Character.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^2"));
                                             break;
+
                                         case 2:
                                             if (resp.DefaultX != 0 && resp.DefaultY != 0 && resp.DefaultMapId != 0)
                                             {
@@ -131,6 +137,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 // dyes or waxes
                 case 10:
                 case 11:

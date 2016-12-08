@@ -41,134 +41,16 @@ using System.Collections.Generic;
 
 namespace EpPathFinding
 {
-    public class Node : IComparable
-    {
-        public int x;
-        public int y;
-        public byte walkable;
-        public float heuristicStartToEndLen;
-        public float startToCurNodeLen;
-        public float? heuristicCurNodeToEndLen;
-        public bool isOpened;
-        public bool isClosed;
-        public object parent;
-
-        public Node(int iX, int iY, byte? iWalkable = null)
-        {
-            x = iX;
-            y = iY;
-            walkable = iWalkable ?? 1;
-            heuristicStartToEndLen = 0;
-            startToCurNodeLen = 0;
-            heuristicCurNodeToEndLen = null;
-            isOpened = false;
-            isClosed = false;
-            parent = null;
-        }
-
-        public Node(Node b)
-        {
-            x = b.x;
-            y = b.y;
-            walkable = b.walkable;
-            heuristicStartToEndLen = b.heuristicStartToEndLen;
-            startToCurNodeLen = b.startToCurNodeLen;
-            heuristicCurNodeToEndLen = b.heuristicCurNodeToEndLen;
-            isOpened = b.isOpened;
-            isClosed = b.isClosed;
-            parent = b.parent;
-        }
-
-        public void Reset(byte? iWalkable = null)
-        {
-            if (iWalkable.HasValue)
-                walkable = iWalkable.Value;
-            heuristicStartToEndLen = 0;
-            startToCurNodeLen = 0;
-            heuristicCurNodeToEndLen = null;
-            isOpened = false;
-            isClosed = false;
-            parent = null;
-        }
-
-        public int CompareTo(object iObj)
-        {
-            Node tOtherNode = (Node)iObj;
-            float result = heuristicStartToEndLen - tOtherNode.heuristicStartToEndLen;
-            if (result > 0.0f)
-                return -1;
-            return result == 0.0f ? 0 : 1;
-        }
-
-        public static List<GridPos> Backtrace(Node iNode)
-        {
-            List<GridPos> path = new List<GridPos> { new GridPos(iNode.x, iNode.y) };
-            while (iNode.parent != null)
-            {
-                iNode = (Node)iNode.parent;
-                path.Add(new GridPos(iNode.x, iNode.y));
-            }
-            path.Reverse();
-            return path;
-        }
-
-        public override int GetHashCode()
-        {
-            return x ^ y;
-        }
-
-        public override bool Equals(object obj)
-        {
-
-            // If parameter cannot be cast to Point return false.
-            Node p = obj as Node;
-            if ((object) p == null)
-            {
-                return false;
-            }
-
-            // Return true if the fields match:
-            return (x == p.x) && (y == p.y);
-        }
-
-        public bool Equals(Node p)
-        {
-            // If parameter is null return false:
-            if ((object)p == null)
-            {
-                return false;
-            }
-
-            // Return true if the fields match:
-            return (x == p.x) && (y == p.y);
-        }
-
-        public static bool operator ==(Node a, Node b)
-        {
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(a, b))
-            {
-                return true;
-            }
-
-            // If one is null, but not both, return false.
-            if (((object)a == null) || ((object)b == null))
-            {
-                return false;
-            }
-
-            // Return true if the fields match:
-            return a.x == b.x && a.y == b.y;
-        }
-
-        public static bool operator !=(Node a, Node b)
-        {
-            return !(a == b);
-        }
-    }
-
     public abstract class BaseGrid
     {
+        #region Members
+
+        protected GridRect MGridRect;
+
+        #endregion
+
+        #region Instantiation
+
         public BaseGrid()
         {
             MGridRect = new GridRect();
@@ -181,28 +63,24 @@ namespace EpPathFinding
             Height = b.Height;
         }
 
-        protected GridRect MGridRect;
+        #endregion
+
+        #region Properties
 
         public GridRect GridRect
         {
             get { return MGridRect; }
         }
 
-        public abstract int Width { get; protected set; }
-
         public abstract int Height { get; protected set; }
 
-        public abstract Node GetNodeAt(int iX, int iY);
+        public abstract int Width { get; protected set; }
 
-        public abstract bool IsWalkableAt(int iX, int iY);
+        #endregion
 
-        public abstract bool SetWalkableAt(int iX, int iY, byte iWalkable);
+        #region Methods
 
-        public abstract Node GetNodeAt(GridPos iPos);
-
-        public abstract bool IsWalkableAt(GridPos iPos);
-
-        public abstract bool SetWalkableAt(GridPos iPos, byte iWalkable);
+        public abstract BaseGrid Clone();
 
         public List<Node> GetNeighbors(Node iNode, bool iCrossCorners, bool iCrossAdjacentPoint)
         {
@@ -276,8 +154,157 @@ namespace EpPathFinding
             return neighbors;
         }
 
+        public abstract Node GetNodeAt(int iX, int iY);
+
+        public abstract Node GetNodeAt(GridPos iPos);
+
+        public abstract bool IsWalkableAt(int iX, int iY);
+
+        public abstract bool IsWalkableAt(GridPos iPos);
+
         public abstract void Reset();
 
-        public abstract BaseGrid Clone();
+        public abstract bool SetWalkableAt(int iX, int iY, byte iWalkable);
+
+        public abstract bool SetWalkableAt(GridPos iPos, byte iWalkable);
+
+        #endregion
+    }
+
+    public class Node : IComparable
+    {
+        #region Members
+
+        public float? heuristicCurNodeToEndLen;
+        public float heuristicStartToEndLen;
+        public bool isClosed;
+        public bool isOpened;
+        public object parent;
+        public float startToCurNodeLen;
+        public byte walkable;
+        public int x;
+        public int y;
+
+        #endregion
+
+        #region Instantiation
+
+        public Node(int iX, int iY, byte? iWalkable = null)
+        {
+            x = iX;
+            y = iY;
+            walkable = iWalkable ?? 1;
+            heuristicStartToEndLen = 0;
+            startToCurNodeLen = 0;
+            heuristicCurNodeToEndLen = null;
+            isOpened = false;
+            isClosed = false;
+            parent = null;
+        }
+
+        public Node(Node b)
+        {
+            x = b.x;
+            y = b.y;
+            walkable = b.walkable;
+            heuristicStartToEndLen = b.heuristicStartToEndLen;
+            startToCurNodeLen = b.startToCurNodeLen;
+            heuristicCurNodeToEndLen = b.heuristicCurNodeToEndLen;
+            isOpened = b.isOpened;
+            isClosed = b.isClosed;
+            parent = b.parent;
+        }
+
+        #endregion
+
+        #region Methods
+
+        public static List<GridPos> Backtrace(Node iNode)
+        {
+            List<GridPos> path = new List<GridPos> { new GridPos(iNode.x, iNode.y) };
+            while (iNode.parent != null)
+            {
+                iNode = (Node)iNode.parent;
+                path.Add(new GridPos(iNode.x, iNode.y));
+            }
+            path.Reverse();
+            return path;
+        }
+
+        public static bool operator !=(Node a, Node b)
+        {
+            return !(a == b);
+        }
+
+        public static bool operator ==(Node a, Node b)
+        {
+            // If both are null, or both are same instance, return true.
+            if (ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
+            // If one is null, but not both, return false.
+            if (((object)a == null) || ((object)b == null))
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return a.x == b.x && a.y == b.y;
+        }
+
+        public int CompareTo(object iObj)
+        {
+            Node tOtherNode = (Node)iObj;
+            float result = heuristicStartToEndLen - tOtherNode.heuristicStartToEndLen;
+            if (result > 0.0f)
+                return -1;
+            return result == 0.0f ? 0 : 1;
+        }
+
+        public override bool Equals(object obj)
+        {
+            // If parameter cannot be cast to Point return false.
+            Node p = obj as Node;
+            if ((object)p == null)
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return (x == p.x) && (y == p.y);
+        }
+
+        public bool Equals(Node p)
+        {
+            // If parameter is null return false:
+            if ((object)p == null)
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return (x == p.x) && (y == p.y);
+        }
+
+        public override int GetHashCode()
+        {
+            return x ^ y;
+        }
+
+        public void Reset(byte? iWalkable = null)
+        {
+            if (iWalkable.HasValue)
+                walkable = iWalkable.Value;
+            heuristicStartToEndLen = 0;
+            startToCurNodeLen = 0;
+            heuristicCurNodeToEndLen = null;
+            isOpened = false;
+            isClosed = false;
+            parent = null;
+        }
+
+        #endregion
     }
 }

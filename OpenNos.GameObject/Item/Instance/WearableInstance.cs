@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -457,6 +457,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
+
             // cannot sum higher than 5
             if (Upgrade < 6)
             {
