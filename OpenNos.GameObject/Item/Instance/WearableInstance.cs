@@ -116,7 +116,8 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
-        public void RarifyItem(ClientSession session, RarifyMode mode, RarifyProtection protection, bool isCommand = false)
+        public void RarifyItem(ClientSession session, RarifyMode mode, RarifyProtection protection,
+            bool isCommand = false)
         {
             double raren2 = 80;
             double raren1 = 70;
@@ -137,7 +138,7 @@ namespace OpenNos.GameObject
             const int scrollVnum = 1218;
             int rnd;
 
-            if (session == null || !session.HasCurrentMap)
+            if (session != null && !session.HasCurrentMap)
             {
                 return;
             }
@@ -168,52 +169,56 @@ namespace OpenNos.GameObject
 
                 // rare8 = rare8 * reducedchancefactor;
             }
-            switch (mode)
+            if (session != null)
             {
-                case RarifyMode.Free:
-                    break;
+                switch (mode)
+                {
+                    case RarifyMode.Free:
+                        break;
 
-                case RarifyMode.Reduced:
+                    case RarifyMode.Reduced:
 
-                    // TODO: Reduced Item Amount
-                    if (session.Character.Gold < (long)(goldprice * reducedpricefactor))
-                    {
-                        return;
-                    }
-                    if (session.Character.Inventory.CountItem(cellaVnum) < cella * reducedpricefactor)
-                    {
-                        return;
-                    }
-                    session.Character.Inventory.RemoveItemAmount(cellaVnum, (int)(cella * reducedpricefactor));
-                    session.Character.Gold -= (long)(goldprice * reducedpricefactor);
-                    session.SendPacket(session.Character.GenerateGold());
-                    break;
+                        // TODO: Reduced Item Amount
+                        if (session.Character.Gold < (long)(goldprice * reducedpricefactor))
+                        {
+                            return;
+                        }
+                        if (session.Character.Inventory.CountItem(cellaVnum) < cella * reducedpricefactor)
+                        {
+                            return;
+                        }
+                        session.Character.Inventory.RemoveItemAmount(cellaVnum, (int)(cella * reducedpricefactor));
+                        session.Character.Gold -= (long)(goldprice * reducedpricefactor);
+                        session.SendPacket(session.Character.GenerateGold());
+                        break;
 
-                case RarifyMode.Normal:
+                    case RarifyMode.Normal:
 
-                    // TODO: Normal Item Amount
-                    if (session.Character.Gold < goldprice)
-                    {
-                        return;
-                    }
-                    if (session.Character.Inventory.CountItem(cellaVnum) < cella)
-                    {
-                        return;
-                    }
-                    if (protection == RarifyProtection.Scroll && !isCommand && session.Character.Inventory.CountItem(scrollVnum) < 1)
-                    {
-                        return;
-                    }
+                        // TODO: Normal Item Amount
+                        if (session.Character.Gold < goldprice)
+                        {
+                            return;
+                        }
+                        if (session.Character.Inventory.CountItem(cellaVnum) < cella)
+                        {
+                            return;
+                        }
+                        if (protection == RarifyProtection.Scroll && !isCommand &&
+                            session.Character.Inventory.CountItem(scrollVnum) < 1)
+                        {
+                            return;
+                        }
 
-                    if (protection == RarifyProtection.Scroll && !isCommand)
-                    {
-                        session.Character.Inventory.RemoveItemAmount(scrollVnum);
-                        session.SendPacket("shop_end 2");
-                    }
-                    session.Character.Gold -= goldprice;
-                    session.Character.Inventory.RemoveItemAmount(cellaVnum, cella);
-                    session.SendPacket(session.Character.GenerateGold());
-                    break;
+                        if (protection == RarifyProtection.Scroll && !isCommand)
+                        {
+                            session.Character.Inventory.RemoveItemAmount(scrollVnum);
+                            session.SendPacket("shop_end 2");
+                        }
+                        session.Character.Gold -= goldprice;
+                        session.Character.Inventory.RemoveItemAmount(cellaVnum, cella);
+                        session.SendPacket(session.Character.GenerateGold());
+                        break;
+                }
             }
             if (Item.IsHeroic && protection == RarifyProtection.Scroll)
             {
@@ -221,12 +226,12 @@ namespace OpenNos.GameObject
                 {
                     if (mode != RarifyMode.Drop)
                     {
-                        session.Character.NotifyRarifyResult(8);
+                        session?.Character.NotifyRarifyResult(8);
                     }
 
                     Rare = 8;
                     SetRarityPoint();
-                    ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
+                    ItemInstance inventory = session?.Character.Inventory.GetItemInstanceById(Id);
                     if (inventory != null)
                     {
                         session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, inventory.Rare, 0, inventory.Upgrade, 0));
@@ -238,7 +243,7 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    session.Character.NotifyRarifyResult(7);
+                    session?.Character.NotifyRarifyResult(7);
                 }
 
                 Rare = 7;
@@ -248,7 +253,7 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    session.Character.NotifyRarifyResult(6);
+                    session?.Character.NotifyRarifyResult(6);
                 }
                 Rare = 6;
                 SetRarityPoint();
@@ -257,7 +262,7 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    session.Character.NotifyRarifyResult(5);
+                    session?.Character.NotifyRarifyResult(5);
                 }
                 Rare = 5;
                 SetRarityPoint();
@@ -266,7 +271,7 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    session.Character.NotifyRarifyResult(4);
+                    session?.Character.NotifyRarifyResult(4);
                 }
                 Rare = 4;
                 SetRarityPoint();
@@ -275,7 +280,7 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    session.Character.NotifyRarifyResult(3);
+                    session?.Character.NotifyRarifyResult(3);
                 }
                 Rare = 3;
                 SetRarityPoint();
@@ -284,7 +289,7 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    session.Character.NotifyRarifyResult(2);
+                    session?.Character.NotifyRarifyResult(2);
                 }
                 Rare = 2;
                 SetRarityPoint();
@@ -293,7 +298,7 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    session.Character.NotifyRarifyResult(1);
+                    session?.Character.NotifyRarifyResult(1);
                 }
                 Rare = 1;
                 SetRarityPoint();
@@ -302,7 +307,7 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    session.Character.NotifyRarifyResult(0);
+                    session?.Character.NotifyRarifyResult(0);
                 }
                 Rare = 0;
                 SetRarityPoint();
@@ -311,7 +316,7 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    session.Character.NotifyRarifyResult(-1);
+                    session?.Character.NotifyRarifyResult(-1);
                 }
                 Rare = -1;
                 SetRarityPoint();
@@ -320,14 +325,14 @@ namespace OpenNos.GameObject
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    session.Character.NotifyRarifyResult(-2);
+                    session?.Character.NotifyRarifyResult(-2);
                 }
                 Rare = -2;
                 SetRarityPoint();
             }
             else
             {
-                if (mode != RarifyMode.Drop)
+                if (mode != RarifyMode.Drop && session != null)
                 {
                     if (protection == RarifyProtection.None)
                     {
@@ -345,7 +350,7 @@ namespace OpenNos.GameObject
             }
 
             // don't place under else.
-            if (mode != RarifyMode.Drop)
+            if (mode != RarifyMode.Drop && session != null)
             {
                 ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
                 if (inventory != null)
@@ -486,7 +491,7 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                         session.SendPacket(session.Character.GenerateGuri(19, 1, 1324));
                         ItemInstance itemInstnace = session.Character.Inventory.GetItemInstanceById(Id);
-                        session.SendPacket(session.Character.GenerateInventoryAdd(itemInstnace.ItemVNum, 1, itemInstnace.Type, itemInstnace.Slot, 0, 0, Upgrade, 0));                        
+                        session.SendPacket(session.Character.GenerateInventoryAdd(itemInstnace.ItemVNum, 1, itemInstnace.Type, itemInstnace.Slot, 0, 0, Upgrade, 0));
                     }
                     else
                     {
@@ -496,7 +501,7 @@ namespace OpenNos.GameObject
                         session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
                         session.Character.DeleteItemByItemInstanceId(Id);
                     }
-                    session.CurrentMap?.Broadcast(session.Character.GenerateGuri(6, 1), session.Character.MapX, session.Character.MapY); 
+                    session.CurrentMap?.Broadcast(session.Character.GenerateGuri(6, 1), session.Character.MapX, session.Character.MapY);
                     session.SendPacket(session.Character.GenerateGold());
                     session.SendPacket("shop_end 1");
                 }
@@ -649,7 +654,7 @@ namespace OpenNos.GameObject
                 int rnd = _random.Next(1, 100);
 
                 if (Rare == 8)
-                {                    
+                {
                     if (rnd <= upsuccess[Upgrade])
                     {
                         session.CurrentMap.Broadcast(session.Character.GenerateEff(3005), session.Character.MapX, session.Character.MapY);
