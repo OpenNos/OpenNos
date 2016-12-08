@@ -157,20 +157,20 @@ namespace OpenNos.GameObject
         {
             if (LifeEvent == default(IDisposable))
             {
-                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000 / (Monster.Speed > 0 ? Monster.Speed : 4))).Subscribe(x =>
-                  {
-                      try
+                LifeEvent = Observable.Interval(new TimeSpan(0, 0, 0, 0, 100)).Subscribe(x =>
                       {
-                          if (!Map.IsSleeping)
+                          try
                           {
-                              MonsterLife();
+                              if (!Map.IsSleeping)
+                              {
+                                  MonsterLife();
+                              }
                           }
-                      }
-                      catch (Exception e)
-                      {
-                          Logger.Error(e);
-                      }
-                  });
+                          catch (Exception e)
+                          {
+                              Logger.Error(e);
+                          }
+                      });
             }
         }
 
@@ -692,7 +692,7 @@ namespace OpenNos.GameObject
                 else
                 {
                     // monster already has been killed, send cancel
-                     hitRequest.Session.SendPacket($"cancel 2 {MapMonsterId}");
+                    hitRequest.Session.SendPacket($"cancel 2 {MapMonsterId}");
                 }
             }
 
@@ -715,6 +715,7 @@ namespace OpenNos.GameObject
             // target following
             else
             {
+
                 if (Map != null)
                 {
                     ClientSession targetSession = Map.GetSessionByCharacterId(Target);

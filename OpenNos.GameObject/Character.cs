@@ -1171,7 +1171,12 @@ namespace OpenNos.GameObject
                 totalDamage -= ushort.MaxValue;
             }
 
-            monsterToAttack.LastEffect = DateTime.Now;
+            // only set the hit delay if we become the monsters target with this hit
+            if(monsterToAttack.Target != CharacterId)
+            {
+                monsterToAttack.LastEffect = DateTime.Now;
+            }
+
             ushort damage = Convert.ToUInt16(totalDamage);
             if (monsterToAttack.IsMoving)
             {
