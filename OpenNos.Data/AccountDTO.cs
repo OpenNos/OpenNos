@@ -32,6 +32,12 @@ namespace OpenNos.Data
 
         public string Password { get; set; }
 
+        public string Email { get; set; }
+
+        public string VerificationToken { get; set; }
+
+        public string RegistrationIP { get; set; }
+
         #endregion
     }
 }

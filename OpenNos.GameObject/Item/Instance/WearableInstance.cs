@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
-using System;
 
 namespace OpenNos.GameObject
 {
@@ -116,7 +116,8 @@ namespace OpenNos.GameObject
             _random = new Random();
         }
 
-        public void RarifyItem(ClientSession Session, RarifyMode mode, RarifyProtection protection, bool isCommand = false)
+        public void RarifyItem(ClientSession session, RarifyMode mode, RarifyProtection protection,
+            bool isCommand = false)
         {
             double raren2 = 80;
             double raren1 = 70;
@@ -129,19 +130,19 @@ namespace OpenNos.GameObject
             double rare6 = 3;
             double rare7 = 2;
             double rare8 = 1;
-            short goldprice = 500;
-            double reducedpricefactor = 0.5;
-            double reducedchancefactor = 1.1;
-            byte cella = 5;
-            int cellaVnum = 1014;
-            int scrollVnum = 1218;
+            const short goldprice = 500;
+            const double reducedpricefactor = 0.5;
+            const double reducedchancefactor = 1.1;
+            const byte cella = 5;
+            const int cellaVnum = 1014;
+            const int scrollVnum = 1218;
             int rnd;
 
-            if (!Session.HasCurrentMap)
+            if (session != null && !session.HasCurrentMap)
             {
                 return;
             }
-            if (mode != RarifyMode.Drop || this.Item.ItemType == ItemType.Shell)
+            if (mode != RarifyMode.Drop || Item.ItemType == ItemType.Shell)
             {
                 raren2 = 0;
                 raren1 = 0;
@@ -168,216 +169,220 @@ namespace OpenNos.GameObject
 
                 // rare8 = rare8 * reducedchancefactor;
             }
-            switch (mode)
+            if (session != null)
             {
-                case RarifyMode.Free:
-                    break;
+                switch (mode)
+                {
+                    case RarifyMode.Free:
+                        break;
 
-                case RarifyMode.Reduced:
+                    case RarifyMode.Reduced:
 
-                    // TODO: Reduced Item Amount
-                    if (Session.Character.Gold < (long)(goldprice * reducedpricefactor))
-                    {
-                        return;
-                    }
-                    if (Session.Character.Inventory.CountItem(cellaVnum) < cella * reducedpricefactor)
-                    {
-                        return;
-                    }
-                    Session.Character.Inventory.RemoveItemAmount(cellaVnum, (int)(cella * reducedpricefactor));
-                    Session.Character.Gold -= (long)(goldprice * reducedpricefactor);
-                    Session.SendPacket(Session.Character.GenerateGold());
-                    break;
+                        // TODO: Reduced Item Amount
+                        if (session.Character.Gold < (long)(goldprice * reducedpricefactor))
+                        {
+                            return;
+                        }
+                        if (session.Character.Inventory.CountItem(cellaVnum) < cella * reducedpricefactor)
+                        {
+                            return;
+                        }
+                        session.Character.Inventory.RemoveItemAmount(cellaVnum, (int)(cella * reducedpricefactor));
+                        session.Character.Gold -= (long)(goldprice * reducedpricefactor);
+                        session.SendPacket(session.Character.GenerateGold());
+                        break;
 
-                case RarifyMode.Normal:
+                    case RarifyMode.Normal:
 
-                    // TODO: Normal Item Amount
-                    if (Session.Character.Gold < goldprice)
-                    {
-                        return;
-                    }
-                    if (Session.Character.Inventory.CountItem(cellaVnum) < cella)
-                    {
-                        return;
-                    }
-                    if (protection == RarifyProtection.Scroll && !isCommand && Session.Character.Inventory.CountItem(scrollVnum) < 1)
-                    {
-                        return;
-                    }
+                        // TODO: Normal Item Amount
+                        if (session.Character.Gold < goldprice)
+                        {
+                            return;
+                        }
+                        if (session.Character.Inventory.CountItem(cellaVnum) < cella)
+                        {
+                            return;
+                        }
+                        if (protection == RarifyProtection.Scroll && !isCommand &&
+                            session.Character.Inventory.CountItem(scrollVnum) < 1)
+                        {
+                            return;
+                        }
 
-                    if (protection == RarifyProtection.Scroll && !isCommand)
-                    {
-                        Session.Character.Inventory.RemoveItemAmount(scrollVnum);
-                        Session.SendPacket("shop_end 2");
-                    }
-                    Session.Character.Gold -= goldprice;
-                    Session.Character.Inventory.RemoveItemAmount(cellaVnum, cella);
-                    Session.SendPacket(Session.Character.GenerateGold());
-                    break;
+                        if (protection == RarifyProtection.Scroll && !isCommand)
+                        {
+                            session.Character.Inventory.RemoveItemAmount(scrollVnum);
+                            session.SendPacket("shop_end 2");
+                        }
+                        session.Character.Gold -= goldprice;
+                        session.Character.Inventory.RemoveItemAmount(cellaVnum, cella);
+                        session.SendPacket(session.Character.GenerateGold());
+                        break;
+                }
             }
-            if (this.Item.IsHeroic && protection == RarifyProtection.Scroll)
+            if (Item.IsHeroic && protection == RarifyProtection.Scroll)
             {
-                if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
+                if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && Rare >= 8))
                 {
                     if (mode != RarifyMode.Drop)
                     {
-                        Session.Character.NotifyRarifyResult(8);
+                        session?.Character.NotifyRarifyResult(8);
                     }
 
-                    this.Rare = 8;
+                    Rare = 8;
                     SetRarityPoint();
-                    ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(this.Id);
+                    ItemInstance inventory = session?.Character.Inventory.GetItemInstanceById(Id);
                     if (inventory != null)
                     {
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.Rare, 0, inventory.Upgrade, 0));
+                        session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, inventory.Rare, 0, inventory.Upgrade, 0));
                     }
                     return;
                 }
             }
-            if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
+            if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && Rare >= 7))
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    Session.Character.NotifyRarifyResult(7);
+                    session?.Character.NotifyRarifyResult(7);
                 }
 
-                this.Rare = 7;
+                Rare = 7;
                 SetRarityPoint();
             }
-            else if (rnd <= rare6 && !(protection == RarifyProtection.Scroll && this.Rare >= 6))
+            else if (rnd <= rare6 && !(protection == RarifyProtection.Scroll && Rare >= 6))
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    Session.Character.NotifyRarifyResult(6);
+                    session?.Character.NotifyRarifyResult(6);
                 }
-                this.Rare = 6;
+                Rare = 6;
                 SetRarityPoint();
             }
-            else if (rnd <= rare5 && !(protection == RarifyProtection.Scroll && this.Rare >= 5))
+            else if (rnd <= rare5 && !(protection == RarifyProtection.Scroll && Rare >= 5))
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    Session.Character.NotifyRarifyResult(5);
+                    session?.Character.NotifyRarifyResult(5);
                 }
-                this.Rare = 5;
+                Rare = 5;
                 SetRarityPoint();
             }
-            else if (rnd <= rare4 && !(protection == RarifyProtection.Scroll && this.Rare >= 4))
+            else if (rnd <= rare4 && !(protection == RarifyProtection.Scroll && Rare >= 4))
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    Session.Character.NotifyRarifyResult(4);
+                    session?.Character.NotifyRarifyResult(4);
                 }
-                this.Rare = 4;
+                Rare = 4;
                 SetRarityPoint();
             }
-            else if (rnd <= rare3 && !(protection == RarifyProtection.Scroll && this.Rare >= 3))
+            else if (rnd <= rare3 && !(protection == RarifyProtection.Scroll && Rare >= 3))
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    Session.Character.NotifyRarifyResult(3);
+                    session?.Character.NotifyRarifyResult(3);
                 }
-                this.Rare = 3;
+                Rare = 3;
                 SetRarityPoint();
             }
-            else if (rnd <= rare2 && !(protection == RarifyProtection.Scroll && this.Rare >= 2))
+            else if (rnd <= rare2 && !(protection == RarifyProtection.Scroll && Rare >= 2))
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    Session.Character.NotifyRarifyResult(2);
+                    session?.Character.NotifyRarifyResult(2);
                 }
-                this.Rare = 2;
+                Rare = 2;
                 SetRarityPoint();
             }
-            else if (rnd <= rare1 && !(protection == RarifyProtection.Scroll && this.Rare >= 1))
+            else if (rnd <= rare1 && !(protection == RarifyProtection.Scroll && Rare >= 1))
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    Session.Character.NotifyRarifyResult(1);
+                    session?.Character.NotifyRarifyResult(1);
                 }
-                this.Rare = 1;
+                Rare = 1;
                 SetRarityPoint();
             }
-            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0))
+            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && Rare >= 0))
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    Session.Character.NotifyRarifyResult(0);
+                    session?.Character.NotifyRarifyResult(0);
                 }
-                this.Rare = 0;
+                Rare = 0;
                 SetRarityPoint();
             }
-            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1))
+            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && Rare >= -1))
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    Session.Character.NotifyRarifyResult(-1);
+                    session?.Character.NotifyRarifyResult(-1);
                 }
-                this.Rare = -1;
+                Rare = -1;
                 SetRarityPoint();
             }
-            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2))
+            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && Rare >= -2))
             {
                 if (mode != RarifyMode.Drop)
                 {
-                    Session.Character.NotifyRarifyResult(-2);
+                    session?.Character.NotifyRarifyResult(-2);
                 }
-                this.Rare = -2;
+                Rare = -2;
                 SetRarityPoint();
             }
             else
             {
-                if (mode != RarifyMode.Drop)
+                if (mode != RarifyMode.Drop && session != null)
                 {
                     if (protection == RarifyProtection.None)
                     {
-                        Session.Character.DeleteItemByItemInstanceId(this.Id);
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
+                        session.Character.DeleteItemByItemInstanceId(Id);
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
-                        Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
+                        session.CurrentMap.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
                     }
                 }
             }
 
             // don't place under else.
-            if (mode != RarifyMode.Drop)
+            if (mode != RarifyMode.Drop && session != null)
             {
-                ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(this.Id);
+                ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
                 if (inventory != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.Rare, 0, inventory.Upgrade, 0));
+                    session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, inventory.Rare, 0, inventory.Upgrade, 0));
                 }
             }
         }
 
         public void SetRarityPoint()
         {
-            if (this.Item.EquipmentSlot == EquipmentType.MainWeapon || this.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
+            if (Item.EquipmentSlot == EquipmentType.MainWeapon || Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
             {
-                int point = CharacterHelper.RarityPoint(this.Rare, (this.Item.IsHeroic ? (short)(95 + this.Item.LevelMinimum) : this.Item.LevelMinimum));
-                this.Concentrate = 0;
-                this.HitRate = 0;
-                this.DamageMinimum = 0;
-                this.DamageMaximum = 0;
-                if (this.Rare >= 0)
+                int point = CharacterHelper.RarityPoint(Rare, (Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum));
+                Concentrate = 0;
+                HitRate = 0;
+                DamageMinimum = 0;
+                DamageMaximum = 0;
+                if (Rare >= 0)
                 {
                     for (int i = 0; i < point; i++)
                     {
                         int rndn = _random.Next(0, 3);
                         if (rndn == 0)
                         {
-                            this.Concentrate++;
-                            this.HitRate++;
+                            Concentrate++;
+                            HitRate++;
                         }
                         else
                         {
-                            this.DamageMinimum++;
-                            this.DamageMaximum++;
+                            DamageMinimum++;
+                            DamageMaximum++;
                         }
                     }
                 }
@@ -388,40 +393,40 @@ namespace OpenNos.GameObject
                         int rndn = _random.Next(0, 3);
                         if (rndn == 0)
                         {
-                            this.Concentrate--;
-                            this.HitRate--;
+                            Concentrate--;
+                            HitRate--;
                         }
                         else
                         {
-                            this.DamageMinimum--;
-                            this.DamageMaximum--;
+                            DamageMinimum--;
+                            DamageMaximum--;
                         }
                     }
                 }
             }
-            else if (this.Item.EquipmentSlot == EquipmentType.Armor)
+            else if (Item.EquipmentSlot == EquipmentType.Armor)
             {
-                int point = CharacterHelper.RarityPoint(this.Rare, (this.Item.IsHeroic ? (short)(95 + this.Item.LevelMinimum) : this.Item.LevelMinimum));
-                this.DefenceDodge = 0;
-                this.DistanceDefenceDodge = 0;
-                this.DistanceDefence = 0;
-                this.MagicDefence = 0;
-                this.CloseDefence = 0;
-                if (this.Rare >= 0)
+                int point = CharacterHelper.RarityPoint(Rare, (Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum));
+                DefenceDodge = 0;
+                DistanceDefenceDodge = 0;
+                DistanceDefence = 0;
+                MagicDefence = 0;
+                CloseDefence = 0;
+                if (Rare >= 0)
                 {
                     for (int i = 0; i < point; i++)
                     {
                         int rndn = _random.Next(0, 3);
                         if (rndn == 0)
                         {
-                            this.DefenceDodge++;
-                            this.DistanceDefenceDodge++;
+                            DefenceDodge++;
+                            DistanceDefenceDodge++;
                         }
                         else
                         {
-                            this.DistanceDefence++;
-                            this.MagicDefence++;
-                            this.CloseDefence++;
+                            DistanceDefence++;
+                            MagicDefence++;
+                            CloseDefence++;
                         }
                     }
                 }
@@ -432,84 +437,84 @@ namespace OpenNos.GameObject
                         int rndn = _random.Next(0, 3);
                         if (rndn == 0)
                         {
-                            this.DefenceDodge--;
-                            this.DistanceDefenceDodge--;
+                            DefenceDodge--;
+                            DistanceDefenceDodge--;
                         }
                         else
                         {
-                            this.DistanceDefence--;
-                            this.MagicDefence--;
-                            this.CloseDefence--;
+                            DistanceDefence--;
+                            MagicDefence--;
+                            CloseDefence--;
                         }
                     }
                 }
             }
         }
 
-        public void Sum(ClientSession Session, WearableInstance itemToSum)
+        public void Sum(ClientSession session, WearableInstance itemToSum)
         {
-            if (!Session.HasCurrentMap)
+            if (!session.HasCurrentMap)
             {
                 return;
             }
             // cannot sum higher than 5
-            if (this.Upgrade < 6)
+            if (Upgrade < 6)
             {
                 short[] upsuccess = { 100, 100, 85, 70, 50, 20 };
                 int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };
                 short[] sand = { 5, 10, 15, 20, 25, 30 };
                 int sandVnum = 1027;
-                if ((this.Upgrade + itemToSum.Upgrade) < 6 && ((((itemToSum.Item.EquipmentSlot == EquipmentType.Gloves) && (this.Item.EquipmentSlot == EquipmentType.Gloves)) || ((this.Item.EquipmentSlot == EquipmentType.Boots) && (itemToSum.Item.EquipmentSlot == EquipmentType.Boots)))))
+                if ((Upgrade + itemToSum.Upgrade) < 6 && ((((itemToSum.Item.EquipmentSlot == EquipmentType.Gloves) && (Item.EquipmentSlot == EquipmentType.Gloves)) || ((Item.EquipmentSlot == EquipmentType.Boots) && (itemToSum.Item.EquipmentSlot == EquipmentType.Boots)))))
                 {
-                    if (Session.Character.Gold < goldprice[this.Upgrade])
+                    if (session.Character.Gold < goldprice[Upgrade])
                     {
                         return;
                     }
-                    if (Session.Character.Inventory.CountItem(sandVnum) < sand[this.Upgrade])
+                    if (session.Character.Inventory.CountItem(sandVnum) < sand[Upgrade])
                     {
                         return;
                     }
-                    Session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)(sand[this.Upgrade]));
-                    Session.Character.Gold -= goldprice[this.Upgrade];
+                    session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)(sand[Upgrade]));
+                    session.Character.Gold -= goldprice[Upgrade];
 
                     int rnd = _random.Next(100);
-                    if (rnd <= upsuccess[this.Upgrade + itemToSum.Upgrade])
+                    if (rnd <= upsuccess[Upgrade + itemToSum.Upgrade])
                     {
-                        this.Upgrade += (byte)(itemToSum.Upgrade + 1);
-                        this.DarkResistance += (short)(itemToSum.DarkResistance + itemToSum.Item.DarkResistance);
-                        this.LightResistance += (short)(itemToSum.LightResistance + itemToSum.Item.LightResistance);
-                        this.WaterResistance += (short)(itemToSum.WaterResistance + itemToSum.Item.WaterResistance);
-                        this.FireResistance += (short)(itemToSum.FireResistance + itemToSum.Item.FireResistance);
-                        Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
-                        Session.SendPacket($"pdti 10 {this.ItemVNum} 1 27 {this.Upgrade} 0");
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
-                        Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
-                        ItemInstance itemInstnace = Session.Character.Inventory.GetItemInstanceById(this.Id);
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(itemInstnace.ItemVNum, 1, itemInstnace.Type, itemInstnace.Slot, 0, 0, this.Upgrade, 0));                        
+                        Upgrade += (byte)(itemToSum.Upgrade + 1);
+                        DarkResistance += (short)(itemToSum.DarkResistance + itemToSum.Item.DarkResistance);
+                        LightResistance += (short)(itemToSum.LightResistance + itemToSum.Item.LightResistance);
+                        WaterResistance += (short)(itemToSum.WaterResistance + itemToSum.Item.WaterResistance);
+                        FireResistance += (short)(itemToSum.FireResistance + itemToSum.Item.FireResistance);
+                        session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
+                        session.SendPacket($"pdti 10 {ItemVNum} 1 27 {Upgrade} 0");
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
+                        session.SendPacket(session.Character.GenerateGuri(19, 1, 1324));
+                        ItemInstance itemInstnace = session.Character.Inventory.GetItemInstanceById(Id);
+                        session.SendPacket(session.Character.GenerateInventoryAdd(itemInstnace.ItemVNum, 1, itemInstnace.Type, itemInstnace.Slot, 0, 0, Upgrade, 0));
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
-                        Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1332));
-                        Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
-                        Session.Character.DeleteItemByItemInstanceId(this.Id);
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
+                        session.SendPacket(session.Character.GenerateGuri(19, 1, 1332));
+                        session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
+                        session.Character.DeleteItemByItemInstanceId(Id);
                     }
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY); 
-                    Session.SendPacket(Session.Character.GenerateGold());
-                    Session.SendPacket("shop_end 1");
+                    session.CurrentMap?.Broadcast(session.Character.GenerateGuri(6, 1), session.Character.MapX, session.Character.MapY);
+                    session.SendPacket(session.Character.GenerateGold());
+                    session.SendPacket("shop_end 1");
                 }
             }
         }
 
-        public void UpgradeItem(ClientSession Session, UpgradeMode mode, UpgradeProtection protection, bool isCommand = false)
+        public void UpgradeItem(ClientSession session, UpgradeMode mode, UpgradeProtection protection, bool isCommand = false)
         {
-            if (!Session.HasCurrentMap)
+            if (!session.HasCurrentMap)
             {
                 return;
             }
-            if (this.Upgrade < 10)
+            if (Upgrade < 10)
             {
                 short[] upsuccess;
                 short[] upfix;
@@ -517,11 +522,11 @@ namespace OpenNos.GameObject
                 short[] cella;
                 short[] gem;
 
-                if (this.Rare == 8)
+                if (Rare == 8)
                 {
                     upsuccess = new short[] { 50, 50, 45, 30, 20, 10, 5, 3, 2, 1 };
                     upfix = new short[] { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
-                    goldprice = new int[] { 5000, 15000, 30000, 100000, 300000, 800000, 1500000, 4000000, 7000000, 10000000 };
+                    goldprice = new[] { 5000, 15000, 30000, 100000, 300000, 800000, 1500000, 4000000, 7000000, 10000000 };
                     cella = new short[] { 40, 100, 160, 240, 320, 440, 560, 760, 960, 1200 };
                     gem = new short[] { 2, 2, 4, 4, 6, 2, 2, 4, 4, 6 };
                 }
@@ -529,7 +534,7 @@ namespace OpenNos.GameObject
                 {
                     upsuccess = new short[] { 100, 100, 100, 95, 80, 60, 40, 30, 20, 11 };
                     upfix = new short[] { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
-                    goldprice = new int[] { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
+                    goldprice = new[] { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
                     cella = new short[] { 20, 50, 80, 120, 160, 220, 280, 380, 480, 600 };
                     gem = new short[] { 1, 1, 2, 2, 3, 1, 1, 2, 2, 3 };
                 }
@@ -541,10 +546,10 @@ namespace OpenNos.GameObject
                 short normalScrollVnum = 1218;
                 short goldScrollVnum = 5369;
 
-                if (this.IsFixed)
+                if (IsFixed)
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
-                    Session.SendPacket("shop_end 1");
+                    session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
+                    session.SendPacket("shop_end 1");
                     return;
                 }
                 switch (mode)
@@ -555,173 +560,173 @@ namespace OpenNos.GameObject
                     case UpgradeMode.Reduced:
 
                         // TODO: Reduced Item Amount
-                        if (Session.Character.Gold < (long)(goldprice[this.Upgrade] * reducedpricefactor))
+                        if (session.Character.Gold < (long)(goldprice[Upgrade] * reducedpricefactor))
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                             return;
                         }
-                        if (Session.Character.Inventory.CountItem(cellaVnum) < cella[this.Upgrade] * reducedpricefactor)
+                        if (session.Character.Inventory.CountItem(cellaVnum) < cella[Upgrade] * reducedpricefactor)
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(cellaVnum).Name, cella[this.Upgrade] * reducedpricefactor)), 10));
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(cellaVnum).Name, cella[Upgrade] * reducedpricefactor)), 10));
                             return;
                         }
-                        if (protection == UpgradeProtection.Protected && !isCommand && Session.Character.Inventory.CountItem(goldScrollVnum) < 1)
+                        if (protection == UpgradeProtection.Protected && !isCommand && session.Character.Inventory.CountItem(goldScrollVnum) < 1)
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(goldScrollVnum).Name, cella[this.Upgrade] * reducedpricefactor)), 10));
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(goldScrollVnum).Name, cella[Upgrade] * reducedpricefactor)), 10));
                             return;
                         }
-                        if (this.Upgrade < 5)
+                        if (Upgrade < 5)
                         {
-                            if (Session.Character.Inventory.CountItem(gemVnum) < gem[this.Upgrade])
+                            if (session.Character.Inventory.CountItem(gemVnum) < gem[Upgrade])
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemVnum).Name, gem[this.Upgrade])), 10));
+                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemVnum).Name, gem[Upgrade])), 10));
                                 return;
                             }
-                            Session.Character.Inventory.RemoveItemAmount(gemVnum, gem[this.Upgrade]);
+                            session.Character.Inventory.RemoveItemAmount(gemVnum, gem[Upgrade]);
                         }
                         else
                         {
-                            if (Session.Character.Inventory.CountItem(gemFullVnum) < gem[this.Upgrade])
+                            if (session.Character.Inventory.CountItem(gemFullVnum) < gem[Upgrade])
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemFullVnum).Name, gem[this.Upgrade])), 10));
+                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemFullVnum).Name, gem[Upgrade])), 10));
                                 return;
                             }
-                            Session.Character.Inventory.RemoveItemAmount(gemFullVnum, gem[this.Upgrade]);
+                            session.Character.Inventory.RemoveItemAmount(gemFullVnum, gem[Upgrade]);
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand)
                         {
-                            Session.Character.Inventory.RemoveItemAmount(goldScrollVnum);
-                            Session.SendPacket("shop_end 2");
+                            session.Character.Inventory.RemoveItemAmount(goldScrollVnum);
+                            session.SendPacket("shop_end 2");
                         }
-                        Session.Character.Gold -= (long)(goldprice[this.Upgrade] * reducedpricefactor);
-                        Session.Character.Inventory.RemoveItemAmount(cellaVnum, (int)(cella[this.Upgrade] * reducedpricefactor));
-                        Session.SendPacket(Session.Character.GenerateGold());
+                        session.Character.Gold -= (long)(goldprice[Upgrade] * reducedpricefactor);
+                        session.Character.Inventory.RemoveItemAmount(cellaVnum, (int)(cella[Upgrade] * reducedpricefactor));
+                        session.SendPacket(session.Character.GenerateGold());
                         break;
 
                     case UpgradeMode.Normal:
 
                         // TODO: Normal Item Amount
-                        if (Session.Character.Inventory.CountItem(cellaVnum) < cella[this.Upgrade])
+                        if (session.Character.Inventory.CountItem(cellaVnum) < cella[Upgrade])
                         {
                             return;
                         }
-                        if (Session.Character.Gold < goldprice[this.Upgrade])
+                        if (session.Character.Gold < goldprice[Upgrade])
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                             return;
                         }
-                        if (protection == UpgradeProtection.Protected && !isCommand && Session.Character.Inventory.CountItem(normalScrollVnum) < 1)
+                        if (protection == UpgradeProtection.Protected && !isCommand && session.Character.Inventory.CountItem(normalScrollVnum) < 1)
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(normalScrollVnum).Name, 1)), 10));
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(normalScrollVnum).Name, 1)), 10));
                             return;
                         }
-                        if (this.Upgrade < 5)
+                        if (Upgrade < 5)
                         {
-                            if (Session.Character.Inventory.CountItem(gemVnum) < gem[this.Upgrade])
+                            if (session.Character.Inventory.CountItem(gemVnum) < gem[Upgrade])
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemVnum).Name, gem[this.Upgrade])), 10));
+                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemVnum).Name, gem[Upgrade])), 10));
                                 return;
                             }
-                            Session.Character.Inventory.RemoveItemAmount(gemVnum, (gem[this.Upgrade]));
+                            session.Character.Inventory.RemoveItemAmount(gemVnum, (gem[Upgrade]));
                         }
                         else
                         {
-                            if (Session.Character.Inventory.CountItem(gemFullVnum) < gem[this.Upgrade])
+                            if (session.Character.Inventory.CountItem(gemFullVnum) < gem[Upgrade])
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemFullVnum).Name, gem[this.Upgrade])), 10));
+                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemFullVnum).Name, gem[Upgrade])), 10));
                                 return;
                             }
-                            Session.Character.Inventory.RemoveItemAmount(gemFullVnum, (gem[this.Upgrade]));
+                            session.Character.Inventory.RemoveItemAmount(gemFullVnum, (gem[Upgrade]));
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand)
                         {
-                            Session.Character.Inventory.RemoveItemAmount(normalScrollVnum);
-                            Session.SendPacket("shop_end 2");
+                            session.Character.Inventory.RemoveItemAmount(normalScrollVnum);
+                            session.SendPacket("shop_end 2");
                         }
-                        Session.Character.Inventory.RemoveItemAmount(cellaVnum, (cella[this.Upgrade]));
-                        Session.Character.Gold -= goldprice[this.Upgrade];
-                        Session.SendPacket(Session.Character.GenerateGold());
+                        session.Character.Inventory.RemoveItemAmount(cellaVnum, (cella[Upgrade]));
+                        session.Character.Gold -= goldprice[Upgrade];
+                        session.SendPacket(session.Character.GenerateGold());
                         break;
                 }
-                WearableInstance wearable = Session.Character.Inventory.LoadByItemInstance<WearableInstance>(this.Id);
-                ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(this.Id);
+                WearableInstance wearable = session.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
+                ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
 
                 int rnd = _random.Next(1, 100);
 
-                if (this.Rare == 8)
-                {                    
-                    if (rnd <= upsuccess[this.Upgrade])
+                if (Rare == 8)
+                {
+                    if (rnd <= upsuccess[Upgrade])
                     {
-                        Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
+                        session.CurrentMap.Broadcast(session.Character.GenerateEff(3005), session.Character.MapX, session.Character.MapY);
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
                         wearable.Upgrade++;
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, wearable.Upgrade, 0));
+                        session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, wearable.Upgrade, 0));
                     }
-                    else if (rnd <= upfix[this.Upgrade])
+                    else if (rnd <= upfix[Upgrade])
                     {
-                        Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
+                        session.CurrentMap.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
                         wearable.IsFixed = true;
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                     }
                     else
                     {
                         if (protection == UpgradeProtection.None)
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
-                            Session.Character.DeleteItemByItemInstanceId(this.Id);
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
+                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
+                            session.Character.DeleteItemByItemInstanceId(Id);
                         }
                         else
                         {
-                            Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
+                            session.CurrentMap.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
+                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
                         }
                     }
                 }
                 else
                 {
-                    if (rnd <= upfix[this.Upgrade])
+                    if (rnd <= upfix[Upgrade])
                     {
-                        Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
+                        session.CurrentMap.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
                         wearable.IsFixed = true;
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                     }
-                    else if (rnd <= upsuccess[this.Upgrade])
+                    else if (rnd <= upsuccess[Upgrade])
                     {
-                        Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
+                        session.CurrentMap.Broadcast(session.Character.GenerateEff(3005), session.Character.MapX, session.Character.MapY);
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
                         wearable.Upgrade++;
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, wearable.Upgrade, 0));
+                        session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, wearable.Upgrade, 0));
                     }
                     else
                     {
                         if (protection == UpgradeProtection.None)
                         {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
-                            Session.Character.DeleteItemByItemInstanceId(this.Id);
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
+                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
+                            session.Character.DeleteItemByItemInstanceId(Id);
                         }
                         else
                         {
-                            Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
+                            session.CurrentMap.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
+                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
                         }
                     }
                 }
             }
             else
             {
-                Session.CurrentMap.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
-                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
+                session.CurrentMap.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
+                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
+                session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
             }
-            Session.SendPacket("shop_end 1");
+            session.SendPacket("shop_end 1");
         }
 
         #endregion

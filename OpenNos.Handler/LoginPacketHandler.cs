@@ -97,7 +97,7 @@ namespace OpenNos.Handler
                             {
                                 switch (type)
                                 {
-                                    case AuthorityType.Unknown:
+                                    case AuthorityType.Unconfirmed:
                                         {
                                             _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("NOTVALIDATE")}");
                                         }
