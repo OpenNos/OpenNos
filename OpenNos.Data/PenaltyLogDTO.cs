@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Domain;
+using System;
 
 namespace OpenNos.Data
 {

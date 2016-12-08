@@ -12,19 +12,19 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class NpcMonsterDao : MappingBaseDao<NpcMonster, NpcMonsterDTO>, INpcMonsterDAO
+    public class NpcMonsterDAO : MappingBaseDAO<NpcMonster, NpcMonsterDTO>, INpcMonsterDAO
     {
         #region Methods
 
@@ -32,9 +32,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (NpcMonster npcMonster in context.NpcMonster.Where(s => s.Name.Contains(name)))
+                foreach (NpcMonster NpcMonster in context.NpcMonster.Where(s => s.Name.Contains(name)))
                 {
-                    yield return Mapper.Map<NpcMonsterDTO>(npcMonster);
+                    yield return _mapper.Map<NpcMonsterDTO>(NpcMonster);
                 }
             }
         }
@@ -53,13 +53,16 @@ namespace OpenNos.DAL.EF
                         npcMonster = Insert(npcMonster, context);
                         return SaveResult.Inserted;
                     }
-                    npcMonster = Update(entity, npcMonster, context);
-                    return SaveResult.Updated;
+                    else
+                    {
+                        npcMonster = Update(entity, npcMonster, context);
+                        return SaveResult.Updated;
+                    }
                 }
             }
             catch (Exception e)
             {
-                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_NPCMONSTER_ERROR"), npcMonster.NpcMonsterVNum, e.Message), e);
+                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_NPCMONSTER_ERROR"), npcMonster.NpcMonsterVNum, e.Message), e);
                 return SaveResult.Error;
             }
         }
@@ -71,9 +74,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (NpcMonsterDTO item in npcs)
+                    foreach (NpcMonsterDTO Item in npcs)
                     {
-                        NpcMonster entity = Mapper.Map<NpcMonster>(item);
+                        NpcMonster entity = _mapper.Map<NpcMonster>(Item);
                         context.NpcMonster.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -92,10 +95,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    NpcMonster entity = Mapper.Map<NpcMonster>(npc);
+                    NpcMonster entity = _mapper.Map<NpcMonster>(npc);
                     context.NpcMonster.Add(entity);
                     context.SaveChanges();
-                    return Mapper.Map<NpcMonsterDTO>(entity);
+                    return _mapper.Map<NpcMonsterDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -109,9 +112,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (NpcMonster npcMonster in context.NpcMonster)
+                foreach (NpcMonster NpcMonster in context.NpcMonster)
                 {
-                    yield return Mapper.Map<NpcMonsterDTO>(npcMonster);
+                    yield return _mapper.Map<NpcMonsterDTO>(NpcMonster);
                 }
             }
         }
@@ -122,7 +125,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return Mapper.Map<NpcMonsterDTO>(context.NpcMonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(vnum)));
+                    return _mapper.Map<NpcMonsterDTO>(context.NpcMonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(vnum)));
                 }
             }
             catch (Exception e)
@@ -134,20 +137,20 @@ namespace OpenNos.DAL.EF
 
         private NpcMonsterDTO Insert(NpcMonsterDTO npcMonster, OpenNosContext context)
         {
-            NpcMonster entity = Mapper.Map<NpcMonster>(npcMonster);
+            NpcMonster entity = _mapper.Map<NpcMonster>(npcMonster);
             context.NpcMonster.Add(entity);
             context.SaveChanges();
-            return Mapper.Map<NpcMonsterDTO>(entity);
+            return _mapper.Map<NpcMonsterDTO>(entity);
         }
 
         private NpcMonsterDTO Update(NpcMonster entity, NpcMonsterDTO npcMonster, OpenNosContext context)
         {
             if (entity != null)
             {
-                Mapper.Map(npcMonster, entity);
+                _mapper.Map(npcMonster, entity);
                 context.SaveChanges();
             }
-            return Mapper.Map<NpcMonsterDTO>(entity);
+            return _mapper.Map<NpcMonsterDTO>(entity);
         }
 
         #endregion

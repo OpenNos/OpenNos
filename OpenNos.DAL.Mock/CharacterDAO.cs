@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.DAL.Interface;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
@@ -46,8 +46,11 @@ namespace OpenNos.DAL.Mock
                 dto = character;
                 return SaveResult.Updated;
             }
-            Insert(character);
-            return SaveResult.Inserted;
+            else
+            {
+                Insert(character);
+                return SaveResult.Inserted;
+            }
         }
 
         public int IsReputHero(long characterId)

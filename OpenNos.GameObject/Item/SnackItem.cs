@@ -12,11 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Threading;
 using OpenNos.Core;
 using OpenNos.Data;
-using OpenNos.Domain;
+using System;
+using System.Threading;
 
 namespace OpenNos.GameObject
 {
@@ -58,17 +57,17 @@ namespace OpenNos.GameObject
                 }
                 session.Character.Hp += session.Character.SnackHp;
                 session.Character.Mp += session.Character.SnackMp;
-                if (session.Character.Mp > session.Character.MpLoad())
+                if (session.Character.Mp > session.Character.MPLoad())
                 {
-                    session.Character.Mp = (int)session.Character.MpLoad();
+                    session.Character.Mp = (int)session.Character.MPLoad();
                 }
-                if (session.Character.Hp > session.Character.HpLoad())
+                if (session.Character.Hp > session.Character.HPLoad())
                 {
-                    session.Character.Hp = (int)session.Character.HpLoad();
+                    session.Character.Hp = (int)session.Character.HPLoad();
                 }
-                if (session.Character.Hp < session.Character.HpLoad() || session.Character.Mp < session.Character.MpLoad())
+                if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
                 {
-                    session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp));
+                    session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
                 }
                 if (session.IsConnected)
                 {
@@ -88,7 +87,10 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            session.Character.LastPotion = DateTime.Now;
+            else
+            {
+                session.Character.LastPotion = DateTime.Now;
+            }
             Item item = inv.Item;
             switch (Effect)
             {
@@ -106,9 +108,14 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        session.SendPacket(session.Character.Gender == GenderType.Female
-                            ? session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1)
-                            : session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
+                        if (session.Character.Gender == Domain.GenderType.Female)
+                        {
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1));
+                        }
+                        else
+                        {
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
+                        }
                     }
                     if (amount == 0)
                     {

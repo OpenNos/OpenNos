@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
+using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.DAL.Interface;
 using OpenNos.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
@@ -77,7 +77,7 @@ namespace OpenNos.DAL.Mock
                 itemInstanceMappings.Add(gameObjectType, itemInstanceType);
             }
 
-            return this;
+            return (IMappingBaseDAO)this;
         }
 
         #endregion

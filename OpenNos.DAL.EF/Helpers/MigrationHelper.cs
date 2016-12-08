@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL.EF.Migrations;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Migrations.Infrastructure;
 using System.IO;
 using System.Linq;
-using OpenNos.DAL.EF.Migrations;
 
 namespace OpenNos.DAL.EF.Helpers
 {
@@ -24,7 +24,7 @@ namespace OpenNos.DAL.EF.Helpers
     {
         #region Methods
 
-        public static void GenerateSqlScript()
+        public static void GenerateSQLScript()
         {
 #if DEBUG
             var migrator = new DbMigrator(new Configuration());

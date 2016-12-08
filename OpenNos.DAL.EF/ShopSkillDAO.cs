@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class ShopSkillDao : MappingBaseDao<ShopSkill, ShopSkillDTO>, IShopSkillDAO
+    public class ShopSkillDAO : MappingBaseDAO<ShopSkill, ShopSkillDTO>, IShopSkillDAO
     {
         #region Methods
 
@@ -32,10 +32,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    ShopSkill entity = Mapper.Map<ShopSkill>(shopSkill);
+                    ShopSkill entity = _mapper.Map<ShopSkill>(shopSkill);
                     context.ShopSkill.Add(entity);
                     context.SaveChanges();
-                    return Mapper.Map<ShopSkillDTO>(entity);
+                    return _mapper.Map<ShopSkillDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -52,9 +52,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (ShopSkillDTO skill in skills)
+                    foreach (ShopSkillDTO Skill in skills)
                     {
-                        ShopSkill entity = Mapper.Map<ShopSkill>(skill);
+                        ShopSkill entity = _mapper.Map<ShopSkill>(Skill);
                         context.ShopSkill.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -73,7 +73,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (ShopSkill entity in context.ShopSkill)
                 {
-                    yield return Mapper.Map<ShopSkillDTO>(entity);
+                    yield return _mapper.Map<ShopSkillDTO>(entity);
                 }
             }
         }
@@ -82,9 +82,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (ShopSkill shopSkill in context.ShopSkill.Where(s => s.ShopId.Equals(shopId)))
+                foreach (ShopSkill ShopSkill in context.ShopSkill.Where(s => s.ShopId.Equals(shopId)))
                 {
-                    yield return Mapper.Map<ShopSkillDTO>(shopSkill);
+                    yield return _mapper.Map<ShopSkillDTO>(ShopSkill);
                 }
             }
         }

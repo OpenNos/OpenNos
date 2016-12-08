@@ -12,17 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Configuration;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Threading;
 using log4net;
 using OpenNos.Core;
-using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
+using OpenNos.Data;
+using System;
+using System.Diagnostics;
+using System.Reflection;
+using System.Threading;
 
 namespace OpenNos.Import.Console
 {
@@ -58,10 +56,10 @@ namespace OpenNos.Import.Console
             System.Console.ResetColor();
 
             // System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_BCard.txt");
-            System.Console.WriteLine($"-----_code_{ConfigurationManager.AppSettings["language"]}_Item.txt");
-            System.Console.WriteLine($"-----_code_{ConfigurationManager.AppSettings["language"]}_MapIDData.txt");
-            System.Console.WriteLine($"-----_code_{ConfigurationManager.AppSettings["language"]}_monster.txt");
-            System.Console.WriteLine($"-----_code_{ConfigurationManager.AppSettings["language"]}_Skill.txt");
+            System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Item.txt");
+            System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt");
+            System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt");
+            System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Skill.txt");
 
             // System.Console.WriteLine("-----BCard.dat");
             System.Console.WriteLine("-----Item.dat");
@@ -221,7 +219,7 @@ namespace OpenNos.Import.Console
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("DONE")}");
                 Thread.Sleep(5000);
             }
-            catch (FileNotFoundException)
+            catch (System.IO.FileNotFoundException)
             {
                 Logger.Log.Error(Language.Instance.GetMessageFromKey("AT_LEAST_ONE_FILE_MISSING"));
                 Thread.Sleep(5000);

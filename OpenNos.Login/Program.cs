@@ -12,19 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Configuration;
-using System.Diagnostics;
-using System.Globalization;
-using System.Reflection;
 using log4net;
 using OpenNos.Core;
-using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
+using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Handler;
 using OpenNos.ServiceRef.Internal;
+using System;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace OpenNos.Login
 {
@@ -38,7 +36,7 @@ namespace OpenNos.Login
             {
                 try
                 {
-                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+                    System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
 
                     // initialize Logger
                     Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
@@ -46,7 +44,7 @@ namespace OpenNos.Login
                     FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
                     Console.Title = $"OpenNos Login Server v{fileVersionInfo.ProductVersion}";
-                    int port = Convert.ToInt32(ConfigurationManager.AppSettings["LoginPort"]);
+                    int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
                     string text = $"LOGIN SERVER VERSION {fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
                     int offset = (Console.WindowWidth - text.Length) / 2;
                     Console.WriteLine(new String('=', Console.WindowWidth));

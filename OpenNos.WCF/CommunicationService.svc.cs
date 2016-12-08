@@ -12,15 +12,15 @@
  * GNU General Public License for more details.
  */
 
+using log4net;
+using OpenNos.Core;
+using OpenNos.WCF.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
-using log4net;
-using OpenNos.Core;
-using OpenNos.WCF.Interface;
 
 namespace OpenNos.WCF
 {
@@ -132,16 +132,19 @@ namespace OpenNos.WCF
                     Logger.Log.DebugFormat($"[WCF] Account {accountName} is already connected.");
                     return false;
                 }
-                // TODO: move in own method, cannot do this here because it needs to be called by
-                //       a client who wants to know if the Account is allowed to connect without
-                // doing it actually
-                Logger.Log.DebugFormat($"[WCF] Account {accountName} has connected.");
-                ConnectedAccounts.Add(accountName, sessionId);
+                else
+                {
+                    // TODO: move in own method, cannot do this here because it needs to be called by
+                    //       a client who wants to know if the Account is allowed to connect without
+                    // doing it actually
+                    Logger.Log.DebugFormat($"[WCF] Account {accountName} has connected.");
+                    ConnectedAccounts.Add(accountName, sessionId);
 
-                // inform clients
-                ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
-                callback.ConnectAccountCallback(accountName, sessionId);
-                return true;
+                    // inform clients
+                    ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
+                    callback.ConnectAccountCallback(accountName, sessionId);
+                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -165,16 +168,19 @@ namespace OpenNos.WCF
                     Logger.Log.DebugFormat($"[WCF] Character {characterName} is already connected.");
                     return false;
                 }
-                // TODO: move in own method, cannot do this here because it needs to be called by
-                //       a client who wants to know if the character is allowed to connect
-                // without doing it actually
-                Logger.Log.DebugFormat($"[WCF] Character {characterName} has connected.");
-                ConnectedCharacters.Add(characterName, accountName);
+                else
+                {
+                    // TODO: move in own method, cannot do this here because it needs to be called by
+                    //       a client who wants to know if the character is allowed to connect
+                    // without doing it actually
+                    Logger.Log.DebugFormat($"[WCF] Character {characterName} has connected.");
+                    ConnectedCharacters.Add(characterName, accountName);
 
-                // inform clients
-                ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
-                callback.ConnectCharacterCallback(characterName);
-                return true;
+                    // inform clients
+                    ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
+                    callback.ConnectCharacterCallback(characterName);
+                    return true;
+                }
             }
             catch (Exception ex)
             {

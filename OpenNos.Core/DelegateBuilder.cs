@@ -29,6 +29,7 @@ namespace OpenNos.Core
             var queueMissingParams = new Queue<object>(missingParamValues);
 
             var dgtMi = typeof(T).GetMethod("Invoke");
+            var dgtRet = dgtMi.ReturnType;
             var dgtParams = dgtMi.GetParameters();
 
             var paramsOfDelegate = dgtParams
@@ -72,7 +73,17 @@ namespace OpenNos.Core
                 return Expression.Convert(paramsOfDelegate[i], callParamType.ParameterType);
             }
 
-            return queueMissingParams.Any() ? Expression.Constant(queueMissingParams.Dequeue()) : Expression.Constant(callParamType.ParameterType.IsValueType ? Activator.CreateInstance(callParamType.ParameterType) : null);
+            if (queueMissingParams.Any())
+            {
+                return Expression.Constant(queueMissingParams.Dequeue());
+            }
+
+            if (callParamType.ParameterType.IsValueType)
+            {
+                return Expression.Constant(Activator.CreateInstance(callParamType.ParameterType));
+            }
+
+            return Expression.Constant(null);
         }
 
         #endregion

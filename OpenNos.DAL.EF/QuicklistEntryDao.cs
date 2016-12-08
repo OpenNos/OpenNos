@@ -12,18 +12,18 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using OpenNos.Core;
-using OpenNos.Data;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class QuicklistEntryDao : SynchronizableBaseDao<QuicklistEntry, QuicklistEntryDTO>, IQuicklistEntryDAO
+    public class QuicklistEntryDAO : SynchronizableBaseDAO<QuicklistEntry, QuicklistEntryDTO>, IQuicklistEntryDAO
     {
         #region Methods
 
@@ -31,9 +31,9 @@ namespace OpenNos.DAL.EF
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                foreach (QuicklistEntry quicklistEntryobject in context.QuicklistEntry.Where(i => i.CharacterId == characterId))
+                foreach (QuicklistEntry QuicklistEntryobject in context.QuicklistEntry.Where(i => i.CharacterId == characterId))
                 {
-                    yield return Mapper.Map<QuicklistEntryDTO>(quicklistEntryobject);
+                    yield return _mapper.Map<QuicklistEntryDTO>(QuicklistEntryobject);
                 }
             }
         }

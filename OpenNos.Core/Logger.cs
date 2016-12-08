@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
+using log4net;
 using System;
 using System.Runtime.CompilerServices;
-using log4net;
 
 namespace OpenNos.Core
 {
@@ -49,11 +49,13 @@ namespace OpenNos.Core
         /// Wraps up the message with the CallerMemberName
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="sessionId"></param>
         /// <param name="memberName"></param>
         public static void Debug(string message, int sessionId = 0, [CallerMemberName] string memberName = "")
         {
-            Log?.Debug($"Session: {sessionId} Method: {memberName} Packet: {message}");
+            if (Log != null)
+            {
+                Log.Debug($"Session: {sessionId} Method: {memberName} Packet: {message}");
+            }
         }
 
         /// <summary>
@@ -63,7 +65,10 @@ namespace OpenNos.Core
         /// <param name="innerException"></param>
         public static void Error(Exception innerException = null, [CallerMemberName]string memberName = "")
         {
-            if (innerException != null) Log?.Error($"{memberName}: {innerException.Message}", innerException);
+            if (Log != null)
+            {
+                Log.Error($"{memberName}: {innerException.Message}", innerException);
+            }
         }
 
         public static void InitializeLogger(ILog log)

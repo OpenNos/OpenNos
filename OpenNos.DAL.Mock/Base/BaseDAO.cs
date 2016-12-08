@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoMapper;
-using OpenNos.Data;
+﻿using AutoMapper;
 using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using System;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {

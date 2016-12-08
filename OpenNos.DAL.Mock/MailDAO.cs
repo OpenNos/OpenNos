@@ -1,7 +1,8 @@
-﻿using System.Linq;
+﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.DAL.Interface;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {
@@ -24,8 +25,11 @@ namespace OpenNos.DAL.Mock
                 dto = mail;
                 return SaveResult.Updated;
             }
-            Insert(mail);
-            return SaveResult.Inserted;
+            else
+            {
+                Insert(mail);
+                return SaveResult.Inserted;
+            }
         }
 
         public MailDTO LoadById(long mailId)

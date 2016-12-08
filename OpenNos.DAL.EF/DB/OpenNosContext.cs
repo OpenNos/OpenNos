@@ -12,22 +12,22 @@
  * GNU General Public License for more details.
  */
 
-using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration.Conventions;
-
 namespace OpenNos.DAL.EF.DB
 {
-    public class OpenNosContext : DbContext
+    using System.Data.Entity;
+    using System.Data.Entity.ModelConfiguration.Conventions;
+
+    public partial class OpenNosContext : DbContext
     {
         #region Instantiation
 
         public OpenNosContext() : base("name=OpenNosContext")
         {
-            Configuration.LazyLoadingEnabled = true;
+            this.Configuration.LazyLoadingEnabled = true;
 
             // --DO NOT DISABLE, otherwise the mapping will fail only one time access to database so
             // no proxy generation needed, its just slowing down in our case
-            Configuration.ProxyCreationEnabled = false;
+            this.Configuration.ProxyCreationEnabled = false;
         }
 
         #endregion

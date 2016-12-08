@@ -12,16 +12,16 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Data;
+using OpenNos.Domain;
+using OpenNos.GameObject;
+using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL;
-using OpenNos.Domain;
-using OpenNos.GameObject;
-using OpenNos.ServiceRef.Internal;
 
 namespace OpenNos.Handler
 {
@@ -69,10 +69,10 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
 
-            UserDTO user = new UserDTO { Name = packetsplit[2], Password = ConfigurationManager.AppSettings["UseOldCrypto"] == "true" ? EncryptionBase.Sha512(LoginEncryption.GetPassword(packetsplit[3])).ToUpper() : packetsplit[3] };
+            UserDTO user = new UserDTO() { Name = packetsplit[2], Password = ConfigurationManager.AppSettings["UseOldCrypto"] == "true" ? EncryptionBase.Sha512(LoginEncryption.GetPassword(packetsplit[3])).ToUpper() : packetsplit[3] };
 
             // closed
-            const bool flag = true;
+            bool flag = true;
             if (flag)
             {
                 // TODO: implement check for maintenances
@@ -91,7 +91,7 @@ namespace OpenNos.Handler
                             PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
                             if (penalty != null)
                             {
-                                _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, penalty.DateEnd.ToString("yyyy-MM-dd-HH:mm"))}");
+                                _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, (penalty.DateEnd).ToString("yyyy-MM-dd-HH:mm"))}");
                             }
                             else
                             {
@@ -128,22 +128,22 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("ALREADY_CONNECTED"))}");
+                            _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("ALREADY_CONNECTED"))}");
                         }
                     }
                     else
                     {
-                        _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("IDERROR"))}");
+                        _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("IDERROR"))}");
                     }
                 }
                 else
                 {
-                    _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"))}"); // add estimated time of maintenance/end of maintenance
+                    _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"))}"); // add estimated time of maintenance/end of maintenance
                 }
             }
             else
             {
-                _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("CLIENT_DISCONNECTED"))}");
+                _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("CLIENT_DISCONNECTED"))}");
             }
         }
 

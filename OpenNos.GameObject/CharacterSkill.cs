@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Data;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -29,9 +29,9 @@ namespace OpenNos.GameObject
 
         public CharacterSkill(CharacterSkillDTO dto)
         {
-            CharacterId = dto.CharacterId;
-            Id = dto.Id;
-            SkillVNum = dto.SkillVNum;
+            this.CharacterId = dto.CharacterId;
+            this.Id = dto.Id;
+            this.SkillVNum = dto.SkillVNum;
             LastUse = DateTime.Now.AddHours(-1);
             Hit = 0;
         }
@@ -55,7 +55,15 @@ namespace OpenNos.GameObject
 
         public Skill Skill
         {
-            get { return skill ?? (skill = ServerManager.GetSkill(SkillVNum)); }
+            get
+            {
+                if (skill == null)
+                {
+                    skill = ServerManager.GetSkill(this.SkillVNum);
+                }
+
+                return skill;
+            }
         }
 
         public bool CanBeUsed()

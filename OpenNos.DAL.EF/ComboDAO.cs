@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class ComboDao : MappingBaseDao<Combo, ComboDTO>, IComboDAO
+    public class ComboDAO : MappingBaseDAO<Combo, ComboDTO>, IComboDAO
     {
         #region Methods
 
@@ -35,7 +35,7 @@ namespace OpenNos.DAL.EF
                     context.Configuration.AutoDetectChangesEnabled = false;
                     foreach (ComboDTO combo in combos)
                     {
-                        Combo entity = Mapper.Map<Combo>(combo);
+                        Combo entity = _mapper.Map<Combo>(combo);
                         context.Combo.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -54,10 +54,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Combo entity = Mapper.Map<Combo>(combo);
+                    Combo entity = _mapper.Map<Combo>(combo);
                     context.Combo.Add(entity);
                     context.SaveChanges();
-                    return Mapper.Map<ComboDTO>(entity);
+                    return _mapper.Map<ComboDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -73,7 +73,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (Combo combo in context.Combo)
                 {
-                    yield return Mapper.Map<ComboDTO>(combo);
+                    yield return _mapper.Map<ComboDTO>(combo);
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return Mapper.Map<ComboDTO>(context.Combo.FirstOrDefault(s => s.SkillVNum.Equals(comboId)));
+                    return _mapper.Map<ComboDTO>(context.Combo.FirstOrDefault(s => s.SkillVNum.Equals(comboId)));
                 }
             }
             catch (Exception e)
@@ -100,7 +100,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (Combo combo in context.Combo.Where(c => c.SkillVNum == skillVNum))
                 {
-                    yield return Mapper.Map<ComboDTO>(combo);
+                    yield return _mapper.Map<ComboDTO>(combo);
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (Combo combo in context.Combo.Where(s => s.SkillVNum == skillVNum && s.Hit == hit && s.Effect == effect))
                 {
-                    yield return Mapper.Map<ComboDTO>(combo);
+                    yield return _mapper.Map<ComboDTO>(combo);
                 }
             }
         }

@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
@@ -79,7 +79,12 @@ namespace OpenNos.GameObject
         public List<string> GeneratePst()
         {
             int i = 0;
-            return Characters.Select(session => $"pst 1 {session.Character.CharacterId} {++i} {(int) (session.Character.Hp/session.Character.HpLoad()*100)} {(int) (session.Character.Mp/session.Character.MpLoad()*100)} {session.Character.HpLoad()} {session.Character.MpLoad()} {(byte) session.Character.Class} {(byte) session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}").ToList();
+            List<string> str = new List<string>();
+            foreach (ClientSession session in Characters)
+            {
+                str.Add($"pst 1 {session.Character.CharacterId} {++i} { (int)(session.Character.Hp / session.Character.HPLoad() * 100) } {(int)(session.Character.Mp / session.Character.MPLoad() * 100) } {session.Character.HPLoad()} {session.Character.MPLoad()} {(byte)session.Character.Class} {(byte)session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}");
+            }
+            return str;
         }
 
         public long? GetNextOrderedCharacterId(Character character)

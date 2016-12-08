@@ -24,7 +24,7 @@ namespace OpenNos.DAL.EF
 
         public short? SlElement { get; set; }
 
-        public short? SlHp { get; set; }
+        public short? SlHP { get; set; }
 
         public byte? SpDamage { get; set; }
 
@@ -36,7 +36,7 @@ namespace OpenNos.DAL.EF
 
         public byte? SpFire { get; set; }
 
-        public byte? SpHp { get; set; }
+        public byte? SpHP { get; set; }
 
         public byte? SpLevel { get; set; }
 

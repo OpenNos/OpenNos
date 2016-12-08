@@ -23,12 +23,12 @@ namespace OpenNos.Data
 
         public override bool Equals(object obj)
         {
-            return ((SynchronizableBaseDTO)obj).Id == Id;
+            return ((SynchronizableBaseDTO)obj).Id == this.Id;
         }
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return this.Id.GetHashCode();
         }
 
         #endregion

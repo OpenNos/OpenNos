@@ -12,16 +12,20 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL;
+using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Data;
-using OpenNos.DAL;
 
 namespace OpenNos.GameObject
 {
     public class Recipe : RecipeDTO
     {
         #region Instantiation
+
+        public Recipe()
+        {
+        }
 
         #endregion
 
@@ -38,7 +42,7 @@ namespace OpenNos.GameObject
             Items = new List<RecipeItemDTO>();
             foreach (RecipeItemDTO rec in DAOFactory.RecipeItemDAO.LoadByRecipe(RecipeId).ToList())
             {
-                Items.Add(rec);
+                Items.Add(rec as RecipeItemDTO);
             }
         }
 

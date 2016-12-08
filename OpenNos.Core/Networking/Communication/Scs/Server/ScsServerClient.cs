@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Threading.Tasks;
 using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
+using System;
+using System.Threading.Tasks;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Server
 {

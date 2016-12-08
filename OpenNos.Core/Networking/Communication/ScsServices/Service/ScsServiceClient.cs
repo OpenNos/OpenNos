@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Runtime.Remoting.Proxies;
 using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
 using OpenNos.Core.Networking.Communication.Scs.Server;
 using OpenNos.Core.Networking.Communication.ScsServices.Communication;
+using System;
+using System.Runtime.Remoting.Proxies;
 
 namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 {

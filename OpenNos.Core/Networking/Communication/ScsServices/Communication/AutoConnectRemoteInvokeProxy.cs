@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using System.Runtime.Remoting.Messaging;
 using OpenNos.Core.Networking.Communication.Scs.Client;
 using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
+using System.Runtime.Remoting.Messaging;
 
 namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
 {

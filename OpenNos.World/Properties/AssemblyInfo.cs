@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using log4net.Config;
 
 // General Information about an assembly is controlled through the following set of attributes.
 // Change these attribute values to modify the information associated with an assembly.
@@ -27,4 +26,4 @@ using log4net.Config;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("ec300279-181e-4e6e-a94c-e8baf0eab2ad")]
-[assembly: XmlConfigurator(Watch = true)]
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]

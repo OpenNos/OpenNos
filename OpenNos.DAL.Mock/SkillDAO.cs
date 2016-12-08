@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using OpenNos.DAL.Interface;
+using System.Linq;
 
 namespace OpenNos.DAL.Mock
 {

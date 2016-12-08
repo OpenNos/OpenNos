@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-using System.Configuration;
+using System;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
@@ -23,7 +23,7 @@ namespace OpenNos.Core
     {
         #region Members
 
-        private static Language instance;
+        private static Language instance = null;
         private ResourceManager _manager;
         private CultureInfo _resourceCulture;
 
@@ -33,7 +33,7 @@ namespace OpenNos.Core
 
         private Language()
         {
-            _resourceCulture = new CultureInfo(ConfigurationManager.AppSettings["language"]);
+            _resourceCulture = new System.Globalization.CultureInfo(System.Configuration.ConfigurationManager.AppSettings["language"]);
             if (Assembly.GetEntryAssembly() != null)
             {
                 _manager = new ResourceManager(Assembly.GetEntryAssembly().GetName().Name + ".Resource.LocalizedResources", Assembly.GetEntryAssembly());
@@ -62,8 +62,16 @@ namespace OpenNos.Core
 
         public string GetMessageFromKey(string message)
         {
-            string resourceMessage = _manager != null ? _manager.GetString(message, _resourceCulture) : string.Empty;
-            return !string.IsNullOrEmpty(resourceMessage) ? resourceMessage : $"#<{message}>";
+            string resourceMessage = _manager != null ? _manager.GetString(message, _resourceCulture) : String.Empty;
+
+            if (!String.IsNullOrEmpty(resourceMessage))
+            {
+                return resourceMessage;
+            }
+            else
+            {
+                return $"#<{message}>";
+            }
         }
 
         #endregion

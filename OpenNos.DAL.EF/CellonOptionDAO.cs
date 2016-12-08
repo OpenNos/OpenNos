@@ -12,15 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using System.Collections.Generic;
-using System.Linq;
-using OpenNos.Data;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class CellonOptionDao : SynchronizableBaseDao<CellonOption, CellonOptionDTO>, ICellonOptionDAO
+    public class CellonOptionDAO : SynchronizableBaseDAO<CellonOption, CellonOptionDTO>, ICellonOptionDAO
     {
         #region Methods
 
@@ -28,9 +28,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (CellonOption cellonOptionobject in context.CellonOption.Where(i => i.WearableInstanceId.Equals(wearableInstanceId)))
+                foreach (CellonOption CellonOptionobject in context.CellonOption.Where(i => i.WearableInstanceId.Equals(wearableInstanceId)))
                 {
-                    yield return Mapper.Map<CellonOptionDTO>(cellonOptionobject);
+                    yield return _mapper.Map<CellonOptionDTO>(CellonOptionobject);
                 }
             }
         }

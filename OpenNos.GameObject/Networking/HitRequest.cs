@@ -1,6 +1,6 @@
-﻿using System;
-using OpenNos.Data;
+﻿using OpenNos.Data;
 using OpenNos.Domain;
+using System;
 
 namespace OpenNos.GameObject.Networking
 {
@@ -14,7 +14,14 @@ namespace OpenNos.GameObject.Networking
             Session = session;
             Skill = skill;
             TargetHitType = targetHitType;
-            SkillEffect = skillEffect ?? skill.Effect;
+            if (skillEffect.HasValue)
+            {
+                SkillEffect = skillEffect.Value;
+            }
+            else
+            {
+                SkillEffect = skill.Effect;
+            }
 
             if (mapX.HasValue)
             {
@@ -58,7 +65,7 @@ namespace OpenNos.GameObject.Networking
 
         public bool Equals(HitRequest other)
         {
-            return other != null && other.HitTimestamp == HitTimestamp;
+            return other.HitTimestamp == HitTimestamp;
         }
 
         #endregion

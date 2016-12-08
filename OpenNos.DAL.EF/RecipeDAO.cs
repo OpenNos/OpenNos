@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class RecipeDao : MappingBaseDao<Recipe, RecipeDTO>, IRecipeDAO
+    public class RecipeDAO : MappingBaseDAO<Recipe, RecipeDTO>, IRecipeDAO
     {
         #region Methods
 
@@ -32,10 +32,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Recipe entity = Mapper.Map<Recipe>(recipe);
+                    Recipe entity = _mapper.Map<Recipe>(recipe);
                     context.Recipe.Add(entity);
                     context.SaveChanges();
-                    return Mapper.Map<RecipeDTO>(entity);
+                    return _mapper.Map<RecipeDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -49,9 +49,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Recipe recipe in context.Recipe)
+                foreach (Recipe Recipe in context.Recipe)
                 {
-                    yield return Mapper.Map<RecipeDTO>(recipe);
+                    yield return _mapper.Map<RecipeDTO>(Recipe);
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return Mapper.Map<RecipeDTO>(context.Recipe.FirstOrDefault(s => s.RecipeId.Equals(recipeId)));
+                    return _mapper.Map<RecipeDTO>(context.Recipe.FirstOrDefault(s => s.RecipeId.Equals(recipeId)));
                 }
             }
             catch (Exception e)
@@ -76,9 +76,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Recipe recipe in context.Recipe.Where(s => s.MapNpcId.Equals(npcId)))
+                foreach (Recipe Recipe in context.Recipe.Where(s => s.MapNpcId.Equals(npcId)))
                 {
-                    yield return Mapper.Map<RecipeDTO>(recipe);
+                    yield return _mapper.Map<RecipeDTO>(Recipe);
                 }
             }
         }
@@ -93,7 +93,7 @@ namespace OpenNos.DAL.EF
                     if (result != null)
                     {
                         recipe.RecipeId = result.RecipeId;
-                        Mapper.Map(recipe, result);
+                        _mapper.Map(recipe, result);
                         context.SaveChanges();
                     }
                 }

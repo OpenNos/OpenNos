@@ -12,12 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using System;
-
 namespace OpenNos.Core
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public class PacketAttribute : Attribute
+    [System.AttributeUsage(System.AttributeTargets.Method)]
+    public class PacketAttribute : System.Attribute
     {
         #region Members
 
@@ -30,8 +28,8 @@ namespace OpenNos.Core
 
         public PacketAttribute(string header, int amount = 1)
         {
-            _header = header;
-            _amount = amount;
+            this._header = header;
+            this._amount = amount;
         }
 
         #endregion

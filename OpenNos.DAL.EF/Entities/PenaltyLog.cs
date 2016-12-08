@@ -12,12 +12,12 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using OpenNos.Domain;
-
 namespace OpenNos.DAL.EF
 {
+    using Domain;
+    using System;
+    using System.ComponentModel.DataAnnotations;
+
     public class PenaltyLog
     {
         #region Properties

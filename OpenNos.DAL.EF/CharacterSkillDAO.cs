@@ -12,18 +12,18 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class CharacterSkillDao : SynchronizableBaseDao<CharacterSkill, CharacterSkillDTO>, ICharacterSkillDAO
+    public class CharacterSkillDAO : SynchronizableBaseDAO<CharacterSkill, CharacterSkillDTO>, ICharacterSkillDAO
     {
         #region Methods
 
@@ -55,7 +55,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (CharacterSkill entity in context.CharacterSkill.Where(i => i.CharacterId == characterId))
                 {
-                    yield return Mapper.Map<CharacterSkillDTO>(entity);
+                    yield return _mapper.Map<CharacterSkillDTO>(entity);
                 }
             }
         }
@@ -78,7 +78,7 @@ namespace OpenNos.DAL.EF
 
         protected override CharacterSkill MapEntity(CharacterSkillDTO dto)
         {
-            CharacterSkill entity = Mapper.Map<CharacterSkill>(dto);
+            CharacterSkill entity = _mapper.Map<CharacterSkill>(dto);
             return entity;
         }
 

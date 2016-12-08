@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using OpenNos.Domain;
-
 namespace OpenNos.DAL.EF
 {
+    using Domain;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public class NpcMonster
     {
         #region Instantiation
@@ -84,7 +84,7 @@ namespace OpenNos.DAL.EF
 
         public bool IsHostile { get; set; }
 
-        public int JobXp { get; set; }
+        public int JobXP { get; set; }
 
         public byte Level { get; set; }
 
@@ -96,9 +96,9 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<MapNpc> MapNpc { get; set; }
 
-        public int MaxHp { get; set; }
+        public int MaxHP { get; set; }
 
-        public int MaxMp { get; set; }
+        public int MaxMP { get; set; }
 
         public MonsterType MonsterType { get; set; }
 
@@ -127,7 +127,7 @@ namespace OpenNos.DAL.EF
 
         public short WaterResistance { get; set; }
 
-        public int Xp { get; set; }
+        public int XP { get; set; }
 
         #endregion
     }

@@ -12,13 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Configuration;
 using OpenNos.Core;
-using OpenNos.DAL.EF;
-using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
-using OpenNos.DAL.Mock;
+using System;
 
 namespace OpenNos.DAL
 {
@@ -65,11 +61,11 @@ namespace OpenNos.DAL
         {
             try
             {
-                _useMock = Convert.ToBoolean(ConfigurationManager.AppSettings["UseMock"]);
+                _useMock = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["UseMock"]);
 
                 if (!_useMock)
                 {
-                    MigrationHelper.GenerateSqlScript();
+                    EF.Helpers.MigrationHelper.GenerateSQLScript();
                 }
             }
             catch (Exception ex)
@@ -90,11 +86,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _accountDAO = new AccountDAO();
+                        _accountDAO = new Mock.AccountDAO();
                     }
                     else
                     {
-                        _accountDAO = new AccountDao();
+                        _accountDAO = new EF.AccountDAO();
                     }
                 }
 
@@ -110,11 +106,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _cellonoptionDAO = new CellonOptionDAO();
+                        _cellonoptionDAO = new Mock.CellonOptionDAO();
                     }
                     else
                     {
-                        _cellonoptionDAO = new CellonOptionDao();
+                        _cellonoptionDAO = new EF.CellonOptionDAO();
                     }
                 }
 
@@ -130,11 +126,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _characterDAO = new CharacterDAO();
+                        _characterDAO = new Mock.CharacterDAO();
                     }
                     else
                     {
-                        _characterDAO = new CharacterDao();
+                        _characterDAO = new EF.CharacterDAO();
                     }
                 }
 
@@ -150,11 +146,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _characterskillDAO = new CharacterSkillDAO();
+                        _characterskillDAO = new Mock.CharacterSkillDAO();
                     }
                     else
                     {
-                        _characterskillDAO = new CharacterSkillDao();
+                        _characterskillDAO = new EF.CharacterSkillDAO();
                     }
                 }
 
@@ -170,11 +166,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _comboDAO = new ComboDAO();
+                        _comboDAO = new Mock.ComboDAO();
                     }
                     else
                     {
-                        _comboDAO = new ComboDao();
+                        _comboDAO = new EF.ComboDAO();
                     }
                 }
 
@@ -190,11 +186,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _dropDAO = new DropDAO();
+                        _dropDAO = new Mock.DropDAO();
                     }
                     else
                     {
-                        _dropDAO = new DropDao();
+                        _dropDAO = new EF.DropDAO();
                     }
                 }
 
@@ -210,11 +206,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _generallogDAO = new GeneralLogDAO();
+                        _generallogDAO = new Mock.GeneralLogDAO();
                     }
                     else
                     {
-                        _generallogDAO = new GeneralLogDao();
+                        _generallogDAO = new EF.GeneralLogDAO();
                     }
                 }
 
@@ -230,11 +226,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _itemDAO = new ItemDAO();
+                        _itemDAO = new Mock.ItemDAO();
                     }
                     else
                     {
-                        _itemDAO = new ItemDao();
+                        _itemDAO = new EF.ItemDAO();
                     }
                 }
 
@@ -250,11 +246,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _itemInstanceDAO = new ItemInstanceDAO();
+                        _itemInstanceDAO = new Mock.ItemInstanceDAO();
                     }
                     else
                     {
-                        _itemInstanceDAO = new ItemInstanceDao();
+                        _itemInstanceDAO = new EF.ItemInstanceDAO();
                     }
                 }
 
@@ -270,11 +266,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _mailDAO = new MailDAO();
+                        _mailDAO = new Mock.MailDAO();
                     }
                     else
                     {
-                        _mailDAO = new MailDao();
+                        _mailDAO = new EF.MailDAO();
                     }
                 }
 
@@ -290,11 +286,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _mapDAO = new MapDAO();
+                        _mapDAO = new Mock.MapDAO();
                     }
                     else
                     {
-                        _mapDAO = new MapDao();
+                        _mapDAO = new EF.MapDAO();
                     }
                 }
 
@@ -310,11 +306,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _mapmonsterDAO = new MapMonsterDAO();
+                        _mapmonsterDAO = new Mock.MapMonsterDAO();
                     }
                     else
                     {
-                        _mapmonsterDAO = new MapMonsterDao();
+                        _mapmonsterDAO = new EF.MapMonsterDAO();
                     }
                 }
 
@@ -330,11 +326,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _mapnpcDAO = new MapNpcDAO();
+                        _mapnpcDAO = new Mock.MapNpcDAO();
                     }
                     else
                     {
-                        _mapnpcDAO = new MapNpcDao();
+                        _mapnpcDAO = new EF.MapNpcDAO();
                     }
                 }
 
@@ -350,11 +346,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _maptypeDAO = new MapTypeDAO();
+                        _maptypeDAO = new Mock.MapTypeDAO();
                     }
                     else
                     {
-                        _maptypeDAO = new MapTypeDao();
+                        _maptypeDAO = new EF.MapTypeDAO();
                     }
                 }
 
@@ -370,11 +366,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _maptypemapDAO = new MapTypeMapDAO();
+                        _maptypemapDAO = new Mock.MapTypeMapDAO();
                     }
                     else
                     {
-                        _maptypemapDAO = new MapTypeMapDao();
+                        _maptypemapDAO = new EF.MapTypeMapDAO();
                     }
                 }
 
@@ -390,11 +386,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _npcmonsterDAO = new NpcMonsterDAO();
+                        _npcmonsterDAO = new Mock.NpcMonsterDAO();
                     }
                     else
                     {
-                        _npcmonsterDAO = new NpcMonsterDao();
+                        _npcmonsterDAO = new EF.NpcMonsterDAO();
                     }
                 }
 
@@ -410,11 +406,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _npcmonsterskillDAO = new NpcMonsterSkillDAO();
+                        _npcmonsterskillDAO = new Mock.NpcMonsterSkillDAO();
                     }
                     else
                     {
-                        _npcmonsterskillDAO = new NpcMonsterSkillDao();
+                        _npcmonsterskillDAO = new EF.NpcMonsterSkillDAO();
                     }
                 }
 
@@ -430,11 +426,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _penaltylogDAO = new PenaltyLogDAO();
+                        _penaltylogDAO = new Mock.PenaltyLogDAO();
                     }
                     else
                     {
-                        _penaltylogDAO = new PenaltyLogDao();
+                        _penaltylogDAO = new EF.PenaltyLogDAO();
                     }
                 }
 
@@ -450,11 +446,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _portalDAO = new PortalDAO();
+                        _portalDAO = new Mock.PortalDAO();
                     }
                     else
                     {
-                        _portalDAO = new PortalDao();
+                        _portalDAO = new EF.PortalDAO();
                     }
                 }
 
@@ -470,11 +466,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _quicklistDAO = new QuicklistEntryDAO();
+                        _quicklistDAO = new Mock.QuicklistEntryDAO();
                     }
                     else
                     {
-                        _quicklistDAO = new QuicklistEntryDao();
+                        _quicklistDAO = new EF.QuicklistEntryDAO();
                     }
                 }
 
@@ -490,11 +486,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _recipeDAO = new RecipeDAO();
+                        _recipeDAO = new Mock.RecipeDAO();
                     }
                     else
                     {
-                        _recipeDAO = new RecipeDao();
+                        _recipeDAO = new EF.RecipeDAO();
                     }
                 }
 
@@ -510,11 +506,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _recipeitemDAO = new RecipeItemDAO();
+                        _recipeitemDAO = new Mock.RecipeItemDAO();
                     }
                     else
                     {
-                        _recipeitemDAO = new RecipeItemDao();
+                        _recipeitemDAO = new EF.RecipeItemDAO();
                     }
                 }
 
@@ -530,11 +526,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _respawnDAO = new RespawnDAO();
+                        _respawnDAO = new Mock.RespawnDAO();
                     }
                     else
                     {
-                        _respawnDAO = new RespawnDao();
+                        _respawnDAO = new EF.RespawnDAO();
                     }
                 }
 
@@ -550,11 +546,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _respawnMapTypeDAO = new RespawnMapTypeDAO();
+                        _respawnMapTypeDAO = new Mock.RespawnMapTypeDAO();
                     }
                     else
                     {
-                        _respawnMapTypeDAO = new RespawnMapTypeDao();
+                        _respawnMapTypeDAO = new EF.RespawnMapTypeDAO();
                     }
                 }
 
@@ -570,11 +566,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _shopDAO = new ShopDAO();
+                        _shopDAO = new Mock.ShopDAO();
                     }
                     else
                     {
-                        _shopDAO = new ShopDao();
+                        _shopDAO = new EF.ShopDAO();
                     }
                 }
 
@@ -590,11 +586,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _shopitemDAO = new ShopItemDAO();
+                        _shopitemDAO = new Mock.ShopItemDAO();
                     }
                     else
                     {
-                        _shopitemDAO = new ShopItemDao();
+                        _shopitemDAO = new EF.ShopItemDAO();
                     }
                 }
 
@@ -610,11 +606,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _shopskillDAO = new ShopSkillDAO();
+                        _shopskillDAO = new Mock.ShopSkillDAO();
                     }
                     else
                     {
-                        _shopskillDAO = new ShopSkillDao();
+                        _shopskillDAO = new EF.ShopSkillDAO();
                     }
                 }
 
@@ -630,11 +626,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _skillDAO = new SkillDAO();
+                        _skillDAO = new Mock.SkillDAO();
                     }
                     else
                     {
-                        _skillDAO = new SkillDao();
+                        _skillDAO = new EF.SkillDAO();
                     }
                 }
 
@@ -650,11 +646,11 @@ namespace OpenNos.DAL
                 {
                     if (_useMock)
                     {
-                        _teleporterDAO = new TeleporterDAO();
+                        _teleporterDAO = new Mock.TeleporterDAO();
                     }
                     else
                     {
-                        _teleporterDAO = new TeleporterDao();
+                        _teleporterDAO = new EF.TeleporterDAO();
                     }
                 }
 

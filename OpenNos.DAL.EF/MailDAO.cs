@@ -12,19 +12,19 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class MailDao : MappingBaseDao<Mail, MailDTO>, IMailDAO
+    public class MailDAO : MappingBaseDAO<Mail, MailDTO>, IMailDAO
     {
         #region Methods
 
@@ -66,9 +66,12 @@ namespace OpenNos.DAL.EF
                         mail = Insert(mail, context);
                         return SaveResult.Inserted;
                     }
-                    mail.MailId = entity.MailId;
-                    mail = Update(entity, mail, context);
-                    return SaveResult.Updated;
+                    else
+                    {
+                        mail.MailId = entity.MailId;
+                        mail = Update(entity, mail, context);
+                        return SaveResult.Updated;
+                    }
                 }
             }
             catch (Exception e)
@@ -84,7 +87,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return Mapper.Map<MailDTO>(context.Mail.FirstOrDefault(i => i.MailId.Equals(mailId)));
+                    return _mapper.Map<MailDTO>(context.Mail.FirstOrDefault(i => i.MailId.Equals(mailId)));
                 }
             }
             catch (Exception e)
@@ -100,7 +103,7 @@ namespace OpenNos.DAL.EF
             {
                 foreach (Mail mail in context.Mail)
                 {
-                    yield return Mapper.Map<MailDTO>(mail);
+                    yield return _mapper.Map<MailDTO>(mail);
                 }
             }
         }
@@ -109,10 +112,10 @@ namespace OpenNos.DAL.EF
         {
             try
             {
-                Mail entity = Mapper.Map<Mail>(mail);
+                Mail entity = _mapper.Map<Mail>(mail);
                 context.Mail.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<MailDTO>(entity);
+                return _mapper.Map<MailDTO>(entity);
             }
             catch (Exception e)
             {
@@ -125,10 +128,10 @@ namespace OpenNos.DAL.EF
         {
             if (entity != null)
             {
-                Mapper.Map(respawn, entity);
+                _mapper.Map(respawn, entity);
                 context.SaveChanges();
             }
-            return Mapper.Map<MailDTO>(entity);
+            return _mapper.Map<MailDTO>(entity);
         }
 
         #endregion

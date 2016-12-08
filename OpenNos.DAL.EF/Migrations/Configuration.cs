@@ -1,9 +1,8 @@
-using System.Data.Entity.Migrations;
-using OpenNos.DAL.EF.DB;
-
 namespace OpenNos.DAL.EF.Migrations
 {
-    internal sealed class Configuration : DbMigrationsConfiguration<OpenNosContext>
+    using System.Data.Entity.Migrations;
+
+    internal sealed class Configuration : DbMigrationsConfiguration<DB.OpenNosContext>
     {
         #region Instantiation
 

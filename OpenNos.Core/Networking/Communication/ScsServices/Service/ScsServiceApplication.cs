@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
 using OpenNos.Core.Networking.Communication.Scs.Server;
 using OpenNos.Core.Networking.Communication.ScsServices.Communication.Messages;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 {
@@ -255,15 +255,18 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                 {
                     var innerEx = ex.InnerException;
                     SendInvokeResponse(requestReplyMessenger, invokeMessage, null, new ScsRemoteException(innerEx.Message + Environment.NewLine + "Service Version: " + serviceObject.ServiceAttribute.Version, innerEx));
+                    return;
                 }
                 catch (Exception ex)
                 {
                     SendInvokeResponse(requestReplyMessenger, invokeMessage, null, new ScsRemoteException(ex.Message + Environment.NewLine + "Service Version: " + serviceObject.ServiceAttribute.Version, ex));
+                    return;
                 }
             }
             catch (Exception ex)
             {
                 SendInvokeResponse(requestReplyMessenger, invokeMessage, null, new ScsRemoteException("An error occured during remote service method call.", ex));
+                return;
             }
         }
 

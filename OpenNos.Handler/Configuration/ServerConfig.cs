@@ -23,7 +23,7 @@ namespace OpenNos.Handler
     {
         #region Methods
 
-        public object Create(object parent, object configContext, XmlNode section)
+        public object Create(object parent, object configContext, System.Xml.XmlNode section)
         {
             List<Server> liste = new List<Server>();
             foreach (XmlNode server in section.ChildNodes)

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using OpenNos.Data;
+using OpenNos.Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL.Mock
 {
@@ -35,7 +35,10 @@ namespace OpenNos.DAL.Mock
             {
                 return loadedDTO = dto;
             }
-            return Insert(dto);
+            else
+            {
+                return Insert(dto);
+            }
         }
 
         public TSynchronizableBaseDTO LoadById(Guid id)

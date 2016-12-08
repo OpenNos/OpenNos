@@ -20,11 +20,11 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        protected Item()
+        public Item()
         {
         }
 
-        protected Item(ItemDTO item)
+        public Item(ItemDTO item)
         {
             InitializeItem(item);
         }
@@ -36,73 +36,73 @@ namespace OpenNos.GameObject
         public void InitializeItem(ItemDTO item)
         {
             // manual mapping to avoid automapper outside of DAO
-            BasicUpgrade = item.BasicUpgrade;
-            CellonLvl = item.CellonLvl;
-            Class = item.Class;
-            CloseDefence = item.CloseDefence;
-            Color = item.Color;
-            Concentrate = item.Concentrate;
-            CriticalRate = item.CriticalRate;
-            CriticalLuckRate = item.CriticalLuckRate;
-            DamageMaximum = item.DamageMaximum;
-            DamageMinimum = item.DamageMinimum;
-            DarkElement = item.DarkElement;
-            DarkResistance = item.DarkResistance;
-            DefenceDodge = item.DefenceDodge;
-            DistanceDefence = item.DistanceDefence;
-            DistanceDefenceDodge = item.DistanceDefenceDodge;
-            Effect = item.Effect;
-            EffectValue = item.EffectValue;
-            Element = item.Element;
-            ElementRate = item.ElementRate;
-            EquipmentSlot = item.EquipmentSlot;
-            FireElement = item.FireElement;
-            FireResistance = item.FireResistance;
-            HitRate = item.HitRate;
-            Hp = item.Hp;
-            HpRegeneration = item.HpRegeneration;
-            IsBlocked = item.IsBlocked;
-            IsColored = item.IsColored;
-            IsConsumable = item.IsConsumable;
-            IsDroppable = item.IsDroppable;
-            IsHeroic = item.IsHeroic;
-            IsMinilandObject = item.IsMinilandObject;
-            IsSoldable = item.IsSoldable;
-            IsTradable = item.IsTradable;
-            IsHolder = item.IsHolder;
-            ItemSubType = item.ItemSubType;
-            ItemType = item.ItemType;
-            ItemValidTime = item.ItemValidTime;
-            LevelJobMinimum = item.LevelJobMinimum;
-            LevelMinimum = item.LevelMinimum;
-            LightElement = item.LightElement;
-            LightResistance = item.LightResistance;
-            MagicDefence = item.MagicDefence;
-            MaxCellon = item.MaxCellon;
-            MaxCellonLvl = item.MaxCellonLvl;
-            MaxElementRate = item.MaxElementRate;
-            MaximumAmmo = item.MaximumAmmo;
-            MoreHp = item.MoreHp;
-            MoreMp = item.MoreMp;
-            Morph = item.Morph;
-            Mp = item.Mp;
-            MpRegeneration = item.MpRegeneration;
-            Name = item.Name;
-            Price = item.Price;
-            PvpDefence = item.PvpDefence;
-            PvpStrength = item.PvpStrength;
-            ReduceOposantResistance = item.ReduceOposantResistance;
-            ReputationMinimum = item.ReputationMinimum;
-            ReputPrice = item.ReputPrice;
-            SecondaryElement = item.SecondaryElement;
-            Sex = item.Sex;
-            Speed = item.Speed;
-            SpType = item.SpType;
-            Type = item.Type;
-            VNum = item.VNum;
-            WaitDelay = item.WaitDelay;
-            WaterElement = item.WaterElement;
-            WaterResistance = item.WaterResistance;
+            this.BasicUpgrade = item.BasicUpgrade;
+            this.CellonLvl = item.CellonLvl;
+            this.Class = item.Class;
+            this.CloseDefence = item.CloseDefence;
+            this.Color = item.Color;
+            this.Concentrate = item.Concentrate;
+            this.CriticalRate = item.CriticalRate;
+            this.CriticalLuckRate = item.CriticalLuckRate;
+            this.DamageMaximum = item.DamageMaximum;
+            this.DamageMinimum = item.DamageMinimum;
+            this.DarkElement = item.DarkElement;
+            this.DarkResistance = item.DarkResistance;
+            this.DefenceDodge = item.DefenceDodge;
+            this.DistanceDefence = item.DistanceDefence;
+            this.DistanceDefenceDodge = item.DistanceDefenceDodge;
+            this.Effect = item.Effect;
+            this.EffectValue = item.EffectValue;
+            this.Element = item.Element;
+            this.ElementRate = item.ElementRate;
+            this.EquipmentSlot = item.EquipmentSlot;
+            this.FireElement = item.FireElement;
+            this.FireResistance = item.FireResistance;
+            this.HitRate = item.HitRate;
+            this.Hp = item.Hp;
+            this.HpRegeneration = item.HpRegeneration;
+            this.IsBlocked = item.IsBlocked;
+            this.IsColored = item.IsColored;
+            this.IsConsumable = item.IsConsumable;
+            this.IsDroppable = item.IsDroppable;
+            this.IsHeroic = item.IsHeroic;
+            this.IsMinilandObject = item.IsMinilandObject;
+            this.IsSoldable = item.IsSoldable;
+            this.IsTradable = item.IsTradable;
+            this.IsHolder = item.IsHolder;
+            this.ItemSubType = item.ItemSubType;
+            this.ItemType = item.ItemType;
+            this.ItemValidTime = item.ItemValidTime;
+            this.LevelJobMinimum = item.LevelJobMinimum;
+            this.LevelMinimum = item.LevelMinimum;
+            this.LightElement = item.LightElement;
+            this.LightResistance = item.LightResistance;
+            this.MagicDefence = item.MagicDefence;
+            this.MaxCellon = item.MaxCellon;
+            this.MaxCellonLvl = item.MaxCellonLvl;
+            this.MaxElementRate = item.MaxElementRate;
+            this.MaximumAmmo = item.MaximumAmmo;
+            this.MoreHp = item.MoreHp;
+            this.MoreMp = item.MoreMp;
+            this.Morph = item.Morph;
+            this.Mp = item.Mp;
+            this.MpRegeneration = item.MpRegeneration;
+            this.Name = item.Name;
+            this.Price = item.Price;
+            this.PvpDefence = item.PvpDefence;
+            this.PvpStrength = item.PvpStrength;
+            this.ReduceOposantResistance = item.ReduceOposantResistance;
+            this.ReputationMinimum = item.ReputationMinimum;
+            this.ReputPrice = item.ReputPrice;
+            this.SecondaryElement = item.SecondaryElement;
+            this.Sex = item.Sex;
+            this.Speed = item.Speed;
+            this.SpType = item.SpType;
+            this.Type = item.Type;
+            this.VNum = item.VNum;
+            this.WaitDelay = item.WaitDelay;
+            this.WaterElement = item.WaterElement;
+            this.WaterResistance = item.WaterResistance;
         }
 
         public abstract void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null);

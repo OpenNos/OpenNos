@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Data;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -26,6 +26,10 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Instantiation
+
+        public NpcMonsterSkill()
+        {
+        }
 
         #endregion
 
@@ -44,7 +48,7 @@ namespace OpenNos.GameObject
             {
                 if (skill == null)
                 {
-                    skill = ServerManager.GetSkill(SkillVNum);
+                    skill = ServerManager.GetSkill(this.SkillVNum);
                 }
                 return skill;
             }

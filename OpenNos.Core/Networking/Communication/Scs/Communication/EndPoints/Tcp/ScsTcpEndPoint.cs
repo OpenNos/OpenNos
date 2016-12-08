@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Core.Networking.Communication.Scs.Client;
 using OpenNos.Core.Networking.Communication.Scs.Client.Tcp;
 using OpenNos.Core.Networking.Communication.Scs.Server;
 using OpenNos.Core.Networking.Communication.Scs.Server.Tcp;
+using System;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp
 {

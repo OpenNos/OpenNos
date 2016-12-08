@@ -171,11 +171,13 @@ namespace OpenNos.Core.Threading
 
             try
             {
-                Elapsed?.Invoke(this, new EventArgs());
+                if (Elapsed != null)
+                {
+                    Elapsed(this, new EventArgs());
+                }
             }
             catch
             {
-                // ignored
             }
             finally
             {

@@ -42,33 +42,33 @@ namespace EpPathFinding
 {
     public class GridPos : IEquatable<GridPos>
     {
-        public int X;
-        public int Y;
+        public int x;
+        public int y;
 
         public GridPos()
         {
-            X = 0;
-            Y = 0;
+            x = 0;
+            y = 0;
         }
 
         public GridPos(int iX, int iY)
         {
-            X = iX;
-            Y = iY;
+            this.x = iX;
+            this.y = iY;
         }
 
         public GridPos(GridPos b)
         {
-            X = b.X;
-            Y = b.Y;
+            x = b.x;
+            y = b.y;
         }
 
         public override int GetHashCode()
         {
-            return X ^ Y;
+            return x ^ y;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(System.Object obj)
         {
             // Unlikely to compare incorrect type so removed for performance
             // if (!(obj.GetType() == typeof(GridPos)))
@@ -81,7 +81,7 @@ namespace EpPathFinding
             }
 
             // Return true if the fields match:
-            return (X == p.X) && (Y == p.Y);
+            return (x == p.x) && (y == p.y);
         }
 
         public bool Equals(GridPos p)
@@ -91,13 +91,13 @@ namespace EpPathFinding
                 return false;
             }
             // Return true if the fields match:
-            return (X == p.X) && (Y == p.Y);
+            return (x == p.x) && (y == p.y);
         }
 
         public static bool operator ==(GridPos a, GridPos b)
         {
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(a, b))
+            if (System.Object.ReferenceEquals(a, b))
             {
                 return true;
             }
@@ -110,7 +110,7 @@ namespace EpPathFinding
                 return false;
             }
             // Return true if the fields match:
-            return a.X == b.X && a.Y == b.Y;
+            return a.x == b.x && a.y == b.y;
         }
 
         public static bool operator !=(GridPos a, GridPos b)
@@ -120,8 +120,8 @@ namespace EpPathFinding
 
         public GridPos Set(int iX, int iY)
         {
-            X = iX;
-            Y = iY;
+            this.x = iX;
+            this.y = iY;
             return this;
         }
     }

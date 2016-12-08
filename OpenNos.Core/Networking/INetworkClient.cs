@@ -1,7 +1,7 @@
-﻿using System;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 
 namespace OpenNos.Core
 {

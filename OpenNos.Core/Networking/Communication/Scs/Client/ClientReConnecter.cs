@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Threading;
+using System;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Client
 {

@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoMapper;
+﻿using AutoMapper;
 using OpenNos.Core;
-using OpenNos.Data;
 using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using System;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.EF
 {
-    public class MappingBaseDao<TEntity, TDto> : IMappingBaseDAO
-        where TDto : MappingBaseDTO
+    public class MappingBaseDAO<TEntity, TDTO> : IMappingBaseDAO
+        where TDTO : MappingBaseDTO
     {
         #region Members
 
-        protected IMapper Mapper;
+        protected IMapper _mapper;
 
-        protected IDictionary<Type, Type> Mappings = new Dictionary<Type, Type>();
+        protected IDictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
 
         #endregion
 
@@ -24,18 +24,18 @@ namespace OpenNos.DAL.EF
         {
             var config = new MapperConfiguration(cfg =>
             {
-                foreach (KeyValuePair<Type, Type> entry in Mappings)
+                foreach (KeyValuePair<Type, Type> entry in _mappings)
                 {
                     // GameObject -> Entity
-                    cfg.CreateMap(typeof(TDto), entry.Value);
+                    cfg.CreateMap(typeof(TDTO), entry.Value);
 
                     // Entity -> GameObject
-                    cfg.CreateMap(entry.Value, typeof(TDto))
+                    cfg.CreateMap(entry.Value, typeof(TDTO))
                         .AfterMap((src, dest) => ((MappingBaseDTO)dest).Initialize()).As(entry.Key);
                 }
             });
 
-            Mapper = config.CreateMapper();
+            _mapper = config.CreateMapper();
         }
 
         public virtual IMappingBaseDAO RegisterMapping(Type gameObjectType)
@@ -43,7 +43,7 @@ namespace OpenNos.DAL.EF
             try
             {
                 Type targetType = typeof(TEntity);
-                Mappings.Add(gameObjectType, targetType);
+                _mappings.Add(gameObjectType, targetType);
                 return this;
             }
             catch (Exception e)

@@ -12,14 +12,18 @@
  * GNU General Public License for more details.
  */
 
-using System.Collections.Generic;
 using OpenNos.Data;
+using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
     public class Account : AccountDTO
     {
         #region Instantiation
+
+        public Account()
+        {
+        }
 
         #endregion
 

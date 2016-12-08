@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class MapTypeDao : MappingBaseDao<MapType, MapTypeDTO>, IMapTypeDAO
+    public class MapTypeDAO : MappingBaseDAO<MapType, MapTypeDTO>, IMapTypeDAO
     {
         #region Methods
 
@@ -32,10 +32,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    MapType entity = Mapper.Map<MapType>(mapType);
+                    MapType entity = _mapper.Map<MapType>(mapType);
                     context.MapType.Add(entity);
                     context.SaveChanges();
-                    return Mapper.Map<MapTypeDTO>(entity);
+                    return _mapper.Map<MapTypeDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -49,9 +49,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapType mapType in context.MapType)
+                foreach (MapType MapType in context.MapType)
                 {
-                    yield return Mapper.Map<MapTypeDTO>(mapType);
+                    yield return _mapper.Map<MapTypeDTO>(MapType);
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return Mapper.Map<MapTypeDTO>(context.MapType.FirstOrDefault(s => s.MapTypeId.Equals(maptypeId)));
+                    return _mapper.Map<MapTypeDTO>(context.MapType.FirstOrDefault(s => s.MapTypeId.Equals(maptypeId)));
                 }
             }
             catch (Exception e)

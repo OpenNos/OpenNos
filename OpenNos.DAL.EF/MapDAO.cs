@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
-    public class MapDao : MappingBaseDao<Map, MapDTO>, IMapDAO
+    public class MapDAO : MappingBaseDAO<Map, MapDTO>, IMapDAO
     {
         #region Methods
 
@@ -33,9 +33,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (MapDTO item in maps)
+                    foreach (MapDTO Item in maps)
                     {
-                        Map entity = Mapper.Map<Map>(item);
+                        Map entity = _mapper.Map<Map>(Item);
                         context.Map.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
@@ -56,12 +56,15 @@ namespace OpenNos.DAL.EF
                 {
                     if (context.Map.FirstOrDefault(c => c.MapId.Equals(map.MapId)) == null)
                     {
-                        Map entity = Mapper.Map<Map>(map);
+                        Map entity = _mapper.Map<Map>(map);
                         context.Map.Add(entity);
                         context.SaveChanges();
-                        return Mapper.Map<MapDTO>(entity);
+                        return _mapper.Map<MapDTO>(entity);
                     }
-                    return new MapDTO();
+                    else
+                    {
+                        return new MapDTO();
+                    }
                 }
             }
             catch (Exception e)
@@ -75,9 +78,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Map map in context.Map)
+                foreach (Map Map in context.Map)
                 {
-                    yield return Mapper.Map<MapDTO>(map);
+                    yield return _mapper.Map<MapDTO>(Map);
                 }
             }
         }
@@ -88,7 +91,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return Mapper.Map<MapDTO>(context.Map.FirstOrDefault(c => c.MapId.Equals(mapId)));
+                    return _mapper.Map<MapDTO>(context.Map.FirstOrDefault(c => c.MapId.Equals(mapId)));
                 }
             }
             catch (Exception e)
