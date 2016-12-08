@@ -44,6 +44,7 @@ namespace OpenNos.GameObject
 
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
+            _isSleeping = true;
             LastUserShopId = 0;
             _random = new Random();
             MapId = mapId;
