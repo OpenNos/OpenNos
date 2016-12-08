@@ -157,7 +157,7 @@ namespace OpenNos.GameObject
         {
             if (LifeEvent == default(IDisposable))
             {
-                LifeEvent = Observable.Interval(new TimeSpan(0, 0, 0, 0, 100)).Subscribe(x =>
+                LifeEvent = Observable.Interval(new TimeSpan(0, 0, 0, 0, 400)).Subscribe(x =>
                       {
                           try
                           {
@@ -609,7 +609,7 @@ namespace OpenNos.GameObject
 
             // handle hit queue
             HitRequest hitRequest;
-            if (HitQueue.TryDequeue(out hitRequest))
+            while (HitQueue.TryDequeue(out hitRequest))
             {
                 if (IsAlive)
                 {
