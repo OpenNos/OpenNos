@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
+using EpPathFinding;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Domain;
+using OpenNos.GameObject.Networking;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
-using EpPathFinding;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.Domain;
-using OpenNos.GameObject.Networking;
 
 namespace OpenNos.GameObject
 {
@@ -609,7 +609,7 @@ namespace OpenNos.GameObject
 
             // handle hit queue
             HitRequest hitRequest;
-            while (HitQueue.TryDequeue(out hitRequest))
+            if (HitQueue.TryDequeue(out hitRequest))
             {
                 if (IsAlive)
                 {
@@ -692,7 +692,7 @@ namespace OpenNos.GameObject
                 else
                 {
                     // monster already has been killed, send cancel
-                    hitRequest.Session.SendPacket($"cancel 2 {MapMonsterId}");
+                     hitRequest.Session.SendPacket($"cancel 2 {MapMonsterId}");
                 }
             }
 

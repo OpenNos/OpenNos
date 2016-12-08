@@ -12,16 +12,16 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Threading;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Networking;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Threading;
 
 namespace OpenNos.Handler
 {
@@ -198,126 +198,121 @@ namespace OpenNos.Handler
                             }
                         }
                     }
-                    else if (ski.Skill.TargetType == 0 && Session.HasCurrentMap)
-                    // monster target
+                    else if (ski.Skill.TargetType == 0 && Session.HasCurrentMap)  // monster target
                     {
                         MapMonster monsterToAttack = Session.CurrentMap.GetMonster(targetId);
-                        if (monsterToAttack != null && monsterToAttack.IsAlive)
+
+                        if (monsterToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
                         {
-                            if (ski.CanBeUsed())
+                            if (Map.GetDistance(
+                                    new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY },
+                                    new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <=
+                                ski.Skill.Range + monsterToAttack.Monster.BasicArea)
                             {
-                                if (Session.Character.Mp >= ski.Skill.MpCost)
+                                Session.Character.LastSkillUse = DateTime.Now;
+                                ski.LastUse = DateTime.Now;
+                                if (!Session.Character.HasGodMode)
                                 {
-                                    if (Map.GetDistance(
-                                            new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY },
-                                            new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <=
-                                        ski.Skill.Range + monsterToAttack.Monster.BasicArea)
+                                    Session.Character.Mp -= ski.Skill.MpCost;
+                                }
+                                if (Session.Character.UseSp && ski.Skill.CastEffect != -1)
+                                {
+                                    Session.SendPackets(Session.Character.GenerateQuicklist());
+                                }
+                                Session.SendPacket(Session.Character.GenerateStat());
+                                CharacterSkill characterSkillInfo = Session.Character.Skills.GetAllItems()
+                                    .OrderBy(o => o.SkillVNum)
+                                    .FirstOrDefault(
+                                        s =>
+                                            s.Skill.UpgradeSkill == ski.Skill.SkillVNum &&
+                                            s.Skill.Effect > 0 && s.Skill.SkillType == 2);
+
+                                Session.CurrentMap?.Broadcast(
+                                    $"ct 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
+                                Session.Character.Skills.GetAllItems()
+                                    .Where(s => s.Id != ski.Id)
+                                    .ToList()
+                                    .ForEach(i => i.Hit = 0);
+
+                                // Generate scp
+                                ski.LastUse = DateTime.Now;
+                                if ((DateTime.Now - ski.LastUse).TotalSeconds > 3)
+                                {
+                                    ski.Hit = 0;
+                                }
+                                else
+                                {
+                                    ski.Hit++;
+                                }
+
+                                if (ski.Skill.CastEffect != 0)
+                                {
+                                    Thread.Sleep(ski.Skill.CastTime * 100);
+                                }
+
+                                // check if we will hit mutltiple targets
+                                if (ski.Skill.TargetRange != 0)
+                                {
+                                    ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
+                                    if (skillCombo != null)
                                     {
-                                        Session.Character.LastSkillUse = DateTime.Now;
-                                        ski.LastUse = DateTime.Now;
-                                        if (!Session.Character.HasGodMode)
-                                        {
-                                            Session.Character.Mp -= ski.Skill.MpCost;
-                                        }
-                                        if (Session.Character.UseSp && ski.Skill.CastEffect != -1)
-                                        {
-                                            Session.SendPackets(Session.Character.GenerateQuicklist());
-                                        }
-                                        Session.SendPacket(Session.Character.GenerateStat());
-                                        CharacterSkill characterSkillInfo = Session.Character.Skills.GetAllItems()
-                                            .OrderBy(o => o.SkillVNum)
-                                            .FirstOrDefault(
-                                                s =>
-                                                    s.Skill.UpgradeSkill == ski.Skill.SkillVNum &&
-                                                    s.Skill.Effect > 0 && s.Skill.SkillType == 2);
-
-                                        Session.CurrentMap?.Broadcast(
-                                            $"ct 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
-                                        Session.Character.Skills.GetAllItems()
-                                            .Where(s => s.Id != ski.Id)
-                                            .ToList()
-                                            .ForEach(i => i.Hit = 0);
-
-                                        // Generate scp
-                                        ski.LastUse = DateTime.Now;
-                                        if ((DateTime.Now - ski.LastUse).TotalSeconds > 3)
+                                        if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit ==
+                                            ski.Hit)
                                         {
                                             ski.Hit = 0;
                                         }
-                                        else
-                                        {
-                                            ski.Hit++;
-                                        }
-
-                                        if (ski.Skill.CastEffect != 0)
-                                        {
-                                            Thread.Sleep(ski.Skill.CastTime * 100);
-                                        }
-                                        // check if we will hit mutltiple targets
-                                        if (ski.Skill.TargetRange != 0)
-                                        {
-                                            ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
-                                            if (skillCombo != null)
+                                        IEnumerable<MapMonster> monstersInAoeRange =
+                                            Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX,
+                                                monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
+                                        if (monstersInAoeRange != null)
+                                            foreach (
+                                                MapMonster mon in monstersInAoeRange.Where(s => s.CurrentHp > 0))
                                             {
-                                                if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit ==
-                                                    ski.Hit)
-                                                {
-                                                    ski.Hit = 0;
-                                                }
-                                                IEnumerable<MapMonster> monstersInAoeRange =
-                                                    Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX,
-                                                        monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
-                                                if (monstersInAoeRange != null)
-                                                    foreach (
-                                                        MapMonster mon in monstersInAoeRange.Where(s => s.CurrentHp > 0))
-                                                    {
-                                                        mon.HitQueue.Enqueue(
-                                                            new HitRequest(
-                                                                TargetHitType.SingleTargetHitCombo, Session, ski.Skill
-                                                                , skillCombo: skillCombo));
-                                                    }
-                                            }
-                                            else
-                                            {
-                                                IEnumerable<MapMonster> monstersInAoeRange =
-                                                    Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX,
-                                                        monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
-                                                Session.CurrentMap?.Broadcast(
-                                                    $"su 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect} 0 0 {(monsterToAttack.IsAlive ? 1 : 0)} {(int)((double)Session.Character.Hp / Session.Character.HpLoad()) * 100} 0 0 {ski.Skill.SkillType - 1}");
-                                                if (monstersInAoeRange != null)
-                                                    foreach (
-                                                        MapMonster mon in monstersInAoeRange.Where(s => s.CurrentHp > 0))
-                                                    {
-                                                        mon.HitQueue.Enqueue(
-                                                            new HitRequest(
-                                                                TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                                ,
-                                                                characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
-                                                    }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
-                                            if (skillCombo != null)
-                                            {
-                                                if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit ==
-                                                    ski.Hit)
-                                                {
-                                                    ski.Hit = 0;
-                                                }
-                                                monsterToAttack.HitQueue.Enqueue(
+                                                mon.HitQueue.Enqueue(
                                                     new HitRequest(
-                                                        TargetHitType.SingleTargetHitCombo, Session, ski.Skill,
-                                                        skillCombo: skillCombo));
+                                                        TargetHitType.SingleTargetHitCombo, Session, ski.Skill
+                                                        , skillCombo: skillCombo));
                                             }
-                                            else
+                                    }
+                                    else
+                                    {
+                                        IEnumerable<MapMonster> monstersInAoeRange =
+                                            Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX,
+                                                monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
+                                        Session.CurrentMap?.Broadcast(
+                                            $"su 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect} 0 0 {(monsterToAttack.IsAlive ? 1 : 0)} {(int)((double)Session.Character.Hp / Session.Character.HpLoad()) * 100} 0 0 {ski.Skill.SkillType - 1}");
+                                        if (monstersInAoeRange != null)
+                                            foreach (
+                                                MapMonster mon in monstersInAoeRange.Where(s => s.CurrentHp > 0))
                                             {
-                                                monsterToAttack.HitQueue.Enqueue(
-                                                    new HitRequest(TargetHitType.SingleTargetHit,
-                                                        Session, ski.Skill));
+                                                mon.HitQueue.Enqueue(
+                                                    new HitRequest(
+                                                        TargetHitType.SingleAOETargetHit, Session, ski.Skill
+                                                        ,
+                                                        characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
                                             }
+                                    }
+                                }
+                                else
+                                {
+                                    ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
+                                    if (skillCombo != null)
+                                    {
+                                        if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit ==
+                                            ski.Hit)
+                                        {
+                                            ski.Hit = 0;
                                         }
+                                        monsterToAttack.HitQueue.Enqueue(
+                                            new HitRequest(
+                                                TargetHitType.SingleTargetHitCombo, Session, ski.Skill,
+                                                skillCombo: skillCombo));
+                                    }
+                                    else
+                                    {
+                                        monsterToAttack.HitQueue.Enqueue(
+                                            new HitRequest(TargetHitType.SingleTargetHit,
+                                                Session, ski.Skill));
                                     }
                                 }
                             }
