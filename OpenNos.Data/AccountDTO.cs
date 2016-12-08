@@ -24,8 +24,6 @@ namespace OpenNos.Data
 
         public AuthorityType Authority { get; set; }
 
-        public string Email { get; set; }
-
         public System.DateTime LastCompliment { get; set; }
 
         public int LastSession { get; set; }
@@ -34,9 +32,11 @@ namespace OpenNos.Data
 
         public string Password { get; set; }
 
-        public string RegistrationIP { get; set; }
+        public string Email { get; set; }
 
         public string VerificationToken { get; set; }
+
+        public string RegistrationIP { get; set; }
 
         #endregion
     }

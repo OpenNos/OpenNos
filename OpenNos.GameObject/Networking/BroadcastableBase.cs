@@ -179,18 +179,20 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            // Create a ChatClient and store it in a collection
-            _sessions[session.Character.CharacterId] = session;
-
-            if (session.HasCurrentMap)
+            if (session != null)
             {
-                session.CurrentMap.IsSleeping = false;
+                // Create a ChatClient and store it in a collection
+                _sessions[session.Character.CharacterId] = session;
+                if (session.HasCurrentMap)
+                {
+                    session.CurrentMap.isSleeping = false;
+                }
             }
         }
 
         public void SpreadBroadcastpacket(BroadcastPacket sentPacket)
         {
-            if (Sessions != null && !string.IsNullOrEmpty(sentPacket?.Packet))
+            if (Sessions != null && sentPacket != null && !String.IsNullOrEmpty(sentPacket.Packet))
             {
                 switch (sentPacket.Receiver)
                 {
@@ -223,7 +225,11 @@ namespace OpenNos.GameObject
                             if (sentPacket.SomeonesCharacterId > 0 || !String.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
                             {
                                 ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == sentPacket.SomeonesCharacterId || s.Character.Name == sentPacket.SomeonesCharacterName);
-                                targetSession?.SendPacket(sentPacket.Packet);
+
+                                if (targetSession != null)
+                                {
+                                    targetSession.SendPacket(sentPacket.Packet);
+                                }
                             }
 
                             break;
@@ -243,7 +249,9 @@ namespace OpenNos.GameObject
                         break;
 
                     case ReceiverType.Group:
-                        foreach (ClientSession session in Sessions.Where(s => s.Character?.Group != null && sentPacket.Sender?.Character?.Group != null && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId))
+                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.Group != null
+                                 && sentPacket.Sender != null && sentPacket.Sender.Character != null && sentPacket.Sender.Character.Group != null
+                                 && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId))
                         {
                             session.SendPacket(sentPacket.Packet);
                         }
@@ -273,9 +281,8 @@ namespace OpenNos.GameObject
             _sessions.Remove(characterId);
             if (session.HasCurrentMap && _sessions.Count == 0)
             {
-                session.CurrentMap.IsSleeping = true;
+                session.CurrentMap.isSleeping = true;
             }
-
             LastUnregister = DateTime.Now;
         }
 

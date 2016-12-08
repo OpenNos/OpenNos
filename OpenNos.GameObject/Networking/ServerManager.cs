@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -19,12 +20,11 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Reactive.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        public bool ShutdownStop;
+        public Boolean ShutdownStop = false;
 
         private static ServerManager _instance;
         private static List<Item> _items = new List<Item>();
@@ -47,7 +47,6 @@ namespace OpenNos.GameObject
 
         private List<DropDTO> _generalDrops;
         private ThreadSafeSortedList<long, Group> _groups;
-        private long _lastGroupId;
         private ThreadSafeSortedList<short, List<MapNpc>> _mapNpcs;
         private ThreadSafeSortedList<short, List<DropDTO>> _monsterDrops;
         private ThreadSafeSortedList<short, List<NpcMonsterSkill>> _monsterSkills;
@@ -59,6 +58,7 @@ namespace OpenNos.GameObject
 
         private ThreadSafeSortedList<int, List<ShopSkillDTO>> _shopSkills;
         private ThreadSafeSortedList<int, List<TeleporterDTO>> _teleporters;
+        private long lastGroupId;
 
         #endregion
 
@@ -68,11 +68,98 @@ namespace OpenNos.GameObject
         {
         }
 
+        public void LaunchEvents()
+        {
+            _groups = new ThreadSafeSortedList<long, Group>();
+
+            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
+            {
+                SaveAllProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x =>
+            {
+                GroupProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
+            {
+                BotProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
+            {
+                MailProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
+            {
+                RemoveItemProcess();
+            });
+
+            foreach (var map in _maps)
+            {
+                Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
+                {
+                    try
+                    {
+                        if (!map.Value.isSleeping)
+                        {
+                            map.Value.RemoveMapItem();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                });
+
+                foreach (MapNpc npc in map.Value.Npcs)
+                {
+                    npc.StartLife();
+                }
+
+                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+                {
+                    Parallel.ForEach(map.Value.Monsters, monster => { monster.StartLife(); });
+                });
+            }
+
+            lastGroupId = 1;
+        }
+
+        private void RemoveItemProcess()
+        {
+            try
+            {
+                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshValidity());
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
+        private void MailProcess()
+        {
+            try
+            {
+                Mails = DAOFactory.MailDAO.LoadAll().ToList();
+                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
         #endregion
 
         #region Properties
 
         public static int DropRate { get; set; }
+
+        public static List<MailDTO> Mails { get; set; }
 
         public static int FairyXpRate { get; set; }
 
@@ -80,9 +167,7 @@ namespace OpenNos.GameObject
 
         public static int GoldRate { get; set; }
 
-        public static List<MailDTO> Mails { get; set; }
-
-        public static int XpRate { get; set; }
+        public static int XPRate { get; set; }
 
         public List<Group> Groups
         {
@@ -138,41 +223,41 @@ namespace OpenNos.GameObject
         // PacketHandler -> with Callback?
         public void AskRevive(long characterId)
         {
-            ClientSession session = GetSessionByCharacterId(characterId);
-            if (session != null && session.HasSelectedCharacter)
+            ClientSession Session = GetSessionByCharacterId(characterId);
+            if (Session != null && Session.HasSelectedCharacter)
             {
-                if (session.Character.IsVehicled)
+                if (Session.Character.IsVehicled)
                 {
-                    session.Character.RemoveVehicle();
+                    Session.Character.RemoveVehicle();
                 }
-                session.SendPacket(session.Character.GenerateStat());
-                session.SendPacket(session.Character.GenerateCond());
-                session.SendPackets(session.Character.GenerateVb());
-                if (session.Character.Level > 20)
+                Session.SendPacket(Session.Character.GenerateStat());
+                Session.SendPacket(Session.Character.GenerateCond());
+                Session.SendPackets(Session.Character.GenerateVb());
+                if (Session.Character.Level > 20)
                 {
-                    session.Character.Dignity -= (short)(session.Character.Level < 50 ? session.Character.Level : 50);
-                    if (session.Character.Dignity < -1000)
+                    Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
+                    if (Session.Character.Dignity < -1000)
                     {
-                        session.Character.Dignity = -1000;
+                        Session.Character.Dignity = -1000;
                     }
-                    session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(session.Character.Level < 50 ? session.Character.Level : 50)), 11));
-                    session.SendPacket(session.Character.GenerateFd());
-                    session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
+                    Session.SendPacket(Session.Character.GenerateFd());
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 }
-                session.SendPacket("eff_ob -1 -1 0 4269");
-                session.SendPacket(session.Character.GenerateDialog($"#revival^0 #revival^1 {(session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+                Session.SendPacket("eff_ob -1 -1 0 4269");
+                Session.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
 
-                Parallel.Invoke(delegate
+                Parallel.Invoke(delegate ()
                 {
                     for (int i = 1; i <= 30; i++)
                     {
                         Thread.Sleep(1000);
-                        if (session.Character.Hp > 0)
+                        if (Session.Character.Hp > 0)
                         {
                             return;
                         }
                     }
-                    Instance.ReviveFirstPosition(session.Character.CharacterId);
+                    Instance.ReviveFirstPosition(Session.Character.CharacterId);
                 });
             }
         }
@@ -181,7 +266,7 @@ namespace OpenNos.GameObject
         public void ChangeMap(long id, short? mapId = null, short? mapX = null, short? mapY = null)
         {
             ClientSession session = GetSessionByCharacterId(id);
-            if (session?.Character != null && !session.Character.IsChangingMap)
+            if (session != null && session.Character != null && !session.Character.IsChangingMap)
             {
                 try
                 {
@@ -194,9 +279,12 @@ namespace OpenNos.GameObject
                     session.ClearLowPriorityQueue();
 
                     // avoid cleaning new portals
-                    if (mapId != null) session.Character.MapId = (short)mapId;
-                    if (mapX != null) session.Character.MapX = (short)mapX;
-                    if (mapY != null) session.Character.MapY = (short)mapY;
+                    if (mapId != null || mapX != null || mapY != null)
+                    {
+                        session.Character.MapId = (short)mapId;
+                        session.Character.MapX = (short)mapX;
+                        session.Character.MapY = (short)mapY;
+                    }
 
                     session.CurrentMap = GetMap(session.Character.MapId);
                     session.CurrentMap.RegisterSession(session);
@@ -241,11 +329,11 @@ namespace OpenNos.GameObject
                     {
                         session.SendPacket(session.Character.GenerateScal());
                     }
-                    if (session.CurrentMap != null && session.CurrentMap.IsDancing && !session.Character.IsDancing)
+                    if (session.CurrentMap.IsDancing && !session.Character.IsDancing)
                     {
                         session.CurrentMap?.Broadcast("dance 2");
                     }
-                    else if (session.CurrentMap != null && !session.CurrentMap.IsDancing && session.Character.IsDancing)
+                    else if (!session.CurrentMap.IsDancing && session.Character.IsDancing)
                     {
                         session.Character.IsDancing = false;
                         session.CurrentMap?.Broadcast("dance");
@@ -261,7 +349,10 @@ namespace OpenNos.GameObject
                                 {
                                     groupSession.SendPacket(groupSession.Character.GeneratePinit());
                                 }
-                                session.CurrentMap?.Broadcast(groupSession, groupSession.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                                if (groupSession.Character.CharacterId == groupSession.Character.CharacterId)
+                                {
+                                    session.CurrentMap?.Broadcast(groupSession, groupSession.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                                }
                             }
                         }
                     }
@@ -298,13 +389,17 @@ namespace OpenNos.GameObject
 
         public Group GetGroupByCharacterId(long characterId)
         {
-            return Groups?.SingleOrDefault(g => g.IsMemberOfGroup(characterId));
+            if (Groups != null)
+            {
+                return Groups.SingleOrDefault(g => g.IsMemberOfGroup(characterId));
+            }
+            else return null;
         }
 
         public long GetNextGroupId()
         {
-            _lastGroupId++;
-            return _lastGroupId;
+            lastGroupId++;
+            return lastGroupId;
         }
 
         public T GetProperty<T>(string charName, string property)
@@ -314,7 +409,7 @@ namespace OpenNos.GameObject
             {
                 return default(T);
             }
-            return (T)session.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
+            return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
         }
 
         public T GetProperty<T>(long charId, string property)
@@ -324,12 +419,17 @@ namespace OpenNos.GameObject
             {
                 return default(T);
             }
-            return (T)session.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
+            return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
         }
 
         public List<Recipe> GetReceipesByMapNpcId(int mapNpcId)
         {
-            return _recipes.ContainsKey(mapNpcId) ? _recipes[mapNpcId] : new List<Recipe>();
+            if (_recipes.ContainsKey(mapNpcId))
+            {
+                return _recipes[mapNpcId];
+            }
+
+            return new List<Recipe>();
         }
 
         public ClientSession GetSessionByCharacterName(string name)
@@ -353,7 +453,7 @@ namespace OpenNos.GameObject
         {
             if (Groups != null)
             {
-                Group grp = Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId));
+                Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId));
                 if (grp != null)
                 {
                     if (grp.CharacterCount == 3)
@@ -392,120 +492,120 @@ namespace OpenNos.GameObject
         public void Initialize()
         {
             // parse rates
-            XpRate = int.Parse(ConfigurationManager.AppSettings["RateXp"]);
-            DropRate = int.Parse(ConfigurationManager.AppSettings["RateDrop"]);
-            GoldDropRate = int.Parse(ConfigurationManager.AppSettings["GoldRateDrop"]);
-            GoldRate = int.Parse(ConfigurationManager.AppSettings["RateGold"]);
-            FairyXpRate = int.Parse(ConfigurationManager.AppSettings["RateFairyXp"]);
+            XPRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXp"]);
+            DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
+            GoldDropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["GoldRateDrop"]);
+            GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
+            FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
 
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
 
             // load explicite type of ItemDTO
-            foreach (ItemDTO item in DAOFactory.ItemDAO.LoadAll())
+            foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
-                Item itemObject;
+                Item ItemGO = null;
 
-                switch (item.ItemType)
+                switch (itemDTO.ItemType)
                 {
                     case ItemType.Ammo:
-                        itemObject = new NoFunctionItem(item);
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Armor:
-                        itemObject = new WearableItem(item);
+                        ItemGO = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Box:
-                        itemObject = new BoxItem(item);
+                        ItemGO = new BoxItem(itemDTO);
                         break;
 
                     case ItemType.Event:
-                        itemObject = new MagicalItem(item);
+                        ItemGO = new MagicalItem(itemDTO);
                         break;
 
                     case ItemType.Fashion:
-                        itemObject = new WearableItem(item);
+                        ItemGO = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Food:
-                        itemObject = new FoodItem(item);
+                        ItemGO = new FoodItem(itemDTO);
                         break;
 
                     case ItemType.Jewelery:
-                        itemObject = new WearableItem(item);
+                        ItemGO = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Magical:
-                        itemObject = new MagicalItem(item);
+                        ItemGO = new MagicalItem(itemDTO);
                         break;
 
                     case ItemType.Main:
-                        itemObject = new NoFunctionItem(item);
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Map:
-                        itemObject = new NoFunctionItem(item);
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Part:
-                        itemObject = new NoFunctionItem(item);
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Potion:
-                        itemObject = new PotionItem(item);
+                        ItemGO = new PotionItem(itemDTO);
                         break;
 
                     case ItemType.Production:
-                        itemObject = new ProduceItem(item);
+                        ItemGO = new ProduceItem(itemDTO);
                         break;
 
                     case ItemType.Quest1:
-                        itemObject = new NoFunctionItem(item);
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Quest2:
-                        itemObject = new NoFunctionItem(item);
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Sell:
-                        itemObject = new NoFunctionItem(item);
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
 
                     case ItemType.Shell:
-                        itemObject = new MagicalItem(item);
+                        ItemGO = new MagicalItem(itemDTO);
                         break;
 
                     case ItemType.Snack:
-                        itemObject = new SnackItem(item);
+                        ItemGO = new SnackItem(itemDTO);
                         break;
 
                     case ItemType.Special:
-                        itemObject = new SpecialItem(item);
+                        ItemGO = new SpecialItem(itemDTO);
                         break;
 
                     case ItemType.Specialist:
-                        itemObject = new WearableItem(item);
+                        ItemGO = new WearableItem(itemDTO);
                         break;
 
                     case ItemType.Teacher:
-                        itemObject = new TeacherItem(item);
+                        ItemGO = new TeacherItem(itemDTO);
                         break;
 
                     case ItemType.Upgrade:
-                        itemObject = new UpgradeItem(item);
+                        ItemGO = new UpgradeItem(itemDTO);
                         break;
 
                     case ItemType.Weapon:
-                        itemObject = new WearableItem(item);
+                        ItemGO = new WearableItem(itemDTO);
                         break;
 
                     default:
-                        itemObject = new NoFunctionItem(item);
+                        ItemGO = new NoFunctionItem(itemDTO);
                         break;
                 }
-                _items.Add(itemObject);
+                _items.Add(ItemGO);
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_LOADED"), _items.Count));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEMS_LOADED"), _items.Count()));
 
             // intialize monsterdrops
             _monsterDrops = new ThreadSafeSortedList<short, List<DropDTO>>();
@@ -520,7 +620,7 @@ namespace OpenNos.GameObject
                     _generalDrops = monsterDropGrouping.ToList();
                 }
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("DROPS_LOADED"), _monsterDrops.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("DROPS_LOADED"), _monsterDrops.GetAllItems().Sum(i => i.Count())));
 
             // initialiize monsterskills
             _monsterSkills = new ThreadSafeSortedList<short, List<NpcMonsterSkill>>();
@@ -528,14 +628,14 @@ namespace OpenNos.GameObject
             {
                 _monsterSkills[monsterSkillGrouping.Key] = monsterSkillGrouping.Select(n => n as NpcMonsterSkill).ToList();
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count())));
 
             // initialize npcmonsters
-            foreach (NpcMonsterDTO npcMonster in DAOFactory.NpcMonsterDAO.LoadAll())
+            foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
             {
-                _npcs.Add(npcMonster as NpcMonster);
+                _npcs.Add(npcmonsterDTO as NpcMonster);
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
 
             // intialize receipes
             _recipes = new ThreadSafeSortedList<int, List<Recipe>>();
@@ -543,7 +643,7 @@ namespace OpenNos.GameObject
             {
                 _recipes[recipeGrouping.Key] = recipeGrouping.Select(r => r as Recipe).ToList();
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), _recipes.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), _recipes.GetAllItems().Sum(i => i.Count())));
 
             // initialize shopitems
             _shopItems = new ThreadSafeSortedList<int, List<ShopItemDTO>>();
@@ -551,7 +651,7 @@ namespace OpenNos.GameObject
             {
                 _shopItems[shopItemGrouping.Key] = shopItemGrouping.ToList();
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_LOADED"), _shopItems.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_LOADED"), _shopItems.GetAllItems().Sum(i => i.Count())));
 
             // initialize shopskills
             _shopSkills = new ThreadSafeSortedList<int, List<ShopSkillDTO>>();
@@ -559,15 +659,15 @@ namespace OpenNos.GameObject
             {
                 _shopSkills[shopSkillGrouping.Key] = shopSkillGrouping.ToList();
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_LOADED"), _shopSkills.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_LOADED"), _shopSkills.GetAllItems().Sum(i => i.Count())));
 
             // initialize shops
             _shops = new ThreadSafeSortedList<int, Shop>();
             foreach (var shopGrouping in DAOFactory.ShopDAO.LoadAll())
             {
-                _shops[shopGrouping.MapNpcId] = (Shop)shopGrouping;
+                _shops[shopGrouping.MapNpcId] = shopGrouping as Shop;
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_LOADED"), _shops.GetAllItems().Count));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_LOADED"), _shops.GetAllItems().Count()));
 
             // initialize teleporters
             _teleporters = new ThreadSafeSortedList<int, List<TeleporterDTO>>();
@@ -575,16 +675,16 @@ namespace OpenNos.GameObject
             {
                 _teleporters[teleporterGrouping.Key] = teleporterGrouping.Select(t => t).ToList();
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_LOADED"), _teleporters.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_LOADED"), _teleporters.GetAllItems().Sum(i => i.Count())));
 
             // initialize skills
-            foreach (SkillDTO skill in DAOFactory.SkillDAO.LoadAll())
+            foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
             {
-                Skill skillObject = (Skill)skill;
-                skillObject.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skillObject.SkillVNum).ToList());
-                _skills.Add(skillObject);
+                Skill skill = skillDTO as Skill;
+                skill.Combos.AddRange(DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum).ToList());
+                _skills.Add(skill);
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count()));
 
             // intialize mapnpcs
             _mapNpcs = new ThreadSafeSortedList<short, List<MapNpc>>();
@@ -592,7 +692,7 @@ namespace OpenNos.GameObject
             {
                 _mapNpcs[mapNpcGrouping.Key] = mapNpcGrouping.Select(t => t as MapNpc).ToList();
             }
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPNPCS_LOADED"), _mapNpcs.GetAllItems().Sum(i => i.Count)));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAPNPCS_LOADED"), _mapNpcs.GetAllItems().Sum(i => i.Count())));
 
             try
             {
@@ -602,11 +702,9 @@ namespace OpenNos.GameObject
                 foreach (MapDTO map in DAOFactory.MapDAO.LoadAll())
                 {
                     Guid guid = Guid.NewGuid();
-                    Map newMap = new Map(map.MapId, guid, map.Data)
-                    {
-                        Music = map.Music,
-                        ShopAllowed = map.ShopAllowed
-                    };
+                    Map newMap = new Map(map.MapId, guid, map.Data);
+                    newMap.Music = map.Music;
+                    newMap.ShopAllowed = map.ShopAllowed;
 
                     // register for broadcast
                     _maps.TryAdd(guid, newMap);
@@ -620,17 +718,17 @@ namespace OpenNos.GameObject
                         mapMonster.Map = newMap;
                         newMap.AddMonster(mapMonster);
                     }
-                    monstercount += newMap.Monsters.Count;
+                    monstercount += newMap.Monsters.Count();
                 }
                 if (i != 0)
                 {
-                    Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_LOADED"), i));
+                    Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAPS_LOADED"), i));
                 }
                 else
                 {
                     Logger.Log.Error(Language.Instance.GetMessageFromKey("NO_MAP"));
                 }
-                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPMONSTERS_LOADED"), monstercount));
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAPMONSTERS_LOADED"), monstercount));
             }
             catch (Exception ex)
             {
@@ -645,7 +743,7 @@ namespace OpenNos.GameObject
             {
                 return Groups.Any(g => g.IsMemberOfGroup(characterId));
             }
-            return false;
+            else return false;
         }
 
         public bool IsCharactersGroupFull(long characterId)
@@ -654,7 +752,7 @@ namespace OpenNos.GameObject
             {
                 return Groups.Any(g => g.IsMemberOfGroup(characterId) && g.CharacterCount == 3);
             }
-            return false;
+            else return false;
         }
 
         // Server
@@ -667,66 +765,6 @@ namespace OpenNos.GameObject
             }
             session.Disconnect();
             return true;
-        }
-
-        public void LaunchEvents()
-        {
-            _groups = new ThreadSafeSortedList<long, Group>();
-
-            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
-            {
-                SaveAllProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x =>
-            {
-                GroupProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
-            {
-                BotProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
-            {
-                MailProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
-            {
-                RemoveItemProcess();
-            });
-
-            foreach (var map in _maps)
-            {
-                Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
-                {
-                    try
-                    {
-                        if (!map.Value.IsSleeping)
-                        {
-                            map.Value.RemoveMapItem();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                });
-
-                foreach (MapNpc npc in map.Value.Npcs)
-                {
-                    npc.StartLife();
-                }
-
-                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
-                {
-                    Parallel.ForEach(map.Value.Monsters, monster => { monster.StartLife(); });
-                });
-            }
-
-            _lastGroupId = 1;
         }
 
         // Map
@@ -769,7 +807,7 @@ namespace OpenNos.GameObject
                 short x = (short)(resp.DefaultX + rnd.Next(-5, 5));
                 short y = (short)(resp.DefaultY + rnd.Next(-5, 5));
                 ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
-                session.CurrentMap?.Broadcast(session, session.Character.GenerateTp());
+                session.CurrentMap?.Broadcast(session, session.Character.GenerateTp(), ReceiverType.All);
                 session.CurrentMap?.Broadcast(session.Character.GenerateRevive());
                 session.SendPacket(session.Character.GenerateStat());
             }
@@ -810,15 +848,14 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    string str = $"pinit {myGroup.Characters.Count}";
+                    string str = $"pinit {myGroup.Characters.Count()}";
                     int i = 0;
                     IList<ClientSession> groupMembers = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters;
-                    if (groupMembers != null)
-                        foreach (ClientSession session in groupMembers)
-                        {
-                            i++;
-                            str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{(byte)session.Character.Gender}|{(byte)session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{(session.Character.IsVehicled ? 1 : 0)}|{session.Character.HeroLevel}";
-                        }
+                    foreach (ClientSession session in groupMembers)
+                    {
+                        i++;
+                        str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{(byte)session.Character.Gender}|{(byte)session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{(session.Character.IsVehicled ? 1 : 0)}|{session.Character.HeroLevel}";
+                    }
 
                     foreach (ClientSession session in myGroup.Characters)
                     {
@@ -888,7 +925,10 @@ namespace OpenNos.GameObject
             {
                 return _teleporters[npcMonsterVNum];
             }
-            return new List<TeleporterDTO>();
+            else
+            {
+                return new List<TeleporterDTO>();
+            }
         }
 
         internal void StopServer()
@@ -948,37 +988,13 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Error(e);
-            }
-        }
 
-        private void MailProcess()
-        {
-            try
-            {
-                Mails = DAOFactory.MailDAO.LoadAll().ToList();
-                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
             }
         }
 
         private void RemoveGroup(Group grp)
         {
             _groups.Remove(grp.GroupId);
-        }
-
-        private void RemoveItemProcess()
-        {
-            try
-            {
-                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshValidity());
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
         }
 
         // Server
