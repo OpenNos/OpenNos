@@ -29,20 +29,18 @@ namespace OpenNos.GameObject
         static MappingHelper()
         {
             // intialize hardcode in waiting for better solution
-            _guriItemEffects = new Dictionary<int, int>
-            {
-                {859, 1343},
-                {860, 1344},
-                {861, 1344},
-                {875, 1558},
-                {876, 1559},
-                {877, 1560},
-                {878, 1560},
-                {879, 1561},
-                {880, 1561}
-            };
+            _guriItemEffects = new Dictionary<int, int>();
 
             // effect items aka. fireworks
+            _guriItemEffects.Add(859, 1343);
+            _guriItemEffects.Add(860, 1344);
+            _guriItemEffects.Add(861, 1344);
+            _guriItemEffects.Add(875, 1558);
+            _guriItemEffects.Add(876, 1559);
+            _guriItemEffects.Add(877, 1560);
+            _guriItemEffects.Add(878, 1560);
+            _guriItemEffects.Add(879, 1561);
+            _guriItemEffects.Add(880, 1561);
         }
 
         #endregion

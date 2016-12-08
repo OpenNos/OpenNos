@@ -119,7 +119,7 @@ namespace OpenNos.GameObject
                     if (currentlyEquippedItem == null)
                     {
                         // move from equipment to wear
-                        session.Character.Inventory.MoveInInventory(itemToWearType, inv.Slot, InventoryType.Wear);
+                        session.Character.Inventory.MoveInInventory(inv.Slot, itemToWearType, InventoryType.Wear);
                         session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, itemToWearType, slot, 0, 0, 0, 0));
                         session.SendPacket(session.Character.GenerateStatChar());
                         session.CurrentMap?.Broadcast(session.Character.GenerateEq());
@@ -129,7 +129,7 @@ namespace OpenNos.GameObject
                     else
                     {
                         // move from wear to equipment and back
-                        session.Character.Inventory.MoveInInventory(InventoryType.Wear, currentlyEquippedItem.Slot, itemToWearType, inv.Slot);
+                        session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, InventoryType.Wear, itemToWearType, inv.Slot);
 
                         session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, itemToWearType, slot, 0, 0, 0, 0));
                         session.SendPacket(session.Character.GenerateInventoryAdd(currentlyEquippedItem.ItemVNum, currentlyEquippedItem.Amount,
