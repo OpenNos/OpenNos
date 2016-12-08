@@ -38,6 +38,7 @@ An Interface for the Jump Point Search Algorithm Class.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EpPathFinding
 {
@@ -329,11 +330,10 @@ namespace EpPathFinding
             }
 
             // while the open list is not empty
-            while (tOpenList.Count > 0)
+            while (tOpenList.Any())
             {
                 // pop the position of node which has the minimum `f` value.
-                tOpenList.Sort();
-                tNode = (Node)tOpenList[tOpenList.Count - 1];
+                tNode = tOpenList.Last();
                 tOpenList.RemoveAt(tOpenList.Count - 1);
                 tNode.isClosed = true;
 
