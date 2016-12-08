@@ -29,6 +29,8 @@ namespace OpenNos.GameObject
         #region Members
 
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
+        private bool _isSleeping;
+        private bool _isSleepingRequest;
         private bool _disposed;
         private List<int> _mapMonsterIds;
         private List<MapNpc> _npcs;
@@ -109,16 +111,34 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (!Sessions.Any() && LastUnregister.AddSeconds(30) < DateTime.Now)
+                if (_isSleepingRequest && !_isSleeping && LastUnregister.AddSeconds(30) < DateTime.Now)
                 {
                     Grid = null;
+                    _isSleeping = true;
+                    _isSleepingRequest = false;
                     return true;
                 }
+                if (_isSleeping)
+                {
+                    return true;
+                }
+
                 if (Grid == null)
                 {
                     LoadZone();
                 }
                 return false;
+            }
+            set
+            {
+                if(value == true)
+                {
+                    _isSleepingRequest = true;
+                }
+                else
+                {
+                    _isSleeping = false;
+                }
             }
         }
 
