@@ -1,7 +1,7 @@
 /*!
 @file GridRect.cs
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
-		<http://github.com/juhgiyo/eppathfinding.cs>
+        <http://github.com/juhgiyo/eppathfinding.cs>
 @date July 16, 2013
 @brief GridRect Interface
 @version 2.0
@@ -101,7 +101,7 @@ namespace EpPathFinding
         public static bool operator ==(GridRect a, GridRect b)
         {
             // If both are null, or both are same instance, return true.
-            if (System.Object.ReferenceEquals(a, b))
+            if (ReferenceEquals(a, b))
             {
                 return true;
             }
@@ -124,10 +124,10 @@ namespace EpPathFinding
 
         public GridRect Set(int iMinX, int iMinY, int iMaxX, int iMaxY)
         {
-            this.minX = iMinX;
-            this.minY = iMinY;
-            this.maxX = iMaxX;
-            this.maxY = iMaxY;
+            minX = iMinX;
+            minY = iMinY;
+            maxX = iMaxX;
+            maxY = iMaxY;
             return this;
         }
     }

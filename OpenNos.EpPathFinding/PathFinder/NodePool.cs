@@ -1,7 +1,7 @@
 /*!
 @file NodePool.cs
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
-		<http://github.com/juhgiyo/eppathfinding.cs>
+        <http://github.com/juhgiyo/eppathfinding.cs>
 @date July 16, 2013
 @brief NodePool Interface
 @version 2.0
@@ -42,16 +42,16 @@ namespace EpPathFinding
 {
     public class NodePool
     {
-        protected Dictionary<GridPos, Node> m_nodes;
+        protected Dictionary<GridPos, Node> MNodes;
 
         public NodePool()
         {
-            m_nodes = new Dictionary<GridPos, Node>();
+            MNodes = new Dictionary<GridPos, Node>();
         }
 
         public Dictionary<GridPos, Node> Nodes
         {
-            get { return m_nodes; }
+            get { return MNodes; }
         }
 
         public Node GetNode(int iX, int iY)
@@ -62,8 +62,8 @@ namespace EpPathFinding
 
         public Node GetNode(GridPos iPos)
         {
-            Node retVal = null;
-            m_nodes.TryGetValue(iPos, out retVal);
+            Node retVal;
+            MNodes.TryGetValue(iPos, out retVal);
             return retVal;
         }
 
@@ -79,39 +79,39 @@ namespace EpPathFinding
             {
                 if (iWalkable.Value == 0)
                 {
-                    Node retVal = null;
-                    if (m_nodes.TryGetValue(iPos, out retVal))
+                    Node retVal;
+                    if (MNodes.TryGetValue(iPos, out retVal))
                     {
                         return retVal;
                     }
                     Node newNode = new Node(iPos.x, iPos.y, iWalkable);
-                    m_nodes.Add(iPos, newNode);
+                    MNodes.Add(iPos, newNode);
                     return newNode;
                 }
                 else
                 {
-                    removeNode(iPos);
+                    RemoveNode(iPos);
                 }
             }
             else
             {
                 Node newNode = new Node(iPos.x, iPos.y, 0);
-                m_nodes.Add(iPos, newNode);
+                MNodes.Add(iPos, newNode);
                 return newNode;
             }
             return null;
         }
 
-        protected void removeNode(int iX, int iY)
+        protected void RemoveNode(int iX, int iY)
         {
             GridPos pos = new GridPos(iX, iY);
-            removeNode(pos);
+            RemoveNode(pos);
         }
 
-        protected void removeNode(GridPos iPos)
+        protected void RemoveNode(GridPos iPos)
         {
-            if (m_nodes.ContainsKey(iPos))
-                m_nodes.Remove(iPos);
+            if (MNodes.ContainsKey(iPos))
+                MNodes.Remove(iPos);
         }
     }
 }

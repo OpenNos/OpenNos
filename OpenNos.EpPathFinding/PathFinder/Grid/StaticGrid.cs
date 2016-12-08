@@ -1,7 +1,7 @@
 ﻿/*!
 @file StaticGrid.cs
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
-		<http://github.com/juhgiyo/eppathfinding.cs>
+        <http://github.com/juhgiyo/eppathfinding.cs>
 @date July 16, 2013
 @brief StaticGrid Interface
 @version 2.0
@@ -36,35 +36,37 @@ An Interface for the StaticGrid Class.
 
 */
 
+using System.Collections.Generic;
+
 namespace EpPathFinding
 {
     public class StaticGrid : BaseGrid
     {
-        public override int width { get; protected set; }
+        public override int Width { get; protected set; }
 
-        public override int height { get; protected set; }
+        public override int Height { get; protected set; }
 
-        private Node[][] m_nodes;
+        private Node[][] _mNodes;
 
         public StaticGrid(int iWidth, int iHeight, bool[][] iMatrix = null) : base()
         {
-            width = iWidth;
-            height = iHeight;
-            m_gridRect.minX = 0;
-            m_gridRect.minY = 0;
-            m_gridRect.maxX = iWidth - 1;
-            m_gridRect.maxY = iHeight - 1;
-            this.m_nodes = buildNodes(iWidth, iHeight, iMatrix);
+            Width = iWidth;
+            Height = iHeight;
+            MGridRect.minX = 0;
+            MGridRect.minY = 0;
+            MGridRect.maxX = iWidth - 1;
+            MGridRect.maxY = iHeight - 1;
+            _mNodes = buildNodes(iWidth, iHeight, iMatrix);
         }
 
         public StaticGrid(StaticGrid b)
             : base(b)
         {
-            bool[][] tMatrix = new bool[b.width][];
-            for (int widthTrav = 0; widthTrav < b.width; widthTrav++)
+            bool[][] tMatrix = new bool[b.Width][];
+            for (int widthTrav = 0; widthTrav < b.Width; widthTrav++)
             {
-                tMatrix[widthTrav] = new bool[b.height];
-                for (int heightTrav = 0; heightTrav < b.height; heightTrav++)
+                tMatrix[widthTrav] = new bool[b.Height];
+                for (int heightTrav = 0; heightTrav < b.Height; heightTrav++)
                 {
                     if (b.IsWalkableAt(widthTrav, heightTrav))
                         tMatrix[widthTrav][heightTrav] = true;
@@ -72,10 +74,10 @@ namespace EpPathFinding
                         tMatrix[widthTrav][heightTrav] = false;
                 }
             }
-            this.m_nodes = buildNodes(b.width, b.height, tMatrix);
+            _mNodes = buildNodes(b.Width, b.Height, tMatrix);
         }
 
-        private Node[][] buildNodes(int iWidth, int iHeight, bool[][] iMatrix)
+        private Node[][] buildNodes(int iWidth, int iHeight, IList<bool[]> iMatrix)
         {
             Node[][] tNodes = new Node[iWidth][];
             for (int widthTrav = 0; widthTrav < iWidth; widthTrav++)
@@ -92,7 +94,7 @@ namespace EpPathFinding
                 return tNodes;
             }
 
-            if (iMatrix.Length != iWidth || iMatrix[0].Length != iHeight)
+            if (iMatrix.Count != iWidth || iMatrix[0].Length != iHeight)
             {
                 throw new System.Exception("Matrix size does not fit");
             }
@@ -116,28 +118,28 @@ namespace EpPathFinding
 
         public override Node GetNodeAt(int iX, int iY)
         {
-            return this.m_nodes[iX][iY];
+            return this._mNodes[iX][iY];
         }
 
         public override bool IsWalkableAt(int iX, int iY)
         {
-            return isInside(iX, iY) && (this.m_nodes[iX][iY].walkable == 0 || this.m_nodes[iX][iY].walkable == 2 || (this.m_nodes[iX][iY].walkable >= 16 && this.m_nodes[iX][iY].walkable <= 19));
+            return IsInside(iX, iY) && (this._mNodes[iX][iY].walkable == 0 || this._mNodes[iX][iY].walkable == 2 || (this._mNodes[iX][iY].walkable >= 16 && this._mNodes[iX][iY].walkable <= 19));
         }
 
-        protected bool isInside(int iX, int iY)
+        protected bool IsInside(int iX, int iY)
         {
-            return (iX >= 0 && iX < width) && (iY >= 0 && iY < height);
+            return iX >= 0 && iX < Width && iY >= 0 && iY < Height;
         }
 
         public override bool SetWalkableAt(int iX, int iY, byte iWalkable)
         {
-            this.m_nodes[iX][iY].walkable = iWalkable;
+            _mNodes[iX][iY].walkable = iWalkable;
             return true;
         }
 
-        protected bool isInside(GridPos iPos)
+        protected bool IsInside(GridPos iPos)
         {
-            return isInside(iPos.x, iPos.y);
+            return IsInside(iPos.x, iPos.y);
         }
 
         public override Node GetNodeAt(GridPos iPos)
@@ -162,11 +164,11 @@ namespace EpPathFinding
 
         public void Reset(bool[][] iMatrix)
         {
-            for (int widthTrav = 0; widthTrav < width; widthTrav++)
+            for (int widthTrav = 0; widthTrav < Width; widthTrav++)
             {
-                for (int heightTrav = 0; heightTrav < height; heightTrav++)
+                for (int heightTrav = 0; heightTrav < Height; heightTrav++)
                 {
-                    m_nodes[widthTrav][heightTrav].Reset();
+                    _mNodes[widthTrav][heightTrav].Reset();
                 }
             }
 
@@ -174,22 +176,22 @@ namespace EpPathFinding
             {
                 return;
             }
-            if (iMatrix.Length != width || iMatrix[0].Length != height)
+            if (iMatrix.Length != Width || iMatrix[0].Length != Height)
             {
                 throw new System.Exception("Matrix size does not fit");
             }
 
-            for (int widthTrav = 0; widthTrav < width; widthTrav++)
+            for (int widthTrav = 0; widthTrav < Width; widthTrav++)
             {
-                for (int heightTrav = 0; heightTrav < height; heightTrav++)
+                for (int heightTrav = 0; heightTrav < Height; heightTrav++)
                 {
                     if (iMatrix[widthTrav][heightTrav])
                     {
-                        m_nodes[widthTrav][heightTrav].walkable = 0;
+                        _mNodes[widthTrav][heightTrav].walkable = 0;
                     }
                     else
                     {
-                        m_nodes[widthTrav][heightTrav].walkable = 1;
+                        _mNodes[widthTrav][heightTrav].walkable = 1;
                     }
                 }
             }
@@ -197,11 +199,11 @@ namespace EpPathFinding
 
         public override BaseGrid Clone()
         {
-            int tWidth = width;
-            int tHeight = height;
-            Node[][] tNodes = this.m_nodes;
+            int tWidth = Width;
+            int tHeight = Height;
+            Node[][] tNodes = _mNodes;
 
-            StaticGrid tNewGrid = new StaticGrid(tWidth, tHeight, null);
+            StaticGrid tNewGrid = new StaticGrid(tWidth, tHeight);
 
             Node[][] tNewNodes = new Node[tWidth][];
             for (int widthTrav = 0; widthTrav < tWidth; widthTrav++)
@@ -212,7 +214,7 @@ namespace EpPathFinding
                     tNewNodes[widthTrav][heightTrav] = new Node(widthTrav, heightTrav, tNodes[widthTrav][heightTrav].walkable);
                 }
             }
-            tNewGrid.m_nodes = tNewNodes;
+            tNewGrid._mNodes = tNewNodes;
 
             return tNewGrid;
         }

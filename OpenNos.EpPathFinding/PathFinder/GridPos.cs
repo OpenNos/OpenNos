@@ -1,7 +1,7 @@
 ﻿/*!
 @file GridPos.cs
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
-		<http://github.com/juhgiyo/eppathfinding.cs>
+        <http://github.com/juhgiyo/eppathfinding.cs>
 @date July 16, 2013
 @brief Grid Position Interface
 @version 2.0
@@ -53,8 +53,8 @@ namespace EpPathFinding
 
         public GridPos(int iX, int iY)
         {
-            this.x = iX;
-            this.y = iY;
+            x = iX;
+            y = iY;
         }
 
         public GridPos(GridPos b)
@@ -68,7 +68,7 @@ namespace EpPathFinding
             return x ^ y;
         }
 
-        public override bool Equals(System.Object obj)
+        public override bool Equals(object obj)
         {
             // Unlikely to compare incorrect type so removed for performance
             // if (!(obj.GetType() == typeof(GridPos)))
@@ -97,7 +97,7 @@ namespace EpPathFinding
         public static bool operator ==(GridPos a, GridPos b)
         {
             // If both are null, or both are same instance, return true.
-            if (System.Object.ReferenceEquals(a, b))
+            if (ReferenceEquals(a, b))
             {
                 return true;
             }
@@ -120,8 +120,8 @@ namespace EpPathFinding
 
         public GridPos Set(int iX, int iY)
         {
-            this.x = iX;
-            this.y = iY;
+            x = iX;
+            y = iY;
             return this;
         }
     }

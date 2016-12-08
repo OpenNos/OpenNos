@@ -128,7 +128,7 @@ namespace OpenNos.GameObject
             short stonevnum;
             byte upmode = 1;
 
-            switch (this.Item.Morph)
+            switch (Item.Morph)
             {
                 case 2:
                     stonevnum = 2514;

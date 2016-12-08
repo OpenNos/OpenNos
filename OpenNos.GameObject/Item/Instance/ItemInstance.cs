@@ -73,7 +73,7 @@ namespace OpenNos.GameObject
 
         public ItemInstance DeepCopy()
         {
-            return (ItemInstance)this.MemberwiseClone();
+            return (ItemInstance)MemberwiseClone();
         }
 
         public void Save()
