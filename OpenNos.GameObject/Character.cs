@@ -1468,7 +1468,7 @@ namespace OpenNos.GameObject
                         switch (subtype)
                         {
                             case 2:
-                                return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {specialist.SpLevel} {CharacterHelper.SpXPData[JobLevelXp]} {CharacterHelper.SpXPData[JobLevel - 1]} {item.Upgrade} {specialist.SlDamage} {specialist.SlDefence} {specialist.SlElement} {specialist.SlHP} {(specialist != null ? (CharacterHelper.SpPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence) : 0)} {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} {specialist.SpStoneUpgrade} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
+                                return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {specialist.SpLevel} {CharacterHelper.SPXPData[JobLevelXp]} {CharacterHelper.SPXPData[JobLevel - 1]} {item.Upgrade} {specialist.SlDamage} {specialist.SlDefence} {specialist.SlElement} {specialist.SlHP} {(specialist != null ? (CharacterHelper.SPPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence) : 0)} {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} {specialist.SpStoneUpgrade} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
 
                             default:
                                 return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";
@@ -2320,7 +2320,7 @@ namespace OpenNos.GameObject
 
         public string GenerateSlInfo(SpecialistInstance inventoryItem, int type)
         {
-            int freepoint = CharacterHelper.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade) - inventoryItem.SlDamage - inventoryItem.SlHP - inventoryItem.SlElement - inventoryItem.SlDefence;
+            int freepoint = CharacterHelper.SPPoint(inventoryItem.SpLevel, inventoryItem.Upgrade) - inventoryItem.SlDamage - inventoryItem.SlHP - inventoryItem.SlElement - inventoryItem.SlDefence;
 
             int slElement = CharacterHelper.SlPoint(inventoryItem.SlElement, 2);
             int slHp = CharacterHelper.SlPoint(inventoryItem.SlHP, 3);
@@ -2356,7 +2356,7 @@ namespace OpenNos.GameObject
             // 10 9 8 '0 0 0 0'<- bonusdamage bonusarmor bonuselement bonushpmp its after upgrade and
             // 3 first values are not important
             skill = skill.TrimEnd('.');
-            return $"slinfo {type} {inventoryItem.ItemVNum} {inventoryItem.Item.Morph} {inventoryItem.SpLevel} {inventoryItem.Item.LevelJobMinimum} {inventoryItem.Item.ReputationMinimum} 0 0 0 0 0 0 0 {inventoryItem.Item.SpType} {inventoryItem.Item.FireResistance} {inventoryItem.Item.WaterResistance} {inventoryItem.Item.LightResistance} {inventoryItem.Item.DarkResistance} {inventoryItem.XP} {CharacterHelper.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.TransportId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
+            return $"slinfo {type} {inventoryItem.ItemVNum} {inventoryItem.Item.Morph} {inventoryItem.SpLevel} {inventoryItem.Item.LevelJobMinimum} {inventoryItem.Item.ReputationMinimum} 0 0 0 0 0 0 0 {inventoryItem.Item.SpType} {inventoryItem.Item.FireResistance} {inventoryItem.Item.WaterResistance} {inventoryItem.Item.LightResistance} {inventoryItem.Item.DarkResistance} {inventoryItem.XP} {CharacterHelper.SPXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.TransportId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
         }
 
         public string GenerateSpk(object message, int v)
@@ -2810,7 +2810,7 @@ namespace OpenNos.GameObject
                     {
                         fairy.XP += ServerManager.FairyXpRate;
                     }
-                    t = CharacterHelper.LoadFairyXpData(fairy.ElementRate);
+                    t = CharacterHelper.LoadFairyXPData(fairy.ElementRate);
                     while (fairy.XP >= t)
                     {
                         fairy.XP -= (int)t;
@@ -3088,11 +3088,11 @@ namespace OpenNos.GameObject
         {
             if (IsSitting)
             {
-                return CharacterHelper.HpHealth[(byte)Class];
+                return CharacterHelper.HPHealth[(byte)Class];
             }
             else if ((DateTime.Now - LastDefence).TotalSeconds > 2)
             {
-                return CharacterHelper.HpHealthStand[(byte)Class];
+                return CharacterHelper.HPHealthStand[(byte)Class];
             }
             else
             {
@@ -3104,11 +3104,11 @@ namespace OpenNos.GameObject
         {
             if (IsSitting)
             {
-                return CharacterHelper.MpHealth[(byte)Class];
+                return CharacterHelper.MPHealth[(byte)Class];
             }
             else if ((DateTime.Now - LastDefence).TotalSeconds > 2)
             {
-                return CharacterHelper.MpHealthStand[(byte)Class];
+                return CharacterHelper.MPHealthStand[(byte)Class];
             }
             else
             {
@@ -3635,7 +3635,7 @@ namespace OpenNos.GameObject
             {
                 specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
             }
-            return CharacterHelper.SpXPData[specialist.SpLevel - 1];
+            return CharacterHelper.SPXPData[specialist.SpLevel - 1];
         }
 
         public bool Update()

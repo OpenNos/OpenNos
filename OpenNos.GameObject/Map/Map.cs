@@ -101,7 +101,7 @@ namespace OpenNos.GameObject
         {
             get; set;
         }
-        public bool isSleeping
+        public bool IsSleeping
         {
             get
             {

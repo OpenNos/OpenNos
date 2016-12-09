@@ -13,13 +13,13 @@ namespace OpenNos.DAL.EF.Migrations
                     {
                         AccountId = c.Long(nullable: false, identity: true),
                         Authority = c.Short(nullable: false),
+                        Email = c.String(maxLength: 255),
                         LastCompliment = c.DateTime(nullable: false),
                         LastSession = c.Int(nullable: false),
                         Name = c.String(maxLength: 255),
                         Password = c.String(maxLength: 255, unicode: false),
-                        Email = c.String(maxLength: 255),
-                        VerificationToken = c.String(maxLength: 32),
                         RegistrationIP = c.String(maxLength: 45),
+                        VerificationToken = c.String(maxLength: 32),
                     })
                 .PrimaryKey(t => t.AccountId);
             
@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF.Migrations
                         Act4Points = c.Int(nullable: false),
                         ArenaWinner = c.Int(nullable: false),
                         Backpack = c.Int(nullable: false),
-                        Biography = c.String(),
+                        Biography = c.String(maxLength: 255),
                         BuffBlocked = c.Boolean(nullable: false),
                         Class = c.Byte(nullable: false),
                         Compliment = c.Short(nullable: false),
@@ -42,6 +42,7 @@ namespace OpenNos.DAL.EF.Migrations
                         EmoticonsBlocked = c.Boolean(nullable: false),
                         ExchangeBlocked = c.Boolean(nullable: false),
                         Faction = c.Int(nullable: false),
+                        FamilyCharacterId = c.Long(),
                         FamilyRequestBlocked = c.Boolean(nullable: false),
                         FriendRequestBlocked = c.Boolean(nullable: false),
                         Gender = c.Byte(nullable: false),
@@ -82,8 +83,10 @@ namespace OpenNos.DAL.EF.Migrations
                     })
                 .PrimaryKey(t => t.CharacterId)
                 .ForeignKey("dbo.Map", t => t.MapId)
+                .ForeignKey("dbo.FamilyCharacter", t => t.FamilyCharacterId)
                 .ForeignKey("dbo.Account", t => t.AccountId)
                 .Index(t => t.AccountId)
+                .Index(t => t.FamilyCharacterId)
                 .Index(t => t.MapId);
             
             CreateTable(
@@ -273,10 +276,10 @@ namespace OpenNos.DAL.EF.Migrations
                         IsConsumable = c.Boolean(nullable: false),
                         IsDroppable = c.Boolean(nullable: false),
                         IsHeroic = c.Boolean(nullable: false),
+                        IsHolder = c.Boolean(nullable: false),
                         IsMinilandObject = c.Boolean(nullable: false),
                         IsSoldable = c.Boolean(nullable: false),
                         IsTradable = c.Boolean(nullable: false),
-                        IsHolder = c.Boolean(nullable: false),
                         ItemSubType = c.Byte(nullable: false),
                         ItemType = c.Byte(nullable: false),
                         ItemValidTime = c.Long(nullable: false),
@@ -516,10 +519,10 @@ namespace OpenNos.DAL.EF.Migrations
                 c => new
                     {
                         MapTypeId = c.Short(nullable: false, identity: true),
-                        RespawnMapTypeId = c.Long(),
-                        ReturnMapTypeId = c.Long(),
                         MapTypeName = c.String(),
                         PotionDelay = c.Short(nullable: false),
+                        RespawnMapTypeId = c.Long(),
+                        ReturnMapTypeId = c.Long(),
                     })
                 .PrimaryKey(t => t.MapTypeId)
                 .ForeignKey("dbo.RespawnMapType", t => t.RespawnMapTypeId)
@@ -662,6 +665,47 @@ namespace OpenNos.DAL.EF.Migrations
                 .Index(t => t.RecipeId);
             
             CreateTable(
+                "dbo.FamilyCharacter",
+                c => new
+                    {
+                        FamilyCharacterId = c.Long(nullable: false, identity: true),
+                        Authority = c.Byte(nullable: false),
+                        DailyMessage = c.String(maxLength: 255),
+                        Experience = c.Int(nullable: false),
+                        FamilyId = c.Long(nullable: false),
+                        JoinDate = c.DateTime(nullable: false),
+                        Rank = c.Byte(nullable: false),
+                    })
+                .PrimaryKey(t => t.FamilyCharacterId)
+                .ForeignKey("dbo.Family", t => t.FamilyId)
+                .Index(t => t.FamilyId);
+            
+            CreateTable(
+                "dbo.Family",
+                c => new
+                    {
+                        FamilyId = c.Long(nullable: false, identity: true),
+                        FamilyExperience = c.Int(nullable: false),
+                        FamilyLevel = c.Byte(nullable: false),
+                        FamilyMessage = c.String(maxLength: 255),
+                        MaxSize = c.Byte(nullable: false),
+                        Name = c.String(maxLength: 255),
+                        Size = c.Byte(nullable: false),
+                    })
+                .PrimaryKey(t => t.FamilyId);
+            
+            CreateTable(
+                "dbo.FamilyLog",
+                c => new
+                    {
+                        FamilyLogId = c.Long(nullable: false, identity: true),
+                        FamilyId = c.Long(nullable: false),
+                    })
+                .PrimaryKey(t => t.FamilyLogId)
+                .ForeignKey("dbo.Family", t => t.FamilyId)
+                .Index(t => t.FamilyId);
+            
+            CreateTable(
                 "dbo.GeneralLog",
                 c => new
                     {
@@ -725,6 +769,9 @@ namespace OpenNos.DAL.EF.Migrations
             DropForeignKey("dbo.Mail", "SenderId", "dbo.Character");
             DropForeignKey("dbo.ItemInstance", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.GeneralLog", "CharacterId", "dbo.Character");
+            DropForeignKey("dbo.Character", "FamilyCharacterId", "dbo.FamilyCharacter");
+            DropForeignKey("dbo.FamilyCharacter", "FamilyId", "dbo.Family");
+            DropForeignKey("dbo.FamilyLog", "FamilyId", "dbo.Family");
             DropForeignKey("dbo.CharacterSkill", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.ShopSkill", "SkillVNum", "dbo.Skill");
             DropForeignKey("dbo.NpcMonsterSkill", "SkillVNum", "dbo.Skill");
@@ -766,6 +813,8 @@ namespace OpenNos.DAL.EF.Migrations
             DropIndex("dbo.QuicklistEntry", new[] { "CharacterId" });
             DropIndex("dbo.GeneralLog", new[] { "CharacterId" });
             DropIndex("dbo.GeneralLog", new[] { "AccountId" });
+            DropIndex("dbo.FamilyLog", new[] { "FamilyId" });
+            DropIndex("dbo.FamilyCharacter", new[] { "FamilyId" });
             DropIndex("dbo.RecipeItem", new[] { "RecipeId" });
             DropIndex("dbo.RecipeItem", new[] { "ItemVNum" });
             DropIndex("dbo.ShopSkill", new[] { "SkillVNum" });
@@ -807,10 +856,14 @@ namespace OpenNos.DAL.EF.Migrations
             DropIndex("dbo.CharacterSkill", new[] { "SkillVNum" });
             DropIndex("dbo.CharacterSkill", new[] { "CharacterId" });
             DropIndex("dbo.Character", new[] { "MapId" });
+            DropIndex("dbo.Character", new[] { "FamilyCharacterId" });
             DropIndex("dbo.Character", new[] { "AccountId" });
             DropTable("dbo.PenaltyLog");
             DropTable("dbo.QuicklistEntry");
             DropTable("dbo.GeneralLog");
+            DropTable("dbo.FamilyLog");
+            DropTable("dbo.Family");
+            DropTable("dbo.FamilyCharacter");
             DropTable("dbo.RecipeItem");
             DropTable("dbo.ShopSkill");
             DropTable("dbo.ShopItem");

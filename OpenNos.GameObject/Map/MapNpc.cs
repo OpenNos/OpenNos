@@ -239,7 +239,7 @@ namespace OpenNos.GameObject
                                 Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                                 if (!Path.Any())
                                 {
-                                    Path = Map.JpsPlus(JumpPointParameters, new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
+                                    Path = Map.JPSPlus(JumpPointParameters, new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                                 }
                             }
 
@@ -266,7 +266,7 @@ namespace OpenNos.GameObject
                             Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
                             if (!Path.Any())
                             {
-                                Path = Map.JpsPlus(JumpPointParameters, new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
+                                Path = Map.JPSPlus(JumpPointParameters, new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
                             }
                         }
                         if (DateTime.Now > LastMove && Npc.Speed > 0 && Path.Any())
@@ -293,12 +293,12 @@ namespace OpenNos.GameObject
                                 Path.RemoveAt(0);
                             }
                         }
-                        if (Path.Count() == 0 && (monster == null || MapId != monster.MapId || distance > maxDistance))
+                        if (Path.Any() && (monster == null || MapId != monster.MapId || distance > maxDistance))
                         {
                             Path = Map.StraightPath(new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                             if (!Path.Any())
                             {
-                                Path = Map.JpsPlus(JumpPointParameters, new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
+                                Path = Map.JPSPlus(JumpPointParameters, new GridPos() { x = this.MapX, y = this.MapY }, new GridPos() { x = FirstX, y = FirstY });
                             }
                             Target = -1;
                         }

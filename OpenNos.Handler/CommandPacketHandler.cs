@@ -1524,7 +1524,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ServerManager.Instance.SessionCount} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("XP_RATE_NOW")}: {ServerManager.XpRate} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("XP_RATE_NOW")}: {ServerManager.XPRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("DROP_RATE_NOW")}: {ServerManager.DropRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_RATE_NOW")}: {ServerManager.GoldRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("FAIRYXP_RATE_NOW")}: {ServerManager.FairyXpRate} ", 13));
@@ -1882,7 +1882,7 @@ namespace OpenNos.Handler
             {
                 if (xpRatePacket.Value <= 1000)
                 {
-                    ServerManager.XpRate = xpRatePacket.Value;
+                    ServerManager.XPRate = xpRatePacket.Value;
 
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_RATE_CHANGED"), 0));
                 }

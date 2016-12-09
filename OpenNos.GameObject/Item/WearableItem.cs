@@ -144,7 +144,7 @@ namespace OpenNos.GameObject
                     if (EquipmentSlot == EquipmentType.Fairy)
                     {
                         WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
-                        session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXpData(fairy.ElementRate + fairy.Item.ElementRate)), 10));
+                        session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXPData(fairy.ElementRate + fairy.Item.ElementRate)), 10));
                     }
                     break;
             }

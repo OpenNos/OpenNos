@@ -137,7 +137,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                if (!Map.isSleeping)
+                if (!Map.IsSleeping)
                 {
                     MonsterLife();
                 }

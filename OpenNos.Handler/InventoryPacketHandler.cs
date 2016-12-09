@@ -822,7 +822,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
                 }
-                if (CharacterHelper.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
+                if (CharacterHelper.SPPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
                 {
                     return;
                 }

@@ -103,7 +103,7 @@ namespace OpenNos.GameObject
                 {
                     try
                     {
-                        if (!map.Value.isSleeping)
+                        if (!map.Value.IsSleeping)
                         {
                             map.Value.RemoveMapItem();
                         }

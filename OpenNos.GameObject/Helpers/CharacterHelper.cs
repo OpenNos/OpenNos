@@ -63,23 +63,23 @@ namespace OpenNos.GameObject
         private CharacterHelper()
         {
             LoadSpeedData();
-            LoadJobXpData();
-            LoadSpXpData();
-            LoadXpData();
-            LoadHpData();
-            LoadMpData();
+            LoadJobXPData();
+            LoadSPXPData();
+            LoadXPData();
+            LoadHPData();
+            LoadMPData();
             LoadStats();
-            LoadHpHealth();
-            LoadMpHealth();
-            LoadHpHealthStand();
-            LoadMpHealthStand();
+            LoadHPHealth();
+            LoadMPHealth();
+            LoadHPHealthStand();
+            LoadMPHealthStand();
         }
 
         #endregion
 
         #region Properties
 
-        public static double[] FirstJobXpData
+        public static double[] FirstJobXPData
         {
             get
             {
@@ -91,7 +91,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static int[,] HpData
+        public static int[,] HPData
         {
             get
             {
@@ -103,7 +103,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static int[] HpHealth
+        public static int[] HPHealth
         {
             get
             {
@@ -115,7 +115,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static int[] HpHealthStand
+        public static int[] HPHealthStand
         {
             get
             {
@@ -127,7 +127,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static int[,] MpData
+        public static int[,] MPData
         {
             get
             {
@@ -139,7 +139,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static int[] MpHealth
+        public static int[] MPHealth
         {
             get
             {
@@ -151,7 +151,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static int[] MpHealthStand
+        public static int[] MPHealthStand
         {
             get
             {
@@ -163,7 +163,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static double[] SecondJobXpData
+        public static double[] SecondJobXPData
         {
             get
             {
@@ -187,7 +187,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static double[] SpXpData
+        public static double[] SPXPData
         {
             get
             {
@@ -199,7 +199,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static double[] XpData
+        public static double[] XPData
         {
             get
             {
@@ -299,7 +299,7 @@ namespace OpenNos.GameObject
             return penalty;
         }
 
-        public static long LoadFairyXpData(long elementRate)
+        public static long LoadFairyXPData(long elementRate)
         {
             if (elementRate < 40)
             {
@@ -482,7 +482,7 @@ namespace OpenNos.GameObject
             return point;
         }
 
-        public static int SpPoint(short spLevel, short upgrade)
+        public static int SPPoint(short spLevel, short upgrade)
         {
             int point = (spLevel - 20) * 3;
             if (spLevel <= 20)
@@ -674,7 +674,7 @@ namespace OpenNos.GameObject
             return 0;
         }
 
-        private void LoadHpData()
+        private void LoadHPData()
         {
             _hp = new int[4, 100];
 
@@ -734,7 +734,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void LoadHpHealth()
+        private void LoadHPHealth()
         {
             _hpHealth = new int[4];
             _hpHealth[(int)ClassType.Archer] = 60;
@@ -743,7 +743,7 @@ namespace OpenNos.GameObject
             _hpHealth[(int)ClassType.Magician] = 30;
         }
 
-        private void LoadHpHealthStand()
+        private void LoadHPHealthStand()
         {
             _hpHealthStand = new int[4];
             _hpHealthStand[(int)ClassType.Archer] = 32;
@@ -752,7 +752,7 @@ namespace OpenNos.GameObject
             _hpHealthStand[(int)ClassType.Magician] = 20;
         }
 
-        private void LoadJobXpData()
+        private void LoadJobXPData()
         {
             // Load JobData
             _firstJobXpData = new double[21];
@@ -779,7 +779,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void LoadMpData()
+        private void LoadMPData()
         {
             // ADVENTURER MP
             _mp = new int[4, 101];
@@ -816,7 +816,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void LoadMpHealth()
+        private void LoadMPHealth()
         {
             _mpHealth = new int[4];
             _mpHealth[(int)ClassType.Archer] = 50;
@@ -825,7 +825,7 @@ namespace OpenNos.GameObject
             _mpHealth[(int)ClassType.Magician] = 80;
         }
 
-        private void LoadMpHealthStand()
+        private void LoadMPHealthStand()
         {
             _mpHealthStand = new int[4];
             _mpHealthStand[(int)ClassType.Archer] = 28;
@@ -843,7 +843,7 @@ namespace OpenNos.GameObject
             _speedData[(int)ClassType.Magician] = 10;
         }
 
-        private void LoadSpXpData()
+        private void LoadSPXPData()
         {
             // Load SpData
             _spxpData = new double[99];
@@ -957,7 +957,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void LoadXpData()
+        private void LoadXPData()
         {
             // Load XpData
             _xpData = new double[100];

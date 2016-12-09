@@ -12,6 +12,12 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL.EF.Migrations;
+using System.Data.Entity.Migrations;
+using System.Data.Entity.Migrations.Infrastructure;
+using System.IO;
+using System.Linq;
+
 namespace OpenNos.DAL.EF.Helpers
 {
     public static class MigrationHelper

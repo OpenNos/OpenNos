@@ -185,7 +185,7 @@ namespace OpenNos.GameObject
                 _sessions[session.Character.CharacterId] = session;
                 if (session.HasCurrentMap)
                 {
-                    session.CurrentMap.isSleeping = false;
+                    session.CurrentMap.IsSleeping = false;
                 }
             }
         }
@@ -281,7 +281,7 @@ namespace OpenNos.GameObject
             _sessions.Remove(characterId);
             if (session.HasCurrentMap && _sessions.Count == 0)
             {
-                session.CurrentMap.isSleeping = true;
+                session.CurrentMap.IsSleeping = true;
             }
             LastUnregister = DateTime.Now;
         }
