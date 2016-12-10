@@ -589,8 +589,9 @@ namespace OpenNos.GameObject
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch (DivideByZeroException ex)
                     {
+                        throw ex;
                         // disconnect if something unexpected happens
                         Logger.Log.Error("Handler Error SessionId: " + SessionId, ex);
                         Disconnect();

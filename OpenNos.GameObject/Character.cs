@@ -1599,6 +1599,32 @@ namespace OpenNos.GameObject
             return $"fd {Reput} {GetReputIco()} {(int)Dignity} {Math.Abs(GetDignityIco())}";
         }
 
+        public string GenerateFinit()
+        {
+            string result = "finit";
+            
+            foreach (CharacterRelationDTO relation in DAOFactory.CharacterRelationDAO.GetFriends(CharacterId))
+            {
+                byte isOnline = 0;
+                if(ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
+                {
+                    isOnline = 1;
+                }
+                result += $" {relation.RelatedCharacterId}|{(short)relation.RelationType}|{isOnline}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
+            }
+            return result;
+        }
+        public string GenerateBlinit()
+        {
+            string result = "blinit";
+
+            foreach (CharacterRelationDTO relation in DAOFactory.CharacterRelationDAO.GetBlacklisted(CharacterId))
+            {
+                result += $"{relation.RelatedCharacterId}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
+            }
+            return result;
+        }
+
         public string GenerateGender()
         {
             return $"p_sex {(byte)Gender}";

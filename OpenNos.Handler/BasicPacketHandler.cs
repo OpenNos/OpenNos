@@ -1182,7 +1182,8 @@ namespace OpenNos.Handler
                 kdlinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Act4Points}|{character.Name}";
             }
 
-            // finit - friend list
+            Session.SendPacket(Session.Character.GenerateFinit());
+            Session.SendPacket(Session.Character.GenerateBlinit());
             Session.SendPacket(clinit);
             Session.SendPacket(flinit);
             Session.SendPacket(kdlinit);

@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ICellonOptionDAO.cs" />
+    <Compile Include="ICharacterRelationDAO.cs" />
     <Compile Include="IComboDAO.cs" />
     <Compile Include="IDropDAO.cs" />
     <Compile Include="IMappingBaseDAO.cs" />

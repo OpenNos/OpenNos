@@ -77,11 +77,13 @@
   <ItemGroup>
     <Compile Include="Base\MappingBaseDAO.cs" />
     <Compile Include="Base\SynchronizableBaseDAO.cs" />
+    <Compile Include="CharacterRelationDAO.cs" />
     <Compile Include="Entities\Account.cs" />
     <Compile Include="Entities\Base\SynchronizableBaseEntity.cs" />
     <Compile Include="Entities\CellonOption.cs" />
     <Compile Include="CellonOptionDAO.cs" />
     <Compile Include="Entities\Character.cs" />
+    <Compile Include="Entities\CharacterRelation.cs" />
     <Compile Include="Entities\CharacterSkill.cs" />
     <Compile Include="Entities\Combo.cs" />
     <Compile Include="ComboDAO.cs" />
@@ -115,6 +117,10 @@
     <Compile Include="Migrations\201612092059142_Aphrodite.cs" />
     <Compile Include="Migrations\201612092059142_Aphrodite.Designer.cs">
       <DependentUpon>201612092059142_Aphrodite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612092208001_Aphrodite1.cs" />
+    <Compile Include="Migrations\201612092208001_Aphrodite1.Designer.cs">
+      <DependentUpon>201612092208001_Aphrodite1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -189,6 +195,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201612092059142_Aphrodite.resx">
       <DependentUpon>201612092059142_Aphrodite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612092208001_Aphrodite1.resx">
+      <DependentUpon>201612092208001_Aphrodite1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -47,6 +47,7 @@
     <Compile Include="Base\MappingBaseDTO.cs" />
     <Compile Include="Base\SynchronizableBaseDTO.cs" />
     <Compile Include="CellonOptionDTO.cs" />
+    <Compile Include="CharacterRelationDTO.cs" />
     <Compile Include="ComboDTO.cs" />
     <Compile Include="DropDTO.cs" />
     <Compile Include="FamilyCharacterDTO.cs" />

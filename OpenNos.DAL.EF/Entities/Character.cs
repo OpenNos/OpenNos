@@ -25,6 +25,7 @@ namespace OpenNos.DAL.EF
 
         public Character()
         {
+            CharacterRelation = new HashSet<CharacterRelation>();
             CharacterSkill = new HashSet<CharacterSkill>();
             Inventory = new HashSet<ItemInstance>();
             QuicklistEntry = new HashSet<QuicklistEntry>();
@@ -58,6 +59,8 @@ namespace OpenNos.DAL.EF
         public bool BuffBlocked { get; set; }
 
         public long CharacterId { get; set; }
+
+        public virtual ICollection<CharacterRelation> CharacterRelation { get; set; }
 
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
 

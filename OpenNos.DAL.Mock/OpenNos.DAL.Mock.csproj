@@ -52,6 +52,7 @@
     <Compile Include="Base\SynchronizableBaseDAO.cs" />
     <Compile Include="CellonOptionDAO.cs" />
     <Compile Include="CharacterDAO.cs" />
+    <Compile Include="CharacterRelationDAO.cs" />
     <Compile Include="CharacterSkillDAO.cs" />
     <Compile Include="ComboDAO.cs" />
     <Compile Include="DropDAO.cs" />

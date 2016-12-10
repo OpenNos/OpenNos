@@ -40,6 +40,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Character> Character { get; set; }
 
+        public virtual DbSet<CharacterRelation> CharacterRelation { get; set; }
+
         public virtual DbSet<CharacterSkill> CharacterSkill { get; set; }
 
         public virtual DbSet<Combo> Combo { get; set; }

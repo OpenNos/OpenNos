@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="BCardType.cs" />
     <Compile Include="BuyShopType.cs" />
+    <Compile Include="CharacterRelationType.cs" />
     <Compile Include="CharacterState.cs" />
     <Compile Include="FamilyAuthority.cs" />
     <Compile Include="FamilyMemberRank.cs" />

@@ -126,6 +126,7 @@ namespace OpenNos.World
             DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
             DAOFactory.CellonOptionDAO.RegisterMapping(typeof(CellonOptionDTO)).InitializeMapper();
             DAOFactory.CharacterDAO.RegisterMapping(typeof(Character)).InitializeMapper();
+            DAOFactory.CharacterRelationDAO.RegisterMapping(typeof(CharacterRelationDTO)).InitializeMapper();
             DAOFactory.CharacterSkillDAO.RegisterMapping(typeof(CharacterSkill)).InitializeMapper();
             DAOFactory.ComboDAO.RegisterMapping(typeof(ComboDTO)).InitializeMapper();
             DAOFactory.DropDAO.RegisterMapping(typeof(DropDTO)).InitializeMapper();

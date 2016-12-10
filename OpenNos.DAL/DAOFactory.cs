@@ -25,6 +25,7 @@ namespace OpenNos.DAL
         private static IAccountDAO _accountDAO;
         private static ICellonOptionDAO _cellonoptionDAO;
         private static ICharacterDAO _characterDAO;
+        private static ICharacterRelationDAO _characterRelationDAO;
         private static ICharacterSkillDAO _characterskillDAO;
         private static IComboDAO _comboDAO;
         private static IDropDAO _dropDAO;
@@ -135,6 +136,26 @@ namespace OpenNos.DAL
                 }
 
                 return _characterDAO;
+            }
+        }
+
+        public static ICharacterRelationDAO CharacterRelationDAO
+        {
+            get
+            {
+                if (_characterRelationDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _characterRelationDAO = new Mock.CharacterRelationDAO();
+                    }
+                    else
+                    {
+                        _characterRelationDAO = new EF.CharacterRelationDAO();
+                    }
+                }
+
+                return _characterRelationDAO;
             }
         }
 
