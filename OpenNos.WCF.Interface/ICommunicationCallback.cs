@@ -30,7 +30,7 @@ namespace OpenNos.WCF.Interface
         void DisconnectAccountCallback(string accountName);
 
         [OperationContract(IsOneWay = true)]
-        void DisconnectCharacterCallback(string characterName);
+        void DisconnectCharacterCallback(string characterName, long characterId);
 
         #endregion
     }

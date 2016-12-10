@@ -231,7 +231,7 @@ namespace OpenNos.GameObject
 
                 // TODO Check why ExchangeInfo.TargetCharacterId is null Character.CloseTrade();
                 // disconnect client
-                ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
+                ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name, Character.CharacterId);
 
                 // unregister from map if registered
                 if (CurrentMap != null)
@@ -343,24 +343,30 @@ namespace OpenNos.GameObject
 
         private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)
         {
-            // TODO: filter for friendlist
-            string characterNameWhichHasBeenLoggedIn = (string)sender;
-
-            if (Character != null && Character.Name != characterNameWhichHasBeenLoggedIn)
+            string loggedInCharacter = (string)sender;
+            ClientSession loggedInSession = ServerManager.Instance.GetSessionByCharacterName(loggedInCharacter);
+            if (loggedInSession != null)
             {
-                _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), characterNameWhichHasBeenLoggedIn), 10));
+                if (Character.IsFriendOfCharacter(loggedInSession.Character.CharacterId))
+
+                    if (Character != null && Character.Name != loggedInCharacter)
+                    {
+                        _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), loggedInCharacter), 10));
+                        _client.SendPacket(Character.GenerateFinfo());
+                    }
             }
         }
 
         private void CommunicationCallback_CharacterDisconnectedEvent(object sender, EventArgs e)
         {
-            // TODO: filter for friendlist
-            string characterNameWhichHasBeenLoggedIn = (string)sender;
+            KeyValuePair<long, string> kvPair = (KeyValuePair<long, string>)sender;
+            if (Character.IsFriendOfCharacter(kvPair.Key))
 
-            if (Character != null && Character.Name != characterNameWhichHasBeenLoggedIn)
-            {
-                _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), characterNameWhichHasBeenLoggedIn), 10));
-            }
+                if (Character != null && Character.Name != kvPair.Value)
+                {
+                    _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), kvPair.Value), 10));
+                    _client.SendPacket(Character.GenerateFinfo());
+                }
         }
 
         private void GenerateHandlerReferences(Type type, bool isWorldServer)

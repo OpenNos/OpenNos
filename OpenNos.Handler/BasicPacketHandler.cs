@@ -489,6 +489,153 @@ namespace OpenNos.Handler
             ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 3), ReceiverType.Group);
         }
 
+        [Packet("btk")]
+        public void FriendTalk(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length >= 4)
+            {
+                long characterId;
+                if (long.TryParse(packetsplit[2], out characterId))
+                {
+                    string message = String.Empty;
+                    for (int i = 3; i < packetsplit.Length; i++)
+                    {
+                        message += packetsplit[i] + " ";
+                    }
+                    if (message.Length > 60)
+                    {
+                        message = message.Substring(0, 60);
+                    }
+
+                    message = message.Trim();
+
+                    ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
+                    if (otherSession != null)
+                    {
+                        // Yes, it has to be two spaces!
+                        otherSession.SendPacket($"talk  {Session.Character.CharacterId} {message}");
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_OFFLINE")));
+                    }
+                }
+            }
+        }
+
+        [Packet("fdel")]
+        public void FriendDelete(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            long characterId;
+            if (packetsplit.Length == 3)
+            {
+                if (long.TryParse(packetsplit[2], out characterId))
+                {
+                    Session.Character.DeleteFriend(characterId);
+                    Session.SendPacket(Session.Character.GenerateFinit());
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_DELETED")));
+
+                    ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
+                    if (otherSession != null)
+                    {
+                        otherSession.Character.DeleteFriend(Session.Character.CharacterId);
+                        otherSession.SendPacket(otherSession.Character.GenerateFinit());
+                    }
+                    else
+                    {
+                        DAOFactory.CharacterRelationDAO.Delete(Session.Character.CharacterId, characterId);
+                    }
+                }
+            }
+        }
+
+        [Packet("fins")]
+        public void FriendAdd(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            long characterId;
+            if (packetsplit.Length == 4)
+            {
+                if (long.TryParse(packetsplit[3], out characterId) && !Session.Character.IsFriendOfCharacter(characterId) && !Session.Character.IsBlockedByCharacter(characterId) && !Session.Character.IsBlockingCharacter(characterId))
+                {
+                    ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
+                    if (otherSession != null)
+                    {
+                        otherSession.SendPacket($"dlg #fins^-1^{Session.Character.CharacterId} #fins^-99^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("FRIEND_ADD"), Session.Character.Name)}");
+                        Session.Character.AddFriend(characterId);
+                    }
+                }
+            }
+        }
+
+        [Packet("#fins")]
+        public void FriendAddResponse(string packet)
+        {
+            string[] packetsplit = packet.Replace('^', ' ').Split(' ');
+            long characterId;
+            if (packetsplit.Length == 4)
+            {
+                if (long.TryParse(packetsplit[3], out characterId) && !Session.Character.IsFriendOfCharacter(characterId) && !Session.Character.IsBlockedByCharacter(characterId) && !Session.Character.IsBlockingCharacter(characterId))
+                {
+                    ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
+                    if (otherSession != null)
+                    {
+                        if (otherSession.Character.IsFriendOfCharacter(Session.Character.CharacterId))
+                        {
+                            if (packetsplit[2] == "-1")
+                            {
+                                Session.Character.AddFriend(characterId);
+                                Session.SendPacket(Session.Character.GenerateFinit());
+                                otherSession.SendPacket(otherSession.Character.GenerateFinit());
+                                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
+                                otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
+                            }
+                            else if (packetsplit[2] == "-99")
+                            {
+                                otherSession.Character.DeleteFriend(Session.Character.CharacterId);
+                                otherSession.SendPacket(Language.Instance.GetMessageFromKey("FRIEND_REJECTED"));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        [Packet("bldel")]
+        public void BlacklistDelete(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            long characterId;
+            if (packetsplit.Length == 3)
+            {
+                if (long.TryParse(packetsplit[2], out characterId))
+                {
+
+                    Session.Character.DeleteBlacklisted(characterId);
+                    Session.SendPacket(Session.Character.GenerateBlinit());
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_DELETED")));
+                }
+            }
+        }
+
+        [Packet("blins")]
+        public void BlacklistAdd(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            long characterId;
+            if (packetsplit.Length == 3)
+            {
+                if (long.TryParse(packetsplit[2], out characterId))
+                {
+                    Session.Character.AddBlacklisted(characterId);
+                    Session.SendPacket(Session.Character.GenerateBlinit());
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_ADDED")));
+                }
+            }
+        }
+
         [Packet("guri")]
         public void Guri(string packet)
         {
@@ -557,6 +704,43 @@ namespace OpenNos.Handler
                         Session.Character.Inventory.RemoveItemAmount(speakerVNum);
                         ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }
+                }
+            }
+            else if (guriPacket[2] == "199" && guriPacket[3] == "1")
+            {
+                int[] listWingOfFriendship = new int[3] { 2160, 2312, 10048 };
+                int vnumToUse = -1;
+                foreach (int vnum in listWingOfFriendship)
+                {
+                    if (Session.Character.Inventory.CountItem(vnum) > 0)
+                    {
+                        vnumToUse = vnum;
+                    }
+                }
+                if (vnumToUse != -1)
+                {
+                    long charId;
+                    long.TryParse(guriPacket[4], out charId);
+                    short? mapId = ServerManager.Instance.GetProperty<short?>(charId, nameof(Character.MapId));
+                    short? mapx = ServerManager.Instance.GetProperty<short?>(charId, nameof(Character.MapX));
+                    short? mapy = ServerManager.Instance.GetProperty<short?>(charId, nameof(Character.MapY));
+                    if (mapy != null && mapx != null && mapId != null)
+                    {
+                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                        Session.Character.MapId = (short)mapId;
+                        Session.Character.MapX = ((short)(mapx));
+                        Session.Character.MapY = ((short)(mapy));
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, (short)mapId, (short)((short)(mapx)), (short)((short)(mapy)));
+                        Session.Character.Inventory.RemoveItemAmount(vnumToUse);
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                    }
+                }
+                else
+                {
+                    // no friendship wings
                 }
             }
             else if (guriPacket[2] == "203" && guriPacket[3] == "0")
@@ -1148,7 +1332,6 @@ namespace OpenNos.Handler
             // sc_p pet sc_n nospartner Session.SendPacket("sc_p_stc 0"); // end pet and partner
             Session.SendPacket("pinit 0"); // clean party list
 
-            // blinit
             Session.SendPacket("zzim");
             Session.SendPacket($"twk 2 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
 
@@ -1165,7 +1348,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateGold());
             Session.SendPackets(Session.Character.GenerateQuicklist());
 
-            // string finit = "finit"; string blinit = "blinit";
             string clinit = "clinit";
             string flinit = "flinit";
             string kdlinit = "kdlinit";

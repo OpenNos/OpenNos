@@ -48,7 +48,8 @@ namespace OpenNos.GameObject
         private int _size = 10;
         private byte _speed;
         private bool _undercover;
-
+        private IList<CharacterRelationDTO> friends;
+        private IList<CharacterRelationDTO> blacklisted;
         #endregion
 
         #region Instantiation
@@ -676,6 +677,35 @@ namespace OpenNos.GameObject
         {
             Character clonedCharacter = (Character)this.MemberwiseClone();
             return clonedCharacter;
+        }
+
+        public void DeleteFriend(long characterId)
+        {
+            DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
+        }
+
+        public void DeleteBlacklisted(long characterId)
+        {
+            DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
+        }
+
+        public void AddFriend(long characterId)
+        {
+            CharacterRelationDTO addRelation = new CharacterRelationDTO();
+            addRelation.CharacterId = CharacterId;
+            addRelation.RelatedCharacterId = characterId;
+            addRelation.RelationType = CharacterRelationType.Friend;
+            DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
+            friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
+        }
+
+        public void AddBlacklisted(long characterId)
+        {
+            CharacterRelationDTO addRelation = new CharacterRelationDTO();
+            addRelation.CharacterId = CharacterId;
+            addRelation.RelatedCharacterId = characterId;
+            addRelation.RelationType = CharacterRelationType.Blocked;
+            DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
         }
 
         public void DeleteItem(InventoryType type, short slot)
@@ -1602,11 +1632,11 @@ namespace OpenNos.GameObject
         public string GenerateFinit()
         {
             string result = "finit";
-            
-            foreach (CharacterRelationDTO relation in DAOFactory.CharacterRelationDAO.GetFriends(CharacterId))
+            friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
+            foreach (CharacterRelationDTO relation in friends)
             {
                 byte isOnline = 0;
-                if(ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
+                if (ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
                 {
                     isOnline = 1;
                 }
@@ -1614,13 +1644,33 @@ namespace OpenNos.GameObject
             }
             return result;
         }
+
+        public string GenerateFinfo()
+        {
+            string result = "finfo";
+
+            if (friends != null)
+            {
+                foreach (CharacterRelationDTO relation in friends)
+                {
+                    byte isOnline = 0;
+                    if (ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
+                    {
+                        isOnline = 1;
+                    }
+                    result += $" {relation.RelatedCharacterId}.{isOnline}";
+                }
+            }
+            return result;
+        }
+
         public string GenerateBlinit()
         {
             string result = "blinit";
-
-            foreach (CharacterRelationDTO relation in DAOFactory.CharacterRelationDAO.GetBlacklisted(CharacterId))
+            blacklisted = DAOFactory.CharacterRelationDAO.GetBlacklisted(CharacterId);
+            foreach (CharacterRelationDTO relation in blacklisted)
             {
-                result += $"{relation.RelatedCharacterId}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
+                result += $" {relation.RelatedCharacterId}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
             }
             return result;
         }
@@ -3185,6 +3235,37 @@ namespace OpenNos.GameObject
             LastMailRefresh = DateTime.Now;
             Group = null;
             GmPvtBlock = false;
+        }
+
+        public bool IsFriendOfCharacter(long characterId)
+        {
+            if(friends != null)
+            {
+                return friends.FirstOrDefault(c => c.RelatedCharacterId.Equals(characterId)) != null ? true : false;
+            }
+            return false;
+        }
+
+        public bool IsBlockingCharacter(long characterId)
+        {
+            if (blacklisted != null)
+            {
+                return blacklisted.Any(c => c.RelatedCharacterId.Equals(characterId));
+            }
+            return false;
+        }
+
+        public bool IsBlockedByCharacter(long characterId)
+        {
+            ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
+            if(otherSession != null)
+            {
+                return otherSession.Character.IsBlockingCharacter(CharacterId);
+            }
+            else
+            {
+                return DAOFactory.CharacterRelationDAO.GetBlacklisted(characterId).FirstOrDefault(b => b.RelatedCharacterId.Equals(CharacterId)) != null ? true : false;
+            }
         }
 
         /// <summary>

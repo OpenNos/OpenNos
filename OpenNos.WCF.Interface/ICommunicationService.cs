@@ -37,7 +37,7 @@ namespace OpenNos.WCF.Interface
         void DisconnectAccount(string accountName);
 
         [OperationContract(IsOneWay = true)]
-        void DisconnectCharacter(string characterName);
+        void DisconnectCharacter(string characterName, long characterId);
 
         [OperationContract]
         bool HasRegisteredAccountLogin(string name, long sessionId);

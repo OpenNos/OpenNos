@@ -55,10 +55,10 @@ namespace OpenNos.ServiceRef.Internal
             OnAccountDisconnected(accountName);
         }
 
-        public void DisconnectCharacterCallback(string characterName)
+        public void DisconnectCharacterCallback(string characterName, long characterId)
         {
             // inform clients about a disconnected character
-            OnCharacterDisconnected(characterName);
+            OnCharacterDisconnected(characterName, characterId);
         }
 
         public void Dispose()
@@ -79,11 +79,11 @@ namespace OpenNos.ServiceRef.Internal
             }
         }
 
-        public void OnCharacterDisconnected(string characterName)
+        public void OnCharacterDisconnected(string characterName, long characterId)
         {
-            if (CharacterDisconnectedEvent != null && !String.IsNullOrEmpty(characterName))
+            if (CharacterDisconnectedEvent != null && !string.IsNullOrEmpty(characterName))
             {
-                CharacterDisconnectedEvent(characterName, new EventArgs());
+                CharacterDisconnectedEvent(new System.Collections.Generic.KeyValuePair<long, string>(characterId, characterName), new EventArgs());
             }
         }
 

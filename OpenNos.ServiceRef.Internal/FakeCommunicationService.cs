@@ -200,7 +200,7 @@ namespace OpenNos.ServiceRef.Internal
         /// Disconnect character from server.
         /// </summary>
         /// <param name="characterName">Character who wants to disconnect.</param>
-        public void DisconnectCharacter(string characterName)
+        public void DisconnectCharacter(string characterName, long characterId)
         {
             try
             {
@@ -214,7 +214,7 @@ namespace OpenNos.ServiceRef.Internal
             }
         }
 
-        public Task DisconnectCharacterAsync(string characterName)
+        public Task DisconnectCharacterAsync(string characterName, long characterId)
         {
             throw new NotImplementedException();
         }

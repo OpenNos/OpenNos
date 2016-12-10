@@ -215,15 +215,16 @@ namespace OpenNos.WCF
         /// Disconnect character from server.
         /// </summary>
         /// <param name="characterName">Character who wants to disconnect.</param>
-        public void DisconnectCharacter(string characterName)
+        public void DisconnectCharacter(string characterName, long characterId)
         {
             try
             {
                 ConnectedCharacters.Remove(characterName);
+                
 
                 // inform clients
                 ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
-                callback.DisconnectCharacterCallback(characterName);
+                callback.DisconnectCharacterCallback(characterName, characterId);
 
                 Logger.Log.DebugFormat($"[WCF] Character {characterName} has been disconnected.");
             }
