@@ -1987,6 +1987,31 @@ namespace OpenNos.GameObject
             return $"inbox #glmk^ {value} {(type == 1 ? 0 : 1)} {(type == 0 ? Language.Instance.GetMessageFromKey("CREATE_FAMILY") : Language.Instance.GetMessageFromKey("DISMISS_FAMILY"))}";
         }
 
+        // uncomment when done
+
+        //public string GenerateGMsg()
+        //{
+        //    string str = "gmsg";
+        //    Family family = DAOFactory.Family.LoadByCharacterId(CharacterId);
+        //    foreach (FamilyCharacterDTO familyCharacter in family)
+        //    {
+        //        str += $" {familyCharacter.CharacterId}|{familyCharacter.DailyMessage}";
+        //    }
+        //    return str;
+        //}
+
+        //public string GenerateGExp()
+        //{
+        //    string str = "gexp";
+        //    Family family = DAOFactory.Family.LoadByCharacterId(CharacterId);
+        //    foreach (FamilyCharacterDTO familyCharacter in family)
+        //    {
+        //        str += $" {familyCharacter.CharacterId}|{familyCharacter.Experience}";
+
+        //    }
+        //    return str;
+        //}
+
         [Obsolete("GeneratePacket is deprecated, This method should only be used for debugging.")]
         public string GeneratePacket(string content)
         {
