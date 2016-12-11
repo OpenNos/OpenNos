@@ -25,7 +25,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public static void NRun(ClientSession Session, byte type, short runner, short data3, short npcid)
+        public static void NRun(ClientSession Session, byte type, short runner, short value, short npcid)
         {
             if (!Session.HasCurrentMap)
             {
@@ -49,7 +49,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (!Session.Character.Inventory.GetAllItems().Where(i => i.Type == InventoryType.Wear).Any())
+                    if (Session.Character.Inventory.GetAllItems().All(i => i.Type != InventoryType.Wear))
                     {
                         Session.Character.Inventory.AddNewToInventory((short)(4 + type * 14), type: InventoryType.Wear);
                         Session.Character.Inventory.AddNewToInventory((short)(81 + type * 13), type: InventoryType.Wear);
@@ -80,11 +80,11 @@ namespace OpenNos.GameObject
                     break;
 
                 case 2:
-                    Session.SendPacket($"wopen 1 0");
+                    Session.SendPacket("wopen 1 0");
                     break;
 
                 case 10:
-                    Session.SendPacket($"wopen 3 0");
+                    Session.SendPacket("wopen 3 0");
                     break;
 
                 case 12:
@@ -92,16 +92,15 @@ namespace OpenNos.GameObject
                     break;
 
                 case 14:
-                    Session.SendPacket($"wopen 27 0");
+                    Session.SendPacket("wopen 27 0");
                     string recipelist = "m_list 2";
 
                     if (npc != null)
                     {
                         List<Recipe> tp = npc.Recipes;
-
-                        foreach (Recipe rec in tp.Where(s => s.Amount > 0))
+                        foreach (Recipe s in tp)
                         {
-                            recipelist += String.Format(" {0}", rec.ItemVNum);
+                            if (s.Amount > 0) recipelist = recipelist + $" {s.ItemVNum}";
                         }
                         recipelist += " -100";
                         Session.SendPacket(recipelist);
@@ -194,6 +193,11 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                case 23:
+                    Session.SendPacket(Session.Character.GenerateInbox(type, 14));
+                    Session.SendPacket(Session.Character.GenerateFamilyMember(Session.Character.Group));
+                    break;
+
                 case 5002:
                     if (npc != null)
                     {
@@ -220,7 +224,7 @@ namespace OpenNos.GameObject
                     break;
 
                 default:
-                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"), runner));
+                    Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"), runner));
                     break;
             }
         }
