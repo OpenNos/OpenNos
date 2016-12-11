@@ -682,6 +682,11 @@ namespace OpenNos.GameObject
         public void DeleteFriend(long characterId)
         {
             DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
+            CharacterRelationDTO deleteReleation = friends.FirstOrDefault(f => f.RelatedCharacterId == characterId);
+            if (deleteReleation != null)
+            {
+                friends.Remove(deleteReleation);
+            }
         }
 
         public void DeleteBlacklisted(long characterId)
