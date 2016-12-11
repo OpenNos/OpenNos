@@ -122,7 +122,6 @@ namespace OpenNos.Handler
                 return;
             }
 
-            bool doNotCancel = false;
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
 
             if (skills != null)
@@ -131,7 +130,7 @@ namespace OpenNos.Handler
                 Session.SendPacket("ms_c 0");
                 if (!Session.Character.WeaponLoaded(ski) || !ski.CanBeUsed())
                 {
-                    Session.SendPacket("cancel 2 0");
+                    Session.SendPacket($"cancel 2 {targetId}");
                     return;
                 }
 
@@ -162,7 +161,6 @@ namespace OpenNos.Handler
                             Thread.Sleep(ski.Skill.CastTime * 100);
                         }
 
-                        doNotCancel = true;
                         Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {ski.Skill.SkillType - 1}");
                         if (ski.Skill.TargetRange != 0 && Session.HasCurrentMap)
                         {
@@ -184,7 +182,6 @@ namespace OpenNos.Handler
                             {
                                 Session.Character.LastSkillUse = DateTime.Now;
                                 ski.LastUse = DateTime.Now;
-                                doNotCancel = true;
                                 if (!Session.Character.HasGodMode)
                                 {
                                     Session.Character.Mp -= ski.Skill.MpCost;
@@ -260,22 +257,32 @@ namespace OpenNos.Handler
                                     }
                                 }
                             }
+                            else
+                            {
+                                Session.SendPacket($"cancel 2 {targetId}");
+                            }
                         }
+                        else
+                        {
+                            Session.SendPacket($"cancel 2 {targetId}");
+                        }
+                    }
+                    else
+                    {
+                        Session.SendPacket($"cancel 2 {targetId}");
                     }
                     Session.SendPacketAfterWait($"sr {castingId}", ski.Skill.Cooldown * 100);
                 }
                 else
                 {
-                    doNotCancel = false;
+                    Session.SendPacket($"cancel 2 {targetId}");
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MP"), 10));
                 }
             }
-
-            //It cancel legit skill should be not. Disabled in waiting for a fix.
-            /*if (!doNotCancel)
+            else
             {
                 Session.SendPacket($"cancel 2 {targetId}");
-            }*/
+            }
         }
 
         /// <summary>
