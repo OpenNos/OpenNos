@@ -65,6 +65,14 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateSpPoint());
                     break;
 
+                // Divorce letter
+                case 6969: // this is imaginary number I = √(-1)
+                    break;
+
+                // Cupid's arrow
+                case 34: // this is imaginary number I = √(-1)
+                    break;
+
                 // wings
                 case 650:
                     SpecialistInstance specialistInstance = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
@@ -92,7 +100,7 @@ namespace OpenNos.GameObject
 
                 // presentation messages
                 case 203:
-                    if (this != null && !session.Character.IsVehicled)
+                    if (!session.Character.IsVehicled)
                     {
                         if (!delay)
                         {
@@ -103,7 +111,7 @@ namespace OpenNos.GameObject
 
                 // magic lamps
                 case 651:
-                    if (!session.Character.Inventory.GetAllItems().Where(i => i.Type == InventoryType.Wear).Any())
+                    if (session.Character.Inventory.GetAllItems().All(i => i.Type != InventoryType.Wear))
                     {
                         if (!delay)
                         {
@@ -163,7 +171,7 @@ namespace OpenNos.GameObject
                     break;
 
                 default:
-                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
+                    Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;
             }
         }
