@@ -2020,12 +2020,6 @@ namespace OpenNos.GameObject
         //    return string.Empty;
         //}
 
-        [Obsolete("GeneratePacket is deprecated, This method should only be used for debugging.")]
-        public string GeneratePacket(string content)
-        {
-            return content;
-        }
-
         public string GenerateFamilyMember(Group group)
         {
             string str = "gmbr 0";
