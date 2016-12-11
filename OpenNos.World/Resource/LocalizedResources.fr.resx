@@ -1051,4 +1051,25 @@ Veux-tu le porter ?</value>
   <data name="WANT_TO_SAVE_POSITION" xml:space="preserve">
     <value>Souhaites-tu enregistrer ta position actuelle et retourner au village ?</value>
   </data>
+  <data name="BLACKLIST_ADDED" xml:space="preserve">
+    <value>Enregistré</value>
+  </data>
+  <data name="BLACKLIST_DELETED" xml:space="preserve">
+    <value>Supprimé</value>
+  </data>
+  <data name="FRIEND_ADD" xml:space="preserve">
+    <value>Veux-tu devenir ami avec {0} ?</value>
+  </data>
+  <data name="FRIEND_ADDED" xml:space="preserve">
+    <value>Enregistré</value>
+  </data>
+  <data name="FRIEND_DELETED" xml:space="preserve">
+    <value>Supprimé</value>
+  </data>
+  <data name="FRIEND_OFFLINE" xml:space="preserve">
+    <value>Votre amis est hors ligne.</value>
+  </data>
+  <data name="FRIEND_REJECTED" xml:space="preserve">
+    <value>Tu es bloqué.</value>
+  </data>
 </root>
