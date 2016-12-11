@@ -1992,8 +1992,8 @@ namespace OpenNos.GameObject
         //public string GenerateGMsg()
         //{
         //    string str = "gmsg";
-        //    Family family = DAOFactory.Family.LoadByCharacterId(CharacterId);
-        //    foreach (FamilyCharacterDTO familyCharacter in family)
+        //    Family family = DAOFactory.FamilyDAO.LoadByCharacterId(CharacterId);
+        //    foreach (FamilyCharacter familyCharacter in family)
         //    {
         //        str += $" {familyCharacter.CharacterId}|{familyCharacter.DailyMessage}";
         //    }
@@ -2003,13 +2003,21 @@ namespace OpenNos.GameObject
         //public string GenerateGExp()
         //{
         //    string str = "gexp";
-        //    Family family = DAOFactory.Family.LoadByCharacterId(CharacterId);
-        //    foreach (FamilyCharacterDTO familyCharacter in family)
+        //    Family family = DAOFactory.FamilyDAO.LoadByCharacterId(CharacterId);
+        //    foreach (FamilyCharacter familyCharacter in family)
         //    {
         //        str += $" {familyCharacter.CharacterId}|{familyCharacter.Experience}";
-
         //    }
         //    return str;
+        //}
+
+        //public string GenerateGidx()
+        //{
+        //    Family family = DAOFactory.FamilyDAO.LoadByCharacterId(CharacterId);
+        //    FamilyCharacter familyCharacter = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(CharacterId);
+        //    if (family != null && familyCharacter != null)
+        //    return $"gidx 1 {CharacterId} {family.FamilyId} {family.Name}({familyCharacter.FamilyAuthority}) 1";
+        //    return string.Empty;
         //}
 
         [Obsolete("GeneratePacket is deprecated, This method should only be used for debugging.")]
