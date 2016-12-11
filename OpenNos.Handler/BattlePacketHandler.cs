@@ -58,17 +58,17 @@ namespace OpenNos.Handler
         /// <summary>
         /// mtlist
         /// </summary>
-        /// <param name="packet"></param>
+        /// <param name="mutliTargetListPacket"></param>
         public void MultiTargetListHit(MultiTargetListPacket mutliTargetListPacket)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
-            if (Session.Character.IsMuted())
+            if (Session.Character.IsMuted() && penalty != null)
             {
                 Session.SendPacket("cancel 0 0");
                 Session.CurrentMap?.Broadcast(Session.Character.Gender == GenderType.Female ? Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1) :
                     Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 return;
             }
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
@@ -83,31 +83,28 @@ namespace OpenNos.Handler
                 return;
             }
             Logger.Debug(mutliTargetListPacket.ToString(), Session.SessionId);
-            if (mutliTargetListPacket != null && mutliTargetListPacket.TargetsAmount > 0 && mutliTargetListPacket.TargetsAmount == mutliTargetListPacket.Targets.Count())
+            if (mutliTargetListPacket.TargetsAmount > 0 && mutliTargetListPacket.TargetsAmount == mutliTargetListPacket.Targets.Count)
             {
                 foreach (MultiTargetListSubPacket subpacket in mutliTargetListPacket.Targets)
                 {
                     List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
-                    if (skills != null)
+                    CharacterSkill ski = skills?.FirstOrDefault(s => s.Skill.CastId == subpacket.SkillCastId - 1);
+                    if (ski != null && ski.CanBeUsed() && Session.HasCurrentMap)
                     {
-                        CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == subpacket.SkillCastId - 1);
-                        if (ski.CanBeUsed() && Session.HasCurrentMap)
+                        MapMonster mon = Session.CurrentMap.GetMonster(subpacket.TargetId);
+                        if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && mon.CurrentHp > 0)
                         {
-                            MapMonster mon = Session.CurrentMap.GetMonster(subpacket.TargetId);
-                            if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && ski != null && mon.CurrentHp > 0)
-                            {
-                                Session.Character.LastSkillUse = DateTime.Now;
-                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SpecialZoneHit, Session, ski.Skill));
-                            }
-
-                            Observable.Timer(TimeSpan.FromMilliseconds(ski.Skill.CastTime * 100))
-                                 .Subscribe(
-                                 o =>
-                                 {
-                                     Session.SendPacket($"sr {subpacket.SkillCastId - 1}");
-                                 }
-                            );
+                            Session.Character.LastSkillUse = DateTime.Now;
+                            mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SpecialZoneHit, Session, ski.Skill));
                         }
+
+                        Observable.Timer(TimeSpan.FromMilliseconds(ski.Skill.CastTime * 100))
+                            .Subscribe(
+                                o =>
+                                {
+                                    Session.SendPacket($"sr {subpacket.SkillCastId - 1}");
+                                }
+                            );
                     }
                 }
             }
@@ -128,7 +125,7 @@ namespace OpenNos.Handler
             {
                 CharacterSkill ski = skills.FirstOrDefault(s => s.Skill?.CastId == castingId && s.Skill?.UpgradeSkill == 0);
                 Session.SendPacket("ms_c 0");
-                if (!Session.Character.WeaponLoaded(ski) || !ski.CanBeUsed())
+                if (ski != null && (!Session.Character.WeaponLoaded(ski) || !ski.CanBeUsed()))
                 {
                     Session.SendPacket($"cancel 2 {targetId}");
                     return;
@@ -152,7 +149,7 @@ namespace OpenNos.Handler
 
                         Session.SendPacket(Session.Character.GenerateStat());
                         CharacterSkill skillinfo = Session.Character.Skills.GetAllItems().OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
-                        Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {(skillinfo != null ? skillinfo.Skill.CastEffect : ski.Skill.CastEffect)} {ski.Skill.SkillVNum}");
+                        Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {skillinfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
 
                         // Generate scp
                         ski.LastUse = DateTime.Now;
@@ -160,13 +157,22 @@ namespace OpenNos.Handler
                         {
                             Thread.Sleep(ski.Skill.CastTime * 100);
                         }
-
-                        Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {ski.Skill.SkillType - 1}");
-                        if (ski.Skill.TargetRange != 0 && Session.HasCurrentMap)
+                        if (Session.HasCurrentMap)
                         {
-                            foreach (MapMonster mon in Session.CurrentMap.GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange).Where(s => s.CurrentHp > 0))
+                            // ReSharper disable once PossibleNullReferenceException HasCurrentMap is nullcheck
+                            Session.CurrentMap.Broadcast(
+                                $"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {ski.Skill.SkillType - 1}");
+                            if (ski.Skill.TargetRange != 0 && Session.HasCurrentMap)
                             {
-                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill, skillEffect: (skillinfo != null ? skillinfo.Skill.Effect : ski.Skill.Effect)));
+                                foreach (
+                                    MapMonster mon in
+                                    Session.CurrentMap.GetListMonsterInRange(Session.Character.MapX,
+                                        Session.Character.MapY, ski.Skill.TargetRange).Where(s => s.CurrentHp > 0))
+                                {
+                                    mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(
+                                        TargetHitType.AOETargetHit, Session, ski.Skill,
+                                        skillinfo?.Skill.Effect ?? ski.Skill.Effect));
+                                }
                             }
                         }
                     }
@@ -175,10 +181,8 @@ namespace OpenNos.Handler
                         MapMonster monsterToAttack = Session.CurrentMap.GetMonster(targetId);
                         if (monsterToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
                         {
-                            short distanceX = (short)(Session.Character.MapX - monsterToAttack.MapX);
-                            short distanceY = (short)(Session.Character.MapY - monsterToAttack.MapY);
-                            if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY },
-                                                new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= (ski.Skill.Range) + monsterToAttack.Monster.BasicArea)
+                            if (Map.GetDistance(new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY },
+                                                new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= (ski.Skill.Range) + monsterToAttack.Monster.BasicArea)
                             {
                                 Session.Character.LastSkillUse = DateTime.Now;
                                 ski.LastUse = DateTime.Now;
@@ -194,7 +198,7 @@ namespace OpenNos.Handler
                                 CharacterSkill characterSkillInfo = Session.Character.Skills.GetAllItems().OrderBy(o => o.SkillVNum)
                                     .FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
-                                Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.CastAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.CastEffect : ski.Skill.CastEffect)} {ski.Skill.SkillVNum}");
+                                Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
                                 Session.Character.Skills.GetAllItems().Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
 
                                 // Generate scp
@@ -223,20 +227,26 @@ namespace OpenNos.Handler
                                             ski.Hit = 0;
                                         }
                                         IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
-                                        foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
+                                        if (monstersInAOERange != null)
                                         {
-                                            mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill
-                                                , skillCombo: skillCombo));
+                                            foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
+                                            {
+                                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill
+                                                    , skillCombo: skillCombo));
+                                            }
                                         }
                                     }
                                     else
                                     {
                                         IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
-                                        Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {(characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)} 0 0 {(monsterToAttack.IsAlive ? 1 : 0)} {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 0 {ski.Skill.SkillType - 1}");
-                                        foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
+                                        Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect} 0 0 {(monsterToAttack.IsAlive ? 1 : 0)} {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 0 {ski.Skill.SkillType - 1}");
+                                        if (monstersInAOERange != null)
                                         {
-                                            mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                , skillEffect: (characterSkillInfo != null ? characterSkillInfo.Skill.Effect : ski.Skill.Effect)));
+                                            foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
+                                            {
+                                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
+                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
+                                            }
                                         }
                                     }
                                 }
@@ -294,21 +304,22 @@ namespace OpenNos.Handler
             if (Session.Character.CanFight && useSkillPacket != null)
             {
                 PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
-                if (Session.Character.IsMuted())
+                if (Session.Character.IsMuted() && penalty != null)
                 {
                     if (Session.Character.Gender == GenderType.Female)
                     {
                         Session.SendPacket("cancel 0 0");
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
-                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                     }
                     else
                     {
                         Session.SendPacket("cancel 0 0");
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+
                     }
                     return;
                 }
@@ -363,21 +374,21 @@ namespace OpenNos.Handler
         public void UseZonesSkill(UseAOESkillPacket useAOESkillPacket)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
-            if (Session.Character.IsMuted())
+            if (Session.Character.IsMuted() && penalty != null)
             {
                 if (Session.Character.Gender == GenderType.Female)
                 {
                     Session.SendPacket("cancel 0 0");
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
                 else
                 {
                     Session.SendPacket("cancel 0 0");
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
             }
             else
@@ -394,7 +405,7 @@ namespace OpenNos.Handler
                     return;
                 }
                 Logger.Debug(useAOESkillPacket.ToString(), Session.SessionId);
-                if (Session.Character.CanFight && useAOESkillPacket != null)
+                if (Session.Character.CanFight)
                 {
                     if (Session.Character.Hp > 0)
                     {
@@ -434,10 +445,13 @@ namespace OpenNos.Handler
 
                         Session.CurrentMap?.Broadcast($"bs 1 {Session.Character.CharacterId} {x} {y} {characterSkill.Skill.SkillVNum} {characterSkill.Skill.Cooldown} {characterSkill.Skill.AttackAnimation} {characterSkill.Skill.Effect} 0 0 1 1 0 0 0");
 
-                        IEnumerable<MapMonster> monstersInRange = Session.CurrentMap.GetListMonsterInRange(x, y, characterSkill.Skill.TargetRange).ToList();
-                        foreach (MapMonster mon in monstersInRange.Where(s => s.CurrentHp > 0))
+                        IEnumerable<MapMonster> monstersInRange = Session.CurrentMap?.GetListMonsterInRange(x, y, characterSkill.Skill.TargetRange).ToList();
+                        if (monstersInRange != null)
                         {
-                            mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y));
+                            foreach (MapMonster mon in monstersInRange.Where(s => s.CurrentHp > 0))
+                            {
+                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y));
+                            }
                         }
                     });
 

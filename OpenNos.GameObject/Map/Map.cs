@@ -131,6 +131,7 @@ namespace OpenNos.GameObject
                 else
                 {
                     _isSleeping = false;
+                    _isSleepingRequest = false;
                 }
             }
         }

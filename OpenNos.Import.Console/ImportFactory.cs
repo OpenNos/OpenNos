@@ -108,7 +108,6 @@ namespace OpenNos.Import.Console
                 if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "2")
                 {
                     MapNpcDTO npctest = new MapNpcDTO();
-
                     npctest.MapX = short.Parse(currentPacket[4]);
                     npctest.MapY = short.Parse(currentPacket[5]);
                     npctest.MapId = map;
@@ -222,7 +221,7 @@ namespace OpenNos.Import.Console
                     Music = music,
                     MapId = short.Parse(file.Name),
                     Data = File.ReadAllBytes(file.FullName),
-                    ShopAllowed = short.Parse(file.Name) == 147 ? true : false
+                    ShopAllowed = short.Parse(file.Name) == 147
                 };
                 if (DAOFactory.MapDAO.LoadById(map.MapId) != null)
                 {
@@ -246,7 +245,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1,
             };
-            if (!list.Any(s => s.MapTypeId == mt1.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt1.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt1);
             }
@@ -258,7 +257,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt2.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt2.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt2);
             }
@@ -270,7 +269,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt3.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt3.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt3);
             }
@@ -280,7 +279,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "Act4",
                 PotionDelay = 5000
             };
-            if (!list.Any(s => s.MapTypeId == mt4.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt4.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt4);
             }
@@ -292,7 +291,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct5,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct5
             };
-            if (!list.Any(s => s.MapTypeId == mt5.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt5.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt5);
             }
@@ -304,7 +303,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct5,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct5
             };
-            if (!list.Any(s => s.MapTypeId == mt6.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt6.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt6);
             }
@@ -316,7 +315,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct6,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt7.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt7.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt7);
             }
@@ -328,7 +327,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt8.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt8.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt8);
             }
@@ -340,7 +339,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct6,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt9.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt9.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt9);
             }
@@ -352,7 +351,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct6,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt10.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt10.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt10);
             }
@@ -364,7 +363,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt11.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt11.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt11);
             }
@@ -376,7 +375,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt12.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt12.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt12);
             }
@@ -388,7 +387,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt13.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt13.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt13);
             }
@@ -400,7 +399,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt14.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt14.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt14);
             }
@@ -412,7 +411,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt15.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt15.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt15);
             }
@@ -424,7 +423,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt16.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt16.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt16);
             }
@@ -436,7 +435,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt17.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt17.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt17);
             }
@@ -448,7 +447,7 @@ namespace OpenNos.Import.Console
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
                 ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
-            if (!list.Any(s => s.MapTypeId == mt18.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt18.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt18);
             }
@@ -458,7 +457,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "LandOfTheDead",
                 PotionDelay = 300
             };
-            if (!list.Any(s => s.MapTypeId == mt19.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt19.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt19);
             }
@@ -468,7 +467,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "Act 3.2",
                 PotionDelay = 300
             };
-            if (!list.Any(s => s.MapTypeId == mt20.MapTypeId))
+            if (list.All(s => s.MapTypeId != mt20.MapTypeId))
             {
                 DAOFactory.MapTypeDAO.Insert(ref mt20);
             }
@@ -683,7 +682,6 @@ namespace OpenNos.Import.Console
                     // TODO: BCard Buff parsing
                     DAOFactory.NpcMonsterDAO.InsertOrUpdate(ref npcMonster);
                 }
-                continue;
             }
         }
 
@@ -811,7 +809,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "PREATT")
                     {
-                        npc.IsHostile = currentLine[2] == "0" ? false : true;
+                        npc.IsHostile = currentLine[2] != "0";
                         npc.NoticeRange = Convert.ToByte(currentLine[4]);
                         npc.Speed = Convert.ToByte(currentLine[5]);
                         npc.RespawnTime = Convert.ToInt32(currentLine[6]);
@@ -844,13 +842,13 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
                         unknownData = Convert.ToInt64(currentLine[2]);
-                        if (unknownData == (long)-2147481593)
+                        if (unknownData == -2147481593)
                         {
                             npc.MonsterType = MonsterType.Special;
                         }
-                        if (unknownData == (long)-2147483616 || unknownData == (long)-2147483647 || unknownData == (long)-2147483646)
+                        if (unknownData == -2147483616 || unknownData == -2147483647 || unknownData == -2147483646)
                         {
-                            if (npc.Race == (byte)8 && npc.RaceType == (byte)0)
+                            if (npc.Race == 8 && npc.RaceType == 0)
                             {
                                 npc.NoAggresiveIcon = true;
                             }
@@ -874,7 +872,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 4 && currentLine[1] == "PETINFO")
                     {
-                        if (npc.VNumRequired == (short)0 && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681))
+                        if (npc.VNumRequired == 0 && (unknownData == -2147481593 || unknownData == -2147481599 || unknownData == -1610610681))
                         {
                             npc.VNumRequired = Convert.ToInt16(currentLine[2]);
                             npc.AmountRequired = Convert.ToByte(currentLine[3]);
@@ -922,8 +920,6 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "ITEM")
                     {
-                        // TODO: add missing general drop if found
-                        // TODO: add map dependant drops eg. angel wings.
                         if (DAOFactory.NpcMonsterDAO.LoadByVNum(npc.NpcMonsterVNum) == null)
                         {
                             npcs.Add(npc);
@@ -1348,7 +1344,7 @@ namespace OpenNos.Import.Console
                         IsDisabled = false
                     };
 
-                    if (listPortals1.Any(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) || !_maps.Any(s => s.MapId == portal.SourceMapId) || !_maps.Any(s => s.MapId == portal.DestinationMapId))
+                    if (listPortals1.Any(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) || _maps.All(s => s.MapId != portal.SourceMapId) || _maps.All(s => s.MapId != portal.DestinationMapId))
                     {
                         // Portal already in list
                         continue;
@@ -1435,18 +1431,22 @@ namespace OpenNos.Import.Console
                         {
                             rec.Amount = byte.Parse(currentPacket[2]);
                             DAOFactory.RecipeDAO.Update(rec);
-                            short recipeId = DAOFactory.RecipeDAO.LoadByNpc(mapnpcid).FirstOrDefault(s => s.ItemVNum == item).RecipeId;
-
-                            RecipeItemDTO recipeitem = new RecipeItemDTO
+                            RecipeDTO recipedto = DAOFactory.RecipeDAO.LoadByNpc(mapnpcid).FirstOrDefault(s => s.ItemVNum == item);
+                            if (recipedto != null)
                             {
-                                ItemVNum = short.Parse(currentPacket[i]),
-                                Amount = byte.Parse(currentPacket[i + 1]),
-                                RecipeId = recipeId
-                            };
+                                short recipeId = recipedto.RecipeId;
 
-                            if (!DAOFactory.RecipeItemDAO.LoadByRecipeAndItem(recipeId, recipeitem.ItemVNum).Any())
-                            {
-                                DAOFactory.RecipeItemDAO.Insert(recipeitem);
+                                RecipeItemDTO recipeitem = new RecipeItemDTO
+                                {
+                                    ItemVNum = short.Parse(currentPacket[i]),
+                                    Amount = byte.Parse(currentPacket[i + 1]),
+                                    RecipeId = recipeId
+                                };
+
+                                if (!DAOFactory.RecipeItemDAO.LoadByRecipeAndItem(recipeId, recipeitem.ItemVNum).Any())
+                                {
+                                    DAOFactory.RecipeItemDAO.Insert(recipeitem);
+                                }
                             }
                         }
                     }
@@ -1459,12 +1459,49 @@ namespace OpenNos.Import.Console
         //Need fix
         public void ImportRespawnMapType()
         {
-            List<RespawnMapTypeDTO> respawnmaptypemaps = new List<RespawnMapTypeDTO>();
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct1, DefaultMapId = 1, DefaultX = 79, DefaultY = 116, Name = "Default" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.ReturnAct1, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "Return" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct5, DefaultMapId = 170, DefaultX = 86, DefaultY = 48, Name = "DefaultAct5" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.ReturnAct5, DefaultMapId = 0, DefaultX = 0, DefaultY = 0, Name = "ReturnAct5" });
-            respawnmaptypemaps.Add(new RespawnMapTypeDTO { RespawnMapTypeId = (long)RespawnType.DefaultAct6, DefaultMapId = 228, DefaultX = 72, DefaultY = 102, Name = "DefaultAct6" });
+            List<RespawnMapTypeDTO> respawnmaptypemaps = new List<RespawnMapTypeDTO>
+            {
+                new RespawnMapTypeDTO
+                {
+                    RespawnMapTypeId = (long) RespawnType.DefaultAct1,
+                    DefaultMapId = 1,
+                    DefaultX = 79,
+                    DefaultY = 116,
+                    Name = "Default"
+                },
+                new RespawnMapTypeDTO
+                {
+                    RespawnMapTypeId = (long) RespawnType.ReturnAct1,
+                    DefaultMapId = 0,
+                    DefaultX = 0,
+                    DefaultY = 0,
+                    Name = "Return"
+                },
+                new RespawnMapTypeDTO
+                {
+                    RespawnMapTypeId = (long) RespawnType.DefaultAct5,
+                    DefaultMapId = 170,
+                    DefaultX = 86,
+                    DefaultY = 48,
+                    Name = "DefaultAct5"
+                },
+                new RespawnMapTypeDTO
+                {
+                    RespawnMapTypeId = (long) RespawnType.ReturnAct5,
+                    DefaultMapId = 0,
+                    DefaultX = 0,
+                    DefaultY = 0,
+                    Name = "ReturnAct5"
+                },
+                new RespawnMapTypeDTO
+                {
+                    RespawnMapTypeId = (long) RespawnType.DefaultAct6,
+                    DefaultMapId = 228,
+                    DefaultX = 72,
+                    DefaultY = 102,
+                    Name = "DefaultAct6"
+                }
+            };
             DAOFactory.RespawnMapTypeDAO.Insert(respawnmaptypemaps);
             Logger.Log.Info(Language.Instance.GetMessageFromKey("RESPAWNTYPE_PARSED"));
         }
@@ -1557,7 +1594,7 @@ namespace OpenNos.Import.Console
                     ShopType = byte.Parse(currentPacket[5])
                 };
 
-                if (DAOFactory.ShopDAO.LoadByNpc(npc.MapNpcId) == null && !shops.Any(s => s.MapNpcId == npc.MapNpcId))
+                if (DAOFactory.ShopDAO.LoadByNpc(npc.MapNpcId) == null && shops.All(s => s.MapNpcId != npc.MapNpcId))
                 {
                     shops.Add(shop);
                     shopCounter++;
@@ -1581,7 +1618,7 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 5; i < currentPacket.Length; i++)
                         {
-                            ShopSkillDTO sskill = null;
+                            ShopSkillDTO sskill;
                             if (!currentPacket[i].Contains("."))
                             {
                                 sskill = new ShopSkillDTO
@@ -1592,7 +1629,7 @@ namespace OpenNos.Import.Console
                                     SkillVNum = short.Parse(currentPacket[i])
                                 };
 
-                                if (sskill == null || shopskills.Any(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).Any(s => s.SkillVNum.Equals(sskill.SkillVNum)))
+                                if (shopskills.Any(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).Any(s => s.SkillVNum.Equals(sskill.SkillVNum)))
                                 {
                                     continue;
                                 }
@@ -1701,7 +1738,7 @@ namespace OpenNos.Import.Console
                                 switch (skill.Class)
                                 {
                                     case 8:
-                                        switch (skills.Where(s => s.Class == skill.Class).Count())
+                                        switch (skills.Count(s => s.Class == skill.Class))
                                         {
                                             case 3:
                                                 skill.LevelMinimum = 20;
@@ -1718,7 +1755,7 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     case 9:
-                                        switch (skills.Where(s => s.Class == skill.Class).Count())
+                                        switch (skills.Count(s => s.Class == skill.Class))
                                         {
                                             case 9:
                                                 skill.LevelMinimum = 20;
@@ -1747,7 +1784,7 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     case 16:
-                                        switch (skills.Where(s => s.Class == skill.Class).Count())
+                                        switch (skills.Count(s => s.Class == skill.Class))
                                         {
                                             case 6:
                                                 skill.LevelMinimum = 20;
@@ -1776,7 +1813,7 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     default:
-                                        switch (skills.Where(s => s.Class == skill.Class).Count())
+                                        switch (skills.Count(s => s.Class == skill.Class))
                                         {
                                             case 10:
                                                 skill.LevelMinimum = 20;
@@ -2475,14 +2512,7 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 3 && currentLine[1] == "TYPE")
                     {
                         // currentLine[2] 0-range 2-range 3-magic
-                        if (item.EquipmentSlot == EquipmentType.Fairy)
-                        {
-                            item.Class = 15;
-                        }
-                        else
-                        {
-                            item.Class = Convert.ToByte(currentLine[3]);
-                        }
+                        item.Class = item.EquipmentSlot == EquipmentType.Fairy ? (byte)15 : Convert.ToByte(currentLine[3]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "FLAG")
                     {
@@ -2524,7 +2554,7 @@ namespace OpenNos.Import.Console
                                 item.CriticalLuckRate = Convert.ToByte(currentLine[6]);
                                 item.CriticalRate = Convert.ToInt16(currentLine[7]);
                                 item.BasicUpgrade = Convert.ToByte(currentLine[10]);
-                                item.MaximumAmmo = (byte)100;
+                                item.MaximumAmmo = 100;
                                 break;
 
                             case ItemType.Armor:
@@ -2773,10 +2803,18 @@ namespace OpenNos.Import.Console
                                         item.Effect = 652;
                                         break;
 
+                                    case 1981:
+                                        item.Effect = 34; // imagined number as for I = √(-1), complex z = a + bi
+                                        break;
+
+                                    case 1982:
+                                        item.Effect = 6969; // imagined number as for I = √(-1), complex z = a + bi
+                                        break;
+
                                     default:
                                         if ((item.VNum > 5891 && item.VNum < 5900) || (item.VNum > 9100 && item.VNum < 9109))
                                         {
-                                            item.Effect = 69;
+                                            item.Effect = 69; // imagined number as for I = √(-1), complex z = a + bi
                                         }
                                         else
                                         {
