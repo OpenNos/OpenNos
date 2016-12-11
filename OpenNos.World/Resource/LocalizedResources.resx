@@ -1096,4 +1096,16 @@
   <data name="FRIEND_REJECTED" xml:space="preserve">
     <value>Friend request rejected!</value>
   </data>
+  <data name="ALREADY_FRIEND" xml:space="preserve">
+    <value>You are already Friends!</value>
+  </data>
+  <data name="BLACKLIST_BLOCKED" xml:space="preserve">
+    <value>This Player has blocked you!</value>
+  </data>
+  <data name="BLACKLIST_BLOCKING" xml:space="preserve">
+    <value>You are blocking this Player!</value>
+  </data>
+  <data name="FRIEND_FULL" xml:space="preserve">
+    <value>Your Friendlist is full!</value>
+  </data>
 </root>

@@ -558,14 +558,42 @@ namespace OpenNos.Handler
             long characterId;
             if (packetsplit.Length == 4)
             {
-                if (long.TryParse(packetsplit[3], out characterId) && !Session.Character.IsFriendOfCharacter(characterId) && !Session.Character.IsBlockedByCharacter(characterId) && !Session.Character.IsBlockingCharacter(characterId))
+                if (!Session.Character.IsFriendlistFull())
                 {
-                    ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
-                    if (otherSession != null)
+                    if (long.TryParse(packetsplit[3], out characterId))
                     {
-                        otherSession.SendPacket($"dlg #fins^-1^{Session.Character.CharacterId} #fins^-99^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("FRIEND_ADD"), Session.Character.Name)}");
-                        Session.Character.AddFriend(characterId);
+                        if (!Session.Character.IsFriendOfCharacter(characterId))
+                        {
+                            if (!Session.Character.IsBlockedByCharacter(characterId))
+                            {
+                                if (!Session.Character.IsBlockingCharacter(characterId))
+                                {
+                                    ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
+                                    if (otherSession != null)
+                                    {
+                                        otherSession.SendPacket($"dlg #fins^-1^{Session.Character.CharacterId} #fins^-99^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("FRIEND_ADD"), Session.Character.Name)}");
+                                        Session.Character.AddFriend(characterId);
+                                    }
+                                }
+                                else
+                                {
+                                    Session.SendPacket($"info {Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKING")}");
+                                }
+                            }
+                            else
+                            {
+                                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")}");
+                            }
+                        }
+                        else
+                        {
+                            Session.SendPacket($"info {Language.Instance.GetMessageFromKey("ALREADY_FRIEND")}");
+                        }
                     }
+                }
+                else
+                {
+                    Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
                 }
             }
         }
@@ -596,6 +624,11 @@ namespace OpenNos.Handler
                             {
                                 otherSession.Character.DeleteFriend(Session.Character.CharacterId);
                                 otherSession.SendPacket(Language.Instance.GetMessageFromKey("FRIEND_REJECTED"));
+                            }
+                            else if (Session.Character.IsFriendlistFull())
+                            {
+                                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
+                                otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
                             }
                         }
                     }

@@ -3242,6 +3242,15 @@ namespace OpenNos.GameObject
             GmPvtBlock = false;
         }
 
+        public bool IsFriendlistFull()
+        {
+            if(friends!= null)
+            {
+                return friends.Count() >= 80 ? true : false;
+            }
+            return false;
+        }
+
         public bool IsFriendOfCharacter(long characterId)
         {
             if(friends != null)
