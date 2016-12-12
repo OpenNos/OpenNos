@@ -29,9 +29,9 @@ namespace OpenNos.GameObject
 
         public CharacterSkill(CharacterSkillDTO dto)
         {
-            this.CharacterId = dto.CharacterId;
-            this.Id = dto.Id;
-            this.SkillVNum = dto.SkillVNum;
+            CharacterId = dto.CharacterId;
+            Id = dto.Id;
+            SkillVNum = dto.SkillVNum;
             LastUse = DateTime.Now.AddHours(-1);
             Hit = 0;
         }
@@ -59,7 +59,7 @@ namespace OpenNos.GameObject
             {
                 if (skill == null)
                 {
-                    skill = ServerManager.GetSkill(this.SkillVNum);
+                    skill = ServerManager.GetSkill(SkillVNum);
                 }
 
                 return skill;
@@ -72,7 +72,7 @@ namespace OpenNos.GameObject
 
         public bool CanBeUsed()
         {
-            return Skill != null && (LastUse.AddMilliseconds((Skill.Cooldown) * 100) < DateTime.Now);
+            return Skill != null && (LastUse.AddMilliseconds(Skill.Cooldown * 100) < DateTime.Now);
         }
 
         #endregion

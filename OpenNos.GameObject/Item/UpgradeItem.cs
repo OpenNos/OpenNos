@@ -126,7 +126,7 @@ namespace OpenNos.GameObject
             }
             else
             {
-                Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
+                Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
             }
         }
     }

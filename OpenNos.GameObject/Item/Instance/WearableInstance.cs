@@ -364,7 +364,7 @@ namespace OpenNos.GameObject
         {
             if (Item.EquipmentSlot == EquipmentType.MainWeapon || Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
             {
-                int point = CharacterHelper.RarityPoint(Rare, (Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum));
+                int point = CharacterHelper.RarityPoint(Rare, Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum);
                 Concentrate = 0;
                 HitRate = 0;
                 DamageMinimum = 0;
@@ -406,7 +406,7 @@ namespace OpenNos.GameObject
             }
             else if (Item.EquipmentSlot == EquipmentType.Armor)
             {
-                int point = CharacterHelper.RarityPoint(Rare, (Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum));
+                int point = CharacterHelper.RarityPoint(Rare, Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum);
                 DefenceDodge = 0;
                 DistanceDefenceDodge = 0;
                 DistanceDefence = 0;
@@ -465,7 +465,7 @@ namespace OpenNos.GameObject
                 int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };
                 short[] sand = { 5, 10, 15, 20, 25, 30 };
                 int sandVnum = 1027;
-                if ((Upgrade + itemToSum.Upgrade) < 6 && ((((itemToSum.Item.EquipmentSlot == EquipmentType.Gloves) && (Item.EquipmentSlot == EquipmentType.Gloves)) || ((Item.EquipmentSlot == EquipmentType.Boots) && (itemToSum.Item.EquipmentSlot == EquipmentType.Boots)))))
+                if (Upgrade + itemToSum.Upgrade < 6 && (((itemToSum.Item.EquipmentSlot == EquipmentType.Gloves) && (Item.EquipmentSlot == EquipmentType.Gloves)) || ((Item.EquipmentSlot == EquipmentType.Boots) && (itemToSum.Item.EquipmentSlot == EquipmentType.Boots))))
                 {
                     if (session.Character.Gold < goldprice[Upgrade])
                     {
@@ -475,7 +475,7 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)(sand[Upgrade]));
+                    session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)sand[Upgrade]);
                     session.Character.Gold -= goldprice[Upgrade];
 
                     int rnd = _random.Next(100);
@@ -628,7 +628,7 @@ namespace OpenNos.GameObject
                                 session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemVnum).Name, gem[Upgrade])), 10));
                                 return;
                             }
-                            session.Character.Inventory.RemoveItemAmount(gemVnum, (gem[Upgrade]));
+                            session.Character.Inventory.RemoveItemAmount(gemVnum, gem[Upgrade]);
                         }
                         else
                         {
@@ -637,14 +637,14 @@ namespace OpenNos.GameObject
                                 session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemFullVnum).Name, gem[Upgrade])), 10));
                                 return;
                             }
-                            session.Character.Inventory.RemoveItemAmount(gemFullVnum, (gem[Upgrade]));
+                            session.Character.Inventory.RemoveItemAmount(gemFullVnum, gem[Upgrade]);
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand)
                         {
                             session.Character.Inventory.RemoveItemAmount(normalScrollVnum);
                             session.SendPacket("shop_end 2");
                         }
-                        session.Character.Inventory.RemoveItemAmount(cellaVnum, (cella[Upgrade]));
+                        session.Character.Inventory.RemoveItemAmount(cellaVnum, cella[Upgrade]);
                         session.Character.Gold -= goldprice[Upgrade];
                         session.SendPacket(session.Character.GenerateGold());
                         break;

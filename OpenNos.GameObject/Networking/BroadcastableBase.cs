@@ -192,7 +192,7 @@ namespace OpenNos.GameObject
 
         public void SpreadBroadcastpacket(BroadcastPacket sentPacket)
         {
-            if (Sessions != null && sentPacket != null && !String.IsNullOrEmpty(sentPacket.Packet))
+            if (Sessions != null && sentPacket != null && !string.IsNullOrEmpty(sentPacket.Packet))
             {
                 switch (sentPacket.Receiver)
                 {
@@ -222,7 +222,7 @@ namespace OpenNos.GameObject
 
                     case ReceiverType.OnlySomeone:
                         {
-                            if (sentPacket.SomeonesCharacterId > 0 || !String.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
+                            if (sentPacket.SomeonesCharacterId > 0 || !string.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
                             {
                                 ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == sentPacket.SomeonesCharacterId || s.Character.Name == sentPacket.SomeonesCharacterName);
 

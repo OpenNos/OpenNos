@@ -65,7 +65,7 @@ namespace OpenNos.GameObject.Networking
 
         public bool Equals(HitRequest other)
         {
-            return other.HitTimestamp == HitTimestamp;
+            return other != null && other.HitTimestamp == HitTimestamp;
         }
 
         #endregion
