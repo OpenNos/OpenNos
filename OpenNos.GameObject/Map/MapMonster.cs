@@ -706,7 +706,7 @@ namespace OpenNos.GameObject
                     ClientSession targetSession = Map.GetSessionByCharacterId(Target);
 
                     // remove target in some situations
-                    if (targetSession == null || targetSession.Character.Invisible || targetSession.Character.Hp <= 0)
+                    if (targetSession == null || targetSession.Character.Invisible || targetSession.Character.Hp <= 0 || CurrentHp <= 0)
                     {
                         RemoveTarget();
                         return;
