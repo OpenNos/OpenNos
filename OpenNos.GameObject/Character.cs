@@ -675,6 +675,11 @@ namespace OpenNos.GameObject
         public void DeleteFriend(long characterId)
         {
             DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
+            CharacterRelationDTO deleteReleation = friends.FirstOrDefault(f => f.RelatedCharacterId == characterId);
+            if (deleteReleation != null)
+            {
+                friends.Remove(deleteReleation);
+            }
         }
 
         public void DeleteBlacklisted(long characterId)
@@ -3237,6 +3242,15 @@ namespace OpenNos.GameObject
             LastMailRefresh = DateTime.Now;
             Group = null;
             GmPvtBlock = false;
+        }
+
+        public bool IsFriendlistFull()
+        {
+            if(friends!= null)
+            {
+                return friends.Count() >= 80 ? true : false;
+            }
+            return false;
         }
 
         public bool IsFriendOfCharacter(long characterId)

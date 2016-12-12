@@ -106,6 +106,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You are already Friends! ähnelt.
+        /// </summary>
+        internal static string ALREADY_FRIEND {
+            get {
+                return ResourceManager.GetString("ALREADY_FRIEND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die You are already in group! ähnelt.
         /// </summary>
         internal static string ALREADY_IN_GROUP {
@@ -282,6 +291,24 @@ namespace OpenNos.World.Resource {
         internal static string BLACKLIST_ADDED {
             get {
                 return ResourceManager.GetString("BLACKLIST_ADDED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This Player has blocked you! ähnelt.
+        /// </summary>
+        internal static string BLACKLIST_BLOCKED {
+            get {
+                return ResourceManager.GetString("BLACKLIST_BLOCKED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You are blocking this Player! ähnelt.
+        /// </summary>
+        internal static string BLACKLIST_BLOCKING {
+            get {
+                return ResourceManager.GetString("BLACKLIST_BLOCKING", resourceCulture);
             }
         }
         
@@ -912,6 +939,15 @@ namespace OpenNos.World.Resource {
         internal static string FRIEND_DELETED {
             get {
                 return ResourceManager.GetString("FRIEND_DELETED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Your Friendlist is full! ähnelt.
+        /// </summary>
+        internal static string FRIEND_FULL {
+            get {
+                return ResourceManager.GetString("FRIEND_FULL", resourceCulture);
             }
         }
         
