@@ -138,6 +138,10 @@ namespace OpenNos.Handler
                             }
                             if (npc.Shop.ShopSkills.Any())
                             {
+                                if(!npc.Shop.ShopSkills.Exists(s=> s.SkillVNum == buyPacket.Slot))
+                                {                                    
+                                    return;
+                                }
                                 // skill shop
                                 if (Session.Character.UseSp)
                                 {
