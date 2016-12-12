@@ -990,4 +990,31 @@
   <data name="POINTS_RESET" xml:space="preserve">
     <value>Deine Punkte wurden zurückgesetzt.</value>
   </data>
+  <data name="CREATE_FAMILY" xml:space="preserve">
+    <value>Familiennamen:</value>
+  </data>
+    <data name="BLACKLIST_ADDED" xml:space="preserve">
+    <value>Spieler wurde zur Schwarzenliste hinzugefügt.</value>
+  </data>
+  <data name="BLACKLIST_DELETED" xml:space="preserve">
+    <value>Spieler wurde aus deiner Schwarzenliste entfernt.</value>
+  </data>
+  <data name="FRIEND_ADD" xml:space="preserve">
+    <value>Möchtest du ein Freund von {0} werden?</value>
+  </data>
+  <data name="FRIEND_ADDED" xml:space="preserve">
+    <value>Registriert!</value>
+  </data>
+  <data name="FRIEND_DELETED" xml:space="preserve">
+    <value>Dein Freund wurde nun entfernt.</value>
+  </data>
+  <data name="FRIEND_OFFLINE" xml:space="preserve">
+    <value>Dein Freund ist derzeit offline.</value>
+  </data>
+  <data name="FRIEND_REJECTED" xml:space="preserve">
+    <value>Du sitzt fest.</value>
+  </data>
+    <data name="DISSMISS_FAMILY" xml:space="preserve">
+    <value>Du kannst keine Familie erstellen.</value>
+  </data>
 </root>
