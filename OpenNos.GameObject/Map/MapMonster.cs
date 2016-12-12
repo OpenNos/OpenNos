@@ -826,6 +826,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string GenerateSay(string message, int type)
+        {
+            return $"say 3 {MapMonsterId} {type} {message}";
+        }
+
         private void Move()
         {
             // Normal Move Mode
@@ -838,28 +843,7 @@ namespace OpenNos.GameObject
             {
                 double time = (DateTime.Now - LastMove).TotalMilliseconds;
 
-                if (Path.Any(s => s != null))
-                {
-                    int timetowalk = 2000 / Monster.Speed;
-                    if (time > timetowalk)
-                    {
-                        int mapX = Path.ElementAt(0).x;
-                        int mapY = Path.ElementAt(0).y;
-                        Path.RemoveAt(0);
-                        Observable.Timer(TimeSpan.FromMilliseconds(timetowalk))
-                        .Subscribe(
-                        x =>
-                        {
-                            MapX = (short)mapX;
-                            MapY = (short)mapY;
-                        });
-
-                        LastMove = DateTime.Now;
-                        Map.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
-                        return;
-                    }
-                }
-                else if (time > _movetime)
+                if (time > _movetime)
                 {
                     _movetime = _random.Next(600, 3000);
                     byte point = (byte)_random.Next(2, 4);
@@ -873,7 +857,7 @@ namespace OpenNos.GameObject
                     if (Map?.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint) ?? false)
                     {
                         Observable.Timer(TimeSpan.FromMilliseconds(1000 * (xpoint + ypoint) / (2 * Monster.Speed)))
-                      .Subscribe(
+                        .Subscribe(
                           x =>
                           {
                               MapX = mapX;
