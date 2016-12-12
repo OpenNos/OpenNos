@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterScreenPacketHandler.cs" />
+    <Compile Include="FamilyPacketHandler.cs" />
     <Compile Include="NpcPacketHandler.cs" />
     <Compile Include="BattlePacketHandler.cs" />
     <Compile Include="UselessPacketHandler.cs" />
