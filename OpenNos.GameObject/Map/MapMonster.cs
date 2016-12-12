@@ -30,9 +30,9 @@ namespace OpenNos.GameObject
     {
         #region Members
 
+        private IDisposable _lifeEvent;
         private int _movetime;
         private Random _random;
-        private IDisposable _lifeEvent;
 
         #endregion
 
@@ -72,6 +72,8 @@ namespace OpenNos.GameObject
 
         public DateTime LastMove { get; set; }
 
+        public IDisposable LifeEvent { get; set; }
+
         public Map Map { get; set; }
 
         public NpcMonster Monster { get; set; }
@@ -83,8 +85,6 @@ namespace OpenNos.GameObject
         public List<NpcMonsterSkill> Skills { get; set; }
 
         public long Target { get; set; }
-
-        public IDisposable LifeEvent { get; set; }
 
         #endregion
 
@@ -110,6 +110,11 @@ namespace OpenNos.GameObject
         public string GenerateMv3()
         {
             return $"mv 3 {MapMonsterId} {MapX} {MapY} {Monster.Speed}";
+        }
+
+        public string GenerateSay(string message, int type)
+        {
+            return $"say 3 {MapMonsterId} {type} {message}";
         }
 
         public void Initialize(Map currentMap)
@@ -826,11 +831,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateSay(string message, int type)
-        {
-            return $"say 3 {MapMonsterId} {type} {message}";
-        }
-
         private void Move()
         {
             // Normal Move Mode
@@ -866,27 +866,20 @@ namespace OpenNos.GameObject
                 }
                 else if (time > _movetime)
                 {
-                    _movetime = _random.Next(600, 3000);
-                    byte point = (byte)_random.Next(2, 4);
-                    byte fpoint = (byte)_random.Next(0, 2);
-
-                    byte xpoint = (byte)_random.Next(fpoint, point);
-                    byte ypoint = (byte)(point - xpoint);
-
-                    short mapX = FirstX;
-                    short mapY = FirstY;
-                    if (Map?.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint) ?? false)
+                    short mapX = FirstX, mapY = FirstY;
+                    if (Map?.GetFreePosition(ref mapX, ref mapY, (byte)_random.Next(2), (byte)_random.Next(2)) ?? false)
                     {
-                        Observable.Timer(TimeSpan.FromMilliseconds(1000 * (xpoint + ypoint) / (2 * Monster.Speed)))
-                      .Subscribe(
-                          x =>
-                          {
-                              MapX = mapX;
-                              MapY = mapY;
-                          });
+                        int distance = Map.GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = MapX, Y = MapY });
+                        Observable.Timer(TimeSpan.FromMilliseconds(1000 * distance / (2 * Monster.Speed)))
+                    .Subscribe(
+                        x =>
+                        {
+                            MapX = mapX;
+                            MapY = mapY;
+                        });
 
-                        LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Monster.Speed));
-                        Map.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
+                        LastMove = DateTime.Now.AddMilliseconds(1000 * distance / (2 * Monster.Speed));
+                        Map.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All));
                     }
                 }
             }
