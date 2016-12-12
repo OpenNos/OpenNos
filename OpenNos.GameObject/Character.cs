@@ -933,7 +933,7 @@ namespace OpenNos.GameObject
 
             #region Basic Damage Data Calculation
 
-#warning TODO: Implement BCard damage boosts, see Issue
+            // TODO: Implement BCard damage boosts, see Issue
 
             mainUpgrade -= monsterToAttack.Monster.DefenceUpgrade;
             if (mainUpgrade < -10)
@@ -3246,7 +3246,7 @@ namespace OpenNos.GameObject
 
         public bool IsFriendlistFull()
         {
-            if(friends!= null)
+            if (friends != null)
             {
                 return friends.Count() >= 80 ? true : false;
             }
