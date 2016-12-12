@@ -1108,4 +1108,7 @@
   <data name="FRIEND_FULL" xml:space="preserve">
     <value>Your Friendlist is full!</value>
   </data>
+  <data name="CHARACTER_NOT_IN_FRIENDLIST" xml:space="preserve">
+    <value>This Player is not in your friendlist</value>
+  </data>
 </root>
