@@ -65,14 +65,8 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (_connectionLog == null)
-                {
-                    _connectionLog = new Dictionary<string, DateTime>();
-                }
-
-                return _connectionLog;
+                return _connectionLog ?? (_connectionLog = new Dictionary<string, DateTime>());
             }
-
             set
             {
                 if (_connectionLog != value)
@@ -101,7 +95,6 @@ namespace OpenNos.GameObject
                 client.Initialize(_fallbackEncryptor);
                 client.SendPacket($"fail {Language.Instance.GetMessageFromKey("CONNECTION_LOST")}");
                 client.Disconnect();
-                client = null;
                 return null;
             }
 

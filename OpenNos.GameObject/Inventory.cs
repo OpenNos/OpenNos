@@ -145,18 +145,18 @@ namespace OpenNos.GameObject
                 itemInstance.Type = type;
                 itemInstance.CharacterId = Owner.Session.Character.CharacterId;
 
-                if (this.ContainsKey(itemInstance.Id))
+                if (ContainsKey(itemInstance.Id))
                 {
                     throw new InvalidOperationException("Cannot add the same ItemInstance twice to inventory.");
                 }
 
                 string inventoryPacket = Owner.Session.Character.GenerateInventoryAdd(itemInstance.ItemVNum, itemInstance.Amount, type, slot, itemInstance.Rare, itemInstance.Design, itemInstance.Upgrade, 0);
-                if (!String.IsNullOrEmpty(inventoryPacket))
+                if (!string.IsNullOrEmpty(inventoryPacket))
                 {
                     Owner.Session.SendPacket(inventoryPacket);
                 }
 
-                if (this.GetAllItems().Any(s => s.Slot == slot && s.Type == type))
+                if (GetAllItems().Any(s => s.Slot == slot && s.Type == type))
                 {
                     return null;
                 }
@@ -184,7 +184,7 @@ namespace OpenNos.GameObject
 
         public int CountItem(int itemVNum)
         {
-            return this.GetAllItems().Where(s => s.ItemVNum == itemVNum).Sum(i => i.Amount);
+            return GetAllItems().Where(s => s.ItemVNum == itemVNum).Sum(i => i.Amount);
         }
 
         public Tuple<short, InventoryType> DeleteById(Guid id)
@@ -198,7 +198,7 @@ namespace OpenNos.GameObject
                 if (inv != null)
                 {
                     removedPlace = new Tuple<short, InventoryType>(inv.Slot, inv.Type);
-                    this.Remove(inv.Id);
+                    Remove(inv.Id);
                 }
                 else
                 {
@@ -215,11 +215,11 @@ namespace OpenNos.GameObject
             if (Owner != null)
             {
                 Logger.Debug($"Slot: {slot} Type: {type}", Owner.Session.SessionId);
-                ItemInstance inv = this.GetAllItems().FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
+                ItemInstance inv = GetAllItems().FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
 
                 if (inv != null)
                 {
-                    this.Remove(inv.Id);
+                    Remove(inv.Id);
                 }
                 else
                 {
@@ -246,7 +246,7 @@ namespace OpenNos.GameObject
             {
                 inventoryitemids.Add(itemfree.Id);
             }
-            return this.GetAllItems().Where(i => inventoryitemids.Contains(i.Id)).OrderBy(i => i.Slot).FirstOrDefault();
+            return GetAllItems().Where(i => inventoryitemids.Contains(i.Id)).OrderBy(i => i.Slot).FirstOrDefault();
         }
 
         public bool GetFreeSlotAmount(List<ItemInstance> itemInstances, int backPack)
@@ -254,8 +254,8 @@ namespace OpenNos.GameObject
             short[] place = new short[itemInstances.Count()];
             for (byte k = 0; k < itemInstances.Count(); k++)
             {
-                place[k] = (byte)(DEFAULT_BACKPACK_SIZE + (backPack * 12));
-                for (short i = 0; i < DEFAULT_BACKPACK_SIZE + (backPack * 12); i++)
+                place[k] = (byte)(DEFAULT_BACKPACK_SIZE + backPack * 12);
+                for (short i = 0; i < DEFAULT_BACKPACK_SIZE + backPack * 12; i++)
                 {
                     ItemInstance loadedItemInstance = LoadBySlotAndType(i, (InventoryType)itemInstances[k].Item.Type);
                     if (loadedItemInstance != null && loadedItemInstance.Type == 0)
@@ -302,18 +302,18 @@ namespace OpenNos.GameObject
 
         public IEnumerable<ItemInstance> LoadBySlotAllowed(short itemVNum, int amount)
         {
-            return this.GetAllItems().Where(i => i.ItemVNum.Equals(itemVNum) && i.Amount + amount <= MAX_ITEM_AMOUNT);
+            return GetAllItems().Where(i => i.ItemVNum.Equals(itemVNum) && i.Amount + amount <= MAX_ITEM_AMOUNT);
         }
 
         public T LoadBySlotAndType<T>(short slot, InventoryType type)
                     where T : ItemInstance
         {
-            return (T)this.GetAllItems().SingleOrDefault(i => i != null && i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type);
+            return (T)GetAllItems().SingleOrDefault(i => i != null && i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type);
         }
 
         public ItemInstance LoadBySlotAndType(short slot, InventoryType type)
         {
-            return this.GetAllItems().SingleOrDefault(i => i != null && i.Slot.Equals(slot) && i.Type.Equals(type));
+            return GetAllItems().SingleOrDefault(i => i != null && i.Slot.Equals(slot) && i.Type.Equals(type));
         }
 
         /// <summary> Moves one item from one Inventory to another. Example: Equipment <-> Wear,
@@ -457,7 +457,7 @@ namespace OpenNos.GameObject
                 Logger.Debug($"vnum: {vnum} amount: {amount}", Owner.Session.SessionId);
                 int remainingAmount = amount;
 
-                foreach (ItemInstance inventory in this.GetAllItems().Where(s => s.ItemVNum == vnum).OrderBy(i => i.Slot))
+                foreach (ItemInstance inventory in GetAllItems().Where(s => s.ItemVNum == vnum).OrderBy(i => i.Slot))
                 {
                     if (remainingAmount > 0)
                     {
@@ -493,7 +493,7 @@ namespace OpenNos.GameObject
             if (Owner != null)
             {
                 Logger.Debug($"InventoryId: {id} amount: {amount}", Owner.Session.SessionId);
-                ItemInstance inv = this.GetAllItems().FirstOrDefault(i => i.Id.Equals(id));
+                ItemInstance inv = GetAllItems().FirstOrDefault(i => i.Id.Equals(id));
 
                 if (inv != null)
                 {
@@ -501,7 +501,7 @@ namespace OpenNos.GameObject
                     if (inv.Amount <= 0)
                     {
                         Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0, 0));
-                        this.Remove(inv.Id);
+                        Remove(inv.Id);
                         return null;
                     }
                 }
@@ -517,11 +517,11 @@ namespace OpenNos.GameObject
             switch (inventoryType)
             {
                 case InventoryType.Costume:
-                    itemsByInventoryType = this.GetAllItems().Where(s => s.Type == InventoryType.Costume).OrderBy(s => s.ItemVNum).ToList();
+                    itemsByInventoryType = GetAllItems().Where(s => s.Type == InventoryType.Costume).OrderBy(s => s.ItemVNum).ToList();
                     break;
 
                 case InventoryType.Specialist:
-                    itemsByInventoryType = this.GetAllItems().Where(s => s.Type == InventoryType.Specialist).OrderBy(s => s.Item.LevelJobMinimum).ToList();
+                    itemsByInventoryType = GetAllItems().Where(s => s.Type == InventoryType.Specialist).OrderBy(s => s.Item.LevelJobMinimum).ToList();
                     break;
             }
 
@@ -553,8 +553,8 @@ namespace OpenNos.GameObject
         /// <returns></returns>
         public ItemInstance TakeItem(short slot, InventoryType type)
         {
-            ItemInstance itemInstance = this.GetAllItems().SingleOrDefault(i => i.Slot == slot && i.Type == type);
-            this.Remove(itemInstance.Id);
+            ItemInstance itemInstance = GetAllItems().SingleOrDefault(i => i.Slot == slot && i.Type == type);
+            Remove(itemInstance.Id);
             return itemInstance;
         }
 
@@ -573,11 +573,11 @@ namespace OpenNos.GameObject
 
         private short? GetFreeSlot(InventoryType type, int backPack)
         {
-            IEnumerable<int> itemInstanceSlotsByType = this.GetAllItems().Where(i => i.Type == type).OrderBy(i => i.Slot).Select(i => (int)i.Slot);
+            IEnumerable<int> itemInstanceSlotsByType = GetAllItems().Where(i => i.Type == type).OrderBy(i => i.Slot).Select(i => (int)i.Slot);
             int nextFreeSlot = itemInstanceSlotsByType.Any()
-                                ? Enumerable.Range(0, (DEFAULT_BACKPACK_SIZE + (backPack * 12) + 1)).Except(itemInstanceSlotsByType).FirstOrDefault()
+                                ? Enumerable.Range(0, DEFAULT_BACKPACK_SIZE + backPack * 12 + 1).Except(itemInstanceSlotsByType).FirstOrDefault()
                                 : 0;
-            return (short?)nextFreeSlot < (DEFAULT_BACKPACK_SIZE + (backPack * 12)) ? (short?)nextFreeSlot : null;
+            return (short?)nextFreeSlot < DEFAULT_BACKPACK_SIZE + backPack * 12 ? (short?)nextFreeSlot : null;
         }
 
         #endregion

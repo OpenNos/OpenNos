@@ -20,14 +20,6 @@ namespace OpenNos.GameObject
 {
     public class NpcMonster : NpcMonsterDTO
     {
-        #region Instantiation
-
-        public NpcMonster()
-        {
-        }
-
-        #endregion
-
         #region Properties
 
         public List<DropDTO> Drops { get; set; }

@@ -59,7 +59,7 @@ namespace OpenNos.GameObject
             {
                 if (item == null)
                 {
-                    item = ServerManager.GetItem(this.ItemVNum);
+                    item = ServerManager.GetItem(ItemVNum);
                 }
                 return item;
             }

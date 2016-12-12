@@ -19,11 +19,8 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -32,9 +29,9 @@ namespace OpenNos.GameObject
         #region Members
 
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
+        private bool _disposed;
         private bool _isSleeping;
         private bool _isSleepingRequest;
-        private bool _disposed;
         private List<int> _mapMonsterIds;
         private List<MapNpc> _npcs;
         private List<PortalDTO> _portals;
@@ -62,7 +59,7 @@ namespace OpenNos.GameObject
             MapTypes = new List<MapTypeDTO>();
             foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId).ToList())
             {
-                MapTypeDTO maptype = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId) as MapTypeDTO;
+                MapTypeDTO maptype = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
                 MapTypes.Add(maptype);
             }
 
@@ -70,19 +67,27 @@ namespace OpenNos.GameObject
             {
                 if (MapTypes.ElementAt(0).RespawnMapTypeId != null)
                 {
-                    DefaultRespawn = DAOFactory.RespawnMapTypeDAO.LoadById((long)MapTypes.ElementAt(0).RespawnMapTypeId);
-                    DefaultReturn = DAOFactory.RespawnMapTypeDAO.LoadById((long)MapTypes.ElementAt(0).ReturnMapTypeId);
+                    long? respawnMapTypeId = MapTypes.ElementAt(0).RespawnMapTypeId;
+                    long? returnMapTypeId = MapTypes.ElementAt(0).ReturnMapTypeId;
+                    if (respawnMapTypeId != null)
+                    {
+                        DefaultRespawn = DAOFactory.RespawnMapTypeDAO.LoadById((long)respawnMapTypeId);
+                    }
+                    if (returnMapTypeId != null)
+                    {
+                        DefaultReturn = DAOFactory.RespawnMapTypeDAO.LoadById((long)returnMapTypeId);
+                    }
                 }
             }
             _portals = new List<PortalDTO>();
             foreach (PortalDTO portal in portals)
             {
-                _portals.Add(portal as PortalDTO);
+                _portals.Add(portal);
             }
 
             UserShops = new Dictionary<long, MapShop>();
             _npcs = new List<MapNpc>();
-            _npcs.AddRange(ServerManager.Instance.GetMapNpcsByMapId(MapId).AsEnumerable<MapNpc>());
+            _npcs.AddRange(ServerManager.Instance.GetMapNpcsByMapId(MapId).AsEnumerable());
         }
 
         #endregion
@@ -91,16 +96,22 @@ namespace OpenNos.GameObject
 
         public byte[] Data { get; set; }
 
-        public ThreadSafeSortedList<long, MapItem> DroppedList { get; set; }
-
-        public bool IsDancing { get; set; }
-
-        public short MapId { get; set; }
-
         public RespawnMapTypeDTO DefaultRespawn
         {
             get; set;
         }
+
+        public RespawnMapTypeDTO DefaultReturn
+        {
+            get; set;
+        }
+
+        public ThreadSafeSortedList<long, MapItem> DroppedList { get; set; }
+
+        public StaticGrid Grid { get; set; }
+
+        public bool IsDancing { get; set; }
+
         public bool IsSleeping
         {
             get
@@ -124,7 +135,7 @@ namespace OpenNos.GameObject
             }
             set
             {
-                if (value == true)
+                if (value)
                 {
                     _isSleepingRequest = true;
                 }
@@ -135,10 +146,10 @@ namespace OpenNos.GameObject
                 }
             }
         }
-        public RespawnMapTypeDTO DefaultReturn
-        {
-            get; set;
-        }
+
+        public long LastUserShopId { get; set; }
+
+        public short MapId { get; set; }
 
         public List<MapTypeDTO> MapTypes
         {
@@ -160,8 +171,6 @@ namespace OpenNos.GameObject
         public int Music { get; set; }
 
         public string Name { get; set; }
-
-        public StaticGrid Grid { get; set; }
 
         public List<MapNpc> Npcs
         {
@@ -186,8 +195,6 @@ namespace OpenNos.GameObject
         public int XLength { get; set; }
 
         public int YLength { get; set; }
-
-        public long LastUserShopId { get; set; }
 
         #endregion
 
@@ -222,9 +229,8 @@ namespace OpenNos.GameObject
         {
             try
             {
-                MonsterMapItem droppedItem = null;
-                short localMapX = (short)(_random.Next(mapX - 1, mapX + 1));
-                short localMapY = (short)(_random.Next(mapY - 1, mapY + 1));
+                short localMapX = (short)_random.Next(mapX - 1, mapX + 1);
+                short localMapY = (short)_random.Next(mapY - 1, mapY + 1);
                 List<MapCell> Possibilities = new List<MapCell>();
 
                 for (short x = -1; x < 2; x++)
@@ -245,7 +251,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, Owner ?? -1);
+                MonsterMapItem droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, Owner ?? -1);
 
                 DroppedList[droppedItem.TransportId] = droppedItem;
 
@@ -254,14 +260,6 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Error(e);
-            }
-        }
-
-        internal void RemoveMonstersTarget(long characterId)
-        {
-            foreach (MapMonster monster in Monsters.Where(m => m.Target == characterId))
-            {
-                monster.RemoveTarget();
             }
         }
 
@@ -371,7 +369,6 @@ namespace OpenNos.GameObject
             }
         }
 
-
         public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
         {
             Logger.Debug($"type: {type} slot: {slot} amount: {amount}", session.SessionId);
@@ -417,6 +414,26 @@ namespace OpenNos.GameObject
             return droppedItem;
         }
 
+        public void RemoveMapItem()
+        {
+            // take the data from list to remove it without having enumeration problems (ToList)
+            try
+            {
+                List<MapItem> dropsToRemove = DroppedList.GetAllItems().Where(dl => dl.CreatedDate.AddMinutes(3) < DateTime.Now).ToList();
+
+                foreach (MapItem drop in dropsToRemove)
+                {
+                    Broadcast(drop.GenerateOut(drop.TransportId));
+                    DroppedList.Remove(drop.TransportId);
+                    TransportFactory.Instance.RemoveTransportId(drop.TransportId);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
         public void RemoveMonster(MapMonster monsterToRemove)
         {
             _monsters.Remove(monsterToRemove.MapMonsterId);
@@ -437,6 +454,21 @@ namespace OpenNos.GameObject
                 npc.Map = this;
                 npc.JumpPointParameters = new JumpPointParam(Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
             }
+        }
+
+        internal IEnumerable<Character> GetCharactersInRange(short mapX, short mapY, byte distance)
+        {
+            List<Character> characters = new List<Character>();
+            IEnumerable<ClientSession> cl = Sessions.Where(s => s.HasSelectedCharacter && s.Character.Hp > 0);
+            IEnumerable<ClientSession> clientSessions = cl as IList<ClientSession> ?? cl.ToList();
+            for (int i = clientSessions.Count() - 1; i >= 0; i--)
+            {
+                if (GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = clientSessions.ElementAt(i).Character.MapX, Y = clientSessions.ElementAt(i).Character.MapY }) <= distance + 1)
+                {
+                    characters.Add(clientSessions.ElementAt(i).Character);
+                }
+            }
+            return characters;
         }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
@@ -472,62 +504,53 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        internal IEnumerable<Character> GetCharactersInRange(short mapX, short mapY, byte distance)
+        internal void RemoveMonstersTarget(long characterId)
         {
-            List<Character> characters = new List<Character>();
-            IEnumerable<ClientSession> cl = Sessions.Where(s => s.HasSelectedCharacter && s.Character.Hp > 0);
-            for (int i = cl.Count() - 1; i >= 0; i--)
+            foreach (MapMonster monster in Monsters.Where(m => m.Target == characterId))
             {
-                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)
-                {
-                    characters.Add(cl.ElementAt(i).Character);
-                }
+                monster.RemoveTarget();
             }
-            return characters;
         }
-
-
 
         internal List<GridPos> StraightPath(GridPos mapCell1, GridPos mapCell2)
         {
-            List<GridPos> Path = new List<GridPos>();
-            Path.Add(mapCell1);
+            List<GridPos> Path = new List<GridPos> { mapCell1 };
             do
             {
                 if (Path.Last().x < mapCell2.x && Path.Last().y < mapCell2.y)
                 {
-                    Path.Add(new GridPos() { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y + 1) });
+                    Path.Add(new GridPos { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y + 1) });
                 }
                 else if (Path.Last().x > mapCell2.x && Path.Last().y > mapCell2.y)
                 {
-                    Path.Add(new GridPos() { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y - 1) });
+                    Path.Add(new GridPos { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y - 1) });
                 }
                 else if (Path.Last().x < mapCell2.x && Path.Last().y > mapCell2.y)
                 {
-                    Path.Add(new GridPos() { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y - 1) });
+                    Path.Add(new GridPos { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y - 1) });
                 }
                 else if (Path.Last().x > mapCell2.x && Path.Last().y < mapCell2.y)
                 {
-                    Path.Add(new GridPos() { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y + 1) });
+                    Path.Add(new GridPos { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y + 1) });
                 }
                 else if (Path.Last().x > mapCell2.x)
                 {
-                    Path.Add(new GridPos() { x = (short)(Path.Last().x - 1), y = (short)(Path.Last().y) });
+                    Path.Add(new GridPos { x = (short)(Path.Last().x - 1), y = (short)Path.Last().y });
                 }
                 else if (Path.Last().x < mapCell2.x)
                 {
-                    Path.Add(new GridPos() { x = (short)(Path.Last().x + 1), y = (short)(Path.Last().y) });
+                    Path.Add(new GridPos { x = (short)(Path.Last().x + 1), y = (short)Path.Last().y });
                 }
                 else if (Path.Last().y > mapCell2.y)
                 {
-                    Path.Add(new GridPos() { x = (short)(Path.Last().x), y = (short)(Path.Last().y - 1) });
+                    Path.Add(new GridPos { x = (short)Path.Last().x, y = (short)(Path.Last().y - 1) });
                 }
                 else if (Path.Last().y < mapCell2.y)
                 {
-                    Path.Add(new GridPos() { x = (short)(Path.Last().x), y = (short)(Path.Last().y + 1) });
+                    Path.Add(new GridPos { x = (short)Path.Last().x, y = (short)(Path.Last().y + 1) });
                 }
             }
-            while ((Path.Last().x != mapCell2.x || Path.Last().y != mapCell2.y) && (!IsBlockedZone(Path.Last().x, Path.Last().y)));
+            while ((Path.Last().x != mapCell2.x || Path.Last().y != mapCell2.y) && !IsBlockedZone(Path.Last().x, Path.Last().y));
             if (IsBlockedZone(Path.Last().x, Path.Last().y))
             {
                 if (Path.Any())
@@ -544,27 +567,6 @@ namespace OpenNos.GameObject
             if (disposing)
             {
                 _monsters.Dispose();
-            }
-        }
-
-
-        public void RemoveMapItem()
-        {
-            // take the data from list to remove it without having enumeration problems (ToList)
-            try
-            {
-                List<MapItem> dropsToRemove = DroppedList.GetAllItems().Where(dl => dl.CreatedDate.AddMinutes(3) < DateTime.Now).ToList();
-
-                foreach (MapItem drop in dropsToRemove)
-                {
-                    Broadcast(drop.GenerateOut(drop.TransportId));
-                    DroppedList.Remove(drop.TransportId);
-                    TransportFactory.Instance.RemoveTransportId(drop.TransportId);
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
             }
         }
 

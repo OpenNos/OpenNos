@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
             {
                 // airwaves - eventitems
                 case 0:
-                    if (this != null && this.ItemType == Domain.ItemType.Event)
+                    if (this != null && ItemType == ItemType.Event)
                     {
                         session.CurrentMap?.Broadcast(session.Character.GenerateEff(EffectValue));
                         if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))
@@ -241,7 +241,7 @@ namespace OpenNos.GameObject
                     break;
 
                 default:
-                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
+                    Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;
             }
         }

@@ -942,7 +942,7 @@ namespace OpenNos.GameObject
 
                 _minHit[(int)ClassType.Archer, i] = 9 + i * 3; // approx
                 _maxHit[(int)ClassType.Archer, i] = 9 + i * 3; // approx
-                int add = (i % 2 == 0) ? 2 : 4;
+                int add = i % 2 == 0 ? 2 : 4;
                 _hitRate[(int)ClassType.Archer, 1] = 41;
                 _hitRate[(int)ClassType.Archer, i] = _hitRate[(int)ClassType.Archer, i] + add; // approx
                 _minDist[(int)ClassType.Archer, i] = 2 * i; // approx

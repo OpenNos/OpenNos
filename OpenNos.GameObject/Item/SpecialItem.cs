@@ -44,7 +44,7 @@ namespace OpenNos.GameObject
                     {
                         session.Character.SpAdditionPoint = 1000000;
                     }
-                    session.SendPacket(session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), EffectValue), 0));
+                    session.SendPacket(session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), EffectValue), 0));
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     session.SendPacket(session.Character.GenerateSpPoint());
                     break;
@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
                     {
                         session.Character.SpPoint = 10000;
                     }
-                    session.SendPacket(session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDEDBOTH"), EffectValue, EffectValue * 3), 0));
+                    session.SendPacket(session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDEDBOTH"), EffectValue, EffectValue * 3), 0));
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     session.SendPacket(session.Character.GenerateSpPoint());
                     break;
