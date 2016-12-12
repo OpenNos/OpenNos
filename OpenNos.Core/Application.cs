@@ -26,7 +26,7 @@ namespace OpenNos.Core
             string text = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
             if (backSlash)
             {
-                text += "\\";
+                text += @"\";
             }
             return text;
         }

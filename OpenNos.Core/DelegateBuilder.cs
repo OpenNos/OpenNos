@@ -29,7 +29,6 @@ namespace OpenNos.Core
             var queueMissingParams = new Queue<object>(missingParamValues);
 
             var dgtMi = typeof(T).GetMethod("Invoke");
-            var dgtRet = dgtMi.ReturnType;
             var dgtParams = dgtMi.GetParameters();
 
             var paramsOfDelegate = dgtParams

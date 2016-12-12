@@ -30,7 +30,7 @@ namespace OpenNos.Core
         /// </summary>
         private const short MaxMessageLength = 4096;
 
-        private IDictionary<String, DateTime> _connectionHistory;
+        private IDictionary<string, DateTime> _connectionHistory;
 
         private bool _disposed;
 
@@ -46,7 +46,7 @@ namespace OpenNos.Core
         public WireProtocol()
         {
             _receiveMemoryStream = new MemoryStream();
-            _connectionHistory = new Dictionary<String, DateTime>();
+            _connectionHistory = new Dictionary<string, DateTime>();
         }
 
         #endregion
@@ -83,8 +83,9 @@ namespace OpenNos.Core
         public byte[] GetBytes(IScsMessage message)
         {
             // Serialize the message to a byte array
-            byte[] bytes = message is ScsTextMessage ?
-                Encoding.Default.GetBytes(((ScsTextMessage)message).Text) :
+            ScsTextMessage textMessage = message as ScsTextMessage;
+            byte[] bytes = textMessage != null ?
+                Encoding.Default.GetBytes(textMessage.Text) :
                 ((ScsRawDataMessage)message).MessageData;
 
             return bytes;
@@ -178,7 +179,7 @@ namespace OpenNos.Core
             }
 
             // Return true to re-call this method to try to read next message
-            return (_receiveMemoryStream.Length > 0);
+            return _receiveMemoryStream.Length > 0;
         }
 
         #endregion

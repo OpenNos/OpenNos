@@ -71,10 +71,10 @@ namespace OpenNos.World
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
             string text = $"WORLD SERVER VERSION {fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
             int offset = (Console.WindowWidth - text.Length) / 2;
-            Console.WriteLine(new String('=', Console.WindowWidth));
+            Console.WriteLine(new string('=', Console.WindowWidth));
             Console.SetCursorPosition(offset < 0 ? 0 : offset, Console.CursorTop);
             Console.WriteLine(text + "\n" +
-            new String('=', Console.WindowWidth) + "\n");
+            new string('=', Console.WindowWidth) + "\n");
 
             // initialize DB
             if (DataAccessHelper.Initialize())
@@ -97,7 +97,7 @@ namespace OpenNos.World
             try
             {
                 ServiceFactory.Instance.Initialize();
-                exitHandler += new EventHandler(ExitHandler);
+                exitHandler += ExitHandler;
                 SetConsoleCtrlHandler(exitHandler, true);
                 NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>("127.0.0.1", port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
@@ -109,7 +109,7 @@ namespace OpenNos.World
 
         private static bool ExitHandler(CtrlType sig)
         {
-            ServerManager.Instance.Shout(String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
+            ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.SaveAll();
             Thread.Sleep(5000);
             return false;

@@ -35,12 +35,12 @@ namespace OpenNos.World
         {
             List<byte> receiveData = new List<byte>();
             char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'n' };
-            int count = 0;
+            int count;
             for (count = 0; count < str.Length; count++)
             {
-                if ((int)str[count] <= 0x7A)
+                if (str[count] <= 0x7A)
                 {
-                    int len = (int)str[count];
+                    int len = str[count];
 
                     for (int i = 0; i < len; i++)
                     {
@@ -58,16 +58,16 @@ namespace OpenNos.World
                 }
                 else
                 {
-                    int len = (int)str[count];
-                    len &= (int)0x7F;
+                    int len = str[count];
+                    len &= 0x7F;
 
-                    for (int i = 0; i < (int)len; i++)
+                    for (int i = 0; i < len; i++)
                     {
                         count++;
-                        int highbyte = 0;
+                        int highbyte;
                         try
                         {
-                            highbyte = (int)str[count];
+                            highbyte = str[count];
                         }
                         catch
                         {
@@ -76,10 +76,10 @@ namespace OpenNos.World
                         highbyte &= 0xF0;
                         highbyte >>= 0x4;
 
-                        int lowbyte = 0;
+                        int lowbyte;
                         try
                         {
-                            lowbyte = (int)str[count];
+                            lowbyte = str[count];
                         }
                         catch
                         {
@@ -103,48 +103,48 @@ namespace OpenNos.World
             return Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, receiveData.ToArray()));
         }
 
-        public override string Decrypt(byte[] str, int session_id)
+        public override string Decrypt(byte[] str, int sessionId = 0)
         {
             string encrypted_string = "";
-            int session_key = session_id & 0xFF;
-            byte session_number = unchecked((byte)(session_id >> 6));
-            session_number &= unchecked((byte)0xFF);
+            int session_key = sessionId & 0xFF;
+            byte session_number = unchecked((byte)(sessionId >> 6));
+            session_number &= 0xFF;
             session_number &= unchecked((byte)0x80000003);
 
             switch (session_number)
             {
                 case 0:
-                    for (int i = 0; i < str.Length; i++)
+                    foreach (byte character in str)
                     {
                         byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(str[i] - firstbyte));
+                        byte highbyte = unchecked((byte)(character - firstbyte));
                         encrypted_string += (char)highbyte;
                     }
                     break;
 
                 case 1:
-                    for (int i = 0; i < str.Length; i++)
+                    foreach (byte character in str)
                     {
                         byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(str[i] + firstbyte));
+                        byte highbyte = unchecked((byte)(character + firstbyte));
                         encrypted_string += (char)highbyte;
                     }
                     break;
 
                 case 2:
-                    for (int i = 0; i < str.Length; i++)
+                    foreach (byte character in str)
                     {
                         byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(str[i] - firstbyte ^ 0xC3));
+                        byte highbyte = unchecked((byte)(character - firstbyte ^ 0xC3));
                         encrypted_string += (char)highbyte;
                     }
                     break;
 
                 case 3:
-                    for (int i = 0; i < str.Length; i++)
+                    foreach (byte character in str)
                     {
                         byte firstbyte = unchecked((byte)(session_key + 0x40));
-                        byte highbyte = unchecked((byte)(str[i] + firstbyte ^ 0xC3));
+                        byte highbyte = unchecked((byte)(character + firstbyte ^ 0xC3));
                         encrypted_string += (char)highbyte;
                     }
                     break;
@@ -171,16 +171,15 @@ namespace OpenNos.World
 
         public override string DecryptCustomParameter(byte[] str)
         {
-            string encrypted_string = String.Empty;
+            string encrypted_string = string.Empty;
             for (int i = 1; i < str.Length; i++)
             {
                 if (Convert.ToChar(str[i]) == 0xE)
                 {
                     return encrypted_string;
                 }
-                string var = (str[i] - 0xF).ToString();
 
-                int firstbyte = Convert.ToInt32((int)str[i] - (int)0xF);
+                int firstbyte = Convert.ToInt32(str[i] - 0xF);
                 int secondbyte = firstbyte;
                 secondbyte &= 0xF0;
                 firstbyte = Convert.ToInt32(firstbyte - secondbyte);

@@ -50,14 +50,8 @@ namespace OpenNos.Core.Threading
         {
             get
             {
-                if (_queue == null)
-                {
-                    _queue = new SequentialItemProcessor<TValue>(_action);
-                }
-
-                return _queue;
+                return _queue ?? (_queue = new SequentialItemProcessor<TValue>(_action));
             }
-
             set
             {
                 _queue = value;

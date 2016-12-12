@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
             {
                 // airwaves - eventitems
                 case 0:
-                    if (this != null && ItemType == ItemType.Event)
+                    if (ItemType == ItemType.Event)
                     {
                         session.CurrentMap?.Broadcast(session.Character.GenerateEff(EffectValue));
                         if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))
@@ -55,9 +55,9 @@ namespace OpenNos.GameObject
                     int x2;
                     int x3;
                     int x4;
-                    int x5;
-                    if (int.TryParse(packetsplit[2], out x1) && int.TryParse(packetsplit[3], out x2) && int.TryParse(packetsplit[4], out x3) && int.TryParse(packetsplit[5], out x4))
+                    if (packetsplit != null && int.TryParse(packetsplit[2], out x1) && int.TryParse(packetsplit[3], out x2) && int.TryParse(packetsplit[4], out x3) && int.TryParse(packetsplit[5], out x4))
                     {
+                        int x5;
                         switch (EffectValue)
                         {
                             case 0:
@@ -141,14 +141,14 @@ namespace OpenNos.GameObject
                 // dyes or waxes
                 case 10:
                 case 11:
-                    if (this != null && !session.Character.IsVehicled)
+                    if (!session.Character.IsVehicled)
                     {
                         if (Effect == 10)
                         {
                             if (EffectValue == 99)
                             {
                                 byte nextValue = (byte)random.Next(0, 127);
-                                session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), (byte)nextValue) ? (HairColorType)nextValue : 0;
+                                session.Character.HairColor = Enum.IsDefined(typeof(HairColorType), nextValue) ? (HairColorType)nextValue : 0;
                             }
                             else
                             {
@@ -168,7 +168,7 @@ namespace OpenNos.GameObject
                             }
                         }
                         session.SendPacket(session.Character.GenerateEq());
-                        session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.All);
+                        session.CurrentMap?.Broadcast(session, session.Character.GenerateIn());
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     break;
@@ -199,7 +199,7 @@ namespace OpenNos.GameObject
 
                 // speakers
                 case 15:
-                    if (this != null && !session.Character.IsVehicled)
+                    if (!session.Character.IsVehicled)
                     {
                         if (!delay)
                         {
@@ -210,7 +210,7 @@ namespace OpenNos.GameObject
 
                 // bubbles
                 case 16:
-                    if (this != null && !session.Character.IsVehicled)
+                    if (!session.Character.IsVehicled)
                     {
                         if (!delay)
                         {
@@ -221,7 +221,7 @@ namespace OpenNos.GameObject
 
                 // wigs
                 case 30:
-                    if (this != null && !session.Character.IsVehicled)
+                    if (!session.Character.IsVehicled)
                     {
                         WearableInstance wig = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
                         if (wig != null)
@@ -229,13 +229,12 @@ namespace OpenNos.GameObject
                             wig.Design = (byte)random.Next(0, 15);
                             session.SendPacket(session.Character.GenerateEq());
                             session.SendPacket(session.Character.GenerateEquipment());
-                            session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.All);
+                            session.CurrentMap?.Broadcast(session, session.Character.GenerateIn());
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         }
                         else
                         {
                             session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"), 0));
-                            return;
                         }
                     }
                     break;

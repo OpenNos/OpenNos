@@ -69,10 +69,7 @@ namespace OpenNos.GameObject
             }
             set
             {
-                if (_connectionLog != value)
-                {
-                    _connectionLog = value;
-                }
+                _connectionLog = value;
             }
         }
 

@@ -126,7 +126,7 @@ namespace OpenNos.Test
                 if (startTime.AddSeconds(10) < DateTime.Now)
                 {
                     Assert.Fail($"Timed out while waiting for a Packet.");
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
         }
@@ -151,7 +151,7 @@ namespace OpenNos.Test
                 if (startTime.AddSeconds(10) < DateTime.Now)
                 {
                     Assert.Fail($"Timed out while waiting for {packetHeader}");
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
         }

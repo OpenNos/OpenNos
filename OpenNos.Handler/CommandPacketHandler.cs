@@ -304,7 +304,7 @@ namespace OpenNos.Handler
                     fairylevel -= fairy.Item.ElementRate;
                     fairy.ElementRate = fairylevel;
                     fairy.XP = 0;
-                    Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVEL_CHANGED"), fairy.Item.Name), 10));
+                    Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVEL_CHANGED"), fairy.Item.Name), 10));
                     Session.SendPacket(Session.Character.GeneratePairy());
                 }
                 else
@@ -602,38 +602,40 @@ namespace OpenNos.Handler
                 {
                     if (iteminfo.IsColored)
                     {
-                        if (packetsplit.Count() > 3)
+                        if (packetsplit.Length > 3)
                         {
                             byte.TryParse(packetsplit[3], out design);
                         }
                     }
                     else if (iteminfo.Type == 0)
                     {
-                        if (packetsplit.Length == 4)
+                        switch (packetsplit.Length)
                         {
-                            sbyte.TryParse(packetsplit[3], out rare);
-                        }
-                        else if (packetsplit.Length == 5)
-                        {
-                            if (iteminfo.EquipmentSlot == EquipmentType.Sp)
-                            {
-                                byte.TryParse(packetsplit[3], out upgrade);
-                                upgrade = upgrade > 15 ? (byte)15 : upgrade;
-                                byte.TryParse(packetsplit[4], out design);
-                            }
-                            else
-                            {
+                            case 4:
                                 sbyte.TryParse(packetsplit[3], out rare);
-                                byte.TryParse(packetsplit[4], out upgrade);
-                                upgrade = upgrade > 10 ? (byte)10 : upgrade;
-                                if (upgrade == 0)
+                                break;
+
+                            case 5:
+                                if (iteminfo.EquipmentSlot == EquipmentType.Sp)
                                 {
-                                    if (iteminfo.BasicUpgrade != 0)
+                                    byte.TryParse(packetsplit[3], out upgrade);
+                                    upgrade = upgrade > 15 ? (byte)15 : upgrade;
+                                    byte.TryParse(packetsplit[4], out design);
+                                }
+                                else
+                                {
+                                    sbyte.TryParse(packetsplit[3], out rare);
+                                    byte.TryParse(packetsplit[4], out upgrade);
+                                    upgrade = upgrade > 10 ? (byte)10 : upgrade;
+                                    if (upgrade == 0)
                                     {
-                                        upgrade = iteminfo.BasicUpgrade;
+                                        if (iteminfo.BasicUpgrade != 0)
+                                        {
+                                            upgrade = iteminfo.BasicUpgrade;
+                                        }
                                     }
                                 }
-                            }
+                                break;
                         }
                     }
                     else
@@ -1072,7 +1074,7 @@ namespace OpenNos.Handler
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.Hp), 0);
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.LastDefence), DateTime.Now);
                     Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 60000 3 0");
-                    Session.CurrentMap?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, String.Empty, (long)id);
+                    Session.CurrentMap?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, string.Empty, (long)id);
                     ServerManager.Instance.AskRevive((long)id);
                 }
                 else
@@ -1213,9 +1215,9 @@ namespace OpenNos.Handler
                         });
                         session.SendPacket(duration == 1
                             ? Session.Character.GenerateInfo(
-                                String.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason))
+                                string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason))
                             : Session.Character.GenerateInfo(
-                                String.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
+                                string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
                     else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
@@ -1320,7 +1322,7 @@ namespace OpenNos.Handler
                     if (monst.IsAlive)
                     {
                         Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {6000} 3 0");
-                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MONSTER_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MONSTER_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
                         Session.CurrentMap.RemoveMonster(monst);
                         if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) != null)
                         {
@@ -1329,7 +1331,7 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MONSTER_NOT_ALIVE")), 11));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MONSTER_NOT_ALIVE")), 11));
                     }
                 }
                 else
@@ -1348,7 +1350,7 @@ namespace OpenNos.Handler
                 PortalDTO pt = Session.CurrentMap.Portals.FirstOrDefault(s => s.SourceMapId == Session.Character.MapId && Map.GetDistance(new MapCell { MapId = s.SourceMapId, X = s.SourceX, Y = s.SourceY }, new MapCell { MapId = Session.Character.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }) < 10);
                 if (pt != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
                     Session.CurrentMap.Portals.Remove(pt);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateGp(pt));
                 }
@@ -1387,7 +1389,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 2)
             {
-                string name = String.Empty;
+                string name = string.Empty;
                 for (int i = 2; i < packetsplit.Length; i++)
                 {
                     name += packetsplit[i] + " ";
@@ -1443,7 +1445,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            string message = String.Empty;
+            string message = string.Empty;
             if (packetsplit.Length > 2)
             {
                 for (int i = 2; i < packetsplit.Length; i++)
@@ -1902,7 +1904,7 @@ namespace OpenNos.Handler
 
         private async void ShutdownTask()
         {
-            string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
+            string message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
             ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
             ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 60 * 4; i++)
@@ -1914,7 +1916,7 @@ namespace OpenNos.Handler
                     return;
                 }
             }
-            message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
             ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
             ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 30; i++)
@@ -1926,7 +1928,7 @@ namespace OpenNos.Handler
                     return;
                 }
             }
-            message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
             ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
             ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 30; i++)
@@ -1938,7 +1940,7 @@ namespace OpenNos.Handler
                     return;
                 }
             }
-            message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
+            message = string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 10);
             ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
             ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 10; i++)

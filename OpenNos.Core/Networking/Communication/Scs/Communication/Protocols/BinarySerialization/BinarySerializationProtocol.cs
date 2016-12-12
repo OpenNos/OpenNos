@@ -238,7 +238,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
             buffer[startIndex] = (byte)((number >> 24) & 0xFF);
             buffer[startIndex + 1] = (byte)((number >> 16) & 0xFF);
             buffer[startIndex + 2] = (byte)((number >> 8) & 0xFF);
-            buffer[startIndex + 3] = (byte)((number) & 0xFF);
+            buffer[startIndex + 3] = (byte)(number & 0xFF);
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
             // Read remaining bytes to an array
             if (_receiveMemoryStream.Length != _receiveMemoryStream.Position)
             {
-                var remainingBytes = ReadByteArray(_receiveMemoryStream, (int)(_receiveMemoryStream.Length));
+                var remainingBytes = ReadByteArray(_receiveMemoryStream, (int)_receiveMemoryStream.Length);
 
                 // Re-create the receive memory stream and write remaining bytes
                 _receiveMemoryStream = new MemoryStream();
@@ -314,7 +314,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
             }
 
             // Return true to re-call this method to try to read next message
-            return (_receiveMemoryStream.Length > 0);
+            return _receiveMemoryStream.Length > 0;
         }
 
         #endregion

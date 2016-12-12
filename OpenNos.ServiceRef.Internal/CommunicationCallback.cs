@@ -73,7 +73,7 @@ namespace OpenNos.ServiceRef.Internal
 
         public void OnAccountDisconnected(string accountName)
         {
-            if (AccountDisconnectedEvent != null && !String.IsNullOrEmpty(accountName))
+            if (AccountDisconnectedEvent != null && !string.IsNullOrEmpty(accountName))
             {
                 AccountDisconnectedEvent(accountName, new EventArgs());
             }
@@ -97,7 +97,7 @@ namespace OpenNos.ServiceRef.Internal
 
         private void OnAccountConnected(string accountName)
         {
-            if (AccountConnectedEvent != null && !String.IsNullOrEmpty(accountName))
+            if (AccountConnectedEvent != null && !string.IsNullOrEmpty(accountName))
             {
                 AccountConnectedEvent(accountName, new EventArgs());
             }
@@ -105,7 +105,7 @@ namespace OpenNos.ServiceRef.Internal
 
         private void OnCharacterConnected(string characterName)
         {
-            if (CharacterConnectedEvent != null && !String.IsNullOrEmpty(characterName))
+            if (CharacterConnectedEvent != null && !string.IsNullOrEmpty(characterName))
             {
                 CharacterConnectedEvent(characterName, new EventArgs());
             }

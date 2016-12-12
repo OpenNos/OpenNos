@@ -65,7 +65,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         {
             if (scsServer == null)
             {
-                throw new ArgumentNullException("scsServer");
+                throw new ArgumentNullException(nameof(scsServer));
             }
 
             _scsServer = scsServer;
@@ -112,7 +112,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         {
             if (service == null)
             {
-                throw new ArgumentNullException("service");
+                throw new ArgumentNullException(nameof(service));
             }
 
             var type = typeof(TServiceInterface);
@@ -254,19 +254,19 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                 catch (TargetInvocationException ex)
                 {
                     var innerEx = ex.InnerException;
-                    SendInvokeResponse(requestReplyMessenger, invokeMessage, null, new ScsRemoteException(innerEx.Message + Environment.NewLine + "Service Version: " + serviceObject.ServiceAttribute.Version, innerEx));
-                    return;
+                    if (innerEx != null)
+                    {
+                        SendInvokeResponse(requestReplyMessenger, invokeMessage, null, new ScsRemoteException(innerEx.Message + Environment.NewLine + "Service Version: " + serviceObject.ServiceAttribute.Version, innerEx));
+                    }
                 }
                 catch (Exception ex)
                 {
                     SendInvokeResponse(requestReplyMessenger, invokeMessage, null, new ScsRemoteException(ex.Message + Environment.NewLine + "Service Version: " + serviceObject.ServiceAttribute.Version, ex));
-                    return;
                 }
             }
             catch (Exception ex)
             {
                 SendInvokeResponse(requestReplyMessenger, invokeMessage, null, new ScsRemoteException("An error occured during remote service method call.", ex));
-                return;
             }
         }
 
@@ -277,10 +277,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         private void OnClientConnected(IScsServiceClient client)
         {
             var handler = ClientConnected;
-            if (handler != null)
-            {
-                handler(this, new ServiceClientEventArgs(client));
-            }
+            handler?.Invoke(this, new ServiceClientEventArgs(client));
         }
 
         /// <summary>
@@ -290,10 +287,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         private void OnClientDisconnected(IScsServiceClient client)
         {
             var handler = ClientDisconnected;
-            if (handler != null)
-            {
-                handler(this, new ServiceClientEventArgs(client));
-            }
+            handler?.Invoke(this, new ServiceClientEventArgs(client));
         }
 
         /// <summary>

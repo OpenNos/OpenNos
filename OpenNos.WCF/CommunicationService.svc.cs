@@ -29,9 +29,9 @@ namespace OpenNos.WCF
     {
         #region Members
 
-        private IDictionary<String, int> _connectedAccounts;
-        private IDictionary<String, String> _connectedCharacters;
-        private IDictionary<String, long> _registeredAccountLogins;
+        private IDictionary<string, int> _connectedAccounts;
+        private IDictionary<string, string> _connectedCharacters;
+        private IDictionary<string, long> _registeredAccountLogins;
 
         #endregion
 
@@ -46,39 +46,39 @@ namespace OpenNos.WCF
 
         #region Properties
 
-        public IDictionary<String, int> ConnectedAccounts
+        public IDictionary<string, int> ConnectedAccounts
         {
             get
             {
                 if (_connectedAccounts == null)
                 {
-                    _connectedAccounts = new Dictionary<String, int>();
+                    _connectedAccounts = new Dictionary<string, int>();
                 }
 
                 return _connectedAccounts;
             }
         }
 
-        public IDictionary<String, String> ConnectedCharacters
+        public IDictionary<string, string> ConnectedCharacters
         {
             get
             {
                 if (_connectedCharacters == null)
                 {
-                    _connectedCharacters = new Dictionary<String, String>();
+                    _connectedCharacters = new Dictionary<string, string>();
                 }
 
                 return _connectedCharacters;
             }
         }
 
-        public IDictionary<String, long> RegisteredAccountLogins
+        public IDictionary<string, long> RegisteredAccountLogins
         {
             get
             {
                 if (_registeredAccountLogins == null)
                 {
-                    _registeredAccountLogins = new Dictionary<String, long>();
+                    _registeredAccountLogins = new Dictionary<string, long>();
                 }
 
                 return _registeredAccountLogins;

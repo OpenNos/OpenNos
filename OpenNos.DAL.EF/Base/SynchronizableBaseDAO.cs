@@ -48,7 +48,7 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
                 return Enumerable.Empty<TDTO>();
             }
         }
@@ -64,7 +64,7 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
                 return null;
             }
         }

@@ -227,7 +227,7 @@ namespace OpenNos.Handler
                 }
                 DAOFactory.GeneralLogDAO.SetCharIdNull(Convert.ToInt64(character.CharacterId));
                 DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, characterDeletePacket.Slot);
-                LoadCharacters(String.Empty);
+                LoadCharacters(string.Empty);
             }
             else
             {

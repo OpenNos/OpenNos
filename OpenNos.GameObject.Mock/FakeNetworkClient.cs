@@ -56,10 +56,8 @@ namespace OpenNos.GameObject.Mock
 
             set
             {
-                if (value != _clientId)
-                {
-                    _clientId = value;
-                }
+
+                _clientId = value;
             }
         }
 
@@ -137,7 +135,7 @@ namespace OpenNos.GameObject.Mock
         {
             Debug.WriteLine($"Enqueued {packet}");
             UTF8Encoding encoding = new UTF8Encoding();
-            byte[] buf = encoding.GetBytes(String.Format("{0} {1}", lastKeepAliveIdentitiy, packet));
+            byte[] buf = encoding.GetBytes($"{lastKeepAliveIdentitiy} {packet}");
             MessageReceived?.Invoke(this, new MessageEventArgs(new ScsRawDataMessage(buf), DateTime.Now));
             lastKeepAliveIdentitiy = lastKeepAliveIdentitiy + 1;
         }
@@ -158,7 +156,7 @@ namespace OpenNos.GameObject.Mock
 
         public void SendPacketFormat(string packet, params object[] param)
         {
-            _sentPackets.Enqueue(String.Format(packet, param));
+            _sentPackets.Enqueue(string.Format(packet, param));
         }
 
         public void SendPackets(IEnumerable<string> packets, byte priority = 10)

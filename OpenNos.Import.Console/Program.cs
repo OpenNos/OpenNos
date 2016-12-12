@@ -39,10 +39,10 @@ namespace OpenNos.Import.Console
             if (args.Length == 0)
             {
                 int offset = (System.Console.WindowWidth - text.Length) / 2;
-                System.Console.WriteLine(new String('=', System.Console.WindowWidth));
+                System.Console.WriteLine(new string('=', System.Console.WindowWidth));
                 System.Console.SetCursorPosition(offset < 0 ? 0 : offset, System.Console.CursorTop);
                 System.Console.WriteLine(text + "\n" +
-                new String('=', System.Console.WindowWidth) + "\n");
+                new string('=', System.Console.WindowWidth) + "\n");
             }
 
             if (DataAccessHelper.Initialize())
@@ -77,7 +77,7 @@ namespace OpenNos.Import.Console
             try
             {
                 Logger.Log.Warn(Language.Instance.GetMessageFromKey("ENTER_PATH"));
-                string folder = String.Empty;
+                string folder = string.Empty;
                 if (args.Length == 0)
                 {
                     folder = System.Console.ReadLine();

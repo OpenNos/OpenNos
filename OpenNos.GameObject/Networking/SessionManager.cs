@@ -46,7 +46,6 @@ namespace OpenNos.GameObject
                     Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                     customClient.Disconnect();
                     _sessions.TryRemove(customClient.ClientId, out session);
-                    return;
                 }
             }
         }
@@ -85,7 +84,7 @@ namespace OpenNos.GameObject
                 session.Destroy();
                 client.Disconnect();
                 Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + client.ClientId);
-                session = null;
+                // session = null;
             }
         }
 

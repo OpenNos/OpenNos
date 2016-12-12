@@ -104,7 +104,7 @@ namespace EpPathFinding
             return (a.minX == b.minX) && (a.minY == b.minY) && (a.maxX == b.maxX) && (a.maxY == b.maxY);
         }
 
-        public override bool Equals(System.Object obj)
+        public override bool Equals(object obj)
         {
             // Unlikely to compare incorrect type so removed for performance
             //if (!(obj.GetType() == typeof(GridRect)))

@@ -108,10 +108,7 @@ namespace OpenNos.GameObject
 
             set
             {
-                if (value != _transportId)
-                {
-                    _transportId = value;
-                }
+                _transportId = value;
             }
         }
 
@@ -577,7 +574,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    wearable.Rare = (sbyte)-2;
+                    wearable.Rare = -2;
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 11));
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 0));
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, SpStoneUpgrade));

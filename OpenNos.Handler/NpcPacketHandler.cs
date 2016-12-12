@@ -319,13 +319,13 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum, newItem.Amount, newItem.Type, newItem.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
                                     if (iteminfo.ReputPrice == 0)
                                     {
-                                        Session.SendPacket(Session.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
+                                        Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
                                         Session.Character.Gold -= (long)(price * percent);
                                         Session.SendPacket(Session.Character.GenerateGold());
                                     }
                                     else
                                     {
-                                        Session.SendPacket(Session.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
+                                        Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
                                         Session.Character.Reput -= Reputprice;
                                         Session.SendPacket(Session.Character.GenerateFd());
                                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
@@ -352,7 +352,7 @@ namespace OpenNos.Handler
             long[] gold = new long[20];
             short[] slot = new short[20];
             byte[] qty = new byte[20];
-            string shopname = String.Empty;
+            string shopname = string.Empty;
             if (packetsplit.Length > 2)
             {
                 short typePacket;
@@ -589,7 +589,7 @@ namespace OpenNos.Handler
                                 Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
                                 Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
 
-                                Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
+                                Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
                             }
                         }
                     }
@@ -634,7 +634,7 @@ namespace OpenNos.Handler
                     return;
                 }
                 Session.Character.Gold += price * amount;
-                Session.SendPacket(Session.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), inv.Item.Name, amount)));
+                Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), inv.Item.Name, amount)));
 
                 Session.Character.Inventory.RemoveItemAmountFromInventory(amount, inv.Id);
                 Session.SendPacket(Session.Character.GenerateGold());
@@ -865,7 +865,7 @@ namespace OpenNos.Handler
 
             shopOwnerSession.Character.Gold += shopitem.Price * amount;
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateGold());
-            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), Session.Character.Name, shopitem.ItemInstance.Item.Name, amount)));
+            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), Session.Character.Name, shopitem.ItemInstance.Item.Name, amount)));
             clientSession.CurrentMap.UserShops[shop.Key].Sell += shopitem.Price * amount;
 
             if (shopitem.ItemInstance.Type != InventoryType.Equipment)

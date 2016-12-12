@@ -104,7 +104,10 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// </summary>
         public CommunicationStates CommunicationState
         {
-            get { return _client.CommunicationState; }
+            get
+            {
+                return _client.CommunicationState;
+            }
         }
 
         /// <summary>
@@ -112,8 +115,14 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// </summary>
         public int ConnectTimeout
         {
-            get { return _client.ConnectTimeout; }
-            set { _client.ConnectTimeout = value; }
+            get
+            {
+                return _client.ConnectTimeout;
+            }
+            set
+            {
+                _client.ConnectTimeout = value;
+            }
         }
 
         /// <summary>
@@ -128,8 +137,14 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         /// </summary>
         public int Timeout
         {
-            get { return _requestReplyMessenger.Timeout; }
-            set { _requestReplyMessenger.Timeout = value; }
+            get
+            {
+                return _requestReplyMessenger.Timeout;
+            }
+            set
+            {
+                _requestReplyMessenger.Timeout = value;
+            }
         }
 
         #endregion
@@ -201,10 +216,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         private void OnConnected()
         {
             var handler = Connected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            handler?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -213,10 +225,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         private void OnDisconnected()
         {
             var handler = Disconnected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            handler?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -252,7 +261,10 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
             catch (TargetInvocationException ex)
             {
                 var innerEx = ex.InnerException;
-                SendInvokeResponse(invokeMessage, null, new ScsRemoteException(innerEx.Message, innerEx));
+                if (innerEx != null)
+                {
+                    SendInvokeResponse(invokeMessage, null, new ScsRemoteException(innerEx.Message, innerEx));
+                }
                 return;
             }
             catch (Exception ex)

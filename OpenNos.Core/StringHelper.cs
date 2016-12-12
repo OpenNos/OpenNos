@@ -20,7 +20,7 @@ namespace OpenNos.Core
 
         public static string Truncate(string source, int length)
         {
-            return (source.Length > length ? source.Substring(0, length) : source);
+            return source.Length > length ? source.Substring(0, length) : source;
         }
 
         #endregion

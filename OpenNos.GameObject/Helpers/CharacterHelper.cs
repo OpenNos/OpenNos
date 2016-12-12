@@ -21,40 +21,40 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private static int[,] _criticalDist = null;
-        private static int[,] _criticalDistRate = null;
-        private static int[,] _criticalHit = null;
-        private static int[,] _criticalHitRate = null;
-        private static int[,] _distDef = null;
-        private static int[,] _distDodge = null;
-        private static int[,] _distRate = null;
-        private static double[] _firstJobXpData = null;
-        private static int[,] _hitDef = null;
-        private static int[,] _hitDodge = null;
-        private static int[,] _hitRate = null;
-        private static int[,] _hp = null;
-        private static int[] _hpHealth = null;
-        private static int[] _hpHealthStand = null;
-        private static int[,] _magicalDef = null;
-        private static int[,] _maxDist = null;
-        private static int[,] _maxHit = null;
-        private static int[,] _minDist = null;
+        private static int[,] _criticalDist;
+        private static int[,] _criticalDistRate;
+        private static int[,] _criticalHit;
+        private static int[,] _criticalHitRate;
+        private static int[,] _distDef;
+        private static int[,] _distDodge;
+        private static int[,] _distRate;
+        private static double[] _firstJobXpData;
+        private static int[,] _hitDef;
+        private static int[,] _hitDodge;
+        private static int[,] _hitRate;
+        private static int[,] _hp;
+        private static int[] _hpHealth;
+        private static int[] _hpHealthStand;
+        private static int[,] _magicalDef;
+        private static int[,] _maxDist;
+        private static int[,] _maxHit;
+        private static int[,] _minDist;
 
         // difference between class
-        private static int[,] _minHit = null;
+        private static int[,] _minHit;
 
-        private static int[,] _mp = null;
-        private static int[] _mpHealth = null;
-        private static int[] _mpHealthStand = null;
-        private static double[] _secondjobxpData = null;
+        private static int[,] _mp;
+        private static int[] _mpHealth;
+        private static int[] _mpHealthStand;
+        private static double[] _secondjobxpData;
 
         // STAT DATA
-        private static byte[] _speedData = null;
+        private static byte[] _speedData;
 
-        private static double[] _spxpData = null;
+        private static double[] _spxpData;
 
         // same for all class
-        private static double[] _xpData = null;
+        private static double[] _xpData;
 
         #endregion
 
@@ -891,11 +891,11 @@ namespace OpenNos.GameObject
                 _distRate[(int)ClassType.Adventurer, i] = (i + 9) * 2; // approx
                 _criticalDistRate[(int)ClassType.Adventurer, i] = 0; // sure
                 _criticalDist[(int)ClassType.Adventurer, i] = 0; // sure
-                _hitDef[(int)ClassType.Adventurer, i] = (int)(i + 9) / 2; // approx
+                _hitDef[(int)ClassType.Adventurer, i] = i + 9 / 2; // approx
                 _hitDodge[(int)ClassType.Adventurer, i] = i + 9; // approx
-                _distDef[(int)ClassType.Adventurer, i] = (int)(i + 9) / 2; // approx
+                _distDef[(int)ClassType.Adventurer, i] = (i + 9) / 2; // approx
                 _distDodge[(int)ClassType.Adventurer, i] = i + 9; // approx
-                _magicalDef[(int)ClassType.Adventurer, i] = (int)(i + 9) / 2; // approx
+                _magicalDef[(int)ClassType.Adventurer, i] = (i + 9) / 2; // approx
 
                 // SWORDMAN
                 _criticalHitRate[(int)ClassType.Swordman, i] = 0; // approx
@@ -925,7 +925,7 @@ namespace OpenNos.GameObject
                 _minDist[(int)ClassType.Magician, i] = 14 + i; // approx
                 _maxDist[(int)ClassType.Magician, i] = 14 + i; // approx
                 _distRate[(int)ClassType.Magician, i] = (14 + i) * 2; // approx
-                _hitDef[(int)ClassType.Magician, i] = (int)(i + 11) / 2; // approx
+                _hitDef[(int)ClassType.Magician, i] = (i + 11) / 2; // approx
                 _magicalDef[(int)ClassType.Magician, i] = i + 4; // approx
                 _hitDodge[(int)ClassType.Magician, i] = 24 + i; // approx
                 _distDodge[(int)ClassType.Magician, i] = 14 + i; // approx

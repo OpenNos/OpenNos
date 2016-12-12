@@ -93,7 +93,7 @@ namespace OpenNos.GameObject
             {
                 _order++;
                 List<ClientSession> sessions = Characters.Where(s => Map.GetDistance(s.Character, character) < 50).ToList();
-                if (_order > sessions.Count() - 1) // if order wents out of amount of ppl, reset it -> zero based index
+                if (_order > sessions.Count - 1) // if order wents out of amount of ppl, reset it -> zero based index
                 {
                     _order = 0;
                 }

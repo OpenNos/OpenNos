@@ -79,10 +79,10 @@ namespace OpenNos.Core
 
         public void SendPacketFormat(string packet, params object[] param)
         {
-            SendPacket(String.Format(packet, param));
+            SendPacket(string.Format(packet, param));
         }
 
-        public void SendPackets(IEnumerable<String> packets, byte priority = 10)
+        public void SendPackets(IEnumerable<string> packets, byte priority = 10)
         {
             // TODO: maybe send at once with delimiter
             foreach (string packet in packets)

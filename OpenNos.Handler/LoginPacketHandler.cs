@@ -91,7 +91,7 @@ namespace OpenNos.Handler
                             PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
                             if (penalty != null)
                             {
-                                _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, (penalty.DateEnd).ToString("yyyy-MM-dd-HH:mm"))}");
+                                _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, (penalty.DateEnd).ToString("yyyy-MM-dd-HH:mm"))}");
                             }
                             else
                             {
@@ -128,22 +128,22 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("ALREADY_CONNECTED"))}");
+                            _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("ALREADY_CONNECTED"))}");
                         }
                     }
                     else
                     {
-                        _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("IDERROR"))}");
+                        _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("IDERROR"))}");
                     }
                 }
                 else
                 {
-                    _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"))}"); // add estimated time of maintenance/end of maintenance
+                    _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"))}"); // add estimated time of maintenance/end of maintenance
                 }
             }
             else
             {
-                _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("CLIENT_DISCONNECTED"))}");
+                _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("CLIENT_DISCONNECTED"))}");
             }
         }
 

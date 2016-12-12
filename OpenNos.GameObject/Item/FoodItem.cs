@@ -59,7 +59,7 @@ namespace OpenNos.GameObject
                 session.Character.Mp += session.Character.SnackMp;
                 if (session.Character.SnackHp > 0 && session.Character.SnackHp > 0 && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
                 {
-                    session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
+                    session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp));
                 }
                 if (session.IsConnected)
                 {
@@ -111,14 +111,9 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        if (session.Character.Gender == Domain.GenderType.Female)
-                        {
-                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1));
-                        }
-                        else
-                        {
-                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
-                        }
+                        session.SendPacket(session.Character.Gender == Domain.GenderType.Female
+                            ? session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1)
+                            : session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
                     }
                     if (amount == 0)
                     {

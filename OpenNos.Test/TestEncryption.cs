@@ -19,7 +19,7 @@ namespace OpenNos.Test
 
         #region Methods
 
-        public override string Decrypt(byte[] data, int customParameter = 0)
+        public override string Decrypt(byte[] data, int sessionId = 0)
         {
             UTF8Encoding encoding = new UTF8Encoding();
             return encoding.GetString(data);

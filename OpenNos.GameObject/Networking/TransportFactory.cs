@@ -30,11 +30,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                if (instance == null)
-                {
-                    instance = new TransportFactory();
-                }
-                return instance;
+                return instance ?? (instance = new TransportFactory());
             }
         }
 

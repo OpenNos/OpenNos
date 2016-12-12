@@ -14,14 +14,7 @@ namespace OpenNos.GameObject.Networking
             Session = session;
             Skill = skill;
             TargetHitType = targetHitType;
-            if (skillEffect.HasValue)
-            {
-                SkillEffect = skillEffect.Value;
-            }
-            else
-            {
-                SkillEffect = skill.Effect;
-            }
+            SkillEffect = skillEffect ?? skill.Effect;
 
             if (mapX.HasValue)
             {

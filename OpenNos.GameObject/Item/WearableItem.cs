@@ -55,7 +55,7 @@ namespace OpenNos.GameObject
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)itemToWearType}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                             return;
                         }
-                        else if (delay)
+                        if (delay)
                         {
                             inv.BoundCharacterId = session.Character.CharacterId;
                         }

@@ -31,8 +31,8 @@ namespace OpenNos.Core
 
         public static string GetPassword(string passcrypt)
         {
-            bool equal = passcrypt.Length % 2 == 0 ? true : false;
-            string str = equal == true ? passcrypt.Remove(0, 3) : passcrypt.Remove(0, 4);
+            bool equal = passcrypt.Length % 2 == 0;
+            string str = equal ? passcrypt.Remove(0, 3) : passcrypt.Remove(0, 4);
             string decpass = string.Empty;
             for (int i = 0; i < str.Length; i += 2)
             {
@@ -40,7 +40,6 @@ namespace OpenNos.Core
             }
             if (decpass.Length % 2 != 0)
             {
-                str = decpass = string.Empty;
                 str = passcrypt.Remove(0, 2);
                 for (int i = 0; i < str.Length; i += 2)
                 {
@@ -56,21 +55,21 @@ namespace OpenNos.Core
             return decpass;
         }
 
-        public override string Decrypt(byte[] packet, int customParameter = 0)
+        public override string Decrypt(byte[] packet, int sessionId = 0)
         {
             try
             {
-                string decryptedPacket = String.Empty;
+                string decryptedPacket = string.Empty;
 
-                for (int i = 0; i < packet.Length; i++)
+                foreach (byte character in packet)
                 {
-                    if (packet[i] > 14)
+                    if (character > 14)
                     {
-                        decryptedPacket += Convert.ToChar((packet[i] - 15) ^ 195);
+                        decryptedPacket += Convert.ToChar((character - 15) ^ 195);
                     }
                     else
                     {
-                        decryptedPacket += Convert.ToChar((256 - (15 - (packet[i]))) ^ 195);
+                        decryptedPacket += Convert.ToChar((256 - (15 - (character))) ^ 195);
                     }
                 }
 
@@ -92,8 +91,7 @@ namespace OpenNos.Core
             try
             {
                 packet += " ";
-                byte[] tmp = new byte[packet.Length + 1];
-                tmp = Encoding.UTF8.GetBytes(packet);
+                byte[] tmp = Encoding.UTF8.GetBytes(packet);
                 for (int i = 0; i < packet.Length; i++)
                 {
                     tmp[i] = Convert.ToByte(packet[i] + 15);

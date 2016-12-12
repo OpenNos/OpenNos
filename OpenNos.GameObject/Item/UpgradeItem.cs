@@ -14,7 +14,6 @@
 
 using OpenNos.Core;
 using OpenNos.Data;
-using System;
 
 namespace OpenNos.GameObject
 {
@@ -43,8 +42,8 @@ namespace OpenNos.GameObject
                 {
                     if (packetsplit != null)
                     {
-                        byte TypeEquip = 0;
-                        short SlotEquip = -1;
+                        byte TypeEquip;
+                        short SlotEquip;
 
                         if (byte.TryParse(packetsplit[8], out TypeEquip) && short.TryParse(packetsplit[9], out SlotEquip))
                         {

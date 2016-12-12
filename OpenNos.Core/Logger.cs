@@ -49,13 +49,11 @@ namespace OpenNos.Core
         /// Wraps up the message with the CallerMemberName
         /// </summary>
         /// <param name="message"></param>
+        /// <param name="sessionId"></param>
         /// <param name="memberName"></param>
         public static void Debug(string message, int sessionId = 0, [CallerMemberName] string memberName = "")
         {
-            if (Log != null)
-            {
-                Log.Debug($"Session: {sessionId} Method: {memberName} Packet: {message}");
-            }
+            Log?.Debug($"Session: {sessionId} Method: {memberName} Packet: {message}");
         }
 
         /// <summary>
@@ -65,9 +63,9 @@ namespace OpenNos.Core
         /// <param name="innerException"></param>
         public static void Error(Exception innerException = null, [CallerMemberName]string memberName = "")
         {
-            if (Log != null)
+            if (innerException != null)
             {
-                Log.Error($"{memberName}: {innerException.Message}", innerException);
+                Log?.Error($"{memberName}: {innerException.Message}", innerException);
             }
         }
 

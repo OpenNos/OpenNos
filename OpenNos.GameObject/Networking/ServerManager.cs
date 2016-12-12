@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;

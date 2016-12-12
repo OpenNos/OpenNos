@@ -15,11 +15,7 @@
         {
             get
             {
-                if (instance == null)
-                {
-                    instance = new GameObjectMockHelper();
-                }
-                return instance;
+                return instance ?? (instance = new GameObjectMockHelper());
             }
         }
 
