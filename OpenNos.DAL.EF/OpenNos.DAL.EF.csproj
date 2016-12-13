@@ -105,6 +105,9 @@
     <Compile Include="Entities\SpecialistInstance.cs" />
     <Compile Include="Entities\UsableInstance.cs" />
     <Compile Include="Entities\WearableInstance.cs" />
+    <Compile Include="FamilyCharacterDAO.cs" />
+    <Compile Include="FamilyDAO.cs" />
+    <Compile Include="FamilyLogDAO.cs" />
     <Compile Include="Helpers\MigrationHelper.cs" />
     <Compile Include="MailDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />

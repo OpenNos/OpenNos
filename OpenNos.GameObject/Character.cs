@@ -3371,7 +3371,7 @@ namespace OpenNos.GameObject
 
         public void LoadInventory()
         {
-            IEnumerable<ItemInstanceDTO> inventories = DAOFactory.ItemInstanceDAO.LoadByCharacterId(CharacterId).ToList();
+            IEnumerable<ItemInstanceDTO> inventories = DAOFactory.IteminstanceDao.LoadByCharacterId(CharacterId).ToList();
 
             Inventory = new Inventory(this);
             Inventory = new Inventory(this);
@@ -3592,18 +3592,18 @@ namespace OpenNos.GameObject
                     {
                         // load and concat inventory with equipment
                         List<ItemInstance> inventories = Inventory.GetAllItems();
-                        IList<Guid> currentlySavedInventoryIds = DAOFactory.ItemInstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
+                        IList<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDao.LoadSlotAndTypeByCharacterId(CharacterId);
 
                         // remove all which are saved but not in our current enumerable
                         foreach (var inventoryToDeleteId in currentlySavedInventoryIds.Except(inventories.Select(i => i.Id)))
                         {
-                            DAOFactory.ItemInstanceDAO.Delete(inventoryToDeleteId);
+                            DAOFactory.IteminstanceDao.Delete(inventoryToDeleteId);
                         }
 
                         // create or update all which are new or do still exist
                         foreach (ItemInstance itemInstance in inventories)
                         {
-                            DAOFactory.ItemInstanceDAO.InsertOrUpdate(itemInstance);
+                            DAOFactory.IteminstanceDao.InsertOrUpdate(itemInstance);
                         }
                     }
                 }

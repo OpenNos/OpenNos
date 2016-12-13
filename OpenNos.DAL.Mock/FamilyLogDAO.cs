@@ -12,32 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System;
-using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
-    public class ShopSkillDAO : BaseDAO<ShopSkillDTO>, IShopSkillDAO
+    public class FamilyLogDAO : BaseDAO<FamilyLogDTO>, IFamilyLogDAO
     {
-        #region Methods
-
-        public void Insert(List<ShopSkillDTO> skills)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ShopSkillDTO Insert(ShopSkillDTO shopskill)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<ShopSkillDTO> LoadByShopId(int ShopId)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }
