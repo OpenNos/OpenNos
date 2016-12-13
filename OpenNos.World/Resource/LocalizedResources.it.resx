@@ -1023,4 +1023,88 @@
   <data name="GM_BLOCK_ENABLE" xml:space="preserve">
     <value>Ora nessuno può contattarti in pvt!</value>
   </data>
+  <data name="CHARACTER_NOT_IN_FRIENDLIST" xml:space="preserve">
+    <value>Questo giocatore non è nella tua lista amici</value>
+  </data>
+  <data name="POINTS_RESET" xml:space="preserve">
+    <value>Punti specialista ripristinati!</value>
+  </data>
+  <data name="SPEAKER_CANT_BE_USED" xml:space="preserve">
+    <value>Non puoi usare l'altoparlante se sei mutato.</value>
+  </data>
+  <data name="NO_FAIRY" xml:space="preserve">
+    <value>Hai bisogno della fata per farlo</value>
+  </data>
+  <data name="GOLD_DROP_RATE_CHANGED" xml:space="preserve">
+    <value>Tasso caduta d'oro cambiato</value>
+  </data>
+  <data name="SP_NOPOINTS" xml:space="preserve">
+    <value>Non hai punti SP rimasti! Non puoi trasformarti ora!</value>
+  </data>
+  <data name="SP_POINTSADDED" xml:space="preserve">
+    <value>Hai ricevuto {0} punti SP!</value>
+  </data>
+  <data name="BLACKLIST_ADDED" xml:space="preserve">
+    <value>Personaggio aggiunto alla lista nera</value>
+  </data>
+  <data name="BLACKLIST_DELETED" xml:space="preserve">
+    <value>Personaggio tolto dalla lista nera</value>
+  </data>
+  <data name="FRIEND_DELETED" xml:space="preserve">
+    <value>Personaggio rimosso dagli amici</value>
+  </data>
+  <data name="FRIEND_OFFLINE" xml:space="preserve">
+    <value>Il tuo amico è offline</value>
+  </data>
+  <data name="GM_CHAT_BLOCKED" xml:space="preserve">
+    <value>Questa scimmietta è occupata al momento. Prova più tardi!</value>
+  </data>
+  <data name="DROP_MAP_FULL" xml:space="preserve">
+    <value>Ci sono troppi oggetti in mappa! Prova più tardi</value>
+  </data>
+  <data name="XP_NOTFIRSTHIT" xml:space="preserve">
+    <value>Visto che non sei stato il primo che ha attaccato, riceverai solo una parte dell'esperienza</value>
+  </data>
+  <data name="SP_NOPOINTSCANCELED" xml:space="preserve">
+    <value>La trasformazione è stata cancellata! Non hai punti SP rimasti!</value>
+  </data>
+  <data name="FRIEND_ADD" xml:space="preserve">
+    <value>Vuoi essere amico di {0}?</value>
+  </data>
+  <data name="FRIEND_ADDED" xml:space="preserve">
+    <value>Richiesta amicizia accettata!</value>
+  </data>
+  <data name="FRIEND_REJECTED" xml:space="preserve">
+    <value>Richiesta amicizia rifutata!</value>
+  </data>
+  <data name="ALREADY_FRIEND" xml:space="preserve">
+    <value>Voi due siete già amici!</value>
+  </data>
+  <data name="BLACKLIST_BLOCKED" xml:space="preserve">
+    <value>Questo giocatore ti ha bloccato!</value>
+  </data>
+  <data name="BLACKLIST_BLOCKING" xml:space="preserve">
+    <value>Stai bloccando questo giocatore!</value>
+  </data>
+  <data name="FRIEND_FULL" xml:space="preserve">
+    <value>La tua lista amici è piena!</value>
+  </data>
+  <data name="ITEM_NOT_DROPPABLE_HERE" xml:space="preserve">
+    <value>Non puoi gettare quest'oggetto!</value>
+  </data>
+  <data name="TELEPORTERS_LOADED" xml:space="preserve">
+    <value>{0} Teletrasporti caricati!</value>
+  </data>
+  <data name="SHOPSKILLS_LOADED" xml:space="preserve">
+    <value>{0} Abilità negli shop caricati!</value>
+  </data>
+  <data name="SHOPITEMS_LOADED" xml:space="preserve">
+    <value>{0} Oggetti negli shop caricati!</value>
+  </data>
+  <data name="MONSTERSKILLS_LOADED" xml:space="preserve">
+    <value>{0} Abilità dei mostri caricati!</value>
+  </data>
+  <data name="DROPS_LOADED" xml:space="preserve">
+    <value>{0} Drop caricati!</value>
+  </data>
 </root>

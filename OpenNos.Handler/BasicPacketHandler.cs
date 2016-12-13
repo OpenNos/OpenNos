@@ -762,6 +762,11 @@ namespace OpenNos.Handler
                 {
                     long charId;
                     long.TryParse(guriPacket[4], out charId);
+                    if(!Session.Character.IsFriendOfCharacter(charId))
+                    {
+                        Session.SendPacket(Language.Instance.GetMessageFromKey("CHARACTER_NOT_IN_FRIENDLIST"));
+                        return;
+                    }
                     short? mapId = ServerManager.Instance.GetProperty<short?>(charId, nameof(Character.MapId));
                     short? mapx = ServerManager.Instance.GetProperty<short?>(charId, nameof(Character.MapX));
                     short? mapy = ServerManager.Instance.GetProperty<short?>(charId, nameof(Character.MapY));
