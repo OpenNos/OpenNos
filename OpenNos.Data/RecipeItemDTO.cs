@@ -18,7 +18,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public byte Amount { get; set; }
+        public short Amount { get; set; }
 
         public short ItemVNum { get; set; }
 

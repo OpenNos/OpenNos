@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF
     {
         #region Properties
 
-        public byte Amount { get; set; }
+        public short Amount { get; set; }
 
         public virtual Item Item { get; set; }
 
