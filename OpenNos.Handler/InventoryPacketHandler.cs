@@ -144,6 +144,27 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("s_carrier")]
+        public void SpecialistHolder(string packet)
+        {
+            // left as a placeholder
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            short slot;
+            short holderSlot;
+            if (short.TryParse(packetsplit[2], out slot) && short.TryParse(packetsplit[3], out holderSlot))
+            {
+                SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
+                WearableInstance holder = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(holderSlot, InventoryType.Equipment);
+                if (specialist != null && holder != null)
+                {
+                    // holder.IsEmpty = false;
+                    Session.SendPacket("shop_end 2");
+                    // Session.Character.Inventory.RemoveItemAmountFromInventory(1, specialist.Id);
+                }
+            }
+        }
+
         [Packet("eqinfo")]
         public void EquipmentInfo(string packet)
         {
@@ -201,6 +222,11 @@ namespace OpenNos.Handler
                 }
                 if (inventory?.Item != null)
                 {
+                    if (!inventory.IsEmpty)
+                    {
+                        Session.SendPacket(Session.Character.GenerateEInfo(inventory));
+                        return;
+                    }
                     Session.SendPacket(inventory.Item.EquipmentSlot != EquipmentType.Sp ?
                         Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ?
                         Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));

@@ -1481,14 +1481,15 @@ namespace OpenNos.GameObject
                 case ItemType.Box:
                     if (Inventory != null)
                     {
-                        SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                        SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>(item.Slot, InventoryType.Equipment);
+                        if (specialist == null) return subtype == 2 ? $"e_info 7 {item.ItemVNum} 0" :string.Empty;
 
                         // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl
                         // 5=fairy pearl
                         switch (subtype)
                         {
                             case 2:
-                                return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {specialist.SpLevel} {CharacterHelper.SPXPData[JobLevelXp]} {CharacterHelper.SPXPData[JobLevel - 1]} {item.Upgrade} {specialist.SlDamage} {specialist.SlDefence} {specialist.SlElement} {specialist.SlHP} {CharacterHelper.SPPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} {specialist.SpStoneUpgrade} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
+                                return $"e_info 7 {item.ItemVNum} 1 {item.Design} {specialist.SpLevel} {CharacterHelper.SPXPData[JobLevelXp]} {CharacterHelper.SPXPData[JobLevel - 1]} {item.Upgrade} {specialist.SlDamage} {specialist.SlDefence} {specialist.SlElement} {specialist.SlHP} {CharacterHelper.SPPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} {specialist.SpStoneUpgrade} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
 
                             default:
                                 return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";
@@ -1698,6 +1699,9 @@ namespace OpenNos.GameObject
         {
             switch (type)
             {
+                case 2:
+                    return $"guri 2 {argument} {CharacterId}";
+
                 case 10:
                     return $"guri 10 {argument} {value} {CharacterId}";
 
@@ -3367,7 +3371,7 @@ namespace OpenNos.GameObject
 
         public void LoadInventory()
         {
-            IEnumerable<ItemInstanceDTO> inventories = DAOFactory.ItemInstanceDAO.LoadByCharacterId(CharacterId).ToList();
+            IEnumerable<ItemInstanceDTO> inventories = DAOFactory.IteminstanceDao.LoadByCharacterId(CharacterId).ToList();
 
             Inventory = new Inventory(this);
             Inventory = new Inventory(this);
@@ -3588,18 +3592,18 @@ namespace OpenNos.GameObject
                     {
                         // load and concat inventory with equipment
                         List<ItemInstance> inventories = Inventory.GetAllItems();
-                        IList<Guid> currentlySavedInventoryIds = DAOFactory.ItemInstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
+                        IList<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDao.LoadSlotAndTypeByCharacterId(CharacterId);
 
                         // remove all which are saved but not in our current enumerable
                         foreach (var inventoryToDeleteId in currentlySavedInventoryIds.Except(inventories.Select(i => i.Id)))
                         {
-                            DAOFactory.ItemInstanceDAO.Delete(inventoryToDeleteId);
+                            DAOFactory.IteminstanceDao.Delete(inventoryToDeleteId);
                         }
 
                         // create or update all which are new or do still exist
                         foreach (ItemInstance itemInstance in inventories)
                         {
-                            DAOFactory.ItemInstanceDAO.InsertOrUpdate(itemInstance);
+                            DAOFactory.IteminstanceDao.InsertOrUpdate(itemInstance);
                         }
                     }
                 }

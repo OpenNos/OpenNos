@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class FamilyDTO
+    public class FamilyDTO : MappingBaseDTO
     {
         #region Properties
 

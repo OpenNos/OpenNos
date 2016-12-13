@@ -13,31 +13,10 @@
  */
 
 using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using System;
-using System.Collections.Generic;
 
-namespace OpenNos.DAL.Mock
+namespace OpenNos.DAL
 {
-    public class ShopSkillDAO : BaseDAO<ShopSkillDTO>, IShopSkillDAO
+    public interface IFamilyLogDAO : IMappingBaseDAO
     {
-        #region Methods
-
-        public void Insert(List<ShopSkillDTO> skills)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ShopSkillDTO Insert(ShopSkillDTO shopskill)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<ShopSkillDTO> LoadByShopId(int ShopId)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

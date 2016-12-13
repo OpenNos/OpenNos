@@ -29,9 +29,12 @@ namespace OpenNos.DAL
         private static ICharacterSkillDAO _characterskillDAO;
         private static IComboDAO _comboDAO;
         private static IDropDAO _dropDAO;
+        private static IFamilyCharacterDAO _familycharacterDAO;
+        private static IFamilyDAO _familyDAO;
+        private static IFamilyLogDAO _familylogDAO;
         private static IGeneralLogDAO _generallogDAO;
         private static IItemDAO _itemDAO;
-        private static IItemInstanceDAO _itemInstanceDAO;
+        private static IItemInstanceDAO _iteminstanceDAO;
         private static IMailDAO _mailDAO;
         private static IMapDAO _mapDAO;
         private static IMapMonsterDAO _mapmonsterDAO;
@@ -219,6 +222,66 @@ namespace OpenNos.DAL
             }
         }
 
+        public static IFamilyCharacterDAO FamilyCharacterDAO
+        {
+            get
+            {
+                if (_familycharacterDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _familycharacterDAO = new Mock.FamilyCharacterDAO();
+                    }
+                    else
+                    {
+                        _familycharacterDAO = new EF.FamilyCharacterDAO();
+                    }
+                }
+
+                return _familycharacterDAO;
+            }
+        }
+
+        public static IFamilyDAO FamilyDAO
+        {
+            get
+            {
+                if (_familyDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _familyDAO = new Mock.FamilyDAO();
+                    }
+                    else
+                    {
+                        _familyDAO = new EF.FamilyDAO();
+                    }
+                }
+
+                return _familyDAO;
+            }
+        }
+
+        public static IFamilyLogDAO FamilyLogDAO
+        {
+            get
+            {
+                if (_familylogDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _familylogDAO = new Mock.FamilyLogDAO();
+                    }
+                    else
+                    {
+                        _familylogDAO = new EF.FamilyLogDAO();
+                    }
+                }
+
+                return _familylogDAO;
+            }
+        }
+
         public static IGeneralLogDAO GeneralLogDAO
         {
             get
@@ -259,23 +322,23 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IItemInstanceDAO ItemInstanceDAO
+        public static IItemInstanceDAO IteminstanceDao
         {
             get
             {
-                if (_itemInstanceDAO == null)
+                if (_iteminstanceDAO == null)
                 {
                     if (_useMock)
                     {
-                        _itemInstanceDAO = new Mock.ItemInstanceDAO();
+                        _iteminstanceDAO = new Mock.ItemInstanceDAO();
                     }
                     else
                     {
-                        _itemInstanceDAO = new EF.ItemInstanceDAO();
+                        _iteminstanceDAO = new EF.ItemInstanceDAO();
                     }
                 }
 
-                return _itemInstanceDAO;
+                return _iteminstanceDAO;
             }
         }
 

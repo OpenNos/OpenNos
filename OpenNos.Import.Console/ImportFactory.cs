@@ -2568,8 +2568,26 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case ItemType.Box:
-                                item.Effect = Convert.ToInt16(currentLine[2]);
-                                item.EffectValue = Convert.ToInt32(currentLine[3]);
+                                switch (item.VNum)
+                                {
+                                    
+                                    // add here your custom effect/effectvalue for box item, make sure its unique for boxitems
+
+                                    case 287:
+                                        item.Effect = 69;
+                                        item.EffectValue = 1;
+                                        break;
+
+                                    case 4240:
+                                        item.Effect = 69;
+                                        item.EffectValue = 2;
+                                        break;
+
+                                    default:
+                                        item.Effect = Convert.ToInt16(currentLine[2]);
+                                        item.EffectValue = Convert.ToInt32(currentLine[3]);
+                                        break;
+                                }
                                 break;
 
                             case ItemType.Fashion:
@@ -2909,21 +2927,23 @@ namespace OpenNos.Import.Console
                                 }
 
                                 // needs to be hardcoded
-                                if (item.VNum == 901)
+                                switch (item.VNum)
                                 {
-                                    item.Element = 1;
-                                }
-                                else if (item.VNum == 903)
-                                {
-                                    item.Element = 2;
-                                }
-                                else if (item.VNum == 906)
-                                {
-                                    item.Element = 3;
-                                }
-                                else if (item.VNum == 909)
-                                {
-                                    item.Element = 3;
+                                    case 901:
+                                        item.Element = 1;
+                                        break;
+
+                                    case 903:
+                                        item.Element = 2;
+                                        break;
+
+                                    case 906:
+                                        item.Element = 3;
+                                        break;
+
+                                    case 909:
+                                        item.Element = 3;
+                                        break;
                                 }
                                 break;
 

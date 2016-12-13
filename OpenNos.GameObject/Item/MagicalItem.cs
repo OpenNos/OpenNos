@@ -162,10 +162,7 @@ namespace OpenNos.GameObject
                                 session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
                                 return;
                             }
-                            else
-                            {
-                                session.Character.HairStyle = Enum.IsDefined(typeof(HairStyleType), (byte)EffectValue) ? (HairStyleType)EffectValue : 0;
-                            }
+                            session.Character.HairStyle = Enum.IsDefined(typeof(HairStyleType), (byte)EffectValue) ? (HairStyleType)EffectValue : 0;
                         }
                         session.SendPacket(session.Character.GenerateEq());
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateIn());

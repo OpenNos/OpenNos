@@ -33,6 +33,13 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
+                case 69:
+                    if (EffectValue == 1)
+                    {
+                        session.SendPacket($"wopen 44 {inv.Slot}");
+                    }
+                    break;
+
                 default:
                     Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;
