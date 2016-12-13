@@ -151,7 +151,7 @@ namespace OpenNos.Handler
                     }
                 }
 
-                Session.Character.Skills[skillVNum] = new CharacterSkill() { SkillVNum = skillVNum, CharacterId = Session.Character.CharacterId };
+                Session.Character.Skills[skillVNum] = new CharacterSkill { SkillVNum = skillVNum, CharacterId = Session.Character.CharacterId };
 
                 Session.SendPacket(Session.Character.GenerateSki());
                 Session.SendPackets(Session.Character.GenerateQuicklist());
@@ -171,6 +171,15 @@ namespace OpenNos.Handler
             Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        }
+
+        [Packet("$Packet")]
+        public void PacketCallBack(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            packet = packet.Substring(packet.IndexOf(' ', packet.IndexOf(' ') + 1));
+            Session.SendPacket(packet);
+            Session.SendPacket(Session.Character.GenerateSay(packet, 10));
         }
 
         [Packet("$Backpack")]
