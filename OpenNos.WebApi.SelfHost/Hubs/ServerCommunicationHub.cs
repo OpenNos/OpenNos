@@ -51,7 +51,7 @@ namespace OpenNos.WebApi.SelfHost
                 // Account cant connect twice
                 if (ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsKey(accountName))
                 {
-                    Logger.Log.DebugFormat($"[API] Account {accountName} is already connected.");
+                    Logger.Log.InfoFormat($"Account {accountName} is already connected.");
                     return false;
                 }
                 else
@@ -59,7 +59,7 @@ namespace OpenNos.WebApi.SelfHost
                     // TODO: move in own method, cannot do this here because it needs to be called by
                     //       a client who wants to know if the Account is allowed to connect without
                     // doing it actually
-                    Logger.Log.DebugFormat($"[API] Account {accountName} has connected.");
+                    Logger.Log.InfoFormat($"Account {accountName} has connected.");
                     ServerCommunicationHelper.Instance.ConnectedAccounts[accountName] = sessionId;
 
                     // inform clients
@@ -86,7 +86,7 @@ namespace OpenNos.WebApi.SelfHost
                 // character cant connect twice
                 if (ServerCommunicationHelper.Instance.ConnectedCharacters.ContainsKey(characterName))
                 {
-                    Logger.Log.DebugFormat($"[API] Character {characterName} is already connected.");
+                    Logger.Log.InfoFormat($"Character {characterName} is already connected.");
                     return false;
                 }
                 else
@@ -94,7 +94,7 @@ namespace OpenNos.WebApi.SelfHost
                     // TODO: move in own method, cannot do this here because it needs to be called by
                     //       a client who wants to know if the character is allowed to connect
                     // without doing it actually
-                    Logger.Log.DebugFormat($"[API] Character {characterName} has connected.");
+                    Logger.Log.InfoFormat($"Character {characterName} has connected.");
                     ServerCommunicationHelper.Instance.ConnectedCharacters[characterName] = accountName;
 
                     // inform clients
@@ -122,7 +122,7 @@ namespace OpenNos.WebApi.SelfHost
                 // inform clients
                 Clients.All.accountDisconnected(accountName);
 
-                Logger.Log.DebugFormat($"[API] Account {accountName} has been disconnected.");
+                Logger.Log.InfoFormat($"Account {accountName} has been disconnected.");
             }
             catch (Exception ex)
             {
@@ -143,7 +143,7 @@ namespace OpenNos.WebApi.SelfHost
                 // inform clients
                 Clients.All.characterDisconnected(characterName, characterId);
 
-                Logger.Log.DebugFormat($"[API] Character {characterName} has been disconnected.");
+                Logger.Log.InfoFormat($"Character {characterName} has been disconnected.");
             }
             catch (Exception ex)
             {
@@ -172,11 +172,11 @@ namespace OpenNos.WebApi.SelfHost
 
                 if (successful)
                 {
-                    Logger.Log.DebugFormat($"[API] Account {accountName} has lost the permission to login with SessionId {sessionId}.");
+                    Logger.Log.InfoFormat($"Account {accountName} has lost the permission to login with SessionId {sessionId}.");
                 }
                 else
                 {
-                    Logger.Log.DebugFormat($"[API] Account {accountName} is not permitted to login with SessionId {sessionId}.");
+                    Logger.Log.InfoFormat($"Account {accountName} is not permitted to login with SessionId {sessionId}.");
                 }
 
                 return successful;
@@ -208,7 +208,7 @@ namespace OpenNos.WebApi.SelfHost
                     ServerCommunicationHelper.Instance.RegisteredAccountLogins[accountName] = sessionId;
                 }
 
-                Logger.Log.DebugFormat($"[API] Account {accountName} is now permitted to login with SessionId {sessionId}");
+                Logger.Log.InfoFormat($"Account {accountName} is now permitted to login with SessionId {sessionId}");
             }
             catch (Exception ex)
             {
