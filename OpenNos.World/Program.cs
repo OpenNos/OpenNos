@@ -118,6 +118,7 @@ namespace OpenNos.World
         private static void RegisterMappings()
         {
             // register mappings for items
+            DAOFactory.IteminstanceDao.RegisterMapping(typeof(BoxInstance));
             DAOFactory.IteminstanceDao.RegisterMapping(typeof(SpecialistInstance));
             DAOFactory.IteminstanceDao.RegisterMapping(typeof(WearableInstance));
             DAOFactory.IteminstanceDao.InitializeMapper(typeof(ItemInstance));

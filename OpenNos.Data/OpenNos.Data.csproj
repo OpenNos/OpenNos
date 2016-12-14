@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Base\MappingBaseDTO.cs" />
     <Compile Include="Base\SynchronizableBaseDTO.cs" />
+    <Compile Include="BoxItemDTO.cs" />
     <Compile Include="CellonOptionDTO.cs" />
     <Compile Include="CharacterRelationDTO.cs" />
     <Compile Include="ComboDTO.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="FamilyDTO.cs" />
     <Compile Include="FamilyLogDTO.cs" />
     <Compile Include="GeneralLogDTO.cs" />
+    <Compile Include="Interfaces\IBoxInstance.cs" />
     <Compile Include="Interfaces\IMapDTO.cs" />
     <Compile Include="Interfaces\IItemInstance.cs" />
     <Compile Include="Interfaces\ISpecialistInstance.cs" />

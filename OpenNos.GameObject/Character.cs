@@ -1481,7 +1481,7 @@ namespace OpenNos.GameObject
                 case ItemType.Box:
                     if (Inventory != null)
                     {
-                        SpecialistInstance specialist = Inventory.LoadBySlotAndType<SpecialistInstance>(item.Slot, InventoryType.Equipment);
+                        BoxInstance specialist = Inventory.LoadBySlotAndType<BoxInstance>(item.Slot, InventoryType.Equipment);
                         if (specialist == null) return subtype == 2 ? $"e_info 7 {item.ItemVNum} 0" :string.Empty;
 
                         // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl
@@ -1489,7 +1489,8 @@ namespace OpenNos.GameObject
                         switch (subtype)
                         {
                             case 2:
-                                return $"e_info 7 {item.ItemVNum} 1 {item.Design} {specialist.SpLevel} {CharacterHelper.SPXPData[JobLevelXp]} {CharacterHelper.SPXPData[JobLevel - 1]} {item.Upgrade} {specialist.SlDamage} {specialist.SlDefence} {specialist.SlElement} {specialist.SlHP} {CharacterHelper.SPPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} {specialist.SpStoneUpgrade} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
+                                Item spitem = ServerManager.GetItem(specialist.HoldingVNum);
+                                return $"e_info 7 {item.ItemVNum} {(specialist.HoldingVNum == 0 ? 0 : 1)} {specialist.HoldingVNum} {specialist.SpLevel} {CharacterHelper.SPXPData[JobLevelXp]} {CharacterHelper.SPXPData[JobLevel - 1]} {item.Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
 
                             default:
                                 return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";

@@ -155,12 +155,28 @@ namespace OpenNos.Handler
             if (short.TryParse(packetsplit[2], out slot) && short.TryParse(packetsplit[3], out holderSlot))
             {
                 SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
-                WearableInstance holder = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(holderSlot, InventoryType.Equipment);
+                BoxInstance holder = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(holderSlot, InventoryType.Equipment);
                 if (specialist != null && holder != null)
                 {
-                    // holder.IsEmpty = false;
+                    holder.HoldingVNum = specialist.ItemVNum;
+                    holder.SlDamage = specialist.SlDamage;
+                    holder.SlDefence = specialist.SlDefence;
+                    holder.SlElement = specialist.SlElement;
+                    holder.SlHP = specialist.SlHP;
+                    holder.SpDamage = specialist.SpDamage;
+                    holder.SpDark = specialist.SpDark;
+                    holder.SpDefence = specialist.SpDefence;
+                    holder.SpElement = specialist.SpElement;
+                    holder.SpFire = specialist.SpFire;
+                    holder.SpHP = specialist.SpHP;
+                    holder.SpLevel = specialist.SpLevel;
+                    holder.SpLight = specialist.SpLight;
+                    holder.SpStoneUpgrade = specialist.SpStoneUpgrade;
+                    holder.SpWater = specialist.SpWater;
+                    holder.Upgrade = specialist.Upgrade;
+                    holder.XP = specialist.XP;
                     Session.SendPacket("shop_end 2");
-                    // Session.Character.Inventory.RemoveItemAmountFromInventory(1, specialist.Id);
+                    Session.Character.Inventory.RemoveItemAmountFromInventory(1, specialist.Id);
                 }
             }
         }
@@ -184,7 +200,8 @@ namespace OpenNos.Handler
 
                     case 1:
                         inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Equipment) ??
-                                    Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
+                                    Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment) ?? 
+                                    Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
                         break;
 
                     case 2:
@@ -222,7 +239,7 @@ namespace OpenNos.Handler
                 }
                 if (inventory?.Item != null)
                 {
-                    if (!inventory.IsEmpty)
+                    if (inventory.IsEmpty)
                     {
                         Session.SendPacket(Session.Character.GenerateEInfo(inventory));
                         return;

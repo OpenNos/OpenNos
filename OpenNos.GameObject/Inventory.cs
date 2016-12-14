@@ -61,6 +61,10 @@ namespace OpenNos.GameObject
                             ItemVNum = vnum,
                             SpLevel = 1,
                             Amount = amount
+                        } : newItem.Item.ItemType == ItemType.Box ? new BoxInstance
+                        {
+                            ItemVNum = vnum,
+                            Amount = amount
                         } :
                         new WearableInstance
                         {
