@@ -1479,8 +1479,10 @@ namespace OpenNos.GameObject
                     }
 
                 case ItemType.Box:
+                    if (item.GetType() == typeof(BoxInstance))
+                    {
                         BoxInstance specialist = (BoxInstance)item;
-                        if (specialist == null) return subtype == 2 ? $"e_info 7 {item.ItemVNum} 0" :string.Empty;
+                        if (specialist == null) return subtype == 2 ? $"e_info 7 {item.ItemVNum} 0" : string.Empty;
 
                         // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl
                         // 5=fairy pearl
@@ -1488,7 +1490,7 @@ namespace OpenNos.GameObject
                         {
                             case 2:
                                 Item spitem = ServerManager.GetItem(specialist.HoldingVNum);
-                                if(specialist.HoldingVNum == 0)
+                                if (specialist.HoldingVNum == 0)
                                 {
                                     return $"e_info 7 {item.ItemVNum} 0";
                                 }
@@ -1497,6 +1499,8 @@ namespace OpenNos.GameObject
                             default:
                                 return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";
                         }
+                    }
+                    return $"e_info 7 {item.ItemVNum} 0";
 
                 case ItemType.Shell:
                     return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {item.Rare} {iteminfo.Price} 0"; // 0 = Number of effects

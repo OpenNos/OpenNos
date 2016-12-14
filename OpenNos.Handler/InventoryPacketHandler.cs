@@ -207,7 +207,7 @@ namespace OpenNos.Handler
                         break;
 
                     case 2:
-                        inventory = new WearableInstance(Guid.NewGuid()); // TODO: take GUID generation to GO
+                        inventory = new WearableInstance(slot, 1);
                         break;
 
                     case 5:
