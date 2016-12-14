@@ -89,6 +89,7 @@
     <Compile Include="ExchangeInfo.cs" />
     <Compile Include="Helpers\MappingHelper.cs" />
     <Compile Include="Item\FoodItem.cs" />
+    <Compile Include="Item\Instance\BoxInstance.cs" />
     <Compile Include="Item\MagicalItem.cs" />
     <Compile Include="Item\ProduceItem.cs" />
     <Compile Include="Item\SnackItem.cs" />

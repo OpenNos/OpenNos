@@ -116,9 +116,10 @@ namespace OpenNos.World
         private static void RegisterMappings()
         {
             // register mappings for items
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
+            DAOFactory.IteminstanceDao.RegisterMapping(typeof(BoxInstance));
+            DAOFactory.IteminstanceDao.RegisterMapping(typeof(SpecialistInstance));
+            DAOFactory.IteminstanceDao.RegisterMapping(typeof(WearableInstance));
+            DAOFactory.IteminstanceDao.InitializeMapper(typeof(ItemInstance));
 
             // entities
             DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
@@ -134,6 +135,9 @@ namespace OpenNos.World
             DAOFactory.MapDAO.RegisterMapping(typeof(MapDTO)).InitializeMapper();
             DAOFactory.MapMonsterDAO.RegisterMapping(typeof(MapMonster)).InitializeMapper();
             DAOFactory.MapNpcDAO.RegisterMapping(typeof(MapNpc)).InitializeMapper();
+            DAOFactory.FamilyDAO.RegisterMapping(typeof(FamilyDTO)).InitializeMapper();
+            DAOFactory.FamilyCharacterDAO.RegisterMapping(typeof(FamilyCharacterDTO)).InitializeMapper();
+            DAOFactory.FamilyLogDAO.RegisterMapping(typeof(FamilyLogDTO)).InitializeMapper();
             DAOFactory.MapTypeDAO.RegisterMapping(typeof(MapTypeDTO)).InitializeMapper();
             DAOFactory.MapTypeMapDAO.RegisterMapping(typeof(MapTypeMapDTO)).InitializeMapper();
             DAOFactory.NpcMonsterDAO.RegisterMapping(typeof(NpcMonster)).InitializeMapper();

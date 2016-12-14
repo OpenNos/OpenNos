@@ -56,6 +56,9 @@
     <Compile Include="CharacterSkillDAO.cs" />
     <Compile Include="ComboDAO.cs" />
     <Compile Include="DropDAO.cs" />
+    <Compile Include="FamilyCharacterDAO.cs" />
+    <Compile Include="FamilyDAO.cs" />
+    <Compile Include="FamilyLogDAO.cs" />
     <Compile Include="GeneralLogDAO.cs" />
     <Compile Include="ItemInstanceDAO.cs" />
     <Compile Include="ItemDAO.cs" />

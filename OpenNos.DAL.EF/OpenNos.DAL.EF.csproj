@@ -80,6 +80,7 @@
     <Compile Include="CharacterRelationDAO.cs" />
     <Compile Include="Entities\Account.cs" />
     <Compile Include="Entities\Base\SynchronizableBaseEntity.cs" />
+    <Compile Include="Entities\BoxInstance.cs" />
     <Compile Include="Entities\CellonOption.cs" />
     <Compile Include="CellonOptionDAO.cs" />
     <Compile Include="Entities\Character.cs" />
@@ -105,6 +106,9 @@
     <Compile Include="Entities\SpecialistInstance.cs" />
     <Compile Include="Entities\UsableInstance.cs" />
     <Compile Include="Entities\WearableInstance.cs" />
+    <Compile Include="FamilyCharacterDAO.cs" />
+    <Compile Include="FamilyDAO.cs" />
+    <Compile Include="FamilyLogDAO.cs" />
     <Compile Include="Helpers\MigrationHelper.cs" />
     <Compile Include="MailDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />
@@ -121,6 +125,14 @@
     <Compile Include="Migrations\201612092208001_Aphrodite1.cs" />
     <Compile Include="Migrations\201612092208001_Aphrodite1.Designer.cs">
       <DependentUpon>201612092208001_Aphrodite1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612131641310_Aphrodite2.cs" />
+    <Compile Include="Migrations\201612131641310_Aphrodite2.Designer.cs">
+      <DependentUpon>201612131641310_Aphrodite2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612141513035_Aphrodite3.cs" />
+    <Compile Include="Migrations\201612141513035_Aphrodite3.Designer.cs">
+      <DependentUpon>201612141513035_Aphrodite3.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -198,6 +210,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612092208001_Aphrodite1.resx">
       <DependentUpon>201612092208001_Aphrodite1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612131641310_Aphrodite2.resx">
+      <DependentUpon>201612131641310_Aphrodite2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612141513035_Aphrodite3.resx">
+      <DependentUpon>201612141513035_Aphrodite3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

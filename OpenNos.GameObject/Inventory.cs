@@ -61,6 +61,10 @@ namespace OpenNos.GameObject
                             ItemVNum = vnum,
                             SpLevel = 1,
                             Amount = amount
+                        } : newItem.Item.ItemType == ItemType.Box ? new BoxInstance
+                        {
+                            ItemVNum = vnum,
+                            Amount = amount
                         } :
                         new WearableInstance
                         {
@@ -313,12 +317,52 @@ namespace OpenNos.GameObject
         public T LoadBySlotAndType<T>(short slot, InventoryType type)
                     where T : ItemInstance
         {
-            return (T)GetAllItems().SingleOrDefault(i => i != null && i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type);
+            T retItem = null;
+            try
+            {
+                retItem = (T)GetAllItems().SingleOrDefault(i => i != null && i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type);
+            }
+            catch (InvalidOperationException ioEx)
+            {
+                Logger.Error(ioEx);
+                bool isFirstItem = true;
+                foreach (ItemInstance item in GetAllItems().Where(i => i != null && i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type))
+                {
+                    if (isFirstItem)
+                    {
+                        retItem = (T)item;
+                        isFirstItem = false;
+                        continue;
+                    }
+                    Remove(GetAllItems().FirstOrDefault(i => i != null && i.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type).Id);
+                }
+            }
+            return retItem;
         }
 
         public ItemInstance LoadBySlotAndType(short slot, InventoryType type)
         {
-            return GetAllItems().SingleOrDefault(i => i != null && i.Slot.Equals(slot) && i.Type.Equals(type));
+            ItemInstance retItem = null;
+            try
+            {
+                retItem = GetAllItems().SingleOrDefault(i => i != null && i.Slot.Equals(slot) && i.Type.Equals(type));
+            }
+            catch(InvalidOperationException ioEx)
+            {
+                Logger.Error(ioEx);
+                bool isFirstItem = true;
+                foreach (ItemInstance item in GetAllItems().Where(i => i != null && i.Slot.Equals(slot) && i.Type.Equals(type)))
+                {
+                    if (isFirstItem)
+                    {
+                        retItem = item;
+                        isFirstItem = false;
+                        continue;
+                    }
+                    Remove(GetAllItems().First(i => i != null && i.Slot.Equals(slot) && i.Type.Equals(type)).Id);
+                }
+            }
+            return retItem;
         }
 
         /// <summary> Moves one item from one Inventory to another. Example: Equipment <-> Wear,

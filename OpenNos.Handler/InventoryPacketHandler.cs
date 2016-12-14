@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
@@ -144,6 +145,43 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("s_carrier")]
+        public void SpecialistHolder(string packet)
+        {
+            // left as a placeholder
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            short slot;
+            short holderSlot;
+            if (short.TryParse(packetsplit[2], out slot) && short.TryParse(packetsplit[3], out holderSlot))
+            {
+                SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
+                BoxInstance holder = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(holderSlot, InventoryType.Equipment);
+                if (specialist != null && holder != null)
+                {
+                    holder.HoldingVNum = specialist.ItemVNum;
+                    holder.SlDamage = specialist.SlDamage;
+                    holder.SlDefence = specialist.SlDefence;
+                    holder.SlElement = specialist.SlElement;
+                    holder.SlHP = specialist.SlHP;
+                    holder.SpDamage = specialist.SpDamage;
+                    holder.SpDark = specialist.SpDark;
+                    holder.SpDefence = specialist.SpDefence;
+                    holder.SpElement = specialist.SpElement;
+                    holder.SpFire = specialist.SpFire;
+                    holder.SpHP = specialist.SpHP;
+                    holder.SpLevel = specialist.SpLevel;
+                    holder.SpLight = specialist.SpLight;
+                    holder.SpStoneUpgrade = specialist.SpStoneUpgrade;
+                    holder.SpWater = specialist.SpWater;
+                    holder.Upgrade = specialist.Upgrade;
+                    holder.XP = specialist.XP;
+                    Session.SendPacket("shop_end 2");
+                    Session.Character.Inventory.RemoveItemAmountFromInventory(1, specialist.Id);
+                }
+            }
+        }
+
         [Packet("eqinfo")]
         public void EquipmentInfo(string packet)
         {
@@ -153,6 +191,7 @@ namespace OpenNos.Handler
             byte type;
             if (packetsplit.Length > 3 && byte.TryParse(packetsplit[2], out type) && short.TryParse(packetsplit[3], out slot))
             {
+                
                 WearableInstance inventory = null;
                 switch (type)
                 {
@@ -163,11 +202,12 @@ namespace OpenNos.Handler
 
                     case 1:
                         inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Equipment) ??
-                                    Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
+                                    Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment) ?? 
+                                    Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
                         break;
 
                     case 2:
-                        inventory = new WearableInstance(Guid.NewGuid()); // TODO: take GUID generation to GO
+                        inventory = new WearableInstance(slot, 1);
                         break;
 
                     case 5:
@@ -181,8 +221,28 @@ namespace OpenNos.Handler
                                     Guid id = exch.ExchangeList.ElementAt(slot).Id;
                                     Inventory inv = ServerManager.Instance.GetProperty<Inventory>(Session.Character.ExchangeInfo.TargetCharacterId, nameof(Character.Inventory));
                                     inventory = inv.LoadByItemInstance<WearableInstance>(id) ??
-                                                inv.LoadByItemInstance<SpecialistInstance>(id);
+                                                inv.LoadByItemInstance<SpecialistInstance>(id) ??
+                                                inv.LoadByItemInstance<BoxInstance>(id);
                                 }
+                            }
+                        }
+                        break;
+
+                    case 6:
+                        long shopOwnerId;
+                        if(long.TryParse(packetsplit[5], out shopOwnerId))
+                        {
+                            KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(shopOwnerId));
+
+                            PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
+
+                            if(item.ItemInstance.GetType() == typeof(BoxInstance))
+                            {
+                                inventory = (BoxInstance)item.ItemInstance;
+                            }
+                            else 
+                            {
+                                inventory = (WearableInstance)item.ItemInstance;
                             }
                         }
                         break;
@@ -201,6 +261,11 @@ namespace OpenNos.Handler
                 }
                 if (inventory?.Item != null)
                 {
+                    if (inventory.IsEmpty)
+                    {
+                        Session.SendPacket(Session.Character.GenerateEInfo(inventory));
+                        return;
+                    }
                     Session.SendPacket(inventory.Item.EquipmentSlot != EquipmentType.Sp ?
                         Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ?
                         Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));

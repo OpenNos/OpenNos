@@ -287,9 +287,9 @@ namespace OpenNos.Test
         private static void RegisterMappings()
         {
             // register mappings for items
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(SpecialistInstance));
-            DAOFactory.ItemInstanceDAO.RegisterMapping(typeof(WearableInstance));
-            DAOFactory.ItemInstanceDAO.InitializeMapper(typeof(ItemInstance));
+            DAOFactory.IteminstanceDao.RegisterMapping(typeof(SpecialistInstance));
+            DAOFactory.IteminstanceDao.RegisterMapping(typeof(WearableInstance));
+            DAOFactory.IteminstanceDao.InitializeMapper(typeof(ItemInstance));
 
             // entities
             DAOFactory.AccountDAO.RegisterMapping(typeof(Account)).InitializeMapper();
