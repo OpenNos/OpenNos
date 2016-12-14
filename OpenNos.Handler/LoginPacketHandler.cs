@@ -75,13 +75,11 @@ namespace OpenNos.Handler
             bool flag = true;
             if (flag)
             {
-                // TODO: implement check for maintenances
-                bool maintenanceCheck = true;
-                if (maintenanceCheck)
-                {
-                    AccountDTO loadedAccount = DAOFactory.AccountDAO.LoadByName(user.Name);
+                AccountDTO loadedAccount = DAOFactory.AccountDAO.LoadByName(user.Name);
 
-                    if (loadedAccount != null && loadedAccount.Password.ToUpper().Equals(user.Password))
+                if (loadedAccount != null && loadedAccount.Password.ToUpper().Equals(user.Password))
+                {
+                    if (ConfigurationManager.AppSettings["Maintenance"] == "false" || (ConfigurationManager.AppSettings["Maintenance"] == "true" && loadedAccount.Authority >= AuthorityType.Admin))
                     {
                         DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.IpAddress, null, "Connection", "LoginServer");
 
@@ -97,7 +95,7 @@ namespace OpenNos.Handler
                             {
                                 switch (type)
                                 {
-                                    case AuthorityType.Unconfirmed:
+                                    case AuthorityType.User:
                                         {
                                             _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("NOTVALIDATE")}");
                                         }
@@ -110,8 +108,6 @@ namespace OpenNos.Handler
                                             DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, newSessionId, _session.IpAddress);
                                             Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
-                                            // inform communication service about new player from
-                                            // login server
                                             try
                                             {
                                                 ServiceFactory.Instance.CommunicationService.RegisterAccountLogin(user.Name, newSessionId);
@@ -135,12 +131,13 @@ namespace OpenNos.Handler
                     {
                         _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("IDERROR"))}");
                     }
+
                 }
                 else
-                {
-                    _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"))}"); // add estimated time of maintenance/end of maintenance
+                    {
+                        _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"))}"); // add estimated time of maintenance/end of maintenance
+                    }
                 }
-            }
             else
             {
                 _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("CLIENT_DISCONNECTED"))}");
