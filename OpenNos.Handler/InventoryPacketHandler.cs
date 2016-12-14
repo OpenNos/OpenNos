@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
@@ -190,6 +191,7 @@ namespace OpenNos.Handler
             byte type;
             if (packetsplit.Length > 3 && byte.TryParse(packetsplit[2], out type) && short.TryParse(packetsplit[3], out slot))
             {
+                
                 WearableInstance inventory = null;
                 switch (type)
                 {
@@ -219,8 +221,28 @@ namespace OpenNos.Handler
                                     Guid id = exch.ExchangeList.ElementAt(slot).Id;
                                     Inventory inv = ServerManager.Instance.GetProperty<Inventory>(Session.Character.ExchangeInfo.TargetCharacterId, nameof(Character.Inventory));
                                     inventory = inv.LoadByItemInstance<WearableInstance>(id) ??
-                                                inv.LoadByItemInstance<SpecialistInstance>(id);
+                                                inv.LoadByItemInstance<SpecialistInstance>(id) ??
+                                                inv.LoadByItemInstance<BoxInstance>(id);
                                 }
+                            }
+                        }
+                        break;
+
+                    case 6:
+                        long shopOwnerId;
+                        if(long.TryParse(packetsplit[5], out shopOwnerId))
+                        {
+                            KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(shopOwnerId));
+
+                            PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
+
+                            if(item.ItemInstance.GetType() == typeof(BoxInstance))
+                            {
+                                inventory = (BoxInstance)item.ItemInstance;
+                            }
+                            else 
+                            {
+                                inventory = (WearableInstance)item.ItemInstance;
                             }
                         }
                         break;
