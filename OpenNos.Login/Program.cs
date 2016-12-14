@@ -19,7 +19,7 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Handler;
-using OpenNos.ServiceRef.Internal;
+using OpenNos.WebApi.Reference;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -66,11 +66,10 @@ namespace OpenNos.Login
                         // register EF -> GO and GO -> EF mappings
                         RegisterMappings();
 
-                        ServiceFactory.Instance.Initialize();
                         NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>("127.0.0.1", port, typeof(LoginPacketHandler), typeof(LoginEncryption), false);
 
-                        // refresh WCF
-                        ServiceFactory.Instance.CommunicationService.CleanupAsync();
+                        //cleanup api
+                        ServerCommunicationClient.Instance.HubProxy.Invoke("Cleanup");
                     }
                     catch (Exception ex)
                     {

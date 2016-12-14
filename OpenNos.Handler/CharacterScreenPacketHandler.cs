@@ -4,7 +4,7 @@ using OpenNos.Data;
 using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using OpenNos.GameObject;
-using OpenNos.ServiceRef.Internal;
+using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -251,7 +251,7 @@ namespace OpenNos.Handler
                 bool hasRegisteredAccountLogin = true;
                 try
                 {
-                    hasRegisteredAccountLogin = ServiceFactory.Instance.CommunicationService.HasRegisteredAccountLogin(loginPacketParts[4], Session.SessionId);
+                    hasRegisteredAccountLogin = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("HasRegisteredAccountLogin", loginPacketParts[4], Session.SessionId).Result;
                 }
                 catch (Exception ex)
                 {
@@ -377,7 +377,7 @@ namespace OpenNos.Handler
                         Session.SendPacket("OK");
 
                         // Inform everyone about connected character
-                        ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
+                        ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectCharacter", Session.Character.Name, Session.Account.Name);
                     }
                 }
             }

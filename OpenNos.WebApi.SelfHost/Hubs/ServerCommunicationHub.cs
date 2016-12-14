@@ -1,64 +1,15 @@
-﻿using OpenNos.Core;
+﻿// Copyright (c) .NET Foundation. All rights reserved. Licensed under the Apache License, Version
+// 2.0. See License.txt in the project root for license information.
+
+using Microsoft.AspNet.SignalR;
+using OpenNos.Core;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace OpenNos.ServiceRef.Internal
+namespace OpenNos.WebApi.SelfHost
 {
-    public class FakeCommunicationService : CommunicationServiceReference.ICommunicationService
+    public class ServerCommunicationHub : Hub
     {
-        #region Members
-
-        private IDictionary<string, int> _connectedAccounts;
-        private IDictionary<string, string> _connectedCharacters;
-        private IDictionary<string, long> _registeredAccountLogins;
-
-        #endregion
-
-        #region Properties
-
-        public IDictionary<string, int> ConnectedAccounts
-        {
-            get
-            {
-                if (_connectedAccounts == null)
-                {
-                    _connectedAccounts = new Dictionary<string, int>();
-                }
-
-                return _connectedAccounts;
-            }
-        }
-
-        public IDictionary<string, string> ConnectedCharacters
-        {
-            get
-            {
-                if (_connectedCharacters == null)
-                {
-                    _connectedCharacters = new Dictionary<string, string>();
-                }
-
-                return _connectedCharacters;
-            }
-        }
-
-        public IDictionary<string, long> RegisteredAccountLogins
-        {
-            get
-            {
-                if (_registeredAccountLogins == null)
-                {
-                    _registeredAccountLogins = new Dictionary<string, long>();
-                }
-
-                return _registeredAccountLogins;
-            }
-        }
-
-        #endregion
-
         #region Methods
 
         /// <summary>
@@ -70,18 +21,12 @@ namespace OpenNos.ServiceRef.Internal
         {
             try
             {
-                return ConnectedAccounts.Any(cc => cc.Key.Equals(accountName));
+                return ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsKey(accountName);
             }
             catch (Exception ex)
             {
-                Logger.Log.Error("General Error", ex);
                 return false;
             }
-        }
-
-        public Task<bool> AccountIsConnectedAsync(string accountName)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -89,14 +34,9 @@ namespace OpenNos.ServiceRef.Internal
         /// </summary>
         public void Cleanup()
         {
-            _registeredAccountLogins = null;
-            _connectedAccounts = null;
-            _connectedCharacters = null;
-        }
-
-        public Task CleanupAsync()
-        {
-            throw new NotImplementedException();
+            ServerCommunicationHelper.Instance.ConnectedAccounts = null;
+            ServerCommunicationHelper.Instance.ConnectedCharacters = null;
+            ServerCommunicationHelper.Instance.RegisteredAccountLogins = null;
         }
 
         /// <summary>
@@ -109,9 +49,9 @@ namespace OpenNos.ServiceRef.Internal
             try
             {
                 // Account cant connect twice
-                if (ConnectedAccounts.ContainsKey(accountName))
+                if (ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsKey(accountName))
                 {
-                    Logger.Log.DebugFormat($"[WCF] Account {accountName} is already connected.");
+                    Logger.Log.DebugFormat($"[API] Account {accountName} is already connected.");
                     return false;
                 }
                 else
@@ -119,8 +59,11 @@ namespace OpenNos.ServiceRef.Internal
                     // TODO: move in own method, cannot do this here because it needs to be called by
                     //       a client who wants to know if the Account is allowed to connect without
                     // doing it actually
-                    Logger.Log.DebugFormat($"[WCF] Account {accountName} has connected.");
-                    ConnectedAccounts.Add(accountName, sessionId);
+                    Logger.Log.DebugFormat($"[API] Account {accountName} has connected.");
+                    ServerCommunicationHelper.Instance.ConnectedAccounts[accountName] = sessionId;
+
+                    // inform clients
+                    Clients.All.accountConnected(accountName, sessionId);
                     return true;
                 }
             }
@@ -129,11 +72,6 @@ namespace OpenNos.ServiceRef.Internal
                 Logger.Log.Error("General Error", ex);
                 return false;
             }
-        }
-
-        public Task<bool> ConnectAccountAsync(string accountName, int sessionId)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -146,9 +84,9 @@ namespace OpenNos.ServiceRef.Internal
             try
             {
                 // character cant connect twice
-                if (ConnectedCharacters.ContainsKey(characterName))
+                if (ServerCommunicationHelper.Instance.ConnectedCharacters.ContainsKey(characterName))
                 {
-                    Logger.Log.DebugFormat($"[WCF] Character {characterName} is already connected.");
+                    Logger.Log.DebugFormat($"[API] Character {characterName} is already connected.");
                     return false;
                 }
                 else
@@ -156,8 +94,11 @@ namespace OpenNos.ServiceRef.Internal
                     // TODO: move in own method, cannot do this here because it needs to be called by
                     //       a client who wants to know if the character is allowed to connect
                     // without doing it actually
-                    Logger.Log.DebugFormat($"[WCF] Character {characterName} has connected.");
-                    ConnectedCharacters.Add(characterName, accountName);
+                    Logger.Log.DebugFormat($"[API] Character {characterName} has connected.");
+                    ServerCommunicationHelper.Instance.ConnectedCharacters[characterName] = accountName;
+
+                    // inform clients
+                    Clients.All.characterConnected(characterName);
                     return true;
                 }
             }
@@ -168,11 +109,6 @@ namespace OpenNos.ServiceRef.Internal
             }
         }
 
-        public Task<bool> ConnectCharacterAsync(string characterName, string accountName)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Disconnect Account from server.
         /// </summary>
@@ -181,19 +117,17 @@ namespace OpenNos.ServiceRef.Internal
         {
             try
             {
-                ConnectedAccounts.Remove(accountName);
+                ServerCommunicationHelper.Instance.ConnectedAccounts.Remove(accountName);
 
-                Logger.Log.DebugFormat($"[WCF] Account {accountName} has been disconnected.");
+                // inform clients
+                Clients.All.accountDisconnected(accountName);
+
+                Logger.Log.DebugFormat($"[API] Account {accountName} has been disconnected.");
             }
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
             }
-        }
-
-        public Task DisconnectAccountAsync(string accountName)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -204,9 +138,12 @@ namespace OpenNos.ServiceRef.Internal
         {
             try
             {
-                ConnectedCharacters.Remove(characterName);
+                ServerCommunicationHelper.Instance.ConnectedCharacters.Remove(characterName);
 
-                Logger.Log.DebugFormat($"[WCF] Character {characterName} has been disconnected.");
+                // inform clients
+                Clients.All.characterDisconnected(characterName, characterId);
+
+                Logger.Log.DebugFormat($"[API] Character {characterName} has been disconnected.");
             }
             catch (Exception ex)
             {
@@ -214,9 +151,10 @@ namespace OpenNos.ServiceRef.Internal
             }
         }
 
-        public Task DisconnectCharacterAsync(string characterName, long characterId)
+        public bool HandleError(Exception error)
         {
-            throw new NotImplementedException();
+            //we do not handle any errors to wrap them up for the client
+            return true;
         }
 
         /// <summary>
@@ -230,15 +168,15 @@ namespace OpenNos.ServiceRef.Internal
             try
             {
                 // return if the player has been registered
-                bool successful = RegisteredAccountLogins.Remove(accountName);
+                bool successful = ServerCommunicationHelper.Instance.RegisteredAccountLogins.Remove(accountName);
 
                 if (successful)
                 {
-                    Logger.Log.DebugFormat($"[WCF] Account {accountName} has lost the permission to login with SessionId {sessionId}.");
+                    Logger.Log.DebugFormat($"[API] Account {accountName} has lost the permission to login with SessionId {sessionId}.");
                 }
                 else
                 {
-                    Logger.Log.DebugFormat($"[WCF] Account {accountName} is not permitted to login with SessionId {sessionId}.");
+                    Logger.Log.DebugFormat($"[API] Account {accountName} is not permitted to login with SessionId {sessionId}.");
                 }
 
                 return successful;
@@ -251,11 +189,6 @@ namespace OpenNos.ServiceRef.Internal
             return false;
         }
 
-        public Task<bool> HasRegisteredAccountLoginAsync(string name, long sessionId)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Register Account for Login (Verification for Security)
         /// </summary>
@@ -265,27 +198,22 @@ namespace OpenNos.ServiceRef.Internal
         {
             try
             {
-                if (!RegisteredAccountLogins.ContainsKey(accountName))
+                if (!ServerCommunicationHelper.Instance.RegisteredAccountLogins.ContainsKey(accountName))
                 {
-                    RegisteredAccountLogins.Add(accountName, sessionId);
+                    ServerCommunicationHelper.Instance.RegisteredAccountLogins[accountName] = sessionId;
                 }
                 else
                 {
-                    RegisteredAccountLogins.Remove(accountName);
-                    RegisteredAccountLogins.Add(accountName, sessionId);
+                    ServerCommunicationHelper.Instance.RegisteredAccountLogins.Remove(accountName);
+                    ServerCommunicationHelper.Instance.RegisteredAccountLogins[accountName] = sessionId;
                 }
 
-                Logger.Log.DebugFormat($"[WCF] Account {accountName} is now permitted to login with SessionId {sessionId}");
+                Logger.Log.DebugFormat($"[API] Account {accountName} is now permitted to login with SessionId {sessionId}");
             }
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
             }
-        }
-
-        public Task RegisterAccountLoginAsync(string name, long sessionId)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

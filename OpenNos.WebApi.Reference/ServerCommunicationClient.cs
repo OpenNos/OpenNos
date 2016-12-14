@@ -12,16 +12,21 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.ServiceRef.Internal.CommunicationServiceReference;
+using Microsoft.AspNet.SignalR.Client;
 using System;
 
-namespace OpenNos.ServiceRef.Internal
+namespace OpenNos.WebApi.Reference
 {
-    public class CommunicationCallback : ICommunicationServiceCallback, IDisposable
+    public class ServerCommunicationClient
     {
         #region Members
 
+        private const string remoteUrl = "http://localhost:6666/";
+
+        private static ServerCommunicationClient _instance;
         private bool _disposed;
+        private HubConnection _hubconnection;
+        private IHubProxy _hubProxy;
 
         #endregion
 
@@ -37,23 +42,37 @@ namespace OpenNos.ServiceRef.Internal
 
         #endregion
 
+        #region Properties
+
+        public static ServerCommunicationClient Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new ServerCommunicationClient();
+                }
+
+                return _instance;
+            }
+        }
+
+        public IHubProxy HubProxy
+        {
+            get
+            {
+                if (_hubProxy == null)
+                {
+                    InitializeAndRegisterCallbacks();
+                }
+
+                return _hubProxy;
+            }
+        }
+
+        #endregion
+
         #region Methods
-
-        public void ConnectAccountCallback(string accountName, int sessionId)
-        {
-            OnAccountConnected(accountName);
-        }
-
-        public void ConnectCharacterCallback(string characterName)
-        {
-            // inform clients about a new connected character
-            OnCharacterConnected(characterName);
-        }
-
-        public void DisconnectAccountCallback(string accountName)
-        {
-            OnAccountDisconnected(accountName);
-        }
 
         public void DisconnectCharacterCallback(string characterName, long characterId)
         {
@@ -93,6 +112,36 @@ namespace OpenNos.ServiceRef.Internal
             {
                 // dispose communication callback service
             }
+        }
+
+        private void InitializeAndRegisterCallbacks()
+        {
+            _hubconnection = new HubConnection(remoteUrl);
+
+            _hubProxy = _hubconnection.CreateHubProxy("servercommunicationhub");
+
+            //register callback methods
+            _hubProxy.On<string>("accountConnected", (accountName) =>
+            {
+                OnAccountConnected(accountName);
+            });
+
+            _hubProxy.On<string>("accountDisconnected", (accountName) =>
+            {
+                OnAccountDisconnected(accountName);
+            });
+
+            _hubProxy.On<string>("characterConnected", (characterName) =>
+            {
+                OnCharacterConnected(characterName);
+            });
+
+            _hubProxy.On<string, long>("characterDisconnected", (characterName, sessionId) =>
+            {
+                OnCharacterDisconnected(characterName, sessionId);
+            });
+
+            _hubconnection.Start().Wait();
         }
 
         private void OnAccountConnected(string accountName)

@@ -15,7 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Domain;
-using OpenNos.ServiceRef.Internal;
+using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -216,8 +216,8 @@ namespace OpenNos.GameObject
         public void Destroy()
         {
             // unregister from WCF events
-            ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent -= CommunicationCallback_CharacterConnectedEvent;
-            ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent -= CommunicationCallback_CharacterDisconnectedEvent;
+            ServerCommunicationClient.Instance.CharacterConnectedEvent -= CommunicationCallback_CharacterConnectedEvent;
+            ServerCommunicationClient.Instance.CharacterDisconnectedEvent -= CommunicationCallback_CharacterDisconnectedEvent;
 
             // do everything necessary before removing client, DB save, Whatever
             if (HasSelectedCharacter)
@@ -226,7 +226,7 @@ namespace OpenNos.GameObject
 
                 // TODO Check why ExchangeInfo.TargetCharacterId is null Character.CloseTrade();
                 // disconnect client
-                ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name, Character.CharacterId);
+                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectCharacter", Character.Name, Character.CharacterId);
 
                 // unregister from map if registered
                 if (CurrentMap != null)
@@ -239,7 +239,7 @@ namespace OpenNos.GameObject
 
             if (Account != null)
             {
-                ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
+                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectAccount", Account.Name);
             }
 
             ClearReceiveQueue();
@@ -262,7 +262,7 @@ namespace OpenNos.GameObject
         public void InitializeAccount(Account account)
         {
             Account = account;
-            ServiceFactory.Instance.CommunicationService.ConnectAccount(account.Name, SessionId);
+            ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectAccount", account.Name, SessionId);
             IsAuthenticated = true;
         }
 
@@ -318,8 +318,8 @@ namespace OpenNos.GameObject
             Character = character;
 
             // register WCF events
-            ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent += CommunicationCallback_CharacterConnectedEvent;
-            ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent += CommunicationCallback_CharacterDisconnectedEvent;
+            ServerCommunicationClient.Instance.CharacterConnectedEvent += CommunicationCallback_CharacterConnectedEvent;
+            ServerCommunicationClient.Instance.CharacterDisconnectedEvent += CommunicationCallback_CharacterDisconnectedEvent;
 
             HasSelectedCharacter = true;
 

@@ -17,7 +17,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
-using OpenNos.ServiceRef.Internal;
+using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -85,7 +85,8 @@ namespace OpenNos.Handler
                     {
                         DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.IpAddress, null, "Connection", "LoginServer");
 
-                        if (!ServiceFactory.Instance.CommunicationService.AccountIsConnected(loadedAccount.Name))
+                        //check if the account is connected
+                        if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("AccountIsConnected", loadedAccount.Name).Result)
                         {
                             AuthorityType type = loadedAccount.Authority;
                             PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
@@ -114,7 +115,7 @@ namespace OpenNos.Handler
                                             // login server
                                             try
                                             {
-                                                ServiceFactory.Instance.CommunicationService.RegisterAccountLogin(user.Name, newSessionId);
+                                                ServerCommunicationClient.Instance.HubProxy.Invoke("RegisterAccountLogin", user.Name, newSessionId);
                                             }
                                             catch (Exception ex)
                                             {

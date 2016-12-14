@@ -42,6 +42,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\OpenNos.WCF\bin\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
@@ -74,6 +75,7 @@
     </Compile>
     <Compile Include="TestEncryption.cs" />
     <Compile Include="BasicPacketHandlerTest.cs" />
+    <Compile Include="WebApiTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
@@ -108,9 +110,9 @@
       <Project>{A6748A8D-0D96-41B9-A110-DBF692AFC56D}</Project>
       <Name>OpenNos.Handler</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.ServiceRef.Internal\OpenNos.ServiceRef.Internal.csproj">
-      <Project>{C4D62DCF-483B-4B8A-9BB6-651D07FF467B}</Project>
-      <Name>OpenNos.ServiceRef.Internal</Name>
+    <ProjectReference Include="..\OpenNos.WebApi.Reference\OpenNos.WebApi.Reference.csproj">
+      <Project>{F36E27AB-7274-48D5-8693-1CCF7919D32C}</Project>
+      <Name>OpenNos.WebApi.Reference</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

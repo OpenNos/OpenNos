@@ -19,7 +19,6 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Handler;
-using OpenNos.ServiceRef.Internal;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -96,7 +95,6 @@ namespace OpenNos.World
 
             try
             {
-                ServiceFactory.Instance.Initialize();
                 exitHandler += ExitHandler;
                 SetConsoleCtrlHandler(exitHandler, true);
                 NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>("127.0.0.1", port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);

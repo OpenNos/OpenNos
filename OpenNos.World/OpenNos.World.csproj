@@ -234,10 +234,6 @@
       <Project>{a6748a8d-0d96-41b9-a110-dbf692afc56d}</Project>
       <Name>OpenNos.Handler</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.ServiceRef.Internal\OpenNos.ServiceRef.Internal.csproj">
-      <Project>{c4d62dcf-483b-4b8a-9bb6-651d07ff467b}</Project>
-      <Name>OpenNos.ServiceRef.Internal</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

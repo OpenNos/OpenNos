@@ -141,6 +141,7 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data">
@@ -261,17 +262,9 @@
       <Project>{a6748a8d-0d96-41b9-a110-dbf692afc56d}</Project>
       <Name>OpenNos.Handler</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.ServiceRef.Internal\OpenNos.ServiceRef.Internal.csproj">
-      <Project>{c4d62dcf-483b-4b8a-9bb6-651d07ff467b}</Project>
-      <Name>OpenNos.ServiceRef.Internal</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.WCF.Interface\OpenNos.WCF.Interface.csproj">
-      <Project>{cd4abd2c-e5d2-4a7d-bb80-606b92c33e8e}</Project>
-      <Name>OpenNos.WCF.Interface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.WCF\OpenNos.WCF.csproj">
-      <Project>{d30674c8-15a6-4fee-8a79-82416f078725}</Project>
-      <Name>OpenNos.WCF</Name>
+    <ProjectReference Include="..\OpenNos.WebApi.Reference\OpenNos.WebApi.Reference.csproj">
+      <Project>{f36e27ab-7274-48d5-8693-1ccf7919d32c}</Project>
+      <Name>OpenNos.WebApi.Reference</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
