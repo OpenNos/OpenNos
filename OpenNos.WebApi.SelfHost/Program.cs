@@ -19,8 +19,8 @@ namespace OpenNos.WebApi.SelfHost
                 // initialize Logger
                 Logger.InitializeLogger(LogManager.GetLogger(typeof(ServerCommunicationHub)));
 
-                Console.Title = $"OpenNos Server Communication v1.0";
-                string text = $"SERVER COMMUNICATION - PORT : 6666 by OpenNos Team";
+                Console.Title = "OpenNos Server Communication v1.0";
+                const string text = "SERVER COMMUNICATION - PORT : 6666 by OpenNos Team";
                 int offset = (Console.WindowWidth - text.Length) / 2;
                 Console.WriteLine(new string('=', Console.WindowWidth));
                 Console.SetCursorPosition(offset < 0 ? 0 : offset, Console.CursorTop);

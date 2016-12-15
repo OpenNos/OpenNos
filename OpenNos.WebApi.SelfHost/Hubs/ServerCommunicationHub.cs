@@ -27,7 +27,7 @@ namespace OpenNos.WebApi.SelfHost
             {
                 return ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsKey(accountName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -47,8 +47,8 @@ namespace OpenNos.WebApi.SelfHost
         /// Registers that the given Account has now logged in
         /// </summary>
         /// <param name="accountName">Name of the Account.</param>
-        /// <param name="sessionId">SessionId of the login.</param>
-        public bool ConnectAccount(string accountName, int sessionId)
+        /// <param name="sessionId"></param>
+        public bool ConnectAccount(string accountName, long sessionId)
         {
             try
             {
@@ -58,13 +58,11 @@ namespace OpenNos.WebApi.SelfHost
                     Logger.Log.InfoFormat($"Account {accountName} is already connected.");
                     return false;
                 }
-                else
-                {
-                    // TODO: move in own method, cannot do this here because it needs to be called by
-                    //       a client who wants to know if the Account is allowed to connect without
-                    // doing it actually
-                    Logger.Log.InfoFormat($"Account {accountName} has connected.");
-                    ServerCommunicationHelper.Instance.ConnectedAccounts[accountName] = sessionId;
+                // TODO: move in own method, cannot do this here because it needs to be called by
+                // a client who wants to know if the Account is allowed to connect without
+                // doing it actually
+                Logger.Log.InfoFormat($"Account {accountName} has connected.");
+                ServerCommunicationHelper.Instance.ConnectedAccounts[accountName] = sessionId;
 
                     // inform clients
                     Clients.All.accountConnected(accountName);
@@ -93,18 +91,15 @@ namespace OpenNos.WebApi.SelfHost
                     Logger.Log.InfoFormat($"Character {characterName} is already connected.");
                     return false;
                 }
-                else
-                {
-                    // TODO: move in own method, cannot do this here because it needs to be called by
-                    //       a client who wants to know if the character is allowed to connect
-                    // without doing it actually
-                    Logger.Log.InfoFormat($"Character {characterName} has connected.");
-                    ServerCommunicationHelper.Instance.ConnectedCharacters[characterName] = accountName;
+                // TODO: move in own method, cannot do this here because it needs to be called by
+                // a client who wants to know if the character is allowed to connect
+                // without doing it actually
+                Logger.Log.InfoFormat($"Character {characterName} has connected.");
+                ServerCommunicationHelper.Instance.ConnectedCharacters[characterName] = accountName;
 
-                    // inform clients
-                    Clients.All.characterConnected(characterName);
-                    return true;
-                }
+                // inform clients
+                Clients.All.characterConnected(characterName);
+                return true;
             }
             catch (Exception ex)
             {
@@ -138,6 +133,7 @@ namespace OpenNos.WebApi.SelfHost
         /// Disconnect character from server.
         /// </summary>
         /// <param name="characterName">Character who wants to disconnect.</param>
+        /// <param name="characterId">same as for characterName</param>
         public void DisconnectCharacter(string characterName, long characterId)
         {
             try
@@ -174,14 +170,9 @@ namespace OpenNos.WebApi.SelfHost
                 // return if the player has been registered
                 bool successful = ServerCommunicationHelper.Instance.RegisteredAccountLogins.Remove(accountName);
 
-                if (successful)
-                {
-                    Logger.Log.InfoFormat($"Account {accountName} has lost the permission to login with SessionId {sessionId}.");
-                }
-                else
-                {
-                    Logger.Log.InfoFormat($"Account {accountName} is not permitted to login with SessionId {sessionId}.");
-                }
+                Logger.Log.InfoFormat(successful
+                    ? $"Account {accountName} has lost the permission to login with SessionId {sessionId}."
+                    : $"Account {accountName} is not permitted to login with SessionId {sessionId}.");
 
                 return successful;
             }
