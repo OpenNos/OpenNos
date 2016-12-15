@@ -191,7 +191,7 @@ namespace OpenNos.Handler
             byte type;
             if (packetsplit.Length > 3 && byte.TryParse(packetsplit[2], out type) && short.TryParse(packetsplit[3], out slot))
             {
-                
+                bool isNPCShopItem = false;
                 WearableInstance inventory = null;
                 switch (type)
                 {
@@ -207,6 +207,7 @@ namespace OpenNos.Handler
                         break;
 
                     case 2:
+                        isNPCShopItem = true;
                         inventory = new WearableInstance(slot, 1);
                         break;
 
@@ -261,7 +262,7 @@ namespace OpenNos.Handler
                 }
                 if (inventory?.Item != null)
                 {
-                    if (inventory.IsEmpty)
+                    if (inventory.IsEmpty || isNPCShopItem)
                     {
                         Session.SendPacket(Session.Character.GenerateEInfo(inventory));
                         return;

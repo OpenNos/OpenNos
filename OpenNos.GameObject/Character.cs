@@ -1477,6 +1477,8 @@ namespace OpenNos.GameObject
                         default:
                             return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.MaxCellonLvl} {iteminfo.MaxCellon} {item.Cellon} {iteminfo.Price}";
                     }
+                case ItemType.Specialist:
+                    return $"e_info 8 {item.ItemVNum}";
 
                 case ItemType.Box:
                     if (item.GetType() == typeof(BoxInstance))
