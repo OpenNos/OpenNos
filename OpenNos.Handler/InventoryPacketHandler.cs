@@ -208,8 +208,12 @@ namespace OpenNos.Handler
 
                     case 2:
                         isNPCShopItem = true;
-                        inventory = new WearableInstance(slot, 1);
-                        break;
+                        if (ServerManager.GetItem(slot) != null)
+                        {
+                            inventory = new WearableInstance(slot, 1);
+                            break;
+                        }
+                        return;
 
                     case 5:
                         if (Session.Character.ExchangeInfo != null)
