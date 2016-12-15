@@ -14,11 +14,13 @@
 
 using log4net;
 using OpenNos.Core;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using OpenNos.GameObject;
 using OpenNos.Handler;
+using OpenNos.WebApi.Reference;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -30,6 +32,8 @@ namespace OpenNos.World
     public class Program
     {
         #region Members
+
+        private const string IPADDRESS = "127.0.0.1";
 
         private static EventHandler exitHandler;
         private static ManualResetEvent run = new ManualResetEvent(true);
@@ -75,6 +79,9 @@ namespace OpenNos.World
             Console.WriteLine(text + "\n" +
             new string('=', Console.WindowWidth) + "\n");
 
+            // initialize api
+            ServerCommunicationClient.Instance.InitializeAndRegisterCallbacks();
+
             // initialize DB
             if (DataAccessHelper.Initialize())
             {
@@ -97,7 +104,7 @@ namespace OpenNos.World
             {
                 exitHandler += ExitHandler;
                 SetConsoleCtrlHandler(exitHandler, true);
-                NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>("127.0.0.1", port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
+                NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(IPADDRESS, port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
             catch (Exception ex)
             {
@@ -107,6 +114,15 @@ namespace OpenNos.World
 
         private static bool ExitHandler(CtrlType sig)
         {
+            string serverGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
+            int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
+            ServerCommunicationClient.Instance.HubProxy.Invoke("UnregisterWorldserver", serverGroup, new ScsTcpEndPoint(IPADDRESS, port));
+
+            foreach(ClientSession session in ServerManager.Instance.Sessions)
+            {
+                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectAccount", session.Account.Name).Wait();
+            }
+
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.SaveAll();
             Thread.Sleep(5000);

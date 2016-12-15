@@ -3,8 +3,12 @@
 
 using Microsoft.AspNet.SignalR;
 using OpenNos.Core;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using OpenNos.Data;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace OpenNos.WebApi.SelfHost
 {
@@ -63,7 +67,7 @@ namespace OpenNos.WebApi.SelfHost
                     ServerCommunicationHelper.Instance.ConnectedAccounts[accountName] = sessionId;
 
                     // inform clients
-                    Clients.All.accountConnected(accountName, sessionId);
+                    Clients.All.accountConnected(accountName);
                     return true;
                 }
             }
@@ -214,6 +218,72 @@ namespace OpenNos.WebApi.SelfHost
             {
                 Logger.Log.Error("General Error", ex);
             }
+        }
+
+        public void RegisterWorldserver(string servergroup, ScsTcpEndPoint ipAddress)
+        {
+            try
+            {
+                if (!ServerCommunicationHelper.Instance.Worldservers.ContainsKey(servergroup))
+                {
+                    ServerCommunicationHelper.Instance.Worldservers[servergroup] = new WorldserverGroupDTO() { GroupName = servergroup, Addresses = new List<ScsTcpEndPoint>() { ipAddress } };
+                    Logger.Log.InfoFormat($"World with address {ipAddress.ToString()} has been registered to new Servergroup {servergroup}.");
+                }
+                else if (ServerCommunicationHelper.Instance.Worldservers[servergroup].Addresses.Contains(ipAddress))
+                {
+                    Logger.Log.InfoFormat($"World with address {ipAddress.ToString()} is already registered.");
+                }
+                else
+                {
+                    ServerCommunicationHelper.Instance.Worldservers[servergroup].Addresses.Add(ipAddress);
+                    Logger.Log.InfoFormat($"World with address {ipAddress.ToString()} has been added to Servergroup {servergroup}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error($"Registering world {ipAddress.ToString()} failed.", ex);
+            }
+        }
+
+        public void UnregisterWorldserver(string servergroup, ScsTcpEndPoint ipAddress)
+        {
+            try
+            {
+                if (ServerCommunicationHelper.Instance.Worldservers.ContainsKey(servergroup) && ServerCommunicationHelper.Instance.Worldservers[servergroup].Addresses.Contains(ipAddress))
+                {
+                    //servergroup does exist with the given ipaddress
+                    ServerCommunicationHelper.Instance.Worldservers[servergroup].Addresses.Remove(ipAddress);
+                    Logger.Log.InfoFormat($"World with address {ipAddress.ToString()} has been unregistered successfully.");
+
+                    if (!ServerCommunicationHelper.Instance.Worldservers[servergroup].Addresses.Any())
+                    {
+                        ServerCommunicationHelper.Instance.Worldservers.Remove(servergroup);
+                        Logger.Log.InfoFormat($"World server group {servergroup} has been removed as no member was left.");
+                    }
+                }
+                else if (!ServerCommunicationHelper.Instance.Worldservers.ContainsKey(servergroup)
+                    && !ServerCommunicationHelper.Instance.Worldservers.GetAllItems().Any(sgi => sgi.Addresses.Contains(ipAddress)))
+                {
+                    //servergroup doesnt exist and world is not in a group named like the given servergroup and in no other
+                    Logger.Log.InfoFormat($"World with address {ipAddress.ToString()} has already been unregistered before.");
+                }
+                else if (!ServerCommunicationHelper.Instance.Worldservers.ContainsKey(servergroup)
+                    && ServerCommunicationHelper.Instance.Worldservers.GetAllItems().Any(sgi => sgi.Addresses.Contains(ipAddress)))
+                {
+                    //servergroup does not exist but world does run in a different servergroup
+                    ServerCommunicationHelper.Instance.Worldservers.GetAllItems().SingleOrDefault(sgi => sgi.Addresses.Contains(ipAddress)).Addresses.Remove(ipAddress);
+                    Logger.Log.InfoFormat($"World with address {ipAddress.ToString()} has been remove from a different servergroup.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error($"Registering world {ipAddress.ToString()} failed.", ex);
+            }
+        }
+
+        public IEnumerable<WorldserverGroupDTO> RetrieveRegisteredWorldservers()
+        {
+            return ServerCommunicationHelper.Instance.Worldservers.GetAllItems();
         }
 
         #endregion

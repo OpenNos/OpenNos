@@ -114,7 +114,7 @@ namespace OpenNos.WebApi.Reference
             }
         }
 
-        private void InitializeAndRegisterCallbacks()
+        public void InitializeAndRegisterCallbacks()
         {
             _hubconnection = new HubConnection(remoteUrl);
 

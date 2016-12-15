@@ -15,9 +15,11 @@
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Core.Networking.Communication.Scs.Server;
+using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace OpenNos.GameObject
 {
@@ -53,6 +55,13 @@ namespace OpenNos.GameObject
 
             // Start the server
             _server.Start();
+
+            if(isWorldServer)
+            {
+                //Register the new created TCPIP server to the api
+                string serverGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
+                ServerCommunicationClient.Instance.HubProxy.Invoke("RegisterWorldserver", serverGroup, new ScsTcpEndPoint(ipAddress, port)).Wait();
+            }
 
             Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
         }

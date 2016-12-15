@@ -52,6 +52,9 @@ namespace OpenNos.Login
                     Console.WriteLine(text + "\n" +
                     new string('=', Console.WindowWidth) + "\n");
 
+                    // initialize api
+                    ServerCommunicationClient.Instance.InitializeAndRegisterCallbacks();
+
                     // initialize DB
                     if (!DataAccessHelper.Initialize())
                     {

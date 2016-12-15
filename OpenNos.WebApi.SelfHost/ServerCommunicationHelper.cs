@@ -1,5 +1,5 @@
 ﻿using OpenNos.Core;
-using System.Collections.Generic;
+using OpenNos.Data;
 
 namespace OpenNos.WebApi.SelfHost
 {
@@ -14,6 +14,8 @@ namespace OpenNos.WebApi.SelfHost
         private ThreadSafeSortedList<string, string> _connectedCharacters;
 
         private ThreadSafeSortedList<string, long> _registeredAccountLogins;
+
+        private ThreadSafeSortedList<string, WorldserverGroupDTO> _worldservers;
 
         #endregion
 
@@ -80,6 +82,23 @@ namespace OpenNos.WebApi.SelfHost
             set
             {
                 _registeredAccountLogins = value;
+            }
+        }
+
+        public ThreadSafeSortedList<string, WorldserverGroupDTO> Worldservers
+        {
+            get
+            {
+                if (_worldservers == null)
+                {
+                    _worldservers = new ThreadSafeSortedList<string, WorldserverGroupDTO>();
+                }
+
+                return _worldservers;
+            }
+            set
+            {
+                _worldservers = value;
             }
         }
 

@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -44,24 +45,33 @@ namespace OpenNos.Handler
 
         #region Methods
 
-        public string BuildServersPacket(int session)
+        public string BuildServersPacket(string accountName, int session)
         {
             string channelPacket = $"NsTeST {session} ";
-            List<ServerConfig.Server> myServs = (List<ServerConfig.Server>)ConfigurationManager.GetSection("Servers");
 
-            checked
+            int serverCount = 1;
+            IEnumerable<WorldserverGroupDTO> worldserverGroups = ServerCommunicationClient.Instance.HubProxy.Invoke<IEnumerable<WorldserverGroupDTO>>("RetrieveRegisteredWorldservers").Result;
+
+            if(!worldserverGroups.Any())
             {
-                int w = 0;
-                foreach (ServerConfig.Server serv in myServs)
-                {
-                    w++;
-                    for (int j = 1; j <= serv.ChannelAmount; j++)
-                    {
-                        channelPacket += $"{serv.WorldIp}:{(serv.WorldPort + j - 1)}:1:{w}.{j}.{serv.Name} ";
-                    }
-                }
-                return channelPacket;
+                Logger.Log.Error("Could not retrieve Worldserver groups. Please make sure they've already been registered.");
+                _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"), DateTime.Now.ToString())}");
+
+                // release account's login permission
+                bool hasRegisteredAccountLogin = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("HasRegisteredAccountLogin", accountName, session).Result;
             }
+
+            foreach (WorldserverGroupDTO worldserverGroup in worldserverGroups)
+            {
+                int channelCount = 1;
+                foreach (ScsTcpEndPoint address in worldserverGroup.Addresses)
+                {
+                    channelPacket += $"{address.IpAddress}:{address.TcpPort}:1:{serverCount}.{channelCount}.{worldserverGroup.GroupName} ";
+                    channelCount++;
+                }
+                serverCount++;
+            }
+            return channelPacket;
         }
 
         [Packet("NoS0575")]
@@ -121,7 +131,7 @@ namespace OpenNos.Handler
                                             {
                                                 Logger.Log.Error("General Error SessionId: " + newSessionId, ex);
                                             }
-                                            _session.SendPacket(BuildServersPacket(newSessionId));
+                                            _session.SendPacket(BuildServersPacket(user.Name, newSessionId));
                                         }
                                         break;
                                 }
