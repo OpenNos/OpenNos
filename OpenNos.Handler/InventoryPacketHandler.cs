@@ -241,7 +241,7 @@ namespace OpenNos.Handler
 
                             PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
 
-                            if(item.ItemInstance.GetType() == typeof(BoxInstance))
+                            if(item != null && item.ItemInstance.GetType() == typeof(BoxInstance))
                             {
                                 inventory = (BoxInstance)item.ItemInstance;
                             }
