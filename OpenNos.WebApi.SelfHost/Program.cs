@@ -12,7 +12,7 @@ namespace OpenNos.WebApi.SelfHost
     {
         #region Methods
 
-        private static void Main(string[] args)
+        private static void Main()
         {
             using (WebApp.Start<Startup>("http://localhost:6666"))
             {

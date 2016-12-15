@@ -2,10 +2,8 @@
 // 2.0. See License.txt in the project root for license information.
 
 using Microsoft.AspNet.SignalR;
-using Microsoft.Owin.Builder;
 using Microsoft.Owin.Cors;
 using Owin;
-using System.Diagnostics;
 
 namespace OpenNos.WebApi.SelfHost
 {
@@ -32,7 +30,6 @@ namespace OpenNos.WebApi.SelfHost
                 map.UseCors(CorsOptions.AllowAll)
                    .RunSignalR(config);
             });
-
 
             log4net.Config.XmlConfigurator.Configure();
 

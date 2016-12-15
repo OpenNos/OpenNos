@@ -69,12 +69,6 @@ namespace OpenNos.WebApi.Reference
 
         #region Methods
 
-        public void DisconnectCharacterCallback(string characterName, long characterId)
-        {
-            // inform clients about a disconnected character
-            OnCharacterDisconnected(characterName, characterId);
-        }
-
         public void Dispose()
         {
             if (!_disposed)
@@ -83,6 +77,24 @@ namespace OpenNos.WebApi.Reference
                 GC.SuppressFinalize(this);
                 _disposed = true;
             }
+        }
+
+        public void InitializeAndRegisterCallbacks()
+        {
+            _hubconnection = new HubConnection(remoteUrl);
+
+            _hubProxy = _hubconnection.CreateHubProxy("servercommunicationhub");
+
+            //register callback methods
+            _hubProxy.On<string, long>("accountConnected", OnAccountConnected);
+
+            _hubProxy.On<string>("accountDisconnected", OnAccountDisconnected);
+
+            _hubProxy.On<string>("characterConnected", OnCharacterConnected);
+
+            _hubProxy.On<string, long>("characterDisconnected", OnCharacterDisconnected);
+
+            _hubconnection.Start().Wait();
         }
 
         public void OnAccountDisconnected(string accountName)
@@ -107,24 +119,6 @@ namespace OpenNos.WebApi.Reference
             {
                 // dispose communication callback service
             }
-        }
-
-        public void InitializeAndRegisterCallbacks()
-        {
-            _hubconnection = new HubConnection(remoteUrl);
-
-            _hubProxy = _hubconnection.CreateHubProxy("servercommunicationhub");
-
-            //register callback methods
-            _hubProxy.On<string, long>("accountConnected", OnAccountConnected);
-
-            _hubProxy.On<string>("accountDisconnected", OnAccountDisconnected);
-
-            _hubProxy.On<string>("characterConnected", OnCharacterConnected);
-
-            _hubProxy.On<string, long>("characterDisconnected", OnCharacterDisconnected);
-
-            _hubconnection.Start().Wait();
         }
 
         private void OnAccountConnected(string accountName, long sessionId)
