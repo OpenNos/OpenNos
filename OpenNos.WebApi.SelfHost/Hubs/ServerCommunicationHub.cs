@@ -64,10 +64,9 @@ namespace OpenNos.WebApi.SelfHost
                 Logger.Log.InfoFormat($"Account {accountName} has connected.");
                 ServerCommunicationHelper.Instance.ConnectedAccounts[accountName] = sessionId;
 
-                    // inform clients
-                    Clients.All.accountConnected(accountName);
-                    return true;
-                }
+                // inform clients
+                Clients.All.accountConnected(accountName);
+                return true;
             }
             catch (Exception ex)
             {
