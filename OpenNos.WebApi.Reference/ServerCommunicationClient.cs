@@ -48,12 +48,7 @@ namespace OpenNos.WebApi.Reference
         {
             get
             {
-                if (_instance == null)
-                {
-                    _instance = new ServerCommunicationClient();
-                }
-
-                return _instance;
+                return _instance ?? (_instance = new ServerCommunicationClient());
             }
         }
 
@@ -102,7 +97,7 @@ namespace OpenNos.WebApi.Reference
         {
             if (CharacterDisconnectedEvent != null && !string.IsNullOrEmpty(characterName))
             {
-                CharacterDisconnectedEvent(new System.Collections.Generic.KeyValuePair<long, string>(characterId, characterName), new EventArgs());
+                CharacterDisconnectedEvent(new System.Collections.Generic.KeyValuePair<string, long>(characterName, characterId), new EventArgs());
             }
         }
 
@@ -121,34 +116,22 @@ namespace OpenNos.WebApi.Reference
             _hubProxy = _hubconnection.CreateHubProxy("servercommunicationhub");
 
             //register callback methods
-            _hubProxy.On<string>("accountConnected", (accountName) =>
-            {
-                OnAccountConnected(accountName);
-            });
+            _hubProxy.On<string, long>("accountConnected", OnAccountConnected);
 
-            _hubProxy.On<string>("accountDisconnected", (accountName) =>
-            {
-                OnAccountDisconnected(accountName);
-            });
+            _hubProxy.On<string>("accountDisconnected", OnAccountDisconnected);
 
-            _hubProxy.On<string>("characterConnected", (characterName) =>
-            {
-                OnCharacterConnected(characterName);
-            });
+            _hubProxy.On<string>("characterConnected", OnCharacterConnected);
 
-            _hubProxy.On<string, long>("characterDisconnected", (characterName, sessionId) =>
-            {
-                OnCharacterDisconnected(characterName, sessionId);
-            });
+            _hubProxy.On<string, long>("characterDisconnected", OnCharacterDisconnected);
 
             _hubconnection.Start().Wait();
         }
 
-        private void OnAccountConnected(string accountName)
+        private void OnAccountConnected(string accountName, long sessionId)
         {
             if (AccountConnectedEvent != null && !string.IsNullOrEmpty(accountName))
             {
-                AccountConnectedEvent(accountName, new EventArgs());
+                AccountConnectedEvent(new System.Collections.Generic.KeyValuePair<string, long>(accountName, sessionId), new EventArgs());
             }
         }
 

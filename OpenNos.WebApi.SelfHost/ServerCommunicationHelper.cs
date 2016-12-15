@@ -9,7 +9,7 @@ namespace OpenNos.WebApi.SelfHost
 
         private static ServerCommunicationHelper _instance;
 
-        private ThreadSafeSortedList<string, int> _connectedAccounts;
+        private ThreadSafeSortedList<string, long> _connectedAccounts;
 
         private ThreadSafeSortedList<string, string> _connectedCharacters;
 
@@ -23,25 +23,15 @@ namespace OpenNos.WebApi.SelfHost
         {
             get
             {
-                if (_instance == null)
-                {
-                    _instance = new ServerCommunicationHelper();
-                }
-
-                return _instance;
+                return _instance ?? (_instance = new ServerCommunicationHelper());
             }
         }
 
-        public ThreadSafeSortedList<string, int> ConnectedAccounts
+        public ThreadSafeSortedList<string, long> ConnectedAccounts
         {
             get
             {
-                if (_connectedAccounts == null)
-                {
-                    _connectedAccounts = new ThreadSafeSortedList<string, int>();
-                }
-
-                return _connectedAccounts;
+                return _connectedAccounts ?? (_connectedAccounts = new ThreadSafeSortedList<string, long>());
             }
             set
             {
@@ -53,12 +43,7 @@ namespace OpenNos.WebApi.SelfHost
         {
             get
             {
-                if (_connectedCharacters == null)
-                {
-                    _connectedCharacters = new ThreadSafeSortedList<string, string>();
-                }
-
-                return _connectedCharacters;
+                return _connectedCharacters ?? (_connectedCharacters = new ThreadSafeSortedList<string, string>());
             }
             set
             {
@@ -70,12 +55,7 @@ namespace OpenNos.WebApi.SelfHost
         {
             get
             {
-                if (_registeredAccountLogins == null)
-                {
-                    _registeredAccountLogins = new ThreadSafeSortedList<string, long>();
-                }
-
-                return _registeredAccountLogins;
+                return _registeredAccountLogins ?? (_registeredAccountLogins = new ThreadSafeSortedList<string, long>());
             }
             set
             {
