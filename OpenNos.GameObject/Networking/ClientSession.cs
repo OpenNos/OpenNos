@@ -354,12 +354,12 @@ namespace OpenNos.GameObject
 
         private void CommunicationCallback_CharacterDisconnectedEvent(object sender, EventArgs e)
         {
-            KeyValuePair<long, string> kvPair = (KeyValuePair<long, string>)sender;
-            if (Character.IsFriendOfCharacter(kvPair.Key))
+            KeyValuePair<string, long> kvPair = (KeyValuePair<string, long>)sender;
+            if (Character.IsFriendOfCharacter(kvPair.Value))
 
-                if (Character != null && Character.Name != kvPair.Value)
+                if (Character != null && Character.Name != kvPair.Key)
                 {
-                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), kvPair.Value), 10));
+                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), kvPair.Key), 10));
                     _client.SendPacket(Character.GenerateFinfo());
                 }
         }
