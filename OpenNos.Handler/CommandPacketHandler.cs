@@ -74,7 +74,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                MapMonsterDTO monst = new MapMonsterDTO()
+                MapMonsterDTO monst = new MapMonsterDTO
                 {
                     MonsterVNum = addMonsterPacket.MonsterVNum,
                     MapY = Session.Character.MapY,
@@ -858,7 +858,7 @@ namespace OpenNos.Handler
                         {
                             foreach (ClientSession session in Session.CurrentMap.Sessions)
                             {
-                                Session.Character.SendGift((session.Character.CharacterId), vnum, amount, rare, upgrade, false);
+                                Session.Character.SendGift(session.Character.CharacterId, vnum, amount, rare, upgrade, false);
                             }
                         }
                     }
@@ -868,7 +868,7 @@ namespace OpenNos.Handler
 
                         if (chara != null)
                         {
-                            Session.Character.SendGift((chara.CharacterId), vnum, amount, rare, upgrade, false);
+                            Session.Character.SendGift(chara.CharacterId, vnum, amount, rare, upgrade, false);
                         }
                         else
                         {

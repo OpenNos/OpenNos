@@ -1163,7 +1163,7 @@ namespace OpenNos.Handler
                             EqPacket = Session.Character.GenerateEqListForPacket(),
                             SenderMorphId = Session.Character.Morph == 0 ? (short)-1 : (short)(Session.Character.Morph > short.MaxValue ? 0 : Session.Character.Morph)
                         };
-                        MailDTO mail = new MailDTO()
+                        MailDTO mail = new MailDTO
                         {
                             AttachmentAmount = 0,
                             IsOpened = false,
