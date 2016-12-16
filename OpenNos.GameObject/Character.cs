@@ -2309,9 +2309,10 @@ namespace OpenNos.GameObject
                 }
             }
         }
+
         public string GeneratePost(MailDTO mail, byte type)
         {
-            return $"post 1 {type} {MailList.First(s => s.Value.MailId == mail.MailId).Key} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddHHmm")} {DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name} {mail.Title}";
+            return $"post 1 {type} {MailList.First(s => s.Value.MailId == mail.MailId).Key} 0 {(mail.IsOpened ? 1 : 0)} {mail.Date.ToString("yyMMddHHmm")} {(type == 2 ? DAOFactory.CharacterDAO.LoadById(mail.ReceiverId).Name : DAOFactory.CharacterDAO.LoadById(mail.SenderId).Name)} {mail.Title}";
         }
 
         public string GeneratePostMessage(MailDTO mailDTO, byte type)
@@ -3709,13 +3710,13 @@ namespace OpenNos.GameObject
                     amount = 99;
                 }
 
-                MailDTO mail = new MailDTO()
+                MailDTO mail = new MailDTO
                 {
                     AttachmentAmount = it.Type == InventoryType.Etc || it.Type == InventoryType.Main ? amount : (byte)1,
                     IsOpened = false,
                     Date = DateTime.Now,
                     ReceiverId = id,
-                    SenderId = id,
+                    SenderId = CharacterId,
                     AttachmentRarity = (byte)rare,
                     AttachmentUpgrade = upgrade,
                     IsSenderCopy = false,
@@ -3784,29 +3785,22 @@ namespace OpenNos.GameObject
                                         wearable.Ammo--;
                                         return true;
                                     }
-                                    else
+                                    if (Inventory.CountItem(2081) < 1)
                                     {
-                                        if (Inventory.CountItem(2081) < 1)
-                                        {
-                                            Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ADVENTURER"), 10));
-                                            return false;
-                                        }
-
-                                        Inventory.RemoveItemAmount(2081);
-                                        wearable.Ammo = 100;
-                                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ADVENTURER"), 10));
-                                        return true;
+                                        Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ADVENTURER"), 10));
+                                        return false;
                                     }
+                                    Inventory.RemoveItemAmount(2081);
+                                    wearable.Ammo = 100;
+                                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ADVENTURER"), 10));
+                                    return true;
                                 }
-                                else
-                                {
-                                    Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
-                                    return false;
-                                }
+                                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
+                                return false;
                             }
-                            else return true;
+                            return true;
                         }
-                        else return true;
+                        return true;
 
                     case ClassType.Swordman:
                         if (ski.Skill.Type == 1)
@@ -3821,29 +3815,23 @@ namespace OpenNos.GameObject
                                         inv.Ammo--;
                                         return true;
                                     }
-                                    else
+                                    if (Inventory.CountItem(2082) < 1)
                                     {
-                                        if (Inventory.CountItem(2082) < 1)
-                                        {
-                                            Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_SWORDSMAN"), 10));
-                                            return false;
-                                        }
-
-                                        Inventory.RemoveItemAmount(2082);
-                                        inv.Ammo = 100;
-                                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_SWORDSMAN"), 10));
-                                        return true;
+                                        Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_SWORDSMAN"), 10));
+                                        return false;
                                     }
+
+                                    Inventory.RemoveItemAmount(2082);
+                                    inv.Ammo = 100;
+                                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_SWORDSMAN"), 10));
+                                    return true;
                                 }
-                                else
-                                {
-                                    Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
-                                    return false;
-                                }
+                                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
+                                return false;
                             }
-                            else return true;
+                            return true;
                         }
-                        else return true;
+                        return true;
 
                     case ClassType.Archer:
                         if (ski.Skill.Type == 1)
@@ -3858,29 +3846,23 @@ namespace OpenNos.GameObject
                                         inv.Ammo--;
                                         return true;
                                     }
-                                    else
+                                    if (Inventory.CountItem(2083) < 1)
                                     {
-                                        if (Inventory.CountItem(2083) < 1)
-                                        {
-                                            Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ARCHER"), 10));
-                                            return false;
-                                        }
-
-                                        Inventory.RemoveItemAmount(2083);
-                                        inv.Ammo = 100;
-                                        Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ARCHER"), 10));
-                                        return true;
+                                        Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ARCHER"), 10));
+                                        return false;
                                     }
+
+                                    Inventory.RemoveItemAmount(2083);
+                                    inv.Ammo = 100;
+                                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ARCHER"), 10));
+                                    return true;
                                 }
-                                else
-                                {
-                                    Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
-                                    return false;
-                                }
+                                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
+                                return false;
                             }
-                            else return true;
+                            return true;
                         }
-                        else return true;
+                        return true;
 
                     case ClassType.Magician:
                         return true;

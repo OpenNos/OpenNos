@@ -240,14 +240,16 @@ namespace OpenNos.Handler
                             KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(shopOwnerId));
 
                             PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
-
-                            if(item.ItemInstance.GetType() == typeof(BoxInstance))
+                            if (item != null)
                             {
-                                inventory = (BoxInstance)item.ItemInstance;
-                            }
-                            else 
-                            {
-                                inventory = (WearableInstance)item.ItemInstance;
+                                if (item.ItemInstance.GetType() == typeof(BoxInstance))
+                                {
+                                    inventory = (BoxInstance) item.ItemInstance;
+                                }
+                                else
+                                {
+                                    inventory = (WearableInstance) item.ItemInstance;
+                                }
                             }
                         }
                         break;

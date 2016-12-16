@@ -69,12 +69,7 @@ namespace OpenNos.WebApi.SelfHost
         {
             get
             {
-                if (_worldservers == null)
-                {
-                    _worldservers = new ThreadSafeSortedList<string, WorldserverGroupDTO>();
-                }
-
-                return _worldservers;
+                return _worldservers ?? (_worldservers = new ThreadSafeSortedList<string, WorldserverGroupDTO>());
             }
             set
             {
