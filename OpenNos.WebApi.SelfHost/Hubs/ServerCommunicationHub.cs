@@ -24,7 +24,7 @@ namespace OpenNos.WebApi.SelfHost
         {
             try
             {
-                return ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsKey(accountName);
+                return ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsKey(accountName.ToLower());
             }
             catch (Exception)
             {
@@ -52,7 +52,7 @@ namespace OpenNos.WebApi.SelfHost
             try
             {
                 // Account cant connect twice
-                if (ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsKey(accountName))
+                if (ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsKey(accountName.ToLower()))
                 {
                     Logger.Log.InfoFormat($"Account {accountName} is already connected.");
                     return false;
@@ -61,7 +61,7 @@ namespace OpenNos.WebApi.SelfHost
                 // TODO: move in own method, cannot do this here because it needs to be called by a
                 // client who wants to know if the Account is allowed to connect without doing it actually
                 Logger.Log.InfoFormat($"Account {accountName} has connected.");
-                ServerCommunicationHelper.Instance.ConnectedAccounts[accountName] = sessionId;
+                ServerCommunicationHelper.Instance.ConnectedAccounts[accountName.ToLower()] = sessionId;
 
                 // inform clients
                 Clients.All.accountConnected(accountName, sessionId);
@@ -114,7 +114,7 @@ namespace OpenNos.WebApi.SelfHost
         {
             try
             {
-                ServerCommunicationHelper.Instance.ConnectedAccounts.Remove(accountName);
+                ServerCommunicationHelper.Instance.ConnectedAccounts.Remove(accountName.ToLower());
 
                 // inform clients
                 Clients.All.accountDisconnected(accountName);
@@ -166,7 +166,7 @@ namespace OpenNos.WebApi.SelfHost
             try
             {
                 // return if the player has been registered
-                bool successful = ServerCommunicationHelper.Instance.RegisteredAccountLogins.Remove(accountName);
+                bool successful = ServerCommunicationHelper.Instance.RegisteredAccountLogins.Remove(accountName.ToLower());
 
                 Logger.Log.InfoFormat(successful
                     ? $"Account {accountName} has lost the permission to login with SessionId {sessionId}."
@@ -191,14 +191,14 @@ namespace OpenNos.WebApi.SelfHost
         {
             try
             {
-                if (!ServerCommunicationHelper.Instance.RegisteredAccountLogins.ContainsKey(accountName))
+                if (!ServerCommunicationHelper.Instance.RegisteredAccountLogins.ContainsKey(accountName.ToLower()))
                 {
-                    ServerCommunicationHelper.Instance.RegisteredAccountLogins[accountName] = sessionId;
+                    ServerCommunicationHelper.Instance.RegisteredAccountLogins[accountName.ToLower()] = sessionId;
                 }
                 else
                 {
-                    ServerCommunicationHelper.Instance.RegisteredAccountLogins.Remove(accountName);
-                    ServerCommunicationHelper.Instance.RegisteredAccountLogins[accountName] = sessionId;
+                    ServerCommunicationHelper.Instance.RegisteredAccountLogins.Remove(accountName.ToLower());
+                    ServerCommunicationHelper.Instance.RegisteredAccountLogins[accountName.ToLower()] = sessionId;
                 }
 
                 Logger.Log.InfoFormat($"Account {accountName} is now permitted to login with SessionId {sessionId}");
