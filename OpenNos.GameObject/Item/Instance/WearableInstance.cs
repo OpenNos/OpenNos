@@ -568,19 +568,19 @@ namespace OpenNos.GameObject
                         }
                         if (session.Character.Inventory.CountItem(cellaVnum) < cella[Upgrade] * reducedpricefactor)
                         {
-                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(cellaVnum).Name, cella[Upgrade] * reducedpricefactor)), 10));
+                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(cellaVnum).Name, cella[Upgrade] * reducedpricefactor), 10));
                             return;
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand && session.Character.Inventory.CountItem(goldScrollVnum) < 1)
                         {
-                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(goldScrollVnum).Name, cella[Upgrade] * reducedpricefactor)), 10));
+                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(goldScrollVnum).Name, cella[Upgrade] * reducedpricefactor), 10));
                             return;
                         }
                         if (Upgrade < 5)
                         {
                             if (session.Character.Inventory.CountItem(gemVnum) < gem[Upgrade])
                             {
-                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemVnum).Name, gem[Upgrade])), 10));
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(gemVnum).Name, gem[Upgrade]), 10));
                                 return;
                             }
                             session.Character.Inventory.RemoveItemAmount(gemVnum, gem[Upgrade]);
@@ -589,7 +589,7 @@ namespace OpenNos.GameObject
                         {
                             if (session.Character.Inventory.CountItem(gemFullVnum) < gem[Upgrade])
                             {
-                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemFullVnum).Name, gem[Upgrade])), 10));
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(gemFullVnum).Name, gem[Upgrade]), 10));
                                 return;
                             }
                             session.Character.Inventory.RemoveItemAmount(gemFullVnum, gem[Upgrade]);
@@ -618,14 +618,14 @@ namespace OpenNos.GameObject
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand && session.Character.Inventory.CountItem(normalScrollVnum) < 1)
                         {
-                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(normalScrollVnum).Name, 1)), 10));
+                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(normalScrollVnum).Name, 1), 10));
                             return;
                         }
                         if (Upgrade < 5)
                         {
                             if (session.Character.Inventory.CountItem(gemVnum) < gem[Upgrade])
                             {
-                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemVnum).Name, gem[Upgrade])), 10));
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(gemVnum).Name, gem[Upgrade]), 10));
                                 return;
                             }
                             session.Character.Inventory.RemoveItemAmount(gemVnum, gem[Upgrade]);
@@ -634,7 +634,7 @@ namespace OpenNos.GameObject
                         {
                             if (session.Character.Inventory.CountItem(gemFullVnum) < gem[Upgrade])
                             {
-                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format("NOT_ENOUGH_ITEMS", ServerManager.GetItem(gemFullVnum).Name, gem[Upgrade])), 10));
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(gemFullVnum).Name, gem[Upgrade]), 10));
                                 return;
                             }
                             session.Character.Inventory.RemoveItemAmount(gemFullVnum, gem[Upgrade]);
