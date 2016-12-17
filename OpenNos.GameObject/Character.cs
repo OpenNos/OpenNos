@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
 
         private AuthorityType _authority;
         private int _backpack;
-        private byte _cmapcount = 0;
+        private byte _cmapcount;
         private int _direction;
         private Inventory _inventory;
         private bool _invisible;
@@ -341,11 +341,13 @@ namespace OpenNos.GameObject
         {
             get
             {
-                RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
-                respawn.DefaultX = 79;
-                respawn.DefaultY = 116;
-                respawn.DefaultMapId = 1;
-                respawn.RespawnMapTypeId = -1;
+                RespawnMapTypeDTO respawn = new RespawnMapTypeDTO
+                {
+                    DefaultX = 79,
+                    DefaultY = 116,
+                    DefaultMapId = 1,
+                    RespawnMapTypeId = -1
+                };
 
                 if (Session.HasCurrentMap && Session.CurrentMap.MapTypes.Any())
                 {
@@ -463,16 +465,8 @@ namespace OpenNos.GameObject
                 return _speed;
             }
 
-            set
-            {
-                if (value > 59)
-                {
-                    _speed = 59;
-                }
-                else
-                {
-                    _speed = value;
-                }
+            set {
+                _speed = value > 59 ? (byte)59 : value;
             }
         }
 
@@ -1587,7 +1581,6 @@ namespace OpenNos.GameObject
                     if (item.GetType() == typeof(BoxInstance))
                     {
                         BoxInstance specialist = (BoxInstance)item;
-                        if (specialist == null) return subtype == 2 ? $"e_info 7 {item.ItemVNum} 0" : string.Empty;
 
                         // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl
                         // 5=fairy pearl
@@ -1595,11 +1588,9 @@ namespace OpenNos.GameObject
                         {
                             case 2:
                                 Item spitem = ServerManager.GetItem(specialist.HoldingVNum);
-                                if (specialist.HoldingVNum == 0)
-                                {
-                                    return $"e_info 7 {item.ItemVNum} 0";
-                                }
-                                return $"e_info 7 {item.ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {CharacterHelper.SPXPData[JobLevelXp]} {CharacterHelper.SPXPData[JobLevel - 1]} {item.Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
+                                return specialist.HoldingVNum == 0 ? 
+                                    $"e_info 7 {item.ItemVNum} 0" : 
+                                    $"e_info 7 {item.ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {CharacterHelper.SPXPData[JobLevelXp]} {CharacterHelper.SPXPData[JobLevel - 1]} {item.Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
 
                             default:
                                 return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";
@@ -1911,7 +1902,6 @@ namespace OpenNos.GameObject
             }
 
             // end owner set
-            int i = 1;
             if (Session.HasCurrentMap)
             {
                 List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMap.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || (s.MapTypeId == null)).ToList();
@@ -1925,7 +1915,6 @@ namespace OpenNos.GameObject
                     {
                         if (x < 4)
                         {
-                            i++;
                             double rndamount = random.Next(0, 100) * random.NextDouble();
                             if (rndamount <= (double)drop.DropChance * dropRate / 5000.000)
                             {
@@ -3198,11 +3187,7 @@ namespace OpenNos.GameObject
 
         public bool IsFriendlistFull()
         {
-            if (friends != null)
-            {
-                return friends.Count() >= 80 ? true : false;
-            }
-            return false;
+            return friends?.Count >= 80;
         }
 
         public bool IsFriendOfCharacter(long characterId)
