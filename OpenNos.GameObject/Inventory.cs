@@ -156,7 +156,8 @@ namespace OpenNos.GameObject
 
                 if (ContainsKey(itemInstance.Id))
                 {
-                    throw new InvalidOperationException("Cannot add the same ItemInstance twice to inventory.");
+                    Logger.Error(new InvalidOperationException("Cannot add the same ItemInstance twice to inventory."));
+                    return null;
                 }
 
                 string inventoryPacket = Owner.Session.Character.GenerateInventoryAdd(itemInstance.ItemVNum, itemInstance.Amount, type, slot, itemInstance.Rare, itemInstance.Design, itemInstance.Upgrade, 0);
@@ -211,7 +212,8 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    throw new InvalidOperationException("Expected item wasn't deleted, Type or Slot did not match!");
+                    Logger.Error(new InvalidOperationException("Expected item wasn't deleted, Type or Slot did not match!"));
+                    return null;
                 }
 
                 return removedPlace;
@@ -232,7 +234,8 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    throw new InvalidOperationException("Expected item wasn't deleted, Type or Slot did not match!");
+                    Logger.Error(new InvalidOperationException("Expected item wasn't deleted, Type or Slot did not match!"));
+                    return;
                 }
             }
         }
@@ -376,7 +379,8 @@ namespace OpenNos.GameObject
 
             if (sourceInstance == null && wear)
             {
-                throw new InvalidOperationException("SourceInstance to move does not exist.");
+                Logger.Error(new InvalidOperationException("SourceInstance to move does not exist."));
+                return null;
             }
             if (Owner != null && sourceInstance != null)
             {
@@ -615,14 +619,16 @@ namespace OpenNos.GameObject
             {
                 if (itemInstance.Type == InventoryType.Specialist && !(itemInstance is SpecialistInstance))
                 {
-                    throw new Exception("Cannot add an item of type Specialist without beeing a SpecialistInstance.");
+                    Logger.Error(new Exception("Cannot add an item of type Specialist without beeing a SpecialistInstance."));
+                    return;
                 }
 
                 if ((itemInstance.Type == InventoryType.Equipment || itemInstance.Type == InventoryType.Wear) &&
                     !(itemInstance is WearableInstance))
                 {
-                    throw new Exception(
-                        "Cannot add an item of type Equipment or Wear without beeing a WearableInstance.");
+                    Logger.Error(new Exception(
+                        "Cannot add an item of type Equipment or Wear without beeing a WearableInstance."));
+                    return;
                 }
             }
         }
