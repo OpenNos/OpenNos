@@ -8,13 +8,14 @@ namespace OpenNos.GameObject.Networking
     {
         #region Instantiation
 
-        public HitRequest(TargetHitType targetHitType, ClientSession session, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null)
+        public HitRequest(TargetHitType targetHitType, ClientSession session, Skill skill, short? skillEffect = null, short? mapX = null, short? mapY = null, ComboDTO skillCombo = null, bool showTargetAnimation = false)
         {
             HitTimestamp = DateTime.Now;
             Session = session;
             Skill = skill;
             TargetHitType = targetHitType;
             SkillEffect = skillEffect ?? skill.Effect;
+            ShowTargetHitAnimation = showTargetAnimation;
 
             if (mapX.HasValue)
             {
@@ -51,6 +52,11 @@ namespace OpenNos.GameObject.Networking
         public short SkillEffect { get; set; }
 
         public TargetHitType TargetHitType { get; set; }
+
+        /// <summary>
+        /// Some AOE Skills need to show additional SU packet for Animation
+        /// </summary>
+        public bool ShowTargetHitAnimation { get; set; }
 
         #endregion
 
