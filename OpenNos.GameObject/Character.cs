@@ -2955,21 +2955,21 @@ namespace OpenNos.GameObject
         public int GetJXP(NpcMonster monster, Group group)
         {
             int partySize = 1;
-            double partyPenalty = 1d;
+            float partyPenalty = 1f;
 
             if (group != null)
             {
-                int levelSum = group.Characters.Sum(g => g.Character.Level);
+                int levelSum = group.Characters.Sum(g => g.Character.JobLevel);
                 partySize = group.CharacterCount;
-                partyPenalty = 12 / partySize / (double)levelSum;
+                partyPenalty = 12 / partySize / (float)levelSum;
             }
 
-            int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.XPRate);
+            int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(JobLevel, monster.Level) * ServerManager.XPRate);
 
             // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
             if (partySize > 1 && group != null)
             {
-                jobxp = (int)Math.Round(jobxp / (Level * partyPenalty));
+                jobxp = (int)Math.Round(jobxp / (JobLevel * partyPenalty));
             }
 
             return jobxp;

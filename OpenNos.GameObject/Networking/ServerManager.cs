@@ -398,12 +398,7 @@ namespace OpenNos.GameObject
 
         public List<DropDTO> GetDropsByMonsterVNum(short monsterVNum)
         {
-            if (_monsterDrops.ContainsKey(monsterVNum))
-            {
-                return _generalDrops.Concat(_monsterDrops[monsterVNum]).ToList();
-            }
-
-            return new List<DropDTO>();
+            return _monsterDrops.ContainsKey(monsterVNum) ? _generalDrops.Concat(_monsterDrops[monsterVNum]).ToList() : new List<DropDTO>();
         }
 
         public Group GetGroupByCharacterId(long characterId)
@@ -439,12 +434,7 @@ namespace OpenNos.GameObject
 
         public List<Recipe> GetReceipesByMapNpcId(int mapNpcId)
         {
-            if (_recipes.ContainsKey(mapNpcId))
-            {
-                return _recipes[mapNpcId];
-            }
-
-            return new List<Recipe>();
+            return _recipes.ContainsKey(mapNpcId) ? _recipes[mapNpcId] : new List<Recipe>();
         }
 
         public ClientSession GetSessionByCharacterName(string name)
