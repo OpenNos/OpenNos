@@ -74,8 +74,7 @@ namespace OpenNos.Handler
                             return;
                         }
                         KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(buyPacket.OwnerId));
-
-                        PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.ShopSlot.Equals(buyPacket.Slot));
+                        PersonalShopItem item = shop.Value?.Items.FirstOrDefault(i => i.ShopSlot.Equals(buyPacket.Slot));
                         if (item == null || amount <= 0 || amount > 99)
                         {
                             return;
