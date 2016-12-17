@@ -1040,6 +1040,13 @@ namespace OpenNos.Handler
             Logger.Debug("Kick Command", Session.SessionId);
             if (kickPacket != null)
             {
+                if(kickPacket.CharacterName == "*")
+                {
+                    foreach (ClientSession cs in ServerManager.Instance.Sessions)
+                    {
+                        cs.Disconnect();
+                    }
+                }
                 ServerManager.Instance.Kick(kickPacket.CharacterName);
             }
             else
