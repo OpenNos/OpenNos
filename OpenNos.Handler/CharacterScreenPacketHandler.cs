@@ -63,10 +63,8 @@ namespace OpenNos.Handler
             {
                 if (characterName.Length > 3 && characterName.Length < 15)
                 {
-                    int isIllegalCharacter = 0;
-
                     System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B]*$");
-                    isIllegalCharacter = rg.Matches(characterName).Count;
+                    int isIllegalCharacter = rg.Matches(characterName).Count;
 
                     if (isIllegalCharacter == 1)
                     {
@@ -86,8 +84,8 @@ namespace OpenNos.Handler
                                 JobLevel = 1,
                                 Level = 1,
                                 MapId = 1,
-                                MapX = (short)(random.Next(78, 81)),
-                                MapY = (short)(random.Next(114, 118)),
+                                MapX = (short)random.Next(78, 81),
+                                MapY = (short)random.Next(114, 118),
                                 Mp = 221,
                                 SpPoint = 10000,
                                 SpAdditionPoint = 0,
@@ -130,16 +128,16 @@ namespace OpenNos.Handler
                                 Slot = 3,
                                 Pos = 1
                             };
-                            qlst1 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst1);
-                            qlst2 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst2);
-                            qlst3 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst3);
-                            qlst4 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst4);
-                            sk1 = DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk1);
-                            sk2 = DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk2);
-                            sk3 = DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk3);
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst1);
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst2);
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst3);
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst4);
+                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk1);
+                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk2);
+                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk3);
 
                             IList<ItemInstanceDTO> startupInventory = new List<ItemInstanceDTO>();
-                            ItemInstance inventory = new WearableInstance() // first weapon
+                            ItemInstance inventory = new WearableInstance // first weapon
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (byte)EquipmentType.MainWeapon,
@@ -218,7 +216,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            if (account != null && account.Password.ToLower() == EncryptionBase.Sha512(characterDeletePacket.Password))
+            if (account.Password.ToLower() == EncryptionBase.Sha512(characterDeletePacket.Password))
             {
                 CharacterDTO character = DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, characterDeletePacket.Slot);
                 if (character == null)
@@ -340,7 +338,7 @@ namespace OpenNos.Handler
                 }
 
                 // 1 1 before long string of -1.-1 = act completion
-                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {(equipment[(byte)EquipmentType.Hat] != null ? equipment[(byte)EquipmentType.Hat].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Armor] != null ? equipment[(byte)EquipmentType.Armor].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.WeaponSkin] != null ? equipment[(byte)EquipmentType.WeaponSkin].ItemVNum : equipment[(byte)EquipmentType.MainWeapon] != null ? equipment[(byte)EquipmentType.MainWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.SecondaryWeapon] != null ? equipment[(byte)EquipmentType.SecondaryWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Mask] != null ? equipment[(byte)EquipmentType.Mask].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Fairy] != null ? equipment[(byte)EquipmentType.Fairy].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeSuit] != null ? equipment[(byte)EquipmentType.CostumeSuit].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeHat] != null ? equipment[(byte)EquipmentType.CostumeHat].ItemVNum : -1)} {character.JobLevel}  1 1 -1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1 {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
+                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {equipment[(byte)EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte)EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte)EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 -1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1 {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
             }
             Session.SendPacket("clist_end");
         }
@@ -351,7 +349,7 @@ namespace OpenNos.Handler
             try
             {
                 Logger.Debug(packet, Session.SessionId);
-                if (Session != null && Session.Account != null && !Session.HasSelectedCharacter)
+                if (Session?.Account != null && !Session.HasSelectedCharacter)
                 {
                     string[] packetsplit = packet.Split(' ');
                     Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2])) as Character;
