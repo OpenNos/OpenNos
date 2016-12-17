@@ -311,6 +311,7 @@ namespace OpenNos.Handler
                                 ItemInstance newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount);
                                 if (newItem == null)
                                 {
+                                    Session.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE")));
                                     return;
                                 }
 
