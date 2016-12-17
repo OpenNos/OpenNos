@@ -52,16 +52,17 @@ namespace OpenNos.Handler
             int serverCount = 1;
             IEnumerable<WorldserverGroupDTO> worldserverGroups = ServerCommunicationClient.Instance.HubProxy.Invoke<IEnumerable<WorldserverGroupDTO>>("RetrieveRegisteredWorldservers").Result;
 
-            if(!worldserverGroups.Any())
+            IEnumerable<WorldserverGroupDTO> worldServerGroup = worldserverGroups as WorldserverGroupDTO[] ?? worldserverGroups.ToArray();
+            if(!worldServerGroup.Any())
             {
                 Logger.Log.Error("Could not retrieve Worldserver groups. Please make sure they've already been registered.");
-                _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"), DateTime.Now.ToString())}");
+                _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"), DateTime.Now)}");
 
                 // release account's login permission
                 bool hasRegisteredAccountLogin = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("HasRegisteredAccountLogin", accountName, session).Result;
             }
 
-            foreach (WorldserverGroupDTO worldserverGroup in worldserverGroups)
+            foreach (WorldserverGroupDTO worldserverGroup in worldServerGroup)
             {
                 int channelCount = 1;
                 foreach (ScsTcpEndPoint address in worldserverGroup.Addresses)
@@ -79,7 +80,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
 
-            UserDTO user = new UserDTO() { Name = packetsplit[2], Password = ConfigurationManager.AppSettings["UseOldCrypto"] == "true" ? EncryptionBase.Sha512(LoginEncryption.GetPassword(packetsplit[3])).ToUpper() : packetsplit[3] };
+            UserDTO user = new UserDTO { Name = packetsplit[2], Password = ConfigurationManager.AppSettings["UseOldCrypto"] == "true" ? EncryptionBase.Sha512(LoginEncryption.GetPassword(packetsplit[3])).ToUpper() : packetsplit[3] };
 
             // closed
             bool flag = true;
@@ -102,7 +103,7 @@ namespace OpenNos.Handler
                             PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
                             if (penalty != null)
                             {
-                                _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, (penalty.DateEnd).ToString("yyyy-MM-dd-HH:mm"))}");
+                                _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, penalty.DateEnd.ToString("yyyy-MM-dd-HH:mm"))}");
                             }
                             else
                             {

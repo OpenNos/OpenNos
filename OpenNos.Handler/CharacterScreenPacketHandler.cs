@@ -63,10 +63,8 @@ namespace OpenNos.Handler
             {
                 if (characterName.Length > 3 && characterName.Length < 15)
                 {
-                    int isIllegalCharacter = 0;
-
                     System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B]*$");
-                    isIllegalCharacter = rg.Matches(characterName).Count;
+                    int isIllegalCharacter = rg.Matches(characterName).Count;
 
                     if (isIllegalCharacter == 1)
                     {
@@ -76,130 +74,120 @@ namespace OpenNos.Handler
                             {
                                 return;
                             }
-                            byte testbyte = 0;
-                            if (byte.TryParse(packetsplit[3], out testbyte) && byte.TryParse(packetsplit[4], out testbyte) && byte.TryParse(packetsplit[5], out testbyte) && byte.TryParse(packetsplit[6], out testbyte))
+                            CharacterDTO newCharacter = new CharacterDTO()
                             {
+                                Class = (byte)ClassType.Adventurer,
+                                Gender = (GenderType)Enum.Parse(typeof(GenderType), packetsplit[4]),
+                                HairColor = (HairColorType)Enum.Parse(typeof(HairColorType), packetsplit[6]),
+                                HairStyle = (HairStyleType)Enum.Parse(typeof(HairStyleType), packetsplit[5]),
+                                Hp = 221,
+                                JobLevel = 1,
+                                Level = 1,
+                                MapId = 1,
+                                MapX = (short)random.Next(78, 81),
+                                MapY = (short)random.Next(114, 118),
+                                Mp = 221,
+                                SpPoint = 10000,
+                                SpAdditionPoint = 0,
+                                Name = characterName,
+                                Slot = slot,
+                                AccountId = accountId,
+                                State = CharacterState.Active,
+                            };
 
-                                CharacterDTO newCharacter = new CharacterDTO()
-                                {
-                                    Class = (byte)ClassType.Adventurer,
-                                    Gender = (GenderType)Enum.Parse(typeof(GenderType), packetsplit[4]),
-                                    HairColor = (HairColorType)Enum.Parse(typeof(HairColorType), packetsplit[6]),
-                                    HairStyle = (HairStyleType)Enum.Parse(typeof(HairStyleType), packetsplit[5]),
-                                    Hp = 221,
-                                    JobLevel = 1,
-                                    Level = 1,
-                                    MapId = 1,
-                                    MapX = (short)(random.Next(78, 81)),
-                                    MapY = (short)(random.Next(114, 118)),
-                                    Mp = 221,
-                                    SpPoint = 10000,
-                                    SpAdditionPoint = 0,
-                                    Name = characterName,
-                                    Slot = slot,
-                                    AccountId = accountId,
-                                    State = CharacterState.Active,
-                                };
-                                SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
-                                CharacterSkillDTO sk1 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
-                                CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
-                                CharacterSkillDTO sk3 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 209 };
-                                QuicklistEntryDTO qlst1 = new QuicklistEntryDTO
-                                {
-                                    CharacterId = newCharacter.CharacterId,
-                                    Type = 1,
-                                    Slot = 1,
-                                    Pos = 1
-                                };
-                                QuicklistEntryDTO qlst2 = new QuicklistEntryDTO
-                                {
-                                    CharacterId = newCharacter.CharacterId,
-                                    Q2 = 1,
-                                    Slot = 2,
-                                };
-                                QuicklistEntryDTO qlst3 = new QuicklistEntryDTO
-                                {
-                                    CharacterId = newCharacter.CharacterId,
-                                    Q2 = 8,
-                                    Type = 1,
-                                    Slot = 1,
-                                    Pos = 16
-                                };
-                                QuicklistEntryDTO qlst4 = new QuicklistEntryDTO
-                                {
-                                    CharacterId = newCharacter.CharacterId,
-                                    Q2 = 9,
-                                    Type = 1,
-                                    Slot = 3,
-                                    Pos = 1
-                                };
-                                qlst1 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst1);
-                                qlst2 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst2);
-                                qlst3 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst3);
-                                qlst4 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst4);
-                                sk1 = DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk1);
-                                sk2 = DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk2);
-                                sk3 = DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk3);
+                            SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+                            CharacterSkillDTO sk1 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
+                            CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
+                            CharacterSkillDTO sk3 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 209 };
+                            QuicklistEntryDTO qlst1 = new QuicklistEntryDTO
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Type = 1,
+                                Slot = 1,
+                                Pos = 1
+                            };
+                            QuicklistEntryDTO qlst2 = new QuicklistEntryDTO
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Q2 = 1,
+                                Slot = 2,
+                            };
+                            QuicklistEntryDTO qlst3 = new QuicklistEntryDTO
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Q2 = 8,
+                                Type = 1,
+                                Slot = 1,
+                                Pos = 16
+                            };
+                            QuicklistEntryDTO qlst4 = new QuicklistEntryDTO
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Q2 = 9,
+                                Type = 1,
+                                Slot = 3,
+                                Pos = 1
+                            };
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst1);
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst2);
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst3);
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst4);
+                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk1);
+                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk2);
+                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk3);
 
-                                IList<ItemInstanceDTO> startupInventory = new List<ItemInstanceDTO>();
-                                ItemInstance inventory = new WearableInstance() // first weapon
-                                {
-                                    CharacterId = newCharacter.CharacterId,
-                                    Slot = (byte)EquipmentType.MainWeapon,
-                                    Type = InventoryType.Wear,
-                                    Amount = 1,
-                                    ItemVNum = 1,
-                                    Rare = 5,
-                                    Upgrade = 8
-                                };
-                                startupInventory.Add(inventory);
+                            IList<ItemInstanceDTO> startupInventory = new List<ItemInstanceDTO>();
+                            ItemInstance inventory = new WearableInstance // first weapon
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Slot = (byte)EquipmentType.MainWeapon,
+                                Type = InventoryType.Wear,
+                                Amount = 1,
+                                ItemVNum = 1,
+                            };
+                            startupInventory.Add(inventory);
 
-                                inventory = new WearableInstance() // second weapon
-                                {
-                                    CharacterId = newCharacter.CharacterId,
-                                    Slot = (byte)EquipmentType.SecondaryWeapon,
-                                    Type = InventoryType.Wear,
-                                    Amount = 1,
-                                    ItemVNum = 8,
-                                    Rare = 5,
-                                    Upgrade = 8
-                                };
-                                startupInventory.Add(inventory);
+                            inventory = new WearableInstance() // second weapon
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Slot = (byte)EquipmentType.SecondaryWeapon,
+                                Type = InventoryType.Wear,
+                                Amount = 1,
+                                ItemVNum = 8
+                            };
+                            startupInventory.Add(inventory);
 
-                                inventory = new WearableInstance() // armor
-                                {
-                                    CharacterId = newCharacter.CharacterId,
-                                    Slot = (byte)EquipmentType.Armor,
-                                    Type = InventoryType.Wear,
-                                    Amount = 1,
-                                    ItemVNum = 12,
-                                    Rare = 5,
-                                    Upgrade = 8
-                                };
-                                startupInventory.Add(inventory);
+                            inventory = new WearableInstance() // armor
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Slot = (byte)EquipmentType.Armor,
+                                Type = InventoryType.Wear,
+                                Amount = 1,
+                                ItemVNum = 12
+                            };
+                            startupInventory.Add(inventory);
 
-                                inventory = new ItemInstance() // snack
-                                {
-                                    CharacterId = newCharacter.CharacterId,
-                                    Type = InventoryType.Etc,
-                                    Amount = 10,
-                                    ItemVNum = 2024
-                                };
-                                startupInventory.Add(inventory);
+                            inventory = new ItemInstance() // snack
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Type = InventoryType.Etc,
+                                Amount = 10,
+                                ItemVNum = 2024
+                            };
+                            startupInventory.Add(inventory);
 
-                                inventory = new ItemInstance() // ammo
-                                {
-                                    CharacterId = newCharacter.CharacterId,
-                                    Slot = 1,
-                                    Type = InventoryType.Etc,
-                                    Amount = 1,
-                                    ItemVNum = 2081
-                                };
-                                startupInventory.Add(inventory);
+                            inventory = new ItemInstance() // ammo
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Slot = 1,
+                                Type = InventoryType.Etc,
+                                Amount = 1,
+                                ItemVNum = 2081
+                            };
+                            startupInventory.Add(inventory);
 
-                                DAOFactory.IteminstanceDao.InsertOrUpdate(startupInventory);
-                                LoadCharacters(packet);
-                            }
+                            DAOFactory.IteminstanceDao.InsertOrUpdate(startupInventory);
+                            LoadCharacters(packet);
                         }
                         else
                         {
@@ -228,7 +216,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            if (account != null && account.Password.ToLower() == EncryptionBase.Sha512(characterDeletePacket.Password))
+            if (account.Password.ToLower() == EncryptionBase.Sha512(characterDeletePacket.Password))
             {
                 CharacterDTO character = DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, characterDeletePacket.Slot);
                 if (character == null)
@@ -350,7 +338,7 @@ namespace OpenNos.Handler
                 }
 
                 // 1 1 before long string of -1.-1 = act completion
-                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {(equipment[(byte)EquipmentType.Hat] != null ? equipment[(byte)EquipmentType.Hat].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Armor] != null ? equipment[(byte)EquipmentType.Armor].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.WeaponSkin] != null ? equipment[(byte)EquipmentType.WeaponSkin].ItemVNum : equipment[(byte)EquipmentType.MainWeapon] != null ? equipment[(byte)EquipmentType.MainWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.SecondaryWeapon] != null ? equipment[(byte)EquipmentType.SecondaryWeapon].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Mask] != null ? equipment[(byte)EquipmentType.Mask].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.Fairy] != null ? equipment[(byte)EquipmentType.Fairy].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeSuit] != null ? equipment[(byte)EquipmentType.CostumeSuit].ItemVNum : -1)}.{(equipment[(byte)EquipmentType.CostumeHat] != null ? equipment[(byte)EquipmentType.CostumeHat].ItemVNum : -1)} {character.JobLevel}  1 1 -1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1 {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
+                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {equipment[(byte)EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte)EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte)EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 -1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1 {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
             }
             Session.SendPacket("clist_end");
         }
@@ -361,7 +349,7 @@ namespace OpenNos.Handler
             try
             {
                 Logger.Debug(packet, Session.SessionId);
-                if (Session != null && Session.Account != null && !Session.HasSelectedCharacter)
+                if (Session?.Account != null && !Session.HasSelectedCharacter)
                 {
                     string[] packetsplit = packet.Split(' ');
                     Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2])) as Character;
@@ -385,7 +373,6 @@ namespace OpenNos.Handler
                         });
                         DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.IpAddress, Session.Character.CharacterId, "Connection", "World");
                         Session.SendPacket("OK");
-
 
                         // Inform everyone about connected character
                         ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectCharacter", Session.Character.Name, Session.Account.Name);
