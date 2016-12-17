@@ -229,7 +229,7 @@ namespace OpenNos.Handler
                                         IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
                                         if (monstersInAOERange != null)
                                         {
-                                            foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
+                                            foreach (MapMonster mon in monstersInAOERange)
                                             {
                                                 mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill
                                                     , skillCombo: skillCombo));
@@ -240,9 +240,15 @@ namespace OpenNos.Handler
                                     {
                                         IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
                                         Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect} 0 0 {(monsterToAttack.IsAlive ? 1 : 0)} {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 0 {ski.Skill.SkillType - 1}");
+
+                                        //hit the targetted monster
+                                        monsterToAttack.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
+                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
+
+                                        //hit all other monsters
                                         if (monstersInAOERange != null)
                                         {
-                                            foreach (MapMonster mon in monstersInAOERange.Where(s => s.CurrentHp > 0))
+                                            foreach (MapMonster mon in monstersInAOERange.Where(m => m.MapMonsterId != monsterToAttack.MapMonsterId)) //exclude targetted monster
                                             {
                                                 mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
                                                     , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
