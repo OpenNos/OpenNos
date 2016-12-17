@@ -241,7 +241,7 @@ namespace OpenNos.Handler
 
                                         //hit the targetted monster
                                         monsterToAttack.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
+                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: true));
 
                                         //hit all other monsters
                                         if (monstersInAOERange != null)
@@ -249,7 +249,7 @@ namespace OpenNos.Handler
                                             foreach (MapMonster mon in monstersInAOERange.Where(m => m.MapMonsterId != monsterToAttack.MapMonsterId)) //exclude targetted monster
                                             {
                                                 mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
+                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: false));
                                             }
                                         }
                                     }
