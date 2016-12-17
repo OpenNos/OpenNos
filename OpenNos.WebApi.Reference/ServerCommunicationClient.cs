@@ -40,6 +40,8 @@ namespace OpenNos.WebApi.Reference
 
         public event EventHandler CharacterDisconnectedEvent;
 
+        public event EventHandler SessionKickedEvent;
+
         #endregion
 
         #region Properties
@@ -94,6 +96,8 @@ namespace OpenNos.WebApi.Reference
 
             _hubProxy.On<string, long>("characterDisconnected", OnCharacterDisconnected);
 
+            _hubProxy.On<long?, string>("kickSession", OnSessionKicked);
+
             _hubconnection.Start().Wait();
         }
 
@@ -110,6 +114,14 @@ namespace OpenNos.WebApi.Reference
             if (CharacterDisconnectedEvent != null && !string.IsNullOrEmpty(characterName))
             {
                 CharacterDisconnectedEvent(new System.Collections.Generic.KeyValuePair<string, long>(characterName, characterId), new EventArgs());
+            }
+        }
+
+        public void OnSessionKicked(long? sessionId, string accountName)
+        {
+            if (SessionKickedEvent != null && (sessionId.HasValue || !String.IsNullOrEmpty(accountName)))
+            {
+                SessionKickedEvent(new Tuple<long?, string>(sessionId, accountName), new EventArgs());
             }
         }
 

@@ -17,6 +17,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -171,15 +172,6 @@ namespace OpenNos.Handler
             Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        }
-
-        [Packet("$Packet")]
-        public void PacketCallBack(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            packet = packet.Substring(packet.IndexOf(' ', packet.IndexOf(' ') + 1));
-            Session.SendPacket(packet);
-            Session.SendPacket(Session.Character.GenerateSay(packet, 10));
         }
 
         [Packet("$Backpack")]
@@ -846,6 +838,7 @@ namespace OpenNos.Handler
                     }
                     Session.Character.SendGift(Session.Character.CharacterId, vnum, amount, rare, upgrade, false);
                     break;
+
                 case 7:
                     string name = packetsplit[2];
                     if (!(byte.TryParse(packetsplit[4], out amount) && short.TryParse(packetsplit[3], out vnum) && sbyte.TryParse(packetsplit[5], out rare) && byte.TryParse(packetsplit[6], out upgrade)))
@@ -1056,6 +1049,27 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        /// $KickSession Command
+        /// </summary>
+        public void KickSession(KickSessionPacket kickPacket)
+        {
+            Logger.Debug("KickSession Command", Session.SessionId);
+            if (kickPacket != null)
+            {
+                if (kickPacket.SessionId.HasValue) //if you set the sessionId, remove account verification
+                {
+                    kickPacket.AccountName = String.Empty;
+                }
+
+                ServerCommunicationClient.Instance.HubProxy.Invoke("KickSession", kickPacket.SessionId, kickPacket.AccountName);
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$KickSession ACCOUNTNAME <SESSIONID>", 10));
+            }
+        }
+
+        /// <summary>
         /// $Kill Command
         /// </summary>
         /// <param name="killPacket"></param>
@@ -1253,6 +1267,15 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME TIME REASON ", 10));
                 Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 10));
             }
+        }
+
+        [Packet("$Packet")]
+        public void PacketCallBack(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            packet = packet.Substring(packet.IndexOf(' ', packet.IndexOf(' ') + 1));
+            Session.SendPacket(packet);
+            Session.SendPacket(Session.Character.GenerateSay(packet, 10));
         }
 
         [Packet("$Position")]

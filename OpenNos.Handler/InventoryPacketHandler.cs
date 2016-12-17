@@ -1619,8 +1619,16 @@ namespace OpenNos.Handler
             // remove all items from source session
             foreach (ItemInstance item in sourceSession.Character.ExchangeInfo.ExchangeList)
             {
+                
                 ItemInstance invtemp = sourceSession.Character.Inventory.GetItemInstanceById(item.Id);
-                sourceSession.Character.Inventory.RemoveItemAmountFromInventory(item.Amount, invtemp.Id);
+                if (invtemp != null && item != null)
+                {
+                    sourceSession.Character.Inventory.RemoveItemAmountFromInventory(item.Amount, invtemp.Id);
+                }
+                else
+                {
+                    return;
+                }
             }
 
             // add all items to target session

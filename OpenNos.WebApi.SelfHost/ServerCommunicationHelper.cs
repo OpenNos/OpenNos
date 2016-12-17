@@ -1,5 +1,6 @@
 ﻿using OpenNos.Core;
 using OpenNos.Data;
+using System.Collections.Generic;
 
 namespace OpenNos.WebApi.SelfHost
 {
@@ -9,13 +10,13 @@ namespace OpenNos.WebApi.SelfHost
 
         private static ServerCommunicationHelper _instance;
 
-        private ThreadSafeSortedList<string, long> _connectedAccounts;
+        private Dictionary<string, long> _connectedAccounts;
 
-        private ThreadSafeSortedList<string, string> _connectedCharacters;
+        private Dictionary<string, string> _connectedCharacters;
 
-        private ThreadSafeSortedList<string, long> _registeredAccountLogins;
+        private Dictionary<string, long> _registeredAccountLogins;
 
-        private ThreadSafeSortedList<string, WorldserverGroupDTO> _worldservers;
+        private Dictionary<string, WorldserverGroupDTO> _worldservers;
 
         #endregion
 
@@ -29,11 +30,11 @@ namespace OpenNos.WebApi.SelfHost
             }
         }
 
-        public ThreadSafeSortedList<string, long> ConnectedAccounts
+        public Dictionary<string, long> ConnectedAccounts
         {
             get
             {
-                return _connectedAccounts ?? (_connectedAccounts = new ThreadSafeSortedList<string, long>());
+                return _connectedAccounts ?? (_connectedAccounts = new Dictionary<string, long>());
             }
             set
             {
@@ -41,11 +42,11 @@ namespace OpenNos.WebApi.SelfHost
             }
         }
 
-        public ThreadSafeSortedList<string, string> ConnectedCharacters
+        public Dictionary<string, string> ConnectedCharacters
         {
             get
             {
-                return _connectedCharacters ?? (_connectedCharacters = new ThreadSafeSortedList<string, string>());
+                return _connectedCharacters ?? (_connectedCharacters = new Dictionary<string, string>());
             }
             set
             {
@@ -53,11 +54,11 @@ namespace OpenNos.WebApi.SelfHost
             }
         }
 
-        public ThreadSafeSortedList<string, long> RegisteredAccountLogins
+        public Dictionary<string, long> RegisteredAccountLogins
         {
             get
             {
-                return _registeredAccountLogins ?? (_registeredAccountLogins = new ThreadSafeSortedList<string, long>());
+                return _registeredAccountLogins ?? (_registeredAccountLogins = new Dictionary<string, long>());
             }
             set
             {
@@ -65,11 +66,11 @@ namespace OpenNos.WebApi.SelfHost
             }
         }
 
-        public ThreadSafeSortedList<string, WorldserverGroupDTO> Worldservers
+        public Dictionary<string, WorldserverGroupDTO> Worldservers
         {
             get
             {
-                return _worldservers ?? (_worldservers = new ThreadSafeSortedList<string, WorldserverGroupDTO>());
+                return _worldservers ?? (_worldservers = new Dictionary<string, WorldserverGroupDTO>());
             }
             set
             {
