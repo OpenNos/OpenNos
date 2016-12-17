@@ -164,12 +164,7 @@ namespace OpenNos.GameObject
 
         public ClientSession GetSessionByCharacterId(long characterId)
         {
-            if (_sessions.ContainsKey(characterId))
-            {
-                return _sessions[characterId];
-            }
-
-            return null;
+            return _sessions.ContainsKey(characterId) ? _sessions[characterId] : null;
         }
 
         public virtual void RegisterSession(ClientSession session)
@@ -179,20 +174,17 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            if (session != null)
+            // Create a ChatClient and store it in a collection
+            _sessions[session.Character.CharacterId] = session;
+            if (session.HasCurrentMap)
             {
-                // Create a ChatClient and store it in a collection
-                _sessions[session.Character.CharacterId] = session;
-                if (session.HasCurrentMap)
-                {
-                    session.CurrentMap.IsSleeping = false;
-                }
+                session.CurrentMap.IsSleeping = false;
             }
         }
 
         public void SpreadBroadcastpacket(BroadcastPacket sentPacket)
         {
-            if (Sessions != null && sentPacket != null && !string.IsNullOrEmpty(sentPacket.Packet))
+            if (Sessions != null && !string.IsNullOrEmpty(sentPacket?.Packet))
             {
                 switch (sentPacket.Receiver)
                 {
@@ -226,10 +218,7 @@ namespace OpenNos.GameObject
                             {
                                 ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == sentPacket.SomeonesCharacterId || s.Character.Name == sentPacket.SomeonesCharacterName);
 
-                                if (targetSession != null)
-                                {
-                                    targetSession.SendPacket(sentPacket.Packet);
-                                }
+                                targetSession?.SendPacket(sentPacket.Packet);
                             }
 
                             break;
@@ -249,9 +238,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case ReceiverType.Group:
-                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.Group != null
-                                 && sentPacket.Sender != null && sentPacket.Sender.Character != null && sentPacket.Sender.Character.Group != null
-                                 && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId))
+                        foreach (ClientSession session in Sessions.Where(s => s.Character?.Group != null && sentPacket.Sender?.Character?.Group != null && s.Character.Group.GroupId == sentPacket.Sender.Character.Group.GroupId))
                         {
                             session.SendPacket(sentPacket.Packet);
                         }

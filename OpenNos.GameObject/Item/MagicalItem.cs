@@ -180,7 +180,7 @@ namespace OpenNos.GameObject
                             session.Character.Dignity = 100;
                         }
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff(48));
+                        session.SendPacket(session.Character.GenerateEff(49 - session.Character.Faction));
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
@@ -188,7 +188,7 @@ namespace OpenNos.GameObject
                     {
                         session.Character.Dignity = 100;
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff(48));
+                        session.SendPacket(session.Character.GenerateEff(49 - session.Character.Faction));
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
