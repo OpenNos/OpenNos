@@ -24,6 +24,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Reactive.Linq;
+using OpenNos.WebApi.Reference;
 
 namespace OpenNos.GameObject
 {
@@ -124,7 +125,25 @@ namespace OpenNos.GameObject
                 });
             }
 
+            ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
+
             lastGroupId = 1;
+        }
+
+        private void OnSessionKicked(object sender, EventArgs e)
+        {
+            if(sender != null)
+            {
+                Tuple<long?, string> kickedSession = (Tuple<long?, string>)sender;
+
+                ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
+                                                        && ((String.IsNullOrEmpty(kickedSession.Item2) || s.Account.Name == kickedSession.Item2)));
+
+                if(targetSession != null)
+                {
+                    targetSession.Disconnect();
+                }
+            }
         }
 
         private void RemoveItemProcess()

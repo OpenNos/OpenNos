@@ -144,6 +144,7 @@
     <Compile Include="Packets\CommandPackets\GuriCommandPacket.cs" />
     <Compile Include="Packets\CommandPackets\HairColorPacket.cs" />
     <Compile Include="Packets\CommandPackets\HairStylePacket.cs" />
+    <Compile Include="Packets\CommandPackets\KickSessionPacket.cs" />
     <Compile Include="Packets\CommandPackets\KickPacket.cs" />
     <Compile Include="Packets\CommandPackets\KillPacket.cs" />
     <Compile Include="Packets\CommandPackets\MusicPacket.cs" />

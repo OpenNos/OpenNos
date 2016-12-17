@@ -118,13 +118,14 @@ namespace OpenNos.World
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
             ServerCommunicationClient.Instance.HubProxy.Invoke("UnregisterWorldserver", serverGroup, new ScsTcpEndPoint(IPADDRESS, port));
 
-            foreach(ClientSession session in ServerManager.Instance.Sessions)
-            {
-                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectAccount", session.Account.Name).Wait();
-            }
-
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.SaveAll();
+
+            foreach (ClientSession session in ServerManager.Instance.Sessions)
+            {
+                session.Disconnect();
+            }
+
             Thread.Sleep(5000);
             return false;
         }

@@ -183,6 +183,47 @@ namespace OpenNos.WebApi.SelfHost
         }
 
         /// <summary>
+        /// Kick a session by providing SessionId or AccountName
+        /// </summary>
+        public void KickSession(long? sessionId, string accountName)
+        {
+            try
+            {
+                if (sessionId.HasValue || !String.IsNullOrEmpty(accountName))
+                {
+                    // inform clients
+                    Clients.All.kickSession(sessionId, accountName);
+
+                    if (!String.IsNullOrEmpty(accountName))
+                    {
+                        DisconnectAccount(accountName);
+                    }
+
+                    //release session login
+                    if (sessionId.HasValue && ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsValue(sessionId.Value))
+                    {
+                        var connectedAccount = ServerCommunicationHelper.Instance.ConnectedAccounts.SingleOrDefault(s => s.Value == sessionId.Value);
+
+                        if (!String.IsNullOrEmpty(connectedAccount.Key))
+                        {
+                            ServerCommunicationHelper.Instance.ConnectedAccounts.Remove(connectedAccount.Key);
+                        }
+                    }
+
+                    Logger.Log.InfoFormat($"Session {sessionId} {accountName} has been kicked.");
+                }
+                else
+                {
+                    Logger.Log.WarnFormat($"Ignored empty kicking event.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error("General Error", ex);
+            }
+        }
+
+        /// <summary>
         /// Register Account for Login (Verification for Security)
         /// </summary>
         /// <param name="accountName">Name of the Account</param>
@@ -236,7 +277,7 @@ namespace OpenNos.WebApi.SelfHost
 
         public IEnumerable<WorldserverGroupDTO> RetrieveRegisteredWorldservers()
         {
-            return ServerCommunicationHelper.Instance.Worldservers.GetAllItems();
+            return ServerCommunicationHelper.Instance.Worldservers.Select(c => c.Value);
         }
 
         public void UnregisterWorldserver(string servergroup, ScsTcpEndPoint ipAddress)
@@ -256,16 +297,16 @@ namespace OpenNos.WebApi.SelfHost
                     }
                 }
                 else if (!ServerCommunicationHelper.Instance.Worldservers.ContainsKey(servergroup)
-                    && !ServerCommunicationHelper.Instance.Worldservers.GetAllItems().Any(sgi => sgi.Addresses.Contains(ipAddress)))
+                    && !ServerCommunicationHelper.Instance.Worldservers.Any(sgi => sgi.Value.Addresses.Contains(ipAddress)))
                 {
                     //servergroup doesnt exist and world is not in a group named like the given servergroup and in no other
                     Logger.Log.InfoFormat($"World with address {ipAddress} has already been unregistered before.");
                 }
                 else if (!ServerCommunicationHelper.Instance.Worldservers.ContainsKey(servergroup)
-                    && ServerCommunicationHelper.Instance.Worldservers.GetAllItems().Any(sgi => sgi.Addresses.Contains(ipAddress)))
+                    && ServerCommunicationHelper.Instance.Worldservers.Any(sgi => sgi.Value.Addresses.Contains(ipAddress)))
                 {
                     //servergroup does not exist but world does run in a different servergroup
-                    WorldserverGroupDTO worldserverGroupDto = ServerCommunicationHelper.Instance.Worldservers.GetAllItems().SingleOrDefault(sgi => sgi.Addresses.Contains(ipAddress));
+                    WorldserverGroupDTO worldserverGroupDto = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(sgi => sgi.Value.Addresses.Contains(ipAddress)).Value;
                     worldserverGroupDto?.Addresses.Remove(ipAddress);
                     Logger.Log.InfoFormat($"World with address {ipAddress} has been remove from a different servergroup.");
                 }
