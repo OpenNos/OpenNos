@@ -305,10 +305,7 @@ namespace OpenNos.GameObject
             {
                 return elementRate * elementRate + 50;
             }
-            else
-            {
-                return elementRate * elementRate * 3 + 50;
-            }
+            return elementRate * elementRate * 3 + 50;
         }
 
         public static int MagicalDefence(ClassType @class, byte level)
