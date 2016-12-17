@@ -180,7 +180,13 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
-
+                case 150:
+                    if (npc != null)
+                    {
+                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 150, 153, 145);
+                    }
+                    break;
                 case 301:
                     if (npc != null)
                     {
