@@ -221,33 +221,34 @@ namespace OpenNos.GameObject
             float penalty;
 
             // penalty calculation
-            if (leveldifference == 6)
+            switch (leveldifference)
             {
-                penalty = 0.9f;
-            }
-            else if (leveldifference == 7)
-            {
-                penalty = 0.7f;
-            }
-            else if (leveldifference == 8)
-            {
-                penalty = 0.5f;
-            }
-            else if (leveldifference == 9)
-            {
-                penalty = 0.3f;
-            }
-            else if (leveldifference > 9)
-            {
-                penalty = 0.1f;
-            }
-            else if (leveldifference > 18 && leveldifference < 19)
-            {
-                penalty = 0.05f;
-            }
-            else
-            {
-                penalty = 1f;
+                case 6:
+                    penalty = 0.9f;
+                    break;
+                case 7:
+                    penalty = 0.7f;
+                    break;
+                case 8:
+                    penalty = 0.5f;
+                    break;
+                case 9:
+                    penalty = 0.3f;
+                    break;
+                default:
+                    if (leveldifference > 9)
+                    {
+                        penalty = 0.1f;
+                    }
+                    else if (leveldifference > 18 && leveldifference < 19)
+                    {
+                        penalty = 0.05f;
+                    }
+                    else
+                    {
+                        penalty = 1f;
+                    }
+                    break;
             }
 
             return penalty;
@@ -259,41 +260,41 @@ namespace OpenNos.GameObject
             float penalty;
 
             // penalty calculation
-            if (leveldifference == 5)
+            switch (leveldifference)
             {
-                penalty = 0.9f;
-            }
-            else if (leveldifference == 6)
-            {
-                penalty = 0.7f;
-            }
-            else if (leveldifference == 7)
-            {
-                penalty = 0.5f;
-            }
-            else if (leveldifference == 8)
-            {
-                penalty = 0.3f;
-            }
-            else if (leveldifference == 9)
-            {
-                penalty = 0.2f;
-            }
-            else if (leveldifference > 9 && leveldifference < 19)
-            {
-                penalty = 0.1f;
-            }
-            else if (leveldifference > 18 && leveldifference < 30)
-            {
-                penalty = 0.05f;
-            }
-            else if (leveldifference > 30)
-            {
-                penalty = 0f;
-            }
-            else
-            {
-                penalty = 1f;
+                case 5:
+                    penalty = 0.9f;
+                    break;
+                case 6:
+                    penalty = 0.7f;
+                    break;
+                case 7:
+                    penalty = 0.5f;
+                    break;
+                case 8:
+                    penalty = 0.3f;
+                    break;
+                case 9:
+                    penalty = 0.2f;
+                    break;
+                default:
+                    if (leveldifference > 9 && leveldifference < 19)
+                    {
+                        penalty = 0.1f;
+                    }
+                    else if (leveldifference > 18 && leveldifference < 30)
+                    {
+                        penalty = 0.05f;
+                    }
+                    else if (leveldifference > 30)
+                    {
+                        penalty = 0f;
+                    }
+                    else
+                    {
+                        penalty = 1f;
+                    }
+                    break;
             }
 
             return penalty;
