@@ -1273,9 +1273,22 @@ namespace OpenNos.Handler
         public void PacketCallBack(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            packet = packet.Substring(packet.IndexOf(' ', packet.IndexOf(' ') + 1));
-            Session.SendPacket(packet);
-            Session.SendPacket(Session.Character.GenerateSay(packet, 10));
+            string[] packetsplit = packet.Split(' ');
+            string str = string.Empty;
+            if (packetsplit.Length > 2)
+            {
+                for (int i = 2; i < packetsplit.Length; i++)
+                {
+                    str += packetsplit[i] + " ";
+                }
+            }
+            str = str.Trim();
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return;
+            }
+            Session.SendPacket(str);
+            Session.SendPacket(Session.Character.GenerateSay(str, 10));
         }
 
         [Packet("$Position")]
@@ -1486,6 +1499,10 @@ namespace OpenNos.Handler
                 }
             }
             message = message.Trim();
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                return;
+            }
             ServerManager.Instance.Shout(message);
         }
 
