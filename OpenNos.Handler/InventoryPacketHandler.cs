@@ -238,8 +238,7 @@ namespace OpenNos.Handler
                         if(long.TryParse(packetsplit[5], out shopOwnerId))
                         {
                             KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(shopOwnerId));
-
-                            PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
+                            PersonalShopItem item = shop.Value?.Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
                             if (item != null)
                             {
                                 if (item.ItemInstance.GetType() == typeof(BoxInstance))

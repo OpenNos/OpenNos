@@ -1612,17 +1612,14 @@ namespace OpenNos.Handler
             switch (packetsplit.Length)
             {
                 case 3:
-                    string name = packetsplit[2];
-                    short? mapId = ServerManager.Instance.GetProperty<short?>(name, nameof(Character.MapId));
-                    short? mapx = ServerManager.Instance.GetProperty<short?>(name, nameof(Character.MapX));
-                    short? mapy = ServerManager.Instance.GetProperty<short?>(name, nameof(Character.MapY));
-                    if (mapy != null && mapx != null && mapId != null)
+                    ClientSession session = ServerManager.Instance.GetSessionByCharacterName(packetsplit[2]);
+                    if (session != null)
                     {
                         ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                        Session.Character.MapId = (short)mapId;
-                        Session.Character.MapX = (short)((short)(mapx) + 1);
-                        Session.Character.MapY = (short)((short)(mapy) + 1);
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, (short)mapId, (short)((short)(mapx) + 1), (short)((short)(mapy) + 1));
+                        short mapId = session.Character.MapId;
+                        short mapX = session.Character.MapX;
+                        short mapY = session.Character.MapY;
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapX, mapY);
                     }
                     else
                     {

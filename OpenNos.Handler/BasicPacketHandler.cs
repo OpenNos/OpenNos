@@ -749,45 +749,14 @@ namespace OpenNos.Handler
             }
             else if (guriPacket[2] == "199" && guriPacket[3] == "1")
             {
-                int[] listWingOfFriendship = { 2160, 2312, 10048 };
-                int vnumToUse = -1;
-                foreach (int vnum in listWingOfFriendship)
+                long charId;
+                long.TryParse(guriPacket[4], out charId);
+                if (!Session.Character.IsFriendOfCharacter(charId))
                 {
-                    if (Session.Character.Inventory.CountItem(vnum) > 0)
-                    {
-                        vnumToUse = vnum;
-                    }
+                    Session.SendPacket(Language.Instance.GetMessageFromKey("CHARACTER_NOT_IN_FRIENDLIST"));
+                    return;
                 }
-                if (vnumToUse != -1)
-                {
-                    long charId;
-                    long.TryParse(guriPacket[4], out charId);
-                    if(!Session.Character.IsFriendOfCharacter(charId))
-                    {
-                        Session.SendPacket(Language.Instance.GetMessageFromKey("CHARACTER_NOT_IN_FRIENDLIST"));
-                        return;
-                    }
-                    short? mapId = ServerManager.Instance.GetProperty<short?>(charId, nameof(Character.MapId));
-                    short? mapx = ServerManager.Instance.GetProperty<short?>(charId, nameof(Character.MapX));
-                    short? mapy = ServerManager.Instance.GetProperty<short?>(charId, nameof(Character.MapY));
-                    if (mapy != null && mapx != null && mapId != null)
-                    {
-                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                        Session.Character.MapId = (short)mapId;
-                        Session.Character.MapX = (short)mapx;
-                        Session.Character.MapY = (short)mapy;
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, (short)mapId, (short)mapx, (short)mapy);
-                        Session.Character.Inventory.RemoveItemAmount(vnumToUse);
-                    }
-                    else
-                    {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
-                    }
-                }
-                else
-                {
-                    // no friendship wings
-                }
+                Session.SendPacket(Session.Character.GenerateDelay(3000, 4, $"#guri^199^{charId}"));
             }
             else if (guriPacket[2] == "203" && guriPacket[3] == "0")
             {
@@ -859,6 +828,45 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ', '^');
             switch (packetsplit[2])
             {
+                case "199":
+                    short[] listWingOfFriendship = { 2160, 2312, 10048 };
+                    short vnumToUse = -1;
+                    foreach (short vnum in listWingOfFriendship)
+                    {
+                        if (Session.Character.Inventory.CountItem(vnum) > 0)
+                        {
+                            vnumToUse = vnum;
+                        }
+                    }
+                    if (vnumToUse != -1)
+                    {
+                        long charId;
+                        if (!long.TryParse(packetsplit[3], out charId))
+                        {
+                            return;
+                        }
+                        ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
+                        if (session != null)
+                        {
+                            short mapy = session.Character.MapY;
+                            short mapx = session.Character.MapX;
+                            short mapId = session.Character.MapId;
+                        
+                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
+                            Session.Character.Inventory.RemoveItemAmount(vnumToUse);
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                        }
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_WINGS"), 10));
+                    }
+                    break;
+
                 case "400":
                     if (packetsplit.Length > 3)
                     {
