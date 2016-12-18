@@ -77,8 +77,8 @@ namespace OpenNos.WebApi.SelfHost
         /// Registers that the given Character has now logged in
         /// </summary>
         /// <param name="characterName">Name of the Character.</param>
-        /// <param name="accountName">Account of the Character to login.</param>
-        public bool ConnectCharacter(Guid worldId, string characterName, string accountName)
+        /// <param name="characterId">If of the Character.</param>
+        public bool ConnectCharacter(Guid worldId, string characterName, long characterId)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace OpenNos.WebApi.SelfHost
                 // TODO: move in own method, cannot do this here because it needs to be called by a
                 // client who wants to know if the character is allowed to connect without doing it actually
                 Logger.Log.InfoFormat($"Character {characterName} has connected to world {worldId}.");
-                ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(w => w.Id == worldId).ConnectedCharacters[characterName] = accountName;
+                ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(w => w.Id == worldId).ConnectedCharacters[characterName] = characterId;
 
                 // inform clients
                 Clients.All.characterConnected(characterName);
@@ -338,14 +338,20 @@ namespace OpenNos.WebApi.SelfHost
         /// Send a message to a Character
         /// </summary>
         /// <returns></returns>
-        public int? SendMessageToCharacter(string characterName, string messagePacket, int fromChannel, MessageType messageType)
+        public int? SendMessageToCharacter(string messagePacket, int fromChannel, MessageType messageType, string characterName, int? characterId = null)
         {
             try
             {
-                WorldserverDTO worldserver = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(c => c.ConnectedCharacters.Any(cc => cc.Key == characterName));
+                WorldserverDTO worldserver = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(c => c.ConnectedCharacters.Any(cc => cc.Key == characterName)
+                                                                                                             || (characterId.HasValue && c.ConnectedCharacters.ContainsValue(characterId.Value)));
 
                 if (worldserver != null)
                 {
+                    if(String.IsNullOrEmpty(characterName) && characterId.HasValue)
+                    {
+                        characterName = worldserver.ConnectedCharacters.SingleOrDefault(c => c.Value == characterId.Value).Key;
+                    }
+
                     //character is connected to different world
                     Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
                     return worldserver.ChannelId;

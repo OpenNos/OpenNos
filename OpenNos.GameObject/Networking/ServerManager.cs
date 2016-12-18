@@ -1008,6 +1008,11 @@ namespace OpenNos.GameObject
                                 Shout(message.Item2);
                                 break;
                             }
+                        case MessageType.PrivateChat:
+                            {
+                                targetSession.SendPacket(message.Item2);
+                                break;
+                            }
                     }
                 }
             }

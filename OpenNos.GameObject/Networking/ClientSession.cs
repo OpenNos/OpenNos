@@ -216,8 +216,8 @@ namespace OpenNos.GameObject
         public void Destroy()
         {
             // unregister from WCF events
-            ServerCommunicationClient.Instance.CharacterConnectedEvent -= CommunicationCallback_CharacterConnectedEvent;
-            ServerCommunicationClient.Instance.CharacterDisconnectedEvent -= CommunicationCallback_CharacterDisconnectedEvent;
+            ServerCommunicationClient.Instance.CharacterConnectedEvent -= OnOtherCharacterConnected;
+            ServerCommunicationClient.Instance.CharacterDisconnectedEvent -= OnOtherCharacterDisconnected;
 
             // do everything necessary before removing client, DB save, Whatever
             if (HasSelectedCharacter)
@@ -318,8 +318,8 @@ namespace OpenNos.GameObject
             Character = character;
 
             // register WCF events
-            ServerCommunicationClient.Instance.CharacterConnectedEvent += CommunicationCallback_CharacterConnectedEvent;
-            ServerCommunicationClient.Instance.CharacterDisconnectedEvent += CommunicationCallback_CharacterDisconnectedEvent;
+            ServerCommunicationClient.Instance.CharacterConnectedEvent += OnOtherCharacterConnected;
+            ServerCommunicationClient.Instance.CharacterDisconnectedEvent += OnOtherCharacterDisconnected;
 
             HasSelectedCharacter = true;
 
@@ -336,7 +336,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)
+        private void OnOtherCharacterConnected(object sender, EventArgs e)
         {
             string loggedInCharacter = (string)sender;
             ClientSession loggedInSession = ServerManager.Instance.GetSessionByCharacterName(loggedInCharacter);
@@ -352,7 +352,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void CommunicationCallback_CharacterDisconnectedEvent(object sender, EventArgs e)
+        private void OnOtherCharacterDisconnected(object sender, EventArgs e)
         {
             KeyValuePair<string, long> kvPair = (KeyValuePair<string, long>)sender;
             if (Character.IsFriendOfCharacter(kvPair.Value))

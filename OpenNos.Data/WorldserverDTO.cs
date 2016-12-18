@@ -11,7 +11,7 @@ namespace OpenNos.Data
         public WorldserverDTO(Guid id, ScsTcpEndPoint endpoint, int accountLimit)
         {
             ConnectedAccounts = new Dictionary<string, long>();
-            ConnectedCharacters = new Dictionary<string, string>();
+            ConnectedCharacters = new Dictionary<string, long>();
             Id = id;
             Endpoint = endpoint;
             AccountLimit = accountLimit;
@@ -27,7 +27,7 @@ namespace OpenNos.Data
 
         public Dictionary<string, long> ConnectedAccounts { get; set; }
 
-        public Dictionary<string, string> ConnectedCharacters { get; set; }
+        public Dictionary<string, long> ConnectedCharacters { get; set; }
 
         public ScsTcpEndPoint Endpoint { get; set; }
 
