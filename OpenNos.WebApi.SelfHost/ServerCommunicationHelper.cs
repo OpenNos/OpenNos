@@ -1,6 +1,7 @@
-﻿using OpenNos.Core;
-using OpenNos.Data;
+﻿using OpenNos.Data;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.WebApi.SelfHost
 {
@@ -10,13 +11,11 @@ namespace OpenNos.WebApi.SelfHost
 
         private static ServerCommunicationHelper _instance;
 
-        private Dictionary<string, long> _connectedAccounts;
-
-        private Dictionary<string, string> _connectedCharacters;
-
         private Dictionary<string, long> _registeredAccountLogins;
 
-        private Dictionary<string, WorldserverGroupDTO> _worldservers;
+        private List<WorldserverGroupDTO> _worldserverGroups;
+
+        private List<WorldserverDTO> _worldservers;
 
         #endregion
 
@@ -27,30 +26,6 @@ namespace OpenNos.WebApi.SelfHost
             get
             {
                 return _instance ?? (_instance = new ServerCommunicationHelper());
-            }
-        }
-
-        public Dictionary<string, long> ConnectedAccounts
-        {
-            get
-            {
-                return _connectedAccounts ?? (_connectedAccounts = new Dictionary<string, long>());
-            }
-            set
-            {
-                _connectedAccounts = value;
-            }
-        }
-
-        public Dictionary<string, string> ConnectedCharacters
-        {
-            get
-            {
-                return _connectedCharacters ?? (_connectedCharacters = new Dictionary<string, string>());
-            }
-            set
-            {
-                _connectedCharacters = value;
             }
         }
 
@@ -66,16 +41,37 @@ namespace OpenNos.WebApi.SelfHost
             }
         }
 
-        public Dictionary<string, WorldserverGroupDTO> Worldservers
+        public List<WorldserverGroupDTO> WorldserverGroups
         {
             get
             {
-                return _worldservers ?? (_worldservers = new Dictionary<string, WorldserverGroupDTO>());
+                return _worldserverGroups ?? (_worldserverGroups = new List<WorldserverGroupDTO>());
+            }
+            set
+            {
+                _worldserverGroups = value;
+            }
+        }
+
+        public List<WorldserverDTO> Worldservers
+        {
+            get
+            {
+                return _worldservers ?? (_worldservers = new List<WorldserverDTO>());
             }
             set
             {
                 _worldservers = value;
             }
+        }
+
+        #endregion
+
+        #region Methods
+
+        public WorldserverDTO GetWorldserverById(Guid id)
+        {
+            return Worldservers.SingleOrDefault(w => w.Id == id);
         }
 
         #endregion

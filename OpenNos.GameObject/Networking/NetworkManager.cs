@@ -56,13 +56,6 @@ namespace OpenNos.GameObject
             // Start the server
             _server.Start();
 
-            if(isWorldServer)
-            {
-                //Register the new created TCPIP server to the api
-                string serverGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
-                ServerCommunicationClient.Instance.HubProxy.Invoke("RegisterWorldserver", serverGroup, new ScsTcpEndPoint(ipAddress, port)).Wait();
-            }
-
             Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
         }
 
