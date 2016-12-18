@@ -96,7 +96,7 @@ namespace OpenNos.WebApi.SelfHost
                 ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(w => w.Id == worldId).ConnectedCharacters[characterName] = characterId;
 
                 // inform clients
-                Clients.All.characterConnected(characterName);
+                Clients.All.characterConnected(characterName, characterId);
                 return true;
             }
             catch (Exception ex)

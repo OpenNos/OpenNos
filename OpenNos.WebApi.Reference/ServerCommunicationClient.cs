@@ -95,7 +95,7 @@ namespace OpenNos.WebApi.Reference
 
             _hubProxy.On<string>("accountDisconnected", OnAccountDisconnected);
 
-            _hubProxy.On<string>("characterConnected", OnCharacterConnected);
+            _hubProxy.On<string, long>("characterConnected", OnCharacterConnected);
 
             _hubProxy.On<string, long>("characterDisconnected", OnCharacterDisconnected);
 
@@ -151,11 +151,11 @@ namespace OpenNos.WebApi.Reference
             }
         }
 
-        private void OnCharacterConnected(string characterName)
+        private void OnCharacterConnected(string characterName, long characterId)
         {
             if (CharacterConnectedEvent != null && !string.IsNullOrEmpty(characterName))
             {
-                CharacterConnectedEvent(characterName, new EventArgs());
+                CharacterConnectedEvent(new Tuple<string,long>(characterName, characterId), new EventArgs());
             }
         }
 

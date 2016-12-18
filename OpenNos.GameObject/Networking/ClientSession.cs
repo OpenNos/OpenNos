@@ -338,17 +338,15 @@ namespace OpenNos.GameObject
 
         private void OnOtherCharacterConnected(object sender, EventArgs e)
         {
-            string loggedInCharacter = (string)sender;
-            ClientSession loggedInSession = ServerManager.Instance.GetSessionByCharacterName(loggedInCharacter);
-            if (loggedInSession != null)
-            {
-                if (Character.IsFriendOfCharacter(loggedInSession.Character.CharacterId))
+            Tuple<string, long> loggedInCharacter = (Tuple<string, long>)sender;
 
-                    if (Character != null && Character.Name != loggedInCharacter)
-                    {
-                        _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), loggedInCharacter), 10));
-                        _client.SendPacket(Character.GenerateFinfo(null, loggedInSession.Character.CharacterId));
-                    }
+            if (Character.IsFriendOfCharacter(loggedInCharacter.Item2))
+            {
+                if (Character != null && Character.Name != loggedInCharacter.Item1)
+                {
+                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), loggedInCharacter.Item1), 10));
+                    _client.SendPacket(Character.GenerateFinfo(null, loggedInCharacter.Item2));
+                }
             }
         }
 
