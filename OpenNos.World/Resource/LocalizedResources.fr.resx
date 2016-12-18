@@ -1072,4 +1072,7 @@ Veux-tu le porter ?</value>
   <data name="FRIEND_REJECTED" xml:space="preserve">
     <value>Tu es bloqué.</value>
   </data>
+  <data name="MESSAGE_SENT_TO_CHARACTER" xml:space="preserve">
+    <value>Sending message to  '{0}' on channel {1}.</value>
+  </data>
 </root>

@@ -1078,4 +1078,7 @@
   <data name="XP_NOTFIRSTHIT" xml:space="preserve">
     <value>Ponieważ nie zadałeś pierwszego ciosu, otrzymasz tylko część XP.</value>
   </data>
+  <data name="MESSAGE_SENT_TO_CHARACTER" xml:space="preserve">
+    <value>Sending message to  '{0}' on channel {1}.</value>
+  </data>
 </root>

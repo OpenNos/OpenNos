@@ -23,6 +23,8 @@ namespace OpenNos.Data
 
         public int AccountLimit { get; set; }
 
+        public int ChannelId { get; set; }
+
         public Dictionary<string, long> ConnectedAccounts { get; set; }
 
         public Dictionary<string, string> ConnectedCharacters { get; set; }

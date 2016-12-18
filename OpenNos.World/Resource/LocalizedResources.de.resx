@@ -990,4 +990,7 @@
   <data name="POINTS_RESET" xml:space="preserve">
     <value>Deine Punkte wurden zurückgesetzt.</value>
   </data>
+  <data name="MESSAGE_SENT_TO_CHARACTER" xml:space="preserve">
+    <value>Sende die Nachricht an '{0}' im Channel {1}.</value>
+  </data>
 </root>

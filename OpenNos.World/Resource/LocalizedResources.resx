@@ -1111,4 +1111,7 @@
   <data name="CHARACTER_NOT_IN_FRIENDLIST" xml:space="preserve">
     <value>This Player is not in your friendlist</value>
   </data>
+  <data name="MESSAGE_SENT_TO_CHARACTER" xml:space="preserve">
+    <value>Sending message to  '{0}' on channel {1}.</value>
+  </data>
 </root>
