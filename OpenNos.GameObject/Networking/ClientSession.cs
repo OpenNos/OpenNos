@@ -226,7 +226,7 @@ namespace OpenNos.GameObject
 
                 // TODO Check why ExchangeInfo.TargetCharacterId is null Character.CloseTrade();
                 // disconnect client
-                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectCharacter", Character.Name, Character.CharacterId);
+                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectCharacter", Character.Name, Character.CharacterId).Wait();
 
                 // unregister from map if registered
                 if (CurrentMap != null)
@@ -239,7 +239,7 @@ namespace OpenNos.GameObject
 
             if (Account != null)
             {
-                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectAccount", Account.Name);
+                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectAccount", Account.Name).Wait();
             }
 
             ClearReceiveQueue();
@@ -262,7 +262,7 @@ namespace OpenNos.GameObject
         public void InitializeAccount(Account account)
         {
             Account = account;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectAccount", account.Name, SessionId);
+            ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectAccount", ServerManager.Instance.WorldId, account.Name, SessionId);
             IsAuthenticated = true;
         }
 

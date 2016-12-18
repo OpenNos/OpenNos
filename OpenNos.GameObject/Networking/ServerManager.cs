@@ -13,18 +13,18 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Reactive.Linq;
-using OpenNos.WebApi.Reference;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -68,122 +68,19 @@ namespace OpenNos.GameObject
         {
         }
 
-        public void LaunchEvents()
-        {
-            _groups = new ThreadSafeSortedList<long, Group>();
-
-            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
-            {
-                SaveAllProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x =>
-            {
-                GroupProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
-            {
-                BotProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
-            {
-                MailProcess();
-            });
-
-            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
-            {
-                RemoveItemProcess();
-            });
-
-            foreach (var map in _maps)
-            {
-                Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
-                {
-                    try
-                    {
-                        if (!map.Value.IsSleeping)
-                        {
-                            map.Value.RemoveMapItem();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                });
-
-                foreach (MapNpc npc in map.Value.Npcs)
-                {
-                    npc.StartLife();
-                }
-
-                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
-                {
-                    Parallel.ForEach(map.Value.Monsters, monster => { monster.StartLife(); });
-                });
-            }
-
-            ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
-
-            lastGroupId = 1;
-        }
-
-        private void OnSessionKicked(object sender, EventArgs e)
-        {
-            if(sender != null)
-            {
-                Tuple<long?, string> kickedSession = (Tuple<long?, string>)sender;
-
-                ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
-                                                        && ((String.IsNullOrEmpty(kickedSession.Item2) || s.Account.Name == kickedSession.Item2)));
-
-                if(targetSession != null)
-                {
-                    targetSession.Disconnect();
-                }
-            }
-        }
-
-        private void RemoveItemProcess()
-        {
-            try
-            {
-                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshValidity());
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
-        private void MailProcess()
-        {
-            try
-            {
-                Mails = DAOFactory.MailDAO.LoadAll().ToList();
-                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
         #endregion
 
         #region Properties
 
         public static int DropRate { get; set; }
 
-        public static List<MailDTO> Mails { get; set; }
-
         public static int FairyXpRate { get; set; }
 
         public static int GoldDropRate { get; set; }
 
         public static int GoldRate { get; set; }
+
+        public static List<MailDTO> Mails { get; set; }
 
         public static int XPRate { get; set; }
 
@@ -198,6 +95,8 @@ namespace OpenNos.GameObject
         public static ServerManager Instance => _instance ?? (_instance = new ServerManager());
 
         public Task TaskShutdown { get; set; }
+
+        public Guid WorldId { get; set; }
 
         #endregion
 
@@ -264,10 +163,10 @@ namespace OpenNos.GameObject
                 }
                 Session.SendPacket("eff_ob -1 -1 0 4269");
                 Session.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
-                Task.Factory.StartNew(async() =>
+                Task.Factory.StartNew(async () =>
                 {
                     bool revive = true;
-                    for(int i = 1; i <= 30; i++)
+                    for (int i = 1; i <= 30; i++)
                     {
                         await Task.Delay(1000);
                         if (Session.Character.Hp > 0)
@@ -276,11 +175,11 @@ namespace OpenNos.GameObject
                             break;
                         }
                     }
-                    if(revive)
+                    if (revive)
                     {
                         Instance.ReviveFirstPosition(Session.Character.CharacterId);
                     }
-                });              
+                });
             }
         }
 
@@ -494,7 +393,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void Initialize()
+        public void Initialize(string ipAddress, int port)
         {
             // parse rates
             XPRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXp"]);
@@ -742,6 +641,13 @@ namespace OpenNos.GameObject
                 Logger.Log.Error("General Error", ex);
             }
             LaunchEvents();
+
+            //Register the new created TCPIP server to the api
+            string serverGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
+            int sessionLimit = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["SessionLimit"]);
+            Guid serverIdentification = Guid.NewGuid();
+            WorldId = serverIdentification;
+            ServerCommunicationClient.Instance.HubProxy.Invoke("RegisterWorldserver", serverGroup, new WorldserverDTO(serverIdentification, new ScsTcpEndPoint(ipAddress, port), sessionLimit)).Wait();
         }
 
         public bool IsCharacterMemberOfGroup(long characterId)
@@ -764,6 +670,68 @@ namespace OpenNos.GameObject
             }
             session.Disconnect();
             return true;
+        }
+
+        public void LaunchEvents()
+        {
+            _groups = new ThreadSafeSortedList<long, Group>();
+
+            Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
+            {
+                SaveAllProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromSeconds(2)).Subscribe(x =>
+            {
+                GroupProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
+            {
+                BotProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
+            {
+                MailProcess();
+            });
+
+            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
+            {
+                RemoveItemProcess();
+            });
+
+            foreach (var map in _maps)
+            {
+                Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
+                {
+                    try
+                    {
+                        if (!map.Value.IsSleeping)
+                        {
+                            map.Value.RemoveMapItem();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                });
+
+                foreach (MapNpc npc in map.Value.Npcs)
+                {
+                    npc.StartLife();
+                }
+
+                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+                {
+                    Parallel.ForEach(map.Value.Monsters, monster => { monster.StartLife(); });
+                });
+            }
+
+            ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
+
+            lastGroupId = 1;
         }
 
         // Map
@@ -990,13 +958,53 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Error(e);
+            }
+        }
 
+        private void MailProcess()
+        {
+            try
+            {
+                Mails = DAOFactory.MailDAO.LoadAll().ToList();
+                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshMail());
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
+        private void OnSessionKicked(object sender, EventArgs e)
+        {
+            if (sender != null)
+            {
+                Tuple<long?, string> kickedSession = (Tuple<long?, string>)sender;
+
+                ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
+                                                        && ((String.IsNullOrEmpty(kickedSession.Item2) || s.Account.Name == kickedSession.Item2)));
+
+                if (targetSession != null)
+                {
+                    targetSession.Disconnect();
+                }
             }
         }
 
         private void RemoveGroup(Group grp)
         {
             _groups.Remove(grp.GroupId);
+        }
+
+        private void RemoveItemProcess()
+        {
+            try
+            {
+                Sessions.Where(c => c.IsConnected).ToList().ForEach(s => s.Character?.RefreshValidity());
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         // Server

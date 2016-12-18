@@ -45,34 +45,20 @@ namespace OpenNos.Handler
 
         #region Methods
 
-        public string BuildServersPacket(string accountName, int session)
+        public string BuildServersPacket(string accountName, int sessionId)
         {
-            string channelPacket = $"NsTeST {session} ";
+            string channelpacket = ServerCommunicationClient.Instance.HubProxy.Invoke<string>("RetrieveRegisteredWorldservers", sessionId).Result;
 
-            int serverCount = 1;
-            IEnumerable<WorldserverGroupDTO> worldserverGroups = ServerCommunicationClient.Instance.HubProxy.Invoke<IEnumerable<WorldserverGroupDTO>>("RetrieveRegisteredWorldservers").Result;
-
-            IEnumerable<WorldserverGroupDTO> worldServerGroup = worldserverGroups as WorldserverGroupDTO[] ?? worldserverGroups.ToArray();
-            if(!worldServerGroup.Any())
+            if(channelpacket == null)
             {
                 Logger.Log.Error("Could not retrieve Worldserver groups. Please make sure they've already been registered.");
                 _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"), DateTime.Now)}");
 
                 // release account's login permission
-                bool hasRegisteredAccountLogin = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("HasRegisteredAccountLogin", accountName, session).Result;
+                bool hasRegisteredAccountLogin = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("HasRegisteredAccountLogin", accountName, sessionId).Result;
             }
 
-            foreach (WorldserverGroupDTO worldserverGroup in worldServerGroup)
-            {
-                int channelCount = 1;
-                foreach (ScsTcpEndPoint address in worldserverGroup.Addresses)
-                {
-                    channelPacket += $"{address.IpAddress}:{address.TcpPort}:1:{serverCount}.{channelCount}.{worldserverGroup.GroupName} ";
-                    channelCount++;
-                }
-                serverCount++;
-            }
-            return channelPacket;
+            return channelpacket;
         }
 
         [Packet("NoS0575")]

@@ -1,4 +1,5 @@
 ﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using System;
 using System.Collections.Generic;
 using System.Net;
 
@@ -8,7 +9,13 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public List<ScsTcpEndPoint> Addresses { get; set; }
+        public WorldserverGroupDTO(string groupName, WorldserverDTO firstWorldserver)
+        {
+            GroupName = groupName;
+            Servers = new List<WorldserverDTO>() { firstWorldserver };
+        } 
+
+        public List<WorldserverDTO> Servers { get; set; }
 
         public string GroupName { get; set; }
 

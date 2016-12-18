@@ -89,7 +89,7 @@ namespace OpenNos.World
                 RegisterMappings();
 
                 // initialilize maps
-                ServerManager.Instance.Initialize();
+                ServerManager.Instance.Initialize(IPADDRESS, port);
             }
             else
             {
@@ -104,6 +104,7 @@ namespace OpenNos.World
             {
                 exitHandler += ExitHandler;
                 SetConsoleCtrlHandler(exitHandler, true);
+
                 NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(IPADDRESS, port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
             catch (Exception ex)
@@ -116,15 +117,10 @@ namespace OpenNos.World
         {
             string serverGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
-            ServerCommunicationClient.Instance.HubProxy.Invoke("UnregisterWorldserver", serverGroup, new ScsTcpEndPoint(IPADDRESS, port));
+            ServerCommunicationClient.Instance.HubProxy.Invoke("UnregisterWorldserver", serverGroup, new ScsTcpEndPoint(IPADDRESS, port)).Wait();
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.SaveAll();
-
-            foreach (ClientSession session in ServerManager.Instance.Sessions)
-            {
-                session.Disconnect();
-            }
 
             Thread.Sleep(5000);
             return false;

@@ -6,7 +6,6 @@ using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Data;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.WebApi.SelfHost
@@ -24,7 +23,8 @@ namespace OpenNos.WebApi.SelfHost
         {
             try
             {
-                return ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsKey(accountName.ToLower());
+                //iterate thru all registered servers and check if the given account logged in
+                return ServerCommunicationHelper.Instance.Worldservers.Any(c => c.ConnectedAccounts.ContainsKey(accountName.ToLower()));
             }
             catch (Exception)
             {
@@ -37,8 +37,6 @@ namespace OpenNos.WebApi.SelfHost
         /// </summary>
         public void Cleanup()
         {
-            ServerCommunicationHelper.Instance.ConnectedAccounts = null;
-            ServerCommunicationHelper.Instance.ConnectedCharacters = null;
             ServerCommunicationHelper.Instance.RegisteredAccountLogins = null;
         }
 
@@ -47,12 +45,12 @@ namespace OpenNos.WebApi.SelfHost
         /// </summary>
         /// <param name="accountName">Name of the Account.</param>
         /// <param name="sessionId"></param>
-        public bool ConnectAccount(string accountName, long sessionId)
+        public bool ConnectAccount(Guid worldId, string accountName, long sessionId)
         {
             try
             {
                 // Account cant connect twice
-                if (ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsKey(accountName.ToLower()))
+                if (AccountIsConnected(accountName))
                 {
                     Logger.Log.InfoFormat($"Account {accountName} is already connected.");
                     return false;
@@ -60,8 +58,8 @@ namespace OpenNos.WebApi.SelfHost
 
                 // TODO: move in own method, cannot do this here because it needs to be called by a
                 // client who wants to know if the Account is allowed to connect without doing it actually
-                Logger.Log.InfoFormat($"Account {accountName} has connected.");
-                ServerCommunicationHelper.Instance.ConnectedAccounts[accountName.ToLower()] = sessionId;
+                Logger.Log.InfoFormat($"Account {accountName} has been connected to world {worldId}.");
+                ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(w => w.Id == worldId).ConnectedAccounts[accountName.ToLower()] = sessionId;
 
                 // inform clients
                 Clients.All.accountConnected(accountName, sessionId);
@@ -79,21 +77,21 @@ namespace OpenNos.WebApi.SelfHost
         /// </summary>
         /// <param name="characterName">Name of the Character.</param>
         /// <param name="accountName">Account of the Character to login.</param>
-        public bool ConnectCharacter(string characterName, string accountName)
+        public bool ConnectCharacter(Guid worldId, string characterName, string accountName)
         {
             try
             {
                 // character cant connect twice
-                if (ServerCommunicationHelper.Instance.ConnectedCharacters.ContainsKey(characterName))
+                if (ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(w => w.Id == worldId).ConnectedCharacters.ContainsKey(characterName))
                 {
-                    Logger.Log.InfoFormat($"Character {characterName} is already connected.");
+                    Logger.Log.InfoFormat($"Character {characterName} is already connected to world {worldId}.");
                     return false;
                 }
 
                 // TODO: move in own method, cannot do this here because it needs to be called by a
                 // client who wants to know if the character is allowed to connect without doing it actually
-                Logger.Log.InfoFormat($"Character {characterName} has connected.");
-                ServerCommunicationHelper.Instance.ConnectedCharacters[characterName] = accountName;
+                Logger.Log.InfoFormat($"Character {characterName} has connected to world {worldId}.");
+                ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(w => w.Id == worldId).ConnectedCharacters[characterName] = accountName;
 
                 // inform clients
                 Clients.All.characterConnected(characterName);
@@ -101,7 +99,7 @@ namespace OpenNos.WebApi.SelfHost
             }
             catch (Exception ex)
             {
-                Logger.Log.Error("General Error", ex);
+                Logger.Log.Error($"Error while connecting Character to world {worldId}", ex);
                 return false;
             }
         }
@@ -114,16 +112,21 @@ namespace OpenNos.WebApi.SelfHost
         {
             try
             {
-                ServerCommunicationHelper.Instance.ConnectedAccounts.Remove(accountName.ToLower());
+                WorldserverDTO worldserver = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(s => s.ConnectedAccounts.ContainsKey(accountName));
 
-                // inform clients
-                Clients.All.accountDisconnected(accountName);
+                if (worldserver != null)
+                {
+                    worldserver.ConnectedAccounts.Remove(accountName.ToLower());
 
-                Logger.Log.InfoFormat($"Account {accountName} has been disconnected.");
+                    // inform clients
+                    Clients.All.accountDisconnected(accountName);
+
+                    Logger.Log.InfoFormat($"Account {accountName} has been disconnected.");
+                }
             }
             catch (Exception ex)
             {
-                Logger.Log.Error("General Error", ex);
+                Logger.Log.Error("Error while disconnecting account.", ex);
             }
         }
 
@@ -136,16 +139,21 @@ namespace OpenNos.WebApi.SelfHost
         {
             try
             {
-                ServerCommunicationHelper.Instance.ConnectedCharacters.Remove(characterName);
+                WorldserverDTO worldserver = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(s => s.ConnectedCharacters.ContainsKey(characterName));
 
-                // inform clients
-                Clients.All.characterDisconnected(characterName, characterId);
+                if (worldserver != null)
+                {
+                    worldserver.ConnectedCharacters.Remove(characterName);
 
-                Logger.Log.InfoFormat($"Character {characterName} has been disconnected.");
+                    // inform clients
+                    Clients.All.characterDisconnected(characterName, characterId);
+
+                    Logger.Log.InfoFormat($"Character {characterName} has been disconnected.");
+                }
             }
             catch (Exception ex)
             {
-                Logger.Log.Error("General Error", ex);
+                Logger.Log.Error("Error while disconnecting character.", ex);
             }
         }
 
@@ -176,7 +184,7 @@ namespace OpenNos.WebApi.SelfHost
             }
             catch (Exception ex)
             {
-                Logger.Log.Error("General Error", ex);
+                Logger.Log.Error("Error while registering account login.", ex);
             }
 
             return false;
@@ -200,14 +208,11 @@ namespace OpenNos.WebApi.SelfHost
                     }
 
                     //release session login
-                    if (sessionId.HasValue && ServerCommunicationHelper.Instance.ConnectedAccounts.ContainsValue(sessionId.Value))
+                    if (sessionId.HasValue)
                     {
-                        var connectedAccount = ServerCommunicationHelper.Instance.ConnectedAccounts.SingleOrDefault(s => s.Value == sessionId.Value);
-
-                        if (!String.IsNullOrEmpty(connectedAccount.Key))
-                        {
-                            ServerCommunicationHelper.Instance.ConnectedAccounts.Remove(connectedAccount.Key);
-                        }
+                        accountName = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(w => w.ConnectedAccounts.ContainsValue(sessionId.Value)).ConnectedAccounts
+                                                                                            .SingleOrDefault(w => w.Value == sessionId.Value).Key;
+                        DisconnectAccount(accountName);
                     }
 
                     Logger.Log.InfoFormat($"Session {sessionId} {accountName} has been kicked.");
@@ -250,70 +255,123 @@ namespace OpenNos.WebApi.SelfHost
             }
         }
 
-        public void RegisterWorldserver(string servergroup, ScsTcpEndPoint ipAddress)
+        public void RegisterWorldserver(string groupName, WorldserverDTO worldserver)
         {
             try
             {
-                if (!ServerCommunicationHelper.Instance.Worldservers.ContainsKey(servergroup))
+                if (!ServerCommunicationHelper.Instance.WorldserverGroups.Any(g => g.GroupName == groupName))
                 {
-                    ServerCommunicationHelper.Instance.Worldservers[servergroup] = new WorldserverGroupDTO { GroupName = servergroup, Addresses = new List<ScsTcpEndPoint>() { ipAddress } };
-                    Logger.Log.InfoFormat($"World with address {ipAddress} has been registered to new Servergroup {servergroup}.");
+                    //add world server
+                    ServerCommunicationHelper.Instance.Worldservers.Add(worldserver);
+
+                    //create new server group
+                    ServerCommunicationHelper.Instance.WorldserverGroups.Add(new WorldserverGroupDTO(groupName, worldserver));
+                    Logger.Log.InfoFormat($"World {worldserver.Id} with address {worldserver.Endpoint} has been registered to new server group {groupName}.");
                 }
-                else if (ServerCommunicationHelper.Instance.Worldservers[servergroup].Addresses.Contains(ipAddress))
+                else if (ServerCommunicationHelper.Instance.WorldserverGroups.SingleOrDefault(wg => wg.GroupName == groupName)?.Servers.Contains(worldserver) ?? false)
                 {
-                    Logger.Log.InfoFormat($"World with address {ipAddress} is already registered.");
+                    //worldserver is already registered
+                    Logger.Log.InfoFormat($"World {worldserver.Id} with address {worldserver.Endpoint} is already registered.");
                 }
                 else
                 {
-                    ServerCommunicationHelper.Instance.Worldservers[servergroup].Addresses.Add(ipAddress);
-                    Logger.Log.InfoFormat($"World with address {ipAddress} has been added to Servergroup {servergroup}.");
+                    //add world server
+                    ServerCommunicationHelper.Instance.Worldservers.Add(worldserver);
+
+                    //add worldserver to existing group
+                    ServerCommunicationHelper.Instance.WorldserverGroups.SingleOrDefault(wg => wg.GroupName == groupName)?.Servers.Add(worldserver);
+                    Logger.Log.InfoFormat($"World {worldserver.Id} with address {worldserver.Endpoint} has been added to server group {groupName}.");
                 }
             }
             catch (Exception ex)
             {
-                Logger.Log.Error($"Registering world {ipAddress} failed.", ex);
+                Logger.Log.Error($"Registering world {worldserver.Id} with endpoint {worldserver.Endpoint} failed.", ex);
             }
         }
 
-        public IEnumerable<WorldserverGroupDTO> RetrieveRegisteredWorldservers()
+        /// <summary>
+        /// Build the channel packets
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <returns></returns>
+        public string RetrieveRegisteredWorldservers(int sessionId)
         {
-            return ServerCommunicationHelper.Instance.Worldservers.Select(c => c.Value);
+            if (ServerCommunicationHelper.Instance.WorldserverGroups.Any())
+            {
+                int servercount = 1;
+                string channelPacket = $"NsTeST {sessionId} ";
+
+                foreach (WorldserverGroupDTO worldserverGroup in ServerCommunicationHelper.Instance.WorldserverGroups)
+                {
+                    int channelCount = 1;
+                    foreach (WorldserverDTO world in worldserverGroup.Servers)
+                    {
+                        //TODO account limit
+                        //int currentlyConnectedAccounts = world.ConnectedAccounts.Count();
+                        //int slotsLeft = world.AccountLimit - currentlyConnectedAccounts;
+                        //int channelcolor = (world.AccountLimit / slotsLeft) + 1;
+
+                        channelPacket += $"{world.Endpoint.IpAddress}:{world.Endpoint.TcpPort}:1:{servercount}.{channelCount}.{worldserverGroup.GroupName} ";
+                        channelCount++;
+                    }
+                    servercount++;
+                }
+                return channelPacket;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public void UnregisterWorldserver(string servergroup, ScsTcpEndPoint ipAddress)
+        public void UnregisterWorldserver(string groupName, ScsTcpEndPoint endpoint)
         {
             try
             {
-                if (ServerCommunicationHelper.Instance.Worldservers.ContainsKey(servergroup) && ServerCommunicationHelper.Instance.Worldservers[servergroup].Addresses.Contains(ipAddress))
+                if (ServerCommunicationHelper.Instance.WorldserverGroups.Any(g => g.GroupName == groupName)
+                    && ServerCommunicationHelper.Instance.WorldserverGroups.SingleOrDefault(g => g.GroupName == groupName).Servers.Any(w => w.Endpoint.Equals(endpoint)))
                 {
                     //servergroup does exist with the given ipaddress
-                    ServerCommunicationHelper.Instance.Worldservers[servergroup].Addresses.Remove(ipAddress);
-                    Logger.Log.InfoFormat($"World with address {ipAddress} has been unregistered successfully.");
-
-                    if (!ServerCommunicationHelper.Instance.Worldservers[servergroup].Addresses.Any())
-                    {
-                        ServerCommunicationHelper.Instance.Worldservers.Remove(servergroup);
-                        Logger.Log.InfoFormat($"World server group {servergroup} has been removed as no member was left.");
-                    }
+                    RemoveWorldFromWorldserver(endpoint, groupName);
                 }
-                else if (!ServerCommunicationHelper.Instance.Worldservers.ContainsKey(servergroup)
-                    && !ServerCommunicationHelper.Instance.Worldservers.Any(sgi => sgi.Value.Addresses.Contains(ipAddress)))
+                else if (!ServerCommunicationHelper.Instance.WorldserverGroups.Any(g => g.GroupName == groupName)
+                    && !ServerCommunicationHelper.Instance.WorldserverGroups.Any(sgi => sgi.Servers.Any(w => w.Endpoint.Equals(endpoint))))
                 {
                     //servergroup doesnt exist and world is not in a group named like the given servergroup and in no other
-                    Logger.Log.InfoFormat($"World with address {ipAddress} has already been unregistered before.");
+                    Logger.Log.InfoFormat($"World with address {endpoint} has already been unregistered before.");
                 }
-                else if (!ServerCommunicationHelper.Instance.Worldservers.ContainsKey(servergroup)
-                    && ServerCommunicationHelper.Instance.Worldservers.Any(sgi => sgi.Value.Addresses.Contains(ipAddress)))
+                else if (!ServerCommunicationHelper.Instance.WorldserverGroups.Any(g => g.GroupName == groupName)
+                    && ServerCommunicationHelper.Instance.WorldserverGroups.Any(sgi => sgi.Servers.Any(w => w.Endpoint.Equals(endpoint))))
                 {
                     //servergroup does not exist but world does run in a different servergroup
-                    WorldserverGroupDTO worldserverGroupDto = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(sgi => sgi.Value.Addresses.Contains(ipAddress)).Value;
-                    worldserverGroupDto?.Addresses.Remove(ipAddress);
-                    Logger.Log.InfoFormat($"World with address {ipAddress} has been remove from a different servergroup.");
+                    WorldserverGroupDTO worldserverGroupDTO = ServerCommunicationHelper.Instance.WorldserverGroups.SingleOrDefault(sgi => sgi.Servers.Any(w => w.Endpoint.Equals(endpoint)));
+                    RemoveWorldFromWorldserver(endpoint, worldserverGroupDTO.GroupName);
                 }
             }
             catch (Exception ex)
             {
-                Logger.Log.Error($"Registering world {ipAddress} failed.", ex);
+                Logger.Log.Error($"Registering world {endpoint} failed.", ex);
+            }
+        }
+
+        private void RemoveWorldFromWorldserver(ScsTcpEndPoint endpoint, string groupName)
+        {
+            WorldserverDTO worldserverToRemove = ServerCommunicationHelper.Instance.WorldserverGroups
+                .SingleOrDefault(g => g.GroupName == groupName).Servers.SingleOrDefault(w => w.Endpoint.Equals(endpoint));
+
+            ServerCommunicationHelper.Instance.WorldserverGroups.SingleOrDefault(g => g.GroupName == groupName).Servers.Remove(worldserverToRemove);
+            ServerCommunicationHelper.Instance.Worldservers.Remove(worldserverToRemove);
+            Logger.Log.InfoFormat($"World {worldserverToRemove.Id} with address {endpoint} has been unregistered successfully.");
+
+            if (!ServerCommunicationHelper.Instance.WorldserverGroups.SingleOrDefault(g => g.GroupName == groupName)?.Servers.Any() ?? false)
+            {
+                WorldserverGroupDTO worldserverGroup = ServerCommunicationHelper.Instance.WorldserverGroups.SingleOrDefault(g => g.GroupName == groupName);
+
+                if (worldserverGroup != null)
+                {
+                    ServerCommunicationHelper.Instance.WorldserverGroups.Remove(worldserverGroup);
+                    Logger.Log.InfoFormat($"World server group {groupName} has been removed as no world was left.");
+                }
             }
         }
 
