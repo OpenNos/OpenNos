@@ -530,7 +530,7 @@ namespace OpenNos.Handler
                     {
                         //session is not on current server, check api if the target character is on another server
                         int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", $"talk  {Session.Character.CharacterId} {message}"
-                                                                                                      , ServerManager.Instance.ChannelId, MessageType.Whisper, null, (long?)characterId).Result;
+                                                                                                      , ServerManager.Instance.ChannelId, MessageType.PrivateChat, null, (long?)characterId).Result;
 
                         if (!sentChannelId.HasValue) //character is even offline on different world
                         {
