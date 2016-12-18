@@ -528,7 +528,14 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_OFFLINE")));
+                        //session is not on current server, check api if the target character is on another server
+                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", $"talk  {Session.Character.CharacterId} {message}"
+                                                                                                      , ServerManager.Instance.ChannelId, MessageType.Whisper, null, (long?)characterId).Result;
+
+                        if (!sentChannelId.HasValue) //character is even offline on different world
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_OFFLINE")));
+                        }
                     }
                 }
             }
@@ -1462,65 +1469,73 @@ namespace OpenNos.Handler
         [Packet("/")]
         public void Whisper(string packet)
         {
-            string[] packetsplit = packet.Split(' ');
-
-            string characterName = packetsplit[packetsplit[1] == "/GM" ? 2 : 1].Substring(packetsplit[1] == "/GM" ? 0 : 1);
-
-            string message = string.Empty;
-
-            for (int i = packetsplit[1] == "/GM" ? 3 : 2; i < packetsplit.Length; i++)
+            try
             {
-                message += packetsplit[i] + " ";
-            }
-            if (message.Length > 60)
-            {
-                message = message.Substring(0, 60);
-            }
 
-            message = message.Trim();
+                string[] packetsplit = packet.Split(' ');
 
-            ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
-            if (targetSession == null)
-            {
-                //session is not on current server, check api if the target character is on another server
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", characterName, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5)
-                                                                                              , ServerManager.Instance.ChannelId, MessageType.Whisper).Result;
+                string characterName = packetsplit[packetsplit[1] == "/GM" ? 2 : 1].Substring(packetsplit[1] == "/GM" ? 0 : 1);
 
-                if(!sentChannelId.HasValue) //character is even offline on different world
+                string message = string.Empty;
+
+                for (int i = packetsplit[1] == "/GM" ? 3 : 2; i < packetsplit.Length; i++)
                 {
-                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
+                    message += packetsplit[i] + " ";
+                }
+                if (message.Length > 60)
+                {
+                    message = message.Substring(0, 60);
+                }
+
+                message = message.Trim();
+
+                ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
+                if (targetSession == null)
+                {
+                    //session is not on current server, check api if the target character is on another server
+                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5)
+                                                                                                  , ServerManager.Instance.ChannelId, MessageType.Whisper, characterName, null).Result;
+
+                    if(!sentChannelId.HasValue) //character is even offline on different world
+                    {
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
+                    }
+                    else
+                    {
+                        //send message to sender
+                        Session.SendPacket(Session.Character.GenerateSpk(message, 5));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MESSAGE_SENT_TO_CHARACTER"), characterName, sentChannelId.Value), 11));
+                    }
+
+                    return;
+                }
+
+                if (packetsplit[1] == "/GM" && targetSession.Account.Authority != AuthorityType.Admin)
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("USER_IS_NOT_AN_ADMIN"), targetSession.Character.Name), 10));
+                    return;
+                }
+
+                Session.SendPacket(Session.Character.GenerateSpk(message, 5));
+
+                if (targetSession.Character.GmPvtBlock)
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_CHAT_BLOCKED"), 10));
+                    return;
+                }
+
+                if (!targetSession.Character.WhisperBlocked)
+                {
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5), ReceiverType.OnlySomeone, packetsplit[packetsplit[1] == "/GM" ? 2 : 1].Substring(packetsplit[1] == "/GM" ? 0 : 1));
                 }
                 else
                 {
-                    //send message to sender
-                    Session.SendPacket(Session.Character.GenerateSpk(message, 5));
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MESSAGE_SENT_TO_CHARACTER"), characterName, sentChannelId.Value), 11));
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_WHISPER_BLOCKED"), 0));
                 }
-
-                return;
             }
-
-            if (packetsplit[1] == "/GM" && targetSession.Account.Authority != AuthorityType.Admin)
+            catch(Exception e)
             {
-                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("USER_IS_NOT_AN_ADMIN"), targetSession.Character.Name), 10));
-                return;
-            }
-
-            Session.SendPacket(Session.Character.GenerateSpk(message, 5));
-
-            if (targetSession.Character.GmPvtBlock)
-            {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_CHAT_BLOCKED"), 10));
-                return;
-            }
-
-            if (!targetSession.Character.WhisperBlocked)
-            {
-                ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5), ReceiverType.OnlySomeone, packetsplit[packetsplit[1] == "/GM" ? 2 : 1].Substring(packetsplit[1] == "/GM" ? 0 : 1));
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_WHISPER_BLOCKED"), 0));
+                Logger.Log.Error("Whisper failed.", e);
             }
         }
 

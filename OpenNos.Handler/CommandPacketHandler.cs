@@ -1512,7 +1512,7 @@ namespace OpenNos.Handler
             }
 
             //session is not on current server, check api if the target character is on another server
-            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", String.Empty, message, ServerManager.Instance.ChannelId, MessageType.Shout).Result;
+            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", message, ServerManager.Instance.ChannelId, MessageType.Shout, String.Empty, null).Result;
 
             return;
         }
