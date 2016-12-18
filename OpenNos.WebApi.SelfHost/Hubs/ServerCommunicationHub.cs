@@ -7,6 +7,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Data;
 using OpenNos.Domain;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.WebApi.SelfHost
@@ -158,12 +159,6 @@ namespace OpenNos.WebApi.SelfHost
             }
         }
 
-        public bool HandleError(Exception error)
-        {
-            //we do not handle any errors to wrap them up for the client
-            return true;
-        }
-
         /// <summary>
         /// Checks if the Account is allowed to login, removes the permission to login
         /// </summary>
@@ -189,6 +184,32 @@ namespace OpenNos.WebApi.SelfHost
             }
 
             return false;
+        }
+
+        public IEnumerable<String> RetrieveServerStatistics()
+        {
+            List<String> result = new List<String>();
+            try
+            {
+                foreach(WorldserverGroupDTO servergroup in ServerCommunicationHelper.Instance.WorldserverGroups)
+                {
+                    int serverSessionAmount = 0;
+                    foreach(WorldserverDTO world in servergroup.Servers)
+                    {
+                        int channelSessionAmount = world.ConnectedAccounts.Count();
+                        serverSessionAmount += channelSessionAmount;
+                        result.Add($"Channel{world.ChannelId}: {channelSessionAmount} sessions.");
+                    }
+
+                    result.Add($"Server {servergroup.GroupName}: {serverSessionAmount} sessions.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error("Error while retriving server statistics.", ex);
+            }
+
+            return result;
         }
 
         /// <summary>
