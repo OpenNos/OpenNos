@@ -1040,7 +1040,7 @@ namespace OpenNos.Handler
             Logger.Debug("Kick Command", Session.SessionId);
             if (kickPacket != null)
             {
-                if(kickPacket.CharacterName == "*")
+                if (kickPacket.CharacterName == "*")
                 {
                     foreach (ClientSession cs in ServerManager.Instance.Sessions)
                     {
@@ -1510,7 +1510,35 @@ namespace OpenNos.Handler
             {
                 return;
             }
+
+            //session is not on current server, check api if the target character is on another server
+            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", String.Empty, message, ServerManager.Instance.ChannelId, MessageType.Shout).Result;
+
+            return;
+        }
+
+        [Packet("$ShoutHere")]
+        public void ShoutHere(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            string message = string.Empty;
+            if (packetsplit.Length > 2)
+            {
+                for (int i = 2; i < packetsplit.Length; i++)
+                {
+                    message += packetsplit[i] + " ";
+                }
+            }
+            message = message.Trim();
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                return;
+            }
+
             ServerManager.Instance.Shout(message);
+
+            return;
         }
 
         [Packet("$Shutdown")]

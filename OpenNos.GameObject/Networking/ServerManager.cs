@@ -994,13 +994,18 @@ namespace OpenNos.GameObject
 
                 ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.Name == message.Item1);
 
-                if (targetSession != null)
+                if (targetSession != null || message.Item4 == MessageType.Shout) //shout doesnt need targetSession
                 {
                     switch (message.Item4)
                     {
                         case MessageType.Whisper:
                             {
                                 targetSession.SendPacket(String.Format("{0} <Channel: {1}>", message.Item2, message.Item3));
+                                break;
+                            }
+                        case MessageType.Shout:
+                            {
+                                Shout(message.Item2);
                                 break;
                             }
                     }

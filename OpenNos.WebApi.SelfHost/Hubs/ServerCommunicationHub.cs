@@ -350,6 +350,12 @@ namespace OpenNos.WebApi.SelfHost
                     Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
                     return worldserver.ChannelId;
                 }
+                else if(messageType == MessageType.Shout)
+                {
+                    //send to all registered worlds
+                    Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
+                    return null;
+                }
             }
             catch (Exception)
             {
