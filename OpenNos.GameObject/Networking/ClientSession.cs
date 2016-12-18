@@ -347,7 +347,7 @@ namespace OpenNos.GameObject
                     if (Character != null && Character.Name != loggedInCharacter)
                     {
                         _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), loggedInCharacter), 10));
-                        _client.SendPacket(Character.GenerateFinfo());
+                        _client.SendPacket(Character.GenerateFinfo(null, loggedInSession.Character.CharacterId));
                     }
             }
         }
@@ -360,7 +360,7 @@ namespace OpenNos.GameObject
                 if (Character != null && Character.Name != kvPair.Key)
                 {
                     _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), kvPair.Key), 10));
-                    _client.SendPacket(Character.GenerateFinfo());
+                    _client.SendPacket(Character.GenerateFinfo(kvPair.Value));
                 }
         }
 

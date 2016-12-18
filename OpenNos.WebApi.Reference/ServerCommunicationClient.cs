@@ -108,10 +108,7 @@ namespace OpenNos.WebApi.Reference
 
         public void OnMessageSentToCharacter(string characterName, string message, int fromChannel, MessageType messageType)
         {
-            if (MessageSentToCharacter != null)
-            {
-                MessageSentToCharacter(new Tuple<string, string, int, MessageType>(characterName, message, fromChannel, messageType), new EventArgs());
-            }
+            MessageSentToCharacter?.Invoke(new Tuple<string, string, int, MessageType>(characterName, message, fromChannel, messageType), new EventArgs());
         }
 
         public void OnAccountDisconnected(string accountName)

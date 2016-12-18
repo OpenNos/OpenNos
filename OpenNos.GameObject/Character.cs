@@ -32,8 +32,10 @@ namespace OpenNos.GameObject
 
         private AuthorityType _authority;
         private int _backpack;
+        private IList<CharacterRelationDTO> _blacklisted;
         private byte _cmapcount;
         private int _direction;
+        private IList<CharacterRelationDTO> _friends;
         private Inventory _inventory;
         private bool _invisible;
         private bool _isDancing;
@@ -48,8 +50,6 @@ namespace OpenNos.GameObject
         private int _size = 10;
         private byte _speed;
         private bool _undercover;
-        private IList<CharacterRelationDTO> blacklisted;
-        private IList<CharacterRelationDTO> friends;
 
         #endregion
 
@@ -516,7 +516,7 @@ namespace OpenNos.GameObject
                 RelationType = CharacterRelationType.Friend
             };
             DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
-            friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
+            _friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
         }
 
         public void ChangeClass(ClassType characterClass)
@@ -834,10 +834,10 @@ namespace OpenNos.GameObject
         public void DeleteFriend(long characterId)
         {
             DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
-            CharacterRelationDTO deleteReleation = friends.FirstOrDefault(f => f.RelatedCharacterId == characterId);
+            CharacterRelationDTO deleteReleation = _friends.FirstOrDefault(f => f.RelatedCharacterId == characterId);
             if (deleteReleation != null)
             {
-                friends.Remove(deleteReleation);
+                _friends.Remove(deleteReleation);
             }
         }
 
@@ -905,8 +905,8 @@ namespace OpenNos.GameObject
         public string GenerateBlinit()
         {
             string result = "blinit";
-            blacklisted = DAOFactory.CharacterRelationDAO.GetBlacklisted(CharacterId);
-            foreach (CharacterRelationDTO relation in blacklisted)
+            _blacklisted = DAOFactory.CharacterRelationDAO.GetBlacklisted(CharacterId);
+            foreach (CharacterRelationDTO relation in _blacklisted)
             {
                 result += $" {relation.RelatedCharacterId}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
             }
@@ -1731,16 +1731,18 @@ namespace OpenNos.GameObject
             return $"fd {Reput} {GetReputIco()} {(int)Dignity} {Math.Abs(GetDignityIco())}";
         }
 
-        public string GenerateFinfo()
+        public string GenerateFinfo(long? relatedCharacterLoggedOutId = null, long? relatedCharacterLoggedInId = null)
         {
             string result = "finfo";
 
-            if (friends != null)
+            if (_friends != null)
             {
-                foreach (CharacterRelationDTO relation in friends)
+                foreach (CharacterRelationDTO relation in _friends)
                 {
                     byte isOnline = 0;
-                    if (ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
+                    if ((relatedCharacterLoggedInId.HasValue && relatedCharacterLoggedInId.Value == relation.RelatedCharacterId)
+                        || (relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId != relatedCharacterLoggedOutId.Value) &&
+                        ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
                     {
                         isOnline = 1;
                     }
@@ -1753,8 +1755,8 @@ namespace OpenNos.GameObject
         public string GenerateFinit()
         {
             string result = "finit";
-            friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
-            foreach (CharacterRelationDTO relation in friends)
+            _friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
+            foreach (CharacterRelationDTO relation in _friends)
             {
                 byte isOnline = 0;
                 if (ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
@@ -3180,17 +3182,17 @@ namespace OpenNos.GameObject
 
         public bool IsBlockingCharacter(long characterId)
         {
-            return blacklisted != null && blacklisted.Any(c => c.RelatedCharacterId.Equals(characterId));
+            return _blacklisted != null && _blacklisted.Any(c => c.RelatedCharacterId.Equals(characterId));
         }
 
         public bool IsFriendlistFull()
         {
-            return friends?.Count >= 80;
+            return _friends?.Count >= 80;
         }
 
         public bool IsFriendOfCharacter(long characterId)
         {
-            return friends?.FirstOrDefault(c => c.RelatedCharacterId.Equals(characterId)) != null;
+            return _friends?.FirstOrDefault(c => c.RelatedCharacterId.Equals(characterId)) != null;
         }
 
         /// <summary>
