@@ -216,7 +216,20 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
-
+                case 5001:
+                    if (npc != null)
+                    {
+                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 130, 12, 40);
+                    }
+                    break;
+                case 5011:
+                    if (npc != null)
+                    {
+                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 170, 127, 46);
+                    }
+                    break;
                 case 5012:
                     if (npc != null)
                     {
