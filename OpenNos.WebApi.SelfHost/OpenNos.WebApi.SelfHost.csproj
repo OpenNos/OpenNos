@@ -105,6 +105,10 @@
       <Project>{f1071ded-3d92-4416-9b9c-8664441ade64}</Project>
       <Name>OpenNos.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.Domain\OpenNos.Domain.csproj">
+      <Project>{20ADDDDD-DAD9-44F3-9BEB-026C73090660}</Project>
+      <Name>OpenNos.Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

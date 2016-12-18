@@ -84,6 +84,8 @@ namespace OpenNos.GameObject
 
         public static int XPRate { get; set; }
 
+        public int ChannelId { get; set; }
+
         public List<Group> Groups
         {
             get
@@ -647,7 +649,16 @@ namespace OpenNos.GameObject
             int sessionLimit = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["SessionLimit"]);
             Guid serverIdentification = Guid.NewGuid();
             WorldId = serverIdentification;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("RegisterWorldserver", serverGroup, new WorldserverDTO(serverIdentification, new ScsTcpEndPoint(ipAddress, port), sessionLimit)).Wait();
+            int? newChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("RegisterWorldserver", serverGroup, new WorldserverDTO(serverIdentification, new ScsTcpEndPoint(ipAddress, port), sessionLimit)).Result;
+
+            if (newChannelId.HasValue)
+            {
+                ChannelId = newChannelId.Value;
+            }
+            else
+            {
+                Logger.Log.ErrorFormat("Could not retrieve ChannelId from Web API.");
+            }
         }
 
         public bool IsCharacterMemberOfGroup(long characterId)
@@ -730,6 +741,7 @@ namespace OpenNos.GameObject
             }
 
             ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
+            ServerCommunicationClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
 
             lastGroupId = 1;
         }
@@ -971,6 +983,28 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Error(e);
+            }
+        }
+
+        private void OnMessageSentToCharacter(object sender, EventArgs e)
+        {
+            if (sender != null)
+            {
+                Tuple<string, string, int, MessageType> message = (Tuple<string, string, int, MessageType>)sender;
+
+                ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.Name == message.Item1);
+
+                if (targetSession != null)
+                {
+                    switch (message.Item4)
+                    {
+                        case MessageType.Whisper:
+                            {
+                                targetSession.SendPacket(String.Format("{0} <Channel: {1}>", message.Item2, message.Item3));
+                                break;
+                            }
+                    }
+                }
             }
         }
 

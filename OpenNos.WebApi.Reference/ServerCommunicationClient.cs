@@ -13,6 +13,7 @@
  */
 
 using Microsoft.AspNet.SignalR.Client;
+using OpenNos.Domain;
 using System;
 
 namespace OpenNos.WebApi.Reference
@@ -41,6 +42,8 @@ namespace OpenNos.WebApi.Reference
         public event EventHandler CharacterDisconnectedEvent;
 
         public event EventHandler SessionKickedEvent;
+
+        public event EventHandler MessageSentToCharacter;
 
         #endregion
 
@@ -98,7 +101,17 @@ namespace OpenNos.WebApi.Reference
 
             _hubProxy.On<long?, string>("kickSession", OnSessionKicked);
 
+            _hubProxy.On<string, string, int, MessageType>("sendMessageToCharacter", OnMessageSentToCharacter);
+
             _hubconnection.Start().Wait();
+        }
+
+        public void OnMessageSentToCharacter(string characterName, string message, int fromChannel, MessageType messageType)
+        {
+            if (MessageSentToCharacter != null && !string.IsNullOrEmpty(characterName))
+            {
+                MessageSentToCharacter(new Tuple<string, string, int, MessageType>(characterName, message, fromChannel, messageType), new EventArgs());
+            }
         }
 
         public void OnAccountDisconnected(string accountName)

@@ -1077,4 +1077,7 @@
   <data name="YOU_REFUSED" xml:space="preserve">
     <value>แลกเปลี่ยนเรียบร้อยแล้ว</value>
   </data>
+  <data name="MESSAGE_SENT_TO_CHARACTER" xml:space="preserve">
+    <value>Sending message to  '{0}' on channel {1}.</value>
+  </data>
 </root>

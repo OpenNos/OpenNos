@@ -1107,4 +1107,7 @@
   <data name="DROPS_LOADED" xml:space="preserve">
     <value>{0} Drop caricati!</value>
   </data>
+  <data name="MESSAGE_SENT_TO_CHARACTER" xml:space="preserve">
+    <value>Sending message to  '{0}' on channel {1}.</value>
+  </data>
 </root>

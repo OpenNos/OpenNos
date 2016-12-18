@@ -5,6 +5,7 @@ using Microsoft.AspNet.SignalR;
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Linq;
 
@@ -112,7 +113,7 @@ namespace OpenNos.WebApi.SelfHost
         {
             try
             {
-                WorldserverDTO worldserver = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(s => s.ConnectedAccounts.ContainsKey(accountName));
+                WorldserverDTO worldserver = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(s => s.ConnectedAccounts.ContainsKey(accountName.ToLower()));
 
                 if (worldserver != null)
                 {
@@ -255,8 +256,10 @@ namespace OpenNos.WebApi.SelfHost
             }
         }
 
-        public void RegisterWorldserver(string groupName, WorldserverDTO worldserver)
+        public int? RegisterWorldserver(string groupName, WorldserverDTO worldserver)
         {
+            int? newChannelId = null;
+
             try
             {
                 if (!ServerCommunicationHelper.Instance.WorldserverGroups.Any(g => g.GroupName == groupName))
@@ -265,6 +268,8 @@ namespace OpenNos.WebApi.SelfHost
                     ServerCommunicationHelper.Instance.Worldservers.Add(worldserver);
 
                     //create new server group
+                    worldserver.ChannelId = 1;
+                    newChannelId = 1;
                     ServerCommunicationHelper.Instance.WorldserverGroups.Add(new WorldserverGroupDTO(groupName, worldserver));
                     Logger.Log.InfoFormat($"World {worldserver.Id} with address {worldserver.Endpoint} has been registered to new server group {groupName}.");
                 }
@@ -275,11 +280,14 @@ namespace OpenNos.WebApi.SelfHost
                 }
                 else
                 {
-                    //add world server
-                    ServerCommunicationHelper.Instance.Worldservers.Add(worldserver);
-
                     //add worldserver to existing group
-                    ServerCommunicationHelper.Instance.WorldserverGroups.SingleOrDefault(wg => wg.GroupName == groupName)?.Servers.Add(worldserver);
+                    WorldserverGroupDTO worldserverGroup = ServerCommunicationHelper.Instance.WorldserverGroups.SingleOrDefault(wg => wg.GroupName == groupName);
+
+                    //add world server
+                    worldserver.ChannelId = worldserverGroup.Servers.Count() + 1;
+                    newChannelId = worldserver.ChannelId;
+                    ServerCommunicationHelper.Instance.Worldservers.Add(worldserver);
+                    worldserverGroup?.Servers.Add(worldserver);
                     Logger.Log.InfoFormat($"World {worldserver.Id} with address {worldserver.Endpoint} has been added to server group {groupName}.");
                 }
             }
@@ -287,6 +295,8 @@ namespace OpenNos.WebApi.SelfHost
             {
                 Logger.Log.Error($"Registering world {worldserver.Id} with endpoint {worldserver.Endpoint} failed.", ex);
             }
+
+            return newChannelId;
         }
 
         /// <summary>
@@ -322,6 +332,32 @@ namespace OpenNos.WebApi.SelfHost
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Send a message to a Character
+        /// </summary>
+        /// <returns></returns>
+        public int? SendMessageToCharacter(string characterName, string messagePacket, int fromChannel, MessageType messageType)
+        {
+            try
+            {
+                WorldserverDTO worldserver = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(c => c.ConnectedCharacters.Any(cc => cc.Key == characterName));
+
+                if (worldserver != null)
+                {
+                    //character is connected to different world
+                    Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
+                    return worldserver.ChannelId;
+                }
+            }
+            catch (Exception)
+            {
+                Logger.Log.Error("Sending message to character failed.");
+                return null;
+            }
+
+            return null;
         }
 
         public void UnregisterWorldserver(string groupName, ScsTcpEndPoint endpoint)
