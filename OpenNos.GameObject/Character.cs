@@ -1006,7 +1006,7 @@ namespace OpenNos.GameObject
             {
                 case 0:
                     monsterDefence = monsterToAttack.Monster.CloseDefence;
-                    monsterDodge = monsterToAttack.Monster.DefenceDodge;
+                    monsterDodge = (int)(monsterToAttack.Monster.DefenceDodge * 0.95);
                     if (Class == ClassType.Archer)
                     {
                         mainCritHit = secCritHit;
@@ -1020,7 +1020,7 @@ namespace OpenNos.GameObject
 
                 case 1:
                     monsterDefence = monsterToAttack.Monster.DistanceDefence;
-                    monsterDodge = monsterToAttack.Monster.DistanceDefenceDodge;
+                    monsterDodge = (int)(monsterToAttack.Monster.DistanceDefenceDodge * 0.95);
                     if (Class == ClassType.Swordman || Class == ClassType.Adventurer || Class == ClassType.Magician)
                     {
                         mainCritHit = secCritHit;
