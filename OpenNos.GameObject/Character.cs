@@ -1960,7 +1960,8 @@ namespace OpenNos.GameObject
                                        .Subscribe(
                                        o =>
                                        {
-                                           Session.CurrentMap.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                                           if(Session.HasCurrentMap)
+                                               Session.CurrentMap.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
                                        });
                                     }
                                 }
@@ -2033,7 +2034,8 @@ namespace OpenNos.GameObject
                                       .Subscribe(
                                       o =>
                                       {
-                                          Session.CurrentMap.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
+                                          if(Session.HasCurrentMap)
+                                              Session.CurrentMap.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
                                       });
                             }
                         }
