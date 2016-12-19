@@ -2874,7 +2874,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket($"levelup {CharacterId}");
                 Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
                 LearnAdventurerSkill();
-                Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
+                Session.CurrentMap?.Broadcast(GenerateEff(8), MapX, MapY);
                 Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
             }
             if (specialist != null)
@@ -2896,7 +2896,7 @@ namespace OpenNos.GameObject
                     LearnSPSkill();
 
                     Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
-                    Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
+                    Session.CurrentMap?.Broadcast(GenerateEff(8), MapX, MapY);
                     Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
                 }
             }
