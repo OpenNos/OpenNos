@@ -518,6 +518,17 @@ namespace OpenNos.GameObject
             DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
             _friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
         }
+        public void AddSpouse(long characterId)
+        {
+            CharacterRelationDTO addRelation = new CharacterRelationDTO
+            {
+                CharacterId = CharacterId,
+                RelatedCharacterId = characterId,
+                RelationType = CharacterRelationType.Spouse
+            };
+            DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
+            _friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
+        }
 
         public void ChangeClass(ClassType characterClass)
         {
@@ -832,6 +843,15 @@ namespace OpenNos.GameObject
         }
 
         public void DeleteFriend(long characterId)
+        {
+            DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
+            CharacterRelationDTO deleteReleation = _friends.FirstOrDefault(f => f.RelatedCharacterId == characterId);
+            if (deleteReleation != null)
+            {
+                _friends.Remove(deleteReleation);
+            }
+        }
+        public void DeleteSpouse(long characterId)
         {
             DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
             CharacterRelationDTO deleteReleation = _friends.FirstOrDefault(f => f.RelatedCharacterId == characterId);
@@ -1592,6 +1612,16 @@ namespace OpenNos.GameObject
                                 return specialist.HoldingVNum == 0 ?
                                     $"e_info 7 {item.ItemVNum} 0" :
                                     $"e_info 7 {item.ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} {CharacterHelper.SPXPData[specialist.SpLevel - 1]} {item.Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
+                            case 4:
+                                Item mountitem = ServerManager.GetItem(specialist.HoldingVNum);
+                                return specialist.HoldingVNum == 0 ?
+                                    $"e_info 11 {item.ItemVNum} 0" :
+                                    $"e_info 11 {item.ItemVNum} 1 {specialist.HoldingVNum}";
+                            case 5:
+                                Item fairyitem = ServerManager.GetItem(specialist.HoldingVNum);
+                                return specialist.HoldingVNum == 0 ?
+                                    $"e_info 12 {item.ItemVNum} 0" :
+                                    $"e_info 12 {item.ItemVNum} 1 {specialist.HoldingVNum} {specialist.ElementRate + fairyitem.ElementRate}";
 
                             default:
                                 return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";

@@ -86,6 +86,72 @@ namespace OpenNos.GameObject
                             }
                         }
                     }
+                    if (EffectValue == 3)
+                    {
+                        BoxInstance box = session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot, InventoryType.Equipment);
+                        if (box != null)
+                        {
+                            if (box.HoldingVNum == 0)
+                            {
+                                session.SendPacket($"guri 26 0 {inv.Slot}");
+                            }
+                            else
+                            {
+                                ItemInstance newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
+                                if (newInv != null)
+                                {
+                                    WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(newInv.Slot, newInv.Type);
+
+                                    if (fairy != null)
+                                    {
+                                        fairy.ElementRate = box.ElementRate;
+                                    }
+
+                                    short Slot = inv.Slot;
+                                    if (Slot != -1)
+                                    {
+                                        session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {fairy.Item.Name} ({fairy.ElementRate}%)", 12));
+                                        session.SendPacket(session.Character.GenerateInventoryAdd(fairy.ItemVNum, newInv.Amount, fairy.Type, newInv.Slot, 0, 0, fairy.Upgrade, 0));
+                                        session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
+                                    }
+                                }
+                                else
+                                {
+                                    session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                                }
+                            }
+                        }
+                    }
+                    if (EffectValue == 4)
+                    {
+                        BoxInstance box = session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot, InventoryType.Equipment);
+                        if (box != null)
+                        {
+                            if (box.HoldingVNum == 0)
+                            {
+                                session.SendPacket($"guri 24 0 {inv.Slot}");
+                            }
+                            else
+                            {
+                                ItemInstance newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
+                                if (newInv != null)
+                                {
+                                    short Slot = inv.Slot;
+                                    if (Slot != -1)
+                                    {
+                                        session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.Item.Name} x 1)", 12));
+                                        session.SendPacket(session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, 0, 0, newInv.Upgrade, 0));
+                                        session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
+                                    }
+                                }
+                                else
+                                {
+                                    session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                                }
+                            }
+                        }
+                    }
+
                     break;
 
                 default:

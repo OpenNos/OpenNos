@@ -766,6 +766,37 @@ namespace OpenNos.Handler
                 }
                 Session.SendPacket(Session.Character.GenerateDelay(3000, 4, $"#guri^199^{charId}"));
             }
+            else if (guriPacket[2] == "208" && guriPacket[3] == "0")
+            {
+                short pearlSlot;
+                short mountSlot;
+                if (short.TryParse(guriPacket[4], out pearlSlot) && short.TryParse(guriPacket[6], out mountSlot))
+                {
+                    ItemInstance mount = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(mountSlot, InventoryType.Main);
+                    BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
+                    if (mount != null && pearl != null)
+                    {
+                        pearl.HoldingVNum = mount.ItemVNum;
+                        Session.Character.Inventory.RemoveItemAmountFromInventory(1, mount.Id);
+                    }
+                }
+            }
+            else if (guriPacket[2] == "209" && guriPacket[3] == "0")
+            {
+                short pearlSlot;
+                short mountSlot;
+                if (short.TryParse(guriPacket[4], out pearlSlot) && short.TryParse(guriPacket[6], out mountSlot))
+                {
+                    WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(mountSlot, InventoryType.Equipment);
+                    BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
+                    if (fairy != null && pearl != null)
+                    {
+                        pearl.HoldingVNum = fairy.ItemVNum;
+                        pearl.ElementRate = fairy.ElementRate;
+                        Session.Character.Inventory.RemoveItemAmountFromInventory(1, fairy.Id);
+                    }
+                }
+            }
             else if (guriPacket[2] == "203" && guriPacket[3] == "0")
             {
                 // SP points initialization
