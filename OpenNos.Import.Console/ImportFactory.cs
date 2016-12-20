@@ -2582,6 +2582,16 @@ namespace OpenNos.Import.Console
                                         item.EffectValue = 2;
                                         break;
 
+                                    case 4194:
+                                        item.Effect = 69;
+                                        item.EffectValue = 3;
+                                        break;
+
+                                    case 4106:
+                                        item.Effect = 69;
+                                        item.EffectValue = 4;
+                                        break;
+
                                     default:
                                         item.Effect = Convert.ToInt16(currentLine[2]);
                                         item.EffectValue = Convert.ToInt32(currentLine[3]);
