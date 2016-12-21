@@ -13,10 +13,24 @@
  */
 
 using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL
 {
     public interface IFamilyDAO : IMappingBaseDAO
     {
+        #region Methods
+        DeleteResult Delete(long familyId);
+
+        SaveResult InsertOrUpdate(ref FamilyDTO family);
+
+        FamilyDTO LoadByCharacterId(long characterId);
+
+        FamilyDTO LoadById(long familyId);
+
+        FamilyDTO LoadByName(string name);
+
+        #endregion
     }
 }

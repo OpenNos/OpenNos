@@ -14,6 +14,9 @@
 
 using OpenNos.Core;
 using OpenNos.GameObject;
+using OpenNos.Data;
+using OpenNos.DAL;
+using System;
 
 namespace OpenNos.Handler
 {
@@ -43,6 +46,46 @@ namespace OpenNos.Handler
 
         #endregion
 
-        // there will be some mad methods
+        #region Methods
+        [Packet("#glmk")]
+        public void CreateFamily(string packet)
+        {
+            if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
+            {
+                string name = packet.Split('^')[1];
+                FamilyDTO family = new FamilyDTO()
+                {
+                    Name = name,
+                    FamilyExperience = 0,
+                    FamilyLevel = 1,
+                    FamilyMessage = "",
+                    MaxSize = 50,
+                    Size = 3
+                };
+
+                DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
+                Session.CurrentMap.Broadcast(Session.Character.GenerateSay($"The family {name} was founded!", 13));
+                foreach (ClientSession c in Session.Character.Group.Characters)
+                {
+                    FamilyCharacterDTO familyCharacter = new FamilyCharacterDTO()
+                    {
+                        CharacterId = c.Character.CharacterId,
+                        DailyMessage = "",
+                        Experience = 0,
+                        Authority = Domain.FamilyAuthority.Assistant,
+                        FamilyId = family.FamilyId,
+                        JoinDate = DateTime.Now,
+                        Rank = Domain.FamilyMemberRank.Member,
+                    };
+                    if(Session.Character.CharacterId == c.Character.CharacterId)
+                    {
+                        familyCharacter.Authority = Domain.FamilyAuthority.Head;
+                    }
+                    DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
+                    c.SendPacket($"gidx 1 {c.Character.CharacterId} {family.FamilyId} {family.Name}({familyCharacter.Authority.ToString()}) {family.FamilyLevel}");
+                }
+            }
+        }
+        #endregion
     }
 }

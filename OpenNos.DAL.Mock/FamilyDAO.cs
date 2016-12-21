@@ -13,10 +13,35 @@
  */
 
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL.Mock
 {
     public class FamilyDAO : BaseDAO<FamilyDTO>, IFamilyDAO
     {
+        public DeleteResult Delete(long familyId)
+        {
+            return DeleteResult.Deleted;
+        }
+
+        public SaveResult InsertOrUpdate(ref FamilyDTO family)
+        {
+            return SaveResult.Inserted;
+        }
+
+        public FamilyDTO LoadByCharacterId(long characterId)
+        {
+            return null;
+        }
+
+        public FamilyDTO LoadById(long familyId)
+        {
+            return null;
+        }
+
+        public FamilyDTO LoadByName(string name)
+        {
+            return null;
+        }
     }
 }

@@ -478,7 +478,7 @@ namespace OpenNos.GameObject
                     session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)sand[Upgrade]);
                     session.Character.Gold -= goldprice[Upgrade];
 
-                    int rnd = _random.Next(100);
+                    int rnd = ServerManager.RandomNumber();
                     if (rnd <= upsuccess[Upgrade + itemToSum.Upgrade])
                     {
                         Upgrade += (byte)(itemToSum.Upgrade + 1);

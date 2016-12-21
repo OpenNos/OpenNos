@@ -34,6 +34,8 @@ namespace OpenNos.GameObject
 
         public bool ShutdownStop;
 
+        private static Random _random = new Random();
+
         private static ServerManager _instance;
         private static List<Item> _items = new List<Item>();
 
@@ -112,6 +114,11 @@ namespace OpenNos.GameObject
         public static IEnumerable<Skill> GetAllSkill()
         {
             return _skills;
+        }
+
+        public static int RandomNumber(int max = 100)
+        {
+            return _random.Next(max);
         }
 
         public static Item GetItem(short vnum)

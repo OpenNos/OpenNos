@@ -16,6 +16,10 @@ namespace OpenNos.Domain
 {
     public enum FamilyMemberRank : byte
     {
+        Head = 3,
+        Assistant = 2,
+        Manager = 1,
+        Member = 0
         // insert family ranks here with corresponding numbers
     }
 }

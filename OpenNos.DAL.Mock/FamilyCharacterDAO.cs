@@ -13,10 +13,31 @@
  */
 
 using OpenNos.Data;
+using OpenNos.Data.Enums;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
     public class FamilyCharacterDAO : BaseDAO<FamilyCharacterDTO>, IFamilyCharacterDAO
     {
+        public DeleteResult Delete(string characterName)
+        {
+            return DeleteResult.Deleted;
+        }
+
+        public SaveResult InsertOrUpdate(ref FamilyCharacterDTO character)
+        {
+            return SaveResult.Inserted;
+        }
+
+        public IList<FamilyCharacterDTO> LoadByFamilyId(long familyId)
+        {
+            return null;
+        }
+
+        public FamilyCharacterDTO LoadById(long familyCharacterId)
+        {
+            return null;
+        }
     }
 }
