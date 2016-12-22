@@ -937,7 +937,7 @@ namespace OpenNos.Handler
                                     }
                                 }
                                 Random random = new Random();
-                                double randomAmount = random.Next(0, 100) * random.NextDouble();
+                                double randomAmount = ServerManager.RandomNumber(0, 100) * random.NextDouble();
                                 DropDTO drop = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum);
                                 if (drop != null)
                                 {

@@ -147,11 +147,11 @@ namespace OpenNos.GameObject
                 raren2 = 0;
                 raren1 = 0;
                 rare0 = 0;
-                rnd = _random.Next(0, 80);
+                rnd = ServerManager.RandomNumber(0, 80);
             }
             else
             {
-                rnd = _random.Next(0, 100);
+                rnd = ServerManager.RandomNumber(0, 100);
             }
             if (protection == RarifyProtection.RedAmulet)
             {
@@ -373,7 +373,7 @@ namespace OpenNos.GameObject
                 {
                     for (int i = 0; i < point; i++)
                     {
-                        int rndn = _random.Next(0, 3);
+                        int rndn = ServerManager.RandomNumber(0, 3);
                         if (rndn == 0)
                         {
                             Concentrate++;
@@ -390,7 +390,7 @@ namespace OpenNos.GameObject
                 {
                     for (int i = 0; i > point; i--)
                     {
-                        int rndn = _random.Next(0, 3);
+                        int rndn = ServerManager.RandomNumber(0, 3);
                         if (rndn == 0)
                         {
                             Concentrate--;
@@ -416,7 +416,7 @@ namespace OpenNos.GameObject
                 {
                     for (int i = 0; i < point; i++)
                     {
-                        int rndn = _random.Next(0, 3);
+                        int rndn = ServerManager.RandomNumber(0, 3);
                         if (rndn == 0)
                         {
                             DefenceDodge++;
@@ -434,7 +434,7 @@ namespace OpenNos.GameObject
                 {
                     for (int i = 0; i > point; i--)
                     {
-                        int rndn = _random.Next(0, 3);
+                        int rndn = ServerManager.RandomNumber(0, 3);
                         if (rndn == 0)
                         {
                             DefenceDodge--;
@@ -652,7 +652,7 @@ namespace OpenNos.GameObject
                 WearableInstance wearable = session.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
                 ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
 
-                int rnd = _random.Next(1, 100);
+                int rnd = ServerManager.RandomNumber();
 
                 if (Rare == 8)
                 {

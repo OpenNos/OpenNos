@@ -385,7 +385,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 8:
-                    p = random.Next(11, 16);
+                    p = ServerManager.RandomNumber(11, 16);
                     break;
             }
             return p * (lvl / 5) + 1;

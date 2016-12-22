@@ -551,7 +551,7 @@ namespace OpenNos.GameObject
             Session.CurrentMap?.Broadcast(GenerateEff(8), MapX, MapY);
             Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
             Session.CurrentMap?.Broadcast(GenerateEff(196), MapX, MapY);
-            int faction = 1 + _random.Next(0, 2);
+            int faction = 1 + ServerManager.RandomNumber(0, 2);
             Faction = faction;
             Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
             Session.SendPacket("scr 0 0 0 0 0 0");
@@ -1128,7 +1128,7 @@ namespace OpenNos.GameObject
                 }
                 if ((skill.Type == 0 || skill.Type == 1) && !HasGodMode)
                 {
-                    if (random.Next(0, 100) <= chance)
+                    if (ServerManager.RandomNumber(0, 100) <= chance)
                     {
                         hitmode = 1;
                         return 0;
@@ -1140,7 +1140,7 @@ namespace OpenNos.GameObject
 
             #region Base Damage
 
-            int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
+            int baseDamage = ServerManager.RandomNumber(mainMinDmg, mainMaxDmg + 1);
             baseDamage += skill.Damage / 4;
             baseDamage += Level - monsterToAttack.Monster.Level; //Morale
             if (Class == ClassType.Adventurer)
@@ -1402,7 +1402,7 @@ namespace OpenNos.GameObject
 
             baseDamage -= monsterDefence;
 
-            if (random.Next(100) <= mainCritChance)
+            if (ServerManager.RandomNumber() <= mainCritChance)
             {
                 if (skill.Type == 2)
                 {
@@ -1432,7 +1432,7 @@ namespace OpenNos.GameObject
             int totalDamage = baseDamage + elementalDamage;
             if (totalDamage < 5)
             {
-                totalDamage = random.Next(1, 6);
+                totalDamage = ServerManager.RandomNumber(1, 6);
             }
 
             #endregion
@@ -1948,7 +1948,7 @@ namespace OpenNos.GameObject
                     {
                         if (x < 4)
                         {
-                            double rndamount = random.Next(0, 100) * random.NextDouble();
+                            double rndamount = ServerManager.RandomNumber(0, 100) * random.NextDouble();
                             if (rndamount <= (double)drop.DropChance * dropRate / 5000.000)
                             {
                                 x++;
@@ -2006,7 +2006,7 @@ namespace OpenNos.GameObject
                     // gold calculation
                     int gold = GetGold(monsterToAttack);
                     gold = gold > 1000000000 ? 1000000000 : gold;
-                    double randChance = random.Next(0, 100) * random.NextDouble();
+                    double randChance = ServerManager.RandomNumber(0, 100) * random.NextDouble();
 
                     if (gold > 0 && randChance <= (int)(ServerManager.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
                     {
@@ -3900,7 +3900,7 @@ namespace OpenNos.GameObject
         private int GetGold(MapMonster mapMonster)
         {
             Random random = new Random(DateTime.Now.Millisecond + mapMonster.MapMonsterId);
-            int lowBaseGold = random.Next(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
+            int lowBaseGold = ServerManager.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
             int actMultiplier = Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
             int gold = lowBaseGold * ServerManager.GoldRate * actMultiplier;
             return gold;

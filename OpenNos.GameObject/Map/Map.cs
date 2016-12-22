@@ -229,8 +229,8 @@ namespace OpenNos.GameObject
         {
             try
             {
-                short localMapX = (short)_random.Next(mapX - 1, mapX + 1);
-                short localMapY = (short)_random.Next(mapY - 1, mapY + 1);
+                short localMapX = (short)ServerManager.RandomNumber(mapX - 1, mapX + 1);
+                short localMapY = (short)ServerManager.RandomNumber(mapY - 1, mapY + 1);
                 List<MapCell> Possibilities = new List<MapCell>();
 
                 for (short x = -1; x < 2; x++)

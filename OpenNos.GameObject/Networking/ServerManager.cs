@@ -116,9 +116,9 @@ namespace OpenNos.GameObject
             return _skills;
         }
 
-        public static int RandomNumber(int max = 100)
+        public static int RandomNumber(int min = 0, int max = 100)
         {
-            return _random.Next(max);
+            return _random.Next(min, max);
         }
 
         public static Item GetItem(short vnum)
@@ -790,8 +790,8 @@ namespace OpenNos.GameObject
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
                 RespawnMapTypeDTO resp = session.Character.Respawn;
-                short x = (short)(resp.DefaultX + rnd.Next(-5, 5));
-                short y = (short)(resp.DefaultY + rnd.Next(-5, 5));
+                short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
+                short y = (short)(resp.DefaultY + RandomNumber(-5, 5));
                 ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
                 session.CurrentMap?.Broadcast(session, session.Character.GenerateTp());
                 session.CurrentMap?.Broadcast(session.Character.GenerateRevive());
@@ -947,8 +947,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                Random rnd = new Random();
-                Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{ rnd.Next(0, 5) }"));
+                Shout(Language.Instance.GetMessageFromKey($"BOT_MESSAGE_{ RandomNumber(0, 5) }"));
             }
             catch (Exception e)
             {

@@ -139,7 +139,7 @@ namespace OpenNos.GameObject
             Skills = Monster.Skills.ToList();
             DamageList = new Dictionary<long, long>();
             _random = new Random(MapMonsterId);
-            _movetime = _random.Next(400, 3200);
+            _movetime = ServerManager.RandomNumber(400, 3200);
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace OpenNos.GameObject
             }
             if (Monster.AttackClass == 0 || Monster.AttackClass == 1)
             {
-                if (random.Next(0, 100) <= chance)
+                if (ServerManager.RandomNumber(0, 100) <= chance)
                 {
                     hitmode = 1;
                     return 0;
@@ -292,7 +292,7 @@ namespace OpenNos.GameObject
 
             #region Base Damage
 
-            int baseDamage = new Random().Next(mainMinDmg, mainMaxDmg + 1);
+            int baseDamage = ServerManager.RandomNumber(mainMinDmg, mainMaxDmg + 1);
             baseDamage += Monster.Level - targetCharacter.Level;
             int elementalDamage = 0; // placeholder for BCard etc...
 
@@ -543,7 +543,7 @@ namespace OpenNos.GameObject
 
             #region Critical Damage
 
-            if (random.Next(100) <= mainCritChance)
+            if (ServerManager.RandomNumber() <= mainCritChance)
             {
                 if (Monster.AttackClass == 2)
                 {
@@ -562,7 +562,7 @@ namespace OpenNos.GameObject
             int totalDamage = baseDamage + elementalDamage - playerDefense;
             if (totalDamage < 5)
             {
-                totalDamage = random.Next(1, 6);
+                totalDamage = ServerManager.RandomNumber(1, 6);
             }
 
             #endregion
@@ -735,7 +735,7 @@ namespace OpenNos.GameObject
                     }
 
                     NpcMonsterSkill npcMonsterSkill = null;
-                    if (_random.Next(10) > 8 && Skills != null)
+                    if (ServerManager.RandomNumber(0, 10) > 8 && Skills != null)
                     {
                         npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
                     }
@@ -788,8 +788,8 @@ namespace OpenNos.GameObject
                 short maxDistance = 22;
                 if (!Path.Any() && targetSession != null && distance > 1 && distance < maxDistance)
                 {
-                    short xoffset = (short)_random.Next(-1, 1);
-                    short yoffset = (short)_random.Next(-1, 1);
+                    short xoffset = (short)ServerManager.RandomNumber(-1, 1);
+                    short yoffset = (short)ServerManager.RandomNumber(-1, 1);
 
                     Path = Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(targetSession.Character.MapX + xoffset), y = (short)(targetSession.Character.MapY + yoffset) });
                     if (!Path.Any())
@@ -871,7 +871,7 @@ namespace OpenNos.GameObject
                 else if (time > _movetime)
                 {
                     short mapX = FirstX, mapY = FirstY;
-                    if (Map?.GetFreePosition(ref mapX, ref mapY, (byte)_random.Next(2), (byte)_random.Next(2)) ?? false)
+                    if (Map?.GetFreePosition(ref mapX, ref mapY, (byte)ServerManager.RandomNumber(0, 2), (byte)_random.Next(0, 2)) ?? false)
                     {
                         int distance = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY });
                         Observable.Timer(TimeSpan.FromMilliseconds(1000 * distance / (2 * Monster.Speed)))

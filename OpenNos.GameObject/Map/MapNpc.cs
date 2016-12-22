@@ -102,7 +102,7 @@ namespace OpenNos.GameObject
             LastMove = DateTime.Now;
             FirstX = MapX;
             FirstY = MapY;
-            _movetime = _random.Next(500, 3000);
+            _movetime = ServerManager.RandomNumber(500, 3000);
             Path = new List<GridPos>();
             Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
             Target = -1;
@@ -127,11 +127,11 @@ namespace OpenNos.GameObject
             time = (DateTime.Now - LastMove).TotalMilliseconds;
             if (IsMoving && Npc.Speed > 0 && time > _movetime)
             {
-                _movetime = _random.Next(500, 3000);
-                byte point = (byte)_random.Next(2, 4);
-                byte fpoint = (byte)_random.Next(0, 2);
+                _movetime = ServerManager.RandomNumber(500, 3000);
+                byte point = (byte)ServerManager.RandomNumber(2, 4);
+                byte fpoint = (byte)ServerManager.RandomNumber(0, 2);
 
-                byte xpoint = (byte)_random.Next(fpoint, point);
+                byte xpoint = (byte)ServerManager.RandomNumber(fpoint, point);
                 byte ypoint = (byte)(point - xpoint);
 
                 short mapX = FirstX;
@@ -173,7 +173,7 @@ namespace OpenNos.GameObject
                     return;
                 }
                 NpcMonsterSkill npcMonsterSkill = null;
-                if (_random.Next(10) > 8)
+                if (ServerManager.RandomNumber(0, 10) > 8)
                 {
                     npcMonsterSkill = Npc.Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
                 }
@@ -230,8 +230,8 @@ namespace OpenNos.GameObject
                         const short maxDistance = 5;
                         if (!Path.Any() && distance > 1 && distance < maxDistance)
                         {
-                            short xoffset = (short)_random.Next(-1, 1);
-                            short yoffset = (short)_random.Next(-1, 1);
+                            short xoffset = (short)ServerManager.RandomNumber(-1, 1);
+                            short yoffset = (short)ServerManager.RandomNumber(-1, 1);
 
                             Path = Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
                             if (!Path.Any())

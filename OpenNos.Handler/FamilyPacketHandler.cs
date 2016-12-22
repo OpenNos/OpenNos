@@ -82,9 +82,28 @@ namespace OpenNos.Handler
                         familyCharacter.Authority = Domain.FamilyAuthority.Head;
                     }
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
-                    c.SendPacket($"gidx 1 {c.Character.CharacterId} {family.FamilyId} {family.Name}({familyCharacter.Authority.ToString()}) {family.FamilyLevel}");
+                    Session.CurrentMap.Broadcast($"gidx 1 {c.Character.CharacterId} {family.FamilyId} {family.Name}({familyCharacter.Authority.ToString()}) ");
                 }
             }
+        }
+
+        [Packet(":")]
+        public void FamilyChat(string packet)
+        {
+            string msg = String.Empty;
+            int i = 0;
+            foreach (string s in packet.Split(' '))
+            {
+                if (i != 0)
+                {
+                    msg += s + " ";
+                }
+                i++;
+            }
+            msg = msg.Substring(1);
+            
+            Session.CurrentMap.Broadcast(Session.Character.GenerateSay(msg, 6));
+            Session.CurrentMap.Broadcast(Session.Character.GenerateSpk(msg, 1));
         }
         #endregion
     }
