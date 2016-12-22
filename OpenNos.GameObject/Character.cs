@@ -1473,7 +1473,8 @@ namespace OpenNos.GameObject
             ushort damage = Convert.ToUInt16(totalDamage);
             if (monsterToAttack.IsMoving)
             {
-                monsterToAttack.Target = CharacterId;
+                long charId = monsterToAttack.DamageList.OrderByDescending(d => d.Value).FirstOrDefault().Key;
+                monsterToAttack.Target = charId;
             }
             return damage;
         }

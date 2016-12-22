@@ -234,6 +234,14 @@ namespace OpenNos.Handler
                                                     , skillCombo: skillCombo));
                                             }
                                         }
+                                        else
+                                        {
+                                            Session.SendPacket($"cancel 2 {targetId}");
+                                        }
+                                        if (!monsterToAttack.IsAlive)
+                                        {
+                                            Session.SendPacket($"cancel 2 {targetId}");
+                                        }
                                     }
                                     else
                                     {
@@ -251,6 +259,14 @@ namespace OpenNos.Handler
                                                 mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
                                                     , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: false));
                                             }
+                                        }
+                                        else
+                                        {
+                                            Session.SendPacket($"cancel 2 {targetId}");
+                                        }
+                                        if(!monsterToAttack.IsAlive)
+                                        {
+                                            Session.SendPacket($"cancel 2 {targetId}");
                                         }
                                     }
                                 }
