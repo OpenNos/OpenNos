@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -34,7 +35,9 @@ namespace OpenNos.GameObject
 
         public bool ShutdownStop;
 
-        private static Random _random = new Random();
+        private static int seed = Environment.TickCount;
+        private static readonly ThreadLocal<Random> random =
+                new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
 
         private static ServerManager _instance;
         private static List<Item> _items = new List<Item>();
@@ -118,7 +121,7 @@ namespace OpenNos.GameObject
 
         public static int RandomNumber(int min = 0, int max = 100)
         {
-            return _random.Next(min, max);
+            return random.Value.Next(min, max);
         }
 
         public static Item GetItem(short vnum)
