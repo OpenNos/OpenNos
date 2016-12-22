@@ -46,65 +46,65 @@ namespace OpenNos.Handler
 
         #endregion
 
-        #region Methods
-        [Packet("#glmk")]
-        public void CreateFamily(string packet)
-        {
-            if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
-            {
-                string name = packet.Split('^')[1];
-                FamilyDTO family = new FamilyDTO()
-                {
-                    Name = name,
-                    FamilyExperience = 0,
-                    FamilyLevel = 1,
-                    FamilyMessage = "",
-                    MaxSize = 50,
-                    Size = 3
-                };
+        //#region Methods
+        //[Packet("#glmk")]
+        //public void CreateFamily(string packet)
+        //{
+        //    if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
+        //    {
+        //        string name = packet.Split('^')[1];
+        //        FamilyDTO family = new FamilyDTO()
+        //        {
+        //            Name = name,
+        //            FamilyExperience = 0,
+        //            FamilyLevel = 1,
+        //            FamilyMessage = "",
+        //            MaxSize = 50,
+        //            Size = 3
+        //        };
 
-                DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
-                Session.CurrentMap.Broadcast(Session.Character.GenerateSay($"The family {name} was founded!", 13));
-                foreach (ClientSession c in Session.Character.Group.Characters)
-                {
-                    FamilyCharacterDTO familyCharacter = new FamilyCharacterDTO()
-                    {
-                        CharacterId = c.Character.CharacterId,
-                        DailyMessage = "",
-                        Experience = 0,
-                        Authority = Domain.FamilyAuthority.Assistant,
-                        FamilyId = family.FamilyId,
-                        JoinDate = DateTime.Now,
-                        Rank = Domain.FamilyMemberRank.Member,
-                    };
-                    if(Session.Character.CharacterId == c.Character.CharacterId)
-                    {
-                        familyCharacter.Authority = Domain.FamilyAuthority.Head;
-                    }
-                    DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
-                    Session.CurrentMap.Broadcast($"gidx 1 {c.Character.CharacterId} {family.FamilyId} {family.Name}({familyCharacter.Authority.ToString()}) ");
-                }
-            }
-        }
+        //        DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
+        //        Session.CurrentMap.Broadcast(Session.Character.GenerateSay($"The family {name} was founded!", 13));
+        //        foreach (ClientSession c in Session.Character.Group.Characters)
+        //        {
+        //            FamilyCharacterDTO familyCharacter = new FamilyCharacterDTO()
+        //            {
+        //                CharacterId = c.Character.CharacterId,
+        //                DailyMessage = "",
+        //                Experience = 0,
+        //                Authority = Domain.FamilyAuthority.Assistant,
+        //                FamilyId = family.FamilyId,
+        //                JoinDate = DateTime.Now,
+        //                Rank = Domain.FamilyMemberRank.Member,
+        //            };
+        //            if(Session.Character.CharacterId == c.Character.CharacterId)
+        //            {
+        //                familyCharacter.Authority = Domain.FamilyAuthority.Head;
+        //            }
+        //            DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
+        //            Session.CurrentMap.Broadcast($"gidx 1 {c.Character.CharacterId} {family.FamilyId} {family.Name}({familyCharacter.Authority.ToString()}) ");
+        //        }
+        //    }
+        //}
 
-        [Packet(":")]
-        public void FamilyChat(string packet)
-        {
-            string msg = String.Empty;
-            int i = 0;
-            foreach (string s in packet.Split(' '))
-            {
-                if (i != 0)
-                {
-                    msg += s + " ";
-                }
-                i++;
-            }
-            msg = msg.Substring(1);
+        //[Packet(":")]
+        //public void FamilyChat(string packet)
+        //{
+        //    string msg = String.Empty;
+        //    int i = 0;
+        //    foreach (string s in packet.Split(' '))
+        //    {
+        //        if (i != 0)
+        //        {
+        //            msg += s + " ";
+        //        }
+        //        i++;
+        //    }
+        //    msg = msg.Substring(1);
             
-            Session.CurrentMap.Broadcast(Session.Character.GenerateSay(msg, 6));
-            Session.CurrentMap.Broadcast(Session.Character.GenerateSpk(msg, 1));
-        }
-        #endregion
+        //    Session.CurrentMap.Broadcast(Session.Character.GenerateSay(msg, 6));
+        //    Session.CurrentMap.Broadcast(Session.Character.GenerateSpk(msg, 1));
+        //}
+        //#endregion
     }
 }
