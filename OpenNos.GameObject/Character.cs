@@ -3080,6 +3080,10 @@ namespace OpenNos.GameObject
 
             // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal
             // to 4
+            if(levelDifference <= 20)
+            {
+                xp /= 10;
+            }
             if (Level <= 5 && levelDifference < -4)
             {
                 xp += xp / 2;
