@@ -70,14 +70,12 @@ namespace OpenNos.World
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
-            Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}";
-            int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
-            string text = $"WORLD SERVER VERSION {fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
+            Console.Title = $"OpenNosBot v{fileVersionInfo.ProductVersion}";
+            string text = $"OpenNosBot v{fileVersionInfo.ProductVersion} by OpenNos Team";
             int offset = (Console.WindowWidth - text.Length) / 2;
             Console.WriteLine(new string('=', Console.WindowWidth));
             Console.SetCursorPosition(offset < 0 ? 0 : offset, Console.CursorTop);
-            Console.WriteLine(text + "\n" +
-            new string('=', Console.WindowWidth) + "\n");
+            Console.WriteLine(text + "\n" + new string('=', Console.WindowWidth) + "\n");
 
             // initialize api
             ServerCommunicationClient.Instance.InitializeAndRegisterCallbacks();

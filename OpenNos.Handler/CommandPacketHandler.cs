@@ -502,6 +502,8 @@ namespace OpenNos.Handler
         public void Command(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
+
+            // TODO: Write helper command to show info and help about desired command
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
             Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$AddSkill SKILLID", 12));
@@ -557,6 +559,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(%)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME(%)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$ShoutHere MESSAGE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Stat", 12));
@@ -1513,8 +1516,6 @@ namespace OpenNos.Handler
 
             //session is not on current server, check api if the target character is on another server
             int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", message, ServerManager.Instance.ChannelId, MessageType.Shout, String.Empty, null).Result;
-
-            return;
         }
 
         [Packet("$ShoutHere")]
@@ -1537,8 +1538,6 @@ namespace OpenNos.Handler
             }
 
             ServerManager.Instance.Shout(message);
-
-            return;
         }
 
         [Packet("$Shutdown")]
