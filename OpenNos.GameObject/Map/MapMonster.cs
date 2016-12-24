@@ -538,7 +538,10 @@ namespace OpenNos.GameObject
 
             elementalDamage = (int)((elementalDamage + (elementalDamage + baseDamage) * (Monster.ElementRate / 100D)) * elementalBoost);
             elementalDamage = elementalDamage / 100 * (100 - playerRessistance);
-
+            if (elementalDamage < 0)
+            {
+                elementalDamage = 0;
+            }
             #endregion
 
             #region Critical Damage
