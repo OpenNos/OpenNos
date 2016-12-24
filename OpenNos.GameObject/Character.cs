@@ -967,6 +967,8 @@ namespace OpenNos.GameObject
                 return 0;
             }
 
+            Random random = new Random();
+
             // int miss_chance = 20;
             int monsterDefence = 0;
             int monsterDodge = 0;
@@ -1126,7 +1128,7 @@ namespace OpenNos.GameObject
                 }
                 if ((skill.Type == 0 || skill.Type == 1) && !HasGodMode)
                 {
-                    if (ServerManager.RandomNumber() <= chance)
+                    if (ServerManager.RandomNumber(0, 100) <= chance)
                     {
                         hitmode = 1;
                         return 0;
@@ -1602,7 +1604,8 @@ namespace OpenNos.GameObject
                     {
                         BoxInstance specialist = (BoxInstance)item;
 
-                        // 0 = pet pearl, 1 = partner pearl, 2 = sp box, 3 = raid box, 4 = mount pearl, 5 = fairy pearl
+                        // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl
+                        // 5=fairy pearl
                         switch (subtype)
                         {
                             case 2:
@@ -1611,7 +1614,7 @@ namespace OpenNos.GameObject
                                     $"e_info 7 {item.ItemVNum} 0" :
                                     $"e_info 7 {item.ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} {CharacterHelper.SPXPData[specialist.SpLevel - 1]} {item.Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
                             case 4:
-                                // Item mountitem = ServerManager.GetItem(specialist.HoldingVNum);
+                                Item mountitem = ServerManager.GetItem(specialist.HoldingVNum);
                                 return specialist.HoldingVNum == 0 ?
                                     $"e_info 11 {item.ItemVNum} 0" :
                                     $"e_info 11 {item.ItemVNum} 1 {specialist.HoldingVNum}";
@@ -1628,7 +1631,7 @@ namespace OpenNos.GameObject
                     return $"e_info 7 {item.ItemVNum} 0";
 
                 case ItemType.Shell:
-                    return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {item.Rare} {iteminfo.Price} 0"; // 0 = Number of effects on shell
+                    return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {item.Rare} {iteminfo.Price} 0"; // 0 = Number of effects
             }
             return string.Empty;
         }
@@ -1679,17 +1682,15 @@ namespace OpenNos.GameObject
                     WearableInstance wearable = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
                     if (wearable != null)
                     {
-                        switch (wearable.Item.EquipmentSlot)
+                        if (wearable.Item.EquipmentSlot == EquipmentType.Armor)
                         {
-                            case EquipmentType.Armor:
-                                armorRare = wearable.Rare;
-                                armorUpgrade = wearable.Upgrade;
-                                break;
-
-                            case EquipmentType.MainWeapon:
-                                weaponRare = wearable.Rare;
-                                weaponUpgrade = wearable.Upgrade;
-                                break;
+                            armorRare = wearable.Rare;
+                            armorUpgrade = wearable.Upgrade;
+                        }
+                        else if (wearable.Item.EquipmentSlot == EquipmentType.MainWeapon)
+                        {
+                            weaponRare = wearable.Rare;
+                            weaponUpgrade = wearable.Upgrade;
                         }
                     }
                 }
@@ -1749,7 +1750,8 @@ namespace OpenNos.GameObject
             {
                 foreach (ClientSession groupClientSession in group.Characters)
                 {
-                    str += $" {groupClientSession.Character.CharacterId}|0|{groupClientSession.Character.Name}|{groupClientSession.Character.Level}|{groupClientSession.Character.Class}|0|0|{groupClientSession.Character.Gender}|0";
+                    str +=
+                        $" {groupClientSession.Character.CharacterId}|0|{groupClientSession.Character.Name}|{groupClientSession.Character.Level}|{groupClientSession.Character.Class}|0|0|{groupClientSession.Character.Gender}|0";
                 }
             }
             return str;
@@ -1770,7 +1772,7 @@ namespace OpenNos.GameObject
                 {
                     byte isOnline = 0;
                     if ((relatedCharacterLoggedInId.HasValue && relatedCharacterLoggedInId.Value == relation.RelatedCharacterId)
-                        || relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId != relatedCharacterLoggedOutId.Value &&
+                        || (relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId != relatedCharacterLoggedOutId.Value) &&
                         ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
                     {
                         isOnline = 1;
@@ -1875,9 +1877,9 @@ namespace OpenNos.GameObject
             return ServerManager.GetMap(MapId).Monsters.Select(monster => monster.GenerateIn3()).Where(s => !string.IsNullOrEmpty(s)).ToList();
         }
 
-        public string GenerateInbox(string message)
+        public string GenerateInbox(byte type, byte value)
         {
-            return $"inbox {message}";
+            return $"inbox #glmk^ {value} {(type == 1 ? 0 : 1)} {(type == 0 ? Language.Instance.GetMessageFromKey("CREATE_FAMILY") : Language.Instance.GetMessageFromKey("DISMISS_FAMILY"))}";
         }
 
         public string GenerateInfo(string message)
@@ -1947,7 +1949,7 @@ namespace OpenNos.GameObject
                     {
                         if (x < 4)
                         {
-                            double rndamount = ServerManager.RandomNumber() * random.NextDouble();
+                            double rndamount = ServerManager.RandomNumber(0, 100) * random.NextDouble();
                             if (rndamount <= (double)drop.DropChance * dropRate / 5000.000)
                             {
                                 x++;
@@ -2005,11 +2007,11 @@ namespace OpenNos.GameObject
                     // gold calculation
                     int gold = GetGold(monsterToAttack);
                     gold = gold > 1000000000 ? 1000000000 : gold;
-                    double randChance = ServerManager.RandomNumber() * random.NextDouble();
+                    double randChance = ServerManager.RandomNumber(0, 100) * random.NextDouble();
 
                     if (gold > 0 && randChance <= (int)(ServerManager.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
                     {
-                        DropDTO drop2 = new DropDTO
+                        DropDTO drop2 = new DropDTO()
                         {
                             Amount = gold,
                             ItemVNum = 1046
@@ -2140,7 +2142,6 @@ namespace OpenNos.GameObject
         //    return $"gidx 1 {CharacterId} {family.FamilyId} {family.Name}({familyCharacter.FamilyAuthority}) 1";
         //    return string.Empty;
         //}
-
         public string GenerateMsg(string message, int type)
         {
             return $"msg {type} {message}";
@@ -2156,7 +2157,6 @@ namespace OpenNos.GameObject
         //    }
         //    return str;
         //}
-
         public MovePacket GenerateMv()
         {
             return new MovePacket
@@ -2179,7 +2179,6 @@ namespace OpenNos.GameObject
         //    }
         //    return str;
         //}
-
         public List<string> GenerateNPCShopOnMap()
         {
             return (from npc in ServerManager.GetMap(MapId).Npcs where npc.Shop != null select $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}").ToList();
@@ -2416,7 +2415,7 @@ namespace OpenNos.GameObject
             List<CharacterSkill> skillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.GetAllSkill().Where(ski => ski.Class == inventoryItem.Item.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel))
             {
-                skillsSp.Add(new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
+                skillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
             }
             byte spdestroyed = 0;
             if (inventoryItem.Rare == -2)
@@ -2434,9 +2433,7 @@ namespace OpenNos.GameObject
                 if (skillsSp.Count >= i + 1)
                 {
                     if (skillsSp[i].SkillVNum <= firstskillvnum + 10)
-                    {
                         skill += $"{skillsSp[i].SkillVNum}.";
-                    }
                 }
             }
 
@@ -2510,7 +2507,6 @@ namespace OpenNos.GameObject
             Session.SendPacket(inv0);
             Session.SendPacket(inv1);
             Session.SendPacket(inv2);
-            // Session.SendPacket(inv3);
             Session.SendPacket(inv6);
             Session.SendPacket(inv7);
         }
@@ -3159,7 +3155,14 @@ namespace OpenNos.GameObject
             {
                 return CharacterHelper.MPHealth[(byte)Class];
             }
-            return (DateTime.Now - LastDefence).TotalSeconds > 2 ? CharacterHelper.MPHealthStand[(byte)Class] : 0;
+            else if ((DateTime.Now - LastDefence).TotalSeconds > 2)
+            {
+                return CharacterHelper.MPHealthStand[(byte)Class];
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public double HPLoad()
@@ -3259,7 +3262,11 @@ namespace OpenNos.GameObject
 
         public double JobXPLoad()
         {
-            return Class == (byte)ClassType.Adventurer ? CharacterHelper.FirstJobXPData[JobLevel - 1] : CharacterHelper.SecondJobXPData[JobLevel - 1];
+            if (Class == (byte)ClassType.Adventurer)
+            {
+                return CharacterHelper.FirstJobXPData[JobLevel - 1];
+            }
+            return CharacterHelper.SecondJobXPData[JobLevel - 1];
         }
 
         public void LearnAdventurerSkill()
@@ -3897,6 +3904,7 @@ namespace OpenNos.GameObject
 
         private int GetGold(MapMonster mapMonster)
         {
+            Random random = new Random(DateTime.Now.Millisecond + mapMonster.MapMonsterId);
             int lowBaseGold = ServerManager.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
             int actMultiplier = Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
             int gold = lowBaseGold * ServerManager.GoldRate * actMultiplier;

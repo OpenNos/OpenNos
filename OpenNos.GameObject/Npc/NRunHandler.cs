@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -199,7 +200,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 23:
-                    Session.SendPacket(Session.Character.GenerateInbox($"#glmk^ {value} {(type == 1 ? 0 : 1)} {(type == 0 ? Language.Instance.GetMessageFromKey("CREATE_FAMILY") : Language.Instance.GetMessageFromKey("DISMISS_FAMILY"))}"));
+                    Session.SendPacket(Session.Character.GenerateInbox(type, 14));
                     Session.SendPacket(Session.Character.GenerateFamilyMember(Session.Character.Group));
                     break;
 

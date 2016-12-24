@@ -257,14 +257,14 @@ namespace OpenNos.Handler
                                             foreach (MapMonster mon in monstersInAOERange.Where(m => m.MapMonsterId != monsterToAttack.MapMonsterId)) //exclude targetted monster
                                             {
                                                 mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
+                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: false));
                                             }
                                         }
                                         else
                                         {
                                             Session.SendPacket($"cancel 2 {targetId}");
                                         }
-                                        if (!monsterToAttack.IsAlive)
+                                        if(!monsterToAttack.IsAlive)
                                         {
                                             Session.SendPacket($"cancel 2 {targetId}");
                                         }

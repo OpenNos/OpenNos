@@ -629,28 +629,23 @@ namespace OpenNos.Handler
                     {
                         if (otherSession.Character.IsFriendOfCharacter(Session.Character.CharacterId))
                         {
-                            switch (packetsplit[2])
+                            if (packetsplit[2] == "-1")
                             {
-                                case "-1":
-                                    Session.Character.AddFriend(characterId);
-                                    Session.SendPacket(Session.Character.GenerateFinit());
-                                    otherSession.SendPacket(otherSession.Character.GenerateFinit());
-                                    Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
-                                    otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
-                                    break;
-
-                                case "-99":
-                                    otherSession.Character.DeleteFriend(Session.Character.CharacterId);
-                                    otherSession.SendPacket(Language.Instance.GetMessageFromKey("FRIEND_REJECTED"));
-                                    break;
-
-                                default:
-                                    if (Session.Character.IsFriendlistFull())
-                                    {
-                                        Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
-                                        otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
-                                    }
-                                    break;
+                                Session.Character.AddFriend(characterId);
+                                Session.SendPacket(Session.Character.GenerateFinit());
+                                otherSession.SendPacket(otherSession.Character.GenerateFinit());
+                                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
+                                otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
+                            }
+                            else if (packetsplit[2] == "-99")
+                            {
+                                otherSession.Character.DeleteFriend(Session.Character.CharacterId);
+                                otherSession.SendPacket(Language.Instance.GetMessageFromKey("FRIEND_REJECTED"));
+                            }
+                            else if (Session.Character.IsFriendlistFull())
+                            {
+                                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
+                                otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
                             }
                         }
                     }
@@ -699,174 +694,169 @@ namespace OpenNos.Handler
             {
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
             }
-            switch (guriPacket[2])
+            if (guriPacket[2] == "2")
             {
-                case "2":
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.MapX, Session.Character.MapY);
-                    break;
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.MapX, Session.Character.MapY);
+            }
+            else if (guriPacket[2] == "4")
+            {
+                const int speakerVNum = 2173;
 
-                case "4":
-                    const int speakerVNum = 2173;
-
-                    // presentation message
-                    if (guriPacket[3] == "2")
+                // presentation message
+                if (guriPacket[3] == "2")
+                {
+                    int presentationVNum = Session.Character.Inventory.CountItem(1117) > 0 ? 1117 : (Session.Character.Inventory.CountItem(9013) > 0 ? 9013 : -1);
+                    if (presentationVNum != -1)
                     {
-                        int presentationVNum = Session.Character.Inventory.CountItem(1117) > 0 ? 1117 : (Session.Character.Inventory.CountItem(9013) > 0 ? 9013 : -1);
-                        if (presentationVNum != -1)
+                        string message = string.Empty;
+
+                        // message = $" ";
+                        for (int i = 6; i < guriPacket.Length; i++)
                         {
-                            string message = string.Empty;
-
-                            // message = $" ";
-                            for (int i = 6; i < guriPacket.Length; i++)
-                            {
-                                message += guriPacket[i] + "^";
-                            }
-                            message = message.Substring(0, message.Length - 1); // Remove the last ^
-                            message = message.Trim();
-                            if (message.Length > 60)
-                            {
-                                message = message.Substring(0, 60);
-                            }
-
-                            Session.Character.Biography = message;
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("INTRODUCTION_SET"), 10));
-                            Session.Character.Inventory.RemoveItemAmount(presentationVNum);
+                            message += guriPacket[i] + "^";
                         }
-                    }
-
-                    // Speaker
-                    if (guriPacket[3] == "3")
-                    {
-                        if (Session.Character.Inventory.CountItem(speakerVNum) > 0)
+                        message = message.Substring(0, message.Length - 1); // Remove the last ^
+                        message = message.Trim();
+                        if (message.Length > 60)
                         {
-                            string message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
-                            for (int i = 6; i < guriPacket.Length; i++)
-                            {
-                                message += guriPacket[i] + " ";
-                            }
-                            if (message.Length > 120)
-                            {
-                                message = message.Substring(0, 120);
-                            }
-
-                            message = message.Trim();
-
-                            if (Session.Character.IsMuted())
-                            {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SPEAKER_CANT_BE_USED"), 10));
-                                return;
-                            }
-                            Session.Character.Inventory.RemoveItemAmount(speakerVNum);
-                            ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
+                            message = message.Substring(0, 60);
                         }
-                    }
-                    break;
 
-                default:
-                    if (guriPacket[2] == "199" && guriPacket[3] == "1")
+                        Session.Character.Biography = message;
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("INTRODUCTION_SET"), 10));
+                        Session.Character.Inventory.RemoveItemAmount(presentationVNum);
+                    }
+                }
+
+                // Speaker
+                if (guriPacket[3] == "3")
+                {
+                    if (Session.Character.Inventory.CountItem(speakerVNum) > 0)
                     {
-                        long charId;
-                        long.TryParse(guriPacket[4], out charId);
-                        if (!Session.Character.IsFriendOfCharacter(charId))
+                        string message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
+                        for (int i = 6; i < guriPacket.Length; i++)
                         {
-                            Session.SendPacket(Language.Instance.GetMessageFromKey("CHARACTER_NOT_IN_FRIENDLIST"));
+                            message += guriPacket[i] + " ";
+                        }
+                        if (message.Length > 120)
+                        {
+                            message = message.Substring(0, 120);
+                        }
+
+                        message = message.Trim();
+
+                        if (Session.Character.IsMuted())
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SPEAKER_CANT_BE_USED"), 10));
                             return;
                         }
-                        Session.SendPacket(Session.Character.GenerateDelay(3000, 4, $"#guri^199^{charId}"));
+                        Session.Character.Inventory.RemoveItemAmount(speakerVNum);
+                        ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }
-                    else if (guriPacket[2] == "208" && guriPacket[3] == "0")
+                }
+            }
+            else if (guriPacket[2] == "199" && guriPacket[3] == "1")
+            {
+                long charId;
+                long.TryParse(guriPacket[4], out charId);
+                if (!Session.Character.IsFriendOfCharacter(charId))
+                {
+                    Session.SendPacket(Language.Instance.GetMessageFromKey("CHARACTER_NOT_IN_FRIENDLIST"));
+                    return;
+                }
+                Session.SendPacket(Session.Character.GenerateDelay(3000, 4, $"#guri^199^{charId}"));
+            }
+            else if (guriPacket[2] == "208" && guriPacket[3] == "0")
+            {
+                short pearlSlot;
+                short mountSlot;
+                if (short.TryParse(guriPacket[4], out pearlSlot) && short.TryParse(guriPacket[6], out mountSlot))
+                {
+                    ItemInstance mount = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(mountSlot, InventoryType.Main);
+                    BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
+                    if (mount != null && pearl != null)
                     {
-                        short pearlSlot;
-                        short mountSlot;
-                        if (short.TryParse(guriPacket[4], out pearlSlot) && short.TryParse(guriPacket[6], out mountSlot))
-                        {
-                            ItemInstance mount = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(mountSlot, InventoryType.Main);
-                            BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
-                            if (mount != null && pearl != null)
-                            {
-                                pearl.HoldingVNum = mount.ItemVNum;
-                                Session.Character.Inventory.RemoveItemAmountFromInventory(1, mount.Id);
-                            }
-                        }
+                        pearl.HoldingVNum = mount.ItemVNum;
+                        Session.Character.Inventory.RemoveItemAmountFromInventory(1, mount.Id);
                     }
-                    else if (guriPacket[2] == "209" && guriPacket[3] == "0")
+                }
+            }
+            else if (guriPacket[2] == "209" && guriPacket[3] == "0")
+            {
+                short pearlSlot;
+                short mountSlot;
+                if (short.TryParse(guriPacket[4], out pearlSlot) && short.TryParse(guriPacket[6], out mountSlot))
+                {
+                    WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(mountSlot, InventoryType.Equipment);
+                    BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
+                    if (fairy != null && pearl != null)
                     {
-                        short pearlSlot;
-                        short mountSlot;
-                        if (short.TryParse(guriPacket[4], out pearlSlot) && short.TryParse(guriPacket[6], out mountSlot))
-                        {
-                            WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(mountSlot, InventoryType.Equipment);
-                            BoxInstance pearl = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(pearlSlot, InventoryType.Equipment);
-                            if (fairy != null && pearl != null)
-                            {
-                                pearl.HoldingVNum = fairy.ItemVNum;
-                                pearl.ElementRate = fairy.ElementRate;
-                                Session.Character.Inventory.RemoveItemAmountFromInventory(1, fairy.Id);
-                            }
-                        }
+                        pearl.HoldingVNum = fairy.ItemVNum;
+                        pearl.ElementRate = fairy.ElementRate;
+                        Session.Character.Inventory.RemoveItemAmountFromInventory(1, fairy.Id);
                     }
-                    else if (guriPacket[2] == "203" && guriPacket[3] == "0")
+                }
+            }
+            else if (guriPacket[2] == "203" && guriPacket[3] == "0")
+            {
+                // SP points initialization
+                int[] listPotionResetVNums = { 1366, 1427, 5115, 9040 };
+                int vnumToUse = -1;
+                foreach (int vnum in listPotionResetVNums)
+                {
+                    if (Session.Character.Inventory.CountItem(vnum) > 0)
                     {
-                        // SP points initialization
-                        int[] listPotionResetVNums = { 1366, 1427, 5115, 9040 };
-                        int vnumToUse = -1;
-                        foreach (int vnum in listPotionResetVNums)
+                        vnumToUse = vnum;
+                    }
+                }
+                if (vnumToUse != -1)
+                {
+                    if (Session.Character.UseSp)
+                    {
+                        SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                        if (specialistInstance != null)
                         {
-                            if (Session.Character.Inventory.CountItem(vnum) > 0)
-                            {
-                                vnumToUse = vnum;
-                            }
-                        }
-                        if (vnumToUse != -1)
-                        {
-                            if (Session.Character.UseSp)
-                            {
-                                SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-                                if (specialistInstance != null)
-                                {
-                                    specialistInstance.SlDamage = 0;
-                                    specialistInstance.SlDefence = 0;
-                                    specialistInstance.SlElement = 0;
-                                    specialistInstance.SlHP = 0;
+                            specialistInstance.SlDamage = 0;
+                            specialistInstance.SlDefence = 0;
+                            specialistInstance.SlElement = 0;
+                            specialistInstance.SlHP = 0;
 
-                                    specialistInstance.DamageMinimum = 0;
-                                    specialistInstance.DamageMaximum = 0;
-                                    specialistInstance.HitRate = 0;
-                                    specialistInstance.CriticalLuckRate = 0;
-                                    specialistInstance.CriticalRate = 0;
-                                    specialistInstance.DefenceDodge = 0;
-                                    specialistInstance.DistanceDefenceDodge = 0;
-                                    specialistInstance.ElementRate = 0;
-                                    specialistInstance.DarkResistance = 0;
-                                    specialistInstance.LightResistance = 0;
-                                    specialistInstance.FireResistance = 0;
-                                    specialistInstance.WaterResistance = 0;
-                                    specialistInstance.CriticalDodge = 0;
-                                    specialistInstance.MagicDefence = 0;
-                                    specialistInstance.HP = 0;
-                                    specialistInstance.MP = 0;
+                            specialistInstance.DamageMinimum = 0;
+                            specialistInstance.DamageMaximum = 0;
+                            specialistInstance.HitRate = 0;
+                            specialistInstance.CriticalLuckRate = 0;
+                            specialistInstance.CriticalRate = 0;
+                            specialistInstance.DefenceDodge = 0;
+                            specialistInstance.DistanceDefenceDodge = 0;
+                            specialistInstance.ElementRate = 0;
+                            specialistInstance.DarkResistance = 0;
+                            specialistInstance.LightResistance = 0;
+                            specialistInstance.FireResistance = 0;
+                            specialistInstance.WaterResistance = 0;
+                            specialistInstance.CriticalDodge = 0;
+                            specialistInstance.MagicDefence = 0;
+                            specialistInstance.HP = 0;
+                            specialistInstance.MP = 0;
 
-                                    Session.Character.Inventory.RemoveItemAmount(vnumToUse);
-                                    Session.Character.Inventory.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Wear);
-                                    Session.Character.Inventory.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Wear, (byte)EquipmentType.Sp);
-                                    Session.SendPacket(Session.Character.GenerateCond());
-                                    Session.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
-                                    Session.SendPacket(Session.Character.GenerateLev());
-                                    Session.SendPacket(Session.Character.GenerateStatChar());
-                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_RESET"), 0));
-                                }
-                            }
-                            else
-                            {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORMATION_NEEDED"), 10));
-                            }
-                        }
-                        else
-                        {
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POINTS"), 10));
+                            Session.Character.Inventory.RemoveItemAmount(vnumToUse);
+                            Session.Character.Inventory.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Wear);
+                            Session.Character.Inventory.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Wear, (byte)EquipmentType.Sp);
+                            Session.SendPacket(Session.Character.GenerateCond());
+                            Session.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
+                            Session.SendPacket(Session.Character.GenerateLev());
+                            Session.SendPacket(Session.Character.GenerateStatChar());
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_RESET"), 0));
                         }
                     }
-                    break;
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORMATION_NEEDED"), 10));
+                    }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POINTS"), 10));
+                }
             }
         }
 
@@ -900,7 +890,7 @@ namespace OpenNos.Handler
                             short mapy = session.Character.MapY;
                             short mapx = session.Character.MapX;
                             short mapId = session.Character.MapId;
-
+                        
                             ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
                             Session.Character.Inventory.RemoveItemAmount(vnumToUse);
@@ -947,7 +937,7 @@ namespace OpenNos.Handler
                                     }
                                 }
                                 Random random = new Random();
-                                double randomAmount = ServerManager.RandomNumber() * random.NextDouble();
+                                double randomAmount = ServerManager.RandomNumber(0, 100) * random.NextDouble();
                                 DropDTO drop = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum);
                                 if (drop != null)
                                 {
@@ -1256,37 +1246,35 @@ namespace OpenNos.Handler
                     byte type;
                     if (int.TryParse(packetsplit[4], out id) && byte.TryParse(packetsplit[3], out type))
                     {
-                        switch (packetsplit[2])
+                        if (packetsplit[2] == "3")
                         {
-                            case "3":
+                            if (Session.Character.MailList.ContainsKey(id))
+                            {
+                                if (!Session.Character.MailList[id].IsOpened)
+                                {
+                                    Session.Character.MailList[id].IsOpened = true;
+                                    MailDTO mailupdate = Session.Character.MailList[id];
+                                    DAOFactory.MailDAO.InsertOrUpdate(ref mailupdate);
+                                }
+                                Session.SendPacket(Session.Character.GeneratePostMessage(Session.Character.MailList[id], type));
+                            }
+                        }
+                        else if (packetsplit[2] == "2")
+                        {
+                            if (Session.Character.MailList.ContainsKey(id))
+                            {
+                                MailDTO mail = Session.Character.MailList[id];
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAIL_DELETED"), 11));
+                                Session.SendPacket($"post 2 {type} {id}");
+                                if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
+                                {
+                                    DAOFactory.MailDAO.DeleteById(mail.MailId);
+                                }
                                 if (Session.Character.MailList.ContainsKey(id))
                                 {
-                                    if (!Session.Character.MailList[id].IsOpened)
-                                    {
-                                        Session.Character.MailList[id].IsOpened = true;
-                                        MailDTO mailupdate = Session.Character.MailList[id];
-                                        DAOFactory.MailDAO.InsertOrUpdate(ref mailupdate);
-                                    }
-                                    Session.SendPacket(Session.Character.GeneratePostMessage(Session.Character.MailList[id], type));
+                                    Session.Character.MailList.Remove(id);
                                 }
-                                break;
-
-                            case "2":
-                                if (Session.Character.MailList.ContainsKey(id))
-                                {
-                                    MailDTO mail = Session.Character.MailList[id];
-                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MAIL_DELETED"), 11));
-                                    Session.SendPacket($"post 2 {type} {id}");
-                                    if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
-                                    {
-                                        DAOFactory.MailDAO.DeleteById(mail.MailId);
-                                    }
-                                    if (Session.Character.MailList.ContainsKey(id))
-                                    {
-                                        Session.Character.MailList.Remove(id);
-                                    }
-                                }
-                                break;
+                            }
                         }
                     }
                     break;
@@ -1539,7 +1527,7 @@ namespace OpenNos.Handler
                     int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5)
                                                                                                   , ServerManager.Instance.ChannelId, MessageType.Whisper, characterName, null).Result;
 
-                    if (!sentChannelId.HasValue) //character is even offline on different world
+                    if(!sentChannelId.HasValue) //character is even offline on different world
                     {
                         Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
                     }
@@ -1576,7 +1564,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_WHISPER_BLOCKED"), 0));
                 }
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 Logger.Log.Error("Whisper failed.", e);
             }
