@@ -45,12 +45,10 @@ namespace OpenNos.Login
 
                     Console.Title = $"OpenNos Login Server v{fileVersionInfo.ProductVersion}";
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
-                    string text = $"LOGIN SERVER VERSION {fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
-                    int offset = (Console.WindowWidth - text.Length) / 2;
-                    Console.WriteLine(new string('=', Console.WindowWidth));
-                    Console.SetCursorPosition(offset < 0 ? 0 : offset, Console.CursorTop);
-                    Console.WriteLine(text + "\n" +
-                    new string('=', Console.WindowWidth) + "\n");
+                    string text = $"LOGIN SERVER v{fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
+                    int offset = Console.WindowWidth / 2 + text.Length / 2;
+                    string separator = new string('=', Console.WindowWidth);
+                    Console.WriteLine(separator + string.Format("{0," + offset + "}", text) + "\n" + separator);
 
                     // initialize api
                     ServerCommunicationClient.Instance.InitializeAndRegisterCallbacks();

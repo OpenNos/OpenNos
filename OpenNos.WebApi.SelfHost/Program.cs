@@ -21,11 +21,9 @@ namespace OpenNos.WebApi.SelfHost
 
                 Console.Title = "OpenNos Server Communication v1.0";
                 const string text = "SERVER COMMUNICATION - PORT : 6666 by OpenNos Team";
-                int offset = (Console.WindowWidth - text.Length) / 2;
-                Console.WriteLine(new string('=', Console.WindowWidth));
-                Console.SetCursorPosition(offset < 0 ? 0 : offset, Console.CursorTop);
-                Console.WriteLine(text + "\n" +
-                new string('=', Console.WindowWidth) + "\n");
+                int offset = Console.WindowWidth / 2 + text.Length / 2;
+                string separator = new string('=', Console.WindowWidth);
+                Console.WriteLine(separator + string.Format("{0," + offset + "}", text) + "\n" + separator);
                 Console.ReadLine();
             }
         }
