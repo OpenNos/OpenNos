@@ -502,6 +502,8 @@ namespace OpenNos.Handler
         public void Command(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
+
+            // TODO: Command displaying detailed informations about commands
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
             Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$AddSkill SKILLID", 12));
@@ -514,22 +516,24 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$ChangeDignity AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Demote CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$DropRate VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$FairyXpRate VALUE", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME(*) VNUM AMOUNT RARE UPGRADE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift VNUM AMOUNT RARE UPGRADE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$GodMode", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$GoldRate Value", 12));
             Session.SendPacket(Session.Character.GenerateSay("$GoldDropRate Value", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$GoldRate Value", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 12));
@@ -547,18 +551,17 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Position", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Promote CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Demote CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RemoveMob", 12));
             Session.SendPacket(Session.Character.GenerateSay("$RemovePortal", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(%)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME(%)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Stat", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 12));
