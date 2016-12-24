@@ -237,4 +237,7 @@
   <data name="PARSE_NPCMONSTERDATA" xml:space="preserve">
     <value>Czy chesz wprowadzić dane NpcMonster?</value>
   </data>
+  <data name="RESPAWNTYPE_PARSED" xml:space="preserve">
+    <value>RespawnType został wprowadzone</value>
+  </data>
 </root>
