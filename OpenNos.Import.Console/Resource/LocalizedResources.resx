@@ -237,4 +237,7 @@
   <data name="PARSE_NPCMONSTERDATA" xml:space="preserve">
     <value>Do you want to parse NpcMonsterData?</value>
   </data>
+  <data name="RESPAWNTYPE_PARSED" xml:space="preserve">
+    <value>RespawnTypes parsed</value>
+  </data>
 </root>

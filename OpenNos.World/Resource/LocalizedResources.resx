@@ -1076,10 +1076,10 @@
     <value>There are too many items on this map! Try again later!</value>
   </data>
   <data name="BLACKLIST_ADDED" xml:space="preserve">
-    <value>Blacklisted Character added!</value>
+    <value>Character added to blacklist!</value>
   </data>
   <data name="BLACKLIST_DELETED" xml:space="preserve">
-    <value>Blacklisted Character deleted!</value>
+    <value>Character deleted from blacklist!</value>
   </data>
   <data name="FRIEND_DELETED" xml:space="preserve">
     <value>Friend deleted!</value>
@@ -1119,5 +1119,20 @@
   </data>
   <data name="WANT_TO_SAVE_POSITION" xml:space="preserve">
     <value>Do you want to save your position?</value>
+  </data>
+  <data name="GOLD_DROPRATE_NOW" xml:space="preserve">
+    <value>Gold Drop Rate</value>
+  </data>
+  <data name="BOT_MESSAGE_4" xml:space="preserve">
+    <value>Never open any suspicious links!</value>
+  </data>
+  <data name="BOT_MESSAGE_5" xml:space="preserve">
+    <value>Never give anyone your password or username!</value>
+  </data>
+  <data name="DEMON" xml:space="preserve">
+    <value>Demon</value>
+  </data>
+  <data name="ANGEL" xml:space="preserve">
+    <value>Angel</value>
   </data>
 </root>

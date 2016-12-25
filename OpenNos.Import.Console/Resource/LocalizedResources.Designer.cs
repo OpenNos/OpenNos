@@ -376,6 +376,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RespawnTypes parsed.
+        /// </summary>
+        internal static string RESPAWNTYPE_PARSED {
+            get {
+                return ResourceManager.GetString("RESPAWNTYPE_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} shopitems parsed.
         /// </summary>
         internal static string SHOPITEMS_PARSED {

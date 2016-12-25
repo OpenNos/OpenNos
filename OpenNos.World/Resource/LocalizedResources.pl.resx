@@ -1081,4 +1081,64 @@
   <data name="MESSAGE_SENT_TO_CHARACTER" xml:space="preserve">
     <value>Sending message to  '{0}' on channel {1}.</value>
   </data>
+  <data name="GOLD_DROPRATE_NOW" xml:space="preserve">
+    <value>Częstotliwość wypadania złota</value>
+  </data>
+  <data name="DROP_MAP_FULL" xml:space="preserve">
+    <value>Drop przedmiotów na mapie zapełniony</value>
+  </data>
+  <data name="BLACKLIST_ADDED" xml:space="preserve">
+    <value>Dodano do czarnej listy</value>
+  </data>
+  <data name="BLACKLIST_DELETED" xml:space="preserve">
+    <value>Usunięto z czarnej listy</value>
+  </data>
+  <data name="FRIEND_DELETED" xml:space="preserve">
+    <value>Usunięto przyjaciela</value>
+  </data>
+  <data name="FRIEND_OFFLINE" xml:space="preserve">
+    <value>Twój przyjaciel jest offline!</value>
+  </data>
+  <data name="FRIEND_ADD" xml:space="preserve">
+    <value>Czy chcesz zostać przyjacielem z {0}? </value>
+  </data>
+  <data name="FRIEND_ADDED" xml:space="preserve">
+    <value>Przyjęto zaproszenie do przyjaciół!</value>
+  </data>
+  <data name="FRIEND_REJECTED" xml:space="preserve">
+    <value>Odrzucono zaproszenie do przyjaciół!</value>
+  </data>
+  <data name="ALREADY_FRIEND" xml:space="preserve">
+    <value>Już jesteście przyjaciółmi!</value>
+  </data>
+  <data name="BLACKLIST_BLOCKED" xml:space="preserve">
+    <value>Ten gracz zablokował cię!</value>
+  </data>
+  <data name="BLACKLIST_BLOCKING" xml:space="preserve">
+    <value>Zablokowałeś tego gracza!</value>
+  </data>
+  <data name="FRIEND_FULL" xml:space="preserve">
+    <value>Twoja lista przyjaciół jest pełna!</value>
+  </data>
+  <data name="CHARACTER_NOT_IN_FRIENDLIST" xml:space="preserve">
+    <value>Ten gracz nie znajduje się na liście przyjaciół!</value>
+  </data>
+  <data name="NO_WINGS" xml:space="preserve">
+    <value>Nie masz skrzydeł przyjaźni!</value>
+  </data>
+  <data name="WANT_TO_SAVE_POSITION" xml:space="preserve">
+    <value>czy chcesz zapisać tą pozycje?</value>
+  </data>
+  <data name="BOT_MESSAGE_4" xml:space="preserve">
+    <value>Nigdy nie ufaj graczom proszącym cię o wejście w jakiś link</value>
+  </data>
+  <data name="BOT_MESSAGE_5" xml:space="preserve">
+    <value>Nigdy nie podawaj swojego hasła i nazwy użytkownika!</value>
+  </data>
+  <data name="DEMON" xml:space="preserve">
+    <value>Diabeł</value>
+  </data>
+  <data name="ANGEL" xml:space="preserve">
+    <value>Anioł</value>
+  </data>
 </root>

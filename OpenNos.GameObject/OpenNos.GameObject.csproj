@@ -134,6 +134,7 @@
     <Compile Include="Packets\CommandPackets\ChangeLevelPacket.cs" />
     <Compile Include="Packets\CommandPackets\ChangeReputationPacket.cs" />
     <Compile Include="Packets\CommandPackets\ChangeSpecialistLevelPacket.cs" />
+    <Compile Include="Packets\CommandPackets\CharacterStatsPacket.cs" />
     <Compile Include="Packets\CommandPackets\DemotePacket.cs" />
     <Compile Include="Packets\CommandPackets\DropRatePacket.cs" />
     <Compile Include="Packets\CommandPackets\EffectCommandPacket.cs" />
