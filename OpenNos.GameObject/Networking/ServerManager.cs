@@ -655,20 +655,8 @@ namespace OpenNos.GameObject
             LaunchEvents();
 
             //Register the new created TCPIP server to the api
-            string serverGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
-            int sessionLimit = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["SessionLimit"]);
             Guid serverIdentification = Guid.NewGuid();
             WorldId = serverIdentification;
-            int? newChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("RegisterWorldserver", serverGroup, new WorldserverDTO(serverIdentification, new ScsTcpEndPoint(ipAddress, port), sessionLimit)).Result;
-
-            if (newChannelId.HasValue)
-            {
-                ChannelId = newChannelId.Value;
-            }
-            else
-            {
-                Logger.Log.ErrorFormat("Could not retrieve ChannelId from Web API.");
-            }
         }
 
         public bool IsCharacterMemberOfGroup(long characterId)

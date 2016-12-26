@@ -72,7 +72,7 @@ namespace OpenNos.World
 
             Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}";
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
-            string text = $"WORLD SERVER v{fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
+            string text = $"WORLD SERVER v{fileVersionInfo.ProductVersion} - by OpenNos Team";
             int offset = Console.WindowWidth / 2 + text.Length / 2;
             string separator = new string('=', Console.WindowWidth);
             Console.WriteLine(separator + string.Format("{0," + offset + "}", text) + "\n" + separator);
@@ -102,12 +102,43 @@ namespace OpenNos.World
             {
                 exitHandler += ExitHandler;
                 SetConsoleCtrlHandler(exitHandler, true);
-
-                NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(IPADDRESS, port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
+            }
+            NetworkManager<WorldEncryption> networkManager = null;
+            portloop:
+            try
+            {
+                networkManager = new NetworkManager<WorldEncryption>(IPADDRESS, port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
+            }
+            catch(System.Net.Sockets.SocketException ex)
+            {
+                if(ex.ErrorCode == 10048)
+                {
+                    port++;
+                    Logger.Log.Info("Port already in use! Incrementing...");
+                    goto portloop;
+                }
+                else
+                {
+                    Logger.Log.Error("General Error", ex);
+                    Environment.Exit(1);
+                }
+            }
+
+            string serverGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
+            int sessionLimit = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["SessionLimit"]);
+            int? newChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("RegisterWorldserver", serverGroup, new WorldserverDTO(ServerManager.Instance.WorldId, new ScsTcpEndPoint(IPADDRESS, port), sessionLimit)).Result;
+
+            if (newChannelId.HasValue)
+            {
+                ServerManager.Instance.ChannelId = newChannelId.Value;
+            }
+            else
+            {
+                Logger.Log.ErrorFormat("Could not retrieve ChannelId from Web API.");
             }
         }
 

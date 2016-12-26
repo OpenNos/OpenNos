@@ -834,6 +834,8 @@ namespace OpenNos.Handler
                             specialistInstance.FireResistance = 0;
                             specialistInstance.WaterResistance = 0;
                             specialistInstance.CriticalDodge = 0;
+                            specialistInstance.CloseDefence = 0;
+                            specialistInstance.DistanceDefence = 0;
                             specialistInstance.MagicDefence = 0;
                             specialistInstance.HP = 0;
                             specialistInstance.MP = 0;
@@ -1393,7 +1395,6 @@ namespace OpenNos.Handler
             Session.Character.LoadSkills();
             Session.SendPacket(Session.Character.GenerateTit());
             Session.SendPacket(Session.Character.GenerateSpPoint());
-            Session.SendPacket(Session.Character.GenerateExts());
             Session.SendPacket("rsfi 1 1 0 9 0 9");
             if (Session.Character.Hp <= 0)
             {

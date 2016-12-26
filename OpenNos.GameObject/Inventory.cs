@@ -126,7 +126,7 @@ namespace OpenNos.GameObject
                     short? freeSlot = newItem.Type == InventoryType.Wear ? (LoadBySlotAndType((short)newItem.Item.EquipmentSlot, InventoryType.Wear) == null
                                                                         ? (short?)newItem.Item.EquipmentSlot
                                                                         : null)
-                                                                      : GetFreeSlot(newItem.Type, Owner.BackPack);
+                                                                      : GetFreeSlot(newItem.Type, Owner.Backpack);
                     if (freeSlot.HasValue)
                     {
                         inv = AddToInventoryWithSlotAndType(newItem, newItem.Type, freeSlot.Value);
@@ -187,7 +187,7 @@ namespace OpenNos.GameObject
         {
             if (Owner != null)
             {
-                return GetFreeSlot(type, Owner.BackPack).HasValue;
+                return GetFreeSlot(type, Owner.Backpack).HasValue;
             }
             else return false;
         }
@@ -400,7 +400,7 @@ namespace OpenNos.GameObject
                     else
                     {
                         // move source to target
-                        short? freeTargetSlot = GetFreeSlot(targetType, Owner.BackPack);
+                        short? freeTargetSlot = GetFreeSlot(targetType, Owner.Backpack);
                         if (freeTargetSlot.HasValue)
                         {
                             sourceInstance.Slot = freeTargetSlot.Value;
@@ -415,7 +415,7 @@ namespace OpenNos.GameObject
                 short? nextFreeSlot = targetType == InventoryType.Wear ? (LoadBySlotAndType((short)sourceInstance.Item.EquipmentSlot, InventoryType.Wear) == null
                         ? (short)sourceInstance.Item.EquipmentSlot
                         : (short)-1)
-                    : GetFreeSlot(targetType, Owner.BackPack);
+                    : GetFreeSlot(targetType, Owner.Backpack);
                 if (nextFreeSlot.HasValue)
                 {
                     sourceInstance.Type = targetType;
