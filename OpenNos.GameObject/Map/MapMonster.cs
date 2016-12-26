@@ -618,7 +618,7 @@ namespace OpenNos.GameObject
             HitRequest hitRequest;
             while (HitQueue.TryDequeue(out hitRequest))
             {
-                if (IsAlive)
+                if (IsAlive && hitRequest.Session.Character.Hp <= 0)
                 {
                     int hitmode = 0;
 
@@ -967,7 +967,8 @@ namespace OpenNos.GameObject
                                        .Subscribe(
                                        o =>
                                        {
-                                           TargetHit2(targetSession, npcMonsterSkill, damage, hitmode);
+                                           if(targetSession != null)
+                                               TargetHit2(targetSession, npcMonsterSkill, damage, hitmode);
                                        });
 
 
@@ -994,8 +995,11 @@ namespace OpenNos.GameObject
                        .Subscribe(
                        o =>
                        {
-                           ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
-                           RemoveTarget();
+                           if (targetSession != null)
+                           {
+                               ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
+                               RemoveTarget();
+                           }
                        });
 
             }
@@ -1025,8 +1029,11 @@ namespace OpenNos.GameObject
                                                .Subscribe(
                                                o =>
                                                {
-                                                   ServerManager.Instance.AskRevive(characterInRange.CharacterId);
-                                                   RemoveTarget();
+                                                   if (characterInRange != null)
+                                                   {
+                                                       ServerManager.Instance.AskRevive(characterInRange.CharacterId);
+                                                       RemoveTarget();
+                                                   }
                                                });
 
                     }
