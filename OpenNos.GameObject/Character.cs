@@ -1949,7 +1949,7 @@ namespace OpenNos.GameObject
                     {
                         if (x < 4)
                         {
-                            double rndamount = ServerManager.RandomNumber(0, 100) * random.NextDouble();
+                            double rndamount = ServerManager.RandomNumber() * random.NextDouble();
                             if (rndamount <= (double)drop.DropChance * dropRate / 5000.000)
                             {
                                 x++;
@@ -1991,8 +1991,10 @@ namespace OpenNos.GameObject
                                        .Subscribe(
                                        o =>
                                        {
-                                           if(Session.HasCurrentMap)
+                                           if (Session.HasCurrentMap)
+                                           {
                                                Session.CurrentMap.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                                           }
                                        });
                                     }
                                 }
@@ -2007,7 +2009,7 @@ namespace OpenNos.GameObject
                     // gold calculation
                     int gold = GetGold(monsterToAttack);
                     gold = gold > 1000000000 ? 1000000000 : gold;
-                    double randChance = ServerManager.RandomNumber(0, 100) * random.NextDouble();
+                    double randChance = ServerManager.RandomNumber() * random.NextDouble();
 
                     if (gold > 0 && randChance <= (int)(ServerManager.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
                     {
@@ -2065,8 +2067,10 @@ namespace OpenNos.GameObject
                                       .Subscribe(
                                       o =>
                                       {
-                                          if(Session.HasCurrentMap)
+                                          if (Session.HasCurrentMap)
+                                          {
                                               Session.CurrentMap.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
+                                          }
                                       });
                             }
                         }
@@ -3080,7 +3084,7 @@ namespace OpenNos.GameObject
 
             // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal
             // to 4
-            if(levelDifference <= 20)
+            if (levelDifference <= 20)
             {
                 xp /= 10;
             }

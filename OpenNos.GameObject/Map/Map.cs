@@ -202,7 +202,7 @@ namespace OpenNos.GameObject
 
         public static int GetDistance(Character character1, Character character2)
         {
-            return GetDistance(new MapCell() { MapId = character1.MapId, X = character1.MapX, Y = character1.MapY }, new MapCell() { MapId = character2.MapId, X = character2.MapX, Y = character2.MapY });
+            return GetDistance(new MapCell { MapId = character1.MapId, X = character1.MapX, Y = character1.MapY }, new MapCell { MapId = character2.MapId, X = character2.MapX, Y = character2.MapY });
         }
 
         public static int GetDistance(MapCell p, MapCell q)
@@ -237,7 +237,7 @@ namespace OpenNos.GameObject
                 {
                     for (short y = -1; y < 2; y++)
                     {
-                        Possibilities.Add(new MapCell() { X = x, Y = y });
+                        Possibilities.Add(new MapCell { X = x, Y = y });
                     }
                 }
 
@@ -380,7 +380,7 @@ namespace OpenNos.GameObject
             {
                 for (short y = -2; y < 3; y++)
                 {
-                    Possibilities.Add(new GridPos() { x = x, y = y });
+                    Possibilities.Add(new GridPos { x = x, y = y });
                 }
             }
 
@@ -486,7 +486,7 @@ namespace OpenNos.GameObject
                 {
                     if (x != firstX || y != firstY)
                     {
-                        cells.Add(new MapCell() { X = x, Y = y, MapId = MapId });
+                        cells.Add(new MapCell { X = x, Y = y, MapId = MapId });
                     }
                 }
             }

@@ -1666,7 +1666,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"Reputation: {character.Reput} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Dignity: {character.Dignity} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Compliment: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Fraction: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))} ", 13));
         }
 
         /// <summary>
