@@ -77,19 +77,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public int BackPack
-        {
-            get
-            {
-                return _backpack;
-            }
-
-            set
-            {
-                _backpack = value;
-            }
-        }
-
         public bool CanFight
         {
             get
@@ -1739,7 +1726,7 @@ namespace OpenNos.GameObject
 
         public string GenerateExts()
         {
-            return $"exts 0 {48 + BackPack * 12} {48 + BackPack * 12} {48 + BackPack * 12}";
+            return $"exts 0 {48 + Backpack * 12} {48 + Backpack * 12} {48 + Backpack * 12}";
         }
 
         public string GenerateFaction()

@@ -433,7 +433,7 @@ namespace OpenNos.Handler
                                         Inventory inventory = targetSession.Character.Inventory;
 
                                         long gold = targetSession.Character.Gold;
-                                        int backpack = targetSession.Character.BackPack;
+                                        int backpack = targetSession.Character.Backpack;
 
                                         if (Session.Character.ExchangeInfo.Validate && targetExchange.Validate)
                                         {
@@ -445,7 +445,7 @@ namespace OpenNos.Handler
 
                                                 bool @continue = true;
                                                 bool goldmax = false;
-                                                if (!Session.Character.Inventory.GetFreeSlotAmount(targetExchange.ExchangeList, Session.Character.BackPack))
+                                                if (!Session.Character.Inventory.GetFreeSlotAmount(targetExchange.ExchangeList, Session.Character.Backpack))
                                                 {
                                                     @continue = false;
                                                 }
@@ -633,7 +633,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet.ToString(), Session.SessionId);
             lock (Session.Character.Inventory)
             {
-                if (packet.DestinationSlot > 48 + (Session.Character.BackPack * 12))
+                if (packet.DestinationSlot > 48 + (Session.Character.Backpack * 12))
                 {
                     return;
                 }
@@ -667,7 +667,7 @@ namespace OpenNos.Handler
                 ItemInstance newInventory;
 
                 // check if the destination slot is out of range
-                if (packet.DestinationSlot > 48 + (Session.Character.BackPack * 12))
+                if (packet.DestinationSlot > 48 + (Session.Character.Backpack * 12))
                 {
                     return;
                 }
