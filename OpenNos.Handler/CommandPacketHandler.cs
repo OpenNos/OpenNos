@@ -367,7 +367,7 @@ namespace OpenNos.Handler
             Logger.Debug("Change JobLevel Command", Session.SessionId);
             if (changeJobLevelPacket != null)
             {
-                if (((Session.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20) || (Session.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 255)) && changeJobLevelPacket.JobLevel > 0)
+                if (((Session.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20) || (Session.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 80)) && changeJobLevelPacket.JobLevel > 0)
                 {
                     Session.Character.JobLevel = changeJobLevelPacket.JobLevel;
                     Session.Character.JobLevelXp = 0;
@@ -404,7 +404,7 @@ namespace OpenNos.Handler
             Logger.Debug("Change Level Packet", Session.SessionId);
             if (changeLevelPacket != null)
             {
-                if (changeLevelPacket.Level > 0)
+                if (changeLevelPacket.Level < 100 && changeLevelPacket.Level > 0)
                 {
                     Session.Character.Level = changeLevelPacket.Level;
                     Session.Character.LevelXp = 0;
