@@ -1,5 +1,5 @@
 [<img src="https://discordapp.com/api/guilds/210791003735457793/widget.png?style=shield">](https://discord.gg/qdPMDv5)
-[<img src="https://img.shields.io/badge/Support-Us!-blue.svg">](https://www.paypal.me/Opennos)
+[<img src="https://img.shields.io/badge/Support-Us!-blue.svg">](https://www.paypal.me/OpenNosServer)
 
 #Information!#
 This repository is no longer our main development repository. Code is now hosted privately until we think it is somewhat stable. When it is, we push all changes back to GitHub. Before you ask: No, you won't get access to the Repository unless you are:
