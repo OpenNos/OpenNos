@@ -618,7 +618,7 @@ namespace OpenNos.GameObject
             HitRequest hitRequest;
             while (HitQueue.TryDequeue(out hitRequest))
             {
-                if (IsAlive && hitRequest.Session.Character.Hp <= 0)
+                if (IsAlive && hitRequest.Session.Character.Hp > 0)
                 {
                     int hitmode = 0;
 
