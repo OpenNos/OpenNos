@@ -62,11 +62,19 @@ namespace OpenNos.Handler
                         return;
                     }
                 }
+                if(Session.Character.Gold < 200000)
+                {
+                    Session.SendPacket(Session.Character.GenerateInfo("You don't have enough Gold!"));
+                    return;
+                }
                 string name = packet.Split('^')[1];
                 if(DAOFactory.FamilyDAO.LoadByName(name) != null)
                 {
                     Session.SendPacket(Session.Character.GenerateInfo("There is already a family with this name!"));
+                    return;
                 }
+                Session.Character.Gold -= 200000;
+                Session.SendPacket(Session.Character.GenerateGold());
                 FamilyDTO family = new FamilyDTO()
                 {
                     Name = name,
