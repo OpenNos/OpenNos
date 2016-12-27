@@ -58,11 +58,15 @@ namespace OpenNos.Handler
                 {
                     if(s.Character.Family != null || s.Character.FamilyCharacter != null)
                     {
-                        //TODO: WARN CHARACTER HAS FAMILY
+                        Session.SendPacket(Session.Character.GenerateInfo("One character in Group is already in a family!"));
                         return;
                     }
                 }
                 string name = packet.Split('^')[1];
+                if(DAOFactory.FamilyDAO.LoadByName(name) != null)
+                {
+                    Session.SendPacket(Session.Character.GenerateInfo("There is already a family with this name!"));
+                }
                 FamilyDTO family = new FamilyDTO()
                 {
                     Name = name,
