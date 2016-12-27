@@ -31,10 +31,11 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     Character character = context.Character.FirstOrDefault(c => c.Name.Equals(characterName));
-
-                    if (character != null)
+                    FamilyCharacter familyCharacter = context.FamilyCharacter.FirstOrDefault(c => c.CharacterId.Equals(character.CharacterId));
+                    if (character != null && familyCharacter != null)
                     {
                         character.FamilyCharacterId = null;
+                        context.FamilyCharacter.Remove(familyCharacter);
                         context.SaveChanges();
                     }
 
@@ -91,6 +92,21 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<FamilyCharacterDTO>(context.FamilyCharacter.FirstOrDefault(c => c.FamilyCharacterId.Equals(familyCharacterId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+        }
+        public FamilyCharacterDTO LoadByCharacterId(long characterId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<FamilyCharacterDTO>(context.FamilyCharacter.FirstOrDefault(c => c.Character.FirstOrDefault(fc=>fc.CharacterId.Equals(characterId)) != null));
                 }
             }
             catch (Exception e)

@@ -27,6 +27,8 @@ namespace OpenNos.DAL
 
         IList<FamilyCharacterDTO> LoadByFamilyId(long familyId);
 
+        FamilyCharacterDTO LoadByCharacterId(long characterId);
+
         FamilyCharacterDTO LoadById(long familyCharacterId);
     }
 }

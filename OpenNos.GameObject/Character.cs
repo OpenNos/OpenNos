@@ -58,6 +58,7 @@ namespace OpenNos.GameObject
         public Character()
         {
             GroupSentRequestCharacterIds = new List<long>();
+            FamilyInviteCharacters = new List<long>();
         }
 
         #endregion
@@ -122,6 +123,10 @@ namespace OpenNos.GameObject
 
         public ExchangeInfo ExchangeInfo { get; set; }
 
+        public FamilyDTO Family { get; set; }
+
+        public FamilyCharacterDTO FamilyCharacter { get; set; }
+
         public int FireResistance { get; set; }
 
         public bool GmPvtBlock { get; set; }
@@ -139,6 +144,8 @@ namespace OpenNos.GameObject
         public int HitCriticalRate { get; set; }
 
         public int HitRate { get; set; }
+
+        public List<long> FamilyInviteCharacters { get; set; }
 
         public bool InExchangeOrTrade
         {
@@ -1734,16 +1741,35 @@ namespace OpenNos.GameObject
             return $"fs {Faction}";
         }
 
-        public string GenerateFamilyMember(Group group)
+        public string GenerateFamilyMember()
         {
+            //gmbr 0 972109|16070622|†Socke†|92|2|0|9|0|1 962596|16070622|¥»Nancy»¥|96|3|1|0|0|1 338884|16070622|Ciapa|96|1|1|0|1|1 998939|16033022|†«¢®êe¶êR»†|59|2|3|0|0|0 963863|16070819|•Êìsstérñçhèñ•|80|1|3|0|0|0 1017441|16102917|†SüßeErdbeere†|58|1|3|0|0|0 1003329|16110518|Rising†Redbuff|36|3|3|0|0|0 972112|16070900|†Söckchen†|83|2|3|0|0|0 1044684|16102914|*Necrømancer*|71|3|3|0|0|0 1043396|16122716|rdfeenlvln1|1|0|3|0|1|0
             string str = "gmbr 0";
-            if (group != null)
+            foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s=> s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
             {
-                foreach (ClientSession groupClientSession in group.Characters)
-                {
-                    str +=
-                        $" {groupClientSession.Character.CharacterId}|0|{groupClientSession.Character.Name}|{groupClientSession.Character.Level}|{groupClientSession.Character.Class}|0|0|{groupClientSession.Character.Gender}|0";
-                }
+                str +=
+                    $" {groupClientSession.Character.CharacterId}|0|{groupClientSession.Character.Name}|{groupClientSession.Character.Level}|{(byte)groupClientSession.Character.Class}|{(byte)groupClientSession.Character.FamilyCharacter.Authority}|{(byte)groupClientSession.Character.FamilyCharacter.Rank}|1|{groupClientSession.Character.HeroLevel}";
+            }
+            return str;
+        }
+        public string GenerateFamilyMemberMessage()
+        {
+            string str = "gmsg";
+            foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+            {
+                str +=
+                    $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.DailyMessage}";
+            }
+            return str;
+        }
+
+        public string GenerateFamilyMemberExp()
+        {
+            string str = "gexp";
+            foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+            {
+                str +=
+                    $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.Experience}";
             }
             return str;
         }
@@ -1798,6 +1824,14 @@ namespace OpenNos.GameObject
         public string GenerateGet(long id)
         {
             return $"get 1 {CharacterId} {id} 0";
+        }
+
+        public string GenerateGidx()
+        {
+            if (Family != null && FamilyCharacter != null)
+                return $"gidx 1 {CharacterId} {Family.FamilyId} {Family.Name}({FamilyCharacter.Authority.ToString()}) {Family.FamilyLevel}";
+            else
+                return $"gidx 1 {CharacterId} -1 - 0";
         }
 
         public string GenerateGold()

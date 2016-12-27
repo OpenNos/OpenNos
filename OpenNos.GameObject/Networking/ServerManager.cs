@@ -231,7 +231,7 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateCond());
                     session.SendPacket(session.Character.GenerateCMap());
                     session.SendPacket(session.Character.GenerateStatChar());
-                    session.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
+                    session.SendPacket(session.Character.GenerateGidx()); // family
                     session.SendPacket("rsfp 0 -1");
 
                     // in 2 // send only when partner present cond 2 // send only when partner present
@@ -240,6 +240,7 @@ namespace OpenNos.GameObject
                     session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
                     Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
+                    Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateGidx"));
 
                     session.SendPackets(session.Character.GenerateGp());
 
@@ -257,6 +258,7 @@ namespace OpenNos.GameObject
                     if (!session.Character.InvisibleGm)
                     {
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        session.CurrentMap.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                     }
                     if (session.Character.Size != 10)
                     {

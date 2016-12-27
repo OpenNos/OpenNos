@@ -1462,11 +1462,23 @@ namespace OpenNos.Handler
                 kdlinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Act4Points}|{character.Name}";
             }
 
+            Session.Character.Family = DAOFactory.FamilyDAO.LoadByCharacterId(Session.Character.CharacterId);
+            Session.Character.FamilyCharacter = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(Session.Character.CharacterId);
+
+            Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
+
             Session.SendPacket(Session.Character.GenerateFinit());
             Session.SendPacket(Session.Character.GenerateBlinit());
             Session.SendPacket(clinit);
             Session.SendPacket(flinit);
             Session.SendPacket(kdlinit);
+
+            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
+            {
+                Session.SendPacket(Session.Character.GenerateFamilyMember());
+                Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
+                Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
+            }
 
             // finfo - friends info
             Session.SendPacket("p_clear");

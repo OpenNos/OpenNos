@@ -82,11 +82,14 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    FamilyCharacter familyCharacter = context.FamilyCharacter.FirstOrDefault(fc => fc.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId)) != null);
-                    Family family = context.Family.FirstOrDefault(a => a.FamilyId.Equals(familyCharacter.FamilyId));
-                    if (family != null)
+                    FamilyCharacter familyCharacter = context.FamilyCharacter.FirstOrDefault(fc => fc.Character.FirstOrDefault(c=>c.CharacterId.Equals(characterId)) != null);
+                    if (familyCharacter != null)
                     {
-                        return _mapper.Map<FamilyDTO>(family);
+                        Family family = context.Family.FirstOrDefault(a => a.FamilyId.Equals(familyCharacter.FamilyId));
+                        if (family != null)
+                        {
+                            return _mapper.Map<FamilyDTO>(family);
+                        }
                     }
                 }
             }

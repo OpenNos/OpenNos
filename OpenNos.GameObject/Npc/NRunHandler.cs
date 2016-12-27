@@ -201,7 +201,7 @@ namespace OpenNos.GameObject
 
                 case 23:
                     Session.SendPacket(Session.Character.GenerateInbox(type, 14));
-                    Session.SendPacket(Session.Character.GenerateFamilyMember(Session.Character.Group));
+                    //Session.SendPacket(Session.Character.GenerateFamilyMember());
                     break;
 
                 case 5002:

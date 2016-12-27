@@ -16,10 +16,9 @@ namespace OpenNos.Domain
 {
     public enum FamilyAuthority : byte
     {
-        Head = 3,
-        Assistant = 2,
-        Manager=1,
-        Member=0
-        // add family authorities here
+        Head = 0,
+        Assistant = 1,
+        Manager=2,
+        Member=3
     }
 }

@@ -36,6 +36,8 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<Character> Character { get; set; }
 
+        public long CharacterId { get; set; }
+
         [MaxLength(255)]
         public string DailyMessage { get; set; }
 
