@@ -261,8 +261,17 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length == 3)
             {
+                if(Session.Character.Family == null || Session.Character.FamilyCharacter == null)
+                {
+                    return;
+                }
+                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member)
+                {
+                    Session.SendPacket(Session.Character.GenerateInfo("You are not permitted to kick players!"));
+                    return;
+                }
                 ClientSession kickSession = ServerManager.Instance.GetSessionByCharacterName(packetsplit[2]);
-                if (kickSession != null)
+                if (kickSession != null && kickSession.Character.Family?.FamilyId == Session.Character.Family.FamilyId)
                 {
                     FamilyDTO family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
                     family.Size += 1;
@@ -288,10 +297,13 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
-                    FamilyDTO family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
-                    family.Size -= 1;
-                    DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
+                    if (DAOFactory.FamilyCharacterDAO.LoadByCharacterId(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).CharacterId).FamilyId == Session.Character.Family.FamilyId)
+                    {
+                        DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
+                        FamilyDTO family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
+                        family.Size -= 1;
+                        DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
+                    }
                 }
             }
         }
