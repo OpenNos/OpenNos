@@ -961,8 +961,6 @@ namespace OpenNos.GameObject
                 return 0;
             }
 
-            Random random = new Random();
-
             // int miss_chance = 20;
             int monsterDefence = 0;
             int monsterDodge = 0;
@@ -1122,7 +1120,7 @@ namespace OpenNos.GameObject
                 }
                 if ((skill.Type == 0 || skill.Type == 1) && !HasGodMode)
                 {
-                    if (ServerManager.RandomNumber(0, 100) <= chance)
+                    if (ServerManager.RandomNumber() <= chance)
                     {
                         hitmode = 1;
                         return 0;
@@ -1612,7 +1610,6 @@ namespace OpenNos.GameObject
                                     $"e_info 7 {item.ItemVNum} 0" :
                                     $"e_info 7 {item.ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} {CharacterHelper.SPXPData[specialist.SpLevel - 1]} {item.Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
                             case 4:
-                                Item mountitem = ServerManager.GetItem(specialist.HoldingVNum);
                                 return specialist.HoldingVNum == 0 ?
                                     $"e_info 11 {item.ItemVNum} 0" :
                                     $"e_info 11 {item.ItemVNum} 1 {specialist.HoldingVNum}";

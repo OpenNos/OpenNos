@@ -257,7 +257,7 @@ namespace OpenNos.Handler
                                             foreach (MapMonster mon in monstersInAOERange.Where(m => m.MapMonsterId != monsterToAttack.MapMonsterId)) //exclude targetted monster
                                             {
                                                 mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: false));
+                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
                                             }
                                         }
                                         else

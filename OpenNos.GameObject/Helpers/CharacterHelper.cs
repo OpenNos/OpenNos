@@ -336,7 +336,6 @@ namespace OpenNos.GameObject
 
         public static int RarityPoint(short rarity, short lvl)
         {
-            Random random = new Random();
             int p;
             switch (rarity)
             {
@@ -679,9 +678,9 @@ namespace OpenNos.GameObject
             return 0;
         }
 
-        private void LoadHPData()
+        private static void LoadHPData()
         {
-            _hp = new int[4, 100];
+            _hp = new int[4, 256];
 
             // Adventurer HP
             for (int i = 1; i < _hp.GetLength(1); i++)
@@ -739,7 +738,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void LoadHPHealth()
+        private static void LoadHPHealth()
         {
             _hpHealth = new int[4];
             _hpHealth[(int)ClassType.Archer] = 60;
@@ -748,7 +747,7 @@ namespace OpenNos.GameObject
             _hpHealth[(int)ClassType.Magician] = 30;
         }
 
-        private void LoadHPHealthStand()
+        private static void LoadHPHealthStand()
         {
             _hpHealthStand = new int[4];
             _hpHealthStand[(int)ClassType.Archer] = 32;
@@ -757,11 +756,11 @@ namespace OpenNos.GameObject
             _hpHealthStand[(int)ClassType.Magician] = 20;
         }
 
-        private void LoadJobXPData()
+        private static void LoadJobXPData()
         {
             // Load JobData
             _firstJobXpData = new double[21];
-            _secondjobxpData = new double[81];
+            _secondjobxpData = new double[256];
             _firstJobXpData[0] = 2200;
             _secondjobxpData[0] = 17600;
             for (int i = 1; i < _firstJobXpData.Length; i++)
@@ -784,14 +783,13 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void LoadMPData()
+        private static void LoadMPData()
         {
-            // ADVENTURER MP
-            _mp = new int[4, 101];
+            _mp = new int[4, 257];
 
+            // ADVENTURER MP
             _mp[(int)ClassType.Adventurer, 0] = 60;
             int baseAdventurer = 9;
-
             for (int i = 1; i < _mp.GetLength(1); i += 4)
             {
                 _mp[(int)ClassType.Adventurer, i] = _mp[(int)ClassType.Adventurer, i - 1] + baseAdventurer;
@@ -821,37 +819,37 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void LoadMPHealth()
+        private static void LoadMPHealth()
         {
             _mpHealth = new int[4];
-            _mpHealth[(int)ClassType.Archer] = 50;
             _mpHealth[(int)ClassType.Adventurer] = 10;
             _mpHealth[(int)ClassType.Swordman] = 30;
+            _mpHealth[(int)ClassType.Archer] = 50;
             _mpHealth[(int)ClassType.Magician] = 80;
         }
 
-        private void LoadMPHealthStand()
+        private static void LoadMPHealthStand()
         {
             _mpHealthStand = new int[4];
-            _mpHealthStand[(int)ClassType.Archer] = 28;
             _mpHealthStand[(int)ClassType.Adventurer] = 5;
             _mpHealthStand[(int)ClassType.Swordman] = 16;
+            _mpHealthStand[(int)ClassType.Archer] = 28;
             _mpHealthStand[(int)ClassType.Magician] = 40;
         }
 
-        private void LoadSpeedData()
+        private static void LoadSpeedData()
         {
             _speedData = new byte[4];
-            _speedData[(int)ClassType.Archer] = 12;
             _speedData[(int)ClassType.Adventurer] = 11;
             _speedData[(int)ClassType.Swordman] = 11;
+            _speedData[(int)ClassType.Archer] = 12;
             _speedData[(int)ClassType.Magician] = 10;
         }
 
-        private void LoadSPXPData()
+        private static void LoadSPXPData()
         {
             // Load SpData
-            _spxpData = new double[99];
+            _spxpData = new double[256];
             _spxpData[0] = 15000;
             _spxpData[19] = 218000;
             for (int i = 1; i < 19; i++)
@@ -865,25 +863,25 @@ namespace OpenNos.GameObject
         }
 
         // TODO: Change or Verify
-        private void LoadStats()
+        private static void LoadStats()
         {
-            _minHit = new int[4, 100];
-            _maxHit = new int[4, 100];
-            _hitRate = new int[4, 100];
-            _criticalHitRate = new int[4, 100];
-            _criticalHit = new int[4, 100];
-            _minDist = new int[4, 100];
-            _maxDist = new int[4, 100];
-            _distRate = new int[4, 100];
-            _criticalDistRate = new int[4, 100];
-            _criticalDist = new int[4, 100];
-            _hitDef = new int[4, 100];
-            _hitDodge = new int[4, 100];
-            _distDef = new int[4, 100];
-            _distDodge = new int[4, 100];
-            _magicalDef = new int[4, 100];
+            _minHit = new int[4, 256];
+            _maxHit = new int[4, 256];
+            _hitRate = new int[4, 256];
+            _criticalHitRate = new int[4, 256];
+            _criticalHit = new int[4, 256];
+            _minDist = new int[4, 256];
+            _maxDist = new int[4, 256];
+            _distRate = new int[4, 256];
+            _criticalDistRate = new int[4, 256];
+            _criticalDist = new int[4, 256];
+            _hitDef = new int[4, 256];
+            _hitDodge = new int[4, 256];
+            _distDef = new int[4, 256];
+            _distDodge = new int[4, 256];
+            _magicalDef = new int[4, 256];
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 256; i++)
             {
                 // ADVENTURER
                 _minHit[(int)ClassType.Adventurer, i] = i + 9; // approx
@@ -962,11 +960,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void LoadXPData()
+        private static void LoadXPData()
         {
             // Load XpData
-            _xpData = new double[100];
-            double[] v = new double[100];
+            _xpData = new double[256];
+            double[] v = new double[256];
             double var = 1;
             v[0] = 540;
             v[1] = 960;
@@ -1010,7 +1008,7 @@ namespace OpenNos.GameObject
                     _xpData[i] = Convert.ToInt64(_xpData[i - 1] + var * (i + 2) * (i + 2));
                 }
 
-                // Console.WriteLine($"LvL {i}: xpdata: {xpData[i - 1]} v: {v[i - 1]}");
+                // Console.WriteLine($"LvL {i}: xpdata: {_xpData[i - 1]} v: {v[i - 1]}");
             }
         }
 
