@@ -33,7 +33,7 @@ namespace OpenNos.World
     {
         #region Members
 
-        private const string IPADDRESS = "77.22.142.200";
+        private const string IPADDRESS = "127.0.0.1";
 
         private static EventHandler exitHandler;
         private static ManualResetEvent run = new ManualResetEvent(true);
