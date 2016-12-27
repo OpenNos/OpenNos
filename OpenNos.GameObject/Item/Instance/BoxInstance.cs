@@ -33,6 +33,5 @@ namespace OpenNos.GameObject
         public short HoldingVNum { get; set; }
 
         #endregion
-
     }
 }

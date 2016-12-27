@@ -2569,7 +2569,6 @@ namespace OpenNos.Import.Console
                             case ItemType.Box:
                                 switch (item.VNum)
                                 {
-                                    
                                     // add here your custom effect/effectvalue for box item, make sure its unique for boxitems
 
                                     case 287:

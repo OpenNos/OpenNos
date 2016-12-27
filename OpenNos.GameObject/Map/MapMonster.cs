@@ -966,14 +966,11 @@ namespace OpenNos.GameObject
                                        .Subscribe(
                                        o =>
                                        {
-                                           if(targetSession != null && targetSession.Character.Hp > 0)
+                                           if (targetSession != null && targetSession.Character.Hp > 0)
                                                TargetHit2(targetSession, npcMonsterSkill, damage, hitmode);
                                        });
-
-
             }
         }
-
         private void TargetHit2(ClientSession targetSession, NpcMonsterSkill npcMonsterSkill, int damage, int hitmode)
         {
             Path = new List<GridPos>();
@@ -1001,7 +998,6 @@ namespace OpenNos.GameObject
                                    RemoveTarget();
                                }
                            });
-
                 }
             }
             if (npcMonsterSkill != null && (npcMonsterSkill.Skill.Range > 0 || npcMonsterSkill.Skill.TargetRange > 0))
@@ -1042,7 +1038,6 @@ namespace OpenNos.GameObject
                 }
             }
         }
-
         #endregion
     }
 }

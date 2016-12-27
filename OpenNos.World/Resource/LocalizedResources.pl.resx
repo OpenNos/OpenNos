@@ -1141,4 +1141,19 @@
   <data name="ANGEL" xml:space="preserve">
     <value>Anioł</value>
   </data>
+  <data name="CREATE_FAMILY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DISMISS_FAMILY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FAMILY_INVITATION_NOT_ALLOWED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FAMILY_NAME_ALREADY_USED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NOT_ALLOWED_KICK" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -49,7 +49,7 @@ namespace OpenNos.Handler
         {
             string channelpacket = ServerCommunicationClient.Instance.HubProxy.Invoke<string>("RetrieveRegisteredWorldservers", sessionId).Result;
 
-            if(channelpacket == null)
+            if (channelpacket == null)
             {
                 Logger.Log.Error("Could not retrieve Worldserver groups. Please make sure they've already been registered.");
                 _session.SendPacket($"fail {string.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"), DateTime.Now)}");

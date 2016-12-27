@@ -54,23 +54,23 @@ namespace OpenNos.Handler
         {
             if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
             {
-                foreach(ClientSession s in Session.Character.Group.Characters)
+                foreach (ClientSession s in Session.Character.Group.Characters)
                 {
-                    if(s.Character.Family != null || s.Character.FamilyCharacter != null)
+                    if (s.Character.Family != null || s.Character.FamilyCharacter != null)
                     {
-                        Session.SendPacket(Session.Character.GenerateInfo("One character in Group is already in a family!"));
+                        Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("GROUP_MEMBER_ALREADY_IN_FAMILY"))));
                         return;
                     }
                 }
-                if(Session.Character.Gold < 200000)
+                if (Session.Character.Gold < 200000)
                 {
-                    Session.SendPacket(Session.Character.GenerateInfo("You don't have enough Gold!"));
+                    Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"))));
                     return;
                 }
                 string name = packet.Split('^')[1];
-                if(DAOFactory.FamilyDAO.LoadByName(name) != null)
+                if (DAOFactory.FamilyDAO.LoadByName(name) != null)
                 {
-                    Session.SendPacket(Session.Character.GenerateInfo("There is already a family with this name!"));
+                    Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("FAMILY_NAME_ALREADY_USED"))));
                     return;
                 }
                 Session.Character.Gold -= 200000;
@@ -170,21 +170,21 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
 
-            if(packetsplit.Length != 3)
+            if (packetsplit.Length != 3)
             {
                 return;
             }
 
-            if(Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member)
+            if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member)
             {
-                Session.SendPacket(Session.Character.GenerateInfo("You are not permitted to invite players!"));
+                Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("FAMILY_INVITATION_NOT_ALLOWED"))));
                 return;
             }
 
             ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterName(packetsplit[2]);
-            if(otherSession== null)
+            if (otherSession == null)
             {
-                Session.SendPacket(Session.Character.GenerateInfo("This user is not online!"));
+                Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"))));
                 return;
             }
 
@@ -261,13 +261,13 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length == 3)
             {
-                if(Session.Character.Family == null || Session.Character.FamilyCharacter == null)
+                if (Session.Character.Family == null || Session.Character.FamilyCharacter == null)
                 {
                     return;
                 }
                 if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member)
                 {
-                    Session.SendPacket(Session.Character.GenerateInfo("You are not permitted to kick players!"));
+                    Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("NOT_ALLOWED_KICK"))));
                     return;
                 }
                 ClientSession kickSession = ServerManager.Instance.GetSessionByCharacterName(packetsplit[2]);

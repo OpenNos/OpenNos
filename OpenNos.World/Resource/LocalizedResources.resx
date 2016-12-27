@@ -1135,4 +1135,22 @@
   <data name="ANGEL" xml:space="preserve">
     <value>Angel</value>
   </data>
+  <data name="CREATE_FAMILY" xml:space="preserve">
+    <value>Do you want to create your family?</value>
+  </data>
+  <data name="DISMISS_FAMILY" xml:space="preserve">
+    <value>Do you want to dismiss yur family?</value>
+  </data>
+  <data name="FAMILY_INVITATION_NOT_ALLOWED" xml:space="preserve">
+    <value>You're not allowed to invite someone because your family rank is too much low.</value>
+  </data>
+  <data name="FAMILY_NAME_ALREADY_USED" xml:space="preserve">
+    <value>This family names is already used</value>
+  </data>
+  <data name="GROUP_MEMBER_ALREADY_IN_FAMILY" xml:space="preserve">
+    <value>One ore more people on the group is already in family.</value>
+  </data>
+  <data name="NOT_ALLOWED_KICK" xml:space="preserve">
+    <value>You're not allowed to kick someone because your family rank is too much low.</value>
+  </data>
 </root>

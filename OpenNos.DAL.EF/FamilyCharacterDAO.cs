@@ -100,6 +100,7 @@ namespace OpenNos.DAL.EF
                 return null;
             }
         }
+
         public FamilyCharacterDTO LoadByCharacterId(long characterId)
         {
             try
