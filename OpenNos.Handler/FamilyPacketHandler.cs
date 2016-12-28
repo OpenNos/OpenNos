@@ -54,21 +54,21 @@ namespace OpenNos.Handler
         {
             if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
             {
-                foreach(ClientSession s in Session.Character.Group.Characters)
+                foreach (ClientSession s in Session.Character.Group.Characters)
                 {
-                    if(s.Character.Family != null || s.Character.FamilyCharacter != null)
+                    if (s.Character.Family != null || s.Character.FamilyCharacter != null)
                     {
                         Session.SendPacket(Session.Character.GenerateInfo("One character in Group is already in a family!"));
                         return;
                     }
                 }
-                if(Session.Character.Gold < 200000)
+                if (Session.Character.Gold < 200000)
                 {
                     Session.SendPacket(Session.Character.GenerateInfo("You don't have enough Gold!"));
                     return;
                 }
                 string name = packet.Split('^')[1];
-                if(DAOFactory.FamilyDAO.LoadByName(name) != null)
+                if (DAOFactory.FamilyDAO.LoadByName(name) != null)
                 {
                     Session.SendPacket(Session.Character.GenerateInfo("There is already a family with this name!"));
                     return;
@@ -170,19 +170,23 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
 
-            if(packetsplit.Length != 3)
+            if (packetsplit.Length != 3)
+            {
+                return;
+            }
+            if (Session.Character.Family == null || Session.Character.FamilyCharacter == null)
             {
                 return;
             }
 
-            if(Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member)
+            if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member)
             {
                 Session.SendPacket(Session.Character.GenerateInfo("You are not permitted to invite players!"));
                 return;
             }
 
             ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterName(packetsplit[2]);
-            if(otherSession== null)
+            if (otherSession == null)
             {
                 Session.SendPacket(Session.Character.GenerateInfo("This user is not online!"));
                 return;
@@ -261,7 +265,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length == 3)
             {
-                if(Session.Character.Family == null || Session.Character.FamilyCharacter == null)
+                if (Session.Character.Family == null || Session.Character.FamilyCharacter == null)
                 {
                     return;
                 }

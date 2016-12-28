@@ -558,7 +558,10 @@ namespace OpenNos.GameObject
                     Path.Remove(Path.Last());
                 }
             }
-            Path.RemoveAt(0);
+            if (Path.Count > 0)
+            {
+                Path.RemoveAt(0);
+            }
             return Path;
         }
 

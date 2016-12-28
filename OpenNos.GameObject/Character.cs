@@ -1387,10 +1387,6 @@ namespace OpenNos.GameObject
 
             elementalDamage = (int)((elementalDamage + (elementalDamage + baseDamage) * ((ElementRate + ElementRateSP) / 100D)) * elementalBoost);
             elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
-            if (elementalDamage < 0)
-            {
-                elementalDamage = 0;
-            }
 
             #endregion
 
@@ -1742,20 +1738,34 @@ namespace OpenNos.GameObject
         {
             //gmbr 0 972109|16070622|†Socke†|92|2|0|9|0|1 962596|16070622|¥»Nancy»¥|96|3|1|0|0|1 338884|16070622|Ciapa|96|1|1|0|1|1 998939|16033022|†«¢®êe¶êR»†|59|2|3|0|0|0 963863|16070819|•Êìsstérñçhèñ•|80|1|3|0|0|0 1017441|16102917|†SüßeErdbeere†|58|1|3|0|0|0 1003329|16110518|Rising†Redbuff|36|3|3|0|0|0 972112|16070900|†Söckchen†|83|2|3|0|0|0 1044684|16102914|*Necrømancer*|71|3|3|0|0|0 1043396|16122716|rdfeenlvln1|1|0|3|0|1|0
             string str = "gmbr 0";
-            foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s=> s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+            try
             {
-                str +=
-                    $" {groupClientSession.Character.CharacterId}|0|{groupClientSession.Character.Name}|{groupClientSession.Character.Level}|{(byte)groupClientSession.Character.Class}|{(byte)groupClientSession.Character.FamilyCharacter.Authority}|{(byte)groupClientSession.Character.FamilyCharacter.Rank}|1|{groupClientSession.Character.HeroLevel}";
+                foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+                {
+                    str +=
+                        $" {groupClientSession.Character.CharacterId}|0|{groupClientSession.Character.Name}|{groupClientSession.Character.Level}|{(byte)groupClientSession.Character.Class}|{(byte)groupClientSession.Character.FamilyCharacter.Authority}|{(byte)groupClientSession.Character.FamilyCharacter.Rank}|1|{groupClientSession.Character.HeroLevel}";
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
             }
             return str;
         }
         public string GenerateFamilyMemberMessage()
         {
             string str = "gmsg";
-            foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+            try
             {
-                str +=
-                    $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.DailyMessage}";
+                foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+                {
+                    str +=
+                        $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.DailyMessage}";
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
             }
             return str;
         }
@@ -1763,10 +1773,17 @@ namespace OpenNos.GameObject
         public string GenerateFamilyMemberExp()
         {
             string str = "gexp";
-            foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+            try
             {
-                str +=
-                    $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.Experience}";
+                foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+                {
+                    str +=
+                        $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.Experience}";
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
             }
             return str;
         }
@@ -2013,7 +2030,7 @@ namespace OpenNos.GameObject
                                        .Subscribe(
                                        o =>
                                        {
-                                           if(Session.HasCurrentMap)
+                                           if (Session.HasCurrentMap)
                                                Session.CurrentMap.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
                                        });
                                     }
@@ -2087,7 +2104,7 @@ namespace OpenNos.GameObject
                                       .Subscribe(
                                       o =>
                                       {
-                                          if(Session.HasCurrentMap)
+                                          if (Session.HasCurrentMap)
                                               Session.CurrentMap.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
                                       });
                             }
@@ -2105,6 +2122,14 @@ namespace OpenNos.GameObject
                         {
                             foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapId == MapId))
                             {
+                                if (targetSession.Character.Level >= monsterToAttack.Monster.Level - 5 && targetSession.Character.Level <= monsterToAttack.Monster.Level + 5)
+                                {
+                                    targetSession.Character.Reput += monsterToAttack.Monster.Level;
+                                }
+                                else if (targetSession.Character.Level >= 90 && monsterToAttack.Monster.Level >= 88)
+                                {
+                                    targetSession.Character.Reput += monsterToAttack.Monster.Level;
+                                }
                                 if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
                                 {
                                     targetSession.Character.GenerateXp(monsterToAttack.Monster, true);
@@ -2118,6 +2143,10 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
+                            if (Level >= monsterToAttack.Monster.Level - 5 && Level <= monsterToAttack.Monster.Level + 5)
+                            {
+                                Reput += monsterToAttack.Monster.Level;
+                            }
                             if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId)
                             {
                                 GenerateXp(monsterToAttack.Monster, true);
@@ -3102,7 +3131,7 @@ namespace OpenNos.GameObject
 
             // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal
             // to 4
-            if(levelDifference <= -20)
+            if (levelDifference <= -20)
             {
                 xp /= 10;
             }
