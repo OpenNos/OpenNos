@@ -1142,18 +1142,39 @@
     <value>Anioł</value>
   </data>
   <data name="CREATE_FAMILY" xml:space="preserve">
-    <value />
+    <value>Czy chcesz założyć rodzinę z członkami swojej grupy?</value>
   </data>
   <data name="DISMISS_FAMILY" xml:space="preserve">
-    <value />
+    <value>Czy chcesz rozwiązać swoją rodzinę?</value>
   </data>
   <data name="FAMILY_INVITATION_NOT_ALLOWED" xml:space="preserve">
-    <value />
+    <value>Nie masz uprawnień, żeby zapraszać graczy do rodziny!</value>
   </data>
   <data name="FAMILY_NAME_ALREADY_USED" xml:space="preserve">
-    <value />
+    <value>Rodzina z taką nazwą już istnieje!</value>
   </data>
   <data name="NOT_ALLOWED_KICK" xml:space="preserve">
-    <value />
+    <value>Nie masz uprawnień, żeby wyrzucać członków rodziny!</value>
+  </data>
+  <data name="GROUP_MEMBER_ALREADY_IN_FAMILY" xml:space="preserve">
+    <value>Członek twojej grupy ma już rodzinę!</value>
+  </data>
+  <data name="FAMILY_FOUNDED" xml:space="preserve">
+    <value>Rodzina {0} została założona!</value>
+  </data>
+  <data name="FAMILY_GROUP_NOT_FULL" xml:space="preserve">
+    <value>Nie możesz założyć rodziny bez całej grupy!</value>
+  </data>
+  <data name="FAMILY_INVITED" xml:space="preserve">
+    <value>Gracz {0} został zaproszony do rodziny!</value>
+  </data>
+  <data name="ASK_FAMILY_INVITED" xml:space="preserve">
+    <value>Zostałeś zaproszony do rodziny {0}, czy chcesz dołączyć?</value>
+  </data>
+  <data name="FAMILY_JOINED" xml:space="preserve">
+    <value>Gracz {0} dołączył do rodziny {1}!</value>
+  </data>
+  <data name="FAMILY_KICKED" xml:space="preserve">
+    <value>Gracz {0} został wyrzucony z rodziny!</value>
   </data>
 </root>
