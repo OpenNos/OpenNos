@@ -994,7 +994,7 @@ namespace OpenNos.GameObject
 
                 ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.Name == message.Item1);
 
-                if (targetSession != null || message.Item4 == MessageType.Shout) //shout doesnt need targetSession
+                if (targetSession != null || message.Item4 == MessageType.Shout || message.Item4 == MessageType.Family) //shout doesnt need targetSession
                 {
                     switch (message.Item4)
                     {
@@ -1012,6 +1012,25 @@ namespace OpenNos.GameObject
                             {
                                 targetSession.SendPacket(message.Item2);
                                 break;
+                            }
+                        case MessageType.Family:
+                            {
+                                long familyId;
+                                if (long.TryParse(message.Item1, out familyId))
+                                {
+                                    if(message.Item3 != ChannelId)
+                                    foreach (ClientSession s in ServerManager.Instance.Sessions)
+                                    {
+                                        if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
+                                        {
+                                            if (s.Character.Family.FamilyId == familyId)
+                                            {
+                                                s.SendPacket($"say 1 0 6 <Channel: {message.Item3}>{message.Item2}");
+                                            }
+                                        }
+                                    }
+                                }
+                                return;
                             }
                     }
                 }

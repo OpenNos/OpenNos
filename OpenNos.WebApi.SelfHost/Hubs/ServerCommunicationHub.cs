@@ -383,6 +383,11 @@ namespace OpenNos.WebApi.SelfHost
                     Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
                     return null;
                 }
+                else if(messageType == MessageType.Family)
+                {
+                    Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
+                    return null;
+                }
             }
             catch (Exception)
             {

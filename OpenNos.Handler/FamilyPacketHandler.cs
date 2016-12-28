@@ -13,10 +13,11 @@
  */
 
 using OpenNos.Core;
-using OpenNos.GameObject;
-using OpenNos.Data;
 using OpenNos.DAL;
+using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject;
+using OpenNos.WebApi.Reference;
 using System;
 using System.Linq;
 
@@ -113,7 +114,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                //TODO: NO FULL GROUP WARNING
+                Session.SendPacket(Session.Character.GenerateInfo("To create a family, you have to be in a party of three people!"));
             }
         }
 
@@ -133,7 +134,14 @@ namespace OpenNos.Handler
                     i++;
                 }
                 msg = msg.Substring(1);
+                string ccmsg = $"[{Session.Character.Name}]:{msg}";
+                if (Session.Account.Authority == AuthorityType.Admin)
+                {
+                    ccmsg = $"[GM {Session.Character.Name}]:{msg}";
+                }
 
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ccmsg
+                                                                                              , ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
                 foreach (ClientSession s in ServerManager.Instance.Sessions)
                 {
                     if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
@@ -147,7 +155,7 @@ namespace OpenNos.Handler
                             else
                             {
                                 string prefix = $"[{Session.Character.Name}]:";
-                                if (s.Account.Authority == Domain.AuthorityType.Admin)
+                                if (Session.Account.Authority == AuthorityType.Admin)
                                 {
                                     prefix = $"[GM {Session.Character.Name}]:";
                                 }
