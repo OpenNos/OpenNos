@@ -256,12 +256,16 @@ namespace OpenNos.Handler
                 {
                     if (packetsplit[3] == "2")
                     {
-                        var temp = DAOFactory.FamilyCharacterDAO.LoadByFamilyId(Session.Character.Family.FamilyId).FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
-                        string familyHead = DAOFactory.CharacterDAO.LoadById(temp.CharacterId).Name;
-                        Session.SendPacket($"ginfo {Session.Character.Family.Name} {familyHead} 0 {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} 200000 {Session.Character.Family.Size} {Session.Character.Family.MaxSize} 1 1 1 1 1 1 1 1");
-                        Session.SendPacket(Session.Character.GenerateFamilyMember());
-                        Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
-                        Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
+                        if (Session.Character.FamilyCharacter != null && Session.Character.Family != null)
+                        {
+                            Session.Character.Family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
+                            var temp = DAOFactory.FamilyCharacterDAO.LoadByFamilyId(Session.Character.Family.FamilyId).FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                            string familyHead = DAOFactory.CharacterDAO.LoadById(temp.CharacterId).Name;
+                            Session.SendPacket($"ginfo {Session.Character.Family.Name} {familyHead} 0 {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.Size} {Session.Character.Family.MaxSize} 1 1 1 1 1 1 1 1");
+                            Session.SendPacket(Session.Character.GenerateFamilyMember());
+                            Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
+                            Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
+                        }
                     }
                 }
             }
@@ -351,7 +355,7 @@ namespace OpenNos.Handler
                     {
                         if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
                         {
-                            s.SendPacket(s.Character.GenerateMsg($"{packetsplit[2]} has left the family!", 0));
+                            s.SendPacket(s.Character.GenerateMsg($"{Session.Character.Name} has left the family!", 0));
                         }
                     }
                 }

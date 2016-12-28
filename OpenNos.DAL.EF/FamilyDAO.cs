@@ -148,11 +148,17 @@ namespace OpenNos.DAL.EF
             return _mapper.Map<FamilyDTO>(entity);
         }
 
-        private FamilyDTO Update(Family entity, FamilyDTO account, OpenNosContext context)
+        private FamilyDTO Update(Family entity, FamilyDTO family, OpenNosContext context)
         {
             if (entity != null)
             {
-                entity = _mapper.Map<Family>(account);
+                entity.Size = family.Size;
+                entity.Name = family.Name;
+                entity.MaxSize = family.MaxSize;
+                entity.FamilyExperience = family.FamilyExperience;
+                entity.FamilyLevel = family.FamilyLevel;
+                entity.FamilyMessage = family.FamilyMessage;
+
                 context.SaveChanges();
             }
             return _mapper.Map<FamilyDTO>(entity);
