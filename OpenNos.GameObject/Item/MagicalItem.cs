@@ -164,6 +164,7 @@ namespace OpenNos.GameObject
                         }
                         session.SendPacket(session.Character.GenerateEq());
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateIn());
+                        session.CurrentMap?.Broadcast(session, session.Character.GenerateGidx());
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     break;
@@ -180,6 +181,7 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateFd());
                         session.SendPacket(session.Character.GenerateEff(49 - session.Character.Faction));
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        session.CurrentMap?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     else if (EffectValue == 2000 && session.Character.Dignity < 100 && !session.Character.IsVehicled)
@@ -188,6 +190,7 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateFd());
                         session.SendPacket(session.Character.GenerateEff(49 - session.Character.Faction));
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        session.CurrentMap?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     }
                     break;
@@ -225,6 +228,7 @@ namespace OpenNos.GameObject
                             session.SendPacket(session.Character.GenerateEq());
                             session.SendPacket(session.Character.GenerateEquipment());
                             session.CurrentMap?.Broadcast(session, session.Character.GenerateIn());
+                            session.CurrentMap?.Broadcast(session, session.Character.GenerateGidx());
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         }
                         else

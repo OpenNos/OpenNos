@@ -277,6 +277,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateFd());
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DIGNITY_CHANGED"), 12));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                 }
                 else
                 {
@@ -344,6 +345,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateStatInfo());
                     Session.SendPacket(Session.Character.GenerateStatChar());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6), Session.Character.MapX, Session.Character.MapY);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198), Session.Character.MapX, Session.Character.MapY);
                 }
@@ -375,6 +377,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateLev());
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(8), Session.Character.MapX, Session.Character.MapY);
 
                     Session.Character.Skills[(short)(200 + 20 * (byte)Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)Session.Character.Class), CharacterId = Session.Character.CharacterId };
@@ -416,6 +419,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
                     Session.SendPacket(Session.Character.GenerateLev());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6), Session.Character.MapX, Session.Character.MapY);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198), Session.Character.MapX, Session.Character.MapY);
                     ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
@@ -446,6 +450,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateFd());
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"), 0));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                 }
                 else
                 {
@@ -480,6 +485,7 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateSki());
                         Session.Character.LearnSPSkill();
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(8), Session.Character.MapX, Session.Character.MapY);
                     }
                     else
@@ -994,6 +1000,7 @@ namespace OpenNos.Handler
                 Session.Character.HairColor = hairColorPacket.HairColor;
                 Session.SendPacket(Session.Character.GenerateEq());
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
             }
             else
             {
@@ -1013,6 +1020,7 @@ namespace OpenNos.Handler
                 Session.Character.HairStyle = hairStylePacket.HairStyle;
                 Session.SendPacket(Session.Character.GenerateEq());
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
             }
             else
             {
@@ -1029,9 +1037,15 @@ namespace OpenNos.Handler
             Session.CurrentMap?.Broadcast(Session.Character.GenerateInvisible());
 
             Session.SendPacket(Session.Character.GenerateEq());
-            Session.CurrentMap?.Broadcast(Session,
-                Session.Character.InvisibleGm ? Session.Character.GenerateOut() : Session.Character.GenerateIn(),
-                ReceiverType.AllExceptMe);
+            if (Session.Character.InvisibleGm)
+            {
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+            }
+            else
+            {
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+            }
         }
 
         /// <summary>
@@ -1905,6 +1919,7 @@ namespace OpenNos.Handler
             Session.Character.Undercover = !Session.Character.Undercover;
             Session.SendPacket(Session.Character.GenerateEq());
             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
         }
 
         /// <summary>
@@ -2000,6 +2015,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateEq());
                     Session.SendPacket(Session.Character.GenerateEquipment());
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
                 }
                 else
                 {

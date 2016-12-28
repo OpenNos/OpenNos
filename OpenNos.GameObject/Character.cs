@@ -556,6 +556,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateLev());
             Session.CurrentMap?.Broadcast(Session, GenerateCMode());
             Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+            Session.CurrentMap?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
             Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
             Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
             foreach (CharacterSkill skill in Skills.GetAllItems())
@@ -606,6 +607,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(GenerateEq());
             Session.SendPacket(GenerateGender());
             Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+            Session.CurrentMap?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
             Session.CurrentMap?.Broadcast(GenerateCMode());
             Session.CurrentMap?.Broadcast(GenerateEff(196), MapX, MapY);
         }
@@ -1490,6 +1492,7 @@ namespace OpenNos.GameObject
                 {
                     Session.SendPacket(GenerateFd());
                     Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
                 }
             }
