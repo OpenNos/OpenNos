@@ -191,6 +191,11 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateInfo("This user is not online!"));
                 return;
             }
+            if (otherSession.Character.Family != null || otherSession.Character.FamilyCharacter != null || otherSession.Character.FamilyCharacterId != null)
+            {
+                Session.SendPacket(Session.Character.GenerateInfo("This user is already in another family!"));
+                return;
+            }
 
             Session.SendPacket(Session.Character.GenerateInfo($"{otherSession.Character.Name} has been invited!"));
             otherSession.SendPacket($"dlg #gjoin^1^{Session.Character.CharacterId} #gjoin^2^{Session.Character.CharacterId} The Family {Session.Character.Family.Name} wants you to join. Accept?");
