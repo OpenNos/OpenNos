@@ -20,6 +20,7 @@ namespace OpenNos.Domain
         Assistant = 2,
         Manager = 1,
         Member = 0
+
         // insert family ranks here with corresponding numbers
     }
 }

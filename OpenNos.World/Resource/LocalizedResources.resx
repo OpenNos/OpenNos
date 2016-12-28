@@ -1135,4 +1135,40 @@
   <data name="ANGEL" xml:space="preserve">
     <value>Angel</value>
   </data>
+  <data name="CREATE_FAMILY" xml:space="preserve">
+    <value>Do you want to create your family?</value>
+  </data>
+  <data name="DISMISS_FAMILY" xml:space="preserve">
+    <value>Do you want to dismiss yur family?</value>
+  </data>
+  <data name="FAMILY_INVITATION_NOT_ALLOWED" xml:space="preserve">
+    <value>You don't have permission to invite players!</value>
+  </data>
+  <data name="FAMILY_NAME_ALREADY_USED" xml:space="preserve">
+    <value>This family name is already in use!</value>
+  </data>
+  <data name="GROUP_MEMBER_ALREADY_IN_FAMILY" xml:space="preserve">
+    <value>Someone in party already has family!</value>
+  </data>
+  <data name="NOT_ALLOWED_KICK" xml:space="preserve">
+    <value>You don't have permission to kick players!</value>
+  </data>
+  <data name="FAMILY_FOUNDED" xml:space="preserve">
+    <value>The family {0} was founded!</value>
+  </data>
+  <data name="FAMILY_GROUP_NOT_FULL" xml:space="preserve">
+    <value>You can't create family without full group!</value>
+  </data>
+  <data name="FAMILY_INVITED" xml:space="preserve">
+    <value>Player {0} has been invited!</value>
+  </data>
+  <data name="ASK_FAMILY_INVITED" xml:space="preserve">
+    <value>You've been invited to family {0}, do you want to join?</value>
+  </data>
+  <data name="FAMILY_JOINED" xml:space="preserve">
+    <value>Player {0} joined the family {1}!</value>
+  </data>
+  <data name="FAMILY_KICKED" xml:space="preserve">
+    <value>Player {0}  has been kicked out of the family!</value>
+  </data>
 </root>

@@ -1090,7 +1090,6 @@ namespace OpenNos.GameObject
             #endregion
 
             #region Basic Damage Data Calculation
-
             // TODO: Implement BCard damage boosts, see Issue
 
             mainUpgrade -= monsterToAttack.Monster.DefenceUpgrade;

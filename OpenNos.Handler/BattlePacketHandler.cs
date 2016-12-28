@@ -264,7 +264,7 @@ namespace OpenNos.Handler
                                         {
                                             Session.SendPacket($"cancel 2 {targetId}");
                                         }
-                                        if(!monsterToAttack.IsAlive)
+                                        if (!monsterToAttack.IsAlive)
                                         {
                                             Session.SendPacket($"cancel 2 {targetId}");
                                         }
@@ -339,7 +339,6 @@ namespace OpenNos.Handler
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
-
                     }
                     return;
                 }

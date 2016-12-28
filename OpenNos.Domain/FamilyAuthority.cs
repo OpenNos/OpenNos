@@ -18,7 +18,7 @@ namespace OpenNos.Domain
     {
         Head = 0,
         Assistant = 1,
-        Manager=2,
-        Member=3
+        Manager = 2,
+        Member = 3
     }
 }

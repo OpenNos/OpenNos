@@ -235,7 +235,7 @@ namespace OpenNos.Handler
 
                     case 6:
                         long shopOwnerId;
-                        if(long.TryParse(packetsplit[5], out shopOwnerId))
+                        if (long.TryParse(packetsplit[5], out shopOwnerId))
                         {
                             KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(shopOwnerId));
                             PersonalShopItem item = shop.Value?.Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
@@ -243,11 +243,11 @@ namespace OpenNos.Handler
                             {
                                 if (item.ItemInstance.GetType() == typeof(BoxInstance))
                                 {
-                                    inventory = (BoxInstance) item.ItemInstance;
+                                    inventory = (BoxInstance)item.ItemInstance;
                                 }
                                 else
                                 {
-                                    inventory = (WearableInstance) item.ItemInstance;
+                                    inventory = (WearableInstance)item.ItemInstance;
                                 }
                             }
                         }
@@ -1619,7 +1619,6 @@ namespace OpenNos.Handler
             // remove all items from source session
             foreach (ItemInstance item in sourceSession.Character.ExchangeInfo.ExchangeList)
             {
-                
                 ItemInstance invtemp = sourceSession.Character.Inventory.GetItemInstanceById(item.Id);
                 if (invtemp != null && item != null)
                 {

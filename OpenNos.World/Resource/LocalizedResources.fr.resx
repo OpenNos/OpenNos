@@ -1078,4 +1078,22 @@ Veux-tu le porter ?</value>
   <data name="NO_WINGS" xml:space="preserve">
     <value>Tu n'as pas d'aile d'amitié à utiliser.</value>
   </data>
+  <data name="CREATE_FAMILY" xml:space="preserve">
+    <value>Voulez-vous fonder cette famille ?</value>
+  </data>
+  <data name="DISMISS_FAMILY" xml:space="preserve">
+    <value>Voulez-vous dissoudre votre famille ?</value>
+  </data>
+  <data name="FAMILY_INVITATION_NOT_ALLOWED" xml:space="preserve">
+    <value>Tu n'es pas autorisé à effectué cette action car ton rang est trop bas.</value>
+  </data>
+  <data name="FAMILY_NAME_ALREADY_USED" xml:space="preserve">
+    <value>Ce nom de famille est déjà utilisé.</value>
+  </data>
+  <data name="NOT_ALLOWED_KICK" xml:space="preserve">
+    <value>Tu n'es pas autorisé à effectué cette action car ton rang est trop bas.</value>
+  </data>
+  <data name="GROUP_MEMBER_ALREADY_IN_FAMILY" xml:space="preserve">
+    <value>Au moins un membre du groupe possède déjà une famille.</value>
+  </data>
 </root>

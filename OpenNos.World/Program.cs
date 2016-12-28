@@ -113,9 +113,9 @@ namespace OpenNos.World
             {
                 networkManager = new NetworkManager<WorldEncryption>(IPADDRESS, port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
-            catch(System.Net.Sockets.SocketException ex)
+            catch (System.Net.Sockets.SocketException ex)
             {
-                if(ex.ErrorCode == 10048)
+                if (ex.ErrorCode == 10048)
                 {
                     port++;
                     Logger.Log.Info("Port already in use! Incrementing...");

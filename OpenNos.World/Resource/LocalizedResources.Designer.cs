@@ -196,6 +196,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You&apos;ve been invited to family {0}, do you want to join?.
+        /// </summary>
+        internal static string ASK_FAMILY_INVITED {
+            get {
+                return ResourceManager.GetString("ASK_FAMILY_INVITED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to revive? it will cost you 10 power seeds.
         /// </summary>
         internal static string ASK_REVIVE {
@@ -700,6 +709,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to create your family?.
+        /// </summary>
+        internal static string CREATE_FAMILY {
+            get {
+                return ResourceManager.GetString("CREATE_FAMILY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Database initialized..
         /// </summary>
         internal static string DATABASE_INITIALIZED {
@@ -768,6 +786,15 @@ namespace OpenNos.World.Resource {
         internal static string DISCONNECT {
             get {
                 return ResourceManager.GetString("DISCONNECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to dismiss yur family?.
+        /// </summary>
+        internal static string DISMISS_FAMILY {
+            get {
+                return ResourceManager.GetString("DISMISS_FAMILY", resourceCulture);
             }
         }
         
@@ -930,6 +957,69 @@ namespace OpenNos.World.Resource {
         internal static string FAIRYXP_RATE_NOW {
             get {
                 return ResourceManager.GetString("FAIRYXP_RATE_NOW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The family {0} was founded!.
+        /// </summary>
+        internal static string FAMILY_FOUNDED {
+            get {
+                return ResourceManager.GetString("FAMILY_FOUNDED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t create family without full group!.
+        /// </summary>
+        internal static string FAMILY_GROUP_NOT_FULL {
+            get {
+                return ResourceManager.GetString("FAMILY_GROUP_NOT_FULL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have permission to invite players!.
+        /// </summary>
+        internal static string FAMILY_INVITATION_NOT_ALLOWED {
+            get {
+                return ResourceManager.GetString("FAMILY_INVITATION_NOT_ALLOWED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player {0} has been invited!.
+        /// </summary>
+        internal static string FAMILY_INVITED {
+            get {
+                return ResourceManager.GetString("FAMILY_INVITED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player {0} joined the family {1}!.
+        /// </summary>
+        internal static string FAMILY_JOINED {
+            get {
+                return ResourceManager.GetString("FAMILY_JOINED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player {0}  has been kicked out of the family!.
+        /// </summary>
+        internal static string FAMILY_KICKED {
+            get {
+                return ResourceManager.GetString("FAMILY_KICKED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This family name is already in use!.
+        /// </summary>
+        internal static string FAMILY_NAME_ALREADY_USED {
+            get {
+                return ResourceManager.GetString("FAMILY_NAME_ALREADY_USED", resourceCulture);
             }
         }
         
@@ -1200,6 +1290,15 @@ namespace OpenNos.World.Resource {
         internal static string GROUP_LEFT {
             get {
                 return ResourceManager.GetString("GROUP_LEFT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Someone in party already has family!.
+        /// </summary>
+        internal static string GROUP_MEMBER_ALREADY_IN_FAMILY {
+            get {
+                return ResourceManager.GetString("GROUP_MEMBER_ALREADY_IN_FAMILY", resourceCulture);
             }
         }
         
@@ -1992,6 +2091,15 @@ namespace OpenNos.World.Resource {
         internal static string NOT_ADVENTURER {
             get {
                 return ResourceManager.GetString("NOT_ADVENTURER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have permission to kick players!.
+        /// </summary>
+        internal static string NOT_ALLOWED_KICK {
+            get {
+                return ResourceManager.GetString("NOT_ALLOWED_KICK", resourceCulture);
             }
         }
         

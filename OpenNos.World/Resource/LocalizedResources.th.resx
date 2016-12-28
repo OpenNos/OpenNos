@@ -1080,4 +1080,19 @@
   <data name="MESSAGE_SENT_TO_CHARACTER" xml:space="preserve">
     <value>Sending message to  '{0}' on channel {1}.</value>
   </data>
+  <data name="CREATE_FAMILY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DISMISS_FAMILY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FAMILY_INVITATION_NOT_ALLOWED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FAMILY_NAME_ALREADY_USED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NOT_ALLOWED_KICK" xml:space="preserve">
+    <value />
+  </data>
 </root>

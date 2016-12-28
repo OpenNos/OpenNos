@@ -530,8 +530,7 @@ namespace OpenNos.Handler
                     {
                         //session is not on current server, check api if the target character is on another server
                         int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", $"talk  {Session.Character.CharacterId} {message}"
-                                                                                                      , ServerManager.Instance.ChannelId, MessageType.PrivateChat, null, (long?)characterId).Result;
-
+                                                                         , ServerManager.Instance.ChannelId, MessageType.PrivateChat, null, (long?)characterId).Result;
                         if (!sentChannelId.HasValue) //character is even offline on different world
                         {
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_OFFLINE")));
@@ -662,7 +661,6 @@ namespace OpenNos.Handler
                 long characterId;
                 if (long.TryParse(packetsplit[2], out characterId))
                 {
-
                     Session.Character.DeleteBlacklisted(characterId);
                     Session.SendPacket(Session.Character.GenerateBlinit());
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_DELETED")));
@@ -1538,9 +1536,8 @@ namespace OpenNos.Handler
                 {
                     //session is not on current server, check api if the target character is on another server
                     int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5)
-                                                                                                  , ServerManager.Instance.ChannelId, MessageType.Whisper, characterName, null).Result;
-
-                    if(!sentChannelId.HasValue) //character is even offline on different world
+                                                                                                  ,ServerManager.Instance.ChannelId, MessageType.Whisper, characterName, null).Result;
+                    if (!sentChannelId.HasValue) //character is even offline on different world
                     {
                         Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
                     }
@@ -1577,7 +1574,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_WHISPER_BLOCKED"), 0));
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Log.Error("Whisper failed.", e);
             }
