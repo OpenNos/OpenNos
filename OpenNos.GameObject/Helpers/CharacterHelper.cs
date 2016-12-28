@@ -309,6 +309,53 @@ namespace OpenNos.GameObject
             return elementRate * elementRate * 3 + 50;
         }
 
+        public static int LoadFamilyXPData(byte familyLevel)
+        {
+            switch (familyLevel)
+            {
+                case 1:
+                    return 100000;
+                case 2:
+                    return 130000;
+                case 3:
+                    return 170000;
+                case 4:
+                    return 220000;
+                case 5:
+                    return 270000;
+                case 6:
+                    return 360000;
+                case 7:
+                    return 550000;
+                case 8:
+                    return 900000;
+                case 9:
+                    return 1570000;
+                case 10:
+                    return 1830000;
+                case 11:
+                    return 2150000;
+                case 12:
+                    return 2750000;
+                case 13:
+                    return 3500000;
+                case 14:
+                    return 4500000;
+                case 15:
+                    return 6000000;
+                case 16:
+                    return 7500000;
+                case 17:
+                    return 9500000;
+                case 18:
+                    return 13000000;
+                case 19:
+                    return 17000000;
+                default:
+                    return 999999999;
+            }
+        }
+
         public static int MagicalDefence(ClassType @class, byte level)
         {
             return _magicalDef[(byte)@class, level];

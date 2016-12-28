@@ -162,11 +162,6 @@ namespace OpenNos.Handler
                                 s.SendPacket(Session.Character.GenerateSay(prefix + msg, 6));
                             }
                             s.SendPacket(Session.Character.GenerateSpk(msg, 1));
-
-                            //if (s.HasCurrentMap && Session.HasCurrentMap && s.CurrentMap == Session.CurrentMap)
-                            //{
-                            //    s.SendPacket(Session.Character.GenerateSpk(msg, 1));
-                            //}
                         }
                     }
                 }
@@ -290,6 +285,16 @@ namespace OpenNos.Handler
                 ClientSession kickSession = ServerManager.Instance.GetSessionByCharacterName(packetsplit[2]);
                 if (kickSession != null && kickSession.Character.Family?.FamilyId == Session.Character.Family.FamilyId)
                 {
+                    if (kickSession.Character.FamilyCharacter?.Authority == FamilyAuthority.Head)
+                    {
+                        Session.SendPacket(Session.Character.GenerateInfo("You can't kick the family head!"));
+                        return;
+                    }
+                    if (kickSession.Character.CharacterId == Session.Character.CharacterId)
+                    {
+                        Session.SendPacket(Session.Character.GenerateInfo("You can't kick yourself!"));
+                        return;
+                    }
                     FamilyDTO family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
                     family.Size += 1;
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
@@ -322,6 +327,45 @@ namespace OpenNos.Handler
                         DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
                     }
                 }
+            }
+        }
+
+        [Packet("%Familyleave")]
+        public void FamilyLeave(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length == 2)
+            {
+                if (Session.Character.Family == null || Session.Character.FamilyCharacter == null)
+                {
+                    return;
+                }
+                if (Session.Character.FamilyCharacter.Authority != FamilyAuthority.Member)
+                {
+                    Session.SendPacket(Session.Character.GenerateInfo("You can only leave the family as a member!"));
+                    return;
+                }
+                foreach (ClientSession s in ServerManager.Instance.Sessions)
+                {
+                    if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
+                    {
+                        if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
+                        {
+                            s.SendPacket(s.Character.GenerateMsg($"{packetsplit[2]} has left the family!", 0));
+                        }
+                    }
+                }
+                FamilyDTO family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
+                family.Size += 1;
+                DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
+                Session.Character.Family.Size -= 1;
+
+                Session.Character.Family = null;
+                DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
+                Session.Character.FamilyCharacter = null;
+                Session.Character.FamilyCharacterId = null;
+                Session.Character.Save();
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
             }
         }
         #endregion

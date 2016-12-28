@@ -31,7 +31,6 @@ namespace OpenNos.GameObject
         #region Members
 
         private AuthorityType _authority;
-        private int _backpack;
         private IList<CharacterRelationDTO> _blacklisted;
         private byte _cmapcount;
         private int _direction;
@@ -85,6 +84,8 @@ namespace OpenNos.GameObject
                 return !IsSitting && ExchangeInfo == null;
             }
         }
+
+        public int CollectedFamilyXp { get; set; }
 
         public int DarkResistance { get; set; }
 
@@ -2128,10 +2129,12 @@ namespace OpenNos.GameObject
                                 if (targetSession.Character.Level >= monsterToAttack.Monster.Level - 5 && targetSession.Character.Level <= monsterToAttack.Monster.Level + 5)
                                 {
                                     targetSession.Character.Reput += monsterToAttack.Monster.Level;
+                                    targetSession.Character.CollectedFamilyXp += monsterToAttack.Monster.Level;
                                 }
                                 else if (targetSession.Character.Level >= 90 && monsterToAttack.Monster.Level >= 88)
                                 {
                                     targetSession.Character.Reput += monsterToAttack.Monster.Level;
+                                    targetSession.Character.CollectedFamilyXp += monsterToAttack.Monster.Level;
                                 }
                                 if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
                                 {
@@ -2149,6 +2152,12 @@ namespace OpenNos.GameObject
                             if (Level >= monsterToAttack.Monster.Level - 5 && Level <= monsterToAttack.Monster.Level + 5)
                             {
                                 Reput += monsterToAttack.Monster.Level;
+                                CollectedFamilyXp += monsterToAttack.Monster.Level;
+                            }
+                            else if (Level >= 90 && monsterToAttack.Monster.Level >= 88)
+                            {
+                                Reput += monsterToAttack.Monster.Level;
+                                CollectedFamilyXp += monsterToAttack.Monster.Level;
                             }
                             if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId)
                             {
@@ -3669,6 +3678,28 @@ namespace OpenNos.GameObject
                     {
                         DAOFactory.RespawnDAO.InsertOrUpdate(ref res);
                     }
+                }
+
+                if(CollectedFamilyXp != 0 && Family != null && FamilyCharacter != null)
+                {
+                    FamilyDTO _family = DAOFactory.FamilyDAO.LoadById(Family.FamilyId);
+                    FamilyCharacterDTO _familyCharacter = DAOFactory.FamilyCharacterDAO.LoadById(FamilyCharacter.FamilyCharacterId);
+                    _family.FamilyExperience += CollectedFamilyXp;
+                    _familyCharacter.Experience += CollectedFamilyXp;
+                    
+                    CollectedFamilyXp = 0;
+
+                    if(CharacterHelper.LoadFamilyXPData(_family.FamilyLevel) <= _family.FamilyExperience)
+                    {
+                        _family.FamilyExperience -= CharacterHelper.LoadFamilyXPData(_family.FamilyLevel);
+                        _family.FamilyLevel += 1;
+                    }
+
+                    DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref _familyCharacter);
+                    DAOFactory.FamilyDAO.InsertOrUpdate(ref _family);
+
+                    Family = _family;
+                    FamilyCharacter = _familyCharacter;
                 }
             }
             catch (Exception e)
