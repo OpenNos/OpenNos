@@ -324,12 +324,16 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    if (DAOFactory.FamilyCharacterDAO.LoadByCharacterId(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).CharacterId).FamilyId == Session.Character.Family.FamilyId)
-                    {
-                        DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
-                        FamilyDTO family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
-                        family.Size -= 1;
-                        DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
+                    CharacterDTO dbCharacter = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]);
+                    if (dbCharacter != null) {
+                        FamilyCharacterDTO dbFamilyCharacter = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(dbCharacter.CharacterId);
+                        if (dbFamilyCharacter != null && dbFamilyCharacter.FamilyId == Session.Character.Family.FamilyId)
+                        {
+                            DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
+                            FamilyDTO family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
+                            family.Size -= 1;
+                            DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
+                        }
                     }
                 }
             }
