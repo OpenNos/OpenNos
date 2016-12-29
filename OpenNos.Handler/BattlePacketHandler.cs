@@ -98,7 +98,7 @@ namespace OpenNos.Handler
                             mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SpecialZoneHit, Session, ski.Skill));
                         }
 
-                        Observable.Timer(TimeSpan.FromMilliseconds(ski.Skill.CastTime * 100))
+                        Observable.Timer(TimeSpan.FromMilliseconds(ski.Skill.Cooldown * 100))
                             .Subscribe(
                                 o =>
                                 {
@@ -474,7 +474,7 @@ namespace OpenNos.Handler
                         }
                     });
 
-                    Observable.Timer(TimeSpan.FromMilliseconds(characterSkill.Skill.CastTime * 100))
+                    Observable.Timer(TimeSpan.FromMilliseconds(characterSkill.Skill.Cooldown * 100))
                     .Subscribe(
                     o =>
                     {
