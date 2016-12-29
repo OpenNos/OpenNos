@@ -35,6 +35,7 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
+
                 // sp point potions
                 case 150:
                 case 151:
@@ -159,6 +160,50 @@ namespace OpenNos.GameObject
                             {
                                 session.Character.RemoveVehicle();
                             }
+                        }
+                    }
+                    break;
+                case 1002:
+                    if (EffectValue == 69)
+                    {
+                        int rnd = ServerManager.RandomNumber(0, 1000);
+                        if (rnd < 5)
+                        {
+                            session.Character.GiftAdd(1160, 10);
+                        }
+                        else if (rnd < 15)
+                        {
+                            short[] specialVnums = new short[] { 5560, 5591, 4099, 907 };
+                            session.Character.GiftAdd(specialVnums[ServerManager.RandomNumber(0,4)], 1);
+                        }
+                        else
+                        {
+                            short[] vnums = new short[] { 1160, 2282, 1030, 1244, 1218, 5369, 1012, 1363, 1364, 2160, 2173, 5959, 5983, 2514, 2515, 2516, 2517, 2518, 2519, 2520, 2521, 1685, 1686, 5087, 5203 };
+                            byte[] counts = new byte[] { 1, 10, 20, 5, 1, 1, 99, 1, 1, 5, 5, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1 };
+                            int item = ServerManager.RandomNumber(0, 25);
+                            session.Character.GiftAdd(vnums[item], counts[item]);
+                        }
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    }
+                    else
+                    {
+                        if (session.HasCurrentMap)
+                        {
+                            short[] vnums = new short[] { 1386, 1387, 1388, 1389, 1390, 1391, 1392, 1393, 1394, 1395, 1396, 1397, 1398, 1399, 1400, 1401, 1402, 1403, 1404, 1405 };
+                            short vnum = vnums[ServerManager.RandomNumber(0, 20)];
+
+                            NpcMonster npcmonster = ServerManager.GetNpc(vnum);
+                            if (npcmonster == null)
+                            {
+                                return;
+                            }
+                            // ReSharper disable once PossibleNullReferenceException HasCurrentMap NullCheck
+                            MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = session.Character.MapY, MapX = session.Character.MapX, MapId = session.Character.MapId, Position = (byte)session.Character.Direction, IsMoving = true, MapMonsterId = session.CurrentMap.GetNextMonsterId(), ShouldRespawn = false };
+                            monster.Initialize(session.CurrentMap);
+                            monster.StartLife();
+                            session.CurrentMap.AddMonster(monster);
+                            session.CurrentMap.Broadcast(monster.GenerateIn3());
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         }
                     }
                     break;
