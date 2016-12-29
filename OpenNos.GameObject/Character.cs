@@ -2127,13 +2127,17 @@ namespace OpenNos.GameObject
                             {
                                 if (targetSession.Character.Level >= monsterToAttack.Monster.Level - 5 && targetSession.Character.Level <= monsterToAttack.Monster.Level + 5)
                                 {
-                                    targetSession.Character.Reput += monsterToAttack.Monster.Level;
-                                    targetSession.Character.CollectedFamilyXp += monsterToAttack.Monster.Level;
+                                    if(!targetSession.Character.BlockRep)
+                                        targetSession.Character.Reput += monsterToAttack.Monster.Level;
+                                    if(!targetSession.Character.BlockFXp)
+                                        targetSession.Character.CollectedFamilyXp += monsterToAttack.Monster.Level;
                                 }
                                 else if (targetSession.Character.Level >= 90 && monsterToAttack.Monster.Level >= 88)
                                 {
-                                    targetSession.Character.Reput += monsterToAttack.Monster.Level;
-                                    targetSession.Character.CollectedFamilyXp += monsterToAttack.Monster.Level;
+                                    if (!targetSession.Character.BlockRep)
+                                        targetSession.Character.Reput += monsterToAttack.Monster.Level;
+                                    if (!targetSession.Character.BlockFXp)
+                                        targetSession.Character.CollectedFamilyXp += monsterToAttack.Monster.Level;
                                 }
                                 if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
                                 {
@@ -2150,13 +2154,17 @@ namespace OpenNos.GameObject
                         {
                             if (Level >= monsterToAttack.Monster.Level - 5 && Level <= monsterToAttack.Monster.Level + 5)
                             {
-                                Reput += monsterToAttack.Monster.Level;
-                                CollectedFamilyXp += monsterToAttack.Monster.Level;
+                                if(!BlockRep)
+                                    Reput += monsterToAttack.Monster.Level;
+                                if(!BlockFXp)
+                                    CollectedFamilyXp += monsterToAttack.Monster.Level;
                             }
                             else if (Level >= 90 && monsterToAttack.Monster.Level >= 88)
                             {
-                                Reput += monsterToAttack.Monster.Level;
-                                CollectedFamilyXp += monsterToAttack.Monster.Level;
+                                if (!BlockRep)
+                                    Reput += monsterToAttack.Monster.Level;
+                                if (!BlockFXp)
+                                    CollectedFamilyXp += monsterToAttack.Monster.Level;
                             }
                             if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId)
                             {
@@ -2855,147 +2863,150 @@ namespace OpenNos.GameObject
 
         public void GenerateXp(NpcMonster monsterinfo, bool isMonsterOwner)
         {
-            Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
-            SpecialistInstance specialist = null;
-            if (Hp <= 0)
+            if (!BlockExp)
             {
-                return;
-            }
-            if ((int)(LevelXp / (XPLoad() / 10)) < (int)((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
-            {
-                Hp = (int)HPLoad();
-                Mp = (int)MPLoad();
-                Session.SendPacket(GenerateStat());
-                Session.SendPacket(GenerateEff(5));
-            }
+                Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
+                SpecialistInstance specialist = null;
+                if (Hp <= 0)
+                {
+                    return;
+                }
+                if ((int)(LevelXp / (XPLoad() / 10)) < (int)((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
+                {
+                    Hp = (int)HPLoad();
+                    Mp = (int)MPLoad();
+                    Session.SendPacket(GenerateStat());
+                    Session.SendPacket(GenerateEff(5));
+                }
 
-            if (Inventory != null)
-            {
-                specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-            }
+                if (Inventory != null)
+                {
+                    specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                }
 
-            if (Level < 99)
-            {
-                if (isMonsterOwner)
+                if (Level < 99)
                 {
-                    LevelXp += GetXP(monsterinfo, grp);
-                }
-                else
-                {
-                    LevelXp += GetXP(monsterinfo, grp) / 3;
-                }
-            }
-            if ((Class == 0 && JobLevel < 20) || (Class != 0 && JobLevel < 80))
-            {
-                if (specialist != null && UseSp && specialist.SpLevel < 99 && specialist.SpLevel > 19)
-                {
-                    JobLevelXp += GetJXP(monsterinfo, grp) / 2;
-                }
-                else
-                {
-                    JobLevelXp += GetJXP(monsterinfo, grp);
-                }
-            }
-            if (specialist != null && UseSp && specialist.SpLevel < 99)
-            {
-                int multiplier = specialist.SpLevel < 10 ? 10 : specialist.SpLevel < 19 ? 5 : 1;
-                specialist.XP += GetJXP(monsterinfo, grp) * multiplier;
-            }
-            double t = XPLoad();
-            while (LevelXp >= t)
-            {
-                LevelXp -= (long)t;
-                Level++;
-                t = XPLoad();
-                if (Level >= 99)
-                {
-                    Level = 99;
-                    LevelXp = 0;
-                }
-                Hp = (int)HPLoad();
-                Mp = (int)MPLoad();
-                Session.SendPacket(GenerateStat());
-                Session.SendPacket($"levelup {CharacterId}");
-                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
-                Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
-                Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
-                ServerManager.Instance.UpdateGroup(CharacterId);
-            }
-
-            WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
-            if (fairy != null)
-            {
-                if (fairy.ElementRate + fairy.Item.ElementRate < fairy.Item.MaxElementRate && Level <= monsterinfo.Level + 15 && Level >= monsterinfo.Level - 15)
-                {
-                    fairy.XP += ServerManager.FairyXpRate;
-                }
-                t = CharacterHelper.LoadFairyXPData(fairy.ElementRate);
-                while (fairy.XP >= t)
-                {
-                    fairy.XP -= (int)t;
-                    fairy.ElementRate++;
-                    if (fairy.ElementRate + fairy.Item.ElementRate == fairy.Item.MaxElementRate)
+                    if (isMonsterOwner)
                     {
-                        fairy.XP = 0;
-                        Session.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
+                        LevelXp += GetXP(monsterinfo, grp);
                     }
                     else
                     {
-                        Session.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
+                        LevelXp += GetXP(monsterinfo, grp) / 3;
                     }
-                    Session.SendPacket(GeneratePairy());
                 }
-            }
-
-            t = JobXPLoad();
-            while (JobLevelXp >= t)
-            {
-                JobLevelXp -= (long)t;
-                JobLevel++;
-                t = JobXPLoad();
-                if (JobLevel >= 20 && Class == 0)
+                if ((Class == 0 && JobLevel < 20) || (Class != 0 && JobLevel < 80))
                 {
-                    JobLevel = 20;
-                    JobLevelXp = 0;
+                    if (specialist != null && UseSp && specialist.SpLevel < 99 && specialist.SpLevel > 19)
+                    {
+                        JobLevelXp += GetJXP(monsterinfo, grp) / 2;
+                    }
+                    else
+                    {
+                        JobLevelXp += GetJXP(monsterinfo, grp);
+                    }
                 }
-                else if (JobLevel >= 80)
+                if (specialist != null && UseSp && specialist.SpLevel < 99)
                 {
-                    JobLevel = 80;
-                    JobLevelXp = 0;
+                    int multiplier = specialist.SpLevel < 10 ? 10 : specialist.SpLevel < 19 ? 5 : 1;
+                    specialist.XP += GetJXP(monsterinfo, grp) * multiplier;
                 }
-                Hp = (int)HPLoad();
-                Mp = (int)MPLoad();
-                Session.SendPacket(GenerateStat());
-                Session.SendPacket($"levelup {CharacterId}");
-                Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
-                LearnAdventurerSkill();
-                Session.CurrentMap?.Broadcast(GenerateEff(8), MapX, MapY);
-                Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
-            }
-            if (specialist != null)
-            {
-                t = SPXPLoad();
-
-                while (UseSp && specialist.XP >= t)
+                double t = XPLoad();
+                while (LevelXp >= t)
                 {
-                    specialist.XP -= (long)t;
-                    specialist.SpLevel++;
-                    t = SPXPLoad();
+                    LevelXp -= (long)t;
+                    Level++;
+                    t = XPLoad();
+                    if (Level >= 99)
+                    {
+                        Level = 99;
+                        LevelXp = 0;
+                    }
+                    Hp = (int)HPLoad();
+                    Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
                     Session.SendPacket($"levelup {CharacterId}");
-                    if (specialist.SpLevel >= 99)
-                    {
-                        specialist.SpLevel = 99;
-                        specialist.XP = 0;
-                    }
-                    LearnSPSkill();
+                    Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
+                    Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
+                    Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
+                    ServerManager.Instance.UpdateGroup(CharacterId);
+                }
 
-                    Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
+                WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+                if (fairy != null)
+                {
+                    if (fairy.ElementRate + fairy.Item.ElementRate < fairy.Item.MaxElementRate && Level <= monsterinfo.Level + 15 && Level >= monsterinfo.Level - 15)
+                    {
+                        fairy.XP += ServerManager.FairyXpRate;
+                    }
+                    t = CharacterHelper.LoadFairyXPData(fairy.ElementRate);
+                    while (fairy.XP >= t)
+                    {
+                        fairy.XP -= (int)t;
+                        fairy.ElementRate++;
+                        if (fairy.ElementRate + fairy.Item.ElementRate == fairy.Item.MaxElementRate)
+                        {
+                            fairy.XP = 0;
+                            Session.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
+                        }
+                        else
+                        {
+                            Session.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
+                        }
+                        Session.SendPacket(GeneratePairy());
+                    }
+                }
+
+                t = JobXPLoad();
+                while (JobLevelXp >= t)
+                {
+                    JobLevelXp -= (long)t;
+                    JobLevel++;
+                    t = JobXPLoad();
+                    if (JobLevel >= 20 && Class == 0)
+                    {
+                        JobLevel = 20;
+                        JobLevelXp = 0;
+                    }
+                    else if (JobLevel >= 80)
+                    {
+                        JobLevel = 80;
+                        JobLevelXp = 0;
+                    }
+                    Hp = (int)HPLoad();
+                    Mp = (int)MPLoad();
+                    Session.SendPacket(GenerateStat());
+                    Session.SendPacket($"levelup {CharacterId}");
+                    Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
+                    LearnAdventurerSkill();
                     Session.CurrentMap?.Broadcast(GenerateEff(8), MapX, MapY);
                     Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
                 }
+                if (specialist != null)
+                {
+                    t = SPXPLoad();
+
+                    while (UseSp && specialist.XP >= t)
+                    {
+                        specialist.XP -= (long)t;
+                        specialist.SpLevel++;
+                        t = SPXPLoad();
+                        Session.SendPacket(GenerateStat());
+                        Session.SendPacket($"levelup {CharacterId}");
+                        if (specialist.SpLevel >= 99)
+                        {
+                            specialist.SpLevel = 99;
+                            specialist.XP = 0;
+                        }
+                        LearnSPSkill();
+
+                        Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
+                        Session.CurrentMap?.Broadcast(GenerateEff(8), MapX, MapY);
+                        Session.CurrentMap?.Broadcast(GenerateEff(198), MapX, MapY);
+                    }
+                }
+                Session.SendPacket(GenerateLev());
             }
-            Session.SendPacket(GenerateLev());
         }
 
         public int GetCP()
