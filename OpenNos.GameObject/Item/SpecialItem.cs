@@ -175,11 +175,16 @@ namespace OpenNos.GameObject
 
                             session.Character.GiftAdd(vnums[item], counts[item]);
                         }
+                        else if (rnd < 30)
+                        {
+                            short[] vnums = new short[] { 361, 362, 363, 366, 367, 368, 371, 372, 373 };
+                            session.Character.GiftAdd(vnums[ServerManager.RandomNumber(0, 9)], 1);
+                        }
                         else
                         {
-                            short[] vnums = new short[] { 1160, 2282, 1030, 1244, 1218, 5369, 1012, 1363, 1364, 2160, 2173, 5959, 5983, 2514, 2515, 2516, 2517, 2518, 2519, 2520, 2521, 1685, 1686, 5087, 5203, 2418, 2310, 2303, 361, 362, 363, 366, 367, 368, 371, 372, 373, 2169, 2280, 5892, 5893, 5894, 5895, 5896, 5897, 5898, 5899, 5332, 5105, 2161, 2162 };
-                            byte[] counts = new byte[] { 1, 10, 20, 5, 1, 1, 99, 1, 1, 5, 5, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 5, 20, 20, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-                            int item = ServerManager.RandomNumber(0, 51);
+                            short[] vnums = new short[] { 1160, 2282, 1030, 1244, 1218, 5369, 1012, 1363, 1364, 2160, 2173, 5959, 5983, 2514, 2515, 2516, 2517, 2518, 2519, 2520, 2521, 1685, 1686, 5087, 5203, 2418, 2310, 2303, 2169, 2280, 5892, 5893, 5894, 5895, 5896, 5897, 5898, 5899, 5332, 5105, 2161, 2162 };
+                            byte[] counts = new byte[] { 1, 10, 20, 5, 1, 1, 99, 1, 1, 5, 5, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 5, 20, 20, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+                            int item = ServerManager.RandomNumber(0, 42);
                             session.Character.GiftAdd(vnums[item], counts[item]);
                         }
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
