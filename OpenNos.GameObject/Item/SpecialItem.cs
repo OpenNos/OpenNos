@@ -188,21 +188,24 @@ namespace OpenNos.GameObject
                     {
                         if (session.HasCurrentMap)
                         {
-                            short[] vnums = new short[] { 1386, 1387, 1388, 1389, 1390, 1391, 1392, 1393, 1394, 1395, 1396, 1397, 1398, 1399, 1400, 1401, 1402, 1403, 1404, 1405 };
-                            short vnum = vnums[ServerManager.RandomNumber(0, 20)];
-
-                            NpcMonster npcmonster = ServerManager.GetNpc(vnum);
-                            if (npcmonster == null)
+                            if (!session.CurrentMap.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4))
                             {
-                                return;
+                                short[] vnums = new short[] { 1386, 1387, 1388, 1389, 1390, 1391, 1392, 1393, 1394, 1395, 1396, 1397, 1398, 1399, 1400, 1401, 1402, 1403, 1404, 1405 };
+                                short vnum = vnums[ServerManager.RandomNumber(0, 20)];
+
+                                NpcMonster npcmonster = ServerManager.GetNpc(vnum);
+                                if (npcmonster == null)
+                                {
+                                    return;
+                                }
+                                // ReSharper disable once PossibleNullReferenceException HasCurrentMap NullCheck
+                                MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = session.Character.MapY, MapX = session.Character.MapX, MapId = session.Character.MapId, Position = (byte)session.Character.Direction, IsMoving = true, MapMonsterId = session.CurrentMap.GetNextMonsterId(), ShouldRespawn = false };
+                                monster.Initialize(session.CurrentMap);
+                                monster.StartLife();
+                                session.CurrentMap.AddMonster(monster);
+                                session.CurrentMap.Broadcast(monster.GenerateIn3());
+                                session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             }
-                            // ReSharper disable once PossibleNullReferenceException HasCurrentMap NullCheck
-                            MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = session.Character.MapY, MapX = session.Character.MapX, MapId = session.Character.MapId, Position = (byte)session.Character.Direction, IsMoving = true, MapMonsterId = session.CurrentMap.GetNextMonsterId(), ShouldRespawn = false };
-                            monster.Initialize(session.CurrentMap);
-                            monster.StartLife();
-                            session.CurrentMap.AddMonster(monster);
-                            session.CurrentMap.Broadcast(monster.GenerateIn3());
-                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         }
                     }
                     break;
