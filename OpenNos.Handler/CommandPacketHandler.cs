@@ -234,12 +234,12 @@ namespace OpenNos.Handler
         public void BlockExp(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            if(packetsplit.Length == 3)
+            if (packetsplit.Length == 3)
             {
                 string characterName = packetsplit[2];
 
                 ClientSession punishSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
-                if(punishSession != null)
+                if (punishSession != null)
                 {
                     punishSession.Character.BlockExp = !punishSession.Character.BlockExp;
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
@@ -1761,22 +1761,53 @@ namespace OpenNos.Handler
         /// <param name="character"></param>
         private void SendStats(CharacterDTO character)
         {
-            Session.SendPacket(Session.Character.GenerateSay($"Name: {character.Name} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Id: {character.CharacterId} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Gender: {character.Gender} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Class: {character.Class} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Level: {character.Level} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"JobLevel: {character.JobLevel} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"HeroLevel: {character.HeroLevel} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Gold: {character.Gold} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Bio: {character.Biography} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"MapId: {character.MapId} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"MapX: {character.MapX} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"MapY: {character.MapY} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Reputation: {character.Reput} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Dignity: {character.Dignity} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Fraction: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))} ", 13));
+            // TODO: Optimize THIS!
+            Session.SendPacket(Session.Character.GenerateSay("---- CHARACTER ----", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Name: {character.Name}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Id: {character.CharacterId}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Gender: {character.Gender}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Class: {character.Class}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Level: {character.Level}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"JobLevel: {character.JobLevel}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"HeroLevel: {character.HeroLevel}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Gold: {character.Gold}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Bio: {character.Biography}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"MapId: {character.MapId}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"MapX: {character.MapX}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"MapY: {character.MapY}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Reputation: {character.Reput}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Dignity: {character.Dignity}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Fraction: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
+            Session.SendPacket(Session.Character.GenerateSay("---- --------- ----", 13));
+            AccountDTO acc = DAOFactory.AccountDAO.LoadById(character.AccountId);
+            if (acc != null)
+            {
+                Session.SendPacket(Session.Character.GenerateSay("----- ACCOUNT -----", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Id: {acc.AccountId}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Name: {acc.Name}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Authority: {acc.Authority}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"RegistrationIP: {acc.RegistrationIP}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Email: {acc.Email}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"LastSession: {acc.LastSession}", 13));
+                Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
+
+            }
+            IEnumerable<PenaltyLogDTO> penalties = DAOFactory.PenaltyLogDAO.LoadByAccount(character.AccountId);
+            IEnumerable<PenaltyLogDTO> penaltyLogs = penalties as PenaltyLogDTO[] ?? penalties.ToArray();
+            PenaltyLogDTO penalty = penaltyLogs.LastOrDefault(s => s.DateEnd > DateTime.Now);
+            if (penalty != null)
+            {
+                Session.SendPacket(Session.Character.GenerateSay("----- PENALTY -----", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Type: {penalty.Penalty}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"AdminName: {penalty.AdminName}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Reason: {penalty.Reason}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"DateStart: {penalty.DateStart}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"DateEnd: {penalty.DateEnd}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Bans: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Banned)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Mutes: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Muted)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
+            }
         }
 
         /// <summary>
