@@ -319,53 +319,62 @@ namespace EpPathFinding
 
         public static List<GridPos> FindPath(JumpPointParam iParam)
         {
-            List<Node> tOpenList = iParam.openList;
-            Node tStartNode = iParam.StartNode;
-            Node tEndNode = iParam.EndNode;
-            bool revertEndNodeWalkable = false;
-
-            // set the `g` and `f` value of the start node to be 0
-            tStartNode.startToCurNodeLen = 0;
-            tStartNode.heuristicStartToEndLen = 0;
-
-            // push the start node into the open list
-            tOpenList.Add(tStartNode);
-            tStartNode.isOpened = true;
-
-            if (iParam.AllowEndNodeUnWalkable && !iParam.SearchGrid.IsWalkableAt(tEndNode.x, tEndNode.y))
+            try
             {
-                iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, 0);
-                revertEndNodeWalkable = true;
-            }
+                List<Node> tOpenList = iParam.openList;
+                Node tStartNode = iParam.StartNode;
+                Node tEndNode = iParam.EndNode;
+                bool revertEndNodeWalkable = false;
 
-            // while the open list is not empty
-            while (tOpenList.Any())
-            {
-                // pop the position of node which has the minimum `f` value.
-                Node tNode = tOpenList.Last();
-                tOpenList.RemoveAt(tOpenList.Count - 1);
-                tNode.isClosed = true;
+                // set the `g` and `f` value of the start node to be 0
+                tStartNode.startToCurNodeLen = 0;
+                tStartNode.heuristicStartToEndLen = 0;
 
-                if (tNode.Equals(tEndNode))
+                // push the start node into the open list
+                tOpenList.Add(tStartNode);
+                tStartNode.isOpened = true;
+
+                if (iParam.AllowEndNodeUnWalkable && !iParam.SearchGrid.IsWalkableAt(tEndNode.x, tEndNode.y))
                 {
-                    if (revertEndNodeWalkable)
-                    {
-                        iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, 1);
-                    }
-                    return Node.Backtrace(tNode); // rebuilding path
+                    iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, 0);
+                    revertEndNodeWalkable = true;
                 }
 
-                identifySuccessors(iParam, tNode);
-            }
+                // while the open list is not empty
+                while (tOpenList.Any())
+                {
+                    // pop the position of node which has the minimum `f` value.
+                    Node tNode = tOpenList.Last();
+                    tOpenList.RemoveAt(tOpenList.Count - 1);
+                    tNode.isClosed = true;
 
-            if (revertEndNodeWalkable)
+                    if (tNode.Equals(tEndNode))
+                    {
+                        if (revertEndNodeWalkable)
+                        {
+                            iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, 1);
+                        }
+                        return Node.Backtrace(tNode); // rebuilding path
+                    }
+
+                    identifySuccessors(iParam, tNode);
+                }
+
+                if (revertEndNodeWalkable)
+                {
+                    iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, 1);
+                }
+
+                // fail to find the path
+                return new List<GridPos>();
+
+            }
+            catch
             {
-                iParam.SearchGrid.SetWalkableAt(tEndNode.x, tEndNode.y, 1);
+                return new List<GridPos>();
             }
-
-            // fail to find the path
-            return new List<GridPos>();
         }
+
 
         private static void identifySuccessors(JumpPointParam iParam, Node iNode)
         {
