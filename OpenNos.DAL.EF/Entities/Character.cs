@@ -58,12 +58,6 @@ namespace OpenNos.DAL.EF
 
         public bool BuffBlocked { get; set; }
 
-        public bool BlockExp { get; set; }
-
-        public bool BlockRep { get; set; }
-
-        public bool BlockFXp { get; set; }
-
         public long CharacterId { get; set; }
 
         public virtual ICollection<CharacterRelation> CharacterRelation { get; set; }

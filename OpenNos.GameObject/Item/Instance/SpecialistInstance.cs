@@ -352,16 +352,16 @@ namespace OpenNos.GameObject
             short[] feather = { 3, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70 };
             short[] fullmoon = { 1, 3, 5, 7, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
             short[] soul = { 2, 4, 6, 8, 10, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 };
-            short featherVnum = 2282;
-            short fullmoonVnum = 1030;
-            short greenSoulVnum = 2283;
-            short redSoulVnum = 2284;
-            short blueSoulVnum = 2285;
-            short dragonSkinVnum = 2511;
-            short dragonBloodVnum = 2512;
-            short dragonHeartVnum = 2513;
-            short blueScrollVnum = 1363;
-            short redScrollVnum = 1364;
+            const short featherVnum = 2282;
+            const short fullmoonVnum = 1030;
+            const short greenSoulVnum = 2283;
+            const short redSoulVnum = 2284;
+            const short blueSoulVnum = 2285;
+            const short dragonSkinVnum = 2511;
+            const short dragonBloodVnum = 2512;
+            const short dragonHeartVnum = 2513;
+            const short blueScrollVnum = 1363;
+            const short redScrollVnum = 1364;
 
             if (!Session.HasCurrentMap)
             {

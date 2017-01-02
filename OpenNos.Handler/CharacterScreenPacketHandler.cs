@@ -147,7 +147,7 @@ namespace OpenNos.Handler
                             };
                             startupInventory.Add(inventory);
 
-                            inventory = new WearableInstance() // second weapon
+                            inventory = new WearableInstance // second weapon
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (byte)EquipmentType.SecondaryWeapon,
@@ -157,7 +157,7 @@ namespace OpenNos.Handler
                             };
                             startupInventory.Add(inventory);
 
-                            inventory = new WearableInstance() // armor
+                            inventory = new WearableInstance // armor
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (byte)EquipmentType.Armor,
@@ -167,7 +167,7 @@ namespace OpenNos.Handler
                             };
                             startupInventory.Add(inventory);
 
-                            inventory = new ItemInstance() // snack
+                            inventory = new ItemInstance // snack
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Type = InventoryType.Etc,
@@ -176,7 +176,7 @@ namespace OpenNos.Handler
                             };
                             startupInventory.Add(inventory);
 
-                            inventory = new ItemInstance() // ammo
+                            inventory = new ItemInstance // ammo
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = 1,
@@ -263,7 +263,7 @@ namespace OpenNos.Handler
                     {
                         if (accountDTO.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])))
                         {
-                            var account = new Account()
+                            var account = new Account
                             {
                                 AccountId = accountDTO.AccountId,
                                 Name = accountDTO.Name,
@@ -274,7 +274,7 @@ namespace OpenNos.Handler
                             account.Initialize();
                             foreach (PenaltyLogDTO penalty in DAOFactory.PenaltyLogDAO.LoadByAccount(accountDTO.AccountId))
                             {
-                                account.PenaltyLogs.Add(new PenaltyLogDTO()
+                                account.PenaltyLogs.Add(new PenaltyLogDTO
                                 {
                                     AccountId = penalty.AccountId,
                                     DateEnd = penalty.DateEnd,
@@ -286,7 +286,7 @@ namespace OpenNos.Handler
                             }
                             foreach (GeneralLogDTO general in DAOFactory.GeneralLogDAO.LoadByAccount(accountDTO.AccountId))
                             {
-                                account.GeneralLogs.Add(new GeneralLogDTO()
+                                account.GeneralLogs.Add(new GeneralLogDTO
                                 {
                                     AccountId = general.AccountId,
                                     LogData = general.LogData,

@@ -362,92 +362,98 @@ namespace OpenNos.GameObject
 
         public void SetRarityPoint()
         {
-            if (Item.EquipmentSlot == EquipmentType.MainWeapon || Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
+            switch (Item.EquipmentSlot)
             {
-                int point = CharacterHelper.RarityPoint(Rare, Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum);
-                Concentrate = 0;
-                HitRate = 0;
-                DamageMinimum = 0;
-                DamageMaximum = 0;
-                if (Rare >= 0)
-                {
-                    for (int i = 0; i < point; i++)
+                case EquipmentType.MainWeapon:
+                case EquipmentType.SecondaryWeapon:
                     {
-                        int rndn = ServerManager.RandomNumber(0, 3);
-                        if (rndn == 0)
+                        int point = CharacterHelper.RarityPoint(Rare, Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum);
+                        Concentrate = 0;
+                        HitRate = 0;
+                        DamageMinimum = 0;
+                        DamageMaximum = 0;
+                        if (Rare >= 0)
                         {
-                            Concentrate++;
-                            HitRate++;
+                            for (int i = 0; i < point; i++)
+                            {
+                                int rndn = ServerManager.RandomNumber(0, 3);
+                                if (rndn == 0)
+                                {
+                                    Concentrate++;
+                                    HitRate++;
+                                }
+                                else
+                                {
+                                    DamageMinimum++;
+                                    DamageMaximum++;
+                                }
+                            }
                         }
                         else
                         {
-                            DamageMinimum++;
-                            DamageMaximum++;
+                            for (int i = 0; i > point; i--)
+                            {
+                                int rndn = ServerManager.RandomNumber(0, 3);
+                                if (rndn == 0)
+                                {
+                                    Concentrate--;
+                                    HitRate--;
+                                }
+                                else
+                                {
+                                    DamageMinimum--;
+                                    DamageMaximum--;
+                                }
+                            }
                         }
                     }
-                }
-                else
-                {
-                    for (int i = 0; i > point; i--)
+                    break;
+                case EquipmentType.Armor:
                     {
-                        int rndn = ServerManager.RandomNumber(0, 3);
-                        if (rndn == 0)
+                        int point = CharacterHelper.RarityPoint(Rare, Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum);
+                        DefenceDodge = 0;
+                        DistanceDefenceDodge = 0;
+                        DistanceDefence = 0;
+                        MagicDefence = 0;
+                        CloseDefence = 0;
+                        if (Rare >= 0)
                         {
-                            Concentrate--;
-                            HitRate--;
+                            for (int i = 0; i < point; i++)
+                            {
+                                int rndn = ServerManager.RandomNumber(0, 3);
+                                if (rndn == 0)
+                                {
+                                    DefenceDodge++;
+                                    DistanceDefenceDodge++;
+                                }
+                                else
+                                {
+                                    DistanceDefence++;
+                                    MagicDefence++;
+                                    CloseDefence++;
+                                }
+                            }
                         }
                         else
                         {
-                            DamageMinimum--;
-                            DamageMaximum--;
+                            for (int i = 0; i > point; i--)
+                            {
+                                int rndn = ServerManager.RandomNumber(0, 3);
+                                if (rndn == 0)
+                                {
+                                    DefenceDodge--;
+                                    DistanceDefenceDodge--;
+                                }
+                                else
+                                {
+                                    DistanceDefence--;
+                                    MagicDefence--;
+                                    CloseDefence--;
+                                }
+                            }
                         }
                     }
-                }
-            }
-            else if (Item.EquipmentSlot == EquipmentType.Armor)
-            {
-                int point = CharacterHelper.RarityPoint(Rare, Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum);
-                DefenceDodge = 0;
-                DistanceDefenceDodge = 0;
-                DistanceDefence = 0;
-                MagicDefence = 0;
-                CloseDefence = 0;
-                if (Rare >= 0)
-                {
-                    for (int i = 0; i < point; i++)
-                    {
-                        int rndn = ServerManager.RandomNumber(0, 3);
-                        if (rndn == 0)
-                        {
-                            DefenceDodge++;
-                            DistanceDefenceDodge++;
-                        }
-                        else
-                        {
-                            DistanceDefence++;
-                            MagicDefence++;
-                            CloseDefence++;
-                        }
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i > point; i--)
-                    {
-                        int rndn = ServerManager.RandomNumber(0, 3);
-                        if (rndn == 0)
-                        {
-                            DefenceDodge--;
-                            DistanceDefenceDodge--;
-                        }
-                        else
-                        {
-                            DistanceDefence--;
-                            MagicDefence--;
-                            CloseDefence--;
-                        }
-                    }
-                }
+                    break;
             }
         }
 
@@ -464,7 +470,7 @@ namespace OpenNos.GameObject
                 short[] upsuccess = { 100, 100, 85, 70, 50, 20 };
                 int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };
                 short[] sand = { 5, 10, 15, 20, 25, 30 };
-                int sandVnum = 1027;
+                const int sandVnum = 1027;
                 if (Upgrade + itemToSum.Upgrade < 6 && (((itemToSum.Item.EquipmentSlot == EquipmentType.Gloves) && (Item.EquipmentSlot == EquipmentType.Gloves)) || ((Item.EquipmentSlot == EquipmentType.Boots) && (itemToSum.Item.EquipmentSlot == EquipmentType.Boots))))
                 {
                     if (session.Character.Gold < goldprice[Upgrade])
@@ -540,12 +546,12 @@ namespace OpenNos.GameObject
                     gem = new short[] { 1, 1, 2, 2, 3, 1, 1, 2, 2, 3 };
                 }
 
-                short cellaVnum = 1014;
-                short gemVnum = 1015;
-                short gemFullVnum = 1016;
-                double reducedpricefactor = 0.5;
-                short normalScrollVnum = 1218;
-                short goldScrollVnum = 5369;
+                const short cellaVnum = 1014;
+                const short gemVnum = 1015;
+                const short gemFullVnum = 1016;
+                const double reducedpricefactor = 0.5;
+                const short normalScrollVnum = 1218;
+                const short goldScrollVnum = 5369;
 
                 if (IsFixed)
                 {

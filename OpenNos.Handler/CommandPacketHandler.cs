@@ -230,98 +230,99 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$BlockExp")]
-        public void BlockExp(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length == 3)
-            {
-                string characterName = packetsplit[2];
+        // use PenaltyLog
+        //[Packet("$BlockExp")]
+        //public void BlockExp(string packet)
+        //{
+        //    string[] packetsplit = packet.Split(' ');
+        //    if (packetsplit.Length == 3)
+        //    {
+        //        string characterName = packetsplit[2];
 
-                ClientSession punishSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
-                if (punishSession != null)
-                {
-                    punishSession.Character.BlockExp = !punishSession.Character.BlockExp;
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                }
-                else
-                {
-                    CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
-                    if (character != null)
-                    {
-                        character.BlockExp = !character.BlockExp;
-                        DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                    }
-                    else
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-                    }
-                }
-            }
-        }
+        //        ClientSession punishSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
+        //        if (punishSession != null)
+        //        {
+        //            punishSession.Character.BlockExp = !punishSession.Character.BlockExp;
+        //            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        //        }
+        //        else
+        //        {
+        //            CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
+        //            if (character != null)
+        //            {
+        //                character.BlockExp = !character.BlockExp;
+        //                DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
+        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        //            }
+        //            else
+        //            {
+        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+        //            }
+        //        }
+        //    }
+        //}
 
-        [Packet("$BlockFXp")]
-        public void BlockFXp(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length == 3)
-            {
-                string characterName = packetsplit[2];
+        //[Packet("$BlockFXp")]
+        //public void BlockFXp(string packet)
+        //{
+        //    string[] packetsplit = packet.Split(' ');
+        //    if (packetsplit.Length == 3)
+        //    {
+        //        string characterName = packetsplit[2];
 
-                ClientSession punishSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
-                if (punishSession != null)
-                {
-                    punishSession.Character.BlockFXp = !punishSession.Character.BlockFXp;
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                }
-                else
-                {
-                    CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
-                    if (character != null)
-                    {
-                        character.BlockFXp = !character.BlockFXp;
-                        DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                    }
-                    else
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-                    }
-                }
-            }
-        }
+        //        ClientSession punishSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
+        //        if (punishSession != null)
+        //        {
+        //            punishSession.Character.BlockFXp = !punishSession.Character.BlockFXp;
+        //            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        //        }
+        //        else
+        //        {
+        //            CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
+        //            if (character != null)
+        //            {
+        //                character.BlockFXp = !character.BlockFXp;
+        //                DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
+        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        //            }
+        //            else
+        //            {
+        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+        //            }
+        //        }
+        //    }
+        //}
 
-        [Packet("$BlockRep")]
-        public void BlockRep(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length == 3)
-            {
-                string characterName = packetsplit[2];
+        //[Packet("$BlockRep")]
+        //public void BlockRep(string packet)
+        //{
+        //    string[] packetsplit = packet.Split(' ');
+        //    if (packetsplit.Length == 3)
+        //    {
+        //        string characterName = packetsplit[2];
 
-                ClientSession punishSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
-                if (punishSession != null)
-                {
-                    punishSession.Character.BlockRep = !punishSession.Character.BlockRep;
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                }
-                else
-                {
-                    CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
-                    if (character != null)
-                    {
-                        character.BlockRep = !character.BlockRep;
-                        DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                    }
-                    else
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-                    }
-                }
-            }
-        }
+        //        ClientSession punishSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
+        //        if (punishSession != null)
+        //        {
+        //            punishSession.Character.BlockRep = !punishSession.Character.BlockRep;
+        //            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        //        }
+        //        else
+        //        {
+        //            CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
+        //            if (character != null)
+        //            {
+        //                character.BlockRep = !character.BlockRep;
+        //                DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
+        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        //            }
+        //            else
+        //            {
+        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+        //            }
+        //        }
+        //    }
+        //}
 
         [Packet("$BlockPM")]
         public void BlockPM(string packet)
