@@ -1184,7 +1184,15 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), 0), ReceiverType.AllExceptMe);
+                string language = System.Configuration.ConfigurationManager.AppSettings["language"];
+                if (System.Configuration.ConfigurationManager.AppSettings["LagMode"].ToLower() == "true" && (Language.GetLanguage(message.Trim()) != language && Language.GetLanguage(message.Trim()) != String.Empty))
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 0));
+                }
+                else
+                {
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), 0), ReceiverType.AllExceptMe);
+                }
             }
         }
 
