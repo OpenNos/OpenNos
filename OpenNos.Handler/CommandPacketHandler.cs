@@ -500,7 +500,7 @@ namespace OpenNos.Handler
             Logger.Debug("Change Level Packet", Session.SessionId);
             if (changeLevelPacket != null)
             {
-                if (changeLevelPacket.Level < 100 && changeLevelPacket.Level > 0)
+                if (changeLevelPacket.Level > 0)
                 {
                     Session.Character.Level = changeLevelPacket.Level;
                     Session.Character.LevelXp = 0;

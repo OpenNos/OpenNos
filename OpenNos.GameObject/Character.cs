@@ -2884,7 +2884,7 @@ namespace OpenNos.GameObject
                     specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 }
 
-                if (Level < 99)
+                if (Level < 120)
                 {
                     if (isMonsterOwner)
                     {
@@ -2917,10 +2917,14 @@ namespace OpenNos.GameObject
                     LevelXp -= (long)t;
                     Level++;
                     t = XPLoad();
-                    if (Level >= 99)
+                    if (Level >= 120)
                     {
-                        Level = 99;
+                        Level = 120;
                         LevelXp = 0;
+                    }
+                    if (Level == 100)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay("You've reached Level 100! From now on, please use $GetExp to get your current Exp", 12));
                     }
                     Hp = (int)HPLoad();
                     Mp = (int)MPLoad();
