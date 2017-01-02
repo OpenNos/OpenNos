@@ -230,99 +230,201 @@ namespace OpenNos.Handler
             }
         }
 
-        // use PenaltyLog
-        //[Packet("$BlockExp")]
-        //public void BlockExp(string packet)
-        //{
-        //    string[] packetsplit = packet.Split(' ');
-        //    if (packetsplit.Length == 3)
-        //    {
-        //        string characterName = packetsplit[2];
+        // TODO: Unify This!
 
-        //        ClientSession punishSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
-        //        if (punishSession != null)
-        //        {
-        //            punishSession.Character.BlockExp = !punishSession.Character.BlockExp;
-        //            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        //        }
-        //        else
-        //        {
-        //            CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
-        //            if (character != null)
-        //            {
-        //                character.BlockExp = !character.BlockExp;
-        //                DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        //            }
-        //            else
-        //            {
-        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-        //            }
-        //        }
-        //    }
-        //}
+        [Packet("$BlockExp")]
+        public void BlockExp(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 3)
+            {
+                string name = packetsplit[2];
+                string reason = string.Empty;
+                int duration;
+                bool isduration = int.TryParse(packetsplit[3], out duration);
 
-        //[Packet("$BlockFXp")]
-        //public void BlockFXp(string packet)
-        //{
-        //    string[] packetsplit = packet.Split(' ');
-        //    if (packetsplit.Length == 3)
-        //    {
-        //        string characterName = packetsplit[2];
+                duration = isduration ? duration : 1;
 
-        //        ClientSession punishSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
-        //        if (punishSession != null)
-        //        {
-        //            punishSession.Character.BlockFXp = !punishSession.Character.BlockFXp;
-        //            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        //        }
-        //        else
-        //        {
-        //            CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
-        //            if (character != null)
-        //            {
-        //                character.BlockFXp = !character.BlockFXp;
-        //                DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        //            }
-        //            else
-        //            {
-        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-        //            }
-        //        }
-        //    }
-        //}
+                // get data from 3rd or 4th packetsplit depending on if duration was parsed or not
+                for (int i = isduration ? 4 : 3; i < packetsplit.Length; i++)
+                {
+                    reason += packetsplit[i] + " ";
+                }
+                reason = reason.Trim();
 
-        //[Packet("$BlockRep")]
-        //public void BlockRep(string packet)
-        //{
-        //    string[] packetsplit = packet.Split(' ');
-        //    if (packetsplit.Length == 3)
-        //    {
-        //        string characterName = packetsplit[2];
+                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
+                if (duration != 0)
+                {
+                    if (session != null)
+                    {
+                        session.Account.PenaltyLogs.Add(new PenaltyLogDTO
+                        {
+                            AccountId = session.Account.AccountId,
+                            Reason = reason,
+                            Penalty = PenaltyType.BlockExp,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddHours(duration),
+                            AdminName = Session.Character.Name
+                        });
+                        session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                    }
+                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    {
+                        DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO
+                        {
+                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                            Reason = reason,
+                            Penalty = PenaltyType.BlockExp,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddHours(duration),
+                            AdminName = Session.Character.Name
+                        });
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                    }
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$BlockExp CHARACTERNAME TIME REASON ", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$BlockExp CHARACTERNAME REASON", 10));
+            }
+        }
 
-        //        ClientSession punishSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
-        //        if (punishSession != null)
-        //        {
-        //            punishSession.Character.BlockRep = !punishSession.Character.BlockRep;
-        //            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        //        }
-        //        else
-        //        {
-        //            CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(characterName);
-        //            if (character != null)
-        //            {
-        //                character.BlockRep = !character.BlockRep;
-        //                DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        //            }
-        //            else
-        //            {
-        //                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-        //            }
-        //        }
-        //    }
-        //}
+        [Packet("$BlockFExp")]
+        public void BlockFExp(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 3)
+            {
+                string name = packetsplit[2];
+                string reason = string.Empty;
+                int duration;
+                bool isduration = int.TryParse(packetsplit[3], out duration);
+
+                duration = isduration ? duration : 1;
+
+                // get data from 3rd or 4th packetsplit depending on if duration was parsed or not
+                for (int i = isduration ? 4 : 3; i < packetsplit.Length; i++)
+                {
+                    reason += packetsplit[i] + " ";
+                }
+                reason = reason.Trim();
+
+                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
+                if (duration != 0)
+                {
+                    if (session != null)
+                    {
+                        session.Account.PenaltyLogs.Add(new PenaltyLogDTO
+                        {
+                            AccountId = session.Account.AccountId,
+                            Reason = reason,
+                            Penalty = PenaltyType.BlockFExp,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddHours(duration),
+                            AdminName = Session.Character.Name
+                        });
+                        session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                    }
+                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    {
+                        DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO
+                        {
+                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                            Reason = reason,
+                            Penalty = PenaltyType.BlockFExp,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddHours(duration),
+                            AdminName = Session.Character.Name
+                        });
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                    }
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$BlockFExp CHARACTERNAME TIME REASON ", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$BlockFExp CHARACTERNAME REASON", 10));
+            }
+        }
+
+        [Packet("$BlockRep")]
+        public void BlockRep(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 3)
+            {
+                string name = packetsplit[2];
+                string reason = string.Empty;
+                int duration;
+                bool isduration = int.TryParse(packetsplit[3], out duration);
+
+                duration = isduration ? duration : 1;
+
+                // get data from 3rd or 4th packetsplit depending on if duration was parsed or not
+                for (int i = isduration ? 4 : 3; i < packetsplit.Length; i++)
+                {
+                    reason += packetsplit[i] + " ";
+                }
+                reason = reason.Trim();
+
+                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
+                if (duration != 0)
+                {
+                    if (session != null)
+                    {
+                        session.Account.PenaltyLogs.Add(new PenaltyLogDTO
+                        {
+                            AccountId = session.Account.AccountId,
+                            Reason = reason,
+                            Penalty = PenaltyType.BlockRep,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddHours(duration),
+                            AdminName = Session.Character.Name
+                        });
+                        session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                    }
+                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    {
+                        DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO
+                        {
+                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                            Reason = reason,
+                            Penalty = PenaltyType.BlockRep,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddHours(duration),
+                            AdminName = Session.Character.Name
+                        });
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                    }
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$BlockRep CHARACTERNAME TIME REASON ", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$BlockRep CHARACTERNAME REASON", 10));
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////
 
         [Packet("$BlockPM")]
         public void BlockPM(string packet)
@@ -612,7 +714,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME TIME REASON ", 12));
             Session.SendPacket(Session.Character.GenerateSay("$BlockExp CHARACTERNAME", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$BlockFXp CHARACTERNAME", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$BlockFExp CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$BlockPM", 12));
             Session.SendPacket(Session.Character.GenerateSay("$BlockRep CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
@@ -1357,11 +1459,7 @@ namespace OpenNos.Handler
                             DateEnd = DateTime.Now.AddHours(duration),
                             AdminName = Session.Character.Name
                         });
-                        session.SendPacket(duration == 1
-                            ? Session.Character.GenerateInfo(
-                                string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason))
-                            : Session.Character.GenerateInfo(
-                                string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
+                        session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
                     else if (DAOFactory.CharacterDAO.LoadByName(name) != null)

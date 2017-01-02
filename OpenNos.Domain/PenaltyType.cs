@@ -17,6 +17,9 @@ namespace OpenNos.Domain
     public enum PenaltyType : byte
     {
         Muted = 0,
-        Banned = 1
+        Banned = 1,
+        BlockExp = 2,
+        BlockFExp = 3,
+        BlockRep = 4
     }
 }
