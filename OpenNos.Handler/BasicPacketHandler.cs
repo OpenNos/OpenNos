@@ -292,14 +292,18 @@ namespace OpenNos.Handler
             {
                 foreach (MapNpc npc in Session.CurrentMap.Npcs)
                 {
-                    if (npc.MapNpcId == Convert.ToInt32(characterInformationPacket[3]))
+                    int mapMonsterId;
+                    if (int.TryParse(characterInformationPacket[3], out mapMonsterId))
                     {
-                        NpcMonster npcinfo = ServerManager.GetNpc(npc.NpcVNum);
-                        if (npcinfo == null)
+                        if (npc.MapNpcId == mapMonsterId)
                         {
-                            return;
+                            NpcMonster npcinfo = ServerManager.GetNpc(npc.NpcVNum);
+                            if (npcinfo == null)
+                            {
+                                return;
+                            }
+                            Session.SendPacket($"st 2 {characterInformationPacket[3]} {npcinfo.Level} {npcinfo.HeroLevel} 100 100 50000 50000");
                         }
-                        Session.SendPacket($"st 2 {characterInformationPacket[3]} {npcinfo.Level} {npcinfo.HeroLevel} 100 100 50000 50000");
                     }
                 }
             }
@@ -307,15 +311,19 @@ namespace OpenNos.Handler
             {
                 foreach (MapMonster monster in Session.CurrentMap.Monsters)
                 {
-                    if (monster.MapMonsterId == Convert.ToInt32(characterInformationPacket[3]))
+                    int mapMonsterId;
+                    if (int.TryParse(characterInformationPacket[3], out mapMonsterId))
                     {
-                        NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
-                        if (monsterinfo == null)
+                        if (monster.MapMonsterId == mapMonsterId)
                         {
-                            return;
+                            NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
+                            if (monsterinfo == null)
+                            {
+                                return;
+                            }
+                            Session.Character.LastMonsterId = monster.MapMonsterId;
+                            Session.SendPacket($"st 3 {characterInformationPacket[3]} {monsterinfo.Level} {monsterinfo.HeroLevel} {(int)((float)monster.CurrentHp / (float)monster.Monster.MaxHP * 100)} {(int)((float)monster.CurrentMp / (float)monster.Monster.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}");
                         }
-                        Session.Character.LastMonsterId = monster.MapMonsterId;
-                        Session.SendPacket($"st 3 {characterInformationPacket[3]} {monsterinfo.Level} {monsterinfo.HeroLevel} {(int)((float)monster.CurrentHp / (float)monster.Monster.MaxHP * 100)} {(int)((float)monster.CurrentMp / (float)monster.Monster.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}");
                     }
                 }
             }
