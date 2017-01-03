@@ -1185,9 +1185,10 @@ namespace OpenNos.Handler
             else
             {
                 string language = System.Configuration.ConfigurationManager.AppSettings["language"];
-                if (System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && (Language.GetLanguage(message.Trim()) != language && Language.GetLanguage(message.Trim()) != String.Empty))
+                if (packetsplit.Length > 3 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && (Language.Instance.GetLanguage(message.Trim()) != language && Language.Instance.GetLanguage(message.Trim()) != String.Empty))
                 {
-                    Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 0));
+                    Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 2));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 11));
                 }
                 else
                 {

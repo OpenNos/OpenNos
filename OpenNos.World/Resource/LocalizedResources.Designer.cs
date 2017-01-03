@@ -1609,7 +1609,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Only {0] language allowed !.
+        ///   Recherche une chaîne localisée semblable à Only {0} language allowed !.
         /// </summary>
         internal static string LANGUAGE_REQUIRED {
             get {

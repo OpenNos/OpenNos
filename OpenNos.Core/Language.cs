@@ -28,7 +28,8 @@ namespace OpenNos.Core
         private static Language instance;
         private ResourceManager _manager;
         private CultureInfo _resourceCulture;
-
+        private RankedLanguageIdentifier _identifier;
+        private RankedLanguageIdentifierFactory _factory;
         #endregion
 
         #region Instantiation
@@ -57,19 +58,19 @@ namespace OpenNos.Core
         #endregion
 
         #region Methods
-        public static string GetLanguage(string completeTextString)
+        public string GetLanguage(string completeTextString)
         {
-            var factory = new RankedLanguageIdentifierFactory();
-            //set the dictionary path
-            var identifier = factory.Load("NTextCat\\LanguageModels\\Core14.profile.xml");
-            //get the language
-            var languages = identifier.Identify(completeTextString);
-            var mostCertainLanguage = languages.FirstOrDefault();
+            if(_factory == null || _identifier == null)
+            {
+                _factory = new RankedLanguageIdentifierFactory();
+                _identifier = _factory.Load(@"Core14.profile.xml");
+            }
+            var mostCertainLanguage = _identifier.Identify(completeTextString).FirstOrDefault();
             if (mostCertainLanguage != null)
             {
                 //get the language in two-digit form e.g. en, de, fr...
-                String language = mostCertainLanguage.Item1.Iso639_3;
-                return language;
+                CultureInfo cult = CultureInfo.GetCultures(CultureTypes.NeutralCultures).FirstOrDefault(ci => string.Equals(ci.ThreeLetterISOLanguageName, mostCertainLanguage.Item1.Iso639_2T, StringComparison.OrdinalIgnoreCase));    
+                return cult.TwoLetterISOLanguageName;
             }
             else
             {
