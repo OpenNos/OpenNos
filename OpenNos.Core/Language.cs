@@ -12,7 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using NTextCat;
+using System;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 
@@ -54,7 +57,25 @@ namespace OpenNos.Core
         #endregion
 
         #region Methods
-
+        public static string GetLanguage(string completeTextString)
+        {
+            var factory = new RankedLanguageIdentifierFactory();
+            //set the dictionary path
+            var identifier = factory.Load("NTextCat\\LanguageModels\\Core14.profile.xml");
+            //get the language
+            var languages = identifier.Identify(completeTextString);
+            var mostCertainLanguage = languages.FirstOrDefault();
+            if (mostCertainLanguage != null)
+            {
+                //get the language in two-digit form e.g. en, de, fr...
+                String language = mostCertainLanguage.Item1.Iso639_3;
+                return language;
+            }
+            else
+            {
+                return String.Empty;
+            }
+        }
         public string GetMessageFromKey(string message)
         {
             string resourceMessage = _manager != null ? _manager.GetString(message, _resourceCulture) : string.Empty;
