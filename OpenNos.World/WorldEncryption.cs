@@ -171,70 +171,77 @@ namespace OpenNos.World
 
         public override string DecryptCustomParameter(byte[] str)
         {
-            string encrypted_string = string.Empty;
-            for (int i = 1; i < str.Length; i++)
+            try
             {
-                if (Convert.ToChar(str[i]) == 0xE)
+                string encrypted_string = string.Empty;
+                for (int i = 1; i < str.Length; i++)
                 {
-                    return encrypted_string;
+                    if (Convert.ToChar(str[i]) == 0xE)
+                    {
+                        return encrypted_string;
+                    }
+
+                    int firstbyte = Convert.ToInt32(str[i] - 0xF);
+                    int secondbyte = firstbyte;
+                    secondbyte &= 0xF0;
+                    firstbyte = Convert.ToInt32(firstbyte - secondbyte);
+                    secondbyte >>= 0x4;
+
+                    switch (secondbyte)
+                    {
+                        case 0:
+                            encrypted_string += ' ';
+                            break;
+
+                        case 1:
+                            encrypted_string += ' ';
+                            break;
+
+                        case 2:
+                            encrypted_string += '-';
+                            break;
+
+                        case 3:
+                            encrypted_string += '.';
+                            break;
+
+                        default:
+                            secondbyte += 0x2C;
+                            encrypted_string += Convert.ToChar(secondbyte);
+                            break;
+                    }
+
+                    switch (firstbyte)
+                    {
+                        case 0:
+                            encrypted_string += ' ';
+                            break;
+
+                        case 1:
+                            encrypted_string += ' ';
+                            break;
+
+                        case 2:
+                            encrypted_string += '-';
+                            break;
+
+                        case 3:
+                            encrypted_string += '.';
+                            break;
+
+                        default:
+                            firstbyte += 0x2C;
+                            encrypted_string += Convert.ToChar(firstbyte);
+                            break;
+                    }
                 }
 
-                int firstbyte = Convert.ToInt32(str[i] - 0xF);
-                int secondbyte = firstbyte;
-                secondbyte &= 0xF0;
-                firstbyte = Convert.ToInt32(firstbyte - secondbyte);
-                secondbyte >>= 0x4;
-
-                switch (secondbyte)
-                {
-                    case 0:
-                        encrypted_string += ' ';
-                        break;
-
-                    case 1:
-                        encrypted_string += ' ';
-                        break;
-
-                    case 2:
-                        encrypted_string += '-';
-                        break;
-
-                    case 3:
-                        encrypted_string += '.';
-                        break;
-
-                    default:
-                        secondbyte += 0x2C;
-                        encrypted_string += Convert.ToChar(secondbyte);
-                        break;
-                }
-
-                switch (firstbyte)
-                {
-                    case 0:
-                        encrypted_string += ' ';
-                        break;
-
-                    case 1:
-                        encrypted_string += ' ';
-                        break;
-
-                    case 2:
-                        encrypted_string += '-';
-                        break;
-
-                    case 3:
-                        encrypted_string += '.';
-                        break;
-
-                    default:
-                        firstbyte += 0x2C;
-                        encrypted_string += Convert.ToChar(firstbyte);
-                        break;
-                }
+                return encrypted_string;
             }
-
-            return encrypted_string;
+            catch(OverflowException oe)
+            {
+                return string.Empty;
+            }
         }
 
         public override byte[] Encrypt(string str)
