@@ -195,16 +195,13 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("dir")]
-        public void Dir(string packet)
+        public void Dir(DirectionPacket directionpacket)
         {
-            Logger.Debug(packet, Session.SessionId);
-            string[] dirPacket = packet.Split(' ');
-
-            if (Convert.ToInt32(dirPacket[4]) == Session.Character.CharacterId)
+           
+            if (directionpacket.CharacterId == Session.Character.CharacterId)
             {
-                Session.Character.Direction = Convert.ToInt32(dirPacket[2]);
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateDir());
+                Session.Character.Direction = directionpacket.Direction;
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateDir()); 
             }
         }
 

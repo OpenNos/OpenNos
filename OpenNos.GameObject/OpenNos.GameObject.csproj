@@ -117,8 +117,16 @@
     <Compile Include="Packets\ClientPackets\ExchangeListPacket.cs" />
     <Compile Include="Packets\ClientPackets\ExchangeRequestPacket.cs" />
     <Compile Include="Packets\ClientPackets\CClosePacket.cs" />
+    <Compile Include="Packets\ClientPackets\GameStart.cs" />
     <Compile Include="Packets\ClientPackets\GetPacket.cs" />
     <Compile Include="Packets\ClientPackets\FStashEndPacket.cs" />
+    <Compile Include="Packets\ClientPackets\DirectionPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GuriPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MallPacket.cs" />
+    <Compile Include="Packets\ClientPackets\NpinfoPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PclPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PreqPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SelectPacket.cs" />
     <Compile Include="Packets\ClientPackets\SitPacket.cs" />
     <Compile Include="Packets\ClientPackets\PulsePacket.cs" />
     <Compile Include="Packets\ClientPackets\MultiTargetListSubPacket.cs" />
@@ -170,6 +178,7 @@
     <Compile Include="Packets\CommandPackets\WigColorPacket.cs" />
     <Compile Include="Packets\CommandPackets\XpRatePacket.cs" />
     <Compile Include="Packets\CommandPackets\ZoomPacket.cs" />
+    <Compile Include="Packets\ServerPackets\Act6Packet.cs" />
     <Compile Include="Packets\ServerPackets\BfPacket.cs" />
     <Compile Include="Packets\ServerPackets\BuyPacket.cs" />
     <Compile Include="Packets\ServerPackets\CharacterCreatePacket.cs" />
@@ -181,6 +190,7 @@
     <Compile Include="Packets\ServerPackets\EqPacket.cs" />
     <Compile Include="Packets\ServerPackets\EquipPacket.cs" />
     <Compile Include="Packets\ServerPackets\GetPacket.cs" />
+    <Compile Include="Packets\ServerPackets\HeroPacket.cs" />
     <Compile Include="Packets\ServerPackets\InPacket.cs" />
     <Compile Include="Packets\ServerPackets\MovePacket.cs" />
     <Compile Include="Packets\ServerPackets\MviPacket.cs" />
