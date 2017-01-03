@@ -1892,7 +1892,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
 
             }
-            IEnumerable<PenaltyLogDTO> penalties = DAOFactory.PenaltyLogDAO.LoadByAccount(character.AccountId);
+            IEnumerable<PenaltyLogDTO> penalties = DAOFactory.PenaltyLogDAO.LoadByAccount(character.AccountId).Any() ? DAOFactory.PenaltyLogDAO.LoadByAccount(character.AccountId) : Session.Account.PenaltyLogs;
             IEnumerable<PenaltyLogDTO> penaltyLogs = penalties as PenaltyLogDTO[] ?? penalties.ToArray();
             PenaltyLogDTO penalty = penaltyLogs.LastOrDefault(s => s.DateEnd > DateTime.Now);
             if (penalty != null)
