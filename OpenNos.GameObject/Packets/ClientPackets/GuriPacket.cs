@@ -12,16 +12,16 @@ namespace OpenNos.GameObject
         public int Type { get; set; }
 
         [PacketIndex(1)]
-        public int Unknown { get; set; }
+        public int Argument { get; set; }
 
         [PacketIndex(2)]
         public long CharacterId { get; set; }
 
         [PacketIndex(3)]
-        public byte Unknown1 { get; set; }
+        public byte Value { get; set; }
 
         [PacketIndex(4)]
-        public byte Unknown2 { get; set; }
+        public byte Value1 { get; set; }
 
         #endregion
     }
