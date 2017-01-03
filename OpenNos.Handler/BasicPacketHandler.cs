@@ -1057,12 +1057,10 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("pulse")]
-        public void Pulse(string packet)
+        public void Pulse(PulsePacket pulsepacket)
         {
-            string[] packetsplit = packet.Split(' ');
             Session.Character.LastPulse += 60;
-            if (Convert.ToInt32(packetsplit[2]) != Session.Character.LastPulse)
+            if (pulsepacket.Tick != Session.Character.LastPulse)
             {
                 Session.Disconnect();
             }
@@ -1093,9 +1091,8 @@ namespace OpenNos.Handler
         }
 
         [Packet("rest")]
-        public void Rest(string packet)
+        public void Rest(SitPacket sitpacket)
         {
-            Logger.Debug(packet, Session.SessionId);
             Session.Character.Rest();
         }
 

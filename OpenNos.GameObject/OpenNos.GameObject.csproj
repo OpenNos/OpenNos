@@ -119,6 +119,8 @@
     <Compile Include="Packets\ClientPackets\CClosePacket.cs" />
     <Compile Include="Packets\ClientPackets\GetPacket.cs" />
     <Compile Include="Packets\ClientPackets\FStashEndPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SitPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PulsePacket.cs" />
     <Compile Include="Packets\ClientPackets\MultiTargetListSubPacket.cs" />
     <Compile Include="Packets\ClientPackets\MvePacket.cs" />
     <Compile Include="Packets\ClientPackets\MviPacket.cs" />
