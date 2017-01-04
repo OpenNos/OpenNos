@@ -10,9 +10,9 @@ namespace OpenNos.GameObject
 
         [PacketIndex(0)]
         public int Type { get; set; }
-        [PacketIndex(0)]
+        [PacketIndex(1)]
         public long CharacterId { get; set; }
-        [PacketIndex(0)]
+        [PacketIndex(2)]
         public int Option { get; set; }
         #endregion
     }
