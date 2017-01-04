@@ -101,7 +101,7 @@ namespace EpPathFinding
             }
 
             // Return true if the fields match:
-            return (a.minX == b.minX) && (a.minY == b.minY) && (a.maxX == b.maxX) && (a.maxY == b.maxY);
+            return a.minX == b.minX && a.minY == b.minY && a.maxX == b.maxX && a.maxY == b.maxY;
         }
 
         public override bool Equals(object obj)
@@ -116,7 +116,7 @@ namespace EpPathFinding
             }
 
             // Return true if the fields match:
-            return (minX == p.minX) && (minY == p.minY) && (maxX == p.maxX) && (maxY == p.maxY);
+            return minX == p.minX && minY == p.minY && maxX == p.maxX && maxY == p.maxY;
         }
 
         public bool Equals(GridRect p)
@@ -127,7 +127,7 @@ namespace EpPathFinding
             }
 
             // Return true if the fields match:
-            return (minX == p.minX) && (minY == p.minY) && (maxX == p.maxX) && (maxY == p.maxY);
+            return minX == p.minX && minY == p.minY && maxX == p.maxX && maxY == p.maxY;
         }
 
         public override int GetHashCode()

@@ -158,11 +158,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalizedResources.pl.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resource\LocalizedResources.th.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LocalizedResources.th.resx</DependentUpon>
-    </Compile>
     <Compile Include="WorldEncryption.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -188,10 +183,6 @@
       <IsTransformFile>True</IsTransformFile>
     </None>
     <None Include="App.FR.config">
-      <DependentUpon>App.config</DependentUpon>
-      <IsTransformFile>True</IsTransformFile>
-    </None>
-    <None Include="App.TH.config">
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
     </None>
@@ -253,11 +244,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resource\LocalizedResources.th.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalizedResources.th.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resource\LocalizedResources.de.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedResources.de.Designer.cs</LastGenOutput>

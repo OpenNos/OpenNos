@@ -639,7 +639,7 @@ namespace OpenNos.GameObject
                     Session.Character.LastEffect = DateTime.Now;
                 }
 
-                if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
+                if (Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now || Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now)
                 {
                     Session.Character.LastHealth = DateTime.Now;
                     if (Session.HealthStop)
@@ -698,7 +698,7 @@ namespace OpenNos.GameObject
                         SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                         byte spType = 0;
 
-                        if ((specialist.Item.Morph > 1 && specialist.Item.Morph < 8) || (specialist.Item.Morph > 9 && specialist.Item.Morph < 16))
+                        if (specialist.Item.Morph > 1 && specialist.Item.Morph < 8 || specialist.Item.Morph > 9 && specialist.Item.Morph < 16)
                             spType = 3;
                         else if (specialist.Item.Morph > 16 && specialist.Item.Morph < 29)
                             spType = 2;
@@ -1805,8 +1805,8 @@ namespace OpenNos.GameObject
                 foreach (CharacterRelationDTO relation in _friends)
                 {
                     byte isOnline = 0;
-                    if ((relatedCharacterLoggedInId.HasValue && relatedCharacterLoggedInId.Value == relation.RelatedCharacterId)
-                        || (relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId != relatedCharacterLoggedOutId.Value) &&
+                    if (relatedCharacterLoggedInId.HasValue && relatedCharacterLoggedInId.Value == relation.RelatedCharacterId
+                        || relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId != relatedCharacterLoggedOutId.Value &&
                         ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
                     {
                         isOnline = 1;
@@ -1980,7 +1980,7 @@ namespace OpenNos.GameObject
             // end owner set
             if (Session.HasCurrentMap)
             {
-                List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMap.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || (s.MapTypeId == null)).ToList();
+                List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMap.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || s.MapTypeId == null).ToList();
                 if (monsterToAttack.Monster.MonsterType != MonsterType.Special)
                 {
                     #region item drop
@@ -1991,7 +1991,7 @@ namespace OpenNos.GameObject
                     {
                         if (x < 4)
                         {
-                            double rndamount = ServerManager.RandomNumber(0, 100) * random.NextDouble();
+                            double rndamount = ServerManager.RandomNumber() * random.NextDouble();
                             if (rndamount <= (double)drop.DropChance * dropRate / 5000.000)
                             {
                                 x++;
@@ -2030,11 +2030,12 @@ namespace OpenNos.GameObject
 
                                         long? owner = dropOwner;
                                         Observable.Timer(TimeSpan.FromMilliseconds(500))
-                                       .Subscribe(
-                                       o =>
+                                       .Subscribe(o =>
                                        {
                                            if (Session.HasCurrentMap)
+                                           {
                                                Session.CurrentMap.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                                           }
                                        });
                                     }
                                 }
@@ -2049,11 +2050,11 @@ namespace OpenNos.GameObject
                     // gold calculation
                     int gold = GetGold(monsterToAttack);
                     gold = gold > 1000000000 ? 1000000000 : gold;
-                    double randChance = ServerManager.RandomNumber(0, 100) * random.NextDouble();
+                    double randChance = ServerManager.RandomNumber() * random.NextDouble();
 
                     if (gold > 0 && randChance <= (int)(ServerManager.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
                     {
-                        DropDTO drop2 = new DropDTO()
+                        DropDTO drop2 = new DropDTO
                         {
                             Amount = gold,
                             ItemVNum = 1046
@@ -2432,9 +2433,9 @@ namespace OpenNos.GameObject
             return $"revive 1 {CharacterId} 0";
         }
 
-        public string GenerateRp(int mapid, int x, int y, string parametter)
+        public string GenerateRp(int mapid, int x, int y, string param)
         {
-            return $"rp {mapid} {x} {y} {parametter}";
+            return $"rp {mapid} {x} {y} {param}";
         }
 
         public string GenerateSay(string message, int type)
@@ -2501,7 +2502,7 @@ namespace OpenNos.GameObject
             List<CharacterSkill> skillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.GetAllSkill().Where(ski => ski.Class == inventoryItem.Item.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel))
             {
-                skillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
+                skillsSp.Add(new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
             }
             byte spdestroyed = 0;
             if (inventoryItem.Rare == -2)
@@ -2838,8 +2839,8 @@ namespace OpenNos.GameObject
                 WearableInstance item = Inventory?.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
                 if (item != null)
                 {
-                    if ((item.Item.EquipmentSlot != EquipmentType.MainWeapon)
-                        && (item.Item.EquipmentSlot != EquipmentType.SecondaryWeapon)
+                    if (item.Item.EquipmentSlot != EquipmentType.MainWeapon
+                        && item.Item.EquipmentSlot != EquipmentType.SecondaryWeapon
                         && item.Item.EquipmentSlot != EquipmentType.Armor
                         && item.Item.EquipmentSlot != EquipmentType.Sp)
                     {
@@ -2887,17 +2888,17 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                if ((int) (LevelXp / (XPLoad() / 10)) < (int) ((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
+                if ((int)(LevelXp / (XPLoad() / 10)) < (int)((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
                 {
-                    Hp = (int) HPLoad();
-                    Mp = (int) MPLoad();
+                    Hp = (int)HPLoad();
+                    Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
                     Session.SendPacket(GenerateEff(5));
                 }
 
                 if (Inventory != null)
                 {
-                    specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp,
+                    specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,
                         InventoryType.Wear);
                 }
 
@@ -2912,7 +2913,7 @@ namespace OpenNos.GameObject
                         LevelXp += GetXP(monsterinfo, grp) / 3;
                     }
                 }
-                if ((Class == 0 && JobLevel < 20) || (Class != 0 && JobLevel < 80))
+                if (Class == 0 && JobLevel < 20 || Class != 0 && JobLevel < 80)
                 {
                     if (specialist != null && UseSp && specialist.SpLevel < 99 && specialist.SpLevel > 19)
                     {
@@ -2931,7 +2932,7 @@ namespace OpenNos.GameObject
                 double t = XPLoad();
                 while (LevelXp >= t)
                 {
-                    LevelXp -= (long) t;
+                    LevelXp -= (long)t;
                     Level++;
                     t = XPLoad();
                     if (Level >= 99)
@@ -2939,8 +2940,8 @@ namespace OpenNos.GameObject
                         Level = 99;
                         LevelXp = 0;
                     }
-                    Hp = (int) HPLoad();
-                    Mp = (int) MPLoad();
+                    Hp = (int)HPLoad();
+                    Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
@@ -2949,7 +2950,7 @@ namespace OpenNos.GameObject
                     ServerManager.Instance.UpdateGroup(CharacterId);
                 }
 
-                WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Fairy,InventoryType.Wear);
+                WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
                 if (fairy != null)
                 {
                     if (fairy.ElementRate + fairy.Item.ElementRate < fairy.Item.MaxElementRate &&
@@ -2960,7 +2961,7 @@ namespace OpenNos.GameObject
                     t = CharacterHelper.LoadFairyXPData(fairy.ElementRate);
                     while (fairy.XP >= t)
                     {
-                        fairy.XP -= (int) t;
+                        fairy.XP -= (int)t;
                         fairy.ElementRate++;
                         if (fairy.ElementRate + fairy.Item.ElementRate == fairy.Item.MaxElementRate)
                         {
@@ -2983,7 +2984,7 @@ namespace OpenNos.GameObject
                 t = JobXPLoad();
                 while (JobLevelXp >= t)
                 {
-                    JobLevelXp -= (long) t;
+                    JobLevelXp -= (long)t;
                     JobLevel++;
                     t = JobXPLoad();
                     if (JobLevel >= 20 && Class == 0)
@@ -2996,8 +2997,8 @@ namespace OpenNos.GameObject
                         JobLevel = 80;
                         JobLevelXp = 0;
                     }
-                    Hp = (int) HPLoad();
-                    Mp = (int) MPLoad();
+                    Hp = (int)HPLoad();
+                    Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
@@ -3011,7 +3012,7 @@ namespace OpenNos.GameObject
 
                     while (UseSp && specialist.XP >= t)
                     {
-                        specialist.XP -= (long) t;
+                        specialist.XP -= (long)t;
                         specialist.SpLevel++;
                         t = SPXPLoad();
                         Session.SendPacket(GenerateStat());
@@ -3759,11 +3760,11 @@ namespace OpenNos.GameObject
                 {
                     rare = 0;
                 }
-                if ((upgrade > 10) && it.ItemType != ItemType.Specialist)
+                if (upgrade > 10 && it.ItemType != ItemType.Specialist)
                 {
                     upgrade = 0;
                 }
-                else if (it.ItemType == ItemType.Specialist && (upgrade > 15))
+                else if (it.ItemType == ItemType.Specialist && upgrade > 15)
                 {
                     upgrade = 0;
                 }
@@ -4022,7 +4023,6 @@ namespace OpenNos.GameObject
 
         private int GetGold(MapMonster mapMonster)
         {
-            Random random = new Random(DateTime.Now.Millisecond + mapMonster.MapMonsterId);
             int lowBaseGold = ServerManager.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
             int actMultiplier = Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
             int gold = lowBaseGold * ServerManager.GoldRate * actMultiplier;

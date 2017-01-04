@@ -129,7 +129,7 @@ namespace OpenNos.WebApi.Reference
 
         public void OnSessionKicked(long? sessionId, string accountName)
         {
-            if (SessionKickedEvent != null && (sessionId.HasValue || !String.IsNullOrEmpty(accountName)))
+            if (SessionKickedEvent != null && (sessionId.HasValue || !string.IsNullOrEmpty(accountName)))
             {
                 SessionKickedEvent(new Tuple<long?, string>(sessionId, accountName), new EventArgs());
             }

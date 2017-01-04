@@ -69,7 +69,7 @@ namespace OpenNos.Core
                     }
                     else
                     {
-                        decryptedPacket += Convert.ToChar((256 - (15 - (character))) ^ 195);
+                        decryptedPacket += Convert.ToChar((256 - (15 - character)) ^ 195);
                     }
                 }
 

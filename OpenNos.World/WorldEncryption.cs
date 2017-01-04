@@ -256,7 +256,7 @@ namespace OpenNos.World
             {
                 if (i % 0x7E == 0)
                 {
-                    encryptedData[i + ii] = (byte)((BytesLength - i) > 0x7E ? 0x7E : BytesLength - i);
+                    encryptedData[i + ii] = (byte)(BytesLength - i > 0x7E ? 0x7E : BytesLength - i);
                     ii++;
                 }
                 encryptedData[i + ii] = (byte)~StrBytes[i];

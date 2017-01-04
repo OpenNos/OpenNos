@@ -133,7 +133,7 @@
     <value>Konfiguracja załadowana!</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
-    <value>CONNECT {0} Connected -- SessionId: {1}</value>
+    <value>ŁĄCZE {0} Połączono -- SessionId: {1}</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Baza danych zostala załadowana!</value>
@@ -169,13 +169,13 @@
     <value>Wiadomość jest za duża ({0} bytes). maksymalna dlugość {1} bytes.</value>
   </data>
   <data name="CONNECTION_LOST" xml:space="preserve">
-    <value>Connection to the server has been lost.</value>
+    <value>Połączenie z serverem zostało utracone.</value>
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
     <value>Database is not up to date. Please consider updating your database.</value>
   </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
-    <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1} </value>
+    <value>Pakiet z Headerem {0} PacketDefinition jest niewłaściwy. Zawartość: {1} </value>
   </data>
   <data name="CONNECTION_CLOSED" xml:space="preserve">
     <value>Połączenie zakończone.</value>

@@ -180,9 +180,9 @@ namespace OpenNos.GameObject
 
                 const short damage = 100;
                 int distance = Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = monster.MapX, Y = monster.MapY });
-                if (monster.CurrentHp > 0 && ((npcMonsterSkill != null && distance < npcMonsterSkill.Skill.Range) || (distance <= Npc.BasicRange)))
+                if (monster.CurrentHp > 0 && (npcMonsterSkill != null && distance < npcMonsterSkill.Skill.Range || distance <= Npc.BasicRange))
                 {
-                    if (((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Npc.BasicCooldown * 200 && !Npc.Skills.Any()) || npcMonsterSkill != null)
+                    if ((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Npc.BasicCooldown * 200 && !Npc.Skills.Any() || npcMonsterSkill != null)
                     {
                         if (npcMonsterSkill != null)
                         {

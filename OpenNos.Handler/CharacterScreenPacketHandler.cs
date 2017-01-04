@@ -58,7 +58,6 @@ namespace OpenNos.Handler
 
             byte slot = Convert.ToByte(packetsplit[3]);
             string characterName = packetsplit[2];
-            Random random = new Random();
             if (slot <= 2 && DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) == null)
             {
                 if (characterName.Length > 3 && characterName.Length < 15)
@@ -74,7 +73,7 @@ namespace OpenNos.Handler
                             {
                                 return;
                             }
-                            CharacterDTO newCharacter = new CharacterDTO()
+                            CharacterDTO newCharacter = new CharacterDTO
                             {
                                 Class = (byte)ClassType.Adventurer,
                                 Gender = (GenderType)Enum.Parse(typeof(GenderType), packetsplit[4]),

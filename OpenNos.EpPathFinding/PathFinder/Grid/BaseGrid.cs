@@ -245,7 +245,7 @@ namespace EpPathFinding
             }
 
             // If one is null, but not both, return false.
-            if (((object)a == null) || ((object)b == null))
+            if ((object)a == null || (object)b == null)
             {
                 return false;
             }
@@ -273,7 +273,7 @@ namespace EpPathFinding
             }
 
             // Return true if the fields match:
-            return (x == p.x) && (y == p.y);
+            return x == p.x && y == p.y;
         }
 
         public bool Equals(Node p)
@@ -285,7 +285,7 @@ namespace EpPathFinding
             }
 
             // Return true if the fields match:
-            return (x == p.x) && (y == p.y);
+            return x == p.x && y == p.y;
         }
 
         public override int GetHashCode()

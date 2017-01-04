@@ -9,13 +9,14 @@ namespace OpenNos.GameObject
         #region Properties
 
         [PacketIndex(0)]
-        public int Type { get; set; }
+        public byte Direction { get; set; }
 
         [PacketIndex(1)]
         public long CharacterId { get; set; }
 
         [PacketIndex(2)]
-        public byte Direction { get; set; }
+        public int Option { get; set; }
+
         #endregion
     }
 }
