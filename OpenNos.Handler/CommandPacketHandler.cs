@@ -230,6 +230,13 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("$MapPVP")]
+        public void MapPVP(string packet)
+        {
+            Session.CurrentMap.IsPVP = !Session.CurrentMap.IsPVP;
+            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        }
+
         // TODO: Unify This!
 
         [Packet("$BlockExp")]
