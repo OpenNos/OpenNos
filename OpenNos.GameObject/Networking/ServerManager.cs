@@ -206,7 +206,7 @@ namespace OpenNos.GameObject
                     Session.Character.Reput -= Session.Character.Level * 50;
                     if (Session.Character.Reput < 50000)
                     {
-                        Session.Character.Dignity = 50000;
+                        Session.Character.Reput = 50000;
                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), 0), 11));
                     }
                     else
