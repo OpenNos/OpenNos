@@ -19,6 +19,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.WebApi.Reference;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -1179,7 +1180,10 @@ namespace OpenNos.Handler
             else
             {
                 string language = System.Configuration.ConfigurationManager.AppSettings["language"];
-                if (packetsplit.Length > 3 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && (Language.Instance.GetLanguage(message.Trim()) != language && Language.Instance.GetLanguage(message.Trim()) != String.Empty))
+                List<string> tempmess = message.Trim().Split(' ', '\'').ToList();
+                tempmess.RemoveAll(s => s.Length <= 2);
+                string messagecheck = tempmess.Aggregate((i, j) => i + " " + j);
+                if (packetsplit.Length > 4 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(messagecheck))
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 2));
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 11));
