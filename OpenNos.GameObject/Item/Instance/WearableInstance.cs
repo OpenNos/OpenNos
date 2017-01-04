@@ -471,7 +471,7 @@ namespace OpenNos.GameObject
                 int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };
                 short[] sand = { 5, 10, 15, 20, 25, 30 };
                 const int sandVnum = 1027;
-                if (Upgrade + itemToSum.Upgrade < 6 && (((itemToSum.Item.EquipmentSlot == EquipmentType.Gloves) && (Item.EquipmentSlot == EquipmentType.Gloves)) || ((Item.EquipmentSlot == EquipmentType.Boots) && (itemToSum.Item.EquipmentSlot == EquipmentType.Boots))))
+                if (Upgrade + itemToSum.Upgrade < 6 && (itemToSum.Item.EquipmentSlot == EquipmentType.Gloves && Item.EquipmentSlot == EquipmentType.Gloves || Item.EquipmentSlot == EquipmentType.Boots && itemToSum.Item.EquipmentSlot == EquipmentType.Boots))
                 {
                     if (session.Character.Gold < goldprice[Upgrade])
                     {

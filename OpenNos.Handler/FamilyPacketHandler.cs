@@ -140,8 +140,7 @@ namespace OpenNos.Handler
                     ccmsg = $"[GM {Session.Character.Name}]:{msg}";
                 }
 
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ccmsg
-                                                                                              , ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ccmsg, ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
                 foreach (ClientSession s in ServerManager.Instance.Sessions)
                 {
                     if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
@@ -259,9 +258,12 @@ namespace OpenNos.Handler
                         if (Session.Character.FamilyCharacter != null && Session.Character.Family != null)
                         {
                             Session.Character.Family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
-                            var temp = DAOFactory.FamilyCharacterDAO.LoadByFamilyId(Session.Character.Family.FamilyId).FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
-                            string familyHead = DAOFactory.CharacterDAO.LoadById(temp.CharacterId).Name;
-                            Session.SendPacket($"ginfo {Session.Character.Family.Name} {familyHead} 0 {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.Size} {Session.Character.Family.MaxSize} 1 1 1 1 1 1 1 1");
+                            FamilyCharacterDTO familyCharacter = DAOFactory.FamilyCharacterDAO.LoadByFamilyId(Session.Character.Family.FamilyId).FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                            if (familyCharacter != null)
+                            {
+                                string familyHead = DAOFactory.CharacterDAO.LoadById(familyCharacter.CharacterId).Name;
+                                Session.SendPacket($"ginfo {Session.Character.Family.Name} {familyHead} 0 {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.Size} {Session.Character.Family.MaxSize} 1 1 1 1 1 1 1 1");
+                            }
                             Session.SendPacket(Session.Character.GenerateFamilyMember());
                             Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                             Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
@@ -325,7 +327,8 @@ namespace OpenNos.Handler
                 else
                 {
                     CharacterDTO dbCharacter = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]);
-                    if (dbCharacter != null) {
+                    if (dbCharacter != null)
+                    {
                         FamilyCharacterDTO dbFamilyCharacter = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(dbCharacter.CharacterId);
                         if (dbFamilyCharacter != null && dbFamilyCharacter.FamilyId == Session.Character.Family.FamilyId)
                         {

@@ -128,7 +128,7 @@ namespace OpenNos.Handler
                 {
                     foreach (var skill in Session.Character.Skills.GetAllItems())
                     {
-                        if ((skillinfo.CastId == skill.Skill.CastId) && (skill.Skill.SkillVNum < 200))
+                        if (skillinfo.CastId == skill.Skill.CastId && skill.Skill.SkillVNum < 200)
                         {
                             Session.Character.Skills.Remove(skill.SkillVNum);
                         }
@@ -228,6 +228,13 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME TIME REASON ", 10));
                 Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 10));
             }
+        }
+
+        [Packet("$MapPVP")]
+        public void MapPVP(string packet)
+        {
+            Session.CurrentMap.IsPVP = !Session.CurrentMap.IsPVP;
+            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
         // TODO: Unify This!
@@ -565,7 +572,7 @@ namespace OpenNos.Handler
             Logger.Debug("Change JobLevel Command", Session.SessionId);
             if (changeJobLevelPacket != null)
             {
-                if (((Session.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20) || (Session.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 80)) && changeJobLevelPacket.JobLevel > 0)
+                if ((Session.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20 || Session.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 80) && changeJobLevelPacket.JobLevel > 0)
                 {
                     Session.Character.JobLevel = changeJobLevelPacket.JobLevel;
                     Session.Character.JobLevelXp = 0;
@@ -1363,7 +1370,7 @@ namespace OpenNos.Handler
             bool verify = false;
             if (packetsplit.Length > 5)
             {
-                verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && short.TryParse(packetsplit[5], out arg[3]));
+                verify = short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && short.TryParse(packetsplit[5], out arg[3]);
             }
             switch (packetsplit.Length)
             {
@@ -1989,7 +1996,7 @@ namespace OpenNos.Handler
 
             if (packetsplit.Length > 4)
             {
-                verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
+                verify = short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null;
             }
             switch (packetsplit.Length)
             {

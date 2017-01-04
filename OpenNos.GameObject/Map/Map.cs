@@ -112,6 +112,8 @@ namespace OpenNos.GameObject
 
         public bool IsDancing { get; set; }
 
+        public bool IsPVP { get; set; }
+
         public bool IsSleeping
         {
             get

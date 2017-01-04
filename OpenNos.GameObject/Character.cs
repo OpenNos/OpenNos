@@ -639,7 +639,7 @@ namespace OpenNos.GameObject
                     Session.Character.LastEffect = DateTime.Now;
                 }
 
-                if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
+                if (Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now || Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now)
                 {
                     Session.Character.LastHealth = DateTime.Now;
                     if (Session.HealthStop)
@@ -698,7 +698,7 @@ namespace OpenNos.GameObject
                         SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                         byte spType = 0;
 
-                        if ((specialist.Item.Morph > 1 && specialist.Item.Morph < 8) || (specialist.Item.Morph > 9 && specialist.Item.Morph < 16))
+                        if (specialist.Item.Morph > 1 && specialist.Item.Morph < 8 || specialist.Item.Morph > 9 && specialist.Item.Morph < 16)
                             spType = 3;
                         else if (specialist.Item.Morph > 16 && specialist.Item.Morph < 29)
                             spType = 2;
@@ -1473,6 +1473,499 @@ namespace OpenNos.GameObject
             return damage;
         }
 
+        public int GeneratePVPDamage(Character target, Skill skill, ref int hitmode)
+        {
+            #region Definitions
+
+            if (target == null)
+            {
+                return 0;
+            }
+            if (Inventory == null)
+            {
+                return 0;
+            }
+
+            // int miss_chance = 20;
+            int monsterDefence = 0;
+            int monsterDodge = 0;
+            short monsterDefLevel = 0;
+
+            short mainUpgrade = 0;
+            int mainCritChance = 0;
+            int mainCritHit = 0;
+            int mainMinDmg = 0;
+            int mainMaxDmg = 0;
+            int mainHitRate = 0;
+
+            short secUpgrade = 0;
+            int secCritChance = 0;
+            int secCritHit = 0;
+            int secMinDmg = 0;
+            int secMaxDmg = 0;
+            int secHitRate = 0;
+
+            // int CritChance = 4; int CritHit = 70; int MinDmg = 0; int MaxDmg = 0; int HitRate = 0;
+            // sbyte Upgrade = 0;
+
+            #endregion
+
+            #region Get Weapon Stats
+
+            WearableInstance weapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
+            if (weapon != null)
+            {
+                mainUpgrade = weapon.Upgrade;
+            }
+
+            mainMinDmg += MinHit;
+            mainMaxDmg += MaxHit;
+            mainHitRate += HitRate;
+            mainCritChance += HitCriticalRate;
+            mainCritHit += HitCritical;
+
+            WearableInstance weapon2 = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
+            if (weapon2 != null)
+            {
+                secUpgrade = weapon2.Upgrade;
+            }
+
+            secMinDmg += MinDistance;
+            secMaxDmg += MaxDistance;
+            secHitRate += DistanceRate;
+            secCritChance += DistanceCriticalRate;
+            secCritHit += DistanceCritical;
+
+            WearableInstance targetArmor = target.Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
+            if (targetArmor != null)
+            {
+                monsterDefLevel = targetArmor.Upgrade;
+            }
+
+            #endregion
+
+            #region Switch skill.Type
+
+            switch (skill.Type)
+            {
+                case 0:
+                    monsterDefence = target.Defence;
+                    monsterDodge = (int)(target.DefenceRate * 0.95);
+                    if (Class == ClassType.Archer)
+                    {
+                        mainCritHit = secCritHit;
+                        mainCritChance = secCritChance;
+                        mainHitRate = secHitRate;
+                        mainMaxDmg = secMaxDmg;
+                        mainMinDmg = secMinDmg;
+                        mainUpgrade = secUpgrade;
+                    }
+                    break;
+
+                case 1:
+                    monsterDefence = target.DistanceDefence;
+                    monsterDodge = (int)(target.DistanceDefenceRate * 0.95);
+                    if (Class == ClassType.Swordman || Class == ClassType.Adventurer || Class == ClassType.Magician)
+                    {
+                        mainCritHit = secCritHit;
+                        mainCritChance = secCritChance;
+                        mainHitRate = secHitRate;
+                        mainMaxDmg = secMaxDmg;
+                        mainMinDmg = secMinDmg;
+                        mainUpgrade = secUpgrade;
+                    }
+                    break;
+
+                case 2:
+                    monsterDefence = target.MagicalDefence;
+                    break;
+
+                case 3:
+                    switch (Class)
+                    {
+                        case ClassType.Swordman:
+                            monsterDefence = target.Defence;
+                            break;
+
+                        case ClassType.Archer:
+                            monsterDefence = target.DistanceDefence;
+                            break;
+
+                        case ClassType.Magician:
+                            monsterDefence = target.MagicalDefence;
+                            break;
+
+                        case ClassType.Adventurer:
+                            monsterDefence = target.Defence;
+                            break;
+                    }
+                    break;
+
+                case 5:
+                    monsterDefence = target.Defence;
+                    monsterDodge = target.DefenceRate;
+                    if (Class == ClassType.Archer)
+                    {
+                        mainCritHit = secCritHit;
+                        mainCritChance = secCritChance;
+                        mainHitRate = secHitRate;
+                        mainMaxDmg = secMaxDmg;
+                        mainMinDmg = secMinDmg;
+                        mainUpgrade = secUpgrade;
+                    }
+                    break;
+            }
+
+            #endregion
+
+            #region Basic Damage Data Calculation
+            // TODO: Implement BCard damage boosts, see Issue
+
+            mainUpgrade -= monsterDefLevel;
+            if (mainUpgrade < -10)
+            {
+                mainUpgrade = -10;
+            }
+            else if (mainUpgrade > 10)
+            {
+                mainUpgrade = 10;
+            }
+
+            #endregion
+
+            #region Detailed Calculation
+
+            #region Dodge
+
+            if (Class != ClassType.Magician)
+            {
+                double multiplier = monsterDodge / (mainHitRate + 1);
+                if (multiplier > 5)
+                {
+                    multiplier = 5;
+                }
+                double chance = -0.25 * Math.Pow(multiplier, 3) - 0.57 * Math.Pow(multiplier, 2) + 25.3 * multiplier - 1.41;
+                if (chance <= 1)
+                {
+                    chance = 1;
+                }
+                if ((skill.Type == 0 || skill.Type == 1) && !HasGodMode)
+                {
+                    if (ServerManager.RandomNumber() <= chance)
+                    {
+                        hitmode = 1;
+                        return 0;
+                    }
+                }
+            }
+
+            #endregion
+
+            #region Base Damage
+
+            int baseDamage = ServerManager.RandomNumber(mainMinDmg, mainMaxDmg + 1);
+            baseDamage += skill.Damage / 4;
+            baseDamage += Level - target.Level; //Morale
+            if (Class == ClassType.Adventurer)
+            {
+                //HACK: Damage is ~10 lower in OpenNos than in official. Fix this...
+                baseDamage += 20;
+            }
+            int elementalDamage = 0; // placeholder for BCard etc...
+            elementalDamage += skill.ElementalDamage / 4;
+            switch (mainUpgrade)
+            {
+                case -10:
+                    monsterDefence += monsterDefence * 2;
+                    break;
+
+                case -9:
+                    monsterDefence += (int)(monsterDefence * 1.2);
+                    break;
+
+                case -8:
+                    monsterDefence += (int)(monsterDefence * 0.9);
+                    break;
+
+                case -7:
+                    monsterDefence += (int)(monsterDefence * 0.65);
+                    break;
+
+                case -6:
+                    monsterDefence += (int)(monsterDefence * 0.54);
+                    break;
+
+                case -5:
+                    monsterDefence += (int)(monsterDefence * 0.43);
+                    break;
+
+                case -4:
+                    monsterDefence += (int)(monsterDefence * 0.32);
+                    break;
+
+                case -3:
+                    monsterDefence += (int)(monsterDefence * 0.22);
+                    break;
+
+                case -2:
+                    monsterDefence += (int)(monsterDefence * 0.15);
+                    break;
+
+                case -1:
+                    monsterDefence += (int)(monsterDefence * 0.1);
+                    break;
+
+                case 0:
+                    break;
+
+                case 1:
+                    baseDamage += (int)(baseDamage * 0.1);
+                    break;
+
+                case 2:
+                    baseDamage += (int)(baseDamage * 0.15);
+                    break;
+
+                case 3:
+                    baseDamage += (int)(baseDamage * 0.22);
+                    break;
+
+                case 4:
+                    baseDamage += (int)(baseDamage * 0.32);
+                    break;
+
+                case 5:
+                    baseDamage += (int)(baseDamage * 0.43);
+                    break;
+
+                case 6:
+                    baseDamage += (int)(baseDamage * 0.54);
+                    break;
+
+                case 7:
+                    baseDamage += (int)(baseDamage * 0.65);
+                    break;
+
+                case 8:
+                    baseDamage += (int)(baseDamage * 0.9);
+                    break;
+
+                case 9:
+                    baseDamage += (int)(baseDamage * 1.2);
+                    break;
+
+                case 10:
+                    baseDamage += baseDamage * 2;
+                    break;
+            }
+            if (skill.Type == 1)
+            {
+                if (Math.Abs(target.MapX - MapX) < 4 && Math.Abs(target.MapY - MapY) < 4)
+                    baseDamage = (int)(baseDamage * 0.7);
+            }
+
+            #endregion
+
+            #region Elementary Damage
+
+            #region Calculate Elemental Boost + Rate
+
+            double elementalBoost = 0;
+            int monsterResistance = 0;
+            switch (Element)
+            {
+                case 0:
+                    break;
+
+                case 1:
+                    monsterResistance = target.FireResistance;
+                    switch (target.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3; // Damage vs no element
+                            break;
+
+                        case 1:
+                            elementalBoost = 1; // Damage vs fire
+                            break;
+
+                        case 2:
+                            elementalBoost = 2; // Damage vs water
+                            break;
+
+                        case 3:
+                            elementalBoost = 1; // Damage vs light
+                            break;
+
+                        case 4:
+                            elementalBoost = 1.5; // Damage vs darkness
+                            break;
+                    }
+                    break;
+
+                case 2:
+                    monsterResistance = target.WaterResistance;
+                    switch (target.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+
+                        case 1:
+                            elementalBoost = 2;
+                            break;
+
+                        case 2:
+                            elementalBoost = 1;
+                            break;
+
+                        case 3:
+                            elementalBoost = 1.5;
+                            break;
+
+                        case 4:
+                            elementalBoost = 1;
+                            break;
+                    }
+                    break;
+
+                case 3:
+                    monsterResistance = target.LightResistance;
+                    switch (target.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+
+                        case 1:
+                            elementalBoost = 1.5;
+                            break;
+
+                        case 2:
+                            elementalBoost = 1;
+                            break;
+
+                        case 3:
+                            elementalBoost = 1;
+                            break;
+
+                        case 4:
+                            elementalBoost = 3;
+                            break;
+                    }
+                    break;
+
+                case 4:
+                    monsterResistance = target.DarkResistance;
+                    switch (target.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+
+                        case 1:
+                            elementalBoost = 1;
+                            break;
+
+                        case 2:
+                            elementalBoost = 1.5;
+                            break;
+
+                        case 3:
+                            elementalBoost = 3;
+                            break;
+
+                        case 4:
+                            elementalBoost = 1;
+                            break;
+                    }
+                    break;
+            }
+
+            #endregion;
+
+            if (skill.Element == 0)
+            {
+                if (elementalBoost == 0.5)
+                {
+                    elementalBoost = 0;
+                }
+                else if (elementalBoost == 1)
+                {
+                    elementalBoost = 0.05;
+                }
+                else if (elementalBoost == 1.3)
+                {
+                    elementalBoost = 0.15;
+                }
+                else if (elementalBoost == 1.5)
+                {
+                    elementalBoost = 0.15;
+                }
+                else if (elementalBoost == 2)
+                {
+                    elementalBoost = 0.2;
+                }
+                else if (elementalBoost == 3)
+                {
+                    elementalBoost = 0.2;
+                }
+            }
+            else if (skill.Element != Element)
+            {
+                elementalBoost = 0;
+            }
+
+            elementalDamage = (int)((elementalDamage + (elementalDamage + baseDamage) * ((ElementRate + ElementRateSP) / 100D)) * elementalBoost);
+            elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
+
+            #endregion
+
+            #region Critical Damage
+
+            baseDamage -= monsterDefence;
+
+            if (ServerManager.RandomNumber() <= mainCritChance)
+            {
+                if (skill.Type == 2)
+                {
+                }
+                else if (skill.Type == 3 && Class != ClassType.Magician)
+                {
+                    double multiplier = mainCritHit / 100D;
+                    if (multiplier > 3)
+                        multiplier = 3;
+                    baseDamage += (int)(baseDamage * multiplier);
+                    hitmode = 3;
+                }
+                else
+                {
+                    double multiplier = mainCritHit / 100D;
+                    if (multiplier > 3)
+                        multiplier = 3;
+                    baseDamage += (int)(baseDamage * multiplier);
+                    hitmode = 3;
+                }
+            }
+
+            #endregion
+
+            #region Total Damage
+
+            int totalDamage = baseDamage + elementalDamage;
+            if (totalDamage < 5)
+            {
+                totalDamage = ServerManager.RandomNumber(1, 6);
+            }
+
+            #endregion
+
+            #endregion
+
+            return totalDamage;
+        }
+
+
         public string GenerateDelay(int delay, int type, string argument)
         {
             return $"delay {delay} {type} {argument}";
@@ -1805,8 +2298,8 @@ namespace OpenNos.GameObject
                 foreach (CharacterRelationDTO relation in _friends)
                 {
                     byte isOnline = 0;
-                    if ((relatedCharacterLoggedInId.HasValue && relatedCharacterLoggedInId.Value == relation.RelatedCharacterId)
-                        || (relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId != relatedCharacterLoggedOutId.Value) &&
+                    if (relatedCharacterLoggedInId.HasValue && relatedCharacterLoggedInId.Value == relation.RelatedCharacterId
+                        || relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId != relatedCharacterLoggedOutId.Value &&
                         ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
                     {
                         isOnline = 1;
@@ -1980,7 +2473,7 @@ namespace OpenNos.GameObject
             // end owner set
             if (Session.HasCurrentMap)
             {
-                List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMap.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || (s.MapTypeId == null)).ToList();
+                List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMap.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || s.MapTypeId == null).ToList();
                 if (monsterToAttack.Monster.MonsterType != MonsterType.Special)
                 {
                     #region item drop
@@ -1991,7 +2484,7 @@ namespace OpenNos.GameObject
                     {
                         if (x < 4)
                         {
-                            double rndamount = ServerManager.RandomNumber(0, 100) * random.NextDouble();
+                            double rndamount = ServerManager.RandomNumber() * random.NextDouble();
                             if (rndamount <= (double)drop.DropChance * dropRate / 5000.000)
                             {
                                 x++;
@@ -2030,11 +2523,12 @@ namespace OpenNos.GameObject
 
                                         long? owner = dropOwner;
                                         Observable.Timer(TimeSpan.FromMilliseconds(500))
-                                       .Subscribe(
-                                       o =>
+                                       .Subscribe(o =>
                                        {
                                            if (Session.HasCurrentMap)
+                                           {
                                                Session.CurrentMap.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                                           }
                                        });
                                     }
                                 }
@@ -2049,11 +2543,11 @@ namespace OpenNos.GameObject
                     // gold calculation
                     int gold = GetGold(monsterToAttack);
                     gold = gold > 1000000000 ? 1000000000 : gold;
-                    double randChance = ServerManager.RandomNumber(0, 100) * random.NextDouble();
+                    double randChance = ServerManager.RandomNumber() * random.NextDouble();
 
                     if (gold > 0 && randChance <= (int)(ServerManager.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
                     {
-                        DropDTO drop2 = new DropDTO()
+                        DropDTO drop2 = new DropDTO
                         {
                             Amount = gold,
                             ItemVNum = 1046
@@ -2432,9 +2926,9 @@ namespace OpenNos.GameObject
             return $"revive 1 {CharacterId} 0";
         }
 
-        public string GenerateRp(int mapid, int x, int y, string parametter)
+        public string GenerateRp(int mapid, int x, int y, string param)
         {
-            return $"rp {mapid} {x} {y} {parametter}";
+            return $"rp {mapid} {x} {y} {param}";
         }
 
         public string GenerateSay(string message, int type)
@@ -2501,7 +2995,7 @@ namespace OpenNos.GameObject
             List<CharacterSkill> skillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.GetAllSkill().Where(ski => ski.Class == inventoryItem.Item.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel))
             {
-                skillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
+                skillsSp.Add(new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
             }
             byte spdestroyed = 0;
             if (inventoryItem.Rare == -2)
@@ -2838,8 +3332,8 @@ namespace OpenNos.GameObject
                 WearableInstance item = Inventory?.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
                 if (item != null)
                 {
-                    if ((item.Item.EquipmentSlot != EquipmentType.MainWeapon)
-                        && (item.Item.EquipmentSlot != EquipmentType.SecondaryWeapon)
+                    if (item.Item.EquipmentSlot != EquipmentType.MainWeapon
+                        && item.Item.EquipmentSlot != EquipmentType.SecondaryWeapon
                         && item.Item.EquipmentSlot != EquipmentType.Armor
                         && item.Item.EquipmentSlot != EquipmentType.Sp)
                     {
@@ -2887,17 +3381,17 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                if ((int) (LevelXp / (XPLoad() / 10)) < (int) ((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
+                if ((int)(LevelXp / (XPLoad() / 10)) < (int)((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
                 {
-                    Hp = (int) HPLoad();
-                    Mp = (int) MPLoad();
+                    Hp = (int)HPLoad();
+                    Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
                     Session.SendPacket(GenerateEff(5));
                 }
 
                 if (Inventory != null)
                 {
-                    specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp,
+                    specialist = Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp,
                         InventoryType.Wear);
                 }
 
@@ -2912,7 +3406,7 @@ namespace OpenNos.GameObject
                         LevelXp += GetXP(monsterinfo, grp) / 3;
                     }
                 }
-                if ((Class == 0 && JobLevel < 20) || (Class != 0 && JobLevel < 80))
+                if (Class == 0 && JobLevel < 20 || Class != 0 && JobLevel < 80)
                 {
                     if (specialist != null && UseSp && specialist.SpLevel < 99 && specialist.SpLevel > 19)
                     {
@@ -2931,7 +3425,7 @@ namespace OpenNos.GameObject
                 double t = XPLoad();
                 while (LevelXp >= t)
                 {
-                    LevelXp -= (long) t;
+                    LevelXp -= (long)t;
                     Level++;
                     t = XPLoad();
                     if (Level >= 99)
@@ -2939,8 +3433,8 @@ namespace OpenNos.GameObject
                         Level = 99;
                         LevelXp = 0;
                     }
-                    Hp = (int) HPLoad();
-                    Mp = (int) MPLoad();
+                    Hp = (int)HPLoad();
+                    Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
@@ -2949,7 +3443,7 @@ namespace OpenNos.GameObject
                     ServerManager.Instance.UpdateGroup(CharacterId);
                 }
 
-                WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte) EquipmentType.Fairy,InventoryType.Wear);
+                WearableInstance fairy = Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
                 if (fairy != null)
                 {
                     if (fairy.ElementRate + fairy.Item.ElementRate < fairy.Item.MaxElementRate &&
@@ -2960,7 +3454,7 @@ namespace OpenNos.GameObject
                     t = CharacterHelper.LoadFairyXPData(fairy.ElementRate);
                     while (fairy.XP >= t)
                     {
-                        fairy.XP -= (int) t;
+                        fairy.XP -= (int)t;
                         fairy.ElementRate++;
                         if (fairy.ElementRate + fairy.Item.ElementRate == fairy.Item.MaxElementRate)
                         {
@@ -2983,7 +3477,7 @@ namespace OpenNos.GameObject
                 t = JobXPLoad();
                 while (JobLevelXp >= t)
                 {
-                    JobLevelXp -= (long) t;
+                    JobLevelXp -= (long)t;
                     JobLevel++;
                     t = JobXPLoad();
                     if (JobLevel >= 20 && Class == 0)
@@ -2996,8 +3490,8 @@ namespace OpenNos.GameObject
                         JobLevel = 80;
                         JobLevelXp = 0;
                     }
-                    Hp = (int) HPLoad();
-                    Mp = (int) MPLoad();
+                    Hp = (int)HPLoad();
+                    Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
@@ -3011,7 +3505,7 @@ namespace OpenNos.GameObject
 
                     while (UseSp && specialist.XP >= t)
                     {
-                        specialist.XP -= (long) t;
+                        specialist.XP -= (long)t;
                         specialist.SpLevel++;
                         t = SPXPLoad();
                         Session.SendPacket(GenerateStat());
@@ -3759,11 +4253,11 @@ namespace OpenNos.GameObject
                 {
                     rare = 0;
                 }
-                if ((upgrade > 10) && it.ItemType != ItemType.Specialist)
+                if (upgrade > 10 && it.ItemType != ItemType.Specialist)
                 {
                     upgrade = 0;
                 }
-                else if (it.ItemType == ItemType.Specialist && (upgrade > 15))
+                else if (it.ItemType == ItemType.Specialist && upgrade > 15)
                 {
                     upgrade = 0;
                 }
@@ -4022,7 +4516,6 @@ namespace OpenNos.GameObject
 
         private int GetGold(MapMonster mapMonster)
         {
-            Random random = new Random(DateTime.Now.Millisecond + mapMonster.MapMonsterId);
             int lowBaseGold = ServerManager.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
             int actMultiplier = Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
             int gold = lowBaseGold * ServerManager.GoldRate * actMultiplier;

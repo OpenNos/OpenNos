@@ -1055,6 +1055,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// Pulse packet
+        /// </summary>
+        /// <param name="pulsepacket"></param>
         public void Pulse(PulsePacket pulsepacket)
         {
             Session.Character.LastPulse += 60;
@@ -1088,7 +1092,10 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("rest")]
+        /// <summary>
+        /// Rest packet
+        /// </summary>
+        /// <param name="sitpacket"></param>
         public void Rest(SitPacket sitpacket)
         {
             Session.Character.Rest();
@@ -1142,6 +1149,22 @@ namespace OpenNos.Handler
 
                     case 1:
                         ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                        break;
+                    case 2:
+                        if (Session.Character.Gold >= 100)
+                        {
+                            Session.Character.Hp = (int)Session.Character.HPLoad();
+                            Session.Character.Mp = (int)Session.Character.MPLoad();
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateTp());
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateRevive());
+                            Session.SendPacket(Session.Character.GenerateStat());
+                            Session.Character.Gold -= 100;
+                            Session.SendPacket(Session.Character.GenerateGold());
+                        }
+                        else
+                        {
+                            ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                        }
                         break;
                 }
             }

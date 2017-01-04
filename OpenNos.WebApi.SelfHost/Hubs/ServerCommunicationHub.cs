@@ -186,9 +186,9 @@ namespace OpenNos.WebApi.SelfHost
             return false;
         }
 
-        public IEnumerable<String> RetrieveServerStatistics()
+        public IEnumerable<string> RetrieveServerStatistics()
         {
-            List<String> result = new List<String>();
+            List<string> result = new List<string>();
             try
             {
                 foreach(WorldserverGroupDTO servergroup in ServerCommunicationHelper.Instance.WorldserverGroups)
@@ -219,12 +219,12 @@ namespace OpenNos.WebApi.SelfHost
         {
             try
             {
-                if (sessionId.HasValue || !String.IsNullOrEmpty(accountName))
+                if (sessionId.HasValue || !string.IsNullOrEmpty(accountName))
                 {
                     // inform clients
                     Clients.All.kickSession(sessionId, accountName);
 
-                    if (!String.IsNullOrEmpty(accountName))
+                    if (!string.IsNullOrEmpty(accountName))
                     {
                         DisconnectAccount(accountName);
                     }
@@ -364,11 +364,11 @@ namespace OpenNos.WebApi.SelfHost
             try
             {
                 WorldserverDTO worldserver = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(c => c.ConnectedCharacters.Any(cc => cc.Key == characterName)
-                                                                                                             || (characterId.HasValue && c.ConnectedCharacters.ContainsValue(characterId.Value)));
+                                                                                                             || characterId.HasValue && c.ConnectedCharacters.ContainsValue(characterId.Value));
 
                 if (worldserver != null)
                 {
-                    if(String.IsNullOrEmpty(characterName) && characterId.HasValue)
+                    if(string.IsNullOrEmpty(characterName) && characterId.HasValue)
                     {
                         characterName = worldserver.ConnectedCharacters.SingleOrDefault(c => c.Value == characterId.Value).Key;
                     }

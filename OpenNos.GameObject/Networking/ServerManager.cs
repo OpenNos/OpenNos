@@ -196,6 +196,78 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void AskPVPRevive(long characterId)
+        {
+            ClientSession Session = GetSessionByCharacterId(characterId);
+            if (Session != null && Session.HasSelectedCharacter)
+            {
+                if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                {
+                    Session.Character.Reput -= Session.Character.Level * 50;
+                    if (Session.Character.Reput < 50000)
+                    {
+                        Session.Character.Reput = 50000;
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), 0), 11));
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), (short)(Session.Character.Level * 50)), 11));
+                    }
+
+                    Session.SendPacket(Session.Character.GenerateFd());
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                }
+
+                if (Session.Character.IsVehicled)
+                {
+                    Session.Character.RemoveVehicle();
+                }
+                Session.SendPacket(Session.Character.GenerateStat());
+                Session.SendPacket(Session.Character.GenerateCond());
+                Session.SendPackets(Session.Character.GenerateVb());
+
+                Session.SendPacket("eff_ob -1 -1 0 4269");
+                Session.SendPacket(Session.Character.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
+                Task.Factory.StartNew(async () =>
+                {
+                    bool revive = true;
+                    for (int i = 1; i <= 30; i++)
+                    {
+                        await Task.Delay(1000);
+                        if (Session.Character.Hp > 0)
+                        {
+                            revive = false;
+                            break;
+                        }
+                    }
+                    if (revive)
+                    {
+                        Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                    }
+                });
+            }
+        }
+
+        public void AskAct4Revive(long characterId)
+        {
+            ClientSession Session = GetSessionByCharacterId(characterId);
+            if (Session != null && Session.HasSelectedCharacter)
+            {
+                if (Session.Character.IsVehicled)
+                {
+                    Session.Character.RemoveVehicle();
+                }
+                Session.SendPacket(Session.Character.GenerateStat());
+                Session.SendPacket(Session.Character.GenerateCond());
+                Session.SendPackets(Session.Character.GenerateVb());
+
+                Session.SendPacket("eff_ob -1 -1 0 4269");
+
+                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+            }
+        }
+
         // Both partly
         public void ChangeMap(long id, short? mapId = null, short? mapX = null, short? mapY = null)
         {
@@ -779,7 +851,6 @@ namespace OpenNos.GameObject
             ClientSession session = GetSessionByCharacterId(characterId);
             if (session != null && session.Character.Hp <= 0)
             {
-                Random rnd = new Random();
                 LeaveMap(session.Character.CharacterId);
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
@@ -792,6 +863,24 @@ namespace OpenNos.GameObject
                 session.SendPacket(session.Character.GenerateStat());
             }
         }
+
+        //public void ReviveAct4(long characterId)
+        //{
+        //    ClientSession session = GetSessionByCharacterId(characterId);
+        //    if (session != null && session.Character.Hp <= 0)
+        //    {
+        //        LeaveMap(session.Character.CharacterId);
+        //        session.Character.Hp = 1;
+        //        session.Character.Mp = 1;
+        //        RespawnMapTypeDTO resp = session.Character.Respawn;
+        //        short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
+        //        short y = (short)(resp.DefaultY + RandomNumber(-5, 5));
+        //        ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
+        //        session.CurrentMap?.Broadcast(session, session.Character.GenerateTp());
+        //        session.CurrentMap?.Broadcast(session.Character.GenerateRevive());
+        //        session.SendPacket(session.Character.GenerateStat());
+        //    }
+        //}
 
         public void SaveAll()
         {
@@ -999,10 +1088,10 @@ namespace OpenNos.GameObject
                     switch (message.Item4)
                     {
                         case MessageType.Whisper:
-                            {
-                                targetSession.SendPacket(String.Format("{0} <Channel: {1}>", message.Item2, message.Item3));
-                                break;
-                            }
+                        {
+                            targetSession?.SendPacket($"{message.Item2} <Channel: {message.Item3}>");
+                            break;
+                        }
                         case MessageType.Shout:
                             {
                                 Shout(message.Item2);
@@ -1010,7 +1099,7 @@ namespace OpenNos.GameObject
                             }
                         case MessageType.PrivateChat:
                             {
-                                targetSession.SendPacket(message.Item2);
+                                targetSession?.SendPacket(message.Item2);
                                 break;
                             }
                         case MessageType.Family:
@@ -1019,7 +1108,7 @@ namespace OpenNos.GameObject
                                 if (long.TryParse(message.Item1, out familyId))
                                 {
                                     if(message.Item3 != ChannelId)
-                                    foreach (ClientSession s in ServerManager.Instance.Sessions)
+                                    foreach (ClientSession s in Instance.Sessions)
                                     {
                                         if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
                                         {
@@ -1044,12 +1133,9 @@ namespace OpenNos.GameObject
                 Tuple<long?, string> kickedSession = (Tuple<long?, string>)sender;
 
                 ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
-                                                        && ((String.IsNullOrEmpty(kickedSession.Item2) || s.Account.Name == kickedSession.Item2)));
+                                                        && (string.IsNullOrEmpty(kickedSession.Item2) || s.Account.Name == kickedSession.Item2));
 
-                if (targetSession != null)
-                {
-                    targetSession.Disconnect();
-                }
+                targetSession?.Disconnect();
             }
         }
 

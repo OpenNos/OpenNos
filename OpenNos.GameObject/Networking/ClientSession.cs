@@ -366,10 +366,10 @@ namespace OpenNos.GameObject
         {
             IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) // shitty but it works
                                                             : type.Assembly.GetTypes().Where(p =>
-                {
-                    Type interfaceType = type.GetInterfaces().FirstOrDefault();
-                    return interfaceType != null && !p.IsInterface && interfaceType.IsAssignableFrom(p);
-                });
+                                                            {
+                                                                Type interfaceType = type.GetInterfaces().FirstOrDefault();
+                                                                return interfaceType != null && !p.IsInterface && interfaceType.IsAssignableFrom(p);
+                                                            });
 
             // iterate thru each type in the given assembly
             foreach (Type handlerType in handlerTypes)
@@ -415,7 +415,12 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    LastKeepAliveIdentity = Convert.ToInt32(sessionParts[0]);
+                    int lastka;
+                    if (!int.TryParse(sessionParts[0], out lastka))
+                    {
+                        Disconnect();
+                    }
+                    LastKeepAliveIdentity = lastka;
 
                     // set the SessionId if Session Packet arrives
                     if (sessionParts.Length < 2)
@@ -591,7 +596,6 @@ namespace OpenNos.GameObject
                     }
                     catch (DivideByZeroException ex)
                     {
-                        throw ex;
                         // disconnect if something unexpected happens
                         Logger.Log.Error("Handler Error SessionId: " + SessionId, ex);
                         Disconnect();

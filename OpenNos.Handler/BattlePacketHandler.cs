@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.GameObject.Networking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,7 +96,7 @@ namespace OpenNos.Handler
                         if (mon != null && mon.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.Range) && mon.CurrentHp > 0)
                         {
                             Session.Character.LastSkillUse = DateTime.Now;
-                            mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SpecialZoneHit, Session, ski.Skill));
+                            mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SpecialZoneHit, Session, ski.Skill));
                         }
 
                         Observable.Timer(TimeSpan.FromMilliseconds(ski.Skill.Cooldown * 100))
@@ -163,128 +164,310 @@ namespace OpenNos.Handler
                             Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {ski.Skill.SkillType - 1}");
                             if (ski.Skill.TargetRange != 0 && Session.HasCurrentMap)
                             {
+                                foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange)))
+                                {
+                                    if(Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                    {
+                                        if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
+                                        {
+                                            PVPHit(new HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill), character);
+                                        }
+                                    }
+                                    else if (Session.Character.MapId == 9305)
+                                    {
+                                        if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                                        {
+                                            PVPHit(new HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill), character);
+                                        }
+                                    }
+                                    else if (Session.CurrentMap.IsPVP)
+                                    {
+                                        if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                                        {
+                                            PVPHit(new HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill), character);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Session.SendPacket($"cancel 2 {targetId}");
+                                    }
+                                }
                                 foreach (
                                     MapMonster mon in
                                     Session.CurrentMap.GetListMonsterInRange(Session.Character.MapX,
                                         Session.Character.MapY, ski.Skill.TargetRange).Where(s => s.CurrentHp > 0))
                                 {
-                                    mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(
+                                    mon.HitQueue.Enqueue(new HitRequest(
                                         TargetHitType.AOETargetHit, Session, ski.Skill,
                                         skillinfo?.Skill.Effect ?? ski.Skill.Effect));
                                 }
+                                //}
                             }
                         }
                     }
                     else if (ski.Skill.TargetType == 0 && Session.HasCurrentMap) // monster target
                     {
-                        MapMonster monsterToAttack = Session.CurrentMap.GetMonster(targetId);
-                        if (monsterToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
+                        if (isPvp)
                         {
-                            if (Map.GetDistance(new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY },
-                                                new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= (ski.Skill.Range) + monsterToAttack.Monster.BasicArea)
+                            ClientSession playerToAttack = ServerManager.Instance.GetSessionByCharacterId(targetId);
+                            if (playerToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
                             {
-                                Session.Character.LastSkillUse = DateTime.Now;
-                                ski.LastUse = DateTime.Now;
-                                if (!Session.Character.HasGodMode)
+                                if (Map.GetDistance(new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY },
+                                                    new MapCell { X = playerToAttack.Character.MapX, Y = playerToAttack.Character.MapY }) <= ski.Skill.Range)
                                 {
-                                    Session.Character.Mp -= ski.Skill.MpCost;
-                                }
-                                if (Session.Character.UseSp && ski.Skill.CastEffect != -1)
-                                {
-                                    Session.SendPackets(Session.Character.GenerateQuicklist());
-                                }
-                                Session.SendPacket(Session.Character.GenerateStat());
-                                CharacterSkill characterSkillInfo = Session.Character.Skills.GetAllItems().OrderBy(o => o.SkillVNum)
-                                    .FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
-
-                                Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
-                                Session.Character.Skills.GetAllItems().Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
-
-                                // Generate scp
-                                ski.LastUse = DateTime.Now;
-                                if ((DateTime.Now - ski.LastUse).TotalSeconds > 3)
-                                {
-                                    ski.Hit = 0;
-                                }
-                                else
-                                {
-                                    ski.Hit++;
-                                }
-
-                                if (ski.Skill.CastEffect != 0)
-                                {
-                                    Thread.Sleep(ski.Skill.CastTime * 100);
-                                }
-                                // check if we will hit mutltiple targets
-                                if (ski.Skill.TargetRange != 0)
-                                {
-                                    ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
-                                    if (skillCombo != null)
+                                    Session.Character.LastSkillUse = DateTime.Now;
+                                    ski.LastUse = DateTime.Now;
+                                    if (!Session.Character.HasGodMode)
                                     {
-                                        if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit == ski.Hit)
+                                        Session.Character.Mp -= ski.Skill.MpCost;
+                                    }
+                                    if (Session.Character.UseSp && ski.Skill.CastEffect != -1)
+                                    {
+                                        Session.SendPackets(Session.Character.GenerateQuicklist());
+                                    }
+                                    Session.SendPacket(Session.Character.GenerateStat());
+                                    CharacterSkill characterSkillInfo = Session.Character.Skills.GetAllItems().OrderBy(o => o.SkillVNum)
+                                        .FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
+
+                                    Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {targetId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
+                                    Session.Character.Skills.GetAllItems().Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
+
+                                    // Generate scp
+                                    ski.LastUse = DateTime.Now;
+                                    if ((DateTime.Now - ski.LastUse).TotalSeconds > 3)
+                                    {
+                                        ski.Hit = 0;
+                                    }
+                                    else
+                                    {
+                                        ski.Hit++;
+                                    }
+
+                                    if (ski.Skill.CastEffect != 0)
+                                    {
+                                        Thread.Sleep(ski.Skill.CastTime * 100);
+                                    }
+                                    // check if we will hit mutltiple targets
+                                    if (ski.Skill.TargetRange != 0)
+                                    {
+                                        ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
+                                        if (skillCombo != null)
                                         {
-                                            ski.Hit = 0;
-                                        }
-                                        IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
-                                        if (monstersInAOERange != null)
-                                        {
-                                            foreach (MapMonster mon in monstersInAOERange)
+                                            if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit == ski.Hit)
                                             {
-                                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill
-                                                    , skillCombo: skillCombo));
+                                                ski.Hit = 0;
+                                            }
+                                            IEnumerable<ClientSession> playersInAOERange = ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange));
+                                            if (playersInAOERange != null)
+                                            {
+                                                foreach (ClientSession character in playersInAOERange)
+                                                {
+                                                    if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                                    {
+                                                        if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
+                                                        {
+                                                            PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
+                                                        }
+                                                    }
+                                                    else if (Session.Character.MapId == 9305)
+                                                    {
+                                                        if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                                                        {
+                                                            PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
+                                                        }
+                                                    }
+                                                    else if (Session.CurrentMap.IsPVP)
+                                                    {
+                                                        if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                                                        {
+                                                            PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
+                                            }
+                                            if (playerToAttack.Character.Hp <= 0)
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
                                             }
                                         }
                                         else
                                         {
-                                            Session.SendPacket($"cancel 2 {targetId}");
-                                        }
-                                        if (!monsterToAttack.IsAlive)
-                                        {
-                                            Session.SendPacket($"cancel 2 {targetId}");
+                                            IEnumerable<ClientSession> playersInAOERange = ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange));
+
+                                            //hit the targetted monster
+
+                                            if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                            {
+                                                if (Session.Character.Family == null || playerToAttack.Character.Family == null || Session.Character.Family.FamilyId != playerToAttack.Character.Family.FamilyId)
+                                                {
+                                                    PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), playerToAttack);
+                                                }
+                                                else
+                                                {
+                                                    Session.SendPacket($"cancel 2 {targetId}");
+                                                }
+                                            }
+                                            else if (Session.Character.MapId == 9305)
+                                            {
+                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                {
+                                                    PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), playerToAttack);
+                                                }
+                                                else
+                                                {
+                                                    Session.SendPacket($"cancel 2 {targetId}");
+                                                }
+                                            }
+                                            else if (Session.CurrentMap.IsPVP)
+                                            {
+                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                {
+                                                    PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), playerToAttack);
+                                                }
+                                                else
+                                                {
+                                                    Session.SendPacket($"cancel 2 {targetId}");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
+                                            }
+
+                                            //hit all other monsters
+                                            if (playersInAOERange != null)
+                                            {
+                                                foreach (ClientSession character in playersInAOERange)
+                                                {
+                                                    if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                                    {
+                                                        if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
+                                                        {
+                                                            PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
+                                                        }
+                                                    }
+                                                    else if (Session.Character.MapId == 9305)
+                                                    {
+                                                        if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                                                        {
+                                                            PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
+                                                        }
+                                                    }
+                                                    else if (Session.CurrentMap.IsPVP)
+                                                    {
+                                                        if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                                                        {
+                                                            PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
+                                            }
+                                            if (playerToAttack.Character.Hp <= 0)
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
+                                            }
                                         }
                                     }
                                     else
                                     {
-                                        IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
-
-                                        //hit the targetted monster
-                                        monsterToAttack.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: true));
-
-                                        //hit all other monsters
-                                        if (monstersInAOERange != null)
+                                        ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
+                                        if (skillCombo != null)
                                         {
-                                            foreach (MapMonster mon in monstersInAOERange.Where(m => m.MapMonsterId != monsterToAttack.MapMonsterId)) //exclude targetted monster
+                                            if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit == ski.Hit)
                                             {
-                                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
-                                                    , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
+                                                ski.Hit = 0;
+                                            }
+                                            if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                            {
+                                                if (Session.Character.Family == null || playerToAttack.Character.Family == null || Session.Character.Family.FamilyId != playerToAttack.Character.Family.FamilyId)
+                                                {
+                                                    PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
+                                                }
+                                                else
+                                                {
+                                                    Session.SendPacket($"cancel 2 {targetId}");
+                                                }
+                                            }
+                                            else if (Session.Character.MapId == 9305)
+                                            {
+                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                {
+                                                    PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
+                                                }
+                                                else
+                                                {
+                                                    Session.SendPacket($"cancel 2 {targetId}");
+                                                }
+                                            }
+                                            else if (Session.CurrentMap.IsPVP)
+                                            {
+                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                {
+                                                    PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
+                                                }
+                                                else
+                                                {
+                                                    Session.SendPacket($"cancel 2 {targetId}");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
                                             }
                                         }
                                         else
                                         {
-                                            Session.SendPacket($"cancel 2 {targetId}");
-                                        }
-                                        if (!monsterToAttack.IsAlive)
-                                        {
-                                            Session.SendPacket($"cancel 2 {targetId}");
+                                            if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                            {
+                                                if (Session.Character.Family == null || playerToAttack.Character.Family == null || Session.Character.Family.FamilyId != playerToAttack.Character.Family.FamilyId)
+                                                {
+                                                    PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
+                                                }
+                                                else
+                                                {
+                                                    Session.SendPacket($"cancel 2 {targetId}");
+                                                }
+                                            }
+                                            else if (Session.Character.MapId == 9305)
+                                            {
+                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                {
+                                                    PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
+                                                }
+                                                else
+                                                {
+                                                    Session.SendPacket($"cancel 2 {targetId}");
+                                                }
+                                            }
+                                            else if (Session.CurrentMap.IsPVP)
+                                            {
+                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                {
+                                                    PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
+                                                }
+                                                else
+                                                {
+                                                    Session.SendPacket($"cancel 2 {targetId}");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
+                                            }
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
-                                    if (skillCombo != null)
-                                    {
-                                        if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit == ski.Hit)
-                                        {
-                                            ski.Hit = 0;
-                                        }
-                                        monsterToAttack.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo));
-                                    }
-                                    else
-                                    {
-                                        monsterToAttack.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill));
-                                    }
+                                    Session.SendPacket($"cancel 2 {targetId}");
                                 }
                             }
                             else
@@ -294,7 +477,126 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            Session.SendPacket($"cancel 2 {targetId}");
+
+                            MapMonster monsterToAttack = Session.CurrentMap.GetMonster(targetId);
+                            if (monsterToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
+                            {
+                                if (Map.GetDistance(new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY },
+                                                    new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= (ski.Skill.Range) + monsterToAttack.Monster.BasicArea)
+                                {
+                                    Session.Character.LastSkillUse = DateTime.Now;
+                                    ski.LastUse = DateTime.Now;
+                                    if (!Session.Character.HasGodMode)
+                                    {
+                                        Session.Character.Mp -= ski.Skill.MpCost;
+                                    }
+                                    if (Session.Character.UseSp && ski.Skill.CastEffect != -1)
+                                    {
+                                        Session.SendPackets(Session.Character.GenerateQuicklist());
+                                    }
+                                    Session.SendPacket(Session.Character.GenerateStat());
+                                    CharacterSkill characterSkillInfo = Session.Character.Skills.GetAllItems().OrderBy(o => o.SkillVNum)
+                                        .FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
+
+                                    Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {monsterToAttack.MapMonsterId} {ski.Skill.CastAnimation} {characterSkillInfo?.Skill.CastEffect ?? ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
+                                    Session.Character.Skills.GetAllItems().Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
+
+                                    // Generate scp
+                                    ski.LastUse = DateTime.Now;
+                                    if ((DateTime.Now - ski.LastUse).TotalSeconds > 3)
+                                    {
+                                        ski.Hit = 0;
+                                    }
+                                    else
+                                    {
+                                        ski.Hit++;
+                                    }
+
+                                    if (ski.Skill.CastEffect != 0)
+                                    {
+                                        Thread.Sleep(ski.Skill.CastTime * 100);
+                                    }
+                                    // check if we will hit mutltiple targets
+                                    if (ski.Skill.TargetRange != 0)
+                                    {
+                                        ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
+                                        if (skillCombo != null)
+                                        {
+                                            if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit == ski.Hit)
+                                            {
+                                                ski.Hit = 0;
+                                            }
+                                            IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
+                                            if (monstersInAOERange != null)
+                                            {
+                                                foreach (MapMonster mon in monstersInAOERange)
+                                                {
+                                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill
+                                                        , skillCombo: skillCombo));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
+                                            }
+                                            if (!monsterToAttack.IsAlive)
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            IEnumerable<MapMonster> monstersInAOERange = Session.CurrentMap?.GetListMonsterInRange(monsterToAttack.MapX, monsterToAttack.MapY, ski.Skill.TargetRange).ToList();
+
+                                            //hit the targetted monster
+                                            monsterToAttack.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
+                                                        , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect, showTargetAnimation: true));
+
+                                            //hit all other monsters
+                                            if (monstersInAOERange != null)
+                                            {
+                                                foreach (MapMonster mon in monstersInAOERange.Where(m => m.MapMonsterId != monsterToAttack.MapMonsterId)) //exclude targetted monster
+                                                {
+                                                    mon.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill
+                                                        , characterSkillInfo?.Skill.Effect ?? ski.Skill.Effect));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
+                                            }
+                                            if (!monsterToAttack.IsAlive)
+                                            {
+                                                Session.SendPacket($"cancel 2 {targetId}");
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ComboDTO skillCombo = ski.Skill.Combos.FirstOrDefault(s => ski.Hit == s.Hit);
+                                        if (skillCombo != null)
+                                        {
+                                            if (ski.Skill.Combos.OrderByDescending(s => s.Hit).First().Hit == ski.Hit)
+                                            {
+                                                ski.Hit = 0;
+                                            }
+                                            monsterToAttack.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo));
+                                        }
+                                        else
+                                        {
+                                            monsterToAttack.HitQueue.Enqueue(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill));
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Session.SendPacket($"cancel 2 {targetId}");
+                                }
+                            }
+                            else
+                            {
+                                Session.SendPacket($"cancel 2 {targetId}");
+                            }
                         }
                     }
                     else
@@ -331,14 +633,12 @@ namespace OpenNos.Handler
                         Session.SendPacket("cancel 0 0");
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                     }
                     else
                     {
                         Session.SendPacket("cancel 0 0");
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                     }
                     return;
                 }
@@ -369,9 +669,16 @@ namespace OpenNos.Handler
                         break;
 
                     case UserType.Player:
-                        if (Session.Character.Hp > 0 && useSkillPacket.MapMonsterId == Session.Character.CharacterId)
+                        if (Session.Character.Hp > 0)
                         {
-                            TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId, true);
+                            if(useSkillPacket.MapMonsterId != Session.Character.CharacterId)
+                            {
+                                TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId, true);
+                            }
+                            else
+                            {
+                                TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId);
+                            }
                         }
                         else
                         {
@@ -469,7 +776,31 @@ namespace OpenNos.Handler
                         {
                             foreach (MapMonster mon in monstersInRange.Where(s => s.CurrentHp > 0))
                             {
-                                mon.HitQueue.Enqueue(new GameObject.Networking.HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y));
+                                mon.HitQueue.Enqueue(new HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y));
+                            }
+                        }
+                        foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.IsInRange(x, y, characterSkill.Skill.TargetRange)))
+                        {
+                            if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                            {
+                                if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
+                                {
+                                    PVPHit(new HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y), character);
+                                }
+                            }
+                            else if (Session.Character.MapId == 9305)
+                            {
+                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                                {
+                                    PVPHit(new HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y), character);
+                                }
+                            }
+                            else if (Session.CurrentMap.IsPVP)
+                            {
+                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(character.Character.CharacterId))
+                                {
+                                    PVPHit(new HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y), character);
+                                }
                             }
                         }
                     });
@@ -490,6 +821,117 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket("cancel 2 0");
+            }
+        }
+
+        private void PVPHit(HitRequest hitRequest, ClientSession target)
+        {
+            if (target.Character.Hp > 0 && hitRequest.Session.Character.Hp > 0)
+            {
+                int hitmode = 0;
+
+                // calculate damage
+                //int damage = hitRequest.Session.Character.GenerateDamage(this, hitRequest.Skill, ref hitmode);
+                int damage = hitRequest.Session.Character.GeneratePVPDamage(target.Character, hitRequest.Skill, ref hitmode);
+                if (target.Character.HasGodMode)
+                {
+                    damage = 0;
+                    hitmode = 1;
+                }
+                target.Character.GetDamage(damage/2);
+                target.Character.LastDefence = DateTime.Now;
+                target.SendPacket(target.Character.GenerateStat());
+                bool IsAlive = target.Character.Hp > 0;
+                if (!IsAlive)
+                {
+                    if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                    {
+                        hitRequest.Session.Character.Reput += target.Character.Level * 50;
+                        hitRequest.Session.SendPacket(hitRequest.Session.Character.GenerateLev());
+                    }
+                    Observable.Timer(TimeSpan.FromMilliseconds(1000))
+                           .Subscribe(
+                           o =>
+                           {
+                               ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
+                           });
+                }
+                switch (hitRequest.TargetHitType)
+                {
+                    case TargetHitType.SingleTargetHit:
+                        {
+                            // Target Hit
+                            hitRequest.Session.CurrentMap?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                    case TargetHitType.SingleTargetHitCombo:
+                        {
+                            // Taget Hit Combo
+                            hitRequest.Session.CurrentMap?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.SkillCombo.Animation} {hitRequest.SkillCombo.Effect} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                    case TargetHitType.SingleAOETargetHit:
+                        {
+                            // Target Hit Single AOE
+                            switch (hitmode)
+                            {
+                                case 1:
+                                    hitmode = 4;
+                                    break;
+
+                                case 3:
+                                    hitmode = 6;
+                                    break;
+
+                                default:
+                                    hitmode = 5;
+                                    break;
+                            }
+                            if (hitRequest.ShowTargetHitAnimation)
+                            {
+                                hitRequest.Session.CurrentMap?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} 0 0 {(IsAlive ? 1 : 0)} {((int)((double)hitRequest.Session.Character.Hp / hitRequest.Session.Character.HPLoad()) * 100)} 0 0 {hitRequest.Skill.SkillType - 1}");
+                            }
+                            hitRequest.Session.CurrentMap?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                    case TargetHitType.AOETargetHit:
+                        {
+                            // Target Hit AOE
+                            switch (hitmode)
+                            {
+                                case 1:
+                                    hitmode = 4;
+                                    break;
+
+                                case 3:
+                                    hitmode = 6;
+                                    break;
+
+                                default:
+                                    hitmode = 5;
+                                    break;
+                            }
+                            hitRequest.Session.CurrentMap?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                    case TargetHitType.ZoneHit:
+                        {
+                            // Zone HIT
+                            hitRequest.Session.CurrentMap?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.MapX} {hitRequest.MapY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} 5 {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                    case TargetHitType.SpecialZoneHit:
+                        {
+                            // Special Zone hit
+                            hitRequest.Session.CurrentMap?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.MapX} {hitRequest.Session.Character.MapY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} 0 {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                // monster already has been killed, send cancel
+                hitRequest.Session.SendPacket($"cancel 2 {target.Character.CharacterId}");
             }
         }
 

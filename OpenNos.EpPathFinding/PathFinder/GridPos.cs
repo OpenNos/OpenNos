@@ -110,7 +110,7 @@ namespace EpPathFinding
             }
 
             // Return true if the fields match:
-            return (x == p.x) && (y == p.y);
+            return x == p.x && y == p.y;
         }
 
         public bool Equals(GridPos p)
@@ -121,7 +121,7 @@ namespace EpPathFinding
             }
 
             // Return true if the fields match:
-            return (x == p.x) && (y == p.y);
+            return x == p.x && y == p.y;
         }
 
         public override int GetHashCode()
