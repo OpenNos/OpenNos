@@ -110,7 +110,7 @@ namespace OpenNos.Handler
             }
         }
 
-        public void TargetHit(int castingId, int targetId)
+        public void TargetHit(int castingId, int targetId, bool isPvp=false)
         {
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
@@ -371,7 +371,7 @@ namespace OpenNos.Handler
                     case UserType.Player:
                         if (Session.Character.Hp > 0 && useSkillPacket.MapMonsterId == Session.Character.CharacterId)
                         {
-                            TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId);
+                            TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId, true);
                         }
                         else
                         {

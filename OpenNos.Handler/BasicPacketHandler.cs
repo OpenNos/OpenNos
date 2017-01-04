@@ -195,16 +195,13 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("dir")]
-        public void Dir(string packet)
+        public void Dir(DirectionPacket directionpacket)
         {
-            Logger.Debug(packet, Session.SessionId);
-            string[] dirPacket = packet.Split(' ');
-
-            if (Convert.ToInt32(dirPacket[4]) == Session.Character.CharacterId)
+           
+            if (directionpacket.CharacterId == Session.Character.CharacterId)
             {
-                Session.Character.Direction = Convert.ToInt32(dirPacket[2]);
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateDir());
+                Session.Character.Direction = directionpacket.Direction;
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateDir()); 
             }
         }
 
@@ -1057,12 +1054,10 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("pulse")]
-        public void Pulse(string packet)
+        public void Pulse(PulsePacket pulsepacket)
         {
-            string[] packetsplit = packet.Split(' ');
             Session.Character.LastPulse += 60;
-            if (Convert.ToInt32(packetsplit[2]) != Session.Character.LastPulse)
+            if (pulsepacket.Tick != Session.Character.LastPulse)
             {
                 Session.Disconnect();
             }
@@ -1093,9 +1088,8 @@ namespace OpenNos.Handler
         }
 
         [Packet("rest")]
-        public void Rest(string packet)
+        public void Rest(SitPacket sitpacket)
         {
-            Logger.Debug(packet, Session.SessionId);
             Session.Character.Rest();
         }
 
@@ -1185,9 +1179,10 @@ namespace OpenNos.Handler
             else
             {
                 string language = System.Configuration.ConfigurationManager.AppSettings["language"];
-                if (System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && (Language.GetLanguage(message.Trim()) != language && Language.GetLanguage(message.Trim()) != String.Empty))
+                if (packetsplit.Length > 3 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && (Language.Instance.GetLanguage(message.Trim()) != language && Language.Instance.GetLanguage(message.Trim()) != String.Empty))
                 {
-                    Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 0));
+                    Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 2));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 11));
                 }
                 else
                 {

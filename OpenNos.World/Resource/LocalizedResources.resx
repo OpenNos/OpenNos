@@ -1172,6 +1172,6 @@
     <value>Player {0}  has been kicked out of the family!</value>
   </data>
   <data name="LANGUAGE_REQUIRED" xml:space="preserve">
-    <value>Only {0] language allowed !</value>
+    <value>Only {0} language allowed !</value>
   </data>
 </root>
