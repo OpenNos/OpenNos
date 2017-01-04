@@ -1054,6 +1054,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// Pulse packet
+        /// </summary>
+        /// <param name="pulsepacket"></param>
         public void Pulse(PulsePacket pulsepacket)
         {
             Session.Character.LastPulse += 60;
@@ -1087,7 +1091,10 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("rest")]
+        /// <summary>
+        /// Rest packet
+        /// </summary>
+        /// <param name="sitpacket"></param>
         public void Rest(SitPacket sitpacket)
         {
             Session.Character.Rest();
