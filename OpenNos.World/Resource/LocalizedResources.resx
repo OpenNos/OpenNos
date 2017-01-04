@@ -653,10 +653,10 @@
     <value>Seeds of power used!</value>
   </data>
   <data name="ASK_REVIVE" xml:space="preserve">
-    <value>Do you want to revive? it will cost you 10 power seeds</value>
+    <value>Do you want to revive? It will cost you 10 power seeds</value>
   </data>
   <data name="ASK_REVIVE_FREE" xml:space="preserve">
-    <value>Do you want to revive? it will be free</value>
+    <value>Do you want to revive? It will be free</value>
   </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>You've lost {0} dignity</value>
@@ -1173,5 +1173,11 @@
   </data>
   <data name="LANGUAGE_REQUIRED" xml:space="preserve">
     <value>Only {0} language allowed !</value>
+  </data>
+  <data name="ASK_REVIVE_PVP" xml:space="preserve">
+    <value>Do you want to revive? It will cost you 100 Gold</value>
+  </data>
+  <data name="LOSE_REP" xml:space="preserve">
+    <value>You've lost {0} reputation</value>
   </data>
 </root>
