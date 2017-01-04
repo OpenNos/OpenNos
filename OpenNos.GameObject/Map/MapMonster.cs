@@ -101,10 +101,7 @@ namespace OpenNos.GameObject
             {
                 return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)((float)CurrentHp / (float)Monster.MaxHP * 100)} {(int)((float)CurrentMp / (float)Monster.MaxMP * 100)} 0 0 0 -1 {(byte)InRespawnType.TeleportationEffect} 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
             }
-            else
-            {
-                return string.Empty;
-            }
+            return string.Empty;
         }
 
         public string GenerateMv3()
@@ -745,11 +742,11 @@ namespace OpenNos.GameObject
 
                     // check if target is in range
                     if (!targetSession.Character.InvisibleGm && !targetSession.Character.Invisible && targetSession.Character.Hp > 0
-                        && ((npcMonsterSkill != null && CurrentMp >= npcMonsterSkill.Skill.MpCost &&
+                        && (npcMonsterSkill != null && CurrentMp >= npcMonsterSkill.Skill.MpCost &&
                              Map.GetDistance(new MapCell { X = MapX, Y = MapY },
-                                 new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range)
-                            || (Map.GetDistance(new MapCell { X = MapX, Y = MapY },
-                                    new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
+                                 new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range
+                            || Map.GetDistance(new MapCell { X = MapX, Y = MapY },
+                                    new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange))
                     {
                         TargetHit(targetSession, npcMonsterSkill);
                     }
@@ -928,7 +925,7 @@ namespace OpenNos.GameObject
         /// <param name="npcMonsterSkill"></param>
         private void TargetHit(ClientSession targetSession, NpcMonsterSkill npcMonsterSkill)
         {
-            if (Monster != null && (((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 200 && !Skills.Any()) || npcMonsterSkill != null))
+            if (Monster != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 200 && !Skills.Any() || npcMonsterSkill != null))
             {
                 int hitmode = 0;
                 int damage = npcMonsterSkill != null ? GenerateDamage(targetSession.Character, npcMonsterSkill.Skill, ref hitmode) : GenerateDamage(targetSession.Character, null, ref hitmode);
@@ -966,7 +963,7 @@ namespace OpenNos.GameObject
                                        .Subscribe(
                                        o =>
                                        {
-                                           if (targetSession != null && targetSession.Character.Hp > 0)
+                                           if (targetSession.Character.Hp > 0)
                                                TargetHit2(targetSession, npcMonsterSkill, damage, hitmode);
                                        });
             }
@@ -992,11 +989,8 @@ namespace OpenNos.GameObject
                            .Subscribe(
                            o =>
                            {
-                               if (targetSession != null)
-                               {
-                                   ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
-                                   RemoveTarget();
-                               }
+                               ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
+                               RemoveTarget();
                            });
                 }
             }
@@ -1026,11 +1020,8 @@ namespace OpenNos.GameObject
                                                    .Subscribe(
                                                    o =>
                                                    {
-                                                       if (characterInRange != null)
-                                                       {
-                                                           ServerManager.Instance.AskRevive(characterInRange.CharacterId);
-                                                           RemoveTarget();
-                                                       }
+                                                       ServerManager.Instance.AskRevive(characterInRange.CharacterId);
+                                                       RemoveTarget();
                                                    });
 
                         }
