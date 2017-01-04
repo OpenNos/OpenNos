@@ -21,6 +21,7 @@ using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
@@ -1202,7 +1203,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                string language = System.Configuration.ConfigurationManager.AppSettings["language"];
+                string language = new CultureInfo(System.Configuration.ConfigurationManager.AppSettings["language"]).EnglishName;
                 List<string> tempmess = message.Trim().Split(' ', '\'').ToList();
                 tempmess.RemoveAll(s => s.Length <= 2);
                 string messagecheck = tempmess.Aggregate((i, j) => i + " " + j);
