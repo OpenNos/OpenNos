@@ -481,19 +481,19 @@ namespace OpenNos.Import.Console
             for (int i = 1; i < 300; i++)
             {
                 bool objectset = false;
-                if ((i < 3) || (i > 48 && i < 53) || (i > 67 && i < 76) || (i == 102) || (i > 103 && i < 105) || (i > 144 && i < 149))
+                if (i < 3 || i > 48 && i < 53 || i > 67 && i < 76 || i == 102 || i > 103 && i < 105 || i > 144 && i < 149)
                 {
                     // "act1"
                     mapTypeId = 1;
                     objectset = true;
                 }
-                else if ((i > 19 && i < 34) || (i > 52 && i < 68) || (i > 84 && i < 101))
+                else if (i > 19 && i < 34 || i > 52 && i < 68 || i > 84 && i < 101)
                 {
                     // "act2"
                     mapTypeId = 2;
                     objectset = true;
                 }
-                else if ((i > 40 && i < 45) || (i > 45 && i < 48) || (i > 99 && i < 102) || (i > 104 && i < 128))
+                else if (i > 40 && i < 45 || i > 45 && i < 48 || i > 99 && i < 102 || i > 104 && i < 128)
                 {
                     // "act3"
                     mapTypeId = 3;
@@ -505,7 +505,7 @@ namespace OpenNos.Import.Console
                     mapTypeId = 20;
                     objectset = true;
                 }
-                else if ((i > 129 && i <= 134) || (i == 135) || (i == 137) || (i == 139) || (i == 141) || (i > 150 && i < 155))
+                else if (i > 129 && i <= 134 || i == 135 || i == 137 || i == 139 || i == 141 || i > 150 && i < 155)
                 {
                     // "act4"
                     mapTypeId = 4;
@@ -529,7 +529,7 @@ namespace OpenNos.Import.Console
                     mapTypeId = 7;
                     objectset = true;
                 }
-                else if ((i > 239 && i < 251) || (i == 299))
+                else if (i > 239 && i < 251 || i == 299)
                 {
                     // "act6.2"
                     mapTypeId = 8;
@@ -2052,7 +2052,7 @@ namespace OpenNos.Import.Console
         {
             int teleporterCounter = 0;
             TeleporterDTO teleporter = null;
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26") || o[1].Equals("45") || o[1].Equals("301") || o[1].Equals("132") || o[1].Equals("5002") || o[1].Equals("5012")))))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26") || o[1].Equals("45") || o[1].Equals("301") || o[1].Equals("132") || o[1].Equals("5002") || o[1].Equals("5012"))))
             {
                 if (currentPacket.Length > 4 && currentPacket[0] == "n_run")
                 {
@@ -2619,11 +2619,11 @@ namespace OpenNos.Import.Console
                                 if (item.EquipmentSlot.Equals(EquipmentType.Amulet))
                                 {
                                     item.LevelMinimum = Convert.ToByte(currentLine[2]);
-                                    if ((item.VNum > 4055 && item.VNum < 4061) || (item.VNum > 4172 && item.VNum < 4176))
+                                    if (item.VNum > 4055 && item.VNum < 4061 || item.VNum > 4172 && item.VNum < 4176)
                                     {
                                         item.ItemValidTime = 10800;
                                     }
-                                    else if ((item.VNum > 4045 && item.VNum < 4056) || item.VNum == 967 || item.VNum == 968)
+                                    else if (item.VNum > 4045 && item.VNum < 4056 || item.VNum == 967 || item.VNum == 968)
                                     {
                                         // (item.VNum > 8104 && item.VNum < 8115) <= disaled for now
                                         // because doesn't work!
@@ -2838,7 +2838,7 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     default:
-                                        if ((item.VNum > 5891 && item.VNum < 5900) || (item.VNum > 9100 && item.VNum < 9109))
+                                        if (item.VNum > 5891 && item.VNum < 5900 || item.VNum > 9100 && item.VNum < 9109)
                                         {
                                             item.Effect = 69; // imagined number as for I = √(-1), complex z = a + bi
                                         }

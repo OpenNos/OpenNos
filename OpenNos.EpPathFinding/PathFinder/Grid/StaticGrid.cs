@@ -125,7 +125,7 @@ namespace EpPathFinding
 
         public override bool IsWalkableAt(int iX, int iY)
         {
-            return IsInside(iX, iY) && (this._mNodes[iX][iY].walkable == 0 || this._mNodes[iX][iY].walkable == 2 || (this._mNodes[iX][iY].walkable >= 16 && this._mNodes[iX][iY].walkable <= 19));
+            return IsInside(iX, iY) && (this._mNodes[iX][iY].walkable == 0 || this._mNodes[iX][iY].walkable == 2 || this._mNodes[iX][iY].walkable >= 16 && this._mNodes[iX][iY].walkable <= 19);
         }
 
         public override bool IsWalkableAt(GridPos iPos)

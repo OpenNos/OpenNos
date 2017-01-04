@@ -74,7 +74,7 @@ namespace OpenNos.Core
             }
             else
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
         public string GetMessageFromKey(string message)

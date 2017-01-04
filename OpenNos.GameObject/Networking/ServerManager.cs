@@ -779,7 +779,6 @@ namespace OpenNos.GameObject
             ClientSession session = GetSessionByCharacterId(characterId);
             if (session != null && session.Character.Hp <= 0)
             {
-                Random rnd = new Random();
                 LeaveMap(session.Character.CharacterId);
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
@@ -999,10 +998,10 @@ namespace OpenNos.GameObject
                     switch (message.Item4)
                     {
                         case MessageType.Whisper:
-                            {
-                                targetSession.SendPacket(String.Format("{0} <Channel: {1}>", message.Item2, message.Item3));
-                                break;
-                            }
+                        {
+                            targetSession?.SendPacket($"{message.Item2} <Channel: {message.Item3}>");
+                            break;
+                        }
                         case MessageType.Shout:
                             {
                                 Shout(message.Item2);
@@ -1010,7 +1009,7 @@ namespace OpenNos.GameObject
                             }
                         case MessageType.PrivateChat:
                             {
-                                targetSession.SendPacket(message.Item2);
+                                targetSession?.SendPacket(message.Item2);
                                 break;
                             }
                         case MessageType.Family:
@@ -1019,7 +1018,7 @@ namespace OpenNos.GameObject
                                 if (long.TryParse(message.Item1, out familyId))
                                 {
                                     if(message.Item3 != ChannelId)
-                                    foreach (ClientSession s in ServerManager.Instance.Sessions)
+                                    foreach (ClientSession s in Instance.Sessions)
                                     {
                                         if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
                                         {
@@ -1044,12 +1043,9 @@ namespace OpenNos.GameObject
                 Tuple<long?, string> kickedSession = (Tuple<long?, string>)sender;
 
                 ClientSession targetSession = Sessions.FirstOrDefault(s => (!kickedSession.Item1.HasValue || s.SessionId == kickedSession.Item1.Value)
-                                                        && ((String.IsNullOrEmpty(kickedSession.Item2) || s.Account.Name == kickedSession.Item2)));
+                                                        && (string.IsNullOrEmpty(kickedSession.Item2) || s.Account.Name == kickedSession.Item2));
 
-                if (targetSession != null)
-                {
-                    targetSession.Disconnect();
-                }
+                targetSession?.Disconnect();
             }
         }
 

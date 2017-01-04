@@ -121,7 +121,6 @@
     <value>Account ist bereits eingeloggt.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
-    <value>Account ist gesperrt!</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Verbindung wurde vom Client getrennt.</value>
@@ -179,5 +178,8 @@
   </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Das empfangene Paket mit der Identifikation {0} hat ein falsches Format oder die dazugehörige Packet-Definition ist fehlerhaft. Inhalt: {1} </value>
+  </data>
+  <data name="MAINTENANCE" xml:space="preserve">
+    <value>Server is currently under maintenance. Maintenance estimated time {0}</value>
   </data>
 </root>

@@ -110,7 +110,7 @@ namespace OpenNos.Handler
             }
         }
 
-        public void TargetHit(int castingId, int targetId, bool isPvp=false)
+        public void TargetHit(int castingId, int targetId, bool isPvp = false)
         {
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
@@ -160,7 +160,7 @@ namespace OpenNos.Handler
                         if (Session.HasCurrentMap)
                         {
                             // ReSharper disable once PossibleNullReferenceException HasCurrentMap is nullcheck
-                            Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {ski.Skill.SkillType - 1}");
+                            Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {(int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100} 0 -2 {ski.Skill.SkillType - 1}");
                             if (ski.Skill.TargetRange != 0 && Session.HasCurrentMap)
                             {
                                 foreach (
@@ -181,7 +181,7 @@ namespace OpenNos.Handler
                         if (monsterToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
                         {
                             if (Map.GetDistance(new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY },
-                                                new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= (ski.Skill.Range) + monsterToAttack.Monster.BasicArea)
+                                                new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + monsterToAttack.Monster.BasicArea)
                             {
                                 Session.Character.LastSkillUse = DateTime.Now;
                                 ski.LastUse = DateTime.Now;

@@ -61,7 +61,6 @@ namespace OpenNos.Handler
             }
             Logger.Debug(buyPacket.ToString(), Session.SessionId);
 
-            Random random = new Random();
             byte amount = buyPacket.Amount;
 
             switch (buyPacket.Type)
@@ -95,8 +94,7 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        // check if the item has been removed successfully from previous owner and
-                        // remove it
+                        // check if the item has been removed successfully from previous owner and remove it
                         if (BuyValidate(Session, shop, buyPacket.Slot, amount))
                         {
                             ItemInstance inv = item.ItemInstance.Type == InventoryType.Equipment
@@ -138,9 +136,10 @@ namespace OpenNos.Handler
                             if (npc.Shop.ShopSkills.Any())
                             {
                                 if (!npc.Shop.ShopSkills.Exists(s => s.SkillVNum == buyPacket.Slot))
-                                {                                    
+                                {
                                     return;
                                 }
+
                                 // skill shop
                                 if (Session.Character.UseSp)
                                 {
@@ -203,7 +202,7 @@ namespace OpenNos.Handler
                                         }
                                         foreach (var skill in Session.Character.Skills.GetAllItems())
                                         {
-                                            if ((skillinfo.CastId == skill.Skill.CastId) && skill.Skill.SkillVNum < 200)
+                                            if (skillinfo.CastId == skill.Skill.CastId && skill.Skill.SkillVNum < 200)
                                             {
                                                 Session.Character.Skills.Remove(skill.SkillVNum);
                                             }
@@ -292,7 +291,7 @@ namespace OpenNos.Handler
                                         Session.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_REPUT")));
                                         return;
                                     }
-                                    byte ra = (byte)ServerManager.RandomNumber(0, 100);
+                                    byte ra = (byte)ServerManager.RandomNumber();
 
                                     int[] rareprob = { 100, 100, 70, 50, 30, 15, 5, 1 };
                                     if (iteminfo.ReputPrice != 0)
@@ -361,7 +360,7 @@ namespace OpenNos.Handler
             {
                 short typePacket;
                 short.TryParse(packetsplit[2], out typePacket);
-                if ((Session.Character.HasShopOpened && typePacket != 1) || !Session.HasCurrentMap)
+                if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMap)
                 {
                     return;
                 }
@@ -606,7 +605,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any()) || Session.Character.IsShopping)
+            if (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
             {
                 return;
             }
@@ -648,7 +647,7 @@ namespace OpenNos.Handler
                 short vnum;
                 short.TryParse(packetsplit[4], out vnum);
                 CharacterSkill skill = Session.Character.Skills[vnum];
-                if (skill == null || vnum == (200 + 20 * (byte)Session.Character.Class) || vnum == (201 + 20 * (byte)Session.Character.Class))
+                if (skill == null || vnum == 200 + 20 * (byte)Session.Character.Class || vnum == 201 + 20 * (byte)Session.Character.Class)
                 {
                     return;
                 }
@@ -749,11 +748,11 @@ namespace OpenNos.Handler
                 }
                 else if (iteminfo.ReputPrice > 0 && iteminfo.Type != 0)
                 {
-                    shoplist += $" {(byte)iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{iteminfo.ReputPrice}";
+                    shoplist += $" {(byte)iteminfo.Type}.{item.Slot}.{item.ItemVNum}.-1.{iteminfo.ReputPrice}";
                 }
                 else if (iteminfo.Type != 0)
                 {
-                    shoplist += $" {(byte)iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{iteminfo.Price * percent}";
+                    shoplist += $" {(byte)iteminfo.Type}.{item.Slot}.{item.ItemVNum}.-1.{iteminfo.Price * percent}";
                 }
                 else
                 {
