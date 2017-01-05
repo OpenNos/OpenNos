@@ -58,23 +58,28 @@ namespace OpenNos.Core
         #endregion
 
         #region Methods
-        public string GetLanguage(string completeTextString)
+        public bool CheckMessageIsCorrectLanguage(string completeTextString)
         {
-            if(_factory == null || _identifier == null)
+            if (_factory == null || _identifier == null)
             {
                 _factory = new RankedLanguageIdentifierFactory();
                 _identifier = _factory.Load(@"Core14.profile.xml");
             }
-            var mostCertainLanguage = _identifier.Identify(completeTextString).FirstOrDefault();
-            if (mostCertainLanguage != null)
+            var mostCertainLanguage = _identifier.Identify(completeTextString).Take(3);
+            if (mostCertainLanguage.Any())
             {
-                //get the language in two-digit form e.g. en, de, fr...
-                CultureInfo cult = CultureInfo.GetCultures(CultureTypes.NeutralCultures).FirstOrDefault(ci => string.Equals(ci.ThreeLetterISOLanguageName, mostCertainLanguage.Item1.Iso639_2T, StringComparison.OrdinalIgnoreCase));    
-                return cult.TwoLetterISOLanguageName;
+                if(mostCertainLanguage.Any(s=>s.Item1.Iso639_2T == _resourceCulture.ThreeLetterISOLanguageName))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
-                return string.Empty;
+                return true;
             }
         }
         public string GetMessageFromKey(string message)
