@@ -70,6 +70,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You were killed by an enemy! Due to the curse of the Frozen Crown, you can&apos;t be revived for 30 seconds! ähnelt.
+        /// </summary>
+        internal static string ACT4_PVP_DIE {
+            get {
+                return ResourceManager.GetString("ACT4_PVP_DIE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Administrator ähnelt.
         /// </summary>
         internal static string ADMINISTRATOR {

@@ -844,17 +844,49 @@ namespace OpenNos.Handler
                 bool IsAlive = target.Character.Hp > 0;
                 if (!IsAlive)
                 {
-                    if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                    if (target.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                     {
-                        hitRequest.Session.Character.Reput += target.Character.Level * 50;
-                        hitRequest.Session.SendPacket(hitRequest.Session.Character.GenerateLev());
+                        if (target.Character.Reput < 50000)
+                        {
+                            target.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), 0), 11));
+                        }
+                        else
+                        {
+                            target.Character.Reput -= target.Character.Level * 50;
+                            hitRequest.Session.Character.Reput += target.Character.Level * 50;
+                            hitRequest.Session.SendPacket(hitRequest.Session.Character.GenerateLev());
+                            target.SendPacket(target.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), (short)(target.Character.Level * 50)), 11));
+                        }
+                        target.SendPacket(target.Character.GenerateFd());
+                        target.CurrentMap?.Broadcast(target, target.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        target.CurrentMap?.Broadcast(target, target.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                        target.SendPacket(target.Character.GenerateSay(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 11));
+                        target.SendPacket(target.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 0));
+                        Observable.Timer(TimeSpan.FromMilliseconds(30000))
+                               .Subscribe(
+                               o =>
+                               {
+                                   ServerManager.Instance.LeaveMap(target.Character.CharacterId);
+                                   target.Character.Hp = (int)target.Character.HPLoad();
+                                   target.Character.Mp = (int)target.Character.MPLoad();
+                                   short x = (short)(39 + ServerManager.RandomNumber(-2, 3));
+                                   short y = (short)(42 + ServerManager.RandomNumber(-2, 3));
+                                   ServerManager.Instance.ChangeMap(target.Character.CharacterId, 130, x, y);
+                                   target.CurrentMap?.Broadcast(target, target.Character.GenerateTp());
+                                   target.CurrentMap?.Broadcast(target.Character.GenerateRevive());
+                                   target.SendPacket(target.Character.GenerateStat());
+                               });
                     }
-                    Observable.Timer(TimeSpan.FromMilliseconds(1000))
-                           .Subscribe(
-                           o =>
-                           {
-                               ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
-                           });
+
+                    else
+                    {
+                        Observable.Timer(TimeSpan.FromMilliseconds(1000))
+                               .Subscribe(
+                               o =>
+                               {
+                                   ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
+                               });
+                    }
                 }
                 switch (hitRequest.TargetHitType)
                 {

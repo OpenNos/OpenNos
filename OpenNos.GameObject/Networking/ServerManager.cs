@@ -201,24 +201,6 @@ namespace OpenNos.GameObject
             ClientSession Session = GetSessionByCharacterId(characterId);
             if (Session != null && Session.HasSelectedCharacter)
             {
-                if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
-                {
-                    Session.Character.Reput -= Session.Character.Level * 50;
-                    if (Session.Character.Reput < 50000)
-                    {
-                        Session.Character.Reput = 50000;
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), 0), 11));
-                    }
-                    else
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), (short)(Session.Character.Level * 50)), 11));
-                    }
-
-                    Session.SendPacket(Session.Character.GenerateFd());
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                }
-
                 if (Session.Character.IsVehicled)
                 {
                     Session.Character.RemoveVehicle();

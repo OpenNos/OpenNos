@@ -1180,4 +1180,7 @@
   <data name="LOSE_REP" xml:space="preserve">
     <value>You've lost {0} reputation</value>
   </data>
+  <data name="ACT4_PVP_DIE" xml:space="preserve">
+    <value>You were killed by an enemy! Due to the curse of the Frozen Crown, you can't be revived for 30 seconds!</value>
+  </data>
 </root>
