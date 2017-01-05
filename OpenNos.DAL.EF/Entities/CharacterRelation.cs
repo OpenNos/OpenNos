@@ -24,10 +24,8 @@ namespace OpenNos.DAL.EF
         #region Instantiation
 
         public CharacterRelation()
-        {
-
+        { 
         }
-
         #endregion
 
         #region Properties
@@ -38,7 +36,7 @@ namespace OpenNos.DAL.EF
 
         public long RelatedCharacterId { get; set; }
 
-        public CharacterRelationType RelationType { get; set;}
+        public CharacterRelationType RelationType { get; set; }
 
         #endregion
     }

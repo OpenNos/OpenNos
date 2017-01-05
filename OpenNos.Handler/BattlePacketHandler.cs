@@ -111,7 +111,7 @@ namespace OpenNos.Handler
             }
         }
 
-        public void TargetHit(int castingId, int targetId, bool isPvp=false)
+        public void TargetHit(int castingId, int targetId, bool isPvp = false)
         {
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
@@ -166,7 +166,7 @@ namespace OpenNos.Handler
                             {
                                 foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange)))
                                 {
-                                    if(Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                                    if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                                     {
                                         if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
                                         {
@@ -671,7 +671,7 @@ namespace OpenNos.Handler
                     case UserType.Player:
                         if (Session.Character.Hp > 0)
                         {
-                            if(useSkillPacket.MapMonsterId != Session.Character.CharacterId)
+                            if (useSkillPacket.MapMonsterId != Session.Character.CharacterId)
                             {
                                 TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId, true);
                             }
@@ -838,7 +838,7 @@ namespace OpenNos.Handler
                     damage = 0;
                     hitmode = 1;
                 }
-                target.Character.GetDamage(damage/2);
+                target.Character.GetDamage(damage / 2);
                 target.Character.LastDefence = DateTime.Now;
                 target.SendPacket(target.Character.GenerateStat());
                 bool IsAlive = target.Character.Hp > 0;
@@ -877,7 +877,6 @@ namespace OpenNos.Handler
                                    target.SendPacket(target.Character.GenerateStat());
                                });
                     }
-
                     else
                     {
                         Observable.Timer(TimeSpan.FromMilliseconds(1000))

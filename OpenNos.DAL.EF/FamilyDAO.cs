@@ -82,7 +82,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    FamilyCharacter familyCharacter = context.FamilyCharacter.FirstOrDefault(fc => fc.Character.FirstOrDefault(c=>c.CharacterId.Equals(characterId)) != null);
+                    FamilyCharacter familyCharacter = context.FamilyCharacter.FirstOrDefault(fc => fc.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId)) != null);
                     if (familyCharacter != null)
                     {
                         Family family = context.Family.FirstOrDefault(a => a.FamilyId.Equals(familyCharacter.FamilyId));

@@ -67,12 +67,11 @@ namespace OpenNos.DAL.EF
             {
                 return context.CharacterRelation
                     .Where(c => c.RelationType != CharacterRelationType.Blocked && c.CharacterId == characterId)
-                    .OrderByDescending(c=>c.RelationType)
-                    .ThenBy(c=>c.RelatedCharacterId)
+                    .OrderByDescending(c => c.RelationType)
+                    .ThenBy(c => c.RelatedCharacterId)
                     .ToList()
                     .Select(c => _mapper.Map<CharacterRelationDTO>(c))
                     .ToList();
-                
             }
         }
 
@@ -82,7 +81,7 @@ namespace OpenNos.DAL.EF
             {
                 return context.CharacterRelation
                     .Where(c => c.RelationType == CharacterRelationType.Blocked && c.CharacterId == characterId)
-                    .OrderBy(c=>c.RelatedCharacterId)
+                    .OrderBy(c => c.RelatedCharacterId)
                     .ToList()
                     .Select(c => _mapper.Map<CharacterRelationDTO>(c))
                     .ToList();

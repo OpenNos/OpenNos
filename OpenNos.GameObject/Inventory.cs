@@ -350,7 +350,7 @@ namespace OpenNos.GameObject
             {
                 retItem = GetAllItems().SingleOrDefault(i => i != null && i.Slot.Equals(slot) && i.Type.Equals(type));
             }
-            catch(InvalidOperationException ioEx)
+            catch (InvalidOperationException ioEx)
             {
                 Logger.Error(ioEx);
                 bool isFirstItem = true;

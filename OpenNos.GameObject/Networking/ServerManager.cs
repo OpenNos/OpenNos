@@ -1089,7 +1089,7 @@ namespace OpenNos.GameObject
                                 long familyId;
                                 if (long.TryParse(message.Item1, out familyId))
                                 {
-                                    if(message.Item3 != ChannelId)
+                                    if (message.Item3 != ChannelId)
                                     foreach (ClientSession s in Instance.Sessions)
                                     {
                                         if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)

@@ -199,7 +199,6 @@ namespace OpenNos.Handler
 
         public void Dir(DirectionPacket directionpacket)
         {
-           
             if (directionpacket.CharacterId == Session.Character.CharacterId)
             {
                 Session.Character.Direction = directionpacket.Direction;

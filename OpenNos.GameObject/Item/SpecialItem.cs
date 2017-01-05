@@ -35,7 +35,6 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
-
                 // sp point potions
                 case 150:
                 case 151:

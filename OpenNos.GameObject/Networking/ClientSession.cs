@@ -129,6 +129,7 @@ namespace OpenNos.GameObject
             {
                 return _handlerMethods ?? (_handlerMethods = new Dictionary<string, HandlerMethodReference>());
             }
+
             set
             {
                 _handlerMethods = value;

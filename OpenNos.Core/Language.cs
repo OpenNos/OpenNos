@@ -68,7 +68,7 @@ namespace OpenNos.Core
             var mostCertainLanguage = _identifier.Identify(completeTextString).Take(3);
             if (mostCertainLanguage.Any())
             {
-                if(mostCertainLanguage.Any(s=>s.Item1.Iso639_2T == _resourceCulture.ThreeLetterISOLanguageName))
+                if (mostCertainLanguage.Any(s => s.Item1.Iso639_2T == _resourceCulture.ThreeLetterISOLanguageName))
                 {
                     return true;
                 }

@@ -35,7 +35,6 @@ namespace OpenNos.DAL.Mock
             return null;
         }
 
-
         public IList<FamilyCharacterDTO> LoadByFamilyId(long familyId)
         {
             return null;

@@ -513,6 +513,7 @@ namespace OpenNos.GameObject
             DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
             _friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
         }
+
         public void AddSpouse(long characterId)
         {
             CharacterRelationDTO addRelation = new CharacterRelationDTO

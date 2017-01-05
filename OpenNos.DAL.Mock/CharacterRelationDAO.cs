@@ -41,7 +41,6 @@ namespace OpenNos.DAL.Mock
             return new List<CharacterRelationDTO>();
         }
 
-
         public override CharacterRelationDTO Insert(CharacterRelationDTO dto)
         {
             dto.CharacterId = Container.Any() ? Container.Max(c => c.CharacterId) + 1 : 1;
@@ -62,6 +61,7 @@ namespace OpenNos.DAL.Mock
                 return SaveResult.Inserted;
             }
         }
+
         public CharacterRelationDTO LoadById(long characterId)
         {
             return Container.SingleOrDefault(c => c.CharacterId == characterId);
