@@ -1202,19 +1202,16 @@ namespace OpenNos.Handler
             }
             else
             {
-                //string language = new CultureInfo(System.Configuration.ConfigurationManager.AppSettings["language"]).EnglishName;
-                //List<string> tempmess = message.Trim().Split(' ', '\'').ToList();
-                //tempmess.RemoveAll(s => s.Length <= 2);
-                //string messagecheck = tempmess.Aggregate((i, j) => i + " " + j);
-                //if (packetsplit.Length > 4 && tempmess.Count > 2 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(messagecheck))
-                //{
-                //    Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 2));
-                //    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 11));
-                //}
-                //else
-                //{
+                string language = new CultureInfo(System.Configuration.ConfigurationManager.AppSettings["Language"]).EnglishName;
+                if (packetsplit.Length > 5 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(message))
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 2));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 11));
+                }
+                else
+                {
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), 0), ReceiverType.AllExceptMe);
-                //}
+                }
             }
         }
 

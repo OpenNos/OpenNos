@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using NTextCat;
-using System;
+using OpenNos.Core.LanguageDetection;
+using RestSharp;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -28,15 +28,13 @@ namespace OpenNos.Core
         private static Language instance;
         private ResourceManager _manager;
         private CultureInfo _resourceCulture;
-        private RankedLanguageIdentifier _identifier;
-        private RankedLanguageIdentifierFactory _factory;
         #endregion
 
         #region Instantiation
 
         private Language()
         {
-            _resourceCulture = new CultureInfo(System.Configuration.ConfigurationManager.AppSettings["language"]);
+            _resourceCulture = new CultureInfo(System.Configuration.ConfigurationManager.AppSettings["Language"]);
             if (Assembly.GetEntryAssembly() != null)
             {
                 _manager = new ResourceManager(Assembly.GetEntryAssembly().GetName().Name + ".Resource.LocalizedResources", Assembly.GetEntryAssembly());
@@ -60,26 +58,25 @@ namespace OpenNos.Core
         #region Methods
         public bool CheckMessageIsCorrectLanguage(string completeTextString)
         {
-            if (_factory == null || _identifier == null)
+          
+            RestClient client = new RestClient("http://ws.detectlanguage.com");
+            RestRequest request = new RestRequest("/0.2/detect", Method.POST);
+
+            request.AddParameter("key", System.Configuration.ConfigurationManager.AppSettings["DetectLanguageApiKey"]); 
+            request.AddParameter("q", completeTextString);
+
+            IRestResponse response = client.Execute(request);
+            RestSharp.Deserializers.JsonDeserializer deserializer = new RestSharp.Deserializers.JsonDeserializer();
+            Result result = deserializer.Deserialize<Result>(response);
+            Detection detection = result?.data?.detections.FirstOrDefault();
+
+            if(detection == null)
             {
-                _factory = new RankedLanguageIdentifierFactory();
-                _identifier = _factory.Load(@"Core14.profile.xml");
-            }
-            var mostCertainLanguage = _identifier.Identify(completeTextString).Take(3);
-            if (mostCertainLanguage.Any())
-            {
-                if (mostCertainLanguage.Any(s => s.Item1.Iso639_2T == _resourceCulture.ThreeLetterISOLanguageName))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
             else
             {
-                return true;
+                return detection.confidence < 10 || detection.language == _resourceCulture.TwoLetterISOLanguageName;
             }
         }
         public string GetMessageFromKey(string message)

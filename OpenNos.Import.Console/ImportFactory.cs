@@ -144,7 +144,7 @@ namespace OpenNos.Import.Console
         public void ImportMaps()
         {
             string fileMapIdDat = $"{_folder}\\MapIDData.dat";
-            string fileMapIdLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt";
+            string fileMapIdLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_MapIDData.txt";
             string folderMap = $"{_folder}\\map";
             List<MapDTO> maps = new List<MapDTO>();
             Dictionary<int, string> dictionaryId = new Dictionary<int, string>();
@@ -733,7 +733,7 @@ namespace OpenNos.Import.Console
             }
 
             string fileNpcId = $"{_folder}\\monster.dat";
-            string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
+            string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_monster.txt";
             List<NpcMonsterDTO> npcs = new List<NpcMonsterDTO>();
 
             // Store like this: (vnum, (name, level))
@@ -1655,7 +1655,7 @@ namespace OpenNos.Import.Console
         public void ImportSkills()
         {
             string fileSkillId = $"{_folder}\\Skill.dat";
-            string fileSkillLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Skill.txt";
+            string fileSkillLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_Skill.txt";
             List<SkillDTO> skills = new List<SkillDTO>();
 
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
@@ -2098,7 +2098,7 @@ namespace OpenNos.Import.Console
         internal void ImportItems()
         {
             string fileId = $"{_folder}\\Item.dat";
-            string fileLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Item.txt";
+            string fileLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_Item.txt";
             Dictionary<string, string> dictionaryName = new Dictionary<string, string>();
             string line;
             List<ItemDTO> items = new List<ItemDTO>();
