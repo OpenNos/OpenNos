@@ -118,6 +118,173 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("fmg")]
+        public void FamilyManagement(string packet)
+        {
+            if(Session.Character.Family==null || Session.Character.FamilyCharacter == null)
+            {
+                return;
+            }
+            if(Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager)
+            {
+                return;
+            }
+            string[] packetsplit = packet.Split(' ');
+            long targetId;
+            if (long.TryParse(packetsplit[3], out targetId))
+            {
+                if (DAOFactory.FamilyCharacterDAO.LoadByCharacterId(targetId)?.FamilyId != Session.Character.FamilyCharacter.FamilyId)
+                {
+                    return;
+                }
+                ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(targetId);
+                switch (packetsplit[2])
+                {
+                    case "0":
+                        if(targetSession == null)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("Player is not online!"));
+                            return;
+                        }
+                        if(Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("You are not the family head!"));
+                            return;
+                        }
+                        if (targetSession.Character.FamilyCharacter.Authority != FamilyAuthority.Assistant)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("You can only promote an assistant to the family head!"));
+                            return;
+                        }
+                        targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Head;
+                        Session.Character.FamilyCharacter.Authority = FamilyAuthority.Assistant;
+                        Session.SendPacket(Session.Character.GenerateInfo("Done!"));
+                        targetSession.Character.Save();
+                        Session.Character.Save();
+                        break;
+                    case "1":
+                        if (targetSession == null)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("Player is not online!"));
+                            return;
+                        }
+                        if (Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("You are not the family head!"));
+                            return;
+                        }
+                        if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("You cannot demote the family head!"));
+                            return;
+                        }
+                        if (DAOFactory.FamilyCharacterDAO.LoadByFamilyId(Session.Character.Family.FamilyId).Where(s=>s.Authority==FamilyAuthority.Assistant).Count() == 2)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("You already have two assistants!"));
+                            return;
+                        }
+                        targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Assistant;
+                        Session.SendPacket(Session.Character.GenerateInfo("Done!"));
+                        targetSession.Character.Save();
+                        break;
+                    case "2":
+                        if (targetSession == null)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("Player is not online!"));
+                            return;
+                        }
+                        if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("You cannot demote the family head!"));
+                            return;
+                        }
+                        if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant && Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("You cannot demote another assistant!"));
+                            return;
+                        }
+                        targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Manager;
+                        Session.SendPacket(Session.Character.GenerateInfo("Done!"));
+                        targetSession.Character.Save();
+                        break;
+                    case "3":
+                        if (targetSession == null)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("Player is not online!"));
+                            return;
+                        }
+                        if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("You cannot demote the family head!"));
+                            return;
+                        }
+                        if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant && Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo("You cannot demote another assistant!"));
+                            return;
+                        }
+                        targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Member;
+                        Session.SendPacket(Session.Character.GenerateInfo("Done!"));
+                        targetSession.Character.Save();
+                        break;
+                }
+            }
+        }
+
+        [Packet("%Message")]
+        public void FamilyMessage(string packet)
+        {
+            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
+            {
+                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                {
+                    string msg = string.Empty;
+                    int i = 0;
+                    foreach (string str in packet.Split(' '))
+                    {
+                        if (i <= 1)
+                        {
+                            msg += str + " ";
+                        }
+                        i++;
+                    }
+                    Session.Character.Family.FamilyMessage = msg;
+                    Session.Character.Save();
+                }
+            }
+        }
+
+        [Packet("%Familycall")]
+        public void FamilyCall(string packet)
+        {
+            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
+            {
+                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                {
+                    string msg = string.Empty;
+                    int i = 0;
+                    foreach (string str in packet.Split(' '))
+                    {
+                        if (i <= 1)
+                        {
+                            msg += str + " ";
+                        }
+                        i++;
+                    }
+                    foreach (ClientSession s in ServerManager.Instance.Sessions)
+                    {
+                        if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
+                        {
+                            if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
+                            {
+                                s.SendPacket(s.Character.GenerateMsg($"<Familycall> {msg}", 0));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         [Packet(":")]
         public void FamilyChat(string packet)
         {
@@ -147,7 +314,7 @@ namespace OpenNos.Handler
                     {
                         if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
                         {
-                            if (Session.HasCurrentMap && s.HasCurrentMap && Session.CurrentMap == s.CurrentMap)
+                            if (Session.HasCurrentMap && s.HasCurrentMap && Session.CurrentMap == s.CurrentMap && !Session.Character.InvisibleGm)
                             {
                                 s.SendPacket(Session.Character.GenerateSay(msg, 6));
                             }
@@ -269,7 +436,7 @@ namespace OpenNos.Handler
                             if (familyCharacter != null)
                             {
                                 string familyHead = DAOFactory.CharacterDAO.LoadById(familyCharacter.CharacterId).Name;
-                                Session.SendPacket($"ginfo {Session.Character.Family.Name} {familyHead} 0 {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.Size} {Session.Character.Family.MaxSize} 1 1 1 1 1 1 1 1");
+                                Session.SendPacket($"ginfo {Session.Character.Family.Name} {familyHead} 0 {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.Size} {Session.Character.Family.MaxSize} {(byte)Session.Character.FamilyCharacter.Authority} 1 0 0 0 0 0 0 {Session.Character.Family.FamilyMessage.Replace(' ', '^')}");
                             }
                             Session.SendPacket(Session.Character.GenerateFamilyMember());
                             Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
@@ -359,9 +526,9 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                if (Session.Character.FamilyCharacter.Authority != FamilyAuthority.Member)
+                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                 {
-                    Session.SendPacket(Session.Character.GenerateInfo("You can only leave the family as a member!"));
+                    Session.SendPacket(Session.Character.GenerateInfo("You can only leave the family as the family head!"));
                     return;
                 }
                 foreach (ClientSession s in ServerManager.Instance.Sessions)
