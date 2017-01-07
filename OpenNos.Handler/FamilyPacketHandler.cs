@@ -242,7 +242,7 @@ namespace OpenNos.Handler
                     int i = 0;
                     foreach (string str in packet.Split(' '))
                     {
-                        if (i <= 1)
+                        if (i > 1)
                         {
                             msg += str + " ";
                         }
@@ -266,7 +266,7 @@ namespace OpenNos.Handler
                     int i = 0;
                     foreach (string str in packet.Split(' '))
                     {
-                        if (i <= 1)
+                        if (i > 1)
                         {
                             msg += str + " ";
                         }

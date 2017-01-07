@@ -4231,8 +4231,9 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                if ((CollectedFamilyXp != 0 || FamilyMessageChanged) && Family != null && FamilyCharacter != null)
+                if ((CollectedFamilyXp != 0 || _familymessagechanged) && Family != null && FamilyCharacter != null)
                 {
+                    string msg = Family.FamilyMessage;
                     FamilyDTO _family = DAOFactory.FamilyDAO.LoadById(Family.FamilyId);
                     FamilyCharacterDTO _familyCharacter = DAOFactory.FamilyCharacterDAO.LoadById(FamilyCharacter.FamilyCharacterId);
                     _family.FamilyExperience += CollectedFamilyXp;
@@ -4246,9 +4247,10 @@ namespace OpenNos.GameObject
                         _family.FamilyLevel += 1;
                     }
 
+                    _family.FamilyMessage = msg;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref _familyCharacter);
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref _family);
-
+                    _familymessagechanged = false;
                     Family = _family;
                     FamilyCharacter = _familyCharacter;
                 }
