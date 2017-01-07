@@ -308,6 +308,10 @@ namespace OpenNos.Handler
                 short.TryParse(packetsplit[j - 2], out slot[i]);
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
                 ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(slot[i], (InventoryType)type[i]);
+                if (item == null)
+                {
+                    return;
+                }
                 if (qty[i] <= 0 || item.Amount < qty[i])
                 {
                     return;
