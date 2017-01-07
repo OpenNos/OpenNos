@@ -27,6 +27,7 @@ namespace OpenNos.DAL.EF
         {
             CharacterRelation = new HashSet<CharacterRelation>();
             CharacterSkill = new HashSet<CharacterSkill>();
+            BazaarItem = new HashSet<BazaarItem>();
             Inventory = new HashSet<ItemInstance>();
             QuicklistEntry = new HashSet<QuicklistEntry>();
             Respawn = new HashSet<Respawn>();
@@ -63,6 +64,8 @@ namespace OpenNos.DAL.EF
         public virtual ICollection<CharacterRelation> CharacterRelation { get; set; }
 
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
+
+        public virtual ICollection<BazaarItem> BazaarItem { get; set; }
 
         public byte Class { get; set; }
 

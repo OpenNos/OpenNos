@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.Collections.Generic;
+
 namespace OpenNos.DAL.EF
 {
     using System;
@@ -19,6 +21,11 @@ namespace OpenNos.DAL.EF
 
     public class ItemInstance : SynchronizableBaseEntity
     {
+        public ItemInstance()
+        {
+            BazaarItem = new HashSet<BazaarItem>();
+        }
+
         #region Properties
 
         public int Amount { get; set; }
@@ -27,6 +34,10 @@ namespace OpenNos.DAL.EF
         public Character BoundCharacter { get; set; }
 
         public long? BoundCharacterId { get; set; }
+
+        public virtual ICollection<BazaarItem> BazaarItem { get; set; }
+
+        public long? BazaarItemId { get; set; }
 
         public virtual Character Character { get; set; }
 

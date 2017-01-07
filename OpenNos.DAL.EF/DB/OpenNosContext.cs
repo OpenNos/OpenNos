@@ -17,17 +17,17 @@ namespace OpenNos.DAL.EF.DB
     using System.Data.Entity;
     using System.Data.Entity.ModelConfiguration.Conventions;
 
-    public partial class OpenNosContext : DbContext
+    public class OpenNosContext : DbContext
     {
         #region Instantiation
 
         public OpenNosContext() : base("name=OpenNosContext")
         {
-            this.Configuration.LazyLoadingEnabled = true;
+            Configuration.LazyLoadingEnabled = true;
 
             // --DO NOT DISABLE, otherwise the mapping will fail only one time access to database so
             // no proxy generation needed, its just slowing down in our case
-            this.Configuration.ProxyCreationEnabled = false;
+            Configuration.ProxyCreationEnabled = false;
         }
 
         #endregion
@@ -35,6 +35,8 @@ namespace OpenNos.DAL.EF.DB
         #region Properties
 
         public virtual DbSet<Account> Account { get; set; }
+
+        public virtual DbSet<BazaarItem> BazaarItem { get; set; }
 
         public virtual DbSet<CellonOption> CellonOption { get; set; }
 
@@ -185,6 +187,18 @@ namespace OpenNos.DAL.EF.DB
                 .HasOptional(e => e.FamilyCharacter)
                 .WithMany(e => e.Character)
                 .HasForeignKey(e => e.FamilyCharacterId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<BazaarItem>()
+                .HasRequired(e => e.Character)
+                .WithMany(e => e.BazaarItem)
+                .HasForeignKey(e => e.SellerId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<BazaarItem>()
+                .HasRequired(e => e.ItemInstance)
+                .WithMany(e => e.BazaarItem)
+                .HasForeignKey(e => e.ItemInstanceId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<FamilyCharacter>()
