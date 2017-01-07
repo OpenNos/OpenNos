@@ -247,7 +247,14 @@ namespace OpenNos.Handler
                                 }
                                 else
                                 {
-                                    inventory = (WearableInstance)item.ItemInstance;
+                                    try
+                                    {
+                                        inventory = (WearableInstance)item.ItemInstance;
+                                    }
+                                    catch
+                                    {
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -446,6 +453,10 @@ namespace OpenNos.Handler
                                         long gold = targetSession.Character.Gold;
                                         int backpack = targetSession.Character.Backpack;
 
+                                        if(targetExchange == null)
+                                        {
+                                            return;
+                                        }
                                         if (Session.Character.ExchangeInfo.Validate && targetExchange.Validate)
                                         {
                                             Session.Character.ExchangeInfo.Confirm = true;
