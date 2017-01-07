@@ -269,6 +269,8 @@ namespace OpenNos.GameObject
 
         public DateTime LastSkillUse { get; set; }
 
+        public DateTime LastPVPRevive { get; set; }
+
         public double LastSp { get; set; }
 
         public DateTime LastSpGaugeRemove { get; set; }

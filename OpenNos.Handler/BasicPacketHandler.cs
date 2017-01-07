@@ -1160,6 +1160,7 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateStat());
                             Session.Character.Gold -= 100;
                             Session.SendPacket(Session.Character.GenerateGold());
+                            Session.Character.LastPVPRevive = DateTime.Now;
                         }
                         else
                         {
@@ -1505,6 +1506,8 @@ namespace OpenNos.Handler
             Session.SendPacket(clinit);
             Session.SendPacket(flinit);
             Session.SendPacket(kdlinit);
+
+            Session.Character.LastPVPRevive = DateTime.Now;
 
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
