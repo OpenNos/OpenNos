@@ -601,7 +601,7 @@ namespace OpenNos.Handler
                                     if (otherSession != null)
                                     {
                                         otherSession.SendPacket($"dlg #fins^-1^{Session.Character.CharacterId} #fins^-99^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("FRIEND_ADD"), Session.Character.Name)}");
-                                        Session.Character.AddFriend(characterId);
+                                        Session.Character.FriendRequestCharacters.Add(characterId);
                                     }
                                 }
                                 else
@@ -639,7 +639,7 @@ namespace OpenNos.Handler
                     ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
                     if (otherSession != null)
                     {
-                        if (otherSession.Character.IsFriendOfCharacter(Session.Character.CharacterId))
+                        if (otherSession.Character.FriendRequestCharacters.Contains(Session.Character.CharacterId))
                         {
                             if (packetsplit[2] == "-1")
                             {

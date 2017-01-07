@@ -58,6 +58,7 @@ namespace OpenNos.GameObject
         {
             GroupSentRequestCharacterIds = new List<long>();
             FamilyInviteCharacters = new List<long>();
+            FriendRequestCharacters = new List<long>();
         }
 
         #endregion
@@ -147,6 +148,8 @@ namespace OpenNos.GameObject
         public int HitRate { get; set; }
 
         public List<long> FamilyInviteCharacters { get; set; }
+
+        public List<long> FriendRequestCharacters { get; set; }
 
         public bool InExchangeOrTrade
         {
@@ -2304,14 +2307,14 @@ namespace OpenNos.GameObject
             {
                 foreach (CharacterRelationDTO relation in _friends)
                 {
-                    byte isOnline = 0;
-                    if (relatedCharacterLoggedInId.HasValue && relatedCharacterLoggedInId.Value == relation.RelatedCharacterId
-                        || relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId != relatedCharacterLoggedOutId.Value &&
-                        ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
+                    if (relatedCharacterLoggedInId.HasValue && relatedCharacterLoggedInId.Value == relation.RelatedCharacterId)
                     {
-                        isOnline = 1;
+                        result += $" {relation.RelatedCharacterId}.1";
                     }
-                    result += $" {relation.RelatedCharacterId}.{isOnline}";
+                    else if(relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId == relatedCharacterLoggedOutId.Value)
+                    {
+                        result += $" {relation.RelatedCharacterId}.0";
+                    }
                 }
             }
             return result;
