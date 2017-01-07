@@ -851,6 +851,13 @@ namespace OpenNos.Handler
                 {
                     if (target.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                     {
+                        hitRequest.Session.Character.Act4Kill += 1;
+                        target.Character.Act4Dead += 1;
+                        target.Character.Act4Points -= 1;
+                        if (target.Character.Level+10 >= hitRequest.Session.Character.Level && hitRequest.Session.Character.Level <= target.Character.Level - 10)
+                        {
+                            hitRequest.Session.Character.Act4Points += 2;
+                        }
                         if (target.Character.Reput < 50000)
                         {
                             target.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), 0), 11));
@@ -884,6 +891,8 @@ namespace OpenNos.Handler
                     }
                     else
                     {
+                        hitRequest.Session.Character.TalentWin += 1;
+                        target.Character.TalentLose += 1;
                         Observable.Timer(TimeSpan.FromMilliseconds(1000))
                                .Subscribe(
                                o =>
