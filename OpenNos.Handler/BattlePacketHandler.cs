@@ -168,7 +168,7 @@ namespace OpenNos.Handler
                                 {
                                     if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                                     {
-                                        if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
+                                        if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId || (Session.Character.MapId != 130 && Session.Character.MapId != 131))
                                         {
                                             PVPHit(new HitRequest(TargetHitType.AOETargetHit, Session, ski.Skill), character);
                                         }
@@ -264,7 +264,7 @@ namespace OpenNos.Handler
                                                 {
                                                     if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                                                     {
-                                                        if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
+                                                        if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId || (Session.Character.MapId != 130 && Session.Character.MapId != 131))
                                                         {
                                                             PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
                                                         }
@@ -345,7 +345,7 @@ namespace OpenNos.Handler
                                                 {
                                                     if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                                                     {
-                                                        if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
+                                                        if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId || (Session.Character.MapId != 130 && Session.Character.MapId != 131))
                                                         {
                                                             PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), character);
                                                         }
@@ -783,7 +783,7 @@ namespace OpenNos.Handler
                         {
                             if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                             {
-                                if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId)
+                                if (Session.Character.Family == null || character.Character.Family == null || Session.Character.Family.FamilyId != character.Character.Family.FamilyId || (Session.Character.MapId != 130 && Session.Character.MapId != 131))
                                 {
                                     PVPHit(new HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y), character);
                                 }
