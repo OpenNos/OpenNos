@@ -231,7 +231,7 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("%Message")]
+        [Packet("%Notice")]
         public void FamilyMessage(string packet)
         {
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
@@ -255,7 +255,7 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("%Familycall")]
+        [Packet("%Familyshout")]
         public void FamilyCall(string packet)
         {
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
