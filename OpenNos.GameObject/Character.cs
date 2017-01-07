@@ -39,6 +39,7 @@ namespace OpenNos.GameObject
         private bool _invisible;
         private bool _isDancing;
         private bool _issitting;
+        private bool _familymessagechanged;
         private double _lastPortal;
         private int _lastPulse;
         private int _morph;
@@ -148,6 +149,19 @@ namespace OpenNos.GameObject
         public int HitRate { get; set; }
 
         public List<long> FamilyInviteCharacters { get; set; }
+
+        public bool FamilyMessageChanged
+        {
+            get
+            {
+                return _familymessagechanged;
+            }
+
+            set
+            {
+                _familymessagechanged = value;
+            }
+        }
 
         public List<long> FriendRequestCharacters { get; set; }
 
@@ -4217,7 +4231,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                if (CollectedFamilyXp != 0 && Family != null && FamilyCharacter != null)
+                if ((CollectedFamilyXp != 0 || FamilyMessageChanged) && Family != null && FamilyCharacter != null)
                 {
                     FamilyDTO _family = DAOFactory.FamilyDAO.LoadById(Family.FamilyId);
                     FamilyCharacterDTO _familyCharacter = DAOFactory.FamilyCharacterDAO.LoadById(FamilyCharacter.FamilyCharacterId);

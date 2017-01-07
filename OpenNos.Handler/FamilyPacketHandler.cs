@@ -249,6 +249,7 @@ namespace OpenNos.Handler
                         i++;
                     }
                     Session.Character.Family.FamilyMessage = msg;
+                    Session.Character.FamilyMessageChanged = true;
                     Session.Character.Save();
                 }
             }
