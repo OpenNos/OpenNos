@@ -363,6 +363,13 @@ namespace OpenNos.Handler
                                 return;
                             }
 
+                            if (Session.Character.IsBlockedByCharacter(packet.CharacterId))
+                            {
+                                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
+                                return;
+                            }
+
+
                             if (Session.Character.Speed == 0 || targetSession.Character.Speed == 0)
                             {
                                 Session.Character.ExchangeBlocked = true;

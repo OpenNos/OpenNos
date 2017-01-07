@@ -366,6 +366,13 @@ namespace OpenNos.Handler
                     ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(pjoinPacket.CharacterId);
                     if (targetSession != null)
                     {
+
+                        if (Session.Character.IsBlockedByCharacter(pjoinPacket.CharacterId))
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
+                            return;
+                        }
+
                         if (targetSession.Character.GroupRequestBlocked)
                         {
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_BLOCKED"), 0));
@@ -1568,6 +1575,16 @@ namespace OpenNos.Handler
                 }
 
                 message = message.Trim();
+
+                CharacterDTO receiver = DAOFactory.CharacterDAO.LoadByName(characterName);
+                if (receiver != null)
+                {
+                    if (Session.Character.IsBlockedByCharacter(receiver.CharacterId))
+                    {
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
+                        return;
+                    }
+                }
 
                 ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
                 if (targetSession == null)

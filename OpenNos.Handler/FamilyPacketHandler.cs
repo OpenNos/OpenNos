@@ -193,6 +193,13 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"))));
                 return;
             }
+
+            if (Session.Character.IsBlockedByCharacter(otherSession.Character.CharacterId))
+            {
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
+                return;
+            }
+
             if (otherSession.Character.Family != null || otherSession.Character.FamilyCharacter != null || otherSession.Character.FamilyCharacterId != null)
             {
                 Session.SendPacket(Session.Character.GenerateInfo("This user is already in another family!"));

@@ -13,6 +13,8 @@
  */
 
 using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -191,14 +193,42 @@ namespace OpenNos.GameObject
                     case ReceiverType.All: // send packet to everyone
                         foreach (ClientSession session in Sessions)
                         {
-                            session.SendPacket(sentPacket.Packet);
+                            if (session.HasSelectedCharacter)
+                            {
+                                if (sentPacket.Sender != null)
+                                {
+                                    if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
+                                    {
+                                        session.SendPacket(sentPacket.Packet);
+                                    }
+                                }
+                                else
+                                {
+                                    session.SendPacket(sentPacket.Packet);
+
+                                }
+                            }
                         }
                         break;
 
                     case ReceiverType.AllExceptMe: // send to everyone except the sender
                         foreach (ClientSession session in Sessions.Where(s => s.SessionId != sentPacket.Sender.SessionId))
                         {
-                            session.SendPacket(sentPacket.Packet);
+                            if (session.HasSelectedCharacter)
+                            {
+                                if (sentPacket.Sender != null)
+                                {
+                                    if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
+                                    {
+                                        session.SendPacket(sentPacket.Packet);
+                                    }
+                                }
+                                else
+                                {
+                                    session.SendPacket(sentPacket.Packet);
+
+                                }
+                            }
                         }
                         break;
 
@@ -207,7 +237,21 @@ namespace OpenNos.GameObject
                         {
                             foreach (ClientSession session in Sessions.Where(s => s.Character.IsInRange(sentPacket.XCoordinate, sentPacket.YCoordinate)))
                             {
-                                session.SendPacket(sentPacket.Packet, 1);
+                                if (session.HasSelectedCharacter)
+                                {
+                                    if (sentPacket.Sender != null)
+                                    {
+                                        if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
+                                        {
+                                            session.SendPacket(sentPacket.Packet);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        session.SendPacket(sentPacket.Packet);
+
+                                    }
+                                }
                             }
                         }
                         break;
@@ -217,8 +261,24 @@ namespace OpenNos.GameObject
                             if (sentPacket.SomeonesCharacterId > 0 || !string.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
                             {
                                 ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == sentPacket.SomeonesCharacterId || s.Character.Name == sentPacket.SomeonesCharacterName);
-
-                                targetSession?.SendPacket(sentPacket.Packet);
+                                if (targetSession.HasSelectedCharacter)
+                                {
+                                    if (sentPacket.Sender != null)
+                                    {
+                                        if (!sentPacket.Sender.Character.IsBlockedByCharacter(targetSession.Character.CharacterId))
+                                        {
+                                            targetSession?.SendPacket(sentPacket.Packet);
+                                        }
+                                        else
+                                        {
+                                            sentPacket.Sender.SendPacket(sentPacket.Sender.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        targetSession?.SendPacket(sentPacket.Packet);
+                                    }
+                                }
                             }
 
                             break;
@@ -226,14 +286,26 @@ namespace OpenNos.GameObject
                     case ReceiverType.AllNoEmoBlocked:
                         foreach (ClientSession session in Sessions.Where(s => !s.Character.EmoticonsBlocked))
                         {
-                            session.SendPacket(sentPacket.Packet);
+                            if (session.HasSelectedCharacter)
+                            {
+                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
+                                {
+                                    session.SendPacket(sentPacket.Packet);
+                                }
+                            }
                         }
                         break;
 
                     case ReceiverType.AllNoHeroBlocked:
                         foreach (ClientSession session in Sessions.Where(s => !s.Character.HeroChatBlocked))
                         {
-                            session.SendPacket(sentPacket.Packet);
+                            if (session.HasSelectedCharacter)
+                            {
+                                if (!sentPacket.Sender.Character.IsBlockedByCharacter(session.Character.CharacterId))
+                                {
+                                    session.SendPacket(sentPacket.Packet);
+                                }
+                            }
                         }
                         break;
 
