@@ -645,6 +645,7 @@ namespace OpenNos.Handler
                             {
                                 Session.Character.AddFriend(characterId);
                                 Session.SendPacket(Session.Character.GenerateFinit());
+                                otherSession.Character.AddFriend(Session.Character.CharacterId);
                                 otherSession.SendPacket(otherSession.Character.GenerateFinit());
                                 Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
                                 otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
@@ -1523,7 +1524,8 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
                 if (!string.IsNullOrWhiteSpace(Session.Character.Family.FamilyMessage))
                 {
-                    Session.SendPacket(Session.Character.GenerateInfo(@"--- Family Message ---" + Session.Character.Family.FamilyMessage));
+                    Session.SendPacket(Session.Character.GenerateInfo(@"--- Family Message ---
+" + Session.Character.Family.FamilyMessage));
                 }
             }
 
