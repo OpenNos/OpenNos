@@ -164,7 +164,7 @@ namespace OpenNos.Handler
                             Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {ski.Skill.SkillType - 1}");
                             if (ski.Skill.TargetRange != 0 && Session.HasCurrentMap)
                             {
-                                foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange)))
+                                foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange)))
                                 {
                                     if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                                     {
@@ -257,7 +257,7 @@ namespace OpenNos.Handler
                                             {
                                                 ski.Hit = 0;
                                             }
-                                            IEnumerable<ClientSession> playersInAOERange = ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange));
+                                            IEnumerable<ClientSession> playersInAOERange = ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange));
                                             if (playersInAOERange != null)
                                             {
                                                 foreach (ClientSession character in playersInAOERange)
@@ -296,7 +296,7 @@ namespace OpenNos.Handler
                                         }
                                         else
                                         {
-                                            IEnumerable<ClientSession> playersInAOERange = ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange));
+                                            IEnumerable<ClientSession> playersInAOERange = ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange));
 
                                             //hit the targetted monster
 
@@ -779,7 +779,7 @@ namespace OpenNos.Handler
                                 mon.HitQueue.Enqueue(new HitRequest(TargetHitType.ZoneHit, Session, characterSkill.Skill, x, y));
                             }
                         }
-                        foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.IsInRange(x, y, characterSkill.Skill.TargetRange)))
+                        foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMap == Session.CurrentMap && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(x, y, characterSkill.Skill.TargetRange)))
                         {
                             if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                             {
