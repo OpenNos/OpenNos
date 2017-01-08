@@ -270,6 +270,7 @@ namespace OpenNos.Handler
                                                             if (Session.Character.MapId != 130 && Session.Character.MapId != 131)
                                                                 PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
                                                         }
+
                                                     }
                                                     else if (Session.Character.MapId == 9305)
                                                     {
@@ -308,6 +309,8 @@ namespace OpenNos.Handler
                                                 {
                                                     if (Session.Character.MapId != 130 && Session.Character.MapId != 131)
                                                         PVPHit(new HitRequest(TargetHitType.SingleAOETargetHit, Session, ski.Skill), playerToAttack);
+                                                    else
+                                                        Session.SendPacket($"cancel 2 {targetId}");
                                                 }
                                                 else
                                                 {
@@ -395,6 +398,8 @@ namespace OpenNos.Handler
                                                 {
                                                     if (Session.Character.MapId != 130 && Session.Character.MapId != 131)
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
+                                                    else
+                                                        Session.SendPacket($"cancel 2 {targetId}");
                                                 }
                                                 else
                                                 {
@@ -436,6 +441,8 @@ namespace OpenNos.Handler
                                                 {
                                                     if (Session.Character.MapId != 130 && Session.Character.MapId != 131)
                                                         PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session, ski.Skill), playerToAttack);
+                                                    else
+                                                        Session.SendPacket($"cancel 2 {targetId}");
                                                 }
                                                 else
                                                 {
