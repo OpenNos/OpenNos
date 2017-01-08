@@ -845,7 +845,7 @@ namespace OpenNos.Handler
                     damage = 0;
                     hitmode = 1;
                 }
-                else if (target.Character.LastPVPRevive < DateTime.Now.AddSeconds(10) || hitRequest.Session.Character.LastPVPRevive < DateTime.Now.AddSeconds(10))
+                else if (target.Character.LastPVPRevive > DateTime.Now.AddSeconds(-10) || hitRequest.Session.Character.LastPVPRevive > DateTime.Now.AddSeconds(-10))
                 {
                     damage = 0;
                     hitmode = 1;
