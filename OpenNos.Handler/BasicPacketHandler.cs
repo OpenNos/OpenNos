@@ -483,15 +483,21 @@ namespace OpenNos.Handler
                 }
             }
         }
-
+        /// <summary>
+        /// pleave
+        /// </summary>
+        /// <param name="PleavePacket"></param>
         public void GroupLeave(PleavePacket packet)
         {
             ServerManager.Instance.GroupLeave(Session);
         }
-
+        /// <summary>
+        /// ;
+        /// </summary>
+        /// <param name="GroupSayPacket"></param>
         public void GroupTalk(GroupSayPacket packet)
         {
-            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(packet.Message, 3), ReceiverType.Group);
+           ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(packet.Message, 3), ReceiverType.Group);
         }
 
         [Packet("btk")]
@@ -1160,6 +1166,11 @@ namespace OpenNos.Handler
                 }
             }
         }
+
+        /// <summary>
+        /// say
+        /// </summary>
+        /// <param name="SayPacket"></param>
         public void Say(SayPacket packet)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
@@ -1529,20 +1540,19 @@ namespace OpenNos.Handler
                 }
             }
         }
-
-        [Packet("/")]
-        public void Whisper(string packet)
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="WhisperPacket"></param>
+        public void Whisper(WhisperPacket packet)
         {
             try
             {
-
-                string[] packetsplit = packet.Split(' ');
-
-                string characterName = packetsplit[packetsplit[1] == "/GM" ? 2 : 1].Substring(packetsplit[1] == "/GM" ? 0 : 1);
-
+                string characterName = packet.Message.Split(' ')[packet.Message.StartsWith("GM ") ? 1:0];
                 string message = string.Empty;
+                string[] packetsplit = packet.Message.Split(' ');
 
-                for (int i = packetsplit[1] == "/GM" ? 3 : 2; i < packetsplit.Length; i++)
+                for (int i = packetsplit[0] == "GM" ? 2 : 1; i < packetsplit.Length; i++)
                 {
                     message += packetsplit[i] + " ";
                 }
@@ -1583,7 +1593,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                if (packetsplit[1] == "/GM" && targetSession.Account.Authority != AuthorityType.Admin)
+                if (packetsplit[0] == "GM" && targetSession.Account.Authority != AuthorityType.Admin)
                 {
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("USER_IS_NOT_AN_ADMIN"), targetSession.Character.Name), 10));
                     return;
@@ -1599,7 +1609,7 @@ namespace OpenNos.Handler
 
                 if (!targetSession.Character.WhisperBlocked)
                 {
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5), ReceiverType.OnlySomeone, packetsplit[packetsplit[1] == "/GM" ? 2 : 1].Substring(packetsplit[1] == "/GM" ? 0 : 1));
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5), ReceiverType.OnlySomeone, characterName);
                 }
                 else
                 {

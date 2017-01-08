@@ -125,6 +125,7 @@
     <Compile Include="Packets\ClientPackets\MallPacket.cs" />
     <Compile Include="Packets\ClientPackets\NpinfoPacket.cs" />
     <Compile Include="Packets\ClientPackets\PclPacket.cs" />
+    <Compile Include="Packets\ClientPackets\WhisperPacket.cs" />
     <Compile Include="Packets\ClientPackets\PleavePacket.cs" />
     <Compile Include="Packets\ClientPackets\PreqPacket.cs" />
     <Compile Include="Packets\ClientPackets\GroupSayPacket.cs" />
