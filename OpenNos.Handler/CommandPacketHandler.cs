@@ -265,19 +265,9 @@ namespace OpenNos.Handler
                 {
                     if (session != null)
                     {
-                        session.Account.PenaltyLogs.Add(new PenaltyLogDTO
-                        {
-                            AccountId = session.Account.AccountId,
-                            Reason = reason,
-                            Penalty = PenaltyType.BlockExp,
-                            DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddHours(duration),
-                            AdminName = Session.Character.Name
-                        });
                         session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
-                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
                         DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO
                         {
@@ -329,19 +319,9 @@ namespace OpenNos.Handler
                 {
                     if (session != null)
                     {
-                        session.Account.PenaltyLogs.Add(new PenaltyLogDTO
-                        {
-                            AccountId = session.Account.AccountId,
-                            Reason = reason,
-                            Penalty = PenaltyType.BlockFExp,
-                            DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddHours(duration),
-                            AdminName = Session.Character.Name
-                        });
                         session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
-                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
                         DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO
                         {
@@ -393,19 +373,9 @@ namespace OpenNos.Handler
                 {
                     if (session != null)
                     {
-                        session.Account.PenaltyLogs.Add(new PenaltyLogDTO
-                        {
-                            AccountId = session.Account.AccountId,
-                            Reason = reason,
-                            Penalty = PenaltyType.BlockRep,
-                            DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddHours(duration),
-                            AdminName = Session.Character.Name
-                        });
                         session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
-                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
                         DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO
                         {
@@ -1457,19 +1427,9 @@ namespace OpenNos.Handler
                 {
                     if (session != null)
                     {
-                        session.Account.PenaltyLogs.Add(new PenaltyLogDTO
-                        {
-                            AccountId = session.Account.AccountId,
-                            Reason = reason,
-                            Penalty = PenaltyType.Muted,
-                            DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddHours(duration),
-                            AdminName = Session.Character.Name
-                        });
                         session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
-                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
                         DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO
                         {
