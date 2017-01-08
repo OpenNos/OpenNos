@@ -327,10 +327,8 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("npinfo")]
-        public void GetStats(string packet)
+        public void GetStats(NpinfoPacket packet)
         {
-            Logger.Debug(packet, Session.SessionId);
             Session.SendPacket(Session.Character.GenerateStatChar());
         }
 
@@ -486,30 +484,14 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("pleave")]
-        public void GroupLeave(string packet)
+        public void GroupLeave(PleavePacket packet)
         {
-            Logger.Debug(packet, Session.SessionId);
             ServerManager.Instance.GroupLeave(Session);
         }
 
-        [Packet(";")]
-        public void GroupTalk(string packet)
+        public void GroupTalk(GroupSayPacket packet)
         {
-            string[] packetsplit = packet.Split(' ');
-            string message = string.Empty;
-            for (int i = 1; i < packetsplit.Length; i++)
-            {
-                message += packetsplit[i] + " ";
-            }
-            if (message.Length > 60)
-            {
-                message = message.Substring(0, 60);
-            }
-
-            message = message.Substring(1).Trim();
-
-            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 3), ReceiverType.Group);
+            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(packet.Message, 3), ReceiverType.Group);
         }
 
         [Packet("btk")]
@@ -1178,21 +1160,10 @@ namespace OpenNos.Handler
                 }
             }
         }
-
-        [Packet("say")]
-        public void Say(string packet)
+        public void Say(SayPacket packet)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
-            string[] packetsplit = packet.Split(' ');
-            string message = string.Empty;
-            for (int i = 2; i < packetsplit.Length; i++)
-            {
-                message += packetsplit[i] + " ";
-            }
-            if (message.Length > 60)
-            {
-                message = message.Substring(0, 60);
-            }
+            string message = packet.Message;
 
             if (Session.Character.IsMuted() && penalty != null)
             {
@@ -1212,7 +1183,7 @@ namespace OpenNos.Handler
             else
             {
                 string language = new CultureInfo(System.Configuration.ConfigurationManager.AppSettings["Language"]).EnglishName;
-                if (packetsplit.Length > 5 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(message))
+                if (message.Split(' ').Length > 3 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(message))
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 2));
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 11));
