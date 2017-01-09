@@ -774,6 +774,20 @@ namespace OpenNos.GameObject
                 Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
             }
             Target = -1;
+            int nearestDistance = 100;
+            foreach (KeyValuePair<long, long> kvp in DamageList)
+            {
+                ClientSession session = Map.GetSessionByCharacterId(kvp.Value);
+                if(session != null)
+                {
+                    int distance = Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = session.Character.MapX, Y = session.Character.MapY });
+                    if (distance < nearestDistance)
+                    {
+                        nearestDistance = distance;
+                        Target = session.Character.CharacterId;
+                    }
+                }
+            }
         }
 
         /// <summary>

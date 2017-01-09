@@ -1514,8 +1514,20 @@ namespace OpenNos.GameObject
             ushort damage = Convert.ToUInt16(totalDamage);
             if (monsterToAttack.IsMoving)
             {
-                long charId = monsterToAttack.DamageList.OrderByDescending(d => d.Value).FirstOrDefault().Key;
-                monsterToAttack.Target = charId;
+                int nearestDistance = 100;
+                foreach (KeyValuePair<long, long> kvp in monsterToAttack.DamageList)
+                {
+                    ClientSession session = monsterToAttack.Map.GetSessionByCharacterId(kvp.Value);
+                    if (session != null)
+                    {
+                        int distance = Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = session.Character.MapX, Y = session.Character.MapY });
+                        if (distance < nearestDistance)
+                        {
+                            nearestDistance = distance;
+                            monsterToAttack.Target = session.Character.CharacterId;
+                        }
+                    }
+                }
             }
             return damage;
         }
