@@ -754,6 +754,10 @@ namespace OpenNos.GameObject
                         {
                             TargetHit(targetSession, npcMonsterSkill);
                         }
+                        else
+                        {
+                            FollowTarget(targetSession);
+                        }
                     }
                     else
                     {
