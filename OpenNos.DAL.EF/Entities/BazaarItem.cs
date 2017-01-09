@@ -36,6 +36,12 @@ namespace OpenNos.DAL.EF
 
         public long SellerId { get; set; }
 
+        public bool MedalUsed { get; set; }
+
+        public bool IsPackage { get; set; }
+
+        public byte Amount { get; set; }
+
         #endregion
     }
 }
