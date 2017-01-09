@@ -202,8 +202,42 @@ namespace OpenNos.Handler
             if (directionpacket.CharacterId == Session.Character.CharacterId)
             {
                 Session.Character.Direction = directionpacket.Direction;
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateDir()); 
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateDir());
             }
+        }
+        public void OpenBazaar(CSkillPacket packet)
+        {
+            Session.SendPacket("wopen 32 0 0");
+            Session.SendPacket("c_blist  0 0 0 0 0 0 0 0 0");
+            Session.SendPacket("c_slist 0 0");
+            Session.SendPacket(Session.Character.GenerateRCBList());
+            Session.SendPacket(Session.Character.GenerateRCSList());
+        }
+
+        public void SellBazaar(CRegPacket packet)
+        {
+            Session.Character.Inventory.AddIntoBazaarInventory((InventoryType)packet.Inventory, packet.Slot, packet.Amount);
+
+          
+            long taxe = (long)(0.05 * packet.Price * packet.Amount);
+            taxe = taxe > 10000 ? 10000 : taxe;
+            if (Session.Character.Gold < taxe)
+            {
+                return;
+            }
+
+            Session.Character.Gold -= taxe;
+            Session.SendPacket(Session.Character.GenerateGold());
+
+            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 10));
+            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 0));
+
+            Session.SendPacket(Session.Character.GenerateRCSList());
+
+            /*
+            rc_reg 1
+            c_slist 0 0
+            */
         }
 
         [Packet("pcl")]
@@ -497,7 +531,7 @@ namespace OpenNos.Handler
         /// <param name="GroupSayPacket"></param>
         public void GroupTalk(GroupSayPacket packet)
         {
-           ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(packet.Message, 3), ReceiverType.Group);
+            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(packet.Message, 3), ReceiverType.Group);
         }
 
         [Packet("btk")]
@@ -892,7 +926,7 @@ namespace OpenNos.Handler
                             short mapy = session.Character.MapY;
                             short mapx = session.Character.MapX;
                             short mapId = session.Character.MapId;
-                        
+
                             ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
                             Session.Character.Inventory.RemoveItemAmount(vnumToUse);
@@ -1548,7 +1582,7 @@ namespace OpenNos.Handler
         {
             try
             {
-                string characterName = packet.Message.Split(' ')[packet.Message.StartsWith("GM ") ? 1:0];
+                string characterName = packet.Message.Split(' ')[packet.Message.StartsWith("GM ") ? 1 : 0];
                 string message = string.Empty;
                 string[] packetsplit = packet.Message.Split(' ');
 
@@ -1578,7 +1612,7 @@ namespace OpenNos.Handler
                 {
                     //session is not on current server, check api if the target character is on another server
                     int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5)
-                                                                                                  ,ServerManager.Instance.ChannelId, MessageType.Whisper, characterName, null).Result;
+                                                                                                  , ServerManager.Instance.ChannelId, MessageType.Whisper, characterName, null).Result;
                     if (!sentChannelId.HasValue) //character is even offline on different world
                     {
                         Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));

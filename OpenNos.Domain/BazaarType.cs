@@ -14,15 +14,10 @@
 
 namespace OpenNos.Domain
 {
-    public enum InventoryType : byte
+    public enum BazaarType : byte
     {
-        Equipment = 0,
-        Main = 1,
-        Etc = 2,
-        Miniland = 3,
-        Specialist = 6,
-        Costume = 7,
-        Wear = 8,
-        Bazaar = 9
+        OnSale = 1,
+        Solded = 2,
+        DelayExpired = 3
     }
 }
