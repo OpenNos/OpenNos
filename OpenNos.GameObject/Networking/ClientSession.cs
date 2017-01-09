@@ -444,6 +444,7 @@ namespace OpenNos.GameObject
                 foreach (string packet in packetConcatenated.Split(new[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     string[] packetsplit = packet.Split(' ', '^');
+                    string packetstring = packet;
 
                     if (_encryptor.HasCustomParameter)
                     {
@@ -503,33 +504,33 @@ namespace OpenNos.GameObject
 
                                 if (packetHeader[1][0] == '/' || packetHeader[1][0] == ':' || packetHeader[1][0] == ';')
                                 {
-                                    TriggerHandler(packetHeader[1][0].ToString(), packet, false);
+                                    packetHeader[1] = packetHeader[1][0].ToString();
+                                  packetstring = packet.Insert(packet.IndexOf(' ')+2, " ");
                                 }
-                                else
+
+                                if (permit == 1)
                                 {
-                                    if (permit == 1)
+                                    if (packetHeader[1] != "0")
                                     {
-                                        if (packetHeader[1] != "0")
-                                        {
-                                            TriggerHandler(packetHeader[1], packet, false);
-                                        }
+                                        TriggerHandler(packetHeader[1], packetstring, false);
                                     }
                                 }
+
                             }
                         }
                     }
                     else
                     {
+                        string packetHeader = packetstring.Split(' ')[0];
                         // simple messaging
-                        string packetHeader = packet.Split(' ')[0];
                         if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
                         {
-                            TriggerHandler(packetHeader[0].ToString(), packet, false);
+                            packetHeader = packetHeader[0].ToString();
+                            packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
                         }
-                        else
-                        {
-                            TriggerHandler(packetHeader, packet, false);
-                        }
+
+                        TriggerHandler(packetHeader, packetstring, false);
+
                     }
                 }
             }

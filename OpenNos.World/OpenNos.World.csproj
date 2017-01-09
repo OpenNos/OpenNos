@@ -272,9 +272,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="on-logo-icon.ico" />
-    <Content Include="Core14.profile.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" Label="SlowCheetah" />

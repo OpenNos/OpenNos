@@ -4210,18 +4210,6 @@ namespace OpenNos.GameObject
                         DAOFactory.GeneralLogDAO.Insert(general);
                     }
                 }
-                foreach (PenaltyLogDTO penalty in Session.Account.PenaltyLogs)
-                {
-                    if (!DAOFactory.PenaltyLogDAO.IdAlreadySet(penalty.PenaltyLogId))
-                    {
-                        DAOFactory.PenaltyLogDAO.Insert(penalty);
-                    }
-                    else
-                    {
-                        DAOFactory.PenaltyLogDAO.Update(penalty);
-                    }
-                }
-
                 foreach (RespawnDTO Resp in Respawns)
                 {
                     RespawnDTO res = Resp;
