@@ -430,9 +430,46 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateRCBList()
+        public string GenerateRCBList(CBListPacket packet)
         {
-            return "rc_blist 0 16728117|577785|Nostel|1316|49|0|22000|35800|2|1|0|0| 16726526|785290|aranrùth|1316|3|0|22400|35504|2|1|0|0| 16707915|816694|*Apéricube*|1316|1|0|30000|31322|2|1|0|0| 16704830|780361|guns|1316|1|0|33500|30752|2|1|0|0| 16696061|790005|Otosaka|1316|1|0|34500|28947|2|1|0|0| 16696063|790005|Otosaka|1316|1|0|34500|28947|2|1|0|0| 16696067|790005|Otosaka|1316|1|0|34500|28947|2|1|0|0| 16696070|790005|Otosaka|1316|1|0|34500|28947|2|1|0|0| 16696073|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16696075|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16696077|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16696078|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16696079|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16696081|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16563290|800551|¤Abrey¤|1316|1|0|85000|2320|2|1|0|0| 16659678|649281|~Séphir~|1316|1|0|70000000|22552|2|1|0|0| 16691691|689800|LynaLove|2272|1|0|950000|28422|2|2|0|0| 16760677|562204|~¤ZymgKor¤~|4250|1|0|7500|42954|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16758202|816490|KeLacker93:)|4250|1|0|8000|927|0|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16755564|820795|DadaIwixZ|4250|1|0|9500|41892|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16734103|562204|~¤ZymgKor¤~|4250|1|0|9999|37204|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16715220|819383|Chippopotamus|4250|1|0|12500|32957|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16715221|819383|Chippopotamus|4250|1|0|12500|32957|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16715222|819383|Chippopotamus|4250|1|0|12500|32957|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16709206|819438|Enky|4250|1|0|15000|31466|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16706581|604053|mega-killeur|4250|1|0|20000|31178|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16712897|799088|EsMin|4250|1|0|20000|32714|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16747981|821316|-Mondorak-|4250|1|0|25000|40441|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16747983|821316|-Mondorak-|4250|1|0|25000|40441|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16697582|678375|shamane*|4250|1|0|29000|29597|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16689268|221755|Bisantion|4250|1|0|37999|27922|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16645206|806760|SosoDash|4250|1|0|50000|18874|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16645208|806760|SosoDash|4250|1|0|50000|18874|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16760665|562204|~¤ZymgKor¤~|4242|1|0|44000|42952|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16758213|816490|KeLacker93:)|4242|1|0|45000|927|0|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16758214|816490|KeLacker93:)|4242|1|0|45000|927|0|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16758215|816490|KeLacker93:)|4242|1|0|45000|928|0|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16755545|820795|DadaIwixZ|4242|1|0|75000|41889|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16753283|562204|~¤ZymgKor¤~|4242|1|0|88000|41594|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16689270|221755|Bisantion|4242|1|0|88999|27923|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16689271|221755|Bisantion|4242|1|0|88999|27923|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16687475|741205|Anicia-x|4242|1|0|90000|27403|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16676340|604053|mega-killeur|4242|1|0|100000|25549|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16662374|819708|OcéaneGame|4242|1|0|252222|22916|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16762811|577785|Nostel|2200|14|0|200000|43190|2|2|0|0| 16762468|802055|majorette|2200|7|0|239999|43149|2|2|0|0| 16762234|764841|Satyana|2200|10|0|240000|43119|2|2|0|0| 16761986|777541|Atsuo`|2200|5|0|250000|43093|2|2|0|0| 16756714|534840|•Hanna•|2200|4|0|300000|42451|2|2|0|0| 16722340|284623|metre|4904|1|0|250000000|34342|2|0|6|8|1^4904^6^8^0^95^601^757^476^14^190^74^100^1000000^-1^0^740882^0";
+            string itembazar = string.Empty;
+
+            string charname = string.Empty;
+            ItemInstance item = null;
+
+            List<string> itemssearch = packet.ItemVNums == "0" ? new List<string>() : packet.ItemVNums.Split(' ').ToList();
+            List<BazaarItemLink> bzlist = new List<BazaarItemLink>();
+            foreach (BazaarItem bz in ServerManager.Instance.BazarItemList)
+            {
+                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == bz.SellerId);
+
+                if (session != null)
+                {
+                    charname = session.Character.Name;
+                    item = session.Character.Inventory.LoadByItemInstance<ItemInstance>(bz.ItemInstanceId);
+                }
+                else if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
+                {
+                    charname = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
+                    item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
+                }
+                if (item == null)
+                    continue;
+
+                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+            }
+            List<BazaarItemLink> bzlistsearched = bzlist.Where(s => itemssearch.Contains(s.Item.ItemVNum.ToString())).ToList();
+            int i = 0;
+            foreach (BazaarItemLink bzlink in (itemssearch.Any() ? bzlistsearched : bzlist))
+            {
+                long time = (long)(bzlink.BazaarItem.DateStart.AddHours(bzlink.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
+                if (time > 0 && bzlink.Item.Amount > 0)
+                {
+                    itembazar += $"{bzlink.BazaarItem.TemporaryId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage?1:0)}|{bzlink.BazaarItem.Price}|{time}|2|1|0|0| ";
+                }
+            }
+
+            return $"rc_blist 0 {itembazar} ";
         }
 
         public short SaveX { get; set; }
@@ -625,19 +662,24 @@ namespace OpenNos.GameObject
         public string GenerateRCSList()
         {
             string list = string.Empty;
-            for(byte i=0;i< 255;i++)
+          
+            foreach (BazaarItem bz in ServerManager.Instance.BazarItemList.Where(s => s.SellerId == CharacterId))
             {
-                ItemInstance item = Inventory.LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar);
-                if(item !=null)
+                ItemInstance item = Inventory.GetItemInstanceById(bz.ItemInstanceId);
+                if (item != null)
                 {
-                    int SoldedAmount = 98;
-                    int Amount = 99;
-                    bool Package = false;
-                    bool IsNosbazar = false;
-                    long Price = 1000;
-                    long MinutesLeft = 1440;
-                    byte Status = (byte)BazaarType.OnSale;
-                    list += $"16762902|626114|{item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1:0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar?1:0)}|1|0|0| ";
+                    int SoldedAmount = bz.Amount - item.Amount;
+                    int Amount = bz.Amount;
+                    bool Package = bz.IsPackage;
+                    bool IsNosbazar = bz.MedalUsed;
+                    long Price = bz.Price;
+                    long MinutesLeft = (long)(bz.DateStart.AddHours(bz.Duration) - DateTime.Now).TotalMinutes;
+                    byte Status = MinutesLeft >= 0 ? (SoldedAmount < Amount ? (byte)BazaarType.OnSale : (byte)BazaarType.Solded) : (byte)BazaarType.DelayExpired;
+                    if (Status == (byte)BazaarType.DelayExpired)
+                    {
+                        MinutesLeft = (long)(bz.DateStart.AddHours(bz.Duration).AddDays(30) - DateTime.Now).TotalMinutes;
+                    }
+                    list += $"{bz.TemporaryId}|{bz.SellerId}|{item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1 : 0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar ? 1 : 0)}|1|0|0| ";
                 }
             }
 
@@ -2352,7 +2394,7 @@ namespace OpenNos.GameObject
                     {
                         result += $" {relation.RelatedCharacterId}.1";
                     }
-                    else if(relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId == relatedCharacterLoggedOutId.Value)
+                    else if (relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId == relatedCharacterLoggedOutId.Value)
                     {
                         result += $" {relation.RelatedCharacterId}.0";
                     }
@@ -4243,6 +4285,15 @@ namespace OpenNos.GameObject
                     if (Resp.MapId != 0 && Resp.X != 0 && Resp.Y != 0)
                     {
                         DAOFactory.RespawnDAO.InsertOrUpdate(ref res);
+                    }
+                }
+
+                foreach (BazaarItem bz in ServerManager.Instance.BazarItemList.Where(s => s.SellerId == CharacterId))
+                {
+                    if(DAOFactory.BazaarItemDAO.LoadById(bz.BazaarItemId) == null)
+                    {
+                        BazaarItemDTO bzsave = bz;
+                        DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bzsave);
                     }
                 }
 

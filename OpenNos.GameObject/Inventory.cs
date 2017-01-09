@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
@@ -112,7 +113,7 @@ namespace OpenNos.GameObject
                 if (newItem.Type != InventoryType.Equipment && newItem.Type != InventoryType.Wear)
                 {
                     IEnumerable<ItemInstance> slotfree = LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
-                    inv = GetFreeSlot(slotfree);
+                    inv = GetFreeSlot(slotfree.Where(s=>s.Type == newItem.Type));
                 }
 
                 if (inv != null)
@@ -306,11 +307,11 @@ namespace OpenNos.GameObject
             return this[id];
         }
 
-        public void AddIntoBazaarInventory(InventoryType inventory, byte slot, byte amount)
+        public ItemInstance AddIntoBazaarInventory(InventoryType inventory, byte slot, byte amount)
         {
             ItemInstance inv = LoadBySlotAndType<ItemInstance>(slot, inventory);
-            if (inv == null)
-                return;
+            if (inv == null || amount > inv.Amount)
+                return null;
 
             ItemInstance invcopy = inv.DeepCopy();
             invcopy.Id = Guid.NewGuid();
@@ -347,7 +348,7 @@ namespace OpenNos.GameObject
                 {
                     invcopy.Amount = amount;
                     inv.Amount -= amount;
-                    
+
                     for (short i = 0; i < 255; i++)
                     {
                         if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) == null)
@@ -356,10 +357,12 @@ namespace OpenNos.GameObject
                             break;
                         }
                     }
-                    
+
                     Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
                 }
             }
+
+            return invcopy;
 
         }
 
