@@ -755,13 +755,13 @@ namespace OpenNos.GameObject
                     }
                     ++j;
                 }
-                _hp[(int)ClassType.Swordman, i] = hp;
+                _hp[(int)ClassType.Swordman, i] = (int)(hp*1.15);
             }
 
             // Magician HP
             for (int i = 0; i < _hp.GetLength(1); i++)
             {
-                _hp[(int)ClassType.Magician, i] = (int)(((i + 15) * (i + 15) + i + 15.0) / 2.0 - 465 + 550);
+                _hp[(int)ClassType.Magician, i] = (int)(((i + 15) * (i + 15) + i + 15.0) - 465 + 550);
             }
 
             // Archer HP
@@ -781,7 +781,7 @@ namespace OpenNos.GameObject
                     }
                     ++j;
                 }
-                _hp[(int)ClassType.Archer, i] = hp;
+                _hp[(int)ClassType.Archer, i] = (int)(hp*1.45);
             }
         }
 

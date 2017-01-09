@@ -740,14 +740,24 @@ namespace OpenNos.GameObject
                     }
 
                     // check if target is in range
-                    if (!targetSession.Character.InvisibleGm && !targetSession.Character.Invisible && targetSession.Character.Hp > 0
-                        && (npcMonsterSkill != null && CurrentMp >= npcMonsterSkill.Skill.MpCost &&
-                             Map.GetDistance(new MapCell { X = MapX, Y = MapY },
-                                 new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range
-                            || Map.GetDistance(new MapCell { X = MapX, Y = MapY },
-                                    new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange))
+                    if (!targetSession.Character.InvisibleGm && !targetSession.Character.Invisible && targetSession.Character.Hp > 0)
                     {
+                        if (npcMonsterSkill != null && CurrentMp >= npcMonsterSkill.Skill.MpCost &&
+                             Map.GetDistance(new MapCell { X = MapX, Y = MapY },
+                                 new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range)
+                        {
                         TargetHit(targetSession, npcMonsterSkill);
+
+                        }
+                        else if(Map.GetDistance(new MapCell { X = MapX, Y = MapY },
+                                    new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)
+                        {
+                            TargetHit(targetSession, npcMonsterSkill);
+                        }
+                        else
+                        {
+                            FollowTarget(targetSession);
+                        }
                     }
                     else
                     {
@@ -768,6 +778,20 @@ namespace OpenNos.GameObject
                 Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
             }
             Target = -1;
+            int nearestDistance = 100;
+            foreach (KeyValuePair<long, long> kvp in DamageList)
+            {
+                ClientSession session = Map.GetSessionByCharacterId(kvp.Value);
+                if(session != null)
+                {
+                    int distance = Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = session.Character.MapX, Y = session.Character.MapY });
+                    if (distance < nearestDistance)
+                    {
+                        nearestDistance = distance;
+                        Target = session.Character.CharacterId;
+                    }
+                }
+            }
         }
 
         /// <summary>

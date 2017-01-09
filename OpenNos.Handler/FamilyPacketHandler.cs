@@ -159,6 +159,8 @@ namespace OpenNos.Handler
                         targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Head;
                         Session.Character.FamilyCharacter.Authority = FamilyAuthority.Assistant;
                         Session.SendPacket(Session.Character.GenerateInfo("Done!"));
+                        Session.Character.FamilyMessageChanged = true;
+                        targetSession.Character.FamilyMessageChanged = true;
                         targetSession.Character.Save();
                         Session.Character.Save();
                         break;
@@ -185,6 +187,7 @@ namespace OpenNos.Handler
                         }
                         targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Assistant;
                         Session.SendPacket(Session.Character.GenerateInfo("Done!"));
+                        targetSession.Character.FamilyMessageChanged = true;
                         targetSession.Character.Save();
                         break;
                     case "2":
@@ -205,6 +208,7 @@ namespace OpenNos.Handler
                         }
                         targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Manager;
                         Session.SendPacket(Session.Character.GenerateInfo("Done!"));
+                        targetSession.Character.FamilyMessageChanged = true;
                         targetSession.Character.Save();
                         break;
                     case "3":
@@ -225,6 +229,7 @@ namespace OpenNos.Handler
                         }
                         targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Member;
                         Session.SendPacket(Session.Character.GenerateInfo("Done!"));
+                        targetSession.Character.FamilyMessageChanged = true;
                         targetSession.Character.Save();
                         break;
                 }
