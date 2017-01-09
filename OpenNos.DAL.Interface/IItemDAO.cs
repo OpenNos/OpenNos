@@ -25,7 +25,7 @@ namespace OpenNos.DAL.Interface
 
         ItemDTO Insert(ItemDTO item);
 
-        void Insert(List<ItemDTO> items);
+        void Insert(IEnumerable<ItemDTO> items);
 
         IEnumerable<ItemDTO> LoadAll();
 

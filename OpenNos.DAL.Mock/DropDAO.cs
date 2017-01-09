@@ -40,6 +40,11 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
+        public void Insert(List<DropDTO> drops)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

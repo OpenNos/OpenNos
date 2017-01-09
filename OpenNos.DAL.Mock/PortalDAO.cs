@@ -28,6 +28,11 @@ namespace OpenNos.DAL.Mock
             return Container.Where(p => p.SourceMapId == mapId);
         }
 
+        public void Insert(List<PortalDTO> portals)
+        {
+            throw new System.NotImplementedException();
+        }
+
         #endregion
     }
 }

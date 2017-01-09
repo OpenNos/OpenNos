@@ -14,26 +14,21 @@
 
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IAccountDAO : IMappingBaseDAO
+    public interface IBazaarItemDAO : IMappingBaseDAO
     {
         #region Methods
 
-        DeleteResult Delete(long accountId);
+        DeleteResult Delete(long bazaarItemId);
 
-        SaveResult InsertOrUpdate(ref AccountDTO account);
+        SaveResult InsertOrUpdate(ref BazaarItemDTO bazaarItem);
 
-        AccountDTO LoadById(long accountId);
+        IEnumerable<BazaarItemDTO> LoadAll();
 
-        AccountDTO LoadByName(string Name);
-
-        void LogIn(string name);
-
-        void UpdateLastSessionAndIp(string name, int session, string ip);
-
-        void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData);
+        BazaarItemDTO LoadById(long bazaarItemId);
 
         #endregion
     }

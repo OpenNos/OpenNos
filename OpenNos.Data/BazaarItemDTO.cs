@@ -12,28 +12,31 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using OpenNos.Data.Enums;
+using System;
 
-namespace OpenNos.DAL.Interface
+namespace OpenNos.Data
 {
-    public interface IAccountDAO : IMappingBaseDAO
+    public class BazaarItemDTO : MappingBaseDTO
     {
-        #region Methods
+        #region Properties
 
-        DeleteResult Delete(long accountId);
+        public byte Amount { get; set; }
 
-        SaveResult InsertOrUpdate(ref AccountDTO account);
+        public long BazaarItemId { get; set; }
 
-        AccountDTO LoadById(long accountId);
+        public DateTime DateStart { get; set; }
 
-        AccountDTO LoadByName(string Name);
+        public short Duration { get; set; }
 
-        void LogIn(string name);
+        public bool IsPackage { get; set; }
 
-        void UpdateLastSessionAndIp(string name, int session, string ip);
+        public Guid ItemInstanceId { get; set; }
 
-        void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData);
+        public bool MedalUsed { get; set; }
+
+        public long Price { get; set; }
+
+        public long SellerId { get; set; }
 
         #endregion
     }

@@ -50,7 +50,7 @@ namespace OpenNos.DAL.Mock
             _mapper = config.CreateMapper();
         }
 
-        public void Insert(List<TDTO> dtos)
+        public void Insert(IEnumerable<TDTO> dtos)
         {
             foreach (TDTO dto in dtos)
             {

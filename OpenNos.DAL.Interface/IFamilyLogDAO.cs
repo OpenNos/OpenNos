@@ -12,9 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL.Interface;
 
-namespace OpenNos.DAL
+namespace OpenNos.DAL.Interface
 {
     public interface IFamilyLogDAO : IMappingBaseDAO
     {

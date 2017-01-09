@@ -12,11 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 
-namespace OpenNos.DAL
+namespace OpenNos.DAL.Interface
 {
     public interface IFamilyDAO : IMappingBaseDAO
     {

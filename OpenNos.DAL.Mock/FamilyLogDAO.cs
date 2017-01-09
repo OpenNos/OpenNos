@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.Mock
 {
