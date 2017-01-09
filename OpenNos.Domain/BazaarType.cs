@@ -12,29 +12,12 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-
-namespace OpenNos.DAL.Interface
+namespace OpenNos.Domain
 {
-    public interface IAccountDAO : IMappingBaseDAO
+    public enum BazaarType : byte
     {
-        #region Methods
-
-        DeleteResult Delete(long accountId);
-
-        SaveResult InsertOrUpdate(ref AccountDTO account);
-
-        AccountDTO LoadById(long accountId);
-
-        AccountDTO LoadByName(string Name);
-
-        void LogIn(string name);
-
-        void UpdateLastSessionAndIp(string name, int session, string ip);
-
-        void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData);
-
-        #endregion
+        OnSale = 1,
+        Solded = 2,
+        DelayExpired = 3
     }
 }

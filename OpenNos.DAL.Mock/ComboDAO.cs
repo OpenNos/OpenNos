@@ -38,6 +38,11 @@ namespace OpenNos.DAL.Mock
             return Container.Where(c => c.SkillVNum == skillVNum && c.Hit == hit && c.Effect == effect).Select(e => MapEntity(e));
         }
 
+        public void Insert(List<ComboDTO> combos)
+        {
+            throw new System.NotImplementedException();
+        }
+
         #endregion
     }
 }

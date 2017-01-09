@@ -55,6 +55,7 @@ namespace OpenNos.DAL
         private static IShopSkillDAO _shopskillDAO;
         private static ISkillDAO _skillDAO;
         private static ITeleporterDAO _teleporterDAO;
+        private static IBazaarItemDAO _bazaarItemDAO;
         private static bool _useMock;
 
         #endregion
@@ -119,6 +120,26 @@ namespace OpenNos.DAL
                 }
 
                 return _cellonoptionDAO;
+            }
+        }
+
+        public static IBazaarItemDAO BazaarItemDAO
+        {
+            get
+            {
+                if (_bazaarItemDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _bazaarItemDAO = new Mock.BazaarItemDAO();
+                    }
+                    else
+                    {
+                        _bazaarItemDAO = new EF.BazaarItemDAO();
+                    }
+                }
+
+                return _bazaarItemDAO;
             }
         }
 

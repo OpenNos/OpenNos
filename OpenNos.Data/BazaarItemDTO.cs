@@ -14,33 +14,29 @@
 
 using System;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.Data
 {
-    public class BazaarItem
+    public class BazaarItemDTO : MappingBaseDTO
     {
         #region Properties
 
-        public long BazaarItemId { get; set; }
+        public byte Amount { get; set; }
 
-        public virtual Character Character { get; set; }
+        public long BazaarItemId { get; set; }
 
         public DateTime DateStart { get; set; }
 
         public short Duration { get; set; }
 
-        public virtual ItemInstance ItemInstance { get; set; }
+        public bool IsPackage { get; set; }
 
         public Guid ItemInstanceId { get; set; }
+
+        public bool MedalUsed { get; set; }
 
         public long Price { get; set; }
 
         public long SellerId { get; set; }
-
-        public bool MedalUsed { get; set; }
-
-        public bool IsPackage { get; set; }
-
-        public byte Amount { get; set; }
 
         #endregion
     }

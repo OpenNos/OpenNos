@@ -33,6 +33,11 @@ namespace OpenNos.DAL.Mock
             return Container.Where(n => n.MapId == mapId);
         }
 
+        public void Insert(List<MapNpcDTO> npcs)
+        {
+            throw new System.NotImplementedException();
+        }
+
         #endregion
     }
 }

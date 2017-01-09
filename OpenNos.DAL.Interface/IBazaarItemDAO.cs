@@ -12,35 +12,23 @@
  * GNU General Public License for more details.
  */
 
-using System;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
+using System.Collections.Generic;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.Interface
 {
-    public class BazaarItem
+    public interface IBazaarItemDAO : IMappingBaseDAO
     {
-        #region Properties
+        #region Methods
 
-        public long BazaarItemId { get; set; }
+        DeleteResult Delete(long bazaarItemId);
 
-        public virtual Character Character { get; set; }
+        SaveResult InsertOrUpdate(ref BazaarItemDTO bazaarItem);
 
-        public DateTime DateStart { get; set; }
+        IEnumerable<BazaarItemDTO> LoadAll();
 
-        public short Duration { get; set; }
-
-        public virtual ItemInstance ItemInstance { get; set; }
-
-        public Guid ItemInstanceId { get; set; }
-
-        public long Price { get; set; }
-
-        public long SellerId { get; set; }
-
-        public bool MedalUsed { get; set; }
-
-        public bool IsPackage { get; set; }
-
-        public byte Amount { get; set; }
+        BazaarItemDTO LoadById(long bazaarItemId);
 
         #endregion
     }

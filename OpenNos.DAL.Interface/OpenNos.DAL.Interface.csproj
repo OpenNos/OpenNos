@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IBazaarItemDAO.cs" />
     <Compile Include="IFamilyCharacterDAO.cs" />
     <Compile Include="IFamilyDAO.cs" />
     <Compile Include="IFamilyLogDAO.cs" />

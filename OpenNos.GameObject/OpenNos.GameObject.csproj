@@ -122,10 +122,16 @@
     <Compile Include="Packets\ClientPackets\FStashEndPacket.cs" />
     <Compile Include="Packets\ClientPackets\DirectionPacket.cs" />
     <Compile Include="Packets\ClientPackets\GuriPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CRegPacket.cs" />
     <Compile Include="Packets\ClientPackets\MallPacket.cs" />
     <Compile Include="Packets\ClientPackets\NpinfoPacket.cs" />
     <Compile Include="Packets\ClientPackets\PclPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CSkillPacket.cs" />
+    <Compile Include="Packets\ClientPackets\WhisperPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PleavePacket.cs" />
     <Compile Include="Packets\ClientPackets\PreqPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GroupSayPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SayPacket.cs" />
     <Compile Include="Packets\ClientPackets\SelectPacket.cs" />
     <Compile Include="Packets\ClientPackets\SitPacket.cs" />
     <Compile Include="Packets\ClientPackets\PulsePacket.cs" />

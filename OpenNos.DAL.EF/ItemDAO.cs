@@ -37,7 +37,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public void Insert(List<ItemDTO> items)
+        public void Insert(IEnumerable<ItemDTO> items)
         {
             try
             {

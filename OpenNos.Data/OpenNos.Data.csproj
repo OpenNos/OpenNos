@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Base\MappingBaseDTO.cs" />
     <Compile Include="Base\SynchronizableBaseDTO.cs" />
+    <Compile Include="BazaarItemDTO.cs" />
     <Compile Include="BoxItemDTO.cs" />
     <Compile Include="CellonOptionDTO.cs" />
     <Compile Include="CharacterRelationDTO.cs" />

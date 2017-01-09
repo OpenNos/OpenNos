@@ -22,6 +22,7 @@ namespace OpenNos.Domain
         Miniland = 3,
         Specialist = 6,
         Costume = 7,
-        Wear = 8
+        Wear = 8,
+        Bazaar = 9
     }
 }

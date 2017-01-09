@@ -19,6 +19,7 @@ using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
 using System.Linq;
+using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {

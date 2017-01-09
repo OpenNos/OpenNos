@@ -202,8 +202,42 @@ namespace OpenNos.Handler
             if (directionpacket.CharacterId == Session.Character.CharacterId)
             {
                 Session.Character.Direction = directionpacket.Direction;
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateDir()); 
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateDir());
             }
+        }
+        public void OpenBazaar(CSkillPacket packet)
+        {
+            Session.SendPacket("wopen 32 0 0");
+            Session.SendPacket("c_blist  0 0 0 0 0 0 0 0 0");
+            Session.SendPacket("c_slist 0 0");
+            Session.SendPacket(Session.Character.GenerateRCBList());
+            Session.SendPacket(Session.Character.GenerateRCSList());
+        }
+
+        public void SellBazaar(CRegPacket packet)
+        {
+            Session.Character.Inventory.AddIntoBazaarInventory((InventoryType)packet.Inventory, packet.Slot, packet.Amount);
+
+          
+            long taxe = (long)(0.05 * packet.Price * packet.Amount);
+            taxe = taxe > 10000 ? 10000 : taxe;
+            if (Session.Character.Gold < taxe)
+            {
+                return;
+            }
+
+            Session.Character.Gold -= taxe;
+            Session.SendPacket(Session.Character.GenerateGold());
+
+            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 10));
+            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 0));
+
+            Session.SendPacket(Session.Character.GenerateRCSList());
+
+            /*
+            rc_reg 1
+            c_slist 0 0
+            */
         }
 
         [Packet("pcl")]
@@ -327,10 +361,8 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("npinfo")]
-        public void GetStats(string packet)
+        public void GetStats(NpinfoPacket packet)
         {
-            Logger.Debug(packet, Session.SessionId);
             Session.SendPacket(Session.Character.GenerateStatChar());
         }
 
@@ -485,31 +517,21 @@ namespace OpenNos.Handler
                 }
             }
         }
-
-        [Packet("pleave")]
-        public void GroupLeave(string packet)
+        /// <summary>
+        /// pleave
+        /// </summary>
+        /// <param name="PleavePacket"></param>
+        public void GroupLeave(PleavePacket packet)
         {
-            Logger.Debug(packet, Session.SessionId);
             ServerManager.Instance.GroupLeave(Session);
         }
-
-        [Packet(";")]
-        public void GroupTalk(string packet)
+        /// <summary>
+        /// ;
+        /// </summary>
+        /// <param name="GroupSayPacket"></param>
+        public void GroupTalk(GroupSayPacket packet)
         {
-            string[] packetsplit = packet.Split(' ');
-            string message = string.Empty;
-            for (int i = 1; i < packetsplit.Length; i++)
-            {
-                message += packetsplit[i] + " ";
-            }
-            if (message.Length > 60)
-            {
-                message = message.Substring(0, 60);
-            }
-
-            message = message.Substring(1).Trim();
-
-            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 3), ReceiverType.Group);
+            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(packet.Message, 3), ReceiverType.Group);
         }
 
         [Packet("btk")]
@@ -904,7 +926,7 @@ namespace OpenNos.Handler
                             short mapy = session.Character.MapY;
                             short mapx = session.Character.MapX;
                             short mapId = session.Character.MapId;
-                        
+
                             ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                             ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
                             Session.Character.Inventory.RemoveItemAmount(vnumToUse);
@@ -1179,20 +1201,14 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("say")]
-        public void Say(string packet)
+        /// <summary>
+        /// say
+        /// </summary>
+        /// <param name="SayPacket"></param>
+        public void Say(SayPacket packet)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
-            string[] packetsplit = packet.Split(' ');
-            string message = string.Empty;
-            for (int i = 2; i < packetsplit.Length; i++)
-            {
-                message += packetsplit[i] + " ";
-            }
-            if (message.Length > 60)
-            {
-                message = message.Substring(0, 60);
-            }
+            string message = packet.Message;
 
             if (Session.Character.IsMuted() && penalty != null)
             {
@@ -1212,7 +1228,7 @@ namespace OpenNos.Handler
             else
             {
                 string language = new CultureInfo(System.Configuration.ConfigurationManager.AppSettings["Language"]).EnglishName;
-                if (packetsplit.Length > 5 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(message))
+                if (message.Split(' ').Length > 3 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(message))
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 2));
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 11));
@@ -1558,20 +1574,19 @@ namespace OpenNos.Handler
                 }
             }
         }
-
-        [Packet("/")]
-        public void Whisper(string packet)
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="WhisperPacket"></param>
+        public void Whisper(WhisperPacket packet)
         {
             try
             {
-
-                string[] packetsplit = packet.Split(' ');
-
-                string characterName = packetsplit[packetsplit[1] == "/GM" ? 2 : 1].Substring(packetsplit[1] == "/GM" ? 0 : 1);
-
+                string characterName = packet.Message.Split(' ')[packet.Message.StartsWith("GM ") ? 1 : 0];
                 string message = string.Empty;
+                string[] packetsplit = packet.Message.Split(' ');
 
-                for (int i = packetsplit[1] == "/GM" ? 3 : 2; i < packetsplit.Length; i++)
+                for (int i = packetsplit[0] == "GM" ? 2 : 1; i < packetsplit.Length; i++)
                 {
                     message += packetsplit[i] + " ";
                 }
@@ -1597,7 +1612,7 @@ namespace OpenNos.Handler
                 {
                     //session is not on current server, check api if the target character is on another server
                     int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5)
-                                                                                                  ,ServerManager.Instance.ChannelId, MessageType.Whisper, characterName, null).Result;
+                                                                                                  , ServerManager.Instance.ChannelId, MessageType.Whisper, characterName, null).Result;
                     if (!sentChannelId.HasValue) //character is even offline on different world
                     {
                         Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
@@ -1612,7 +1627,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                if (packetsplit[1] == "/GM" && targetSession.Account.Authority != AuthorityType.Admin)
+                if (packetsplit[0] == "GM" && targetSession.Account.Authority != AuthorityType.Admin)
                 {
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("USER_IS_NOT_AN_ADMIN"), targetSession.Character.Name), 10));
                     return;
@@ -1628,7 +1643,7 @@ namespace OpenNos.Handler
 
                 if (!targetSession.Character.WhisperBlocked)
                 {
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5), ReceiverType.OnlySomeone, packetsplit[packetsplit[1] == "/GM" ? 2 : 1].Substring(packetsplit[1] == "/GM" ? 0 : 1));
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5), ReceiverType.OnlySomeone, characterName);
                 }
                 else
                 {

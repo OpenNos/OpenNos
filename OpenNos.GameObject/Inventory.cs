@@ -306,6 +306,63 @@ namespace OpenNos.GameObject
             return this[id];
         }
 
+        public void AddIntoBazaarInventory(InventoryType inventory, byte slot, byte amount)
+        {
+            ItemInstance inv = LoadBySlotAndType<ItemInstance>(slot, inventory);
+            if (inv == null)
+                return;
+
+            ItemInstance invcopy = inv.DeepCopy();
+            invcopy.Id = Guid.NewGuid();
+
+            if (inv.Item.Type == InventoryType.Equipment)
+            {
+                for (short i = 0; i < 255; i++)
+                {
+                    if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) == null)
+                    {
+                        AddToInventoryWithSlotAndType(invcopy, InventoryType.Bazaar, i);
+                        DeleteFromSlotAndType(inv.Slot, inv.Type);
+                        break;
+                    }
+                }
+                Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inventory, slot, 0, 0, 0, 0));
+            }
+            else
+            {
+                if (amount >= inv.Amount)
+                {
+                    for (short i = 0; i < 255; i++)
+                    {
+                        if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) == null)
+                        {
+                            AddToInventoryWithSlotAndType(invcopy, InventoryType.Bazaar, i);
+                            DeleteFromSlotAndType(inv.Slot, inv.Type);
+                            break;
+                        }
+                    }
+                    Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inventory, slot, 0, 0, 0, 0));
+                }
+                else
+                {
+                    invcopy.Amount = amount;
+                    inv.Amount -= amount;
+                    
+                    for (short i = 0; i < 255; i++)
+                    {
+                        if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) == null)
+                        {
+                            AddToInventoryWithSlotAndType(invcopy, InventoryType.Bazaar, i);
+                            break;
+                        }
+                    }
+                    
+                    Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
+                }
+            }
+
+        }
+
         public T LoadByItemInstance<T>(Guid id)
                     where T : ItemInstance
         {
