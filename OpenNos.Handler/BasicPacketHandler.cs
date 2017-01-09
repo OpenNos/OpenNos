@@ -207,11 +207,11 @@ namespace OpenNos.Handler
         }
         public void RefreshBazarList(CBListPacket packet)
         {
-           Session.SendPacket(Session.Character.GenerateRCBList(packet));
+            Session.SendPacket(Session.Character.GenerateRCBList(packet));
         }
         public void RefreshPersonalBazarList(CSListnPacket packet)
         {
-          Session.SendPacket(Session.Character.GenerateRCSList());
+            Session.SendPacket(Session.Character.GenerateRCSList());
         }
 
         public void OpenBazaar(CSkillPacket packet)
@@ -282,8 +282,8 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"),10));
-                    Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"),1));
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                    Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 1));
                 }
 
             }
@@ -302,15 +302,15 @@ namespace OpenNos.Handler
                 ItemInstance Item = Session.Character.Inventory.LoadByItemInstance<ItemInstance>(bz.ItemInstanceId);
                 if (Item == null)
                     return;
-                Guid temp = bz.ItemInstanceId;
-                int stayamount = bz.Amount - Item.Amount;
-                long price = bz.Price*(stayamount);
-                if(Session.Character.Gold+ price <= 1000000000)
+                int soldedamount = bz.Amount - Item.Amount;
+                long taxes = 0;//TODO Calculate taxes
+                long price = bz.Price * (soldedamount) - taxes;
+                if (Session.Character.Gold + price <= 1000000000)
                 {
                     Session.Character.Gold += price;
                     Session.SendPacket(Session.Character.GenerateGold());
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REMOVE_FROM_BAZAAR"),price), 10));
-                    if(stayamount != 0)
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REMOVE_FROM_BAZAAR"), price), 10));
+                    if (Item.Amount != 0)
                     {
                         ItemInstance newBz = Item.DeepCopy();
                         newBz.Id = Guid.NewGuid();
@@ -322,15 +322,15 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
                         }
                     }
-
+                    Session.SendPacket($"rc_scalc 1 {bz.Price} {bz.Amount - Item.Amount} {bz.Amount} {taxes} {price + taxes}");
                     ServerManager.Instance.BazarItemList.Remove(bz);
                     if (DAOFactory.BazaarItemDAO.LoadById(bz.BazaarItemId) != null)
                     {
                         DAOFactory.BazaarItemDAO.Delete(bz.BazaarItemId);
                     }
-                    Session.Character.Inventory.DeleteById(temp);
+                    Session.Character.Inventory.DeleteById(Item.Id);
 
-                    Session.SendPacket("rc_scalc 1 1 3 3 0 3");
+
                 }
                 else
                 {
@@ -397,7 +397,7 @@ namespace OpenNos.Handler
             rc_reg 1
             c_slist 0 0
             */
-                }
+        }
 
         [Packet("pcl")]
         public void GetGift(string packet)
