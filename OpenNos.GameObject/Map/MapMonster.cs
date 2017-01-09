@@ -740,14 +740,20 @@ namespace OpenNos.GameObject
                     }
 
                     // check if target is in range
-                    if (!targetSession.Character.InvisibleGm && !targetSession.Character.Invisible && targetSession.Character.Hp > 0
-                        && (npcMonsterSkill != null && CurrentMp >= npcMonsterSkill.Skill.MpCost &&
-                             Map.GetDistance(new MapCell { X = MapX, Y = MapY },
-                                 new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range
-                            || Map.GetDistance(new MapCell { X = MapX, Y = MapY },
-                                    new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange))
+                    if (!targetSession.Character.InvisibleGm && !targetSession.Character.Invisible && targetSession.Character.Hp > 0)
                     {
+                        if (npcMonsterSkill != null && CurrentMp >= npcMonsterSkill.Skill.MpCost &&
+                             Map.GetDistance(new MapCell { X = MapX, Y = MapY },
+                                 new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range)
+                        {
                         TargetHit(targetSession, npcMonsterSkill);
+
+                        }
+                        else if(Map.GetDistance(new MapCell { X = MapX, Y = MapY },
+                                    new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)
+                        {
+                            TargetHit(targetSession, npcMonsterSkill);
+                        }
                     }
                     else
                     {
