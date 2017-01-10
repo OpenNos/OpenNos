@@ -2912,7 +2912,7 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     default:
-                                        item.EffectValue = Convert.ToInt32(currentLine[4]);
+                                        item.EffectValue = item.EffectValue == 0 ? Convert.ToInt32(currentLine[4]) : item.EffectValue;
                                         break;
                                 }
                                 item.WaitDelay = 5000;
