@@ -204,6 +204,18 @@ namespace OpenNos.GameObject
                     //Session.SendPacket(Session.Character.GenerateFamilyMember());
                     break;
 
+                case 60:
+                    StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
+                    byte Medal = 0;
+                    int Time = 0;
+                    if (medal != null)
+                    {
+                        Medal = medal.StaticBonusType == StaticBonusType.BazaarMedalGold ? (byte)MedalType.Gold : (byte)MedalType.Silver;
+                        Time = (int)(medal.DateEnd - DateTime.Now).TotalHours;
+                    }
+                    Session.SendPacket($"wopen 32 {Medal} {Time}");
+                    break;
+
                 case 5002:
                     if (npc != null)
                     {
