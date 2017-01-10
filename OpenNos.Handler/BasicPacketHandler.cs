@@ -385,13 +385,15 @@ namespace OpenNos.Handler
                 default:
                     return;
             }
+            StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BackPack);
+
             BazaarItem bz = new BazaarItem()
             {
                 Amount = bazar.Amount,
                 DateStart = DateTime.Now,
                 Duration = duration,
                 IsPackage = packet.IsPackage == 0 ? false : true,
-                MedalUsed = packet.MedalUsed == 0 ? false : true,
+                MedalUsed = medal == null ? false : true,
                 Price = packet.Price,
                 SellerId = Session.Character.CharacterId,
                 ItemInstanceId = bazar.Id,

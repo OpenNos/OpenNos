@@ -178,7 +178,7 @@ namespace OpenNos.Handler
         public void Backpack(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.Character.Backpack = Session.Character.Backpack == 0 ? 1 : 0;
+            Session.Character.Backpack = Session.Character.HaveBackpack() ? 1 : 0;
             Session.SendPacket(Session.Character.GenerateExts());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
