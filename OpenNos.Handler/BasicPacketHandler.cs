@@ -334,7 +334,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    //max money
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                 }
 
             }
