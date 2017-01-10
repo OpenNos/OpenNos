@@ -340,11 +340,15 @@ namespace OpenNos.GameObject
                                 {
                                     groupSession.SendPacket(groupSession.Character.GeneratePinit());
                                 }
-                                session.CurrentMap?.Broadcast(groupSession, groupSession.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+
                             }
                         }
                     }
 
+                    if (session.Character.Group != null)
+                    {
+                        session.CurrentMap?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
+                    }
                     session.Character.IsChangingMap = false;
                 }
                 catch (Exception)
