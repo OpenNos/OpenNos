@@ -3718,7 +3718,7 @@ namespace OpenNos.GameObject
                     {
                         fairy.XP += ServerManager.FairyXpRate;
                     }
-                    t = CharacterHelper.LoadFairyXPData(fairy.ElementRate);
+                    t = CharacterHelper.LoadFairyXPData(fairy.ElementRate + fairy.Item.ElementRate);
                     while (fairy.XP >= t)
                     {
                         fairy.XP -= (int)t;
