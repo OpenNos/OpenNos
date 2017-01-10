@@ -1183,22 +1183,4 @@
   <data name="ACT4_PVP_DIE" xml:space="preserve">
     <value>You were killed by an enemy! Due to the curse of the Frozen Crown, you can't be revived for 30 seconds!</value>
   </data>
-  <data name="EFFECT_ACTIVATED" xml:space="preserve">
-    <value>The {0} effect has been actived!</value>
-  </data>
-  <data name="INFO_BAZAAR" xml:space="preserve">
-    <value>You cannot open the bazaar because you do not possess the required object.</value>
-  </data>
-  <data name="NOTICE_BAZAAR" xml:space="preserve">
-    <value>Warning, you can be attacked by monster when you use the bazaar!</value>
-  </data>
-  <data name="OBJECT_IN_BAZAAR" xml:space="preserve">
-    <value>Your item has been added on the bazaar!</value>
-  </data>
-  <data name="REMOVE_FROM_BAZAAR" xml:space="preserve">
-    <value>The sale is completed, you receive gold : {0}.</value>
-  </data>
-  <data name="STATE_CHANGED" xml:space="preserve">
-    <value>The sale was interrupted because the item is no longer available!</value>
-  </data>
 </root>

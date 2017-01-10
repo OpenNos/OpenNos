@@ -1088,4 +1088,58 @@ Veux-tu le porter ?</value>
   <data name="GROUP_MEMBER_ALREADY_IN_FAMILY" xml:space="preserve">
     <value>Au moins un membre du groupe possède déjà une famille.</value>
   </data>
+ <data name="DEMON" xml:space="preserve">
+    <value>Démon</value>
+  </data>
+  <data name="ANGEL" xml:space="preserve">
+    <value>Ange</value>
+  </data>
+  <data name="FAMILY_FOUNDED" xml:space="preserve">
+    <value>Félicitations ! La famille {0} a été fondée !</value>
+  </data>
+  <data name="FAMILY_GROUP_NOT_FULL" xml:space="preserve">
+    <value>Il n'y a pas assez de membres pour crée une famille.</value>
+  </data>
+  <data name="FAMILY_INVITED" xml:space="preserve">
+    <value>{0} a été invité !</value>
+  </data>
+  <data name="ASK_FAMILY_INVITED" xml:space="preserve">
+    <value>Tu as reçu une demande d'adhésion à la famille {0}</value>
+  </data>
+  <data name="FAMILY_JOINED" xml:space="preserve">
+    <value>{0} A rejoint la famille  "{1}" !</value>
+  </data>
+  <data name="FAMILY_KICKED" xml:space="preserve">
+    <value>{0} a été exclus de la famille.</value>
+  </data>
+  <data name="LANGUAGE_REQUIRED" xml:space="preserve">
+    <value>Le language autorisé est le {0}, il est interdit de parler un autre language !</value>
+  </data>
+  <data name="ASK_REVIVE_PVP" xml:space="preserve">
+    <value>Voulez-vous continuer ? Cela vous coûtera 100 or !</value>
+  </data>
+  <data name="LOSE_REP" xml:space="preserve">
+    <value>Réputation -{0}</value>
+  </data>
+  <data name="ACT4_PVP_DIE" xml:space="preserve">
+    <value>La malédiction de la Courrone de Glace t'a transformé en phoque pour 30 secondes !</value>
+  </data>
+  <data name="EFFECT_ACTIVATED" xml:space="preserve">
+    <value>L'effet de {0} a été activé.</value>
+  </data>
+  <data name="INFO_BAZAAR" xml:space="preserve">
+    <value>Avec la médaille NosMarchand, tu peux utiliser le NosBazar à tout moment sur toutes les cartes générales.</value>
+  </data>
+  <data name="NOTICE_BAZAAR" xml:space="preserve">
+    <value>N'oublie pas que tu peux aussi être attaqué pendant que la fenêtre du NosBazar est ouverte.</value>
+  </data>
+  <data name="OBJECT_IN_BAZAAR" xml:space="preserve">
+    <value>Tes objets se trouvent désormais dans le NosBazar.</value>
+  </data>
+  <data name="REMOVE_FROM_BAZAAR" xml:space="preserve">
+    <value>La vente est terminée. Or : {0}.</value>
+  </data>
+  <data name="STATE_CHANGED" xml:space="preserve">
+    <value>L'offre a été mise à jour. La vente a été annulée.</value>
+  </data>
 </root>
