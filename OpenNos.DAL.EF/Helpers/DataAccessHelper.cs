@@ -41,11 +41,7 @@ namespace OpenNos.DAL.EF.Helpers
         {
             get
             {
-                if (_context == null)
-                {
-                    _context = CreateContext();
-                }
-                return _context;
+                return _context ?? (_context = CreateContext());
             }
         }
 

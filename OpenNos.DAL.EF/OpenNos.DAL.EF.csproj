@@ -106,6 +106,7 @@
     <Compile Include="Entities\PenaltyLog.cs" />
     <Compile Include="Entities\RespawnMapType.cs" />
     <Compile Include="Entities\SpecialistInstance.cs" />
+    <Compile Include="Entities\StaticBonus.cs" />
     <Compile Include="Entities\UsableInstance.cs" />
     <Compile Include="Entities\WearableInstance.cs" />
     <Compile Include="FamilyCharacterDAO.cs" />
@@ -156,6 +157,10 @@
     <Compile Include="Migrations\201701091242298_Aphrodite8.Designer.cs">
       <DependentUpon>201701091242298_Aphrodite8.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701101528067_Aphrodite9.cs" />
+    <Compile Include="Migrations\201701101528067_Aphrodite9.Designer.cs">
+      <DependentUpon>201701101528067_Aphrodite9.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
     <Compile Include="DB\OpenNosContext.cs" />
@@ -190,6 +195,7 @@
     <Compile Include="ShopSkillDAO.cs" />
     <Compile Include="CharacterSkillDAO.cs" />
     <Compile Include="Entities\Teleporter.cs" />
+    <Compile Include="StaticBonusDAO.cs" />
     <Compile Include="TeleporterDAO.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +259,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701091242298_Aphrodite8.resx">
       <DependentUpon>201701091242298_Aphrodite8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701101528067_Aphrodite9.resx">
+      <DependentUpon>201701101528067_Aphrodite9.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
