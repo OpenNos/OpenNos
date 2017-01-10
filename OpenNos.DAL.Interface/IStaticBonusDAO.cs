@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
@@ -26,21 +27,22 @@ namespace OpenNos.DAL.Interface
         /// </summary>
         /// <param name="staticBonusId"></param>
         /// <returns></returns>
-        DeleteResult Delete(long staticBonusId);
+        void RemoveOutDated();
 
         /// <summary>
         /// Inserts new object to database context
         /// </summary>
         /// <param name="staticBonus"></param>
         /// <returns></returns>
-        StaticBonusDTO Insert(StaticBonusDTO staticBonus);
+        SaveResult InsertOrUpdate(StaticBonusDTO staticbonus);
+
 
         /// <summary>
         /// Loads staticbonus by characterid
         /// </summary>
         /// <param name="characterId"></param>
         /// <returns></returns>
-        StaticBonusDTO LoadByCharacterId(long characterId);
+        IEnumerable<StaticBonusDTO> LoadByCharacterId(long characterId);
 
         #endregion
     }

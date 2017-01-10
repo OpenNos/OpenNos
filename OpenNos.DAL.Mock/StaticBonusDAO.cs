@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.Collections.Generic;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
@@ -22,14 +24,19 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
-        public DeleteResult Delete(long staticBonusId)
+        public SaveResult InsertOrUpdate(StaticBonusDTO staticbonus)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public StaticBonusDTO LoadByCharacterId(long characterId)
+        public IEnumerable<StaticBonusDTO> LoadByCharacterId(long characterId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
+        }
+
+        public void RemoveOutDated()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

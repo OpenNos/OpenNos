@@ -202,7 +202,7 @@ namespace OpenNos.Handler
 
                     case 1:
                         inventory = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Equipment) ??
-                                    Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment) ?? 
+                                    Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment) ??
                                     Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
                         break;
 
@@ -451,9 +451,9 @@ namespace OpenNos.Handler
                                         Inventory inventory = targetSession.Character.Inventory;
 
                                         long gold = targetSession.Character.Gold;
-                                        int backpack = targetSession.Character.Backpack;
+                                        int backpack = targetSession.Character.HaveBackpack() ? 1 : 0;
 
-                                        if(targetExchange == null)
+                                        if (targetExchange == null)
                                         {
                                             return;
                                         }
@@ -467,7 +467,7 @@ namespace OpenNos.Handler
 
                                                 bool @continue = true;
                                                 bool goldmax = false;
-                                                if (!Session.Character.Inventory.GetFreeSlotAmount(targetExchange.ExchangeList, Session.Character.Backpack))
+                                                if (!Session.Character.Inventory.GetFreeSlotAmount(targetExchange.ExchangeList, Session.Character.HaveBackpack() ? 1 : 0))
                                                 {
                                                     @continue = false;
                                                 }
@@ -655,7 +655,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet.ToString(), Session.SessionId);
             lock (Session.Character.Inventory)
             {
-                if (packet.DestinationSlot > 48 + Session.Character.Backpack * 12)
+                if (packet.DestinationSlot > 48 + (Session.Character.HaveBackpack() ? 1 : 0) * 12)
                 {
                     return;
                 }
@@ -689,7 +689,7 @@ namespace OpenNos.Handler
                 ItemInstance newInventory;
 
                 // check if the destination slot is out of range
-                if (packet.DestinationSlot > 48 + Session.Character.Backpack * 12)
+                if (packet.DestinationSlot > 48 + (Session.Character.HaveBackpack() ? 1 : 0) * 12)
                 {
                     return;
                 }
