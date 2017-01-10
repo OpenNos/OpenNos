@@ -309,7 +309,7 @@ namespace OpenNos.GameObject
 
         public ItemInstance AddIntoBazaarInventory(InventoryType inventory, byte slot, byte amount)
         {
-            ItemInstance inv = LoadBySlotAndType<ItemInstance>(slot, inventory);
+            ItemInstance inv = LoadBySlotAndType(slot, inventory);
             if (inv == null || amount > inv.Amount)
                 return null;
 
