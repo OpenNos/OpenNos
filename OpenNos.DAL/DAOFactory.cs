@@ -23,6 +23,7 @@ namespace OpenNos.DAL
         #region Members
 
         private static IAccountDAO _accountDAO;
+        private static IBazaarItemDAO _bazaarItemDAO;
         private static ICellonOptionDAO _cellonoptionDAO;
         private static ICharacterDAO _characterDAO;
         private static ICharacterRelationDAO _characterRelationDAO;
@@ -54,8 +55,8 @@ namespace OpenNos.DAL
         private static IShopItemDAO _shopitemDAO;
         private static IShopSkillDAO _shopskillDAO;
         private static ISkillDAO _skillDAO;
+        private static IStaticBonusDAO _staticBonusDAO;
         private static ITeleporterDAO _teleporterDAO;
-        private static IBazaarItemDAO _bazaarItemDAO;
         private static bool _useMock;
 
         #endregion
@@ -103,26 +104,6 @@ namespace OpenNos.DAL
             }
         }
 
-        public static ICellonOptionDAO CellonOptionDAO
-        {
-            get
-            {
-                if (_cellonoptionDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _cellonoptionDAO = new Mock.CellonOptionDAO();
-                    }
-                    else
-                    {
-                        _cellonoptionDAO = new EF.CellonOptionDAO();
-                    }
-                }
-
-                return _cellonoptionDAO;
-            }
-        }
-
         public static IBazaarItemDAO BazaarItemDAO
         {
             get
@@ -140,6 +121,26 @@ namespace OpenNos.DAL
                 }
 
                 return _bazaarItemDAO;
+            }
+        }
+
+        public static ICellonOptionDAO CellonOptionDAO
+        {
+            get
+            {
+                if (_cellonoptionDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _cellonoptionDAO = new Mock.CellonOptionDAO();
+                    }
+                    else
+                    {
+                        _cellonoptionDAO = new EF.CellonOptionDAO();
+                    }
+                }
+
+                return _cellonoptionDAO;
             }
         }
 
@@ -740,6 +741,26 @@ namespace OpenNos.DAL
                 }
 
                 return _skillDAO;
+            }
+        }
+
+        public static IStaticBonusDAO StaticBonusDAO
+        {
+            get
+            {
+                if (_staticBonusDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _staticBonusDAO = new Mock.StaticBonusDAO();
+                    }
+                    else
+                    {
+                        _staticBonusDAO = new EF.StaticBonusDAO();
+                    }
+                }
+
+                return _staticBonusDAO;
             }
         }
 

@@ -15,24 +15,14 @@
 namespace OpenNos.DAL.EF
 {
     using Domain;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
 
     public class CharacterRelation
     {
-        #region Instantiation
-
-        public CharacterRelation()
-        { 
-        }
-        #endregion
-
         #region Properties
 
-        public long CharacterRelationId { get; set; }
-
         public long CharacterId { get; set; }
+
+        public long CharacterRelationId { get; set; }
 
         public long RelatedCharacterId { get; set; }
 

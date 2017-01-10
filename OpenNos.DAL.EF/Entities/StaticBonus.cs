@@ -12,32 +12,24 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Domain;
+using System;
 
-namespace OpenNos.Data
+namespace OpenNos.DAL.EF
 {
-    public class AccountDTO : MappingBaseDTO
+    public class StaticBonus
     {
         #region Properties
 
-        public long AccountId { get; set; }
+        public virtual Character Character { get; set; }
 
-        public AuthorityType Authority { get; set; }
+        public long CharacterId { get; set; }
 
-        public DateTime LastCompliment { get; set; }
+        public DateTime DateEnd { get; set; }
 
-        public int LastSession { get; set; }
+        public long StaticBonusId { get; set; }
 
-        public string Name { get; set; }
-
-        public string Password { get; set; }
-
-        public string Email { get; set; }
-
-        public string VerificationToken { get; set; }
-
-        public string RegistrationIP { get; set; }
+        public StaticBonusType StaticBonusType { get; set; }
 
         #endregion
     }
