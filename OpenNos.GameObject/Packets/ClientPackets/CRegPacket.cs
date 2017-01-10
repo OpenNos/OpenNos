@@ -6,6 +6,7 @@ namespace OpenNos.GameObject
     [PacketHeader("c_reg")]
     public class CRegPacket : PacketDefinition
     {
+        //c_reg 0 1 0 9 1 4 1 99 63 90 2
         #region Properties
         [PacketIndex(0)]
         public int Type { get; set; }
@@ -18,9 +19,9 @@ namespace OpenNos.GameObject
         [PacketIndex(4)]
         public int Unknown2 { get; set; }
         [PacketIndex(5)]
-        public int Unknown3 { get; set; }
+        public byte Durability { get; set; }
         [PacketIndex(6)]
-        public int Unknown4 { get; set; }
+        public int IsPackage { get; set; }
         [PacketIndex(7)]
         public byte Amount { get; set; }
         [PacketIndex(8)]
@@ -28,7 +29,7 @@ namespace OpenNos.GameObject
         [PacketIndex(9)]
         public short Taxe { get; set; }
         [PacketIndex(10)]
-        public int Unknown5 { get; set; }
+        public byte MedalUsed { get; set; }
 
         #endregion
     }

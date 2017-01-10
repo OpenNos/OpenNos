@@ -105,6 +105,7 @@ namespace OpenNos.GameObject
 
         public Guid WorldId { get; set; }
 
+        public List<BazaarItem> BazarItemList { get; set; }
         #endregion
 
         #region Methods
@@ -603,6 +604,19 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
 
+            // initialize bazaar
+            int TempId = 0;
+            BazarItemList = new List<BazaarItem>();
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll().ToList())
+            {
+                TempId++;
+                BazaarItem item = (BazaarItem)bz;
+                item.TemporaryId = TempId;
+                BazarItemList.Add(item);
+            }
+
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED")));
+
             // initialize npcmonsters
             foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
             {
@@ -1070,10 +1084,10 @@ namespace OpenNos.GameObject
                     switch (message.Item4)
                     {
                         case MessageType.Whisper:
-                        {
-                            targetSession?.SendPacket($"{message.Item2} <Channel: {message.Item3}>");
-                            break;
-                        }
+                            {
+                                targetSession?.SendPacket($"{message.Item2} <Channel: {message.Item3}>");
+                                break;
+                            }
                         case MessageType.Shout:
                             {
                                 Shout(message.Item2);
@@ -1090,16 +1104,16 @@ namespace OpenNos.GameObject
                                 if (long.TryParse(message.Item1, out familyId))
                                 {
                                     if (message.Item3 != ChannelId)
-                                    foreach (ClientSession s in Instance.Sessions)
-                                    {
-                                        if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
+                                        foreach (ClientSession s in Instance.Sessions)
                                         {
-                                            if (s.Character.Family.FamilyId == familyId)
+                                            if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
                                             {
-                                                s.SendPacket($"say 1 0 6 <Channel: {message.Item3}>{message.Item2}");
+                                                if (s.Character.Family.FamilyId == familyId)
+                                                {
+                                                    s.SendPacket($"say 1 0 6 <Channel: {message.Item3}>{message.Item2}");
+                                                }
                                             }
                                         }
-                                    }
                                 }
                                 return;
                             }
