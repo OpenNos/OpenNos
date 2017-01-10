@@ -16,6 +16,8 @@ namespace OpenNos.Domain
 {
     public enum StaticBonusType : byte
     {
-        // this is empty DO SOMETHING WITH IT!
+        BazaarMedalGold = 0,
+        BazaarMedalSilver = 1,
+        BackPack = 2
     }
 }

@@ -19,6 +19,9 @@ using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
 using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
@@ -26,38 +29,42 @@ namespace OpenNos.DAL.EF
     {
         #region Methods
 
-        public DeleteResult Delete(long staticBonusId)
+        public SaveResult InsertOrUpdate( StaticBonusDTO sb)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    StaticBonus entity = context.StaticBonus.FirstOrDefault(i => i.StaticBonusId == staticBonusId);
-                    if (entity != null)
+                    long id = sb.StaticBonusId;
+                    StaticBonus entity = context.StaticBonus.FirstOrDefault(c => c.StaticBonusId.Equals(id));
+
+                    if (entity == null)
                     {
-                        context.StaticBonus.Remove(entity);
-                        context.SaveChanges();
+                        sb = Insert(sb, context);
+                        return SaveResult.Inserted;
                     }
-                    return DeleteResult.Deleted;
+                    else
+                    {
+                        sb.StaticBonusId = entity.StaticBonusId;
+                        sb = Update(entity, sb, context);
+                        return SaveResult.Updated;
+                    }
                 }
             }
             catch (Exception e)
             {
                 Logger.Error(e);
-                return DeleteResult.Error;
+                return SaveResult.Error;
             }
         }
 
-        public StaticBonusDTO Insert(StaticBonusDTO staticBonus)
+        public StaticBonusDTO LoadById(long sbId)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    StaticBonus entity = _mapper.Map<StaticBonus>(staticBonus);
-                    context.StaticBonus.Add(entity);
-                    context.SaveChanges();
-                    return _mapper.Map<StaticBonusDTO>(entity);
+                    return _mapper.Map<StaticBonusDTO>(context.RespawnMapType.FirstOrDefault(s => s.RespawnMapTypeId.Equals(sbId)));
                 }
             }
             catch (Exception e)
@@ -66,25 +73,64 @@ namespace OpenNos.DAL.EF
                 return null;
             }
         }
+        
 
-        public StaticBonusDTO LoadByCharacterId(long characterId)
+        private StaticBonusDTO Insert(StaticBonusDTO sb, OpenNosContext context)
         {
+            try
             {
-                try
+                StaticBonus entity = _mapper.Map<StaticBonus>(sb);
+                context.StaticBonus.Add(entity);
+                context.SaveChanges();
+                return _mapper.Map<StaticBonusDTO>(entity);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+        }
+
+        private StaticBonusDTO Update(StaticBonus entity, StaticBonusDTO sb, OpenNosContext context)
+        {
+            if (entity != null)
+            {
+                _mapper.Map(sb, entity);
+                context.SaveChanges();
+            }
+            return _mapper.Map<StaticBonusDTO>(entity);
+        }
+
+        public void RemoveOutDated()
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    using (var context = DataAccessHelper.CreateContext())
+                    foreach (StaticBonus entity in context.StaticBonus.Where(e => e.DateEnd < DateTime.Now))
                     {
-                        return _mapper.Map<StaticBonusDTO>(context.StaticBonus.FirstOrDefault(i => i.CharacterId.Equals(characterId)));
+                        context.StaticBonus.Remove(entity);
                     }
                 }
-                catch (Exception e)
+            }
+            catch
+            {
+
+            }
+        }
+
+        public IEnumerable<StaticBonusDTO> LoadByCharacterId(long characterId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (StaticBonus entity in context.StaticBonus.Where(i => i.CharacterId == characterId))
                 {
-                    Logger.Error(e);
-                    return null;
+                    yield return _mapper.Map<StaticBonusDTO>(entity);
                 }
             }
         }
 
         #endregion
+
     }
 }

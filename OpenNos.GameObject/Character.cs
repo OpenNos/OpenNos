@@ -60,6 +60,7 @@ namespace OpenNos.GameObject
             GroupSentRequestCharacterIds = new List<long>();
             FamilyInviteCharacters = new List<long>();
             FriendRequestCharacters = new List<long>();
+            StaticBonusList = new List<StaticBonusDTO>();
         }
 
         #endregion
@@ -109,6 +110,8 @@ namespace OpenNos.GameObject
         }
 
         public int DistanceCritical { get; set; }
+
+        public List<StaticBonusDTO> StaticBonusList { get; set; }
 
         public int DistanceCriticalRate { get; set; }
 
@@ -2458,9 +2461,14 @@ namespace OpenNos.GameObject
             return $"equip {weaponUpgrade}{weaponRare} {armorUpgrade}{armorRare}{eqlist}";
         }
 
+        public bool HaveBackpack()
+        {
+            return StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.BackPack);
+        }
+
         public string GenerateExts()
         {
-            return $"exts 0 {48 + Backpack * 12} {48 + Backpack * 12} {48 + Backpack * 12}";
+            return $"exts 0 {48 + (HaveBackpack() ? 1 : 0) * 12} {48 + (HaveBackpack() ? 1 : 0) * 12} {48 + (HaveBackpack() ? 1 : 0) * 12}";
         }
 
         public string GenerateFaction()
@@ -4417,6 +4425,13 @@ namespace OpenNos.GameObject
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
                 }
 
+                foreach (StaticBonusDTO bonus in Session.Character.StaticBonusList)
+                {
+                        DAOFactory.StaticBonusDAO.InsertOrUpdate(bonus);
+                }
+
+                DAOFactory.StaticBonusDAO.RemoveOutDated();
+
                 foreach (GeneralLogDTO general in Session.Account.GeneralLogs)
                 {
                     if (!DAOFactory.GeneralLogDAO.IdAlreadySet(general.LogId))
@@ -4720,6 +4735,11 @@ namespace OpenNos.GameObject
 
         internal void RefreshValidity()
         {
+            if (Session.Character.StaticBonusList.RemoveAll(s => s.DateEnd < DateTime.Now) > 0)
+            {
+                Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
+            }
+
             if (Inventory != null)
             {
                 foreach (var suit in Enum.GetValues(typeof(EquipmentType)))

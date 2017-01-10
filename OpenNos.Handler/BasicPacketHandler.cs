@@ -216,9 +216,18 @@ namespace OpenNos.Handler
 
         public void OpenBazaar(CSkillPacket packet)
         {
-            byte Medal = (byte)MedalType.Gold;
-            int Time = 1200;
-            Session.SendPacket($"wopen 32 {Medal} {Time}");
+            StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BackPack);
+            if (medal != null)
+            {
+                byte Medal = medal.StaticBonusType == StaticBonusType.BazaarMedalGold ? (byte)MedalType.Gold : (byte)MedalType.Silver;
+                int Time = (int)(medal.DateEnd - DateTime.Now).TotalHours;
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOTICE_BAZAAR"), 0));
+                Session.SendPacket($"wopen 32 {Medal} {Time}");
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("INFO_BAZAAR")));
+            }
         }
 
         public void BuyBazaar(CBuyPacket packet)

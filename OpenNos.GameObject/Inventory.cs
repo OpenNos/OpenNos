@@ -127,7 +127,7 @@ namespace OpenNos.GameObject
                     short? freeSlot = newItem.Type == InventoryType.Wear ? (LoadBySlotAndType((short)newItem.Item.EquipmentSlot, InventoryType.Wear) == null
                                                                         ? (short?)newItem.Item.EquipmentSlot
                                                                         : null)
-                                                                      : GetFreeSlot(newItem.Type, Owner.Backpack);
+                                                                      : GetFreeSlot(newItem.Type, Owner.HaveBackpack() ? 1 : 0);
                     if (freeSlot.HasValue)
                     {
                         inv = AddToInventoryWithSlotAndType(newItem, newItem.Type, freeSlot.Value);
@@ -188,7 +188,7 @@ namespace OpenNos.GameObject
         {
             if (Owner != null)
             {
-                return GetFreeSlot(type, Owner.Backpack).HasValue;
+                return GetFreeSlot(type, Owner.HaveBackpack() ? 1 : 0).HasValue;
             }
             else return false;
         }
@@ -460,7 +460,7 @@ namespace OpenNos.GameObject
                     else
                     {
                         // move source to target
-                        short? freeTargetSlot = GetFreeSlot(targetType, Owner.Backpack);
+                        short? freeTargetSlot = GetFreeSlot(targetType, Owner.HaveBackpack() ? 1 : 0);
                         if (freeTargetSlot.HasValue)
                         {
                             sourceInstance.Slot = freeTargetSlot.Value;
@@ -475,7 +475,7 @@ namespace OpenNos.GameObject
                 short? nextFreeSlot = targetType == InventoryType.Wear ? (LoadBySlotAndType((short)sourceInstance.Item.EquipmentSlot, InventoryType.Wear) == null
                         ? (short)sourceInstance.Item.EquipmentSlot
                         : (short)-1)
-                    : GetFreeSlot(targetType, Owner.Backpack);
+                    : GetFreeSlot(targetType, Owner.HaveBackpack() ? 1 : 0);
                 if (nextFreeSlot.HasValue)
                 {
                     sourceInstance.Type = targetType;
