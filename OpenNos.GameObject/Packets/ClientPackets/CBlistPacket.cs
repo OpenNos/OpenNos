@@ -7,32 +7,33 @@ namespace OpenNos.GameObject
     public class CBListPacket : PacketDefinition
     {
         #region Properties
+  
         [PacketIndex(0)]
-        public byte unknown0 { get; set; }
+        public byte Type { get; set; }
 
         [PacketIndex(1)]
-        public byte unknown1 { get; set; }
+        public byte TypeFilter { get; set; }
 
         [PacketIndex(2)]
-        public byte unknown2 { get; set; }
+        public byte SubTypeFilter { get; set; }
 
         [PacketIndex(3)]
-        public byte unknown3 { get; set; }
+        public byte LevelFilter { get; set; }
 
         [PacketIndex(4)]
-        public byte unknown4 { get; set; }
+        public byte RareFilter { get; set; }
 
         [PacketIndex(5)]
-        public byte unknown5 { get; set; }
+        public byte UpgradeFilter { get; set; }
 
         [PacketIndex(6)]
-        public byte unknown6 { get; set; }
+        public byte OrderFilter { get; set; }
 
         [PacketIndex(7)]
-        public byte unknown7 { get; set; }
+        public byte Unknown1 { get; set; }
 
         [PacketIndex(8, SerializeToEnd = true)]
-        public string ItemVNums { get; set; }
+        public string ItemVNumFilter { get; set; }
 
         #endregion
     }

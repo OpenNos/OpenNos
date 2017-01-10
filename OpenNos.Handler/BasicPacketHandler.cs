@@ -211,7 +211,7 @@ namespace OpenNos.Handler
         }
         public void RefreshPersonalBazarList(CSListnPacket packet)
         {
-            Session.SendPacket(Session.Character.GenerateRCSList());
+            Session.SendPacket(Session.Character.GenerateRCSList(packet.Filter));
         }
 
         public void OpenBazaar(CSkillPacket packet)
@@ -232,8 +232,6 @@ namespace OpenNos.Handler
                 {
                     if (packet.Amount <= bz.Amount)
                     {
-                        Session.Character.Gold -= price;
-                        Session.SendPacket(Session.Character.GenerateGold());
 
                         ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == bz.SellerId);
                         BazaarItemLink bzcree = new BazaarItemLink();
@@ -248,6 +246,14 @@ namespace OpenNos.Handler
                             bzcree.Owner = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
                             bzcree.Item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
                         }
+                        if (!Session.Character.Inventory.CanAddItem(bzcree.Item.ItemVNum))
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                            return;
+                        }
+                        Session.Character.Gold -= price;
+                        Session.SendPacket(Session.Character.GenerateGold());
+
                         if (bzcree.Item != null)
                         {
                             if (session == null)
@@ -392,12 +398,9 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 10));
             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 0));
 
-            Session.SendPacket(Session.Character.GenerateRCSList());
+            Session.SendPacket(Session.Character.GenerateRCSList(0));
 
-            /*
-            rc_reg 1
-            c_slist 0 0
-            */
+
         }
 
         [Packet("pcl")]

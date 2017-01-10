@@ -437,7 +437,7 @@ namespace OpenNos.GameObject
             string charname = string.Empty;
             ItemInstance item = null;
 
-            List<string> itemssearch = packet.ItemVNums == "0" ? new List<string>() : packet.ItemVNums.Split(' ').ToList();
+            List<string> itemssearch = packet.ItemVNumFilter == "0" ? new List<string>() : packet.ItemVNumFilter.Split(' ').ToList();
             List<BazaarItemLink> bzlist = new List<BazaarItemLink>();
             foreach (BazaarItem bz in ServerManager.Instance.BazarItemList)
             {
@@ -456,16 +456,86 @@ namespace OpenNos.GameObject
                 if (item == null)
                     continue;
 
-                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                switch (packet.Type)
+                {
+                    default:
+                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 1://weapon
+                        if (item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)//WeaponFilter
+                            if (packet.SubTypeFilter == 0 || ((item.Item.Class + 1 >> (byte)packet.SubTypeFilter) & 1) == 1)//Class Filter
+                                if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum > packet.LevelFilter * 10 - 9))//Level filter
+                                    if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
+                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
+                                            bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 2://armor
+                        if (item.Item.EquipmentSlot == EquipmentType.Armor)
+                            if (packet.SubTypeFilter == 0 || ((item.Item.Class + 1 >> (byte)packet.SubTypeFilter) & 1) == 1)//Class Filter
+                                if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum > packet.LevelFilter * 10 - 9))//Level filter
+                                    if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
+                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
+                                            bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 3://Equipment 
+                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 4://Access 
+                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 5://Specialist 
+                            bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 6://Pet 
+                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 7://Vehicle
+                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 8://Shell
+                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 9://Main
+                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 10://Usable
+                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 11://Others
+                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                }
             }
             List<BazaarItemLink> bzlistsearched = bzlist.Where(s => itemssearch.Contains(s.Item.ItemVNum.ToString())).ToList();
             int i = 0;
-            foreach (BazaarItemLink bzlink in (itemssearch.Any() ? bzlistsearched : bzlist))
+            //price up price down quantity up quantity down
+            List<BazaarItemLink> definitivelist = (itemssearch.Any() ? bzlistsearched : bzlist);
+            switch(packet.OrderFilter)
+            {
+                case 0:
+                    definitivelist = definitivelist.OrderBy(s => s.BazaarItem.Price).ToList();
+                    break;
+                case 1:
+                    definitivelist = definitivelist.OrderByDescending(s => s.BazaarItem.Price).ToList();
+                    break;
+                case 2:
+                    definitivelist = definitivelist.OrderBy(s => s.BazaarItem.Amount).ToList();
+                    break;
+                case 3:
+                    definitivelist = definitivelist.OrderByDescending(s => s.BazaarItem.Amount).ToList();
+                    break;
+                default:
+                    definitivelist = definitivelist.ToList();
+                    break;
+
+            }
+            foreach (BazaarItemLink bzlink in definitivelist)
             {
                 long time = (long)(bzlink.BazaarItem.DateStart.AddHours(bzlink.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
                 if (time > 0 && bzlink.Item.Amount > 0)
                 {
-                    itembazar += $"{bzlink.BazaarItem.TemporaryId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage?1:0)}|{bzlink.BazaarItem.Price}|{time}|2|1|0|0| ";
+                    itembazar += $"{bzlink.BazaarItem.TemporaryId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage ? 1 : 0)}|{bzlink.BazaarItem.Price}|{time}|2|1|0|0| ";
                 }
             }
 
@@ -659,10 +729,10 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateRCSList()
+        public string GenerateRCSList(byte filter)
         {
             string list = string.Empty;
-          
+
             foreach (BazaarItem bz in ServerManager.Instance.BazarItemList.Where(s => s.SellerId == CharacterId))
             {
                 ItemInstance item = Inventory.GetItemInstanceById(bz.ItemInstanceId);
@@ -679,7 +749,10 @@ namespace OpenNos.GameObject
                     {
                         MinutesLeft = (long)(bz.DateStart.AddHours(bz.Duration).AddDays(30) - DateTime.Now).TotalMinutes;
                     }
-                    list += $"{bz.TemporaryId}|{bz.SellerId}|{item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1 : 0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar ? 1 : 0)}|1|0|0| ";
+                    if (filter == 0 || filter == Status)
+                    {
+                        list += $"{bz.TemporaryId}|{bz.SellerId}|{item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1 : 0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar ? 1 : 0)}|1|0|0| ";
+                    }
                 }
             }
 
@@ -4302,7 +4375,7 @@ namespace OpenNos.GameObject
 
                 foreach (BazaarItem bz in ServerManager.Instance.BazarItemList.Where(s => s.SellerId == CharacterId))
                 {
-                    if(DAOFactory.BazaarItemDAO.LoadById(bz.BazaarItemId) == null)
+                    if (DAOFactory.BazaarItemDAO.LoadById(bz.BazaarItemId) == null)
                     {
                         BazaarItemDTO bzsave = bz;
                         DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bzsave);

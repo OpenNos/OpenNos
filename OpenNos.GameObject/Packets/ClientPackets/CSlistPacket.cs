@@ -9,11 +9,11 @@ namespace OpenNos.GameObject
         #region Properties
 
         [PacketIndex(0)]
-        public byte unknown1 { get; set; }
+        public byte Type { get; set; }
 
 
         [PacketIndex(1)]
-        public byte unknown2 { get; set; }
+        public byte Filter { get; set; }
 
         #endregion
     }
