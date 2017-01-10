@@ -3430,12 +3430,12 @@ namespace OpenNos.GameObject
             DistanceDefenceRate = CharacterHelper.DistanceDefenceRate(Class, Level);
             MagicalDefence = CharacterHelper.MagicalDefence(Class, Level);
             if (UseSp)
-            {
+            { // handle specialist            
                 SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (specialist != null)
                 {
-                    MinHit += specialist.DamageMinimum;
-                    MaxHit += specialist.DamageMaximum;
+                    MinHit += specialist.DamageMinimum + specialist.SpDamage * 10;
+                    MaxHit += specialist.DamageMaximum + specialist.SpDamage * 10;
                     MinDistance += specialist.DamageMinimum;
                     MaxDistance += specialist.DamageMaximum;
                     HitCriticalRate += specialist.CriticalLuckRate;
@@ -3446,14 +3446,14 @@ namespace OpenNos.GameObject
                     DistanceRate += specialist.HitRate;
                     DefenceRate += specialist.DefenceDodge;
                     DistanceDefenceRate += specialist.DistanceDefenceDodge;
-                    FireResistance += specialist.FireResistance;
-                    WaterResistance += specialist.WaterResistance;
-                    LightResistance += specialist.LightResistance;
-                    DarkResistance += specialist.DarkResistance;
-                    ElementRateSP += specialist.ElementRate;
-                    Defence += specialist.CloseDefence;
-                    DistanceDefence += specialist.DistanceDefence;
-                    MagicalDefence += specialist.MagicDefence;
+                    FireResistance += specialist.Item.FireResistance;
+                    WaterResistance += specialist.Item.WaterResistance;
+                    LightResistance += specialist.Item.LightResistance;
+                    DarkResistance += specialist.Item.DarkResistance;
+                    ElementRateSP += specialist.ElementRate+ specialist.SpElement;
+                    Defence += specialist.CloseDefence + specialist.SpDefence * 10;
+                    DistanceDefence += specialist.DistanceDefence + specialist.SpDefence * 10;
+                    MagicalDefence += specialist.MagicDefence + specialist.SpDefence * 10;
 
                     int point = CharacterHelper.SlPoint(specialist.SlDamage, 0);
 
@@ -3572,27 +3572,7 @@ namespace OpenNos.GameObject
                 ElementRate += fairy.ElementRate + fairy.Item.ElementRate;
             }
 
-            // handle specialist
-            if (UseSp)
-            {
-                SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-                if (specialist != null)
-                {
-                    FireResistance += specialist.SpFire;
-                    LightResistance += specialist.SpLight;
-                    WaterResistance += specialist.SpWater;
-                    DarkResistance += specialist.SpDark;
 
-                    Defence += specialist.SpDefence * 10;
-                    DistanceDefence += specialist.SpDefence * 10;
-                    MagicalDefence += specialist.SpDefence * 10;
-
-                    MinHit += specialist.SpDamage * 10;
-                    MaxHit += specialist.SpDamage * 10;
-
-                    ElementRateSP += specialist.SpElement;
-                }
-            }
 
             for (short i = 1; i < 14; i++)
             {
