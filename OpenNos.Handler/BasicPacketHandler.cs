@@ -313,7 +313,7 @@ namespace OpenNos.Handler
                 if (Item == null)
                     return;
                 int soldedamount = bz.Amount - Item.Amount;
-                long taxes = 0;//TODO Calculate taxes
+                long taxes = bz.MedalUsed ? 0 : (long)(bz.Price * 0.10 * soldedamount);
                 long price = bz.Price * (soldedamount) - taxes;
                 if (Session.Character.Gold + price <= 1000000000)
                 {
@@ -352,14 +352,18 @@ namespace OpenNos.Handler
         }
         public void SellBazaar(CRegPacket packet)
         {
-            long taxe = 0;//TODO calculate the taxe
+            StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold);
 
-            if (Session.Character.Gold < taxe || packet.Amount <= 0)
+            long price = packet.Price * packet.Amount;
+            long taxemax = price > 100000 ? price / 200 : 500;
+            long taxemin = price >= 4000 ? ((60+ ((price-4000)/2000)*30)>10000  ? 10000 : (60 + ((price - 4000) / 2000) * 30)) : 50;
+            long taxe = medal == null ? taxemax : taxemin;
+            if (Session.Character.Gold < taxe || packet.Amount <= 0 || (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any()) || Session.Character.IsShopping)
             {
                 return;
             }
             ItemInstance it = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory == 4 ? (InventoryType)0 : (InventoryType)packet.Inventory);
-            if (it==null || !it.Item.IsSoldable || it.IsBound)
+            if (it == null || !it.Item.IsSoldable || it.IsBound || (medal == null && packet.Price*packet.Amount >= 100000))
                 return;
             ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory(packet.Inventory == 4 ? (InventoryType)0 : (InventoryType)packet.Inventory, packet.Slot, packet.Amount);
             if (bazar == null)
@@ -382,9 +386,8 @@ namespace OpenNos.Handler
                 default:
                     return;
             }
-            StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold);
-           
-         
+
+
             BazaarItemDTO bz = new BazaarItemDTO()
             {
                 Amount = bazar.Amount,
