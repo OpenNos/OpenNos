@@ -23,6 +23,6 @@ namespace OpenNos.GameObject
 
         public ItemInstance Item { get; set; }
 
-        public BazaarItem BazaarItem { get; set; }
+        public BazaarItemDTO BazaarItem { get; set; }
     }
 }

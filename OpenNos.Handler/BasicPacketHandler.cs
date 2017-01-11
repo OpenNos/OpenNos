@@ -232,7 +232,7 @@ namespace OpenNos.Handler
 
         public void BuyBazaar(CBuyPacket packet)
         {
-            BazaarItem bz = ServerManager.Instance.BazarItemList.FirstOrDefault(s => s.TemporaryId == packet.BazaarId);
+            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null || packet.Amount < 1)
             {
                 long price = packet.Amount * bz.Price;
@@ -311,7 +311,7 @@ namespace OpenNos.Handler
 
         public void GetBazaar(CScalcPacket packet)
         {
-            BazaarItem bz = ServerManager.Instance.BazarItemList.FirstOrDefault(s => s.TemporaryId == packet.BazaarId);
+            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null)
             {
                 ItemInstance Item = Session.Character.Inventory.LoadByItemInstance<ItemInstance>(bz.ItemInstanceId);
@@ -338,7 +338,7 @@ namespace OpenNos.Handler
                         }
                     }
                     Session.SendPacket($"rc_scalc 1 {bz.Price} {bz.Amount - Item.Amount} {bz.Amount} {taxes} {price + taxes}");
-                    ServerManager.Instance.BazarItemList.Remove(bz);
+                    DAOFactory.BazaarItemDAO.Delete(bz.BazaarItemId);
                     if (DAOFactory.BazaarItemDAO.LoadById(bz.BazaarItemId) != null)
                     {
                         DAOFactory.BazaarItemDAO.Delete(bz.BazaarItemId);
@@ -387,7 +387,9 @@ namespace OpenNos.Handler
             }
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BackPack);
 
-            BazaarItem bz = new BazaarItem()
+          ItemInstanceDTO itemdto = DAOFactory.IteminstanceDao.InsertOrUpdate(bazar);
+
+            BazaarItemDTO bz = new BazaarItemDTO()
             {
                 Amount = bazar.Amount,
                 DateStart = DateTime.Now,
@@ -396,11 +398,11 @@ namespace OpenNos.Handler
                 MedalUsed = medal == null ? false : true,
                 Price = packet.Price,
                 SellerId = Session.Character.CharacterId,
-                ItemInstanceId = bazar.Id,
-                TemporaryId = ServerManager.Instance.BazarItemList.Any() ? ServerManager.Instance.BazarItemList.Max(s => s.TemporaryId) + 1 : 1
+                ItemInstanceId =itemdto.Id,
             };
 
-            ServerManager.Instance.BazarItemList.Add(bz);
+           
+            DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bz);
 
 
             Session.Character.Gold -= taxe;

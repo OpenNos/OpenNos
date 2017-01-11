@@ -105,7 +105,6 @@ namespace OpenNos.GameObject
 
         public Guid WorldId { get; set; }
 
-        public List<BazaarItem> BazarItemList { get; set; }
         #endregion
 
         #region Methods
@@ -608,17 +607,7 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
 
-            // initialize bazaar
-            int TempId = 0;
-            BazarItemList = new List<BazaarItem>();
-            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll().ToList())
-            {
-                TempId++;
-                BazaarItem item = (BazaarItem)bz;
-                item.TemporaryId = TempId;
-                BazarItemList.Add(item);
-            }
-
+            // initialize bazaar      
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED")));
 
             // initialize npcmonsters

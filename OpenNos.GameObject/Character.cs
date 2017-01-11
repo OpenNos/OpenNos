@@ -442,7 +442,7 @@ namespace OpenNos.GameObject
 
             List<string> itemssearch = packet.ItemVNumFilter == "0" ? new List<string>() : packet.ItemVNumFilter.Split(' ').ToList();
             List<BazaarItemLink> bzlist = new List<BazaarItemLink>();
-            foreach (BazaarItem bz in ServerManager.Instance.BazarItemList)
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
             {
                 ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == bz.SellerId);
 
@@ -612,7 +612,7 @@ namespace OpenNos.GameObject
                             Session.Character.GeneratePslInfo(bzlink.Item as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(bzlink.Item as SpecialistInstance, 0)).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
 
 
-                    itembazar += $"{bzlink.BazaarItem.TemporaryId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage ? 1 : 0)}|{bzlink.BazaarItem.Price}|{time}|2|0|{bzlink.Item.Rare}|{bzlink.Item.Upgrade}|{info} ";
+                    itembazar += $"{bzlink.BazaarItem.BazaarItemId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage ? 1 : 0)}|{bzlink.BazaarItem.Price}|{time}|2|0|{bzlink.Item.Rare}|{bzlink.Item.Upgrade}|{info} ";
                 }
             }
 
@@ -810,7 +810,7 @@ namespace OpenNos.GameObject
         {
             string list = string.Empty;
 
-            foreach (BazaarItem bz in ServerManager.Instance.BazarItemList.Where(s => s.SellerId == CharacterId))
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll().Where(s => s.SellerId == CharacterId))
             {
                 ItemInstance item = Inventory.GetItemInstanceById(bz.ItemInstanceId);
                 if (item != null)
@@ -835,7 +835,7 @@ namespace OpenNos.GameObject
 
                     if (filter == 0 || filter == Status)
                     {
-                        list += $"{bz.TemporaryId}|{bz.SellerId}|{item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1 : 0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar ? 1 : 0)}|0|{item.Rare}|{item.Upgrade}|{info} ";
+                        list += $"{bz.BazaarItemId}|{bz.SellerId}|{item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1 : 0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar ? 1 : 0)}|0|{item.Rare}|{item.Upgrade}|{info} ";
                     }
                 }
             }
@@ -4446,15 +4446,6 @@ namespace OpenNos.GameObject
                     if (Resp.MapId != 0 && Resp.X != 0 && Resp.Y != 0)
                     {
                         DAOFactory.RespawnDAO.InsertOrUpdate(ref res);
-                    }
-                }
-
-                foreach (BazaarItem bz in ServerManager.Instance.BazarItemList.Where(s => s.SellerId == CharacterId))
-                {
-                    if (DAOFactory.BazaarItemDAO.LoadById(bz.BazaarItemId) == null)
-                    {
-                        BazaarItemDTO bzsave = bz;
-                        DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bzsave);
                     }
                 }
 

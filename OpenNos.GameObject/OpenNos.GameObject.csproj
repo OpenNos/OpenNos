@@ -86,7 +86,6 @@
   <ItemGroup>
     <Compile Include="BazaarItemLink.cs" />
     <Compile Include="Account.cs" />
-    <Compile Include="BazaarItem.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="ExchangeInfo.cs" />
     <Compile Include="Helpers\MappingHelper.cs" />
