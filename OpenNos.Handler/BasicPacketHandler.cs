@@ -385,7 +385,7 @@ namespace OpenNos.Handler
                 default:
                     return;
             }
-            StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BackPack);
+            StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold);
 
           ItemInstanceDTO itemdto = DAOFactory.IteminstanceDao.InsertOrUpdate(bazar);
 
