@@ -243,7 +243,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                foreach (MapCell possibilitie in Possibilities.OrderBy(s => _random.Next()))
+                foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.RandomNumber(0, int.MaxValue)))
                 {
                     localMapX = (short)(mapX + possibilitie.X);
                     localMapY = (short)(mapY + possibilitie.Y);
@@ -427,7 +427,6 @@ namespace OpenNos.GameObject
                 {
                     Broadcast(drop.GenerateOut(drop.TransportId));
                     DroppedList.Remove(drop.TransportId);
-                    TransportFactory.Instance.RemoveTransportId(drop.TransportId);
                 }
             }
             catch (Exception e)
