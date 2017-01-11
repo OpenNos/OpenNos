@@ -453,7 +453,7 @@ namespace OpenNos.GameObject
                 }
                 if (item == null)
                     continue;
-
+                
                 switch (packet.TypeFilter)
                 {
                     default:
@@ -461,7 +461,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case 1://weapon
-                        if (item.Item.Type == InventoryType.Equipment && item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)//WeaponFilter
+                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Weapon)//WeaponFilter
                             if (packet.SubTypeFilter == 0 || ((item.Item.Class + 1 >> (byte)packet.SubTypeFilter) & 1) == 1)//Class Filter
                                 if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
                                     if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
@@ -469,7 +469,7 @@ namespace OpenNos.GameObject
                                             bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
                         break;
                     case 2://armor
-                        if (item.Item.Type == InventoryType.Equipment && item.Item.EquipmentSlot == EquipmentType.Armor)
+                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Armor)
                             if (packet.SubTypeFilter == 0 || ((item.Item.Class + 1 >> (byte)packet.SubTypeFilter) & 1) == 1)//Class Filter
                                 if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
                                     if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
@@ -477,18 +477,16 @@ namespace OpenNos.GameObject
                                             bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
                         break;
                     case 3://Equipment 
-                        if (item.Item.Type == InventoryType.Equipment)
-                            if (item.Item.EquipmentSlot == EquipmentType.Mask || item.Item.EquipmentSlot == EquipmentType.Hat || item.Item.EquipmentSlot == EquipmentType.CostumeHat || item.Item.EquipmentSlot == EquipmentType.CostumeSuit || item.Item.EquipmentSlot == EquipmentType.Gloves || item.Item.EquipmentSlot == EquipmentType.Boots)
-                                if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 2 && item.Item.EquipmentSlot == EquipmentType.Mask) || (packet.SubTypeFilter == 1 && item.Item.EquipmentSlot == EquipmentType.Hat) || (packet.SubTypeFilter == 6 && item.Item.EquipmentSlot == EquipmentType.CostumeHat) || (packet.SubTypeFilter == 5 && item.Item.EquipmentSlot == EquipmentType.CostumeSuit) || (packet.SubTypeFilter == 3 && item.Item.EquipmentSlot == EquipmentType.Gloves) || (packet.SubTypeFilter == 4 && item.Item.EquipmentSlot == EquipmentType.Boots))
-                                    if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
-                                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Fashion)
+                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 2 && item.Item.EquipmentSlot == EquipmentType.Mask) || (packet.SubTypeFilter == 1 && item.Item.EquipmentSlot == EquipmentType.Hat) || (packet.SubTypeFilter == 6 && item.Item.EquipmentSlot == EquipmentType.CostumeHat) || (packet.SubTypeFilter == 5 && item.Item.EquipmentSlot == EquipmentType.CostumeSuit) || (packet.SubTypeFilter == 3 && item.Item.EquipmentSlot == EquipmentType.Gloves) || (packet.SubTypeFilter == 4 && item.Item.EquipmentSlot == EquipmentType.Boots))
+                                if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
+                                    bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
                         break;
                     case 4://Access 
-                        if (item.Item.Type == InventoryType.Equipment)
-                            if (item.Item.EquipmentSlot == EquipmentType.Necklace || item.Item.EquipmentSlot == EquipmentType.Ring || item.Item.EquipmentSlot == EquipmentType.Bracelet || (item.Item.EquipmentSlot == EquipmentType.Fairy || (item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 5)) || item.Item.EquipmentSlot == EquipmentType.Amulet)
-                                if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 2 && item.Item.EquipmentSlot == EquipmentType.Ring) || (packet.SubTypeFilter == 1 && item.Item.EquipmentSlot == EquipmentType.Necklace) || (packet.SubTypeFilter == 5 && item.Item.EquipmentSlot == EquipmentType.Amulet) || (packet.SubTypeFilter == 3 && item.Item.EquipmentSlot == EquipmentType.Bracelet) || (packet.SubTypeFilter == 4 && (item.Item.EquipmentSlot == EquipmentType.Fairy || (item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 5))))
-                                    if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
-                                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Jewelery)
+                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 2 && item.Item.EquipmentSlot == EquipmentType.Ring) || (packet.SubTypeFilter == 1 && item.Item.EquipmentSlot == EquipmentType.Necklace) || (packet.SubTypeFilter == 5 && item.Item.EquipmentSlot == EquipmentType.Amulet) || (packet.SubTypeFilter == 3 && item.Item.EquipmentSlot == EquipmentType.Bracelet) || (packet.SubTypeFilter == 4 && (item.Item.EquipmentSlot == EquipmentType.Fairy || (item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 5))))
+                                if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
+                                    bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
                         break;
                     case 5://Specialist 
                         if (item.Item.Type == InventoryType.Equipment)
@@ -611,7 +609,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            return $"rc_blist 0 {itembazar} ";
+            return $"rc_blist {packet.Index} {itembazar} ";
         }
 
         public short SaveX { get; set; }

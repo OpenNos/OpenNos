@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using System;
@@ -113,7 +114,7 @@ namespace OpenNos.GameObject
                 if (newItem.Type != InventoryType.Equipment && newItem.Type != InventoryType.Wear)
                 {
                     IEnumerable<ItemInstance> slotfree = LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
-                    inv = GetFreeSlot(slotfree.Where(s=>s.Type == newItem.Type));
+                    inv = GetFreeSlot(slotfree.Where(s => s.Type == newItem.Type));
                 }
 
                 if (inv != null)
@@ -313,8 +314,6 @@ namespace OpenNos.GameObject
             if (inv == null || amount > inv.Amount)
                 return null;
 
-            ItemInstance invcopy = inv.DeepCopy();
-            invcopy.Id = Guid.NewGuid();
 
             if (inv.Item.Type == InventoryType.Equipment)
             {
@@ -322,14 +321,14 @@ namespace OpenNos.GameObject
                 {
                     if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) == null)
                     {
-                        invcopy.Type = InventoryType.Bazaar;
-                        invcopy.Slot = i;
-                        invcopy.CharacterId = 1;
-                        DeleteFromSlotAndType(inv.Slot, inv.Type);
+                        inv.Type = InventoryType.Bazaar;
+                        inv.Slot = i;
+                        ItemInstanceDTO itemdto = DAOFactory.IteminstanceDao.InsertOrUpdate(inv);
                         break;
                     }
                 }
                 Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inventory, slot, 0, 0, 0, 0));
+                return inv;
             }
             else
             {
@@ -339,17 +338,21 @@ namespace OpenNos.GameObject
                     {
                         if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) == null)
                         {
-                            invcopy.Type = InventoryType.Bazaar;
-                            invcopy.Slot = i;
-                            invcopy.CharacterId = 1;
-                            DeleteFromSlotAndType(inv.Slot, inv.Type);
+                            inv.Type = InventoryType.Bazaar;
+                            inv.Slot = i;
+                            inv.CharacterId = 1;
+                            ItemInstanceDTO itemdto = DAOFactory.IteminstanceDao.InsertOrUpdate(inv);
                             break;
                         }
                     }
                     Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inventory, slot, 0, 0, 0, 0));
+                    return inv;
                 }
                 else
                 {
+                    ItemInstance invcopy = inv.DeepCopy();
+                    invcopy.Id = Guid.NewGuid();
+
                     invcopy.Amount = amount;
                     inv.Amount -= amount;
 
@@ -360,15 +363,16 @@ namespace OpenNos.GameObject
                             invcopy.Type = InventoryType.Bazaar;
                             invcopy.Slot = i;
                             invcopy.CharacterId = 1;
+                            ItemInstanceDTO itemdto = DAOFactory.IteminstanceDao.InsertOrUpdate(invcopy);
+                            PutItem((ItemInstance)itemdto);
                             break;
                         }
                     }
 
                     Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
+                    return invcopy;
                 }
             }
-
-            return invcopy;
 
         }
 

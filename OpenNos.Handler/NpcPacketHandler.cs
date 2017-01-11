@@ -614,7 +614,7 @@ namespace OpenNos.Handler
                 InventoryType type;
                 byte amount, slot;
 
-                if (!Enum.TryParse(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount))
+                if (!Enum.TryParse(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount) || type == InventoryType.Bazaar)
                 {
                     return;
                 }

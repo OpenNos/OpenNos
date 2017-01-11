@@ -235,6 +235,7 @@ namespace OpenNos.Handler
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null || packet.Amount < 1)
             {
+
                 long price = packet.Amount * bz.Price;
 
                 if (Session.Character.Gold >= price)
@@ -255,11 +256,16 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                             return;
                         }
-                        Session.Character.Gold -= price;
-                        Session.SendPacket(Session.Character.GenerateGold());
 
                         if (bzcree.Item != null)
                         {
+                            if (bz.IsPackage && packet.Amount != bz.Amount)
+                                return;
+                            Session.Character.Gold -= price;
+                            Session.SendPacket(Session.Character.GenerateGold());
+
+
+
                             ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDao.LoadById(bzcree.BazaarItem.ItemInstanceId);
                             bzitemdto.Amount -= packet.Amount;
                             DAOFactory.IteminstanceDao.InsertOrUpdate(bzitemdto);
@@ -352,9 +358,11 @@ namespace OpenNos.Handler
             {
                 return;
             }
-
+            ItemInstance it = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory == 4 ? (InventoryType)0 : (InventoryType)packet.Inventory);
+            if (it==null || !it.Item.IsSoldable || it.IsBound)
+                return;
             ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory(packet.Inventory == 4 ? (InventoryType)0 : (InventoryType)packet.Inventory, packet.Slot, packet.Amount);
-            if (bazar == null || !bazar.Item.IsSoldable)
+            if (bazar == null)
                 return;
             short duration = 0;
             switch (packet.Durability)
@@ -375,9 +383,8 @@ namespace OpenNos.Handler
                     return;
             }
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold);
-
-          ItemInstanceDTO itemdto = DAOFactory.IteminstanceDao.InsertOrUpdate(bazar);
-
+           
+         
             BazaarItemDTO bz = new BazaarItemDTO()
             {
                 Amount = bazar.Amount,
@@ -387,10 +394,10 @@ namespace OpenNos.Handler
                 MedalUsed = medal == null ? false : true,
                 Price = packet.Price,
                 SellerId = Session.Character.CharacterId,
-                ItemInstanceId = itemdto.Id,
+                ItemInstanceId = bazar.Id,
             };
 
-           
+
             DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bz);
 
 
@@ -400,7 +407,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 10));
             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 0));
 
-            Session.SendPacket(Session.Character.GenerateRCSList(0));
+            Session.SendPacket("rc_reg 1");
 
 
         }

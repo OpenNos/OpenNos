@@ -123,7 +123,7 @@ namespace OpenNos.Handler
                 }
                 else if (Convert.ToInt32(packetsplit[4]) == 2)
                 {
-                    if (Session.Character.InExchangeOrTrade)
+                    if (Session.Character.InExchangeOrTrade || (InventoryType)type == InventoryType.Bazaar)
                     {
                         return;
                     }
@@ -314,6 +314,11 @@ namespace OpenNos.Handler
                 byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
+                if((InventoryType)type[i] == InventoryType.Bazaar)
+                {
+                    CloseExchange(Session, targetSession);
+                    return;
+                }
                 ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(slot[i], (InventoryType)type[i]);
                 if (item == null)
                 {
@@ -723,7 +728,7 @@ namespace OpenNos.Handler
             lock (Session.Character.Inventory)
             {
                 ItemInstance invitem = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.InventoryType);
-                if (invitem != null && invitem.Item.IsDroppable && invitem.Item.IsTradable && !Session.Character.InExchangeOrTrade)
+                if (invitem != null && invitem.Item.IsDroppable && invitem.Item.IsTradable && !Session.Character.InExchangeOrTrade && packet.InventoryType != InventoryType.Bazaar)
                 {
                     if (packet.Amount > 0 && packet.Amount < 100)
                     {
