@@ -322,7 +322,9 @@ namespace OpenNos.GameObject
                 {
                     if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) == null)
                     {
-                        AddToInventoryWithSlotAndType(invcopy, InventoryType.Bazaar, i);
+                        invcopy.Type = InventoryType.Bazaar;
+                        invcopy.Slot = i;
+                        invcopy.CharacterId = 1;
                         DeleteFromSlotAndType(inv.Slot, inv.Type);
                         break;
                     }
@@ -337,7 +339,9 @@ namespace OpenNos.GameObject
                     {
                         if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) == null)
                         {
-                            AddToInventoryWithSlotAndType(invcopy, InventoryType.Bazaar, i);
+                            invcopy.Type = InventoryType.Bazaar;
+                            invcopy.Slot = i;
+                            invcopy.CharacterId = 1;
                             DeleteFromSlotAndType(inv.Slot, inv.Type);
                             break;
                         }
@@ -353,7 +357,9 @@ namespace OpenNos.GameObject
                     {
                         if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) == null)
                         {
-                            AddToInventoryWithSlotAndType(invcopy, InventoryType.Bazaar, i);
+                            invcopy.Type = InventoryType.Bazaar;
+                            invcopy.Slot = i;
+                            invcopy.CharacterId = 1;
                             break;
                         }
                     }

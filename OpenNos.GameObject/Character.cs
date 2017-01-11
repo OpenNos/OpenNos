@@ -446,12 +446,7 @@ namespace OpenNos.GameObject
             {
                 ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == bz.SellerId);
 
-                if (session != null)
-                {
-                    charname = session.Character.Name;
-                    item = session.Character.Inventory.LoadByItemInstance<ItemInstance>(bz.ItemInstanceId);
-                }
-                else if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
+                if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
                 {
                     charname = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
                     item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);

@@ -9,7 +9,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         [PacketIndex(0)]
-        public int BazaarId { get; set; }
+        public long BazaarId { get; set; }
 
         [PacketIndex(1)]
         public short VNum { get; set; }

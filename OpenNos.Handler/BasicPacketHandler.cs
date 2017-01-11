@@ -245,12 +245,7 @@ namespace OpenNos.Handler
                         ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == bz.SellerId);
                         BazaarItemLink bzcree = new BazaarItemLink();
                         bzcree.BazaarItem = bz;
-                        if (session != null)
-                        {
-                            bzcree.Owner = session.Character.Name;
-                            bzcree.Item = session.Character.Inventory.LoadByItemInstance<ItemInstance>(bz.ItemInstanceId);
-                        }
-                        else if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
+                        if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
                         {
                             bzcree.Owner = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
                             bzcree.Item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
@@ -265,16 +260,10 @@ namespace OpenNos.Handler
 
                         if (bzcree.Item != null)
                         {
-                            if (session == null)
-                            {
-                                ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDao.LoadById(bzcree.BazaarItem.ItemInstanceId);
-                                bzitemdto.Amount -= packet.Amount;
-                                DAOFactory.IteminstanceDao.InsertOrUpdate(bzitemdto);
-                            }
-                            else
-                            {
-                                bzcree.Item.Amount -= packet.Amount;
-                            }
+                            ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDao.LoadById(bzcree.BazaarItem.ItemInstanceId);
+                            bzitemdto.Amount -= packet.Amount;
+                            DAOFactory.IteminstanceDao.InsertOrUpdate(bzitemdto);
+
                             Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {packet.Amount} {packet.Price} 0 0 0");
                             ItemInstance newBz = bzcree.Item.DeepCopy();
                             newBz.Id = Guid.NewGuid();
@@ -314,7 +303,7 @@ namespace OpenNos.Handler
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null)
             {
-                ItemInstance Item = Session.Character.Inventory.LoadByItemInstance<ItemInstance>(bz.ItemInstanceId);
+                ItemInstance Item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
                 if (Item == null)
                     return;
                 int soldedamount = bz.Amount - Item.Amount;
@@ -343,8 +332,8 @@ namespace OpenNos.Handler
                     {
                         DAOFactory.BazaarItemDAO.Delete(bz.BazaarItemId);
                     }
-                    Session.Character.Inventory.DeleteById(Item.Id);
 
+                    DAOFactory.IteminstanceDao.Delete(Item.Id);
 
                 }
                 else
@@ -398,7 +387,7 @@ namespace OpenNos.Handler
                 MedalUsed = medal == null ? false : true,
                 Price = packet.Price,
                 SellerId = Session.Character.CharacterId,
-                ItemInstanceId =itemdto.Id,
+                ItemInstanceId = itemdto.Id,
             };
 
            
