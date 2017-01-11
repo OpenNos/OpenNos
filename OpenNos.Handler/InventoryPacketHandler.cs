@@ -563,7 +563,7 @@ namespace OpenNos.Handler
             }
             if (mapItem != null)
             {
-                if (Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 3) && Session.HasCurrentMap)
+                if (Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8) && Session.HasCurrentMap)
                 {
                     MonsterMapItem item = mapItem as MonsterMapItem;
                     if (item != null)
@@ -600,7 +600,6 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GenerateSpPoint());
                             }
                             Session.CurrentMap.DroppedList.Remove(packet.TransportId);
-                            TransportFactory.Instance.RemoveTransportId(packet.TransportId);
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                         }
                         else
@@ -611,7 +610,6 @@ namespace OpenNos.Handler
                                 if (newInv != null)
                                 {
                                     Session.CurrentMap.DroppedList.Remove(packet.TransportId);
-                                    TransportFactory.Instance.RemoveTransportId(packet.TransportId);
                                     Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                                     Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
                                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.Item.Name} x {mapItem.Amount}", 12));
@@ -639,7 +637,6 @@ namespace OpenNos.Handler
                         }
                         Session.SendPacket(Session.Character.GenerateGold());
                         Session.CurrentMap.DroppedList.Remove(packet.TransportId);
-                        TransportFactory.Instance.RemoveTransportId(packet.TransportId);
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                     }
                 }

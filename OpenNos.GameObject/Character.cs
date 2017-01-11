@@ -1704,25 +1704,23 @@ namespace OpenNos.GameObject
             }
 
             // only set the hit delay if we become the monsters target with this hit
-            if (monsterToAttack.Target != CharacterId)
+            if (monsterToAttack.Target == -1)
             {
                 monsterToAttack.LastEffect = DateTime.Now;
             }
             ushort damage = Convert.ToUInt16(totalDamage);
-            if (monsterToAttack.IsMoving)
+
+            int nearestDistance = 100;
+            foreach (KeyValuePair<long, long> kvp in monsterToAttack.DamageList)
             {
-                int nearestDistance = 100;
-                foreach (KeyValuePair<long, long> kvp in monsterToAttack.DamageList)
+                ClientSession session = monsterToAttack.Map.GetSessionByCharacterId(kvp.Value);
+                if (session != null)
                 {
-                    ClientSession session = monsterToAttack.Map.GetSessionByCharacterId(kvp.Value);
-                    if (session != null)
+                    int distance = Map.GetDistance(new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }, new MapCell { X = session.Character.MapX, Y = session.Character.MapY });
+                    if (distance < nearestDistance)
                     {
-                        int distance = Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = session.Character.MapX, Y = session.Character.MapY });
-                        if (distance < nearestDistance)
-                        {
-                            nearestDistance = distance;
-                            monsterToAttack.Target = session.Character.CharacterId;
-                        }
+                        nearestDistance = distance;
+                        monsterToAttack.Target = session.Character.CharacterId;
                     }
                 }
             }

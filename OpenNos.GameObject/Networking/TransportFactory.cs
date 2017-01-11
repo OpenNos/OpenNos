@@ -9,8 +9,6 @@ namespace OpenNos.GameObject
 
         private static TransportFactory instance;
         private long _lastTransportId = 1;
-        private Random _random;
-        private ConcurrentBag<long> _transportIds;
 
         #endregion
 
@@ -18,8 +16,6 @@ namespace OpenNos.GameObject
 
         public TransportFactory()
         {
-            _transportIds = new ConcurrentBag<long>();
-            _random = new Random();
         }
 
         #endregion
@@ -42,21 +38,13 @@ namespace OpenNos.GameObject
         {
             _lastTransportId++;
 
-            if (_lastTransportId > 999999)
+            if (_lastTransportId >= long.MaxValue)
             {
                 _lastTransportId = 1;
             }
 
-            _transportIds.Add(_lastTransportId);
-
             return _lastTransportId;
         }
-
-        public bool RemoveTransportId(long id)
-        {
-            return _transportIds.TryTake(out id);
-        }
-
         #endregion
     }
 }
