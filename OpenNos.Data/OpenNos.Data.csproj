@@ -89,6 +89,7 @@
     <Compile Include="ShopSkillDTO.cs" />
     <Compile Include="CharacterSkillDTO.cs" />
     <Compile Include="SpecialistInstanceDTO.cs" />
+    <Compile Include="StaticBonusDTO.cs" />
     <Compile Include="TeleporterDTO.cs" />
     <Compile Include="UsableInstanceDTO.cs" />
     <Compile Include="UserDTO.cs" />

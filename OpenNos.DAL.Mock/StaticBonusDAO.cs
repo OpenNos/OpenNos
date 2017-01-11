@@ -13,31 +13,31 @@
  */
 
 using System;
-using OpenNos.Domain;
+using System.Collections.Generic;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 
-namespace OpenNos.Data
+namespace OpenNos.DAL.Mock
 {
-    public class AccountDTO : MappingBaseDTO
+    public class StaticBonusDAO : BaseDAO<StaticBonusDTO>, IStaticBonusDAO
     {
-        #region Properties
+        #region Methods
 
-        public long AccountId { get; set; }
+        public SaveResult InsertOrUpdate(StaticBonusDTO staticbonus)
+        {
+            throw new NotImplementedException();
+        }
 
-        public AuthorityType Authority { get; set; }
+        public IEnumerable<StaticBonusDTO> LoadByCharacterId(long characterId)
+        {
+            throw new NotImplementedException();
+        }
 
-        public DateTime LastCompliment { get; set; }
-
-        public int LastSession { get; set; }
-
-        public string Name { get; set; }
-
-        public string Password { get; set; }
-
-        public string Email { get; set; }
-
-        public string VerificationToken { get; set; }
-
-        public string RegistrationIP { get; set; }
+        public void RemoveOutDated()
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
     }

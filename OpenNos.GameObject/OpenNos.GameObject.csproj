@@ -84,6 +84,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BazaarItemLink.cs" />
     <Compile Include="Account.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="ExchangeInfo.cs" />
@@ -113,7 +114,11 @@
     <Compile Include="NpcMonsterSkill.cs" />
     <Compile Include="Map\MapNpc.cs" />
     <Compile Include="Npc\NRunHandler.cs" />
+    <Compile Include="Packets\ClientPackets\CScalcPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CBuyPacket.cs" />
     <Compile Include="Packets\ClientPackets\CharacterOptionPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CBlistPacket.cs" />
+    <Compile Include="Packets\ClientPackets\CSlistPacket.cs" />
     <Compile Include="Packets\ClientPackets\ExchangeListPacket.cs" />
     <Compile Include="Packets\ClientPackets\ExchangeRequestPacket.cs" />
     <Compile Include="Packets\ClientPackets\CClosePacket.cs" />

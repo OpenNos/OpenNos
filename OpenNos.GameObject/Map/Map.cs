@@ -231,8 +231,8 @@ namespace OpenNos.GameObject
         {
             try
             {
-                short localMapX = (short)ServerManager.RandomNumber(mapX - 1, mapX + 1);
-                short localMapY = (short)ServerManager.RandomNumber(mapY - 1, mapY + 1);
+                short localMapX = mapX;
+                short localMapY = mapY;
                 List<MapCell> Possibilities = new List<MapCell>();
 
                 for (short x = -1; x < 2; x++)
@@ -243,7 +243,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.RandomNumber(0, int.MaxValue)))
+                foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.RandomNumber(0,100)))
                 {
                     localMapX = (short)(mapX + possibilitie.X);
                     localMapY = (short)(mapY + possibilitie.Y);

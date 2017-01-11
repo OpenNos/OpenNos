@@ -60,6 +60,7 @@ namespace OpenNos.GameObject
             GroupSentRequestCharacterIds = new List<long>();
             FamilyInviteCharacters = new List<long>();
             FriendRequestCharacters = new List<long>();
+            StaticBonusList = new List<StaticBonusDTO>();
         }
 
         #endregion
@@ -109,6 +110,8 @@ namespace OpenNos.GameObject
         }
 
         public int DistanceCritical { get; set; }
+
+        public List<StaticBonusDTO> StaticBonusList { get; set; }
 
         public int DistanceCriticalRate { get; set; }
 
@@ -430,9 +433,190 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateRCBList()
+        public string GenerateRCBList(CBListPacket packet)
         {
-            return "rc_blist 0 16728117|577785|Nostel|1316|49|0|22000|35800|2|1|0|0| 16726526|785290|aranrùth|1316|3|0|22400|35504|2|1|0|0| 16707915|816694|*Apéricube*|1316|1|0|30000|31322|2|1|0|0| 16704830|780361|guns|1316|1|0|33500|30752|2|1|0|0| 16696061|790005|Otosaka|1316|1|0|34500|28947|2|1|0|0| 16696063|790005|Otosaka|1316|1|0|34500|28947|2|1|0|0| 16696067|790005|Otosaka|1316|1|0|34500|28947|2|1|0|0| 16696070|790005|Otosaka|1316|1|0|34500|28947|2|1|0|0| 16696073|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16696075|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16696077|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16696078|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16696079|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16696081|790005|Otosaka|1316|1|0|34500|28948|2|1|0|0| 16563290|800551|¤Abrey¤|1316|1|0|85000|2320|2|1|0|0| 16659678|649281|~Séphir~|1316|1|0|70000000|22552|2|1|0|0| 16691691|689800|LynaLove|2272|1|0|950000|28422|2|2|0|0| 16760677|562204|~¤ZymgKor¤~|4250|1|0|7500|42954|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16758202|816490|KeLacker93:)|4250|1|0|8000|927|0|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16755564|820795|DadaIwixZ|4250|1|0|9500|41892|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16734103|562204|~¤ZymgKor¤~|4250|1|0|9999|37204|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16715220|819383|Chippopotamus|4250|1|0|12500|32957|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16715221|819383|Chippopotamus|4250|1|0|12500|32957|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16715222|819383|Chippopotamus|4250|1|0|12500|32957|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16709206|819438|Enky|4250|1|0|15000|31466|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16706581|604053|mega-killeur|4250|1|0|20000|31178|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16712897|799088|EsMin|4250|1|0|20000|32714|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16747981|821316|-Mondorak-|4250|1|0|25000|40441|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16747983|821316|-Mondorak-|4250|1|0|25000|40441|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16697582|678375|shamane*|4250|1|0|29000|29597|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16689268|221755|Bisantion|4250|1|0|37999|27922|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16645206|806760|SosoDash|4250|1|0|50000|18874|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16645208|806760|SosoDash|4250|1|0|50000|18874|2|0|0|0|3^4250^20^0^0^0^0^0^0^0^0^2400^0^1^168^0 16760665|562204|~¤ZymgKor¤~|4242|1|0|44000|42952|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16758213|816490|KeLacker93:)|4242|1|0|45000|927|0|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16758214|816490|KeLacker93:)|4242|1|0|45000|927|0|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16758215|816490|KeLacker93:)|4242|1|0|45000|928|0|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16755545|820795|DadaIwixZ|4242|1|0|75000|41889|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16753283|562204|~¤ZymgKor¤~|4242|1|0|88000|41594|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16689270|221755|Bisantion|4242|1|0|88999|27923|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16689271|221755|Bisantion|4242|1|0|88999|27923|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16687475|741205|Anicia-x|4242|1|0|90000|27403|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16676340|604053|mega-killeur|4242|1|0|100000|25549|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16662374|819708|OcéaneGame|4242|1|0|252222|22916|2|0|0|0|2^4242^0^0^0^20^0^0^0^0^2400^-1^1^168^0 16762811|577785|Nostel|2200|14|0|200000|43190|2|2|0|0| 16762468|802055|majorette|2200|7|0|239999|43149|2|2|0|0| 16762234|764841|Satyana|2200|10|0|240000|43119|2|2|0|0| 16761986|777541|Atsuo`|2200|5|0|250000|43093|2|2|0|0| 16756714|534840|•Hanna•|2200|4|0|300000|42451|2|2|0|0| 16722340|284623|metre|4904|1|0|250000000|34342|2|0|6|8|1^4904^6^8^0^95^601^757^476^14^190^74^100^1000000^-1^0^740882^0";
+            string itembazar = string.Empty;
+
+            string charname = string.Empty;
+            ItemInstance item = null;
+
+            List<string> itemssearch = packet.ItemVNumFilter == "0" ? new List<string>() : packet.ItemVNumFilter.Split(' ').ToList();
+            List<BazaarItemLink> bzlist = new List<BazaarItemLink>();
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
+            {
+                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == bz.SellerId);
+
+                if (session != null)
+                {
+                    charname = session.Character.Name;
+                    item = session.Character.Inventory.LoadByItemInstance<ItemInstance>(bz.ItemInstanceId);
+                }
+                else if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
+                {
+                    charname = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
+                    item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
+                }
+                if (item == null)
+                    continue;
+
+                switch (packet.TypeFilter)
+                {
+                    default:
+                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 1://weapon
+                        if (item.Item.Type == InventoryType.Equipment && item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)//WeaponFilter
+                            if (packet.SubTypeFilter == 0 || ((item.Item.Class + 1 >> (byte)packet.SubTypeFilter) & 1) == 1)//Class Filter
+                                if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
+                                    if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
+                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
+                                            bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 2://armor
+                        if (item.Item.Type == InventoryType.Equipment && item.Item.EquipmentSlot == EquipmentType.Armor)
+                            if (packet.SubTypeFilter == 0 || ((item.Item.Class + 1 >> (byte)packet.SubTypeFilter) & 1) == 1)//Class Filter
+                                if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
+                                    if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
+                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
+                                            bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 3://Equipment 
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if (item.Item.EquipmentSlot == EquipmentType.Mask || item.Item.EquipmentSlot == EquipmentType.Hat || item.Item.EquipmentSlot == EquipmentType.CostumeHat || item.Item.EquipmentSlot == EquipmentType.CostumeSuit || item.Item.EquipmentSlot == EquipmentType.Gloves || item.Item.EquipmentSlot == EquipmentType.Boots)
+                                if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 2 && item.Item.EquipmentSlot == EquipmentType.Mask) || (packet.SubTypeFilter == 1 && item.Item.EquipmentSlot == EquipmentType.Hat) || (packet.SubTypeFilter == 6 && item.Item.EquipmentSlot == EquipmentType.CostumeHat) || (packet.SubTypeFilter == 5 && item.Item.EquipmentSlot == EquipmentType.CostumeSuit) || (packet.SubTypeFilter == 3 && item.Item.EquipmentSlot == EquipmentType.Gloves) || (packet.SubTypeFilter == 4 && item.Item.EquipmentSlot == EquipmentType.Boots))
+                                    if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
+                                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 4://Access 
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if (item.Item.EquipmentSlot == EquipmentType.Necklace || item.Item.EquipmentSlot == EquipmentType.Ring || item.Item.EquipmentSlot == EquipmentType.Bracelet || (item.Item.EquipmentSlot == EquipmentType.Fairy || (item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 5)) || item.Item.EquipmentSlot == EquipmentType.Amulet)
+                                if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 2 && item.Item.EquipmentSlot == EquipmentType.Ring) || (packet.SubTypeFilter == 1 && item.Item.EquipmentSlot == EquipmentType.Necklace) || (packet.SubTypeFilter == 5 && item.Item.EquipmentSlot == EquipmentType.Amulet) || (packet.SubTypeFilter == 3 && item.Item.EquipmentSlot == EquipmentType.Bracelet) || (packet.SubTypeFilter == 4 && (item.Item.EquipmentSlot == EquipmentType.Fairy || (item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 5))))
+                                    if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
+                                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 5://Specialist 
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if ((item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 2))
+                                if (packet.TypeFilter == 0
+                                    || (packet.TypeFilter == 1 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 10)
+                                     || (packet.TypeFilter == 2 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 11)
+                                      || (packet.TypeFilter == 3 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 2)
+                                       || (packet.TypeFilter == 4 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 3)
+                                        || (packet.TypeFilter == 5 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 13)
+                                         || (packet.TypeFilter == 6 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 5)
+                                          || (packet.TypeFilter == 7 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 12)
+                                           || (packet.TypeFilter == 8 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 4)
+                                            || (packet.TypeFilter == 9 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 7)
+                                             || (packet.TypeFilter == 10 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 15)
+                                              || (packet.TypeFilter == 11 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 6)
+                                               || (packet.TypeFilter == 12 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 14)
+                                                || (packet.TypeFilter == 13 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 9)
+                                                 || (packet.TypeFilter == 14 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 9)
+                                                  || (packet.TypeFilter == 15 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 8)
+                                                   || (packet.TypeFilter == 16 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 1)
+                                                    || (packet.TypeFilter == 17 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 16)
+                                                     || (packet.TypeFilter == 18 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 17)
+                                                      || (packet.TypeFilter == 19 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 18)
+                                                       || (packet.TypeFilter == 20 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 19)
+                                                        || (packet.TypeFilter == 21 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 20)
+                                                         || (packet.TypeFilter == 22 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 21)
+                                                          || (packet.TypeFilter == 23 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 22)
+                                                           || (packet.TypeFilter == 24 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 23)
+                                                            || (packet.TypeFilter == 25 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 24)
+                                                             || (packet.TypeFilter == 26 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 25)
+                                                              || (packet.TypeFilter == 27 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 26)
+                                                               || (packet.TypeFilter == 28 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 27)
+                                                                || (packet.TypeFilter == 29 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 28))
+                                    if (packet.LevelFilter == 0 || ((item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
+                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
+                                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0) || (packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0))
+                                                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 6://Pet 
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if (item.Item.ItemType == ItemType.Box && (item.Item.ItemSubType == 0))
+                                if (packet.LevelFilter == 0 || ((item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
+                                    if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0) || (packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0))
+                                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 7://Npc
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if (item.Item.ItemType == ItemType.Box && (item.Item.ItemSubType == 1))
+                                if (packet.LevelFilter == 0 || ((item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
+                                    if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0) || (packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0))
+                                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 8://Vehicle
+                        if ((item.Item.ItemType == ItemType.Box && (item.Item.ItemSubType == 4)))
+                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0) || (packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0))
+                                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 9://Shell
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if (item.Item.ItemType == ItemType.Shell)
+                                if (packet.SubTypeFilter == 0 || item.Item.ItemSubType == item.Item.ItemSubType + 1)
+                                    if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
+                                        if (packet.LevelFilter == 0 || ((item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
+                                            bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 10://Main
+                        if (item.Item.Type == InventoryType.Main)
+                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && item.Item.ItemType == ItemType.Main) || (packet.SubTypeFilter == 2 && item.Item.ItemType == ItemType.Upgrade) || (packet.SubTypeFilter == 3 && item.Item.ItemType == ItemType.Production) || (packet.SubTypeFilter == 4 && item.Item.ItemType == ItemType.Special) || (packet.SubTypeFilter == 5 && item.Item.ItemType == ItemType.Potion) || (packet.SubTypeFilter == 6 && item.Item.ItemType == ItemType.Event))
+                                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 11://Usable
+                        if (item.Item.Type == InventoryType.Etc)
+                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && item.Item.ItemType == ItemType.Food) || (packet.SubTypeFilter == 2 && item.Item.ItemType == ItemType.Snack) || (packet.SubTypeFilter == 3 && item.Item.ItemType == ItemType.Magical) || (packet.SubTypeFilter == 4 && item.Item.ItemType == ItemType.Part) || (packet.SubTypeFilter == 5 && item.Item.ItemType == ItemType.Teacher) || (packet.SubTypeFilter == 6 && item.Item.ItemType == ItemType.Sell))
+                                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                    case 12://Others
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if (item.Item.ItemType == ItemType.Box)
+                                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                }
+            }
+            List<BazaarItemLink> bzlistsearched = bzlist.Where(s => itemssearch.Contains(s.Item.ItemVNum.ToString())).ToList();
+            int i = 0;
+            //price up price down quantity up quantity down
+            List<BazaarItemLink> definitivelist = (itemssearch.Any() ? bzlistsearched : bzlist);
+            switch (packet.OrderFilter)
+            {
+                case 0:
+                    definitivelist = definitivelist.OrderBy(s => s.BazaarItem.Price).ToList();
+                    break;
+                case 1:
+                    definitivelist = definitivelist.OrderByDescending(s => s.BazaarItem.Price).ToList();
+                    break;
+                case 2:
+                    definitivelist = definitivelist.OrderBy(s => s.BazaarItem.Amount).ToList();
+                    break;
+                case 3:
+                    definitivelist = definitivelist.OrderByDescending(s => s.BazaarItem.Amount).ToList();
+                    break;
+                default:
+                    definitivelist = definitivelist.ToList();
+                    break;
+
+            }
+            foreach (BazaarItemLink bzlink in definitivelist.Skip(packet.Index*50).Take(50))
+            {
+                long time = (long)(bzlink.BazaarItem.DateStart.AddHours(bzlink.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
+                if (time > 0 && bzlink.Item.Amount > 0)
+                {
+                    string info = string.Empty;
+                    if (bzlink.Item.Item.Type == InventoryType.Equipment)
+                        info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ?
+                            Session.Character.GenerateEInfo(bzlink.Item as WearableInstance) : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
+                            Session.Character.GeneratePslInfo(bzlink.Item as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(bzlink.Item as SpecialistInstance, 0)).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
+
+
+                    itembazar += $"{bzlink.BazaarItem.BazaarItemId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage ? 1 : 0)}|{bzlink.BazaarItem.Price}|{time}|2|0|{bzlink.Item.Rare}|{bzlink.Item.Upgrade}|{info} ";
+                }
+            }
+
+            return $"rc_blist 0 {itembazar} ";
         }
 
         public short SaveX { get; set; }
@@ -622,22 +806,37 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateRCSList()
+        public string GenerateRCSList(byte filter)
         {
             string list = string.Empty;
-            for(byte i=0;i< 255;i++)
+
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll().Where(s => s.SellerId == CharacterId))
             {
-                ItemInstance item = Inventory.LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar);
-                if(item !=null)
+                ItemInstance item = Inventory.GetItemInstanceById(bz.ItemInstanceId);
+                if (item != null)
                 {
-                    int SoldedAmount = 98;
-                    int Amount = 99;
-                    bool Package = false;
-                    bool IsNosbazar = false;
-                    long Price = 1000;
-                    long MinutesLeft = 1440;
-                    byte Status = (byte)BazaarType.OnSale;
-                    list += $"16762902|626114|{item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1:0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar?1:0)}|1|0|0| ";
+                    int SoldedAmount = bz.Amount - item.Amount;
+                    int Amount = bz.Amount;
+                    bool Package = bz.IsPackage;
+                    bool IsNosbazar = bz.MedalUsed;
+                    long Price = bz.Price;
+                    long MinutesLeft = (long)(bz.DateStart.AddHours(bz.Duration) - DateTime.Now).TotalMinutes;
+                    byte Status = MinutesLeft >= 0 ? (SoldedAmount < Amount ? (byte)BazaarType.OnSale : (byte)BazaarType.Solded) : (byte)BazaarType.DelayExpired;
+                    if (Status == (byte)BazaarType.DelayExpired)
+                    {
+                        MinutesLeft = (long)(bz.DateStart.AddHours(bz.Duration).AddDays(30) - DateTime.Now).TotalMinutes;
+                    }
+                    string info = string.Empty;
+                    if (item.Item.Type == InventoryType.Equipment)
+                        info = (item.Item.EquipmentSlot != EquipmentType.Sp ?
+                            Session.Character.GenerateEInfo(item as WearableInstance) : item.Item.SpType == 0 && item.Item.ItemSubType == 4 ?
+                            Session.Character.GeneratePslInfo(item as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(item as SpecialistInstance, 0)).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
+
+
+                    if (filter == 0 || filter == Status)
+                    {
+                        list += $"{bz.BazaarItemId}|{bz.SellerId}|{item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1 : 0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar ? 1 : 0)}|0|{item.Rare}|{item.Upgrade}|{info} ";
+                    }
                 }
             }
 
@@ -2281,9 +2480,14 @@ namespace OpenNos.GameObject
             return $"equip {weaponUpgrade}{weaponRare} {armorUpgrade}{armorRare}{eqlist}";
         }
 
+        public bool HaveBackpack()
+        {
+            return StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.BackPack);
+        }
+
         public string GenerateExts()
         {
-            return $"exts 0 {48 + Backpack * 12} {48 + Backpack * 12} {48 + Backpack * 12}";
+            return $"exts 0 {48 + (HaveBackpack() ? 1 : 0) * 12} {48 + (HaveBackpack() ? 1 : 0) * 12} {48 + (HaveBackpack() ? 1 : 0) * 12}";
         }
 
         public string GenerateFaction()
@@ -2362,7 +2566,7 @@ namespace OpenNos.GameObject
                     {
                         result += $" {relation.RelatedCharacterId}.1";
                     }
-                    else if(relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId == relatedCharacterLoggedOutId.Value)
+                    else if (relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId == relatedCharacterLoggedOutId.Value)
                     {
                         result += $" {relation.RelatedCharacterId}.0";
                     }
@@ -3224,12 +3428,12 @@ namespace OpenNos.GameObject
             DistanceDefenceRate = CharacterHelper.DistanceDefenceRate(Class, Level);
             MagicalDefence = CharacterHelper.MagicalDefence(Class, Level);
             if (UseSp)
-            {
+            { // handle specialist            
                 SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (specialist != null)
                 {
-                    MinHit += specialist.DamageMinimum;
-                    MaxHit += specialist.DamageMaximum;
+                    MinHit += specialist.DamageMinimum + specialist.SpDamage * 10;
+                    MaxHit += specialist.DamageMaximum + specialist.SpDamage * 10;
                     MinDistance += specialist.DamageMinimum;
                     MaxDistance += specialist.DamageMaximum;
                     HitCriticalRate += specialist.CriticalLuckRate;
@@ -3240,14 +3444,14 @@ namespace OpenNos.GameObject
                     DistanceRate += specialist.HitRate;
                     DefenceRate += specialist.DefenceDodge;
                     DistanceDefenceRate += specialist.DistanceDefenceDodge;
-                    FireResistance += specialist.FireResistance;
-                    WaterResistance += specialist.WaterResistance;
-                    LightResistance += specialist.LightResistance;
-                    DarkResistance += specialist.DarkResistance;
-                    ElementRateSP += specialist.ElementRate;
-                    Defence += specialist.CloseDefence;
-                    DistanceDefence += specialist.DistanceDefence;
-                    MagicalDefence += specialist.MagicDefence;
+                    FireResistance += specialist.Item.FireResistance;
+                    WaterResistance += specialist.Item.WaterResistance;
+                    LightResistance += specialist.Item.LightResistance;
+                    DarkResistance += specialist.Item.DarkResistance;
+                    ElementRateSP += specialist.ElementRate+ specialist.SpElement;
+                    Defence += specialist.CloseDefence + specialist.SpDefence * 10;
+                    DistanceDefence += specialist.DistanceDefence + specialist.SpDefence * 10;
+                    MagicalDefence += specialist.MagicDefence + specialist.SpDefence * 10;
 
                     int point = CharacterHelper.SlPoint(specialist.SlDamage, 0);
 
@@ -3366,27 +3570,7 @@ namespace OpenNos.GameObject
                 ElementRate += fairy.ElementRate + fairy.Item.ElementRate;
             }
 
-            // handle specialist
-            if (UseSp)
-            {
-                SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-                if (specialist != null)
-                {
-                    FireResistance += specialist.SpFire;
-                    LightResistance += specialist.SpLight;
-                    WaterResistance += specialist.SpWater;
-                    DarkResistance += specialist.SpDark;
 
-                    Defence += specialist.SpDefence * 10;
-                    DistanceDefence += specialist.SpDefence * 10;
-                    MagicalDefence += specialist.SpDefence * 10;
-
-                    MinHit += specialist.SpDamage * 10;
-                    MaxHit += specialist.SpDamage * 10;
-
-                    ElementRateSP += specialist.SpElement;
-                }
-            }
 
             for (short i = 1; i < 14; i++)
             {
@@ -3512,7 +3696,7 @@ namespace OpenNos.GameObject
                     {
                         fairy.XP += ServerManager.FairyXpRate;
                     }
-                    t = CharacterHelper.LoadFairyXPData(fairy.ElementRate);
+                    t = CharacterHelper.LoadFairyXPData(fairy.ElementRate + fairy.Item.ElementRate);
                     while (fairy.XP >= t)
                     {
                         fairy.XP -= (int)t;
@@ -4240,6 +4424,13 @@ namespace OpenNos.GameObject
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
                 }
 
+                foreach (StaticBonusDTO bonus in Session.Character.StaticBonusList)
+                {
+                    DAOFactory.StaticBonusDAO.InsertOrUpdate(bonus);
+                }
+
+                DAOFactory.StaticBonusDAO.RemoveOutDated();
+
                 foreach (GeneralLogDTO general in Session.Account.GeneralLogs)
                 {
                     if (!DAOFactory.GeneralLogDAO.IdAlreadySet(general.LogId))
@@ -4534,6 +4725,17 @@ namespace OpenNos.GameObject
 
         internal void RefreshValidity()
         {
+            if (Session.Character.StaticBonusList.RemoveAll(s => s.StaticBonusType == StaticBonusType.BackPack && s.DateEnd < DateTime.Now) > 0)
+            {
+                Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
+                Session.SendPacket(Session.Character.GenerateExts());
+            }
+
+            if (Session.Character.StaticBonusList.RemoveAll(s => s.DateEnd < DateTime.Now) > 0)
+            {
+                Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
+            }
+
             if (Inventory != null)
             {
                 foreach (var suit in Enum.GetValues(typeof(EquipmentType)))

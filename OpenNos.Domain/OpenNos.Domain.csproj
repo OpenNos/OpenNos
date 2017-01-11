@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MedalType.cs" />
     <Compile Include="BCardType.cs" />
     <Compile Include="BuyShopType.cs" />
     <Compile Include="CharacterRelationType.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="PenaltyType.cs" />
     <Compile Include="PortalType.cs" />
     <Compile Include="RequestExchangeType.cs" />
+    <Compile Include="StaticBonusType.cs" />
     <Compile Include="TargetHitType.cs" />
     <Compile Include="UpgradeProtection.cs" />
     <Compile Include="RarifyProtection.cs" />

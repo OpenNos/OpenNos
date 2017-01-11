@@ -2821,6 +2821,43 @@ namespace OpenNos.Import.Console
                             case ItemType.Special:
                                 switch (item.VNum)
                                 {
+                                    case 1272:
+                                    case 1858:
+                                    case 9047:
+                                        item.Effect = 1005;
+                                        item.EffectValue = 10;
+                                        break;
+
+                                    case 1273:
+                                    case 9024:
+                                        item.Effect = 1005;
+                                        item.EffectValue = 30;
+                                        break;
+
+                                    case 1274:
+                                    case 9025:
+                                        item.Effect = 1005;
+                                        item.EffectValue = 60;
+                                        break;
+
+                                    case 5060:
+                                    case 9066:
+                                        item.Effect = 1003;
+                                        item.EffectValue = 30;
+                                        break;
+
+                                    case 5061:
+                                    case 9067:
+                                        item.Effect = 1004;
+                                        item.EffectValue = 7;
+                                        break;
+
+                                    case 5062:
+                                    case 9068:
+                                        item.Effect = 1004;
+                                        item.EffectValue = 1;
+                                        break;
+
                                     case 5105:
                                         item.Effect = 651;
                                         break;
@@ -2875,7 +2912,7 @@ namespace OpenNos.Import.Console
                                         break;
 
                                     default:
-                                        item.EffectValue = Convert.ToInt32(currentLine[4]);
+                                        item.EffectValue = item.EffectValue == 0 ? Convert.ToInt32(currentLine[4]) : item.EffectValue;
                                         break;
                                 }
                                 item.WaitDelay = 5000;

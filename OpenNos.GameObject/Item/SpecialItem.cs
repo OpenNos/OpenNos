@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
+using System;
 using System.Linq;
 
 namespace OpenNos.GameObject
@@ -182,7 +183,7 @@ namespace OpenNos.GameObject
                         else
                         {
                             short[] vnums = new short[] { 1161, 2282, 1030, 1244, 1218, 5369, 1012, 1363, 1364, 2160, 2173, 5959, 5983, 2514, 2515, 2516, 2517, 2518, 2519, 2520, 2521, 1685, 1686, 5087, 5203, 2418, 2310, 2303, 2169, 2280, 5892, 5893, 5894, 5895, 5896, 5897, 5898, 5899, 5332, 5105, 2161, 2162 };
-                            byte[] counts = new byte[] { 10, 10, 20, 5, 1, 1, 99, 1, 1, 5, 5, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 5, 20, 20, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+                            byte[] counts = new byte[] { 10, 10, 20, 5, 1, 1, 99, 1, 1, 5, 5, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 5, 20, 20, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
                             int item = ServerManager.RandomNumber(0, 42);
                             session.Character.GiftAdd(vnums[item], counts[item]);
                         }
@@ -218,6 +219,34 @@ namespace OpenNos.GameObject
                     session.Character.Reput += ReputPrice;
                     session.SendPacket(session.Character.GenerateFd());
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    break;
+
+                case 1003:
+                    if (!session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver))
+                    {
+                        session.Character.StaticBonusList.Add(new StaticBonusDTO() { CharacterId = session.Character.CharacterId, DateEnd = DateTime.Now.AddDays(EffectValue), StaticBonusType = StaticBonusType.BazaarMedalGold });
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                        session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"),Name),12));
+                    }
+                    break;
+
+                case 1004:
+                    if (!session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalGold))
+                    { 
+                        session.Character.StaticBonusList.Add(new StaticBonusDTO() { CharacterId = session.Character.CharacterId, DateEnd = DateTime.Now.AddDays(EffectValue), StaticBonusType = StaticBonusType.BazaarMedalSilver });
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                        session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
+                    }
+                    break;
+
+                case 1005:
+                    if (!session.Character.StaticBonusList.Any(s =>s.StaticBonusType == StaticBonusType.BackPack))
+                    {
+                        session.Character.StaticBonusList.Add(new StaticBonusDTO() { CharacterId = session.Character.CharacterId, DateEnd = DateTime.Now.AddDays(EffectValue), StaticBonusType = StaticBonusType.BackPack });
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                        session.SendPacket(session.Character.GenerateExts());
+                        session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
+                    }
                     break;
 
                 default:

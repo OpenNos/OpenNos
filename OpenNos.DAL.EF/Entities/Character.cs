@@ -34,6 +34,7 @@ namespace OpenNos.DAL.EF
             GeneralLog = new HashSet<GeneralLog>();
             Mail = new HashSet<Mail>();
             Mail1 = new HashSet<Mail>();
+
         }
 
         #endregion
@@ -62,6 +63,8 @@ namespace OpenNos.DAL.EF
         public long CharacterId { get; set; }
 
         public virtual ICollection<CharacterRelation> CharacterRelation { get; set; }
+
+        public virtual ICollection<StaticBonus> StaticBonus { get; set; }
 
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
 

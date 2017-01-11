@@ -100,6 +100,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Skill> Skill { get; set; }
 
+        public virtual DbSet<StaticBonus> StaticBonus { get; set; }
+
         public virtual DbSet<Teleporter> Teleporter { get; set; }
 
         #endregion
@@ -150,6 +152,12 @@ namespace OpenNos.DAL.EF.DB
 
             modelBuilder.Entity<Character>()
                 .HasMany(e => e.CharacterSkill)
+                .WithRequired(e => e.Character)
+                .HasForeignKey(e => e.CharacterId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Character>()
+                .HasMany(e => e.StaticBonus)
                 .WithRequired(e => e.Character)
                 .HasForeignKey(e => e.CharacterId)
                 .WillCascadeOnDelete(false);

@@ -12,33 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using OpenNos.Domain;
+using OpenNos.Data;
+using System.Collections.Generic;
 
-namespace OpenNos.Data
+namespace OpenNos.GameObject
 {
-    public class AccountDTO : MappingBaseDTO
+    public class BazaarItemLink
     {
-        #region Properties
+        public string Owner { get; set; }
 
-        public long AccountId { get; set; }
+        public ItemInstance Item { get; set; }
 
-        public AuthorityType Authority { get; set; }
-
-        public DateTime LastCompliment { get; set; }
-
-        public int LastSession { get; set; }
-
-        public string Name { get; set; }
-
-        public string Password { get; set; }
-
-        public string Email { get; set; }
-
-        public string VerificationToken { get; set; }
-
-        public string RegistrationIP { get; set; }
-
-        #endregion
+        public BazaarItemDTO BazaarItem { get; set; }
     }
 }

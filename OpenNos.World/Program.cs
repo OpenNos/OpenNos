@@ -197,6 +197,8 @@ namespace OpenNos.World
             DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
             DAOFactory.SkillDAO.RegisterMapping(typeof(Skill)).InitializeMapper();
             DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
+            DAOFactory.StaticBonusDAO.RegisterMapping(typeof(StaticBonusDTO)).InitializeMapper();
+
         }
 
         [DllImport("Kernel32")]
