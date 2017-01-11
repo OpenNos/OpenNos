@@ -828,9 +828,7 @@ namespace OpenNos.GameObject
                     }
                     string info = string.Empty;
                     if (item.Item.Type == InventoryType.Equipment)
-                        info = (item.Item.EquipmentSlot != EquipmentType.Sp ?
-                            Session.Character.GenerateEInfo(item as WearableInstance) : item.Item.SpType == 0 && item.Item.ItemSubType == 4 ?
-                            Session.Character.GeneratePslInfo(item as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(item as SpecialistInstance, 0)).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
+                        info = Session.Character.GenerateEInfo(item as WearableInstance).Replace("e_info^", "");
 
 
                     if (filter == 0 || filter == Status)
