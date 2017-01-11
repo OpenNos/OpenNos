@@ -338,7 +338,7 @@ namespace OpenNos.Handler
                         }
                     }
                     Session.SendPacket($"rc_scalc 1 {bz.Price} {bz.Amount - Item.Amount} {bz.Amount} {taxes} {price + taxes}");
-                    DAOFactory.BazaarItemDAO.Delete(bz.BazaarItemId);
+
                     if (DAOFactory.BazaarItemDAO.LoadById(bz.BazaarItemId) != null)
                     {
                         DAOFactory.BazaarItemDAO.Delete(bz.BazaarItemId);
