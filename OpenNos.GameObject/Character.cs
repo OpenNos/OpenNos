@@ -600,7 +600,7 @@ namespace OpenNos.GameObject
                     break;
 
             }
-            foreach (BazaarItemLink bzlink in definitivelist.Skip(packet.Index*50).Take(50))
+            foreach (BazaarItemLink bzlink in definitivelist.Skip(packet.Index * 50).Take(50))
             {
                 long time = (long)(bzlink.BazaarItem.DateStart.AddHours(bzlink.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
                 if (time > 0 && bzlink.Item.Amount > 0)
@@ -812,7 +812,7 @@ namespace OpenNos.GameObject
 
             foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll().Where(s => s.SellerId == CharacterId))
             {
-                ItemInstance item = Inventory.GetItemInstanceById(bz.ItemInstanceId);
+                ItemInstance item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
                 if (item != null)
                 {
                     int SoldedAmount = bz.Amount - item.Amount;
@@ -828,7 +828,7 @@ namespace OpenNos.GameObject
                     }
                     string info = string.Empty;
                     if (item.Item.Type == InventoryType.Equipment)
-                        info = Session.Character.GenerateEInfo(item as WearableInstance).Replace("e_info^", "");
+                        info = Session.Character.GenerateEInfo(item as WearableInstance).Replace(' ', '^').Replace("e_info^", "");
 
 
                     if (filter == 0 || filter == Status)
@@ -2906,12 +2906,12 @@ namespace OpenNos.GameObject
                                 }
                                 if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
                                 {
-                                    targetSession.Character.GenerateXp(monsterToAttack.Monster, true);
+                                    targetSession.Character.GenerateXp(monsterToAttack, true);
                                 }
                                 else
                                 {
                                     targetSession.SendPacket(targetSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
-                                    targetSession.Character.GenerateXp(monsterToAttack.Monster, false);
+                                    targetSession.Character.GenerateXp(monsterToAttack, false);
                                 }
                             }
                         }
@@ -2941,12 +2941,12 @@ namespace OpenNos.GameObject
                             }
                             if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId)
                             {
-                                GenerateXp(monsterToAttack.Monster, true);
+                                GenerateXp(monsterToAttack, true);
                             }
                             else
                             {
                                 Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("XP_NOTFIRSTHIT"), 10));
-                                GenerateXp(monsterToAttack.Monster, false);
+                                GenerateXp(monsterToAttack, false);
                             }
                         }
                         GenerateDignity(monsterToAttack.Monster);
@@ -3446,7 +3446,7 @@ namespace OpenNos.GameObject
                     WaterResistance += specialist.Item.WaterResistance;
                     LightResistance += specialist.Item.LightResistance;
                     DarkResistance += specialist.Item.DarkResistance;
-                    ElementRateSP += specialist.ElementRate+ specialist.SpElement;
+                    ElementRateSP += specialist.ElementRate + specialist.SpElement;
                     Defence += specialist.CloseDefence + specialist.SpDefence * 10;
                     DistanceDefence += specialist.DistanceDefence + specialist.SpDefence * 10;
                     MagicalDefence += specialist.MagicDefence + specialist.SpDefence * 10;
@@ -3614,8 +3614,9 @@ namespace OpenNos.GameObject
             return new[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
         }
 
-        public void GenerateXp(NpcMonster monsterinfo, bool isMonsterOwner)
+        public void GenerateXp(MapMonster monster, bool isMonsterOwner)
         {
+            NpcMonster monsterinfo = monster.Monster;
             if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockExp && s.DateEnd > DateTime.Now))
             {
                 Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
@@ -3638,7 +3639,7 @@ namespace OpenNos.GameObject
                         InventoryType.Wear);
                 }
 
-                if (Level < 99)
+                if (Level < 120)
                 {
                     if (isMonsterOwner)
                     {
@@ -3671,9 +3672,9 @@ namespace OpenNos.GameObject
                     LevelXp -= (long)t;
                     Level++;
                     t = XPLoad();
-                    if (Level >= 99)
+                    if (Level >= 120)
                     {
-                        Level = 99;
+                        Level = 120;
                         LevelXp = 0;
                     }
                     Hp = (int)HPLoad();
@@ -3925,6 +3926,14 @@ namespace OpenNos.GameObject
             {
                 xp *= 2;
             }
+            if (monster.Level >= 100)
+            {
+                xp *= 2;
+                if (Level < 96)
+                {
+                    xp = 1;
+                }
+            }
 
             if (partySize > 1 && group != null)
             {
@@ -3933,6 +3942,7 @@ namespace OpenNos.GameObject
 
             return xp;
         }
+
 
         public void GiftAdd(short itemVNum, byte amount)
         {
@@ -4452,7 +4462,8 @@ namespace OpenNos.GameObject
                     FamilyCharacterDTO _familyCharacter = DAOFactory.FamilyCharacterDAO.LoadById(FamilyCharacter.FamilyCharacterId);
                     _family.FamilyExperience += CollectedFamilyXp;
                     _familyCharacter.Experience += CollectedFamilyXp;
-
+                    _familyCharacter.Authority = FamilyCharacter.Authority;
+                    _familyCharacter.DailyMessage = FamilyCharacter.DailyMessage;
                     CollectedFamilyXp = 0;
 
                     if (CharacterHelper.LoadFamilyXPData(_family.FamilyLevel) <= _family.FamilyExperience)
@@ -4467,6 +4478,10 @@ namespace OpenNos.GameObject
                     _familymessagechanged = false;
                     Family = _family;
                     FamilyCharacter = _familyCharacter;
+                }
+                else if (FamilyCharacter == null)
+                {
+                    DAOFactory.FamilyCharacterDAO.Delete(Name);
                 }
             }
             catch (Exception e)
@@ -4768,7 +4783,7 @@ namespace OpenNos.GameObject
         private int GetGold(MapMonster mapMonster)
         {
             int lowBaseGold = ServerManager.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
-            int actMultiplier = Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
+            int actMultiplier = Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52 || s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) ?? false ? 10 : 1;
             int gold = lowBaseGold * ServerManager.GoldRate * actMultiplier;
             return gold;
         }

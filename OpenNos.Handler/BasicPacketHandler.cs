@@ -364,7 +364,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory((InventoryType)packet.Inventory, packet.Slot, packet.Amount);
+            ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory(packet.Inventory == 4 ? (InventoryType)0 : (InventoryType)packet.Inventory, packet.Slot, packet.Amount);
             if (bazar == null || !bazar.Item.IsSoldable)
                 return;
             short duration = 0;
