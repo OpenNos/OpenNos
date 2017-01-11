@@ -600,7 +600,7 @@ namespace OpenNos.GameObject
                     break;
 
             }
-            foreach (BazaarItemLink bzlink in definitivelist)
+            foreach (BazaarItemLink bzlink in definitivelist.Skip(packet.Index*50).Take(50))
             {
                 long time = (long)(bzlink.BazaarItem.DateStart.AddHours(bzlink.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
                 if (time > 0 && bzlink.Item.Amount > 0)

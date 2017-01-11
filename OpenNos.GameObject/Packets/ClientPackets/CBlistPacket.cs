@@ -9,7 +9,7 @@ namespace OpenNos.GameObject
         #region Properties
   
         [PacketIndex(0)]
-        public byte Type { get; set; }
+        public int Index { get; set; }
 
         [PacketIndex(1)]
         public byte TypeFilter { get; set; }
