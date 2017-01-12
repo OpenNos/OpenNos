@@ -1201,4 +1201,7 @@
   <data name="STATE_CHANGED" xml:space="preserve">
     <value>The sale was interrupted because the item is no longer available!</value>
   </data>
+  <data name="LOGIN_MEDAL" xml:space="preserve">
+    <value>The BazaarMedal is currently active.</value>
+  </data>
 </root>
