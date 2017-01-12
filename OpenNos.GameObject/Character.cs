@@ -593,20 +593,17 @@ namespace OpenNos.GameObject
                     break;
 
             }
-            foreach (BazaarItemLink bzlink in definitivelist.Skip(packet.Index * 50).Take(50))
+            foreach (BazaarItemLink bzlink in definitivelist.Where(s => ((s.BazaarItem.DateStart.AddHours(s.BazaarItem.Duration) - DateTime.Now).TotalMinutes > 0 && s.Item.Amount > 0)).Skip(packet.Index * 50).Take(50))
             {
                 long time = (long)(bzlink.BazaarItem.DateStart.AddHours(bzlink.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
-                if (time > 0 && bzlink.Item.Amount > 0)
-                {
-                    string info = string.Empty;
-                    if (bzlink.Item.Item.Type == InventoryType.Equipment)
-                        info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ?
-                            Session.Character.GenerateEInfo(bzlink.Item as WearableInstance) : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
-                            Session.Character.GeneratePslInfo(bzlink.Item as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(bzlink.Item as SpecialistInstance, 0)).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
+                string info = string.Empty;
+                if (bzlink.Item.Item.Type == InventoryType.Equipment)
+                    info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ?
+                        Session.Character.GenerateEInfo(bzlink.Item as WearableInstance) : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
+                        Session.Character.GeneratePslInfo(bzlink.Item as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(bzlink.Item as SpecialistInstance, 0)).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
 
 
-                    itembazar += $"{bzlink.BazaarItem.BazaarItemId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage ? 1 : 0)}|{bzlink.BazaarItem.Price}|{time}|2|0|{bzlink.Item.Rare}|{bzlink.Item.Upgrade}|{info} ";
-                }
+                itembazar += $"{bzlink.BazaarItem.BazaarItemId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage ? 1 : 0)}|{bzlink.BazaarItem.Price}|{time}|2|0|{bzlink.Item.Rare}|{bzlink.Item.Upgrade}|{info} ";
             }
 
             return $"rc_blist {packet.Index} {itembazar} ";
@@ -1707,7 +1704,7 @@ namespace OpenNos.GameObject
             int nearestDistance = 100;
             foreach (KeyValuePair<long, long> kvp in monsterToAttack.DamageList)
             {
-                ClientSession session = monsterToAttack.Map.GetSessionByCharacterId(kvp.Value);
+                ClientSession session = monsterToAttack.Map.GetSessionByCharacterId(kvp.Key);
                 if (session != null)
                 {
                     int distance = Map.GetDistance(new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }, new MapCell { X = session.Character.MapX, Y = session.Character.MapY });
@@ -4764,7 +4761,11 @@ namespace OpenNos.GameObject
         private int GetGold(MapMonster mapMonster)
         {
             int lowBaseGold = ServerManager.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
-            int actMultiplier = Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52 || s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) ?? false ? 10 : 1;
+            int actMultiplier = Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
+            if(Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) == true)
+            {
+                actMultiplier = 5;
+            }
             int gold = lowBaseGold * ServerManager.GoldRate * actMultiplier;
             return gold;
         }
