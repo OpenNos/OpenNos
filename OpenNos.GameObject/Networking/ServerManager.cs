@@ -84,8 +84,6 @@ namespace OpenNos.GameObject
 
         public static int XPRate { get; set; }
 
-        public List<BazaarItem> BazarItemList { get; set; }
-
         public int ChannelId { get; set; }
 
         public List<Group> Groups
