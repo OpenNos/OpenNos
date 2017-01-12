@@ -61,6 +61,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} has modified the return point..
+        /// </summary>
+        internal static string ACCEPTED_SHARE {
+            get {
+                return ResourceManager.GetString("ACCEPTED_SHARE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Account with SessionId {0} has arrived..
         /// </summary>
         internal static string ACCOUNT_ARRIVED {
@@ -570,6 +579,15 @@ namespace OpenNos.World.Resource {
         internal static string CANT_UPGRADE_DESTROYED_SP {
             get {
                 return ResourceManager.GetString("CANT_UPGRADE_DESTROYED_SP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You have changed the common point of return of the members of the group..
+        /// </summary>
+        internal static string CHANGED_SHARE {
+            get {
+                return ResourceManager.GetString("CHANGED_SHARE", resourceCulture);
             }
         }
         
@@ -1357,6 +1375,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à You sent a request to share the point of return with the members of your group..
+        /// </summary>
+        internal static string GROUP_SHARE_INFO {
+            get {
+                return ResourceManager.GetString("GROUP_SHARE_INFO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Could not found Handler implementation for Packet with Header {0}.
         /// </summary>
         internal static string HANDLER_NOT_FOUND {
@@ -1497,6 +1524,15 @@ namespace OpenNos.World.Resource {
         internal static string INVITED_YOU {
             get {
                 return ResourceManager.GetString("INVITED_YOU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Do you want to set as a return point from : {0} ?.
+        /// </summary>
+        internal static string INVITED_YOU_SHARE {
+            get {
+                return ResourceManager.GetString("INVITED_YOU_SHARE", resourceCulture);
             }
         }
         
@@ -2293,7 +2329,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Warning, you can be attacked by monster when you use the bazaar!.
+        ///   Recherche une chaîne localisée semblable à Warning, you can be attacked by monsters when you use the bazaar!.
         /// </summary>
         internal static string NOTICE_BAZAAR {
             get {
@@ -2550,6 +2586,15 @@ namespace OpenNos.World.Resource {
         internal static string REFUSED_GROUP_REQUEST {
             get {
                 return ResourceManager.GetString("REFUSED_GROUP_REQUEST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You refused to share the point of return with the group members..
+        /// </summary>
+        internal static string REFUSED_SHARE {
+            get {
+                return ResourceManager.GetString("REFUSED_SHARE", resourceCulture);
             }
         }
         

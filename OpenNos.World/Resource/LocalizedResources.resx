@@ -1190,7 +1190,7 @@
     <value>You cannot open the bazaar because you do not possess the required object.</value>
   </data>
   <data name="NOTICE_BAZAAR" xml:space="preserve">
-    <value>Warning, you can be attacked by monster when you use the bazaar!</value>
+    <value>Warning, you can be attacked by monsters when you use the bazaar!</value>
   </data>
   <data name="OBJECT_IN_BAZAAR" xml:space="preserve">
     <value>Your item has been added on the bazaar!</value>
@@ -1203,5 +1203,20 @@
   </data>
   <data name="LOGIN_MEDAL" xml:space="preserve">
     <value>The BazaarMedal is currently active.</value>
+  </data>
+  <data name="GROUP_SHARE_INFO" xml:space="preserve">
+    <value>You sent a request to share the point of return with the members of your group.</value>
+  </data>
+  <data name="INVITED_YOU_SHARE" xml:space="preserve">
+    <value>Do you want to set as a return point from : {0} ?</value>
+  </data>
+  <data name="ACCEPTED_SHARE" xml:space="preserve">
+    <value>{0} has modified the return point.</value>
+  </data>
+  <data name="CHANGED_SHARE" xml:space="preserve">
+    <value>You have changed the common point of return of the members of the group.</value>
+  </data>
+  <data name="REFUSED_SHARE" xml:space="preserve">
+    <value>You refused to share the point of return with the group members.</value>
   </data>
 </root>
