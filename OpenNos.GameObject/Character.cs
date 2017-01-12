@@ -449,7 +449,7 @@ namespace OpenNos.GameObject
                 if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
                 {
                     charname = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
-                    item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
+                    item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
                 }
                 if (item == null)
                     continue;
@@ -805,7 +805,7 @@ namespace OpenNos.GameObject
 
             foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll().Where(s => s.SellerId == CharacterId).Skip(packet.Index * 50).Take(50))
             {
-                ItemInstance item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
+                ItemInstance item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
                 if (item != null)
                 {
                     int SoldedAmount = bz.Amount - item.Amount;
@@ -1013,7 +1013,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void CloseExchangeOrTrade()
+        private void CloseExchangeOrTrade()
         {
             if (InExchangeOrTrade)
             {
@@ -1036,7 +1036,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void CloseShop(bool closedByCharacter = false)
+        public void CloseShop()
         {
             if (HasShopOpened && Session.HasCurrentMap)
             {
@@ -1065,7 +1065,7 @@ namespace OpenNos.GameObject
             IsDancing = !IsDancing;
         }
 
-        public Character DeepCopy()
+        private Character DeepCopy()
         {
             Character clonedCharacter = (Character)MemberwiseClone();
             return clonedCharacter;
@@ -1085,6 +1085,7 @@ namespace OpenNos.GameObject
                 _friends.Remove(deleteReleation);
             }
         }
+
         public void DeleteSpouse(long characterId)
         {
             DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
@@ -2227,7 +2228,7 @@ namespace OpenNos.GameObject
             return $"dlg {dialog}";
         }
 
-        public void GenerateDignity(NpcMonster monsterinfo)
+        private void GenerateDignity(NpcMonsterDTO monsterinfo)
         {
             if (Level < monsterinfo.Level && Dignity < 100 && Level > 20)
             {
@@ -2407,7 +2408,7 @@ namespace OpenNos.GameObject
             return $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuit]}.{invarray[(byte)EquipmentType.CostumeHat]}.{invarray[(byte)EquipmentType.WeaponSkin]}";
         }
 
-        public string GenerateEqRareUpgradeForPacket()
+        private string GenerateEqRareUpgradeForPacket()
         {
             sbyte weaponRare = 0;
             byte weaponUpgrade = 0;
@@ -2420,15 +2421,17 @@ namespace OpenNos.GameObject
                     WearableInstance wearable = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
                     if (wearable != null)
                     {
-                        if (wearable.Item.EquipmentSlot == EquipmentType.Armor)
+                        switch (wearable.Item.EquipmentSlot)
                         {
-                            armorRare = wearable.Rare;
-                            armorUpgrade = wearable.Upgrade;
-                        }
-                        else if (wearable.Item.EquipmentSlot == EquipmentType.MainWeapon)
-                        {
-                            weaponRare = wearable.Rare;
-                            weaponUpgrade = wearable.Upgrade;
+                            case EquipmentType.Armor:
+                                armorRare = wearable.Rare;
+                                armorUpgrade = wearable.Upgrade;
+                                break;
+
+                            case EquipmentType.MainWeapon:
+                                weaponRare = wearable.Rare;
+                                weaponUpgrade = wearable.Upgrade;
+                                break;
                         }
                     }
                 }
@@ -2488,14 +2491,12 @@ namespace OpenNos.GameObject
 
         public string GenerateFamilyMember()
         {
-            //gmbr 0 972109|16070622|†Socke†|92|2|0|9|0|1 962596|16070622|¥»Nancy»¥|96|3|1|0|0|1 338884|16070622|Ciapa|96|1|1|0|1|1 998939|16033022|†«¢®êe¶êR»†|59|2|3|0|0|0 963863|16070819|•Êìsstérñçhèñ•|80|1|3|0|0|0 1017441|16102917|†SüßeErdbeere†|58|1|3|0|0|0 1003329|16110518|Rising†Redbuff|36|3|3|0|0|0 972112|16070900|†Söckchen†|83|2|3|0|0|0 1044684|16102914|*Necrømancer*|71|3|3|0|0|0 1043396|16122716|rdfeenlvln1|1|0|3|0|1|0
             string str = "gmbr 0";
             try
             {
                 foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
                 {
-                    str +=
-                        $" {groupClientSession.Character.CharacterId}|0|{groupClientSession.Character.Name}|{groupClientSession.Character.Level}|{(byte)groupClientSession.Character.Class}|{(byte)groupClientSession.Character.FamilyCharacter.Authority}|{(byte)groupClientSession.Character.FamilyCharacter.Rank}|1|{groupClientSession.Character.HeroLevel}";
+                    str += $" {groupClientSession.Character.CharacterId}|0|{groupClientSession.Character.Name}|{groupClientSession.Character.Level}|{(byte)groupClientSession.Character.Class}|{(byte)groupClientSession.Character.FamilyCharacter.Authority}|{(byte)groupClientSession.Character.FamilyCharacter.Rank}|1|{groupClientSession.Character.HeroLevel}";
                 }
             }
             catch (Exception ex)
@@ -2511,8 +2512,7 @@ namespace OpenNos.GameObject
             {
                 foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
                 {
-                    str +=
-                        $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.DailyMessage}";
+                    str += $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.DailyMessage}";
                 }
             }
             catch (Exception ex)
@@ -2582,7 +2582,7 @@ namespace OpenNos.GameObject
             return result;
         }
 
-        public string GenerateGender()
+        private string GenerateGender()
         {
             return $"p_sex {(byte)Gender}";
         }
@@ -2595,9 +2595,10 @@ namespace OpenNos.GameObject
         public string GenerateGidx()
         {
             if (Family != null && FamilyCharacter != null)
-                return $"gidx 1 {CharacterId} {Family.FamilyId} {Family.Name}({FamilyCharacter.Authority.ToString()}) {Family.FamilyLevel}";
-            else
-                return $"gidx 1 {CharacterId} -1 - 0";
+            {
+                return $"gidx 1 {CharacterId} {Family.FamilyId} {Family.Name}({FamilyCharacter.Authority}) {Family.FamilyLevel}";
+            }
+            return $"gidx 1 {CharacterId} -1 - 0";
         }
 
         public string GenerateGold()
@@ -2970,29 +2971,26 @@ namespace OpenNos.GameObject
             return $"modal {type} {message}";
         }
 
-        //public string GenerateGidx()
-        //{
-        //    Family family = DAOFactory.FamilyDAO.LoadByCharacterId(CharacterId);
-        //    FamilyCharacter familyCharacter = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(CharacterId);
-        //    if (family != null && familyCharacter != null)
-        //    return $"gidx 1 {CharacterId} {family.FamilyId} {family.Name}({familyCharacter.FamilyAuthority}) 1";
-        //    return string.Empty;
-        //}
         public string GenerateMsg(string message, int type)
         {
             return $"msg {type} {message}";
         }
 
-        //public string GenerateGExp()
-        //{
-        //    string str = "gexp";
-        //    Family family = DAOFactory.FamilyDAO.LoadByCharacterId(CharacterId);
-        //    foreach (FamilyCharacter familyCharacter in family)
-        //    {
-        //        str += $" {familyCharacter.CharacterId}|{familyCharacter.Experience}";
-        //    }
-        //    return str;
-        //}
+        public string GenerateGExp()
+        {
+            string str = "gexp";
+            if (FamilyCharacterId != null)
+            {
+                IEnumerable<FamilyCharacterDTO> familyCharacters = DAOFactory.FamilyCharacterDAO.LoadByFamilyId(FamilyCharacterId.Value);
+                foreach (FamilyCharacterDTO familyCharacter in familyCharacters)
+                {
+                    str += $" {familyCharacter.CharacterId}|{familyCharacter.Experience}";
+                }
+                return str;
+            }
+            return string.Empty;
+        }
+
         public MovePacket GenerateMv()
         {
             return new MovePacket
@@ -3005,22 +3003,11 @@ namespace OpenNos.GameObject
             };
         }
 
-        //public string GenerateGMsg()
-        //{
-        //    string str = "gmsg";
-        //    Family family = DAOFactory.FamilyDAO.LoadByCharacterId(CharacterId);
-        //    foreach (FamilyCharacter familyCharacter in family)
-        //    {
-        //        str += $" {familyCharacter.CharacterId}|{familyCharacter.DailyMessage}";
-        //    }
-        //    return str;
-        //}
-        public List<string> GenerateNPCShopOnMap()
+        public IEnumerable<string> GenerateNPCShopOnMap()
         {
             return (from npc in ServerManager.GetMap(MapId).Npcs where npc.Shop != null select $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}").ToList();
         }
 
-        // uncomment when done
         public string GenerateOut()
         {
             return $"out 1 {CharacterId}";
@@ -4163,7 +4150,7 @@ namespace OpenNos.GameObject
 
         public void LoadInventory()
         {
-            IEnumerable<ItemInstanceDTO> inventories = DAOFactory.IteminstanceDao.LoadByCharacterId(CharacterId).ToList();
+            IEnumerable<ItemInstanceDTO> inventories = DAOFactory.IteminstanceDAO.LoadByCharacterId(CharacterId).ToList();
 
             Inventory = new Inventory(this);
             Inventory = new Inventory(this);
@@ -4383,18 +4370,18 @@ namespace OpenNos.GameObject
                     {
                         // load and concat inventory with equipment
                         List<ItemInstance> inventories = Inventory.GetAllItems();
-                        IList<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDao.LoadSlotAndTypeByCharacterId(CharacterId);
+                        IList<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
 
                         // remove all which are saved but not in our current enumerable
                         foreach (var inventoryToDeleteId in currentlySavedInventoryIds.Except(inventories.Select(i => i.Id)))
                         {
-                            DAOFactory.IteminstanceDao.Delete(inventoryToDeleteId);
+                            DAOFactory.IteminstanceDAO.Delete(inventoryToDeleteId);
                         }
 
                         // create or update all which are new or do still exist
                         foreach (ItemInstance itemInstance in inventories)
                         {
-                            DAOFactory.IteminstanceDao.InsertOrUpdate(itemInstance);
+                            DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
                         }
                     }
                 }
@@ -4725,7 +4712,7 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        public double XPLoad()
+        private double XPLoad()
         {
             return CharacterHelper.XPData[Level - 1];
         }

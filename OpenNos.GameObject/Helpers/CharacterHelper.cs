@@ -240,7 +240,7 @@ namespace OpenNos.GameObject
                     {
                         penalty = 0.1f;
                     }
-                    else if (leveldifference > 18 && leveldifference < 19)
+                    else if (leveldifference > 18)
                     {
                         penalty = 0.05f;
                     }

@@ -117,17 +117,19 @@ namespace OpenNos.Handler
             short slot;
             if (byte.TryParse(packetsplit[2], out type) && short.TryParse(packetsplit[3], out slot))
             {
-                if (Convert.ToInt32(packetsplit[4]) == 1)
+                switch (Convert.ToInt32(packetsplit[4]))
                 {
-                    Session.SendPacket(Session.Character.GenerateDialog($"#b_i^{type}^{slot}^2 #b_i^{type}^{slot}^5 {Language.Instance.GetMessageFromKey("SURE_TO_DELETE")}"));
-                }
-                else if (Convert.ToInt32(packetsplit[4]) == 2)
-                {
-                    if (Session.Character.InExchangeOrTrade || (InventoryType)type == InventoryType.Bazaar)
-                    {
-                        return;
-                    }
-                    Session.Character.DeleteItem((InventoryType)type, slot);
+                    case 1:
+                        Session.SendPacket(Session.Character.GenerateDialog($"#b_i^{type}^{slot}^2 #b_i^{type}^{slot}^5 {Language.Instance.GetMessageFromKey("SURE_TO_DELETE")}"));
+                        break;
+
+                    case 2:
+                        if (Session.Character.InExchangeOrTrade || (InventoryType)type == InventoryType.Bazaar)
+                        {
+                            return;
+                        }
+                        Session.Character.DeleteItem((InventoryType)type, slot);
+                        break;
                 }
             }
         }

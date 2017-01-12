@@ -315,7 +315,6 @@ namespace OpenNos.GameObject
                                 {
                                     groupSession.SendPacket(groupSession.Character.GeneratePinit());
                                 }
-
                             }
                         }
                     }
@@ -583,7 +582,7 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
 
-            // initialize bazaar      
+            // initialize bazaar
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED")));
 
             // initialize npcmonsters

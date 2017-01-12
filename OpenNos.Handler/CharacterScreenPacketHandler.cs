@@ -185,7 +185,7 @@ namespace OpenNos.Handler
                             };
                             startupInventory.Add(inventory);
 
-                            DAOFactory.IteminstanceDao.InsertOrUpdate(startupInventory);
+                            DAOFactory.IteminstanceDAO.InsertOrUpdate(startupInventory);
                             LoadCharacters(packet);
                         }
                         else
@@ -326,7 +326,7 @@ namespace OpenNos.Handler
             Session.SendPacket("clist_start 0");
             foreach (CharacterDTO character in characters)
             {
-                IEnumerable<ItemInstanceDTO> inventory = DAOFactory.IteminstanceDao.LoadByType(character.CharacterId, InventoryType.Wear);
+                IEnumerable<ItemInstanceDTO> inventory = DAOFactory.IteminstanceDAO.LoadByType(character.CharacterId, InventoryType.Wear);
 
                 WearableInstance[] equipment = new WearableInstance[16];
                 foreach (ItemInstanceDTO equipmentEntry in inventory)

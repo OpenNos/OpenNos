@@ -249,7 +249,7 @@ namespace OpenNos.Handler
                         if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
                         {
                             bzcree.Owner = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
-                            bzcree.Item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
+                            bzcree.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
                         }
                         if (!Session.Character.Inventory.CanAddItem(bzcree.Item.ItemVNum))
                         {
@@ -266,9 +266,9 @@ namespace OpenNos.Handler
 
 
 
-                            ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDao.LoadById(bzcree.BazaarItem.ItemInstanceId);
+                            ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDAO.LoadById(bzcree.BazaarItem.ItemInstanceId);
                             bzitemdto.Amount -= packet.Amount;
-                            DAOFactory.IteminstanceDao.InsertOrUpdate(bzitemdto);
+                            DAOFactory.IteminstanceDAO.InsertOrUpdate(bzitemdto);
 
                             Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {packet.Amount} {packet.Price} 0 0 0");
                             ItemInstance newBz = bzcree.Item.DeepCopy();
@@ -309,7 +309,7 @@ namespace OpenNos.Handler
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null)
             {
-                ItemInstance Item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
+                ItemInstance Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
                 if (Item == null)
                     return;
                 int soldedamount = bz.Amount - Item.Amount;
@@ -339,7 +339,7 @@ namespace OpenNos.Handler
                         DAOFactory.BazaarItemDAO.Delete(bz.BazaarItemId);
                     }
 
-                    DAOFactory.IteminstanceDao.Delete(Item.Id);
+                    DAOFactory.IteminstanceDAO.Delete(Item.Id);
 
                 }
                 else

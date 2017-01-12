@@ -344,7 +344,7 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IItemInstanceDAO IteminstanceDao
+        public static IItemInstanceDAO IteminstanceDAO
         {
             get
             {

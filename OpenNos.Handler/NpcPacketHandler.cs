@@ -481,7 +481,7 @@ namespace OpenNos.Handler
                 }
                 else if (typePacket == 1)
                 {
-                    Session.Character.CloseShop(true);
+                    Session.Character.CloseShop();
                 }
             }
         }
