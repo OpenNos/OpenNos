@@ -1706,7 +1706,7 @@ namespace OpenNos.GameObject
             int nearestDistance = 100;
             foreach (KeyValuePair<long, long> kvp in monsterToAttack.DamageList)
             {
-                ClientSession session = monsterToAttack.Map.GetSessionByCharacterId(kvp.Value);
+                ClientSession session = monsterToAttack.Map.GetSessionByCharacterId(kvp.Key);
                 if (session != null)
                 {
                     int distance = Map.GetDistance(new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }, new MapCell { X = session.Character.MapX, Y = session.Character.MapY });
