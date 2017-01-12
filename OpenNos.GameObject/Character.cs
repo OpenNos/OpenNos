@@ -34,12 +34,12 @@ namespace OpenNos.GameObject
         private IList<CharacterRelationDTO> _blacklisted;
         private byte _cmapcount;
         private int _direction;
+        private bool _familymessagechanged;
         private IList<CharacterRelationDTO> _friends;
         private Inventory _inventory;
         private bool _invisible;
         private bool _isDancing;
         private bool _issitting;
-        private bool _familymessagechanged;
         private double _lastPortal;
         private int _lastPulse;
         private int _morph;
@@ -80,13 +80,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool CanFight
-        {
-            get
-            {
-                return !IsSitting && ExchangeInfo == null;
-            }
-        }
+        public bool CanFight => !IsSitting && ExchangeInfo == null;
 
         public int CollectedFamilyXp { get; set; }
 
@@ -111,8 +105,6 @@ namespace OpenNos.GameObject
 
         public int DistanceCritical { get; set; }
 
-        public List<StaticBonusDTO> StaticBonusList { get; set; }
-
         public int DistanceCriticalRate { get; set; }
 
         public int DistanceDefence { get; set; }
@@ -133,7 +125,23 @@ namespace OpenNos.GameObject
 
         public FamilyCharacterDTO FamilyCharacter { get; set; }
 
+        public List<long> FamilyInviteCharacters { get; set; }
+
+        public bool FamilyMessageChanged
+        {
+            get
+            {
+                return _familymessagechanged;
+            }
+            set
+            {
+                _familymessagechanged = value;
+            }
+        }
+
         public int FireResistance { get; set; }
+
+        public List<long> FriendRequestCharacters { get; set; }
 
         public bool GmPvtBlock { get; set; }
 
@@ -151,30 +159,7 @@ namespace OpenNos.GameObject
 
         public int HitRate { get; set; }
 
-        public List<long> FamilyInviteCharacters { get; set; }
-
-        public bool FamilyMessageChanged
-        {
-            get
-            {
-                return _familymessagechanged;
-            }
-
-            set
-            {
-                _familymessagechanged = value;
-            }
-        }
-
-        public List<long> FriendRequestCharacters { get; set; }
-
-        public bool InExchangeOrTrade
-        {
-            get
-            {
-                return ExchangeInfo != null || Speed == 0;
-            }
-        }
+        public bool InExchangeOrTrade => ExchangeInfo != null || Speed == 0;
 
         public Inventory Inventory
         {
@@ -287,9 +272,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public DateTime LastSkillUse { get; set; }
-
         public DateTime LastPVPRevive { get; set; }
+
+        public DateTime LastSkillUse { get; set; }
 
         public double LastSp { get; set; }
 
@@ -433,182 +418,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateRCBList(CBListPacket packet)
-        {
-            string itembazar = string.Empty;
-
-            string charname = string.Empty;
-            ItemInstance item = null;
-
-            List<string> itemssearch = packet.ItemVNumFilter == "0" ? new List<string>() : packet.ItemVNumFilter.Split(' ').ToList();
-            List<BazaarItemLink> bzlist = new List<BazaarItemLink>();
-            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
-            {
-                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == bz.SellerId);
-
-                if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
-                {
-                    charname = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
-                    item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
-                }
-                if (item == null)
-                    continue;
-                
-                switch (packet.TypeFilter)
-                {
-                    default:
-                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-
-                    case 1://weapon
-                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Weapon)//WeaponFilter
-                            if (packet.SubTypeFilter == 0 || ((item.Item.Class + 1 >> (byte)packet.SubTypeFilter) & 1) == 1)//Class Filter
-                                if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
-                                    if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
-                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
-                                            bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                    case 2://armor
-                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Armor)
-                            if (packet.SubTypeFilter == 0 || ((item.Item.Class + 1 >> (byte)packet.SubTypeFilter) & 1) == 1)//Class Filter
-                                if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
-                                    if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
-                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
-                                            bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                    case 3://Equipment 
-                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Fashion)
-                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 2 && item.Item.EquipmentSlot == EquipmentType.Mask) || (packet.SubTypeFilter == 1 && item.Item.EquipmentSlot == EquipmentType.Hat) || (packet.SubTypeFilter == 6 && item.Item.EquipmentSlot == EquipmentType.CostumeHat) || (packet.SubTypeFilter == 5 && item.Item.EquipmentSlot == EquipmentType.CostumeSuit) || (packet.SubTypeFilter == 3 && item.Item.EquipmentSlot == EquipmentType.Gloves) || (packet.SubTypeFilter == 4 && item.Item.EquipmentSlot == EquipmentType.Boots))
-                                if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
-                                    bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                    case 4://Access 
-                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Jewelery)
-                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 2 && item.Item.EquipmentSlot == EquipmentType.Ring) || (packet.SubTypeFilter == 1 && item.Item.EquipmentSlot == EquipmentType.Necklace) || (packet.SubTypeFilter == 5 && item.Item.EquipmentSlot == EquipmentType.Amulet) || (packet.SubTypeFilter == 3 && item.Item.EquipmentSlot == EquipmentType.Bracelet) || (packet.SubTypeFilter == 4 && (item.Item.EquipmentSlot == EquipmentType.Fairy || (item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 5))))
-                                if (packet.LevelFilter == 0 || (packet.LevelFilter == 11 && item.Item.IsHeroic) || (item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9))//Level filter
-                                    bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                    case 5://Specialist 
-                        if (item.Item.Type == InventoryType.Equipment)
-                            if ((item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 2))
-                                if (packet.TypeFilter == 0
-                                    || (packet.TypeFilter == 1 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 10)
-                                     || (packet.TypeFilter == 2 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 11)
-                                      || (packet.TypeFilter == 3 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 2)
-                                       || (packet.TypeFilter == 4 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 3)
-                                        || (packet.TypeFilter == 5 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 13)
-                                         || (packet.TypeFilter == 6 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 5)
-                                          || (packet.TypeFilter == 7 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 12)
-                                           || (packet.TypeFilter == 8 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 4)
-                                            || (packet.TypeFilter == 9 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 7)
-                                             || (packet.TypeFilter == 10 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 15)
-                                              || (packet.TypeFilter == 11 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 6)
-                                               || (packet.TypeFilter == 12 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 14)
-                                                || (packet.TypeFilter == 13 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 9)
-                                                 || (packet.TypeFilter == 14 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 9)
-                                                  || (packet.TypeFilter == 15 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 8)
-                                                   || (packet.TypeFilter == 16 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 1)
-                                                    || (packet.TypeFilter == 17 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 16)
-                                                     || (packet.TypeFilter == 18 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 17)
-                                                      || (packet.TypeFilter == 19 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 18)
-                                                       || (packet.TypeFilter == 20 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 19)
-                                                        || (packet.TypeFilter == 21 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 20)
-                                                         || (packet.TypeFilter == 22 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 21)
-                                                          || (packet.TypeFilter == 23 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 22)
-                                                           || (packet.TypeFilter == 24 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 23)
-                                                            || (packet.TypeFilter == 25 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 24)
-                                                             || (packet.TypeFilter == 26 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 25)
-                                                              || (packet.TypeFilter == 27 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 26)
-                                                               || (packet.TypeFilter == 28 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 27)
-                                                                || (packet.TypeFilter == 29 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 28))
-                                    if (packet.LevelFilter == 0 || ((item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
-                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
-                                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0) || (packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0))
-                                                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                    case 6://Pet 
-                        if (item.Item.Type == InventoryType.Equipment)
-                            if (item.Item.ItemType == ItemType.Box && (item.Item.ItemSubType == 0))
-                                if (packet.LevelFilter == 0 || ((item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
-                                    if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0) || (packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0))
-                                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                    case 7://Npc
-                        if (item.Item.Type == InventoryType.Equipment)
-                            if (item.Item.ItemType == ItemType.Box && (item.Item.ItemSubType == 1))
-                                if (packet.LevelFilter == 0 || ((item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
-                                    if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0) || (packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0))
-                                        bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                    case 8://Vehicle
-                        if ((item.Item.ItemType == ItemType.Box && (item.Item.ItemSubType == 4)))
-                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0) || (packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0))
-                                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                    case 9://Shell
-                        if (item.Item.Type == InventoryType.Equipment)
-                            if (item.Item.ItemType == ItemType.Shell)
-                                if (packet.SubTypeFilter == 0 || item.Item.ItemSubType == item.Item.ItemSubType + 1)
-                                    if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
-                                        if (packet.LevelFilter == 0 || ((item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
-                                            bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                    case 10://Main
-                        if (item.Item.Type == InventoryType.Main)
-                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && item.Item.ItemType == ItemType.Main) || (packet.SubTypeFilter == 2 && item.Item.ItemType == ItemType.Upgrade) || (packet.SubTypeFilter == 3 && item.Item.ItemType == ItemType.Production) || (packet.SubTypeFilter == 4 && item.Item.ItemType == ItemType.Special) || (packet.SubTypeFilter == 5 && item.Item.ItemType == ItemType.Potion) || (packet.SubTypeFilter == 6 && item.Item.ItemType == ItemType.Event))
-                                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                    case 11://Usable
-                        if (item.Item.Type == InventoryType.Etc)
-                            if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && item.Item.ItemType == ItemType.Food) || (packet.SubTypeFilter == 2 && item.Item.ItemType == ItemType.Snack) || (packet.SubTypeFilter == 3 && item.Item.ItemType == ItemType.Magical) || (packet.SubTypeFilter == 4 && item.Item.ItemType == ItemType.Part) || (packet.SubTypeFilter == 5 && item.Item.ItemType == ItemType.Teacher) || (packet.SubTypeFilter == 6 && item.Item.ItemType == ItemType.Sell))
-                                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                    case 12://Others
-                        if (item.Item.Type == InventoryType.Equipment)
-                            if (item.Item.ItemType == ItemType.Box)
-                                bzlist.Add(new BazaarItemLink() { Item = item, BazaarItem = bz, Owner = charname });
-                        break;
-                }
-            }
-            List<BazaarItemLink> bzlistsearched = bzlist.Where(s => itemssearch.Contains(s.Item.ItemVNum.ToString())).ToList();
-            int i = 0;
-            //price up price down quantity up quantity down
-            List<BazaarItemLink> definitivelist = (itemssearch.Any() ? bzlistsearched : bzlist);
-            switch (packet.OrderFilter)
-            {
-                case 0:
-                    definitivelist = definitivelist.OrderBy(s => s.BazaarItem.Price).ToList();
-                    break;
-                case 1:
-                    definitivelist = definitivelist.OrderByDescending(s => s.BazaarItem.Price).ToList();
-                    break;
-                case 2:
-                    definitivelist = definitivelist.OrderBy(s => s.BazaarItem.Amount).ToList();
-                    break;
-                case 3:
-                    definitivelist = definitivelist.OrderByDescending(s => s.BazaarItem.Amount).ToList();
-                    break;
-                default:
-                    definitivelist = definitivelist.ToList();
-                    break;
-
-            }
-            foreach (BazaarItemLink bzlink in definitivelist.Where(s => ((s.BazaarItem.DateStart.AddHours(s.BazaarItem.Duration) - DateTime.Now).TotalMinutes > 0 && s.Item.Amount > 0)).Skip(packet.Index * 50).Take(50))
-            {
-                long time = (long)(bzlink.BazaarItem.DateStart.AddHours(bzlink.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
-                string info = string.Empty;
-                if (bzlink.Item.Item.Type == InventoryType.Equipment)
-                    info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ?
-                        Session.Character.GenerateEInfo(bzlink.Item as WearableInstance) : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
-                        Session.Character.GeneratePslInfo(bzlink.Item as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(bzlink.Item as SpecialistInstance, 0)).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
-
-
-                itembazar += $"{bzlink.BazaarItem.BazaarItemId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage ? 1 : 0)}|{bzlink.BazaarItem.Price}|{time}|2|0|{bzlink.Item.Rare}|{bzlink.Item.Upgrade}|{info} ";
-            }
-
-            return $"rc_blist {packet.Index} {itembazar} ";
-        }
-
         public short SaveX { get; set; }
 
         public short SaveY { get; set; }
@@ -663,6 +472,8 @@ namespace OpenNos.GameObject
                 _speed = value > 59 ? (byte)59 : value;
             }
         }
+
+        public List<StaticBonusDTO> StaticBonusList { get; set; }
 
         public int TimesUsed { get; set; }
 
@@ -794,41 +605,6 @@ namespace OpenNos.GameObject
             {
                 Session.CurrentMap?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
             }
-        }
-
-        public string GenerateRCSList(CSListnPacket packet)
-        {
-            string list = string.Empty;
-
-            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll().Where(s => s.SellerId == CharacterId).Skip(packet.Index * 50).Take(50))
-            {
-                ItemInstance item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
-                if (item != null)
-                {
-                    int SoldedAmount = bz.Amount - item.Amount;
-                    int Amount = bz.Amount;
-                    bool Package = bz.IsPackage;
-                    bool IsNosbazar = bz.MedalUsed;
-                    long Price = bz.Price;
-                    long MinutesLeft = (long)(bz.DateStart.AddHours(bz.Duration) - DateTime.Now).TotalMinutes;
-                    byte Status = MinutesLeft >= 0 ? (SoldedAmount < Amount ? (byte)BazaarType.OnSale : (byte)BazaarType.Solded) : (byte)BazaarType.DelayExpired;
-                    if (Status == (byte)BazaarType.DelayExpired)
-                    {
-                        MinutesLeft = (long)(bz.DateStart.AddHours(bz.Duration).AddDays(30) - DateTime.Now).TotalMinutes;
-                    }
-                    string info = string.Empty;
-                    if (item.Item.Type == InventoryType.Equipment)
-                        info = Session.Character.GenerateEInfo(item as WearableInstance).Replace(' ', '^').Replace("e_info^", "");
-                    
-
-                    if (packet.Filter == 0 || packet.Filter == Status)
-                    {
-                        list += $"{bz.BazaarItemId}|{bz.SellerId}|{item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1 : 0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar ? 1 : 0)}|0|{item.Rare}|{item.Upgrade}|{info} ";
-                    }
-                }
-            }
-
-            return $"rc_slist {packet.Index} {list}";
         }
 
         public void ChangeSex()
@@ -1010,29 +786,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void CloseExchangeOrTrade()
-        {
-            if (InExchangeOrTrade)
-            {
-                long? targetSessionId = ExchangeInfo?.TargetCharacterId;
-
-                if (targetSessionId.HasValue && Session.HasCurrentMap)
-                {
-                    ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(targetSessionId.Value);
-
-                    if (targetSession == null)
-                    {
-                        return;
-                    }
-
-                    Session.SendPacket("exc_close 0");
-                    targetSession.SendPacket("exc_close 0");
-                    ExchangeInfo = null;
-                    targetSession.Character.ExchangeInfo = null;
-                }
-            }
-        }
-
         public void CloseShop()
         {
             if (HasShopOpened && Session.HasCurrentMap)
@@ -1062,28 +815,12 @@ namespace OpenNos.GameObject
             IsDancing = !IsDancing;
         }
 
-        private Character DeepCopy()
-        {
-            Character clonedCharacter = (Character)MemberwiseClone();
-            return clonedCharacter;
-        }
-
         public void DeleteBlacklisted(long characterId)
         {
             DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
         }
 
         public void DeleteFriend(long characterId)
-        {
-            DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
-            CharacterRelationDTO deleteReleation = _friends.FirstOrDefault(f => f.RelatedCharacterId == characterId);
-            if (deleteReleation != null)
-            {
-                _friends.Remove(deleteReleation);
-            }
-        }
-
-        public void DeleteSpouse(long characterId)
         {
             DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
             CharacterRelationDTO deleteReleation = _friends.FirstOrDefault(f => f.RelatedCharacterId == characterId);
@@ -1108,6 +845,16 @@ namespace OpenNos.GameObject
             {
                 Tuple<short, InventoryType> result = Inventory.DeleteById(id);
                 Session.SendPacket(GenerateInventoryAdd(-1, 0, result.Item2, result.Item1, 0, 0, 0, 0));
+            }
+        }
+
+        public void DeleteSpouse(long characterId)
+        {
+            DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
+            CharacterRelationDTO deleteReleation = _friends.FirstOrDefault(f => f.RelatedCharacterId == characterId);
+            if (deleteReleation != null)
+            {
+                _friends.Remove(deleteReleation);
             }
         }
 
@@ -1325,6 +1072,7 @@ namespace OpenNos.GameObject
             #endregion
 
             #region Basic Damage Data Calculation
+
             // TODO: Implement BCard damage boosts, see Issue
 
             mainUpgrade -= monsterToAttack.Monster.DefenceUpgrade;
@@ -1718,503 +1466,6 @@ namespace OpenNos.GameObject
             return damage;
         }
 
-        public int GeneratePVPDamage(Character target, Skill skill, ref int hitmode)
-        {
-            #region Definitions
-
-            if (target == null)
-            {
-                return 0;
-            }
-            if (Inventory == null)
-            {
-                return 0;
-            }
-
-            // int miss_chance = 20;
-            int monsterDefence = 0;
-            int monsterDodge = 0;
-            short monsterDefLevel = 0;
-
-            short mainUpgrade = 0;
-            int mainCritChance = 0;
-            int mainCritHit = 0;
-            int mainMinDmg = 0;
-            int mainMaxDmg = 0;
-            int mainHitRate = 0;
-
-            short secUpgrade = 0;
-            int secCritChance = 0;
-            int secCritHit = 0;
-            int secMinDmg = 0;
-            int secMaxDmg = 0;
-            int secHitRate = 0;
-
-            // int CritChance = 4; int CritHit = 70; int MinDmg = 0; int MaxDmg = 0; int HitRate = 0;
-            // sbyte Upgrade = 0;
-
-            #endregion
-
-            #region Get Weapon Stats
-
-            WearableInstance weapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
-            if (weapon != null)
-            {
-                mainUpgrade = weapon.Upgrade;
-            }
-
-            mainMinDmg += MinHit;
-            mainMaxDmg += MaxHit;
-            mainHitRate += HitRate;
-            mainCritChance += HitCriticalRate;
-            mainCritHit += HitCritical;
-
-            WearableInstance weapon2 = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
-            if (weapon2 != null)
-            {
-                secUpgrade = weapon2.Upgrade;
-            }
-
-            secMinDmg += MinDistance;
-            secMaxDmg += MaxDistance;
-            secHitRate += DistanceRate;
-            secCritChance += DistanceCriticalRate;
-            secCritHit += DistanceCritical;
-
-            WearableInstance targetArmor = target.Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
-            if (targetArmor != null)
-            {
-                monsterDefLevel = targetArmor.Upgrade;
-            }
-
-            #endregion
-
-            #region Switch skill.Type
-
-            switch (skill.Type)
-            {
-                case 0:
-                    monsterDefence = target.Defence;
-                    monsterDodge = (int)(target.DefenceRate * 0.95);
-                    if (Class == ClassType.Archer)
-                    {
-                        mainCritHit = secCritHit;
-                        mainCritChance = secCritChance;
-                        mainHitRate = secHitRate;
-                        mainMaxDmg = secMaxDmg;
-                        mainMinDmg = secMinDmg;
-                        mainUpgrade = secUpgrade;
-                    }
-                    break;
-
-                case 1:
-                    monsterDefence = target.DistanceDefence;
-                    monsterDodge = (int)(target.DistanceDefenceRate * 0.95);
-                    if (Class == ClassType.Swordman || Class == ClassType.Adventurer || Class == ClassType.Magician)
-                    {
-                        mainCritHit = secCritHit;
-                        mainCritChance = secCritChance;
-                        mainHitRate = secHitRate;
-                        mainMaxDmg = secMaxDmg;
-                        mainMinDmg = secMinDmg;
-                        mainUpgrade = secUpgrade;
-                    }
-                    break;
-
-                case 2:
-                    monsterDefence = target.MagicalDefence;
-                    break;
-
-                case 3:
-                    switch (Class)
-                    {
-                        case ClassType.Swordman:
-                            monsterDefence = target.Defence;
-                            break;
-
-                        case ClassType.Archer:
-                            monsterDefence = target.DistanceDefence;
-                            break;
-
-                        case ClassType.Magician:
-                            monsterDefence = target.MagicalDefence;
-                            break;
-
-                        case ClassType.Adventurer:
-                            monsterDefence = target.Defence;
-                            break;
-                    }
-                    break;
-
-                case 5:
-                    monsterDefence = target.Defence;
-                    monsterDodge = target.DefenceRate;
-                    if (Class == ClassType.Archer)
-                    {
-                        mainCritHit = secCritHit;
-                        mainCritChance = secCritChance;
-                        mainHitRate = secHitRate;
-                        mainMaxDmg = secMaxDmg;
-                        mainMinDmg = secMinDmg;
-                        mainUpgrade = secUpgrade;
-                    }
-                    break;
-            }
-
-            #endregion
-
-            #region Basic Damage Data Calculation
-            // TODO: Implement BCard damage boosts, see Issue
-
-            mainUpgrade -= monsterDefLevel;
-            if (mainUpgrade < -10)
-            {
-                mainUpgrade = -10;
-            }
-            else if (mainUpgrade > 10)
-            {
-                mainUpgrade = 10;
-            }
-
-            #endregion
-
-            #region Detailed Calculation
-
-            #region Dodge
-
-            if (Class != ClassType.Magician)
-            {
-                double multiplier = monsterDodge / (mainHitRate + 1);
-                if (multiplier > 5)
-                {
-                    multiplier = 5;
-                }
-                double chance = -0.25 * Math.Pow(multiplier, 3) - 0.57 * Math.Pow(multiplier, 2) + 25.3 * multiplier - 1.41;
-                if (chance <= 1)
-                {
-                    chance = 1;
-                }
-                if ((skill.Type == 0 || skill.Type == 1) && !HasGodMode)
-                {
-                    if (ServerManager.RandomNumber() <= chance)
-                    {
-                        hitmode = 1;
-                        return 0;
-                    }
-                }
-            }
-
-            #endregion
-
-            #region Base Damage
-
-            int baseDamage = ServerManager.RandomNumber(mainMinDmg, mainMaxDmg + 1);
-            baseDamage += skill.Damage / 4;
-            baseDamage += Level - target.Level; //Morale
-            if (Class == ClassType.Adventurer)
-            {
-                //HACK: Damage is ~10 lower in OpenNos than in official. Fix this...
-                baseDamage += 20;
-            }
-            int elementalDamage = 0; // placeholder for BCard etc...
-            elementalDamage += skill.ElementalDamage / 4;
-            switch (mainUpgrade)
-            {
-                case -10:
-                    monsterDefence += monsterDefence * 2;
-                    break;
-
-                case -9:
-                    monsterDefence += (int)(monsterDefence * 1.2);
-                    break;
-
-                case -8:
-                    monsterDefence += (int)(monsterDefence * 0.9);
-                    break;
-
-                case -7:
-                    monsterDefence += (int)(monsterDefence * 0.65);
-                    break;
-
-                case -6:
-                    monsterDefence += (int)(monsterDefence * 0.54);
-                    break;
-
-                case -5:
-                    monsterDefence += (int)(monsterDefence * 0.43);
-                    break;
-
-                case -4:
-                    monsterDefence += (int)(monsterDefence * 0.32);
-                    break;
-
-                case -3:
-                    monsterDefence += (int)(monsterDefence * 0.22);
-                    break;
-
-                case -2:
-                    monsterDefence += (int)(monsterDefence * 0.15);
-                    break;
-
-                case -1:
-                    monsterDefence += (int)(monsterDefence * 0.1);
-                    break;
-
-                case 0:
-                    break;
-
-                case 1:
-                    baseDamage += (int)(baseDamage * 0.1);
-                    break;
-
-                case 2:
-                    baseDamage += (int)(baseDamage * 0.15);
-                    break;
-
-                case 3:
-                    baseDamage += (int)(baseDamage * 0.22);
-                    break;
-
-                case 4:
-                    baseDamage += (int)(baseDamage * 0.32);
-                    break;
-
-                case 5:
-                    baseDamage += (int)(baseDamage * 0.43);
-                    break;
-
-                case 6:
-                    baseDamage += (int)(baseDamage * 0.54);
-                    break;
-
-                case 7:
-                    baseDamage += (int)(baseDamage * 0.65);
-                    break;
-
-                case 8:
-                    baseDamage += (int)(baseDamage * 0.9);
-                    break;
-
-                case 9:
-                    baseDamage += (int)(baseDamage * 1.2);
-                    break;
-
-                case 10:
-                    baseDamage += baseDamage * 2;
-                    break;
-            }
-            if (skill.Type == 1)
-            {
-                if (Math.Abs(target.MapX - MapX) < 4 && Math.Abs(target.MapY - MapY) < 4)
-                    baseDamage = (int)(baseDamage * 0.7);
-            }
-
-            #endregion
-
-            #region Elementary Damage
-
-            #region Calculate Elemental Boost + Rate
-
-            double elementalBoost = 0;
-            int monsterResistance = 0;
-            switch (Element)
-            {
-                case 0:
-                    break;
-
-                case 1:
-                    monsterResistance = target.FireResistance;
-                    switch (target.Element)
-                    {
-                        case 0:
-                            elementalBoost = 1.3; // Damage vs no element
-                            break;
-
-                        case 1:
-                            elementalBoost = 1; // Damage vs fire
-                            break;
-
-                        case 2:
-                            elementalBoost = 2; // Damage vs water
-                            break;
-
-                        case 3:
-                            elementalBoost = 1; // Damage vs light
-                            break;
-
-                        case 4:
-                            elementalBoost = 1.5; // Damage vs darkness
-                            break;
-                    }
-                    break;
-
-                case 2:
-                    monsterResistance = target.WaterResistance;
-                    switch (target.Element)
-                    {
-                        case 0:
-                            elementalBoost = 1.3;
-                            break;
-
-                        case 1:
-                            elementalBoost = 2;
-                            break;
-
-                        case 2:
-                            elementalBoost = 1;
-                            break;
-
-                        case 3:
-                            elementalBoost = 1.5;
-                            break;
-
-                        case 4:
-                            elementalBoost = 1;
-                            break;
-                    }
-                    break;
-
-                case 3:
-                    monsterResistance = target.LightResistance;
-                    switch (target.Element)
-                    {
-                        case 0:
-                            elementalBoost = 1.3;
-                            break;
-
-                        case 1:
-                            elementalBoost = 1.5;
-                            break;
-
-                        case 2:
-                            elementalBoost = 1;
-                            break;
-
-                        case 3:
-                            elementalBoost = 1;
-                            break;
-
-                        case 4:
-                            elementalBoost = 3;
-                            break;
-                    }
-                    break;
-
-                case 4:
-                    monsterResistance = target.DarkResistance;
-                    switch (target.Element)
-                    {
-                        case 0:
-                            elementalBoost = 1.3;
-                            break;
-
-                        case 1:
-                            elementalBoost = 1;
-                            break;
-
-                        case 2:
-                            elementalBoost = 1.5;
-                            break;
-
-                        case 3:
-                            elementalBoost = 3;
-                            break;
-
-                        case 4:
-                            elementalBoost = 1;
-                            break;
-                    }
-                    break;
-            }
-
-            #endregion;
-
-            if (skill.Element == 0)
-            {
-                if (elementalBoost == 0.5)
-                {
-                    elementalBoost = 0;
-                }
-                else if (elementalBoost == 1)
-                {
-                    elementalBoost = 0.05;
-                }
-                else if (elementalBoost == 1.3)
-                {
-                    elementalBoost = 0.15;
-                }
-                else if (elementalBoost == 1.5)
-                {
-                    elementalBoost = 0.15;
-                }
-                else if (elementalBoost == 2)
-                {
-                    elementalBoost = 0.2;
-                }
-                else if (elementalBoost == 3)
-                {
-                    elementalBoost = 0.2;
-                }
-            }
-            else if (skill.Element != Element)
-            {
-                elementalBoost = 0;
-            }
-
-            elementalDamage = (int)((elementalDamage + (elementalDamage + baseDamage) * ((ElementRate + ElementRateSP) / 100D)) * elementalBoost);
-            elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
-            if (elementalDamage < 0)
-            {
-                elementalDamage = 0;
-            }
-
-            #endregion
-
-            #region Critical Damage
-
-            baseDamage -= monsterDefence;
-
-            if (ServerManager.RandomNumber() <= mainCritChance)
-            {
-                if (skill.Type == 2)
-                {
-                }
-                else if (skill.Type == 3 && Class != ClassType.Magician)
-                {
-                    double multiplier = mainCritHit / 100D;
-                    if (multiplier > 3)
-                        multiplier = 3;
-                    baseDamage += (int)(baseDamage * multiplier);
-                    hitmode = 3;
-                }
-                else
-                {
-                    double multiplier = mainCritHit / 100D;
-                    if (multiplier > 3)
-                        multiplier = 3;
-                    baseDamage += (int)(baseDamage * multiplier);
-                    hitmode = 3;
-                }
-            }
-
-            #endregion
-
-            #region Total Damage
-
-            int totalDamage = baseDamage + elementalDamage;
-            if (totalDamage < 5)
-            {
-                totalDamage = ServerManager.RandomNumber(1, 6);
-            }
-
-            #endregion
-
-            #endregion
-
-            return totalDamage;
-        }
-
-
         public string GenerateDelay(int delay, int type, string argument)
         {
             return $"delay {delay} {type} {argument}";
@@ -2223,21 +1474,6 @@ namespace OpenNos.GameObject
         public string GenerateDialog(string dialog)
         {
             return $"dlg {dialog}";
-        }
-
-        private void GenerateDignity(NpcMonsterDTO monsterinfo)
-        {
-            if (Level < monsterinfo.Level && Dignity < 100 && Level > 20)
-            {
-                Dignity += (float)0.5;
-                if (Dignity == (int)Dignity)
-                {
-                    Session.SendPacket(GenerateFd());
-                    Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMap?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
-                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
-                }
-            }
         }
 
         public string GenerateDir()
@@ -2350,10 +1586,12 @@ namespace OpenNos.GameObject
                                 return specialist.HoldingVNum == 0 ?
                                     $"e_info 7 {item.ItemVNum} 0" :
                                     $"e_info 7 {item.ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} {CharacterHelper.SPXPData[specialist.SpLevel - 1]} {item.Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, item.Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
+
                             case 4:
                                 return specialist.HoldingVNum == 0 ?
                                     $"e_info 11 {item.ItemVNum} 0" :
                                     $"e_info 11 {item.ItemVNum} 1 {specialist.HoldingVNum}";
+
                             case 5:
                                 Item fairyitem = ServerManager.GetItem(specialist.HoldingVNum);
                                 return specialist.HoldingVNum == 0 ?
@@ -2405,37 +1643,6 @@ namespace OpenNos.GameObject
             return $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuit]}.{invarray[(byte)EquipmentType.CostumeHat]}.{invarray[(byte)EquipmentType.WeaponSkin]}";
         }
 
-        private string GenerateEqRareUpgradeForPacket()
-        {
-            sbyte weaponRare = 0;
-            byte weaponUpgrade = 0;
-            sbyte armorRare = 0;
-            byte armorUpgrade = 0;
-            if (Inventory != null)
-            {
-                for (short i = 0; i < 15; i++)
-                {
-                    WearableInstance wearable = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
-                    if (wearable != null)
-                    {
-                        switch (wearable.Item.EquipmentSlot)
-                        {
-                            case EquipmentType.Armor:
-                                armorRare = wearable.Rare;
-                                armorUpgrade = wearable.Upgrade;
-                                break;
-
-                            case EquipmentType.MainWeapon:
-                                weaponRare = wearable.Rare;
-                                weaponUpgrade = wearable.Upgrade;
-                                break;
-                        }
-                    }
-                }
-            }
-            return $"{weaponUpgrade}{weaponRare} {armorUpgrade}{armorRare}";
-        }
-
         public string GenerateEquipment()
         {
             string eqlist = string.Empty;
@@ -2471,11 +1678,6 @@ namespace OpenNos.GameObject
             return $"equip {weaponUpgrade}{weaponRare} {armorUpgrade}{armorRare}{eqlist}";
         }
 
-        public bool HaveBackpack()
-        {
-            return StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.BackPack);
-        }
-
         public string GenerateExts()
         {
             return $"exts 0 {48 + (HaveBackpack() ? 1 : 0) * 12} {48 + (HaveBackpack() ? 1 : 0) * 12} {48 + (HaveBackpack() ? 1 : 0) * 12}";
@@ -2502,22 +1704,6 @@ namespace OpenNos.GameObject
             }
             return str;
         }
-        public string GenerateFamilyMemberMessage()
-        {
-            string str = "gmsg";
-            try
-            {
-                foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
-                {
-                    str += $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.DailyMessage}";
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-            }
-            return str;
-        }
 
         public string GenerateFamilyMemberExp()
         {
@@ -2528,6 +1714,23 @@ namespace OpenNos.GameObject
                 {
                     str +=
                         $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.Experience}";
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
+            return str;
+        }
+
+        public string GenerateFamilyMemberMessage()
+        {
+            string str = "gmsg";
+            try
+            {
+                foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+                {
+                    str += $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.DailyMessage}";
                 }
             }
             catch (Exception ex)
@@ -2579,14 +1782,24 @@ namespace OpenNos.GameObject
             return result;
         }
 
-        private string GenerateGender()
-        {
-            return $"p_sex {(byte)Gender}";
-        }
-
         public string GenerateGet(long id)
         {
             return $"get 1 {CharacterId} {id} 0";
+        }
+
+        public string GenerateGExp()
+        {
+            string str = "gexp";
+            if (FamilyCharacterId != null)
+            {
+                IEnumerable<FamilyCharacterDTO> familyCharacters = DAOFactory.FamilyCharacterDAO.LoadByFamilyId(FamilyCharacterId.Value);
+                foreach (FamilyCharacterDTO familyCharacter in familyCharacters)
+                {
+                    str += $" {familyCharacter.CharacterId}|{familyCharacter.Experience}";
+                }
+                return str;
+            }
+            return string.Empty;
         }
 
         public string GenerateGidx()
@@ -2973,21 +2186,6 @@ namespace OpenNos.GameObject
             return $"msg {type} {message}";
         }
 
-        public string GenerateGExp()
-        {
-            string str = "gexp";
-            if (FamilyCharacterId != null)
-            {
-                IEnumerable<FamilyCharacterDTO> familyCharacters = DAOFactory.FamilyCharacterDAO.LoadByFamilyId(FamilyCharacterId.Value);
-                foreach (FamilyCharacterDTO familyCharacter in familyCharacters)
-                {
-                    str += $" {familyCharacter.CharacterId}|{familyCharacter.Experience}";
-                }
-                return str;
-            }
-            return string.Empty;
-        }
-
         public MovePacket GenerateMv()
         {
             return new MovePacket
@@ -3098,6 +2296,503 @@ namespace OpenNos.GameObject
             return $"pslinfo {inventoryItem.Item.VNum} {inventoryItem.Item.Element} {inventoryItem.Item.ElementRate} {inventoryItem.Item.LevelJobMinimum} {inventoryItem.Item.Speed} {inventoryItem.Item.FireResistance} {inventoryItem.Item.WaterResistance} {inventoryItem.Item.LightResistance} {inventoryItem.Item.DarkResistance} 0.0 0.0 0.0";
         }
 
+        public int GeneratePVPDamage(Character target, Skill skill, ref int hitmode)
+        {
+            #region Definitions
+
+            if (target == null)
+            {
+                return 0;
+            }
+            if (Inventory == null)
+            {
+                return 0;
+            }
+
+            // int miss_chance = 20;
+            int monsterDefence = 0;
+            int monsterDodge = 0;
+            short monsterDefLevel = 0;
+
+            short mainUpgrade = 0;
+            int mainCritChance = 0;
+            int mainCritHit = 0;
+            int mainMinDmg = 0;
+            int mainMaxDmg = 0;
+            int mainHitRate = 0;
+
+            short secUpgrade = 0;
+            int secCritChance = 0;
+            int secCritHit = 0;
+            int secMinDmg = 0;
+            int secMaxDmg = 0;
+            int secHitRate = 0;
+
+            // int CritChance = 4; int CritHit = 70; int MinDmg = 0; int MaxDmg = 0; int HitRate = 0;
+            // sbyte Upgrade = 0;
+
+            #endregion
+
+            #region Get Weapon Stats
+
+            WearableInstance weapon = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Wear);
+            if (weapon != null)
+            {
+                mainUpgrade = weapon.Upgrade;
+            }
+
+            mainMinDmg += MinHit;
+            mainMaxDmg += MaxHit;
+            mainHitRate += HitRate;
+            mainCritChance += HitCriticalRate;
+            mainCritHit += HitCritical;
+
+            WearableInstance weapon2 = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Wear);
+            if (weapon2 != null)
+            {
+                secUpgrade = weapon2.Upgrade;
+            }
+
+            secMinDmg += MinDistance;
+            secMaxDmg += MaxDistance;
+            secHitRate += DistanceRate;
+            secCritChance += DistanceCriticalRate;
+            secCritHit += DistanceCritical;
+
+            WearableInstance targetArmor = target.Inventory?.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
+            if (targetArmor != null)
+            {
+                monsterDefLevel = targetArmor.Upgrade;
+            }
+
+            #endregion
+
+            #region Switch skill.Type
+
+            switch (skill.Type)
+            {
+                case 0:
+                    monsterDefence = target.Defence;
+                    monsterDodge = (int)(target.DefenceRate * 0.95);
+                    if (Class == ClassType.Archer)
+                    {
+                        mainCritHit = secCritHit;
+                        mainCritChance = secCritChance;
+                        mainHitRate = secHitRate;
+                        mainMaxDmg = secMaxDmg;
+                        mainMinDmg = secMinDmg;
+                        mainUpgrade = secUpgrade;
+                    }
+                    break;
+
+                case 1:
+                    monsterDefence = target.DistanceDefence;
+                    monsterDodge = (int)(target.DistanceDefenceRate * 0.95);
+                    if (Class == ClassType.Swordman || Class == ClassType.Adventurer || Class == ClassType.Magician)
+                    {
+                        mainCritHit = secCritHit;
+                        mainCritChance = secCritChance;
+                        mainHitRate = secHitRate;
+                        mainMaxDmg = secMaxDmg;
+                        mainMinDmg = secMinDmg;
+                        mainUpgrade = secUpgrade;
+                    }
+                    break;
+
+                case 2:
+                    monsterDefence = target.MagicalDefence;
+                    break;
+
+                case 3:
+                    switch (Class)
+                    {
+                        case ClassType.Swordman:
+                            monsterDefence = target.Defence;
+                            break;
+
+                        case ClassType.Archer:
+                            monsterDefence = target.DistanceDefence;
+                            break;
+
+                        case ClassType.Magician:
+                            monsterDefence = target.MagicalDefence;
+                            break;
+
+                        case ClassType.Adventurer:
+                            monsterDefence = target.Defence;
+                            break;
+                    }
+                    break;
+
+                case 5:
+                    monsterDefence = target.Defence;
+                    monsterDodge = target.DefenceRate;
+                    if (Class == ClassType.Archer)
+                    {
+                        mainCritHit = secCritHit;
+                        mainCritChance = secCritChance;
+                        mainHitRate = secHitRate;
+                        mainMaxDmg = secMaxDmg;
+                        mainMinDmg = secMinDmg;
+                        mainUpgrade = secUpgrade;
+                    }
+                    break;
+            }
+
+            #endregion
+
+            #region Basic Damage Data Calculation
+
+            // TODO: Implement BCard damage boosts, see Issue
+
+            mainUpgrade -= monsterDefLevel;
+            if (mainUpgrade < -10)
+            {
+                mainUpgrade = -10;
+            }
+            else if (mainUpgrade > 10)
+            {
+                mainUpgrade = 10;
+            }
+
+            #endregion
+
+            #region Detailed Calculation
+
+            #region Dodge
+
+            if (Class != ClassType.Magician)
+            {
+                double multiplier = monsterDodge / (mainHitRate + 1);
+                if (multiplier > 5)
+                {
+                    multiplier = 5;
+                }
+                double chance = -0.25 * Math.Pow(multiplier, 3) - 0.57 * Math.Pow(multiplier, 2) + 25.3 * multiplier - 1.41;
+                if (chance <= 1)
+                {
+                    chance = 1;
+                }
+                if ((skill.Type == 0 || skill.Type == 1) && !HasGodMode)
+                {
+                    if (ServerManager.RandomNumber() <= chance)
+                    {
+                        hitmode = 1;
+                        return 0;
+                    }
+                }
+            }
+
+            #endregion
+
+            #region Base Damage
+
+            int baseDamage = ServerManager.RandomNumber(mainMinDmg, mainMaxDmg + 1);
+            baseDamage += skill.Damage / 4;
+            baseDamage += Level - target.Level; //Morale
+            if (Class == ClassType.Adventurer)
+            {
+                //HACK: Damage is ~10 lower in OpenNos than in official. Fix this...
+                baseDamage += 20;
+            }
+            int elementalDamage = 0; // placeholder for BCard etc...
+            elementalDamage += skill.ElementalDamage / 4;
+            switch (mainUpgrade)
+            {
+                case -10:
+                    monsterDefence += monsterDefence * 2;
+                    break;
+
+                case -9:
+                    monsterDefence += (int)(monsterDefence * 1.2);
+                    break;
+
+                case -8:
+                    monsterDefence += (int)(monsterDefence * 0.9);
+                    break;
+
+                case -7:
+                    monsterDefence += (int)(monsterDefence * 0.65);
+                    break;
+
+                case -6:
+                    monsterDefence += (int)(monsterDefence * 0.54);
+                    break;
+
+                case -5:
+                    monsterDefence += (int)(monsterDefence * 0.43);
+                    break;
+
+                case -4:
+                    monsterDefence += (int)(monsterDefence * 0.32);
+                    break;
+
+                case -3:
+                    monsterDefence += (int)(monsterDefence * 0.22);
+                    break;
+
+                case -2:
+                    monsterDefence += (int)(monsterDefence * 0.15);
+                    break;
+
+                case -1:
+                    monsterDefence += (int)(monsterDefence * 0.1);
+                    break;
+
+                case 0:
+                    break;
+
+                case 1:
+                    baseDamage += (int)(baseDamage * 0.1);
+                    break;
+
+                case 2:
+                    baseDamage += (int)(baseDamage * 0.15);
+                    break;
+
+                case 3:
+                    baseDamage += (int)(baseDamage * 0.22);
+                    break;
+
+                case 4:
+                    baseDamage += (int)(baseDamage * 0.32);
+                    break;
+
+                case 5:
+                    baseDamage += (int)(baseDamage * 0.43);
+                    break;
+
+                case 6:
+                    baseDamage += (int)(baseDamage * 0.54);
+                    break;
+
+                case 7:
+                    baseDamage += (int)(baseDamage * 0.65);
+                    break;
+
+                case 8:
+                    baseDamage += (int)(baseDamage * 0.9);
+                    break;
+
+                case 9:
+                    baseDamage += (int)(baseDamage * 1.2);
+                    break;
+
+                case 10:
+                    baseDamage += baseDamage * 2;
+                    break;
+            }
+            if (skill.Type == 1)
+            {
+                if (Math.Abs(target.MapX - MapX) < 4 && Math.Abs(target.MapY - MapY) < 4)
+                    baseDamage = (int)(baseDamage * 0.7);
+            }
+
+            #endregion
+
+            #region Elementary Damage
+
+            #region Calculate Elemental Boost + Rate
+
+            double elementalBoost = 0;
+            int monsterResistance = 0;
+            switch (Element)
+            {
+                case 0:
+                    break;
+
+                case 1:
+                    monsterResistance = target.FireResistance;
+                    switch (target.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3; // Damage vs no element
+                            break;
+
+                        case 1:
+                            elementalBoost = 1; // Damage vs fire
+                            break;
+
+                        case 2:
+                            elementalBoost = 2; // Damage vs water
+                            break;
+
+                        case 3:
+                            elementalBoost = 1; // Damage vs light
+                            break;
+
+                        case 4:
+                            elementalBoost = 1.5; // Damage vs darkness
+                            break;
+                    }
+                    break;
+
+                case 2:
+                    monsterResistance = target.WaterResistance;
+                    switch (target.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+
+                        case 1:
+                            elementalBoost = 2;
+                            break;
+
+                        case 2:
+                            elementalBoost = 1;
+                            break;
+
+                        case 3:
+                            elementalBoost = 1.5;
+                            break;
+
+                        case 4:
+                            elementalBoost = 1;
+                            break;
+                    }
+                    break;
+
+                case 3:
+                    monsterResistance = target.LightResistance;
+                    switch (target.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+
+                        case 1:
+                            elementalBoost = 1.5;
+                            break;
+
+                        case 2:
+                            elementalBoost = 1;
+                            break;
+
+                        case 3:
+                            elementalBoost = 1;
+                            break;
+
+                        case 4:
+                            elementalBoost = 3;
+                            break;
+                    }
+                    break;
+
+                case 4:
+                    monsterResistance = target.DarkResistance;
+                    switch (target.Element)
+                    {
+                        case 0:
+                            elementalBoost = 1.3;
+                            break;
+
+                        case 1:
+                            elementalBoost = 1;
+                            break;
+
+                        case 2:
+                            elementalBoost = 1.5;
+                            break;
+
+                        case 3:
+                            elementalBoost = 3;
+                            break;
+
+                        case 4:
+                            elementalBoost = 1;
+                            break;
+                    }
+                    break;
+            }
+
+            #endregion;
+
+            if (skill.Element == 0)
+            {
+                if (elementalBoost == 0.5)
+                {
+                    elementalBoost = 0;
+                }
+                else if (elementalBoost == 1)
+                {
+                    elementalBoost = 0.05;
+                }
+                else if (elementalBoost == 1.3)
+                {
+                    elementalBoost = 0.15;
+                }
+                else if (elementalBoost == 1.5)
+                {
+                    elementalBoost = 0.15;
+                }
+                else if (elementalBoost == 2)
+                {
+                    elementalBoost = 0.2;
+                }
+                else if (elementalBoost == 3)
+                {
+                    elementalBoost = 0.2;
+                }
+            }
+            else if (skill.Element != Element)
+            {
+                elementalBoost = 0;
+            }
+
+            elementalDamage = (int)((elementalDamage + (elementalDamage + baseDamage) * ((ElementRate + ElementRateSP) / 100D)) * elementalBoost);
+            elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
+            if (elementalDamage < 0)
+            {
+                elementalDamage = 0;
+            }
+
+            #endregion
+
+            #region Critical Damage
+
+            baseDamage -= monsterDefence;
+
+            if (ServerManager.RandomNumber() <= mainCritChance)
+            {
+                if (skill.Type == 2)
+                {
+                }
+                else if (skill.Type == 3 && Class != ClassType.Magician)
+                {
+                    double multiplier = mainCritHit / 100D;
+                    if (multiplier > 3)
+                        multiplier = 3;
+                    baseDamage += (int)(baseDamage * multiplier);
+                    hitmode = 3;
+                }
+                else
+                {
+                    double multiplier = mainCritHit / 100D;
+                    if (multiplier > 3)
+                        multiplier = 3;
+                    baseDamage += (int)(baseDamage * multiplier);
+                    hitmode = 3;
+                }
+            }
+
+            #endregion
+
+            #region Total Damage
+
+            int totalDamage = baseDamage + elementalDamage;
+            if (totalDamage < 5)
+            {
+                totalDamage = ServerManager.RandomNumber(1, 6);
+            }
+
+            #endregion
+
+            #endregion
+
+            return totalDamage;
+        }
+
         public string[] GenerateQuicklist()
         {
             string[] pktQs = { "qslot 0", "qslot 1", "qslot 2" };
@@ -3117,6 +2812,230 @@ namespace OpenNos.GameObject
         public string GenerateRc(int characterHealth)
         {
             return $"rc 1 {CharacterId} {characterHealth} 0";
+        }
+
+        public string GenerateRCBList(CBListPacket packet)
+        {
+            string itembazar = string.Empty;
+
+            string charname = string.Empty;
+            ItemInstance item = null;
+
+            List<string> itemssearch = packet.ItemVNumFilter == "0" ? new List<string>() : packet.ItemVNumFilter.Split(' ').ToList();
+            List<BazaarItemLink> bzlist = new List<BazaarItemLink>();
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
+            {
+                if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
+                {
+                    charname = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
+                    item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                }
+                if (item == null)
+                    continue;
+
+                switch (packet.TypeFilter)
+                {
+                    default:
+                        bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 1://weapon
+                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Weapon)//WeaponFilter
+                            if (packet.SubTypeFilter == 0 || ((item.Item.Class + 1 >> packet.SubTypeFilter) & 1) == 1)//Class Filter
+                                if (packet.LevelFilter == 0 || packet.LevelFilter == 11 && item.Item.IsHeroic || item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9)//Level filter
+                                    if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
+                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
+                                            bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 2://armor
+                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Armor)
+                            if (packet.SubTypeFilter == 0 || ((item.Item.Class + 1 >> packet.SubTypeFilter) & 1) == 1)//Class Filter
+                                if (packet.LevelFilter == 0 || packet.LevelFilter == 11 && item.Item.IsHeroic || item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9)//Level filter
+                                    if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
+                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
+                                            bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 3://Equipment
+                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Fashion)
+                            if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 2 && item.Item.EquipmentSlot == EquipmentType.Mask || packet.SubTypeFilter == 1 && item.Item.EquipmentSlot == EquipmentType.Hat || packet.SubTypeFilter == 6 && item.Item.EquipmentSlot == EquipmentType.CostumeHat || packet.SubTypeFilter == 5 && item.Item.EquipmentSlot == EquipmentType.CostumeSuit || packet.SubTypeFilter == 3 && item.Item.EquipmentSlot == EquipmentType.Gloves || packet.SubTypeFilter == 4 && item.Item.EquipmentSlot == EquipmentType.Boots)
+                                if (packet.LevelFilter == 0 || packet.LevelFilter == 11 && item.Item.IsHeroic || item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9)//Level filter
+                                    bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 4://Access
+                        if (item.Item.Type == InventoryType.Equipment && item.Item.ItemType == ItemType.Jewelery)
+                            if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 2 && item.Item.EquipmentSlot == EquipmentType.Ring || packet.SubTypeFilter == 1 && item.Item.EquipmentSlot == EquipmentType.Necklace || packet.SubTypeFilter == 5 && item.Item.EquipmentSlot == EquipmentType.Amulet || packet.SubTypeFilter == 3 && item.Item.EquipmentSlot == EquipmentType.Bracelet || packet.SubTypeFilter == 4 && (item.Item.EquipmentSlot == EquipmentType.Fairy || item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 5))
+                                if (packet.LevelFilter == 0 || packet.LevelFilter == 11 && item.Item.IsHeroic || item.Item.LevelMinimum < packet.LevelFilter * 10 + 1 && item.Item.LevelMinimum >= packet.LevelFilter * 10 - 9)//Level filter
+                                    bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 5://Specialist
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if (item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 2)
+                                if (packet.TypeFilter == 0
+                                    || packet.TypeFilter == 1 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 10
+                                     || packet.TypeFilter == 2 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 11
+                                      || packet.TypeFilter == 3 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 2
+                                       || packet.TypeFilter == 4 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 3
+                                        || packet.TypeFilter == 5 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 13
+                                         || packet.TypeFilter == 6 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 5
+                                          || packet.TypeFilter == 7 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 12
+                                           || packet.TypeFilter == 8 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 4
+                                            || packet.TypeFilter == 9 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 7
+                                             || packet.TypeFilter == 10 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 15
+                                              || packet.TypeFilter == 11 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 6
+                                               || packet.TypeFilter == 12 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 14
+                                                || packet.TypeFilter == 13 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 9
+                                                 || packet.TypeFilter == 14 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 9
+                                                  || packet.TypeFilter == 15 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 8
+                                                   || packet.TypeFilter == 16 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 1
+                                                    || packet.TypeFilter == 17 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 16
+                                                     || packet.TypeFilter == 18 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 17
+                                                      || packet.TypeFilter == 19 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 18
+                                                       || packet.TypeFilter == 20 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 19
+                                                        || packet.TypeFilter == 21 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 20
+                                                         || packet.TypeFilter == 22 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 21
+                                                          || packet.TypeFilter == 23 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 22
+                                                           || packet.TypeFilter == 24 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 23
+                                                            || packet.TypeFilter == 25 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 24
+                                                             || packet.TypeFilter == 26 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 25
+                                                              || packet.TypeFilter == 27 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 26
+                                                               || packet.TypeFilter == 28 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 27
+                                                                || packet.TypeFilter == 29 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 28)
+                                {
+                                    BoxInstance boxInstance = item as BoxInstance;
+                                    if (boxInstance != null && (packet.LevelFilter == 0 || boxInstance.SpLevel < packet.LevelFilter * 10 + 1 && boxInstance.SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
+                                        if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
+                                            if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0 || packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0)
+                                                bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                                }
+                        break;
+
+                    case 6://Pet
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if (item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 0)
+                                if (packet.LevelFilter == 0 || (item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9)//Level filter
+                                    if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0 || packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0)
+                                        bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 7://Npc
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if (item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 1)
+                                if (packet.LevelFilter == 0 || (item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9)//Level filter
+                                    if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0 || packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0)
+                                        bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 8://Vehicle
+                        if (item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 4)
+                            if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0 || packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0)
+                                bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 9://Shell
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if (item.Item.ItemType == ItemType.Shell)
+                                if (packet.SubTypeFilter == 0 || item.Item.ItemSubType == item.Item.ItemSubType + 1)
+                                    if (packet.RareFilter == 0 || packet.RareFilter == item.Rare + 1) //rare filter
+                                        if (packet.LevelFilter == 0 || (item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9)//Level filter
+                                            bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 10://Main
+                        if (item.Item.Type == InventoryType.Main)
+                            if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && item.Item.ItemType == ItemType.Main || packet.SubTypeFilter == 2 && item.Item.ItemType == ItemType.Upgrade || packet.SubTypeFilter == 3 && item.Item.ItemType == ItemType.Production || packet.SubTypeFilter == 4 && item.Item.ItemType == ItemType.Special || packet.SubTypeFilter == 5 && item.Item.ItemType == ItemType.Potion || packet.SubTypeFilter == 6 && item.Item.ItemType == ItemType.Event)
+                                bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 11://Usable
+                        if (item.Item.Type == InventoryType.Etc)
+                            if (packet.SubTypeFilter == 0 || packet.SubTypeFilter == 1 && item.Item.ItemType == ItemType.Food || packet.SubTypeFilter == 2 && item.Item.ItemType == ItemType.Snack || packet.SubTypeFilter == 3 && item.Item.ItemType == ItemType.Magical || packet.SubTypeFilter == 4 && item.Item.ItemType == ItemType.Part || packet.SubTypeFilter == 5 && item.Item.ItemType == ItemType.Teacher || packet.SubTypeFilter == 6 && item.Item.ItemType == ItemType.Sell)
+                                bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+
+                    case 12://Others
+                        if (item.Item.Type == InventoryType.Equipment)
+                            if (item.Item.ItemType == ItemType.Box)
+                                bzlist.Add(new BazaarItemLink { Item = item, BazaarItem = bz, Owner = charname });
+                        break;
+                }
+            }
+            List<BazaarItemLink> bzlistsearched = bzlist.Where(s => itemssearch.Contains(s.Item.ItemVNum.ToString())).ToList();
+
+            //price up price down quantity up quantity down
+            List<BazaarItemLink> definitivelist = itemssearch.Any() ? bzlistsearched : bzlist;
+            switch (packet.OrderFilter)
+            {
+                case 0:
+                    definitivelist = definitivelist.OrderBy(s => s.BazaarItem.Price).ToList();
+                    break;
+
+                case 1:
+                    definitivelist = definitivelist.OrderByDescending(s => s.BazaarItem.Price).ToList();
+                    break;
+
+                case 2:
+                    definitivelist = definitivelist.OrderBy(s => s.BazaarItem.Amount).ToList();
+                    break;
+
+                case 3:
+                    definitivelist = definitivelist.OrderByDescending(s => s.BazaarItem.Amount).ToList();
+                    break;
+
+                default:
+                    definitivelist = definitivelist.ToList();
+                    break;
+            }
+            foreach (BazaarItemLink bzlink in definitivelist.Where(s => (s.BazaarItem.DateStart.AddHours(s.BazaarItem.Duration) - DateTime.Now).TotalMinutes > 0 && s.Item.Amount > 0).Skip(packet.Index * 50).Take(50))
+            {
+                long time = (long)(bzlink.BazaarItem.DateStart.AddHours(bzlink.BazaarItem.Duration) - DateTime.Now).TotalMinutes;
+                string info = string.Empty;
+                if (bzlink.Item.Item.Type == InventoryType.Equipment)
+                    info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ?
+                        Session.Character.GenerateEInfo(bzlink.Item as WearableInstance) : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
+                        Session.Character.GeneratePslInfo(bzlink.Item as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(bzlink.Item as SpecialistInstance, 0)).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
+
+                itembazar += $"{bzlink.BazaarItem.BazaarItemId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage ? 1 : 0)}|{bzlink.BazaarItem.Price}|{time}|2|0|{bzlink.Item.Rare}|{bzlink.Item.Upgrade}|{info} ";
+            }
+
+            return $"rc_blist {packet.Index} {itembazar} ";
+        }
+
+        public string GenerateRCSList(CSListnPacket packet)
+        {
+            string list = string.Empty;
+
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll().Where(s => s.SellerId == CharacterId).Skip(packet.Index * 50).Take(50))
+            {
+                ItemInstance item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                if (item != null)
+                {
+                    int SoldedAmount = bz.Amount - item.Amount;
+                    int Amount = bz.Amount;
+                    bool Package = bz.IsPackage;
+                    bool IsNosbazar = bz.MedalUsed;
+                    long Price = bz.Price;
+                    long MinutesLeft = (long)(bz.DateStart.AddHours(bz.Duration) - DateTime.Now).TotalMinutes;
+                    byte Status = MinutesLeft >= 0 ? (SoldedAmount < Amount ? (byte)BazaarType.OnSale : (byte)BazaarType.Solded) : (byte)BazaarType.DelayExpired;
+                    if (Status == (byte)BazaarType.DelayExpired)
+                    {
+                        MinutesLeft = (long)(bz.DateStart.AddHours(bz.Duration).AddDays(30) - DateTime.Now).TotalMinutes;
+                    }
+                    string info = string.Empty;
+                    if (item.Item.Type == InventoryType.Equipment)
+                        info = Session.Character.GenerateEInfo(item as WearableInstance).Replace(' ', '^').Replace("e_info^", "");
+
+                    if (packet.Filter == 0 || packet.Filter == Status)
+                    {
+                        list += $"{bz.BazaarItemId}|{bz.SellerId}|{item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1 : 0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar ? 1 : 0)}|0|{item.Rare}|{item.Upgrade}|{info} ";
+                    }
+                }
+            }
+
+            return $"rc_slist {packet.Index} {list}";
         }
 
         public string GenerateReqInfo()
@@ -3403,7 +3322,7 @@ namespace OpenNos.GameObject
             DistanceDefenceRate = CharacterHelper.DistanceDefenceRate(Class, Level);
             MagicalDefence = CharacterHelper.MagicalDefence(Class, Level);
             if (UseSp)
-            { // handle specialist            
+            { // handle specialist
                 SpecialistInstance specialist = Inventory?.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                 if (specialist != null)
                 {
@@ -3545,8 +3464,6 @@ namespace OpenNos.GameObject
                 ElementRate += fairy.ElementRate + fairy.Item.ElementRate;
             }
 
-
-
             for (short i = 1; i < 14; i++)
             {
                 WearableInstance item = Inventory?.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
@@ -3586,7 +3503,7 @@ namespace OpenNos.GameObject
             return $"tp 1 {CharacterId} {MapX} {MapY} 0";
         }
 
-        public string[] GenerateVb()
+        public IEnumerable<string> GenerateVb()
         {
             return new[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
         }
@@ -3758,7 +3675,7 @@ namespace OpenNos.GameObject
             return cpmax - cpused;
         }
 
-        public int GetDamage(int damage)
+        public void GetDamage(int damage)
         {
             LastDefence = DateTime.Now;
             Dispose();
@@ -3768,7 +3685,6 @@ namespace OpenNos.GameObject
             {
                 Hp = 0;
             }
-            return Hp;
         }
 
         public int GetDignityIco()
@@ -3799,7 +3715,7 @@ namespace OpenNos.GameObject
             return icoDignity;
         }
 
-        public int GetJXP(NpcMonster monster, Group group)
+        private int GetJXP(NpcMonster monster, Group group)
         {
             int partySize = 1;
             float partyPenalty = 1f;
@@ -3873,7 +3789,7 @@ namespace OpenNos.GameObject
             return Reput <= 5000000 ? 26 : 27;
         }
 
-        public long GetXP(NpcMonster monster, Group group)
+        private long GetXP(NpcMonster monster, Group group)
         {
             int partySize = 1;
             double partyPenalty = 1d;
@@ -3921,7 +3837,6 @@ namespace OpenNos.GameObject
             return xp;
         }
 
-
         public void GiftAdd(short itemVNum, byte amount)
         {
             if (Inventory != null)
@@ -3954,36 +3869,27 @@ namespace OpenNos.GameObject
             }
         }
 
-        public int HealthHPLoad()
+        public bool HaveBackpack()
+        {
+            return StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.BackPack);
+        }
+
+        private int HealthHPLoad()
         {
             if (IsSitting)
             {
                 return CharacterHelper.HPHealth[(byte)Class];
             }
-            else if ((DateTime.Now - LastDefence).TotalSeconds > 4)
-            {
-                return CharacterHelper.HPHealthStand[(byte)Class];
-            }
-            else
-            {
-                return 0;
-            }
+            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.HPHealthStand[(byte)Class] : 0;
         }
 
-        public int HealthMPLoad()
+        private int HealthMPLoad()
         {
             if (IsSitting)
             {
                 return CharacterHelper.MPHealth[(byte)Class];
             }
-            else if ((DateTime.Now - LastDefence).TotalSeconds > 4)
-            {
-                return CharacterHelper.MPHealthStand[(byte)Class];
-            }
-            else
-            {
-                return 0;
-            }
+            return (DateTime.Now - LastDefence).TotalSeconds > 4 ? CharacterHelper.MPHealthStand[(byte)Class] : 0;
         }
 
         public double HPLoad()
@@ -4081,13 +3987,9 @@ namespace OpenNos.GameObject
             return DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now);
         }
 
-        public double JobXPLoad()
+        private double JobXPLoad()
         {
-            if (Class == (byte)ClassType.Adventurer)
-            {
-                return CharacterHelper.FirstJobXPData[JobLevel - 1];
-            }
-            return CharacterHelper.SecondJobXPData[JobLevel - 1];
+            return Class == (byte)ClassType.Adventurer ? CharacterHelper.FirstJobXPData[JobLevel - 1] : CharacterHelper.SecondJobXPData[JobLevel - 1];
         }
 
         public void LearnAdventurerSkill()
@@ -4576,7 +4478,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public double SPXPLoad()
+        private double SPXPLoad()
         {
             SpecialistInstance specialist = null;
             if (Inventory != null)
@@ -4586,17 +4488,16 @@ namespace OpenNos.GameObject
             return specialist != null ? CharacterHelper.SPXPData[specialist.SpLevel - 1] : 0;
         }
 
-        public bool Update()
+        public void Update()
         {
             try
             {
                 CharacterDTO characterToUpdate = this;
                 DAOFactory.CharacterDAO.InsertOrUpdate(ref characterToUpdate);
-                return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                Logger.Log.Error("Character update exception",ex);
             }
         }
 
@@ -4709,11 +4610,6 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        private double XPLoad()
-        {
-            return CharacterHelper.XPData[Level - 1];
-        }
-
         internal void RefreshValidity()
         {
             if (Session.Character.StaticBonusList.RemoveAll(s => s.StaticBonusType == StaticBonusType.BackPack && s.DateEnd < DateTime.Now) > 0)
@@ -4758,16 +4654,101 @@ namespace OpenNos.GameObject
             return 949560;
         }
 
+        private void CloseExchangeOrTrade()
+        {
+            if (InExchangeOrTrade)
+            {
+                long? targetSessionId = ExchangeInfo?.TargetCharacterId;
+
+                if (targetSessionId.HasValue && Session.HasCurrentMap)
+                {
+                    ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(targetSessionId.Value);
+
+                    if (targetSession == null)
+                    {
+                        return;
+                    }
+
+                    Session.SendPacket("exc_close 0");
+                    targetSession.SendPacket("exc_close 0");
+                    ExchangeInfo = null;
+                    targetSession.Character.ExchangeInfo = null;
+                }
+            }
+        }
+
+        private Character DeepCopy()
+        {
+            Character clonedCharacter = (Character)MemberwiseClone();
+            return clonedCharacter;
+        }
+
+        private void GenerateDignity(NpcMonsterDTO monsterinfo)
+        {
+            if (Level < monsterinfo.Level && Dignity < 100 && Level > 20)
+            {
+                Dignity += (float)0.5;
+                if (Dignity == (int)Dignity)
+                {
+                    Session.SendPacket(GenerateFd());
+                    Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
+                    Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
+                }
+            }
+        }
+
+        private string GenerateEqRareUpgradeForPacket()
+        {
+            sbyte weaponRare = 0;
+            byte weaponUpgrade = 0;
+            sbyte armorRare = 0;
+            byte armorUpgrade = 0;
+            if (Inventory != null)
+            {
+                for (short i = 0; i < 15; i++)
+                {
+                    WearableInstance wearable = Inventory.LoadBySlotAndType<WearableInstance>(i, InventoryType.Wear);
+                    if (wearable != null)
+                    {
+                        switch (wearable.Item.EquipmentSlot)
+                        {
+                            case EquipmentType.Armor:
+                                armorRare = wearable.Rare;
+                                armorUpgrade = wearable.Upgrade;
+                                break;
+
+                            case EquipmentType.MainWeapon:
+                                weaponRare = wearable.Rare;
+                                weaponUpgrade = wearable.Upgrade;
+                                break;
+                        }
+                    }
+                }
+            }
+            return $"{weaponUpgrade}{weaponRare} {armorUpgrade}{armorRare}";
+        }
+
+        private string GenerateGender()
+        {
+            return $"p_sex {(byte)Gender}";
+        }
+
         private int GetGold(MapMonster mapMonster)
         {
             int lowBaseGold = ServerManager.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
             int actMultiplier = Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
-            if(Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) == true)
+            if (Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) == true)
             {
                 actMultiplier = 5;
             }
             int gold = lowBaseGold * ServerManager.GoldRate * actMultiplier;
             return gold;
+        }
+
+        private double XPLoad()
+        {
+            return CharacterHelper.XPData[Level - 1];
         }
 
         #endregion

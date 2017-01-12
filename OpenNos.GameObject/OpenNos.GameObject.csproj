@@ -133,7 +133,7 @@
     <Compile Include="Packets\ClientPackets\PclPacket.cs" />
     <Compile Include="Packets\ClientPackets\CSkillPacket.cs" />
     <Compile Include="Packets\ClientPackets\WhisperPacket.cs" />
-    <Compile Include="Packets\ClientPackets\PleavePacket.cs" />
+    <Compile Include="Packets\ClientPackets\PLeavePacket.cs" />
     <Compile Include="Packets\ClientPackets\PreqPacket.cs" />
     <Compile Include="Packets\ClientPackets\GroupSayPacket.cs" />
     <Compile Include="Packets\ClientPackets\SayPacket.cs" />

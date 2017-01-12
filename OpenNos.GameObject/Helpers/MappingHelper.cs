@@ -20,7 +20,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private static Dictionary<int, int> _guriItemEffects;
+        private static readonly Dictionary<int, int> _guriItemEffects;
 
         #endregion
 
@@ -49,13 +49,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public static Dictionary<int, int> GuriItemEffects
-        {
-            get
-            {
-                return _guriItemEffects;
-            }
-        }
+        public static Dictionary<int, int> GuriItemEffects => _guriItemEffects;
 
         #endregion
     }

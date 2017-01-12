@@ -33,7 +33,6 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
         {
-            Random random = new Random();
             switch (Effect)
             {
                 // airwaves - eventitems

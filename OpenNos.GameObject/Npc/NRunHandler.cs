@@ -21,11 +21,11 @@ using System.Linq;
 
 namespace OpenNos.GameObject
 {
-    public class NRunHandler
+    public static class NRunHandler
     {
         #region Methods
 
-        public static void NRun(ClientSession Session, byte type, short runner, short value, short npcid)
+        public static void NRun(ClientSession Session, byte type, short runner, short npcid)
         {
             if (!Session.HasCurrentMap)
             {

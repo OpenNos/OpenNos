@@ -57,7 +57,7 @@ namespace OpenNos.DAL
         private static ISkillDAO _skillDAO;
         private static IStaticBonusDAO _staticBonusDAO;
         private static ITeleporterDAO _teleporterDAO;
-        private static bool _useMock;
+        private static readonly bool _useMock;
 
         #endregion
 

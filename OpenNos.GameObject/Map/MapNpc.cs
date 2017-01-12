@@ -62,16 +62,10 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public string GenerateEff()
+        private string GenerateEff()
         {
             NpcMonster npc = ServerManager.GetNpc(NpcVNum);
             return npc != null ? $"eff 2 {MapNpcId} {Effect}" : string.Empty;
-        }
-
-        public string GenerateEff(short effect)
-        {
-            NpcMonster npc = ServerManager.GetNpc(NpcVNum);
-            return npc != null ? $"eff 2 {MapNpcId} {effect}" : string.Empty;
         }
 
         public string GenerateIn2()
@@ -84,7 +78,7 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
-        public string GenerateMv2()
+        private string GenerateMv2()
         {
             return $"mv 2 {MapNpcId} {MapX} {MapY} {Npc.Speed}";
         }
@@ -115,7 +109,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal void NpcLife()
+        private void NpcLife()
         {
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
@@ -155,8 +149,8 @@ namespace OpenNos.GameObject
             {
                 if (Npc.IsHostile && Shop == null)
                 {
-                    MapMonster monster = Map.Monsters.FirstOrDefault(s => MapId == s.MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.MapX, Y = s.MapY }) < (Npc.NoticeRange > 5 ? Npc.NoticeRange / 2 : Npc.NoticeRange));
-                    ClientSession session = Map.Sessions.FirstOrDefault(s => MapId == s.Character.MapId && Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY }) < Npc.NoticeRange);
+                    MapMonster monster = Map.Monsters.FirstOrDefault(s => MapId == s.MapId && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.MapX, Y = s.MapY }) < (Npc.NoticeRange > 5 ? Npc.NoticeRange / 2 : Npc.NoticeRange));
+                    ClientSession session = Map.Sessions.FirstOrDefault(s => MapId == s.Character.MapId && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.MapX, Y = s.Character.MapY }) < Npc.NoticeRange);
 
                     if (monster != null && session != null)
                     {
@@ -179,7 +173,7 @@ namespace OpenNos.GameObject
                 }
 
                 const short damage = 100;
-                int distance = Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = monster.MapX, Y = monster.MapY });
+                int distance = Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = monster.MapX, Y = monster.MapY });
                 if (monster.CurrentHp > 0 && (npcMonsterSkill != null && distance < npcMonsterSkill.Skill.Range || distance <= Npc.BasicRange))
                 {
                     if ((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Npc.BasicCooldown * 200 && !Npc.Skills.Any() || npcMonsterSkill != null)
@@ -198,8 +192,8 @@ namespace OpenNos.GameObject
                         monster.CurrentHp -= damage;
 
                         Map.Broadcast(npcMonsterSkill != null
-                            ? $"su 2 {MapNpcId} 3 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} {(int)(monster.CurrentHp / monster.Monster.MaxHP * 100)} {damage} 0 0"
-                            : $"su 2 {MapNpcId} 3 {Target} 0 {Npc.BasicCooldown} 11 {Npc.BasicSkill} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} {(int)(monster.CurrentHp / monster.Monster.MaxHP * 100)} {damage} 0 0");
+                            ? $"su 2 {MapNpcId} 3 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} {monster.CurrentHp / monster.Monster.MaxHP * 100} {damage} 0 0"
+                            : $"su 2 {MapNpcId} 3 {Target} 0 {Npc.BasicCooldown} 11 {Npc.BasicSkill} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} {monster.CurrentHp / monster.Monster.MaxHP * 100} {damage} 0 0");
 
                         LastEffect = DateTime.Now;
                         if (monster.CurrentHp < 1)

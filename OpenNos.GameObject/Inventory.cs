@@ -44,7 +44,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public Character Owner { get; set; }
+        private Character Owner { get; }
 
         #endregion
 
@@ -433,8 +433,8 @@ namespace OpenNos.GameObject
             return retItem;
         }
 
-        /// <summary> Moves one item from one Inventory to another. Example: Equipment <-> Wear,
-        /// Equipment <-> Costume, Equipment <-> Specialist </summary> <param
+        /// <summary> Moves one item from one Inventory to another. Example: Equipment &lt;-&gt; Wear,
+        /// Equipment &lt;-&gt; Costume, Equipment &lt;-&gt; Specialist </summary> <param
         /// name="sourceSlot"></param> <param name="sourceType"></param> <param
         /// name="targetType"></param> <param name="targetSlot"></param> <param
         /// name="wear"></param>
