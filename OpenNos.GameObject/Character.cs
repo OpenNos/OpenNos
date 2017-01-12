@@ -885,7 +885,7 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkillUse.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
+                    if (Session.Character.LastDefence.AddSeconds(4) <= DateTime.Now && Session.Character.LastSkillUse.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
                     {
                         if (x == 0)
                         {
@@ -3776,6 +3776,7 @@ namespace OpenNos.GameObject
 
         public int GetDamage(int damage)
         {
+            LastDefence = DateTime.Now;
             Dispose();
 
             Hp -= damage;
@@ -3975,7 +3976,7 @@ namespace OpenNos.GameObject
             {
                 return CharacterHelper.HPHealth[(byte)Class];
             }
-            else if ((DateTime.Now - LastDefence).TotalSeconds > 2)
+            else if ((DateTime.Now - LastDefence).TotalSeconds > 4)
             {
                 return CharacterHelper.HPHealthStand[(byte)Class];
             }
@@ -3991,7 +3992,7 @@ namespace OpenNos.GameObject
             {
                 return CharacterHelper.MPHealth[(byte)Class];
             }
-            else if ((DateTime.Now - LastDefence).TotalSeconds > 2)
+            else if ((DateTime.Now - LastDefence).TotalSeconds > 4)
             {
                 return CharacterHelper.MPHealthStand[(byte)Class];
             }
