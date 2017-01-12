@@ -595,12 +595,12 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            else if(pjoinPacket.RequestType.Equals(GroupRequestType.Sharing))
+            else if (pjoinPacket.RequestType.Equals(GroupRequestType.Sharing))
             {
-                if(Session.Character.Group !=null)
+                if (Session.Character.Group != null)
                 {
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_SHARE_INFO")));
-                    Session.Character.Group.Characters.Where(s=>s.Character.CharacterId != Session.Character.CharacterId).ToList().ForEach(s=>s.SendPacket($"#pjoin^6^{ Session.Character.CharacterId} #pjoin^7^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU_SHARE"), Session.Character.Name)}"));
+                    Session.Character.Group.Characters.Where(s => s.Character.CharacterId != Session.Character.CharacterId).ToList().ForEach(s => s.SendPacket($"#pjoin^6^{ Session.Character.CharacterId} #pjoin^7^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU_SHARE"), Session.Character.Name)}"));
                 }
 
             }
@@ -702,7 +702,7 @@ namespace OpenNos.Handler
                 else if (pjoinPacket.RequestType == GroupRequestType.AcceptedShare)
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), 0));
-                    if(Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
+                    if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
                     {
                         Session.Character.SetReturnPoint(Session.Character.MapId, targetSession.Character.MapX, targetSession.Character.MapY);
                         targetSession.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
@@ -1170,7 +1170,7 @@ namespace OpenNos.Handler
                                     }
                                 }
                                 Random random = new Random();
-                                double randomAmount = ServerManager.RandomNumber(0, 100) * random.NextDouble();
+                                double randomAmount = ServerManager.RandomNumber() * random.NextDouble();
                                 DropDTO drop = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum);
                                 if (drop != null)
                                 {
@@ -1216,6 +1216,26 @@ namespace OpenNos.Handler
                         // MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n =>
                         // n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5]))); NpcMonster mapObject
                         // = ServerManager.GetNpc(npc.NpcVNum); teleport free
+                    }
+                    break;
+
+                case "750":
+                    if (packetsplit.Length > 3)
+                    {
+                        short faction;
+                        const short baseVnum = 1623;
+                        if (short.TryParse(packetsplit[3], out faction))
+                        {
+                            if (Session.Character.Inventory.CountItem(baseVnum + faction) > 0)
+                            {
+                                Session.Character.Faction = faction;
+                                Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
+                                Session.SendPacket("scr 0 0 0 0 0 0 0");
+                                Session.SendPacket(Session.Character.GenerateFaction());
+                                Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+                            }
+                        }
                     }
                     break;
             }
