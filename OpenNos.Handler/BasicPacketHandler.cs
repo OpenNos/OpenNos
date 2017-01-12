@@ -372,10 +372,10 @@ namespace OpenNos.Handler
             switch (packet.Durability)
             {
                 case 1:
-                    duration = 1;
+                    duration = 24;
                     break;
                 case 2:
-                    duration = 24;
+                    duration = 168;
                     break;
                 case 3:
                     duration = 360;
