@@ -453,7 +453,7 @@ namespace OpenNos.GameObject
                 }
                 if (item == null)
                     continue;
-                
+
                 switch (packet.TypeFilter)
                 {
 
@@ -490,34 +490,34 @@ namespace OpenNos.GameObject
                             if ((item.Item.ItemType == ItemType.Box && item.Item.ItemSubType == 2))
                                 if (packet.SubTypeFilter == 0
                                     || (packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0)
-                                    || (packet.SubTypeFilter == 2 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 10)
-                                     || (packet.SubTypeFilter == 3 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 11)
-                                      || (packet.SubTypeFilter == 4 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 2)
-                                       || (packet.SubTypeFilter == 5 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 3)
-                                        || (packet.SubTypeFilter == 6 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 13)
-                                         || (packet.SubTypeFilter == 7 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 5)
-                                          || (packet.SubTypeFilter == 8 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 12)
-                                           || (packet.SubTypeFilter == 9 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 4)
-                                            || (packet.SubTypeFilter == 10 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 7)
-                                             || (packet.SubTypeFilter == 11 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 15)
-                                              || (packet.SubTypeFilter == 12 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 6)
-                                               || (packet.SubTypeFilter == 13 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 14)
-                                                || (packet.SubTypeFilter == 14 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 9)
-                                                  || (packet.SubTypeFilter == 15 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 8)
-                                                   || (packet.SubTypeFilter == 16 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 1)
-                                                    || (packet.SubTypeFilter == 17 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 16)
-                                                     || (packet.SubTypeFilter == 18 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 17)
-                                                      || (packet.SubTypeFilter == 19 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 18)
-                                                       || (packet.SubTypeFilter == 20 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 19)
-                                                        || (packet.SubTypeFilter == 21 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 20)
-                                                         || (packet.SubTypeFilter == 22 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 21)
-                                                          || (packet.SubTypeFilter == 23 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 22)
-                                                           || (packet.SubTypeFilter == 24 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 23)
-                                                            || (packet.SubTypeFilter == 25 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 24)
-                                                             || (packet.SubTypeFilter == 26 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 25)
-                                                              || (packet.SubTypeFilter == 27 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 26)
-                                                               || (packet.SubTypeFilter == 28 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 27)
-                                                                || (packet.SubTypeFilter == 29 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 28))
+                                     || (packet.SubTypeFilter == 2 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 10)
+                                      || (packet.SubTypeFilter == 3 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 11)
+                                       || (packet.SubTypeFilter == 4 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 2)
+                                        || (packet.SubTypeFilter == 5 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 3)
+                                         || (packet.SubTypeFilter == 6 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 13)
+                                          || (packet.SubTypeFilter == 7 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 5)
+                                           || (packet.SubTypeFilter == 8 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 12)
+                                            || (packet.SubTypeFilter == 9 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 4)
+                                             || (packet.SubTypeFilter == 10 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 7)
+                                              || (packet.SubTypeFilter == 11 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 15)
+                                               || (packet.SubTypeFilter == 12 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 6)
+                                                || (packet.SubTypeFilter == 13 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 14)
+                                                 || (packet.SubTypeFilter == 14 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 9)
+                                                   || (packet.SubTypeFilter == 15 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 8)
+                                                    || (packet.SubTypeFilter == 16 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 1)
+                                                     || (packet.SubTypeFilter == 17 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 16)
+                                                      || (packet.SubTypeFilter == 18 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 17)
+                                                       || (packet.SubTypeFilter == 19 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 18)
+                                                        || (packet.SubTypeFilter == 20 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 19)
+                                                         || (packet.SubTypeFilter == 21 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 20)
+                                                          || (packet.SubTypeFilter == 22 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 21)
+                                                           || (packet.SubTypeFilter == 23 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 22)
+                                                            || (packet.SubTypeFilter == 24 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 23)
+                                                             || (packet.SubTypeFilter == 25 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 24)
+                                                              || (packet.SubTypeFilter == 26 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 25)
+                                                               || (packet.SubTypeFilter == 27 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 26)
+                                                                || (packet.SubTypeFilter == 28 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 27)
+                                                                 || (packet.SubTypeFilter == 29 && ServerManager.GetItem((item as BoxInstance).HoldingVNum).Morph == 28))
                                     if (packet.LevelFilter == 0 || ((item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9))//Level filter
                                         if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == item.Upgrade + 1) //upgrade filter
                                             if (packet.SubTypeFilter == 0 || (packet.SubTypeFilter == 1 && (item as BoxInstance).HoldingVNum == 0) || (packet.SubTypeFilter == 2 && (item as BoxInstance).HoldingVNum != 0))
@@ -577,13 +577,13 @@ namespace OpenNos.GameObject
             switch (packet.OrderFilter)
             {
                 case 0:
-                    definitivelist = definitivelist.OrderBy(s => s.Item.Item.Name).ThenBy(s=>s.BazaarItem.Price).ToList();
+                    definitivelist = definitivelist.OrderBy(s => s.Item.Item.Name).ThenBy(s => s.BazaarItem.Price).ToList();
                     break;
                 case 1:
                     definitivelist = definitivelist.OrderBy(s => s.Item.Item.Name).ThenByDescending(s => s.BazaarItem.Price).ToList();
                     break;
                 case 2:
-                    definitivelist = definitivelist.OrderBy(s =>s.Item.Item.Name).ThenBy(s=> s.BazaarItem.Amount).ToList();
+                    definitivelist = definitivelist.OrderBy(s => s.Item.Item.Name).ThenBy(s => s.BazaarItem.Amount).ToList();
                     break;
                 case 3:
                     definitivelist = definitivelist.OrderBy(s => s.Item.Item.Name).ThenByDescending(s => s.BazaarItem.Amount).ToList();
@@ -819,7 +819,7 @@ namespace OpenNos.GameObject
                     string info = string.Empty;
                     if (item.Item.Type == InventoryType.Equipment)
                         info = Session.Character.GenerateEInfo(item as WearableInstance).Replace(' ', '^').Replace("e_info^", "");
-                    
+
 
                     if (packet.Filter == 0 || packet.Filter == Status)
                     {
@@ -4775,7 +4775,7 @@ namespace OpenNos.GameObject
         {
             int lowBaseGold = ServerManager.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
             int actMultiplier = Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
-            if(Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) == true)
+            if (Session?.CurrentMap?.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) == true)
             {
                 actMultiplier = 5;
             }
