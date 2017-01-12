@@ -595,6 +595,15 @@ namespace OpenNos.Handler
                     }
                 }
             }
+            else if(pjoinPacket.RequestType.Equals(GroupRequestType.Sharing))
+            {
+                if(Session.Character.Group !=null)
+                {
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_SHARE_INFO")));
+                    Session.Character.Group.Characters.Where(s=>s.Character.CharacterId != Session.Character.CharacterId).ToList().ForEach(s=>s.SendPacket($"#pjoin^6^{ Session.Character.CharacterId} #pjoin^7^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU_SHARE"), Session.Character.Name)}"));
+                }
+
+            }
         }
 
         [Packet("#pjoin")]
@@ -689,6 +698,19 @@ namespace OpenNos.Handler
                 else if (pjoinPacket.RequestType == GroupRequestType.Declined)
                 {
                     targetSession.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10));
+                }
+                else if (pjoinPacket.RequestType == GroupRequestType.AcceptedShare)
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), 0));
+                    if(Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
+                    {
+                        Session.Character.SetReturnPoint(Session.Character.MapId, targetSession.Character.MapX, targetSession.Character.MapY);
+                        targetSession.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
+                    }
+                }
+                else if (pjoinPacket.RequestType == GroupRequestType.DeclinedShare)
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REFUSED_SHARE"), 0));
                 }
             }
         }
