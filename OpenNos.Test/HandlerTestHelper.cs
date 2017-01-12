@@ -90,7 +90,7 @@ namespace OpenNos.Test
             CreateServerSkills();
 
             // initialize servermanager
-            ServerManager.Instance.Initialize("127.0.0.1", 1234);
+            ServerManager.Instance.Initialize();
 
             // initialize PacketSerialization
             PacketFactory.Initialize<WalkPacket>();

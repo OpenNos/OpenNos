@@ -87,7 +87,7 @@ namespace OpenNos.World
                 RegisterMappings();
 
                 // initialilize maps
-                ServerManager.Instance.Initialize(IPADDRESS, port);
+                ServerManager.Instance.Initialize();
             }
             else
             {

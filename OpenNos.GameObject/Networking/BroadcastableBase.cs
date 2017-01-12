@@ -13,8 +13,6 @@
  */
 
 using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +34,7 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public BroadcastableBase()
+        protected BroadcastableBase()
         {
             LastUnregister = DateTime.Now.AddMinutes(-1);
             _sessions = new ThreadSafeSortedList<long, ClientSession>();
@@ -46,15 +44,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public DateTime LastUnregister { get; set; }
-
-        public int SessionCount
-        {
-            get
-            {
-                return _sessions.Count;
-            }
-        }
+        protected DateTime LastUnregister { get; private set; }
 
         public IEnumerable<ClientSession> Sessions
         {
@@ -78,16 +68,6 @@ namespace OpenNos.GameObject
             Broadcast(new BroadcastPacket(null, packet, ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate));
         }
 
-        public void Broadcast(string[] packets)
-        {
-            Broadcast(null, packets);
-        }
-
-        public void Broadcast(string[] packets, int xRangeCoordinate, int yRangeCoordinate)
-        {
-            Broadcast(packets.Select(p => new BroadcastPacket(null, p, ReceiverType.AllInRange, xCoordinate: xRangeCoordinate, yCoordinate: yRangeCoordinate)));
-        }
-
         public void Broadcast(PacketDefinition packet)
         {
             Broadcast(null, packet);
@@ -101,33 +81,6 @@ namespace OpenNos.GameObject
         public void Broadcast(ClientSession client, PacketDefinition packet, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
         {
             Broadcast(client, PacketFactory.Serialize(packet), receiver, characterName, characterId);
-        }
-
-        public void Broadcast(ClientSession client, string[] packets, ReceiverType receiver = ReceiverType.All, string characterName = "", long characterId = -1)
-        {
-            try
-            {
-                foreach (string packet in packets)
-                {
-                    SpreadBroadcastpacket(new BroadcastPacket(client, packet, receiver, characterName, characterId));
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-            }
-        }
-
-        public void Broadcast(IEnumerable<BroadcastPacket> packets)
-        {
-            try
-            {
-                SpreadBroadcasts(packets);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-            }
         }
 
         public void Broadcast(BroadcastPacket packet)
@@ -169,7 +122,7 @@ namespace OpenNos.GameObject
             return _sessions.ContainsKey(characterId) ? _sessions[characterId] : null;
         }
 
-        public virtual void RegisterSession(ClientSession session)
+        public void RegisterSession(ClientSession session)
         {
             if (!session.HasSelectedCharacter)
             {
@@ -184,7 +137,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SpreadBroadcastpacket(BroadcastPacket sentPacket)
+        private void SpreadBroadcastpacket(BroadcastPacket sentPacket)
         {
             if (Sessions != null && !string.IsNullOrEmpty(sentPacket?.Packet))
             {
@@ -205,7 +158,6 @@ namespace OpenNos.GameObject
                                 else
                                 {
                                     session.SendPacket(sentPacket.Packet);
-
                                 }
                             }
                         }
@@ -226,7 +178,6 @@ namespace OpenNos.GameObject
                                 else
                                 {
                                     session.SendPacket(sentPacket.Packet);
-
                                 }
                             }
                         }
@@ -249,7 +200,6 @@ namespace OpenNos.GameObject
                                     else
                                     {
                                         session.SendPacket(sentPacket.Packet);
-
                                     }
                                 }
                             }
@@ -257,32 +207,31 @@ namespace OpenNos.GameObject
                         break;
 
                     case ReceiverType.OnlySomeone:
+                        if (sentPacket.SomeonesCharacterId > 0 || !string.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
                         {
-                            if (sentPacket.SomeonesCharacterId > 0 || !string.IsNullOrEmpty(sentPacket.SomeonesCharacterName))
+                            ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == sentPacket.SomeonesCharacterId || s.Character.Name == sentPacket.SomeonesCharacterName);
+                            if (targetSession != null && targetSession.HasSelectedCharacter)
                             {
-                                ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.CharacterId == sentPacket.SomeonesCharacterId || s.Character.Name == sentPacket.SomeonesCharacterName);
-                                if (targetSession.HasSelectedCharacter)
+                                if (sentPacket.Sender != null)
                                 {
-                                    if (sentPacket.Sender != null)
+                                    if (!sentPacket.Sender.Character.IsBlockedByCharacter(targetSession.Character.CharacterId))
                                     {
-                                        if (!sentPacket.Sender.Character.IsBlockedByCharacter(targetSession.Character.CharacterId))
-                                        {
-                                            targetSession?.SendPacket(sentPacket.Packet);
-                                        }
-                                        else
-                                        {
-                                            sentPacket.Sender.SendPacket(sentPacket.Sender.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
-                                        }
+                                        targetSession.SendPacket(sentPacket.Packet);
                                     }
                                     else
                                     {
-                                        targetSession?.SendPacket(sentPacket.Packet);
+                                        sentPacket.Sender.SendPacket(sentPacket.Sender.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
                                     }
                                 }
+                                else
+                                {
+                                    targetSession.SendPacket(sentPacket.Packet);
+                                }
                             }
-
-                            break;
                         }
+                        break;
+
+
                     case ReceiverType.AllNoEmoBlocked:
                         foreach (ClientSession session in Sessions.Where(s => !s.Character.EmoticonsBlocked))
                         {
@@ -315,19 +264,15 @@ namespace OpenNos.GameObject
                             session.SendPacket(sentPacket.Packet);
                         }
                         break;
+
+                    case ReceiverType.Unknown:
+                        break;
+
                 }
             }
         }
 
-        public void SpreadBroadcasts(IEnumerable<BroadcastPacket> sentpackets)
-        {
-            foreach (BroadcastPacket broadcastPacket in sentpackets)
-            {
-                SpreadBroadcastpacket(broadcastPacket);
-            }
-        }
-
-        public virtual void UnregisterSession(long characterId)
+        public void UnregisterSession(long characterId)
         {
             // Get client from client list, if not in list do not continue
             var session = _sessions[characterId];

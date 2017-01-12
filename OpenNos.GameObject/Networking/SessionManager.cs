@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void RemoveSession(INetworkClient client)
+        protected void RemoveSession(INetworkClient client)
         {
             ClientSession session;
             _sessions.TryRemove(client.ClientId, out session);
@@ -91,7 +91,7 @@ namespace OpenNos.GameObject
         public virtual void StopServer()
         {
             _sessions.Clear();
-            ServerManager.Instance.StopServer();
+            ServerManager.StopServer();
         }
 
         protected virtual ClientSession IntializeNewSession(INetworkClient client)

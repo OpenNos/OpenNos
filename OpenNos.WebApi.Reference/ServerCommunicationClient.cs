@@ -106,12 +106,12 @@ namespace OpenNos.WebApi.Reference
             _hubconnection.Start().Wait();
         }
 
-        public void OnMessageSentToCharacter(string characterName, string message, int fromChannel, MessageType messageType)
+        private void OnMessageSentToCharacter(string characterName, string message, int fromChannel, MessageType messageType)
         {
             MessageSentToCharacter?.Invoke(new Tuple<string, string, int, MessageType>(characterName, message, fromChannel, messageType), new EventArgs());
         }
 
-        public void OnAccountDisconnected(string accountName)
+        private void OnAccountDisconnected(string accountName)
         {
             if (AccountDisconnectedEvent != null && !string.IsNullOrEmpty(accountName))
             {
@@ -119,7 +119,7 @@ namespace OpenNos.WebApi.Reference
             }
         }
 
-        public void OnCharacterDisconnected(string characterName, long characterId)
+        private void OnCharacterDisconnected(string characterName, long characterId)
         {
             if (CharacterDisconnectedEvent != null && !string.IsNullOrEmpty(characterName))
             {
@@ -127,7 +127,7 @@ namespace OpenNos.WebApi.Reference
             }
         }
 
-        public void OnSessionKicked(long? sessionId, string accountName)
+        private void OnSessionKicked(long? sessionId, string accountName)
         {
             if (SessionKickedEvent != null && (sessionId.HasValue || !string.IsNullOrEmpty(accountName)))
             {

@@ -15,11 +15,9 @@
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Core.Networking.Communication.Scs.Server;
-using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 
 namespace OpenNos.GameObject
 {
@@ -63,15 +61,11 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public IDictionary<string, DateTime> ConnectionLog
+        private IDictionary<string, DateTime> ConnectionLog
         {
             get
             {
                 return _connectionLog ?? (_connectionLog = new Dictionary<string, DateTime>());
-            }
-            set
-            {
-                _connectionLog = value;
             }
         }
 
@@ -119,11 +113,8 @@ namespace OpenNos.GameObject
                 {
                     return false;
                 }
-                else
-                {
-                    ConnectionLog.Add(client.IpAddress, DateTime.Now);
-                    return true;
-                }
+                ConnectionLog.Add(client.IpAddress, DateTime.Now);
+                return true;
             }
 
             return true;
