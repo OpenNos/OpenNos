@@ -123,7 +123,7 @@ namespace OpenNos.Handler
                 }
                 else if (Convert.ToInt32(packetsplit[4]) == 2)
                 {
-                    if (Session.Character.InExchangeOrTrade)
+                    if (Session.Character.InExchangeOrTrade || (InventoryType)type == InventoryType.Bazaar)
                     {
                         return;
                     }
@@ -314,6 +314,11 @@ namespace OpenNos.Handler
                 byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
+                if((InventoryType)type[i] == InventoryType.Bazaar)
+                {
+                    CloseExchange(Session, targetSession);
+                    return;
+                }
                 ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(slot[i], (InventoryType)type[i]);
                 if (item == null)
                 {
@@ -563,7 +568,7 @@ namespace OpenNos.Handler
             }
             if (mapItem != null)
             {
-                if (Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 3) && Session.HasCurrentMap)
+                if (Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8) && Session.HasCurrentMap)
                 {
                     MonsterMapItem item = mapItem as MonsterMapItem;
                     if (item != null)
@@ -600,7 +605,6 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GenerateSpPoint());
                             }
                             Session.CurrentMap.DroppedList.Remove(packet.TransportId);
-                            TransportFactory.Instance.RemoveTransportId(packet.TransportId);
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                         }
                         else
@@ -611,7 +615,6 @@ namespace OpenNos.Handler
                                 if (newInv != null)
                                 {
                                     Session.CurrentMap.DroppedList.Remove(packet.TransportId);
-                                    TransportFactory.Instance.RemoveTransportId(packet.TransportId);
                                     Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                                     Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
                                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.Item.Name} x {mapItem.Amount}", 12));
@@ -639,7 +642,6 @@ namespace OpenNos.Handler
                         }
                         Session.SendPacket(Session.Character.GenerateGold());
                         Session.CurrentMap.DroppedList.Remove(packet.TransportId);
-                        TransportFactory.Instance.RemoveTransportId(packet.TransportId);
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                     }
                 }
@@ -726,7 +728,7 @@ namespace OpenNos.Handler
             lock (Session.Character.Inventory)
             {
                 ItemInstance invitem = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.InventoryType);
-                if (invitem != null && invitem.Item.IsDroppable && invitem.Item.IsTradable && !Session.Character.InExchangeOrTrade)
+                if (invitem != null && invitem.Item.IsDroppable && invitem.Item.IsTradable && !Session.Character.InExchangeOrTrade && packet.InventoryType != InventoryType.Bazaar)
                 {
                     if (packet.Amount > 0 && packet.Amount < 100)
                     {

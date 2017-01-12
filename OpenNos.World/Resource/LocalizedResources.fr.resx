@@ -1142,4 +1142,22 @@ Veux-tu le porter ?</value>
   <data name="STATE_CHANGED" xml:space="preserve">
     <value>L'offre a été mise à jour. La vente a été annulée.</value>
   </data>
+  <data name="LOGIN_MEDAL" xml:space="preserve">
+    <value>L'effet de la Médaille de NosMarchand est actif.</value>
+  </data>
+  <data name="GROUP_SHARE_INFO" xml:space="preserve">
+    <value>Tu a envoyé une demande pour partager le point de retour avec les membres de ton groupe.</value>
+  </data>
+  <data name="INVITED_YOU_SHARE" xml:space="preserve">
+    <value>Veux-tu établir comme point de retour : {0} ?</value>
+  </data>
+  <data name="ACCEPTED_SHARE" xml:space="preserve">
+    <value>{0} a modifié le point de retour.</value>
+  </data>
+  <data name="CHANGED_SHARE" xml:space="preserve">
+    <value>Tu as changé le point de retour commun des membres du groupe.</value>
+  </data>
+  <data name="REFUSED_SHARE" xml:space="preserve">
+    <value>Tu as refusé de partager le point de retour avec les membres du groupe.</value>
+  </data>
 </root>

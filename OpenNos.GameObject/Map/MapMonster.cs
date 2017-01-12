@@ -994,7 +994,6 @@ namespace OpenNos.GameObject
         private void TargetHit2(ClientSession targetSession, NpcMonsterSkill npcMonsterSkill, int damage, int hitmode)
         {
             Path = new List<GridPos>();
-            targetSession.Character.LastDefence = DateTime.Now;
             if (targetSession.Character.Hp > 0)
             {
                 targetSession.Character.GetDamage(damage);
@@ -1034,7 +1033,6 @@ namespace OpenNos.GameObject
                     if (characterInRange.Hp > 0)
                     {
                         characterInRange.GetDamage(damage);
-                        characterInRange.LastDefence = DateTime.Now;
                         Map.Broadcast(null, characterInRange.GenerateStat(), ReceiverType.OnlySomeone, "", characterInRange.CharacterId);
                         Map.Broadcast($"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} { (int)(characterInRange.Hp / characterInRange.HPLoad() * 100) } {damage} {hitmode} 0");
                         if (characterInRange.Hp <= 0)

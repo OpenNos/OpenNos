@@ -211,12 +211,12 @@ namespace OpenNos.Handler
         }
         public void RefreshPersonalBazarList(CSListnPacket packet)
         {
-            Session.SendPacket(Session.Character.GenerateRCSList(packet.Filter));
+            Session.SendPacket(Session.Character.GenerateRCSList(packet));
         }
 
         public void OpenBazaar(CSkillPacket packet)
         {
-            StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BackPack);
+            StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
             if (medal != null)
             {
                 byte Medal = medal.StaticBonusType == StaticBonusType.BazaarMedalGold ? (byte)MedalType.Gold : (byte)MedalType.Silver;
@@ -232,9 +232,10 @@ namespace OpenNos.Handler
 
         public void BuyBazaar(CBuyPacket packet)
         {
-            BazaarItem bz = ServerManager.Instance.BazarItemList.FirstOrDefault(s => s.TemporaryId == packet.BazaarId);
+            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null || packet.Amount < 1)
             {
+
                 long price = packet.Amount * bz.Price;
 
                 if (Session.Character.Gold >= price)
@@ -245,12 +246,7 @@ namespace OpenNos.Handler
                         ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == bz.SellerId);
                         BazaarItemLink bzcree = new BazaarItemLink();
                         bzcree.BazaarItem = bz;
-                        if (session != null)
-                        {
-                            bzcree.Owner = session.Character.Name;
-                            bzcree.Item = session.Character.Inventory.LoadByItemInstance<ItemInstance>(bz.ItemInstanceId);
-                        }
-                        else if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
+                        if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
                         {
                             bzcree.Owner = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
                             bzcree.Item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
@@ -260,21 +256,20 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                             return;
                         }
-                        Session.Character.Gold -= price;
-                        Session.SendPacket(Session.Character.GenerateGold());
 
                         if (bzcree.Item != null)
                         {
-                            if (session == null)
-                            {
-                                ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDao.LoadById(bzcree.BazaarItem.ItemInstanceId);
-                                bzitemdto.Amount -= packet.Amount;
-                                DAOFactory.IteminstanceDao.InsertOrUpdate(bzitemdto);
-                            }
-                            else
-                            {
-                                bzcree.Item.Amount -= packet.Amount;
-                            }
+                            if (bz.IsPackage && packet.Amount != bz.Amount)
+                                return;
+                            Session.Character.Gold -= price;
+                            Session.SendPacket(Session.Character.GenerateGold());
+
+
+
+                            ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDao.LoadById(bzcree.BazaarItem.ItemInstanceId);
+                            bzitemdto.Amount -= packet.Amount;
+                            DAOFactory.IteminstanceDao.InsertOrUpdate(bzitemdto);
+
                             Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {packet.Amount} {packet.Price} 0 0 0");
                             ItemInstance newBz = bzcree.Item.DeepCopy();
                             newBz.Id = Guid.NewGuid();
@@ -311,14 +306,14 @@ namespace OpenNos.Handler
 
         public void GetBazaar(CScalcPacket packet)
         {
-            BazaarItem bz = ServerManager.Instance.BazarItemList.FirstOrDefault(s => s.TemporaryId == packet.BazaarId);
+            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null)
             {
-                ItemInstance Item = Session.Character.Inventory.LoadByItemInstance<ItemInstance>(bz.ItemInstanceId);
+                ItemInstance Item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
                 if (Item == null)
                     return;
                 int soldedamount = bz.Amount - Item.Amount;
-                long taxes = 0;//TODO Calculate taxes
+                long taxes = bz.MedalUsed ? 0 : (long)(bz.Price * 0.10 * soldedamount);
                 long price = bz.Price * (soldedamount) - taxes;
                 if (Session.Character.Gold + price <= 1000000000)
                 {
@@ -338,13 +333,13 @@ namespace OpenNos.Handler
                         }
                     }
                     Session.SendPacket($"rc_scalc 1 {bz.Price} {bz.Amount - Item.Amount} {bz.Amount} {taxes} {price + taxes}");
-                    ServerManager.Instance.BazarItemList.Remove(bz);
+
                     if (DAOFactory.BazaarItemDAO.LoadById(bz.BazaarItemId) != null)
                     {
                         DAOFactory.BazaarItemDAO.Delete(bz.BazaarItemId);
                     }
-                    Session.Character.Inventory.DeleteById(Item.Id);
 
+                    DAOFactory.IteminstanceDao.Delete(Item.Id);
 
                 }
                 else
@@ -357,15 +352,21 @@ namespace OpenNos.Handler
         }
         public void SellBazaar(CRegPacket packet)
         {
-            long taxe = 0;//TODO calculate the taxe
+            StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold);
 
-            if (Session.Character.Gold < taxe || packet.Amount <= 0)
+            long price = packet.Price * packet.Amount;
+            long taxemax = price > 100000 ? price / 200 : 500;
+            long taxemin = price >= 4000 ? ((60 + ((price - 4000) / 2000) * 30) > 10000 ? 10000 : (60 + ((price - 4000) / 2000) * 30)) : 50;
+            long taxe = medal == null ? taxemax : taxemin;
+            if (Session.Character.Gold < taxe || packet.Amount <= 0 || (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any()) || Session.Character.IsShopping)
             {
                 return;
             }
-
-            ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory((InventoryType)packet.Inventory, packet.Slot, packet.Amount);
-            if (bazar == null || !bazar.Item.IsSoldable)
+            ItemInstance it = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory == 4 ? (InventoryType)0 : (InventoryType)packet.Inventory);
+            if (it == null || !it.Item.IsSoldable || it.IsBound || (Session.Character.Inventory.CountItemInAnInventory(InventoryType.Bazaar) > 10 * (medal == null ? 1 : 10)) || (medal == null && packet.Price * packet.Amount >= 100000))
+                return;
+            ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory(packet.Inventory == 4 ? (InventoryType)0 : (InventoryType)packet.Inventory, packet.Slot, packet.Amount);
+            if (bazar == null)
                 return;
             short duration = 0;
             switch (packet.Durability)
@@ -385,20 +386,22 @@ namespace OpenNos.Handler
                 default:
                     return;
             }
-            BazaarItem bz = new BazaarItem()
+
+
+            BazaarItemDTO bz = new BazaarItemDTO()
             {
                 Amount = bazar.Amount,
                 DateStart = DateTime.Now,
                 Duration = duration,
                 IsPackage = packet.IsPackage == 0 ? false : true,
-                MedalUsed = packet.MedalUsed == 0 ? false : true,
+                MedalUsed = medal == null ? false : true,
                 Price = packet.Price,
                 SellerId = Session.Character.CharacterId,
                 ItemInstanceId = bazar.Id,
-                TemporaryId = ServerManager.Instance.BazarItemList.Any() ? ServerManager.Instance.BazarItemList.Max(s => s.TemporaryId) + 1 : 1
             };
 
-            ServerManager.Instance.BazarItemList.Add(bz);
+
+            DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bz);
 
 
             Session.Character.Gold -= taxe;
@@ -407,7 +410,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 10));
             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 0));
 
-            Session.SendPacket(Session.Character.GenerateRCSList(0));
+            Session.SendPacket("rc_reg 1");
 
 
         }
@@ -592,6 +595,15 @@ namespace OpenNos.Handler
                     }
                 }
             }
+            else if(pjoinPacket.RequestType.Equals(GroupRequestType.Sharing))
+            {
+                if(Session.Character.Group !=null)
+                {
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_SHARE_INFO")));
+                    Session.Character.Group.Characters.Where(s=>s.Character.CharacterId != Session.Character.CharacterId).ToList().ForEach(s=>s.SendPacket($"#pjoin^6^{ Session.Character.CharacterId} #pjoin^7^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU_SHARE"), Session.Character.Name)}"));
+                }
+
+            }
         }
 
         [Packet("#pjoin")]
@@ -686,6 +698,19 @@ namespace OpenNos.Handler
                 else if (pjoinPacket.RequestType == GroupRequestType.Declined)
                 {
                     targetSession.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10));
+                }
+                else if (pjoinPacket.RequestType == GroupRequestType.AcceptedShare)
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), 0));
+                    if(Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
+                    {
+                        Session.Character.SetReturnPoint(Session.Character.MapId, targetSession.Character.MapX, targetSession.Character.MapY);
+                        targetSession.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
+                    }
+                }
+                else if (pjoinPacket.RequestType == GroupRequestType.DeclinedShare)
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REFUSED_SHARE"), 0));
                 }
             }
         }
@@ -1640,6 +1665,13 @@ namespace OpenNos.Handler
             Session.SendPacket("rage 0 250000");
             Session.SendPacket("rank_cool 0 0 18000");
             SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(8, InventoryType.Wear);
+            StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BackPack);
+            if (medal != null)
+            {
+                byte Medal = medal.StaticBonusType == StaticBonusType.BazaarMedalGold ? (byte)MedalType.Gold : (byte)MedalType.Silver;
+                int Time = (int)(medal.DateEnd - DateTime.Now).TotalHours;
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("LOGIN_MEDAL"), 12));
+            }
             if (Session.Character.MapId == 138)
             {
                 Session.SendPacket("bc 0 0 0");
