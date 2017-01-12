@@ -1643,6 +1643,13 @@ namespace OpenNos.Handler
             Session.SendPacket("rage 0 250000");
             Session.SendPacket("rank_cool 0 0 18000");
             SpecialistInstance specialistInstance = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(8, InventoryType.Wear);
+            StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BackPack);
+            if (medal != null)
+            {
+                byte Medal = medal.StaticBonusType == StaticBonusType.BazaarMedalGold ? (byte)MedalType.Gold : (byte)MedalType.Silver;
+                int Time = (int)(medal.DateEnd - DateTime.Now).TotalHours;
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("LOGIN_MEDAL"), 12));
+            }
             if (Session.Character.MapId == 138)
             {
                 Session.SendPacket("bc 0 0 0");

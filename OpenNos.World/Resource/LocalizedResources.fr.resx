@@ -1142,4 +1142,7 @@ Veux-tu le porter ?</value>
   <data name="STATE_CHANGED" xml:space="preserve">
     <value>L'offre a été mise à jour. La vente a été annulée.</value>
   </data>
+  <data name="LOGIN_MEDAL" xml:space="preserve">
+    <value>L'effet de la Médaille de NosMarchand est actif.</value>
+  </data>
 </root>

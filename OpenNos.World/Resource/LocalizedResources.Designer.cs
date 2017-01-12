@@ -1681,6 +1681,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The BazaarMedal is currently active..
+        /// </summary>
+        internal static string LOGIN_MEDAL {
+            get {
+                return ResourceManager.GetString("LOGIN_MEDAL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You&apos;ve lost {0} dignity.
         /// </summary>
         internal static string LOSE_DIGNITY {
