@@ -799,11 +799,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateRCSList(byte filter)
+        public string GenerateRCSList(CSListnPacket packet)
         {
             string list = string.Empty;
 
-            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll().Where(s => s.SellerId == CharacterId))
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll().Where(s => s.SellerId == CharacterId).Skip(packet.Index * 50).Take(50))
             {
                 ItemInstance item = (ItemInstance)DAOFactory.IteminstanceDao.LoadById(bz.ItemInstanceId);
                 if (item != null)
@@ -822,16 +822,16 @@ namespace OpenNos.GameObject
                     string info = string.Empty;
                     if (item.Item.Type == InventoryType.Equipment)
                         info = Session.Character.GenerateEInfo(item as WearableInstance).Replace(' ', '^').Replace("e_info^", "");
+                    
 
-
-                    if (filter == 0 || filter == Status)
+                    if (packet.Filter == 0 || packet.Filter == Status)
                     {
                         list += $"{bz.BazaarItemId}|{bz.SellerId}|{item.ItemVNum}|{SoldedAmount}|{Amount}|{(Package ? 1 : 0)}|{Price}|{Status}|{MinutesLeft}|{(IsNosbazar ? 1 : 0)}|0|{item.Rare}|{item.Upgrade}|{info} ";
                     }
                 }
             }
 
-            return $"rc_slist 0 {list}";
+            return $"rc_slist {packet.Index} {list}";
         }
 
         public void ChangeSex()

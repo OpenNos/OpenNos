@@ -211,7 +211,7 @@ namespace OpenNos.Handler
         }
         public void RefreshPersonalBazarList(CSListnPacket packet)
         {
-            Session.SendPacket(Session.Character.GenerateRCSList(packet.Filter));
+            Session.SendPacket(Session.Character.GenerateRCSList(packet));
         }
 
         public void OpenBazaar(CSkillPacket packet)
@@ -356,14 +356,14 @@ namespace OpenNos.Handler
 
             long price = packet.Price * packet.Amount;
             long taxemax = price > 100000 ? price / 200 : 500;
-            long taxemin = price >= 4000 ? ((60+ ((price-4000)/2000)*30)>10000  ? 10000 : (60 + ((price - 4000) / 2000) * 30)) : 50;
+            long taxemin = price >= 4000 ? ((60 + ((price - 4000) / 2000) * 30) > 10000 ? 10000 : (60 + ((price - 4000) / 2000) * 30)) : 50;
             long taxe = medal == null ? taxemax : taxemin;
             if (Session.Character.Gold < taxe || packet.Amount <= 0 || (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any()) || Session.Character.IsShopping)
             {
                 return;
             }
             ItemInstance it = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory == 4 ? (InventoryType)0 : (InventoryType)packet.Inventory);
-            if (it == null || !it.Item.IsSoldable || it.IsBound || (medal == null && packet.Price*packet.Amount >= 100000))
+            if (it == null || !it.Item.IsSoldable || it.IsBound || (Session.Character.Inventory.CountItemInAnInventory(InventoryType.Bazaar) > 10 * (medal == null ? 1 : 10)) || (medal == null && packet.Price * packet.Amount >= 100000))
                 return;
             ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory(packet.Inventory == 4 ? (InventoryType)0 : (InventoryType)packet.Inventory, packet.Slot, packet.Amount);
             if (bazar == null)
