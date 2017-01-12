@@ -73,6 +73,16 @@ namespace OpenNos.GameObject
                 case 34: // this is imaginary number I = √(-1)
                     break;
 
+                case 570:
+                    if (session.Character.Faction == EffectValue)
+                    {
+                        return;
+                    }
+                    session.SendPacket(session.Character.Family == null
+                        ? $"qna #guri^750^{EffectValue} {Language.Instance.GetMessageFromKey($"ASK_CHANGE_FACTION{EffectValue}")}"
+                        : session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("IN_FAMILY"), 0));
+                    break;
+
                 // wings
                 case 650:
                     SpecialistInstance specialistInstance = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
@@ -163,27 +173,28 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 1002:
                     if (EffectValue == 69)
                     {
                         int rnd = ServerManager.RandomNumber(0, 1000);
                         if (rnd < 5)
                         {
-                            short[] vnums = new short[] { 5560, 5591, 4099, 907, 1160, 4705, 4706, 4707, 4708, 4709, 4710, 4711, 4712, 4713, 4714, 4715, 4716 };
-                            byte[] counts = new byte[] { 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+                            short[] vnums = { 5560, 5591, 4099, 907, 1160, 4705, 4706, 4707, 4708, 4709, 4710, 4711, 4712, 4713, 4714, 4715, 4716 };
+                            byte[] counts = { 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
                             int item = ServerManager.RandomNumber(0, 17);
 
                             session.Character.GiftAdd(vnums[item], counts[item]);
                         }
                         else if (rnd < 30)
                         {
-                            short[] vnums = new short[] { 361, 362, 363, 366, 367, 368, 371, 372, 373 };
+                            short[] vnums = { 361, 362, 363, 366, 367, 368, 371, 372, 373 };
                             session.Character.GiftAdd(vnums[ServerManager.RandomNumber(0, 9)], 1);
                         }
                         else
                         {
-                            short[] vnums = new short[] { 1161, 2282, 1030, 1244, 1218, 5369, 1012, 1363, 1364, 2160, 2173, 5959, 5983, 2514, 2515, 2516, 2517, 2518, 2519, 2520, 2521, 1685, 1686, 5087, 5203, 2418, 2310, 2303, 2169, 2280, 5892, 5893, 5894, 5895, 5896, 5897, 5898, 5899, 5332, 5105, 2161, 2162 };
-                            byte[] counts = new byte[] { 10, 10, 20, 5, 1, 1, 99, 1, 1, 5, 5, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 5, 20, 20, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+                            short[] vnums = { 1161, 2282, 1030, 1244, 1218, 5369, 1012, 1363, 1364, 2160, 2173, 5959, 5983, 2514, 2515, 2516, 2517, 2518, 2519, 2520, 2521, 1685, 1686, 5087, 5203, 2418, 2310, 2303, 2169, 2280, 5892, 5893, 5894, 5895, 5896, 5897, 5898, 5899, 5332, 5105, 2161, 2162 };
+                            byte[] counts = { 10, 10, 20, 5, 1, 1, 99, 1, 1, 5, 5, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 5, 20, 20, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
                             int item = ServerManager.RandomNumber(0, 42);
                             session.Character.GiftAdd(vnums[item], counts[item]);
                         }
@@ -193,9 +204,9 @@ namespace OpenNos.GameObject
                     {
                         if (session.HasCurrentMap)
                         {
-                            if (!session.CurrentMap.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.Act4))
+                            if (session.CurrentMap.MapTypes.All(m => m.MapTypeId != (short)MapTypeEnum.Act4))
                             {
-                                short[] vnums = new short[] { 1386, 1387, 1388, 1389, 1390, 1391, 1392, 1393, 1394, 1395, 1396, 1397, 1398, 1399, 1400, 1401, 1402, 1403, 1404, 1405 };
+                                short[] vnums = { 1386, 1387, 1388, 1389, 1390, 1391, 1392, 1393, 1394, 1395, 1396, 1397, 1398, 1399, 1400, 1401, 1402, 1403, 1404, 1405 };
                                 short vnum = vnums[ServerManager.RandomNumber(0, 20)];
 
                                 NpcMonster npcmonster = ServerManager.GetNpc(vnum);
@@ -224,28 +235,28 @@ namespace OpenNos.GameObject
                 case 1003:
                     if (!session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver))
                     {
-                        session.Character.StaticBonusList.Add(new StaticBonusDTO() { CharacterId = session.Character.CharacterId, DateEnd = DateTime.Now.AddDays(EffectValue), StaticBonusType = StaticBonusType.BazaarMedalGold });
+                        session.Character.StaticBonusList.Add(new StaticBonusDTO { CharacterId = session.Character.CharacterId, DateEnd = DateTime.Now.AddDays(EffectValue), StaticBonusType = StaticBonusType.BazaarMedalGold });
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                        session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"),Name),12));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
 
                 case 1004:
                     if (!session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalGold))
-                    { 
-                        session.Character.StaticBonusList.Add(new StaticBonusDTO() { CharacterId = session.Character.CharacterId, DateEnd = DateTime.Now.AddDays(EffectValue), StaticBonusType = StaticBonusType.BazaarMedalSilver });
+                    {
+                        session.Character.StaticBonusList.Add(new StaticBonusDTO { CharacterId = session.Character.CharacterId, DateEnd = DateTime.Now.AddDays(EffectValue), StaticBonusType = StaticBonusType.BazaarMedalSilver });
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                        session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
 
                 case 1005:
-                    if (!session.Character.StaticBonusList.Any(s =>s.StaticBonusType == StaticBonusType.BackPack))
+                    if (session.Character.StaticBonusList.All(s => s.StaticBonusType != StaticBonusType.BackPack))
                     {
-                        session.Character.StaticBonusList.Add(new StaticBonusDTO() { CharacterId = session.Character.CharacterId, DateEnd = DateTime.Now.AddDays(EffectValue), StaticBonusType = StaticBonusType.BackPack });
+                        session.Character.StaticBonusList.Add(new StaticBonusDTO { CharacterId = session.Character.CharacterId, DateEnd = DateTime.Now.AddDays(EffectValue), StaticBonusType = StaticBonusType.BackPack });
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                         session.SendPacket(session.Character.GenerateExts());
-                        session.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
+                        session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
 
