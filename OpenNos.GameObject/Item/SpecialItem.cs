@@ -154,7 +154,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            if (!session.Character.IsVehicled)
+                            if (!session.Character.IsVehicled && delay)
                             {
                                 session.Character.Speed = Speed;
                                 session.Character.IsVehicled = true;

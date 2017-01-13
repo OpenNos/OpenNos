@@ -21,5 +21,10 @@ namespace OpenNos.DAL.Mock
         {
             throw new NotImplementedException();
         }
+
+        public void RemoveOutDated()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
