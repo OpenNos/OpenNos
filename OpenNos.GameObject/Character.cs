@@ -815,7 +815,7 @@ namespace OpenNos.GameObject
                     byte Status = MinutesLeft >= 0 ? (SoldedAmount < Amount ? (byte)BazaarType.OnSale : (byte)BazaarType.Solded) : (byte)BazaarType.DelayExpired;
                     if (Status == (byte)BazaarType.DelayExpired)
                     {
-                        MinutesLeft = (long)(bz.DateStart.AddHours(bz.Duration).AddDays(30) - DateTime.Now).TotalMinutes;
+                        MinutesLeft = (long)(bz.DateStart.AddHours(bz.Duration).AddDays(IsNosbazar ? 30 : 7) - DateTime.Now).TotalMinutes;
                     }
                     string info = string.Empty;
                     if (item.Item.Type == InventoryType.Equipment)
@@ -4351,6 +4351,14 @@ namespace OpenNos.GameObject
                     // be sure that noone tries to edit while saving is currently editing
                     lock (Inventory)
                     {
+                        DAOFactory.BazaarItemDAO.RemoveOutDated();
+                        foreach (var item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.Bazaar))
+                        {
+                            if (DAOFactory.BazaarItemDAO.LoadAll().ToList().FirstOrDefault(s => s.ItemInstanceId == item.Id) == null)
+                            {
+                                Inventory.DeleteById(item.Id);
+                            }
+                        }
                         // load and concat inventory with equipment
                         List<ItemInstance> inventories = Inventory.GetAllItems();
                         IList<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
@@ -4400,6 +4408,7 @@ namespace OpenNos.GameObject
                 {
                     DAOFactory.StaticBonusDAO.InsertOrUpdate(bonus);
                 }
+
 
                 DAOFactory.StaticBonusDAO.RemoveOutDated();
 
