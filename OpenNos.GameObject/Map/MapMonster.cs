@@ -745,7 +745,7 @@ namespace OpenNos.GameObject
                         TargetHit(targetSession, npcMonsterSkill);
 
                         }
-                        else if(Map.GetDistance(new MapCell { X = MapX, Y = MapY },
+                        else if (Map.GetDistance(new MapCell { X = MapX, Y = MapY },
                                     new MapCell { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)
                         {
                             TargetHit(targetSession, npcMonsterSkill);

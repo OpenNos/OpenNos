@@ -166,7 +166,7 @@ namespace OpenNos.GameObject
                                 session.CurrentMap?.Broadcast(session.Character.GenerateCMode());
                                 session.SendPacket(session.Character.GenerateCond());
                             }
-                            else if(session.Character.IsVehicled)
+                            else if (session.Character.IsVehicled)
                             {
                                 session.Character.RemoveVehicle();
                             }
