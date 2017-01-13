@@ -360,12 +360,12 @@ namespace OpenNos.Handler
             }
             if (Session.Character.Inventory.CountItemInAnInventory(InventoryType.Bazaar) > 10 * (medal == null ? 1 : 10))
             {
-                //todo uppermost 
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LIMIT_EXCEEDED"), 0));
                 return;
             }
             if (medal == null && packet.Price * packet.Amount >= 1000000)
             {
-                //todo uppermost
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PRICE_EXCEEDED"), 0));
                 return;
             }
             ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory(packet.Inventory == 4 ? 0 : (InventoryType)packet.Inventory, packet.Slot, packet.Amount);

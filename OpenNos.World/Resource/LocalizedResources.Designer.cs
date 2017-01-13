@@ -1717,6 +1717,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à You can&apos;t add more item on the bazaar because the limit is exceeded.
+        /// </summary>
+        internal static string LIMIT_EXCEEDED {
+            get {
+                return ResourceManager.GetString("LIMIT_EXCEEDED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à The BazaarMedal is currently active..
         /// </summary>
         internal static string LOGIN_MEDAL {
@@ -2496,6 +2505,15 @@ namespace OpenNos.World.Resource {
         internal static string PORTAL_BLOCKED {
             get {
                 return ResourceManager.GetString("PORTAL_BLOCKED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The price limit is exceeded..
+        /// </summary>
+        internal static string PRICE_EXCEEDED {
+            get {
+                return ResourceManager.GetString("PRICE_EXCEEDED", resourceCulture);
             }
         }
         

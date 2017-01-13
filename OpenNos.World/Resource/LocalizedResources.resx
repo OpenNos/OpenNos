@@ -1219,4 +1219,10 @@
   <data name="REFUSED_SHARE" xml:space="preserve">
     <value>You refused to share the point of return with the group members.</value>
   </data>
+  <data name="LIMIT_EXCEEDED" xml:space="preserve">
+    <value>You can't add more item on the bazaar because the limit is exceeded</value>
+  </data>
+  <data name="PRICE_EXCEEDED" xml:space="preserve">
+    <value>The price limit is exceeded.</value>
+  </data>
 </root>
