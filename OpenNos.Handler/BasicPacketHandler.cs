@@ -363,7 +363,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LIMIT_EXCEEDED"), 0));
                 return;
             }
-            if (medal == null && packet.Price * packet.Amount >= 1000000)
+            if (medal == null && packet.Price >= (medal == null ? 1000000 : 1000000000))
             {
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PRICE_EXCEEDED"), 0));
                 return;
