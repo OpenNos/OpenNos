@@ -41,13 +41,7 @@ namespace OpenNos.Handler
 
         #region Properties
 
-        public ClientSession Session
-        {
-            get
-            {
-                return _session;
-            }
-        }
+        private ClientSession Session => _session;
 
         #endregion
 
@@ -481,7 +475,7 @@ namespace OpenNos.Handler
                 }
                 else if (typePacket == 1)
                 {
-                    Session.Character.CloseShop(true);
+                    Session.Character.CloseShop();
                 }
             }
         }
@@ -506,7 +500,7 @@ namespace OpenNos.Handler
             Session.Character.LastNRunId = npcid;
             if (Session.Character.Hp > 0)
             {
-                NRunHandler.NRun(Session, type, runner, value, npcid);
+                NRunHandler.NRun(Session, type, runner, npcid);
             }
         }
 

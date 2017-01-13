@@ -20,7 +20,7 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public MonsterMapItem(short x, short y, short itemVNum, int amount = 1, long owner = -1) : base(x, y)
+        public MonsterMapItem(short x, short y, short itemVNum, int amount = 1, long ownerId = -1) : base(x, y)
         {
             ItemVNum = itemVNum;
             if (amount < 100)
@@ -28,20 +28,20 @@ namespace OpenNos.GameObject
                 Amount = (byte)amount;
             }
             GoldAmount = amount;
-            Owner = owner;
+            OwnerId = ownerId;
         }
 
         #endregion
 
         #region Properties
 
-        public override byte Amount { get; set; }
+        public sealed override byte Amount { get; set; }
 
-        public int GoldAmount { get; set; }
+        public int GoldAmount { get; private set; }
 
-        public override short ItemVNum { get; set; }
+        public sealed override short ItemVNum { get; set; }
 
-        public long? Owner { get; set; }
+        public long? OwnerId { get; }
 
         #endregion
 
@@ -49,9 +49,9 @@ namespace OpenNos.GameObject
 
         public override ItemInstance GetItemInstance()
         {
-            if (_itemInstance == null && Owner != null)
+            if (_itemInstance == null && OwnerId != null)
             {
-                _itemInstance = Inventory.InstantiateItemInstance(ItemVNum, Owner.Value, Amount);
+                _itemInstance = Inventory.InstantiateItemInstance(ItemVNum, OwnerId.Value, Amount);
             }
             return _itemInstance;
         }

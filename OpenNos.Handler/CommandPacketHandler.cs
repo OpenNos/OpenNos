@@ -45,13 +45,7 @@ namespace OpenNos.Handler
 
         #region Properties
 
-        public ClientSession Session
-        {
-            get
-            {
-                return _session;
-            }
-        }
+        private ClientSession Session => _session;
 
         #endregion
 
@@ -231,7 +225,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("$MapPVP")]
-        public void MapPVP(string packet)
+        public void MapPVP()
         {
             Session.CurrentMap.IsPVP = !Session.CurrentMap.IsPVP;
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
@@ -263,10 +257,7 @@ namespace OpenNos.Handler
                 ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                 if (duration != 0)
                 {
-                    if (session != null)
-                    {
-                        session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
-                    }
+                    session?.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
                     if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
                         DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO
@@ -317,10 +308,7 @@ namespace OpenNos.Handler
                 ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                 if (duration != 0)
                 {
-                    if (session != null)
-                    {
-                        session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
-                    }
+                    session?.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
                     if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
                         DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO
@@ -371,10 +359,7 @@ namespace OpenNos.Handler
                 ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                 if (duration != 0)
                 {
-                    if (session != null)
-                    {
-                        session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
-                    }
+                    session?.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
                     if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
                         DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO
@@ -404,7 +389,7 @@ namespace OpenNos.Handler
         /////////////////////////////////////////////////////////////////////////////////
 
         [Packet("$BlockPM")]
-        public void BlockPM(string packet)
+        public void BlockPM()
         {
             if (!Session.Character.GmPvtBlock)
             {
@@ -1425,10 +1410,7 @@ namespace OpenNos.Handler
                 ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                 if (duration != 0)
                 {
-                    if (session != null)
-                    {
-                        session.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
-                    }
+                    session?.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
                     if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
                         DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO

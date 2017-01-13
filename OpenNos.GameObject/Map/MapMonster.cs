@@ -51,17 +51,15 @@ namespace OpenNos.GameObject
 
         public int CurrentMp { get; set; }
 
-        public IDictionary<long, long> DamageList { get; set; }
+        public IDictionary<long, long> DamageList { get; private set; }
 
         public DateTime Death { get; set; }
 
-        public short FirstX { get; set; }
+        private short FirstX { get; set; }
 
-        public short FirstY { get; set; }
+        private short FirstY { get; set; }
 
-        public ConcurrentQueue<HitRequest> HitQueue { get; set; }
-
-        public bool InWaiting { get; set; }
+        public ConcurrentQueue<HitRequest> HitQueue { get; }
 
         public bool IsAlive { get; set; }
 
@@ -75,7 +73,7 @@ namespace OpenNos.GameObject
 
         public Map Map { get; set; }
 
-        public NpcMonster Monster { get; set; }
+        public NpcMonster Monster { get; private set; }
 
         public List<GridPos> Path { get; set; }
 
@@ -89,7 +87,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public string GenerateEff(int effect)
+        private string GenerateEff(int effect)
         {
             return $"eff 3 {MapMonsterId} {effect}";
         }
@@ -103,7 +101,7 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
-        public string GenerateMv3()
+        private string GenerateMv3()
         {
             return $"mv 3 {MapMonsterId} {MapX} {MapY} {Monster.Speed}";
         }
@@ -181,7 +179,7 @@ namespace OpenNos.GameObject
         /// <param name="skill"></param>
         /// <param name="hitmode"></param>
         /// <returns></returns>
-        internal int GenerateDamage(Character targetCharacter, Skill skill, ref int hitmode)
+        private int GenerateDamage(Character targetCharacter, Skill skill, ref int hitmode)
         {
             //Warning: This code contains a huge amount of copypasta!
 
@@ -191,8 +189,6 @@ namespace OpenNos.GameObject
             {
                 return 0;
             }
-
-            Random random = new Random();
 
             int playerDefense;
             byte playerDefenseUpgrade = 0;
@@ -277,7 +273,7 @@ namespace OpenNos.GameObject
             }
             if (Monster.AttackClass == 0 || Monster.AttackClass == 1)
             {
-                if (ServerManager.RandomNumber(0, 100) <= chance)
+                if (ServerManager.RandomNumber() <= chance)
                 {
                     hitmode = 1;
                     return 0;
@@ -603,7 +599,7 @@ namespace OpenNos.GameObject
         /// <summary>
         /// Handle any kind of Monster interaction
         /// </summary>
-        internal void MonsterLife()
+        private void MonsterLife()
         {
             if (Monster == null)
             {

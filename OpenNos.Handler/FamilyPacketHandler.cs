@@ -42,10 +42,7 @@ namespace OpenNos.Handler
 
         #region Properties
 
-        public ClientSession Session
-        {
-            get { return _session; }
-        }
+        private ClientSession Session => _session;
 
         #endregion
 
@@ -181,7 +178,7 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateInfo("You cannot demote the family head!"));
                             return;
                         }
-                        if (DAOFactory.FamilyCharacterDAO.LoadByFamilyId(Session.Character.Family.FamilyId).Where(s => s.Authority == FamilyAuthority.Assistant).Count() == 2)
+                        if (DAOFactory.FamilyCharacterDAO.LoadByFamilyId(Session.Character.Family.FamilyId).Count(s => s.Authority == FamilyAuthority.Assistant) == 2)
                         {
                             Session.SendPacket(Session.Character.GenerateInfo("You already have two assistants!"));
                             return;
@@ -535,7 +532,7 @@ namespace OpenNos.Handler
                 }
                 if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                 {
-                    Session.SendPacket(Session.Character.GenerateInfo("You can only leave the family as the family head!"));
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CANNOT_LEAVE_FAMILY")));
                     return;
                 }
                 foreach (ClientSession s in ServerManager.Instance.Sessions)
@@ -544,7 +541,7 @@ namespace OpenNos.Handler
                     {
                         if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
                         {
-                            s.SendPacket(s.Character.GenerateMsg($"{Session.Character.Name} has left the family!", 0));
+                            s.SendPacket(s.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CHARACTER_LEFT_FAMILY"), 0));
                         }
                     }
                 }

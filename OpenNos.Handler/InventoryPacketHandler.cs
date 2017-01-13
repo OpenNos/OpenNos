@@ -42,13 +42,7 @@ namespace OpenNos.Handler
 
         #region Properties
 
-        public ClientSession Session
-        {
-            get
-            {
-                return _session;
-            }
-        }
+        private ClientSession Session => _session;
 
         #endregion
 
@@ -117,17 +111,19 @@ namespace OpenNos.Handler
             short slot;
             if (byte.TryParse(packetsplit[2], out type) && short.TryParse(packetsplit[3], out slot))
             {
-                if (Convert.ToInt32(packetsplit[4]) == 1)
+                switch (Convert.ToInt32(packetsplit[4]))
                 {
-                    Session.SendPacket(Session.Character.GenerateDialog($"#b_i^{type}^{slot}^2 #b_i^{type}^{slot}^5 {Language.Instance.GetMessageFromKey("SURE_TO_DELETE")}"));
-                }
-                else if (Convert.ToInt32(packetsplit[4]) == 2)
-                {
-                    if (Session.Character.InExchangeOrTrade || (InventoryType)type == InventoryType.Bazaar)
-                    {
-                        return;
-                    }
-                    Session.Character.DeleteItem((InventoryType)type, slot);
+                    case 1:
+                        Session.SendPacket(Session.Character.GenerateDialog($"#b_i^{type}^{slot}^2 #b_i^{type}^{slot}^5 {Language.Instance.GetMessageFromKey("SURE_TO_DELETE")}"));
+                        break;
+
+                    case 2:
+                        if (Session.Character.InExchangeOrTrade || (InventoryType)type == InventoryType.Bazaar)
+                        {
+                            return;
+                        }
+                        Session.Character.DeleteItem((InventoryType)type, slot);
+                        break;
                 }
             }
         }
@@ -148,7 +144,6 @@ namespace OpenNos.Handler
         [Packet("s_carrier")]
         public void SpecialistHolder(string packet)
         {
-            // left as a placeholder
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short slot;
@@ -314,7 +309,7 @@ namespace OpenNos.Handler
                 byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
-                if((InventoryType)type[i] == InventoryType.Bazaar)
+                if ((InventoryType)type[i] == InventoryType.Bazaar)
                 {
                     CloseExchange(Session, targetSession);
                     return;
@@ -574,11 +569,10 @@ namespace OpenNos.Handler
                     if (item != null)
                     {
                         MonsterMapItem monsterMapItem = item;
-                        if (monsterMapItem.Owner.HasValue)
+                        if (monsterMapItem.OwnerId.HasValue)
                         {
-                            Group group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(monsterMapItem.Owner.Value) && g.IsMemberOfGroup(Session.Character.CharacterId));
-                            if (item.CreatedDate.AddSeconds(30) > DateTime.Now && !(monsterMapItem.Owner == Session.Character.CharacterId ||
-                                @group != null && @group.SharingMode == (byte)GroupSharingType.Everyone))
+                            Group group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(monsterMapItem.OwnerId.Value) && g.IsMemberOfGroup(Session.Character.CharacterId));
+                            if (item.CreatedDate.AddSeconds(30) > DateTime.Now && !(monsterMapItem.OwnerId == Session.Character.CharacterId || group != null && group.SharingMode == (byte)GroupSharingType.Everyone))
                             {
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"), 10));
                                 return;
@@ -719,28 +713,28 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// put
+        /// put packet
         /// </summary>
-        /// <param name="packet"></param>
-        public void PutItem(PutPacket packet)
+        /// <param name="putPacket"></param>
+        public void PutItem(PutPacket putPacket)
         {
-            Logger.Debug(packet.ToString(), Session.SessionId);
+            Logger.Debug(putPacket.ToString(), Session.SessionId);
             lock (Session.Character.Inventory)
             {
-                ItemInstance invitem = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.InventoryType);
-                if (invitem != null && invitem.Item.IsDroppable && invitem.Item.IsTradable && !Session.Character.InExchangeOrTrade && packet.InventoryType != InventoryType.Bazaar)
+                ItemInstance invitem = Session.Character.Inventory.LoadBySlotAndType(putPacket.Slot, putPacket.InventoryType);
+                if (invitem != null && invitem.Item.IsDroppable && invitem.Item.IsTradable && !Session.Character.InExchangeOrTrade && putPacket.InventoryType != InventoryType.Bazaar)
                 {
-                    if (packet.Amount > 0 && packet.Amount < 100)
+                    if (putPacket.Amount > 0 && putPacket.Amount < 100)
                     {
                         if (ServerManager.GetMap(Session.Character.MapId).DroppedList.GetAllItems().Count < 200 && Session.HasCurrentMap)
                         {
-                            MapItem droppedItem = Session.CurrentMap.PutItem(packet.InventoryType, packet.Slot, packet.Amount, ref invitem, Session);
+                            MapItem droppedItem = Session.CurrentMap.PutItem(putPacket.InventoryType, putPacket.Slot, putPacket.Amount, ref invitem, Session);
                             if (droppedItem == null)
                             {
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
                                 return;
                             }
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemVNum, invitem.Amount, packet.InventoryType, invitem.Slot, invitem.Rare, invitem.Design, invitem.Upgrade, 0));
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemVNum, invitem.Amount, putPacket.InventoryType, invitem.Slot, invitem.Rare, invitem.Design, invitem.Upgrade, 0));
 
                             if (invitem.Amount == 0)
                             {
@@ -1512,7 +1506,7 @@ namespace OpenNos.Handler
                             {
                                 if (specialist.Item.EquipmentSlot == EquipmentType.Sp)
                                 {
-                                    specialist.PerfectSP(Session, UpgradeProtection.None);
+                                    specialist.PerfectSP(Session);
                                 }
                             }
                             else

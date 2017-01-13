@@ -14,7 +14,7 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public TransportFactory()
+        private TransportFactory()
         {
         }
 
@@ -22,13 +22,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public static TransportFactory Instance
-        {
-            get
-            {
-                return instance ?? (instance = new TransportFactory());
-            }
-        }
+        public static TransportFactory Instance => instance ?? (instance = new TransportFactory());
 
         #endregion
 
