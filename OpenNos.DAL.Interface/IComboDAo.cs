@@ -29,6 +29,9 @@ namespace OpenNos.DAL.Interface
 
         ComboDTO LoadById(short ComboId);
 
+        IEnumerable<ComboDTO> LoadBySkillVnum(short skillVNum);
+
+        IEnumerable<ComboDTO> LoadByVNumHitAndEffect(short skillVNum, short hit, short effect);
         #endregion
     }
 }

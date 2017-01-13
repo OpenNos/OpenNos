@@ -41,6 +41,7 @@ namespace OpenNos.DAL.EF.MySQL
         public int Act4Points { get; set; }
         public int ArenaWinner { get; set; }
         public int Backpack { get; set; }
+        public string Biography { get; set; }
         public bool BuffBlocked { get; set; }
         public long CharacterId { get; set; }
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
@@ -70,7 +71,6 @@ namespace OpenNos.DAL.EF.MySQL
         public long LevelXp { get; set; }
         public virtual Map Map { get; set; }
         public short MapId { get; set; }
-
         public short MapX { get; set; }
 
         public short MapY { get; set; }

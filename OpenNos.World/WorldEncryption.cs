@@ -31,7 +31,7 @@ namespace OpenNos.World
 
         public static string Decrypt2(char[] str)
         {
-            string decrypted_string = "";
+            string decrypted_string = String.Empty;
             char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'n' };
             int count = 0;
 
@@ -91,7 +91,7 @@ namespace OpenNos.World
         public override string Decrypt(byte[] str, int session_id)
         {
             int length = str.Length;
-            string encrypted_string = "";
+            string encrypted_string = String.Empty;
             byte session_key = (byte)(session_id & 0xFF);
             byte session_number = (byte)(session_id >> 6);
             session_number &= (byte)0xFF;
@@ -141,7 +141,7 @@ namespace OpenNos.World
 
             string[] bytes = encrypted_string.Split(Convert.ToChar(0xFF));// return string less 255 (2 strings)
 
-            string save = "";
+            string save = String.Empty;
             for (int i = 0; i < bytes.Length; i++)
             {
                 save += Decrypt2(bytes[i].ToCharArray());
@@ -152,7 +152,7 @@ namespace OpenNos.World
 
         public override string DecryptCustomParameter(byte[] str)
         {
-            string encrypted_string = "";
+            string encrypted_string = String.Empty;
             for (int i = 1; i < str.Length; i++)
             {
                 if (Convert.ToChar(str[i]) == 0xE) { return encrypted_string; }
@@ -218,8 +218,7 @@ namespace OpenNos.World
 
         public override byte[] Encrypt(string str)
         {
-            int EncCodepage = 1252;
-            byte[] StrBytes = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.GetEncoding(EncCodepage), System.Text.Encoding.UTF8.GetBytes(str));
+            byte[] StrBytes = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Default, System.Text.Encoding.UTF8.GetBytes(str));
             int BytesLength = StrBytes.Length;
 
             byte[] encryptedData = new byte[BytesLength + (int)Math.Ceiling((decimal)BytesLength / 0x7E) + 1];

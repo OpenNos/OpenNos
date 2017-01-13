@@ -14,21 +14,20 @@
 
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface ICharacterSkillDAO
+    public interface ICharacterSkillDAO : ISynchronizableBaseDAO<CharacterSkillDTO>
     {
         #region Methods
 
         DeleteResult Delete(long characterId, short skillVNum);
 
-        SaveResult InsertOrUpdate(ref CharacterSkillDTO characterskill);
-
-        IEnumerable<CharacterSkillDTO> InsertOrUpdate(IEnumerable<CharacterSkillDTO> characterSkills);
-
         IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId);
+
+        IEnumerable<Guid> LoadKeysByCharacterId(long characterId);
 
         #endregion
     }

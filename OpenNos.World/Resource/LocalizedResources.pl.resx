@@ -874,4 +874,40 @@
   <data name="TRY_FAILED_WAIT" xml:space="preserve">
     <value>Próba nieudana, spróbuj za: {0}</value>
   </data>
+  <data name="NOT_ENOUGH_ITEM" xml:space="preserve">
+    <value>Nie masz wystarczającej ilości potrzebnych przedmiotów, aby rozpocząć zbieranie.</value>
+  </data>
+  <data name="NOT_ENOUGH_POINTS" xml:space="preserve">
+    <value>Nie masz wystarczająco punktów specjalisty, aby to zrobić.</value>
+  </data>
+  <data name="SPEAKER" xml:space="preserve">
+    <value>Głośnik</value>
+  </data>
+  <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
+    <value>Muszisz się transformować aby zresetować swoje punkty specjalisty.</value>
+  </data>
+  <data name="REMOVE_VEHICLE" xml:space="preserve">
+    <value>Zanim przejdziesz transformację powinieneś najpierw zdjąć swój pojazd</value>
+  </data>
+  <data name="SAVING_ALL" xml:space="preserve">
+    <value>W trakcie zapisu</value>
+  </data>
+  <data name="MEMORY" xml:space="preserve">
+    <value>Użycie pamięci</value>
+  </data>
+  <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
+    <value>Nie możesz otwierac sklepów na głównych mapach.</value>
+  </data>
+  <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
+    <value>Nauczyłeś się już tej umiejętności!</value>
+  </data>
+  <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SUM_FAILED" xml:space="preserve">
+    <value>Sumowanie zakończone niepowodzeniem.</value>
+  </data>
+  <data name="SUM_SUCCESS" xml:space="preserve">
+    <value>Sumowanie powiodło się!</value>
+  </data>
 </root>

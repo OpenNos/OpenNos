@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class QuicklistEntryDTO : SynchronizeableBaseDTO
+    public class QuicklistEntryDTO : SynchronizableBaseDTO
     {
         #region Properties
 

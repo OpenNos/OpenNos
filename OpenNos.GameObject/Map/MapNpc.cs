@@ -16,6 +16,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -25,8 +26,9 @@ namespace OpenNos.GameObject
 
         public MapNpc(int npcId, Map parent)
         {
-            LifeTaskIsRunning = false;
+           
             MapNpcId = npcId;
+            Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = LastMove = DateTime.Now;
             IEnumerable<RecipeDTO> Recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId);
             Recipes = new List<Recipe>();
@@ -35,11 +37,11 @@ namespace OpenNos.GameObject
                 Recipes.Add(new GameObject.Recipe(rec.RecipeId) { ItemVNum = rec.ItemVNum, MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId, Amount = rec.Amount });
             }
 
-            IEnumerable<TeleporterDTO> Teleporter = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
+            IEnumerable<TeleporterDTO> teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
             Teleporters = new List<Teleporter>();
-            foreach (TeleporterDTO telep in Teleporter)
+            foreach (TeleporterDTO teleporter in teleporters)
             {
-                Teleporters.Add(new GameObject.Teleporter() { MapId = telep.MapId, Index = telep.Index, MapNpcId = telep.MapNpcId, MapX = telep.MapX, MapY = telep.MapY, TeleporterId = telep.TeleporterId });
+                Teleporters.Add(new GameObject.Teleporter() { MapId = teleporter.MapId, Index = teleporter.Index, MapNpcId = teleporter.MapNpcId, MapX = teleporter.MapX, MapY = teleporter.MapY, TeleporterId = teleporter.TeleporterId });
             }
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
             if (shop != null)
@@ -56,11 +58,12 @@ namespace OpenNos.GameObject
         public short FirstY { get; set; }
         public DateTime LastEffect { get; private set; }
         public DateTime LastMove { get; private set; }
-        public bool LifeTaskIsRunning { get; internal set; }
         public Map Map { get; set; }
         public List<Recipe> Recipes { get; set; }
         public Shop Shop { get; set; }
         public List<Teleporter> Teleporters { get; set; }
+        public NpcMonster Npc;      
+
 
         #endregion
 
@@ -87,30 +90,24 @@ namespace OpenNos.GameObject
             return $"npc_req 2 {MapNpcId} {Dialog}";
         }
 
-        internal void NpcLife()
+        internal async void NpcLife()
         {
-            LifeTaskIsRunning = true;
-            NpcMonster npc = ServerManager.GetNpc(this.NpcVNum);
-            if (npc == null)
-            {
-                LifeTaskIsRunning = false;
-                return;
-            }
+            await Task.Delay((1000 / ServerManager.GetMap(MapId).Npcs.Count));
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
-            if (Effect > 0 && time > EffectDelay + 1000)
+            if (Effect > 0 && time > EffectDelay)
             {
                 Map.Broadcast(GenerateEff());
                 LastEffect = DateTime.Now;
             }
 
-            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             time = (DateTime.Now - LastMove).TotalSeconds;
-            if (IsMoving && time > r.Next(1, 3) * (0.5 + r.NextDouble()))
+            if (IsMoving && time > random.Next(1, 3) * (0.5 + random.NextDouble()))
             {
-                byte point = (byte)r.Next(2, 5);
-                byte fpoint = (byte)r.Next(0, 2);
+                byte point = (byte)random.Next(2, 5);
+                byte fpoint = (byte)random.Next(0, 2);
 
-                byte xpoint = (byte)r.Next(fpoint, point);
+                byte xpoint = (byte)random.Next(fpoint, point);
                 byte ypoint = (byte)(point - xpoint);
 
                 short mapX = FirstX;
@@ -121,11 +118,10 @@ namespace OpenNos.GameObject
                     this.MapY = mapY;
                     LastMove = DateTime.Now;
 
-                    string movepacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {npc.Speed}";
-                    Map.Broadcast(movepacket);
+                    string movePacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {Npc.Speed}";
+                    Map.Broadcast(movePacket);
                 }
             }
-            LifeTaskIsRunning = false;
         }
 
         #endregion

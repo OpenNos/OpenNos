@@ -83,6 +83,7 @@
     <Compile Include="ISkillDAO.cs" />
     <Compile Include="IShopSkillDAO.cs" />
     <Compile Include="ICharacterSkillDAO.cs" />
+    <Compile Include="ISynchronizableBaseDAO.cs" />
     <Compile Include="ITeleporterDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

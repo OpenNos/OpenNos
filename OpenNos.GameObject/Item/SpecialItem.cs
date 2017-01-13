@@ -23,17 +23,17 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false)
+        public override void Use(ClientSession Session, ref Inventory inventory, bool DelayUsed = false)
         {
             switch (Effect)
             {
                 case 650: //wings
-                    SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                    SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
                     if (Session.Character.UseSp && specialistInstance != null)
                     {
                         if (!DelayUsed)
                         {
-                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
+                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
                         }
                         else
                         {
@@ -42,13 +42,13 @@ namespace OpenNos.GameObject
                             Session.Client.SendPacket(Session.Character.GenerateCMode());
                             Session.Client.SendPacket(Session.Character.GenerateStat());
                             Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                            Inv.ItemInstance.Amount--;
-                            if (Inv.ItemInstance.Amount > 0)
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            inventory.ItemInstance.Amount--;
+                            if (inventory.ItemInstance.Amount > 0)
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             else
                             {
-                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                         }
                     }
@@ -61,18 +61,18 @@ namespace OpenNos.GameObject
                     {
                         if (!DelayUsed)
                         {
-                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
+                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
                         }
                         else
                         {
                             Session.Character.ChangeSex();
-                            Inv.ItemInstance.Amount--;
-                            if (Inv.ItemInstance.Amount > 0)
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            inventory.ItemInstance.Amount--;
+                            if (inventory.ItemInstance.Amount > 0)
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             else
                             {
-                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                         }
                     }
@@ -83,32 +83,36 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1000: // vehicles
-                    SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                    SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
                     if (!DelayUsed && Session.Character.IsVehicled == false)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateDelay(3000, 3, $"#u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^2"));
+                        if (Session.Character.IsSitting)
+                        {
+                            Session.Character.IsSitting = false;
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
+                        }
+                        Session.Client.SendPacket(Session.Character.GenerateDelay(3000, 3, $"#u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^2"));
                     }
                     else
                     {
-                        if (Session.Character.IsVehicled == false)
+                        if (!Session.Character.IsVehicled)
                         {
                             Session.Character.IsVehicled = true;
                             Session.Character.MorphUpgrade = 0;
                             Session.Character.MorphUpgrade2 = 0;
                             Session.Character.Morph = Morph + Session.Character.Gender;
-                            Session.Character.LastSpeed = Session.Character.Speed;
                             Session.Character.Speed = Speed;
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
                         }
                         else
                         {
                             Session.Character.IsVehicled = false;
-                            Session.Character.Speed = Session.Character.LastSpeed;
+                            Session.Character.LoadSpeed();
                             if (Session.Character.UseSp)
                             {
                                 if (sp != null)
                                 {
-                                    Session.Character.Morph = ServerManager.GetItem(sp.ItemVNum).Morph;
+                                    Session.Character.Morph = sp.Item.Morph;
                                     Session.Character.MorphUpgrade = sp.Upgrade;
                                     Session.Character.MorphUpgrade2 = sp.Design;
                                 }

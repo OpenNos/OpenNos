@@ -25,9 +25,6 @@ namespace OpenNos.GameObject
 
         public void Regenerate(ClientSession session, Item item)
         {
-            session.Character.IsSitting = true;
-            session.CurrentMap?.Broadcast(session, session.Character.GenerateRest(), ReceiverType.All);
-
             session.Client.SendPacket(session.Character.GenerateEff(6000));
             session.Character.SnackAmount++;
             session.Character.MaxSnack = 0;
@@ -63,14 +60,15 @@ namespace OpenNos.GameObject
                 return;
             else
                 session.Character.LastPotion = DateTime.Now;
-            Item item = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
+            Item item = ((ItemInstance)Inv.ItemInstance).Item;
             switch (Effect)
             {
                 default:
                     if (session.Character.Hp <= 0)
                         return;
-                    if (session.Character.IsSitting == false)
+                    if (!session.Character.IsSitting)
                     {
+                        session.Character.Rest();
                         session.Character.SnackAmount = 0;
                         session.Character.SnackHp = 0;
                         session.Character.SnackMp = 0;
@@ -78,6 +76,8 @@ namespace OpenNos.GameObject
                     int amount = session.Character.SnackAmount;
                     if (amount < 5)
                     {
+                        if (!session.Character.IsSitting)
+                            return;
                         Thread workerThread = new Thread(() => Regenerate(session, item));
                         workerThread.Start();
                         Inv.ItemInstance.Amount--;
@@ -98,6 +98,8 @@ namespace OpenNos.GameObject
                     }
                     if (amount == 0)
                     {
+                        if (!session.Character.IsSitting)
+                            return;
                         Thread workerThread2 = new Thread(() => Sync(session, item));
                         workerThread2.Start();
                     }

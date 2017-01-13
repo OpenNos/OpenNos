@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class CellonOptionDTO : SynchronizeableBaseDTO
+    public class CellonOptionDTO : SynchronizableBaseDTO
     {
         #region Properties
 

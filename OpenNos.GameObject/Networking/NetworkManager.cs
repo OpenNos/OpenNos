@@ -157,7 +157,7 @@ namespace OpenNos.GameObject
                 {
                     if (session.Character != null)
                     {
-                        if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId)) != null)
+                        if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(session.Character.CharacterId)))
                         {
                             ServerManager.Instance.GroupLeave(session);
                         }
@@ -166,11 +166,7 @@ namespace OpenNos.GameObject
                         //only remove the character from map if the character has been set
                         session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
 
-                        if (session.HealthTask != null)
-                        {
-                            session.healthStop = true;
-                            session.HealthTask.Dispose();
-                        }
+                     
                     }
                 }
 

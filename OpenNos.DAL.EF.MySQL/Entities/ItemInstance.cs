@@ -15,6 +15,7 @@
 namespace OpenNos.DAL.EF.MySQL
 {
     using System;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class ItemInstance : SynchronizableBaseEntity
     {
@@ -23,7 +24,10 @@ namespace OpenNos.DAL.EF.MySQL
         public int Amount { get; set; }
         public short Design { get; set; }
         public virtual Inventory Inventory { get; set; }
-        public bool IsUsed { get; set; }
+
+        [ForeignKey(nameof(BoundCharacterId))]
+        public Character BoundCharacter { get; set; }
+        public long? BoundCharacterId { get; set; }
         public virtual Item Item { get; set; }
         public DateTime? ItemDeleteTime { get; set; }
         public short ItemVNum { get; set; }

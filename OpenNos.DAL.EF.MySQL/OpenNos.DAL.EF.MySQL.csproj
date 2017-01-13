@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\SynchronizableBaseDAO.cs" />
     <Compile Include="Entities\Account.cs" />
     <Compile Include="Entities\Base\SynchronizableBaseEntity.cs" />
     <Compile Include="Entities\CellonOption.cs" />
@@ -110,9 +111,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201608311933508_Ares.cs" />
-    <Compile Include="Migrations\201608311933508_Ares.Designer.cs">
-      <DependentUpon>201608311933508_Ares.cs</DependentUpon>
+    <Compile Include="Migrations\201609102004158_Migration.cs" />
+    <Compile Include="Migrations\201609102004158_Migration.Designer.cs">
+      <DependentUpon>201609102004158_Migration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -192,8 +193,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201608311933508_Ares.resx">
-      <DependentUpon>201608311933508_Ares.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609102004158_Migration.resx">
+      <DependentUpon>201609102004158_Migration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

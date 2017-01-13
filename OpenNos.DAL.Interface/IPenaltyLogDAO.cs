@@ -24,6 +24,8 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult Delete(int penaltylogId);
 
+        bool IdAlreadySet(long id);
+
         PenaltyLogDTO Insert(PenaltyLogDTO penaltylog);
 
         IEnumerable<PenaltyLogDTO> LoadByAccount(long accountId);

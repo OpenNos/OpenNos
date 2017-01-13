@@ -13,29 +13,25 @@
  */
 
 using OpenNos.Data;
-using OpenNos.Data.Enums;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IInventoryDAO
+    public interface IInventoryDAO : ISynchronizableBaseDAO<InventoryDTO>
     {
         #region Methods
 
-        DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type);
-
         void InitializeMapper(Type baseType);
-
-        IEnumerable<InventoryDTO> InsertOrUpdate(IEnumerable<InventoryDTO> inventories);
-
-        InventoryDTO InsertOrUpdate(InventoryDTO inventory);
 
         IEnumerable<InventoryDTO> LoadByCharacterId(long characterId);
 
-        InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type);
+        InventoryDTO LoadBySlotAndType(long characterId, short slot, InventoryType type);
 
-        IEnumerable<InventoryDTO> LoadByType(long characterId, byte type);
+        IEnumerable<InventoryDTO> LoadByType(long characterId, InventoryType type);
+
+        IEnumerable<Guid> LoadKeysByCharacterId(long characterId);
 
         void RegisterMapping(Type gameObjectType);
 

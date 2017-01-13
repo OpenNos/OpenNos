@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Ares : DbMigration
+    public partial class Migration : DbMigration
     {
         public override void Up()
         {
@@ -31,6 +31,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Act4Points = c.Int(nullable: false),
                         ArenaWinner = c.Int(nullable: false),
                         Backpack = c.Int(nullable: false),
+                        Biography = c.String(unicode: false),
                         BuffBlocked = c.Boolean(nullable: false),
                         Class = c.Byte(nullable: false),
                         Compliment = c.Short(nullable: false),
@@ -200,6 +201,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         MagicDefence = c.Short(nullable: false),
                         MaxHP = c.Int(nullable: false),
                         MaxMP = c.Int(nullable: false),
+                        MonsterType = c.Int(nullable: false),
                         Name = c.String(maxLength: 255, storeType: "nvarchar"),
                         NoAggresiveIcon = c.Boolean(nullable: false),
                         Race = c.Byte(nullable: false),
@@ -351,6 +353,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Data = c.Binary(),
                         Music = c.Int(nullable: false),
                         Name = c.String(maxLength: 255, storeType: "nvarchar"),
+                        ShopAllowed = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.MapId);
             
@@ -528,7 +531,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 .ForeignKey("dbo.ItemInstance", t => t.Id)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
                 .Index(t => t.Id)
-                .Index(t => new { t.CharacterId, t.Slot, t.Type }, unique: true, name: "IX_SlotAndType");
+                .Index(t => new { t.CharacterId, t.Slot, t.Type }, name: "IX_SlotAndType");
             
             CreateTable(
                 "dbo.ItemInstance",
@@ -537,7 +540,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Id = c.Guid(nullable: false),
                         Amount = c.Int(nullable: false),
                         Design = c.Short(nullable: false),
-                        IsUsed = c.Boolean(nullable: false),
+                        BoundCharacterId = c.Long(),
                         ItemDeleteTime = c.DateTime(precision: 0),
                         ItemVNum = c.Short(nullable: false),
                         Rare = c.SByte(nullable: false),
@@ -591,7 +594,9 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Discriminator = c.String(nullable: false, maxLength: 128, storeType: "nvarchar"),
                     })
                 .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Character", t => t.BoundCharacterId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum, cascadeDelete: true)
+                .Index(t => t.BoundCharacterId)
                 .Index(t => t.ItemVNum);
             
             CreateTable(
@@ -668,6 +673,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.CellonOption", "WearableInstanceId", "dbo.ItemInstance");
             DropForeignKey("dbo.ItemInstance", "ItemVNum", "dbo.Item");
             DropForeignKey("dbo.Inventory", "Id", "dbo.ItemInstance");
+            DropForeignKey("dbo.ItemInstance", "BoundCharacterId", "dbo.Character");
             DropForeignKey("dbo.GeneralLog", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.CharacterSkill", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.ShopSkill", "SkillVNum", "dbo.Skill");
@@ -702,6 +708,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.QuicklistEntry", new[] { "CharacterId" });
             DropIndex("dbo.CellonOption", new[] { "WearableInstanceId" });
             DropIndex("dbo.ItemInstance", new[] { "ItemVNum" });
+            DropIndex("dbo.ItemInstance", new[] { "BoundCharacterId" });
             DropIndex("dbo.Inventory", "IX_SlotAndType");
             DropIndex("dbo.Inventory", new[] { "Id" });
             DropIndex("dbo.GeneralLog", new[] { "CharacterId" });
