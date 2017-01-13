@@ -368,7 +368,7 @@ namespace OpenNos.WebApi.SelfHost
 
                 if (worldserver != null)
                 {
-                    if(string.IsNullOrEmpty(characterName) && characterId.HasValue)
+                    if (string.IsNullOrEmpty(characterName) && characterId.HasValue)
                     {
                         characterName = worldserver.ConnectedCharacters.SingleOrDefault(c => c.Value == characterId.Value).Key;
                     }
@@ -377,13 +377,13 @@ namespace OpenNos.WebApi.SelfHost
                     Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
                     return worldserver.ChannelId;
                 }
-                else if(messageType == MessageType.Shout)
+                else if (messageType == MessageType.Shout)
                 {
                     //send to all registered worlds
                     Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
                     return null;
                 }
-                else if(messageType == MessageType.Family)
+                else if (messageType == MessageType.Family)
                 {
                     Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
                     return null;

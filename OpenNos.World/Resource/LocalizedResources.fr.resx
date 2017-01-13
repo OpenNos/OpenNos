@@ -1160,4 +1160,10 @@ Veux-tu le porter ?</value>
   <data name="REFUSED_SHARE" xml:space="preserve">
     <value>Tu as refusé de partager le point de retour avec les membres du groupe.</value>
   </data>
+ <data name="LIMIT_EXCEEDED" xml:space="preserve">
+    <value>Tu as atteint la limite d'objet qui peuvent être dans ton NosBazard simultanément.</value>
+  </data>
+  <data name="PRICE_EXCEEDED" xml:space="preserve">
+    <value>Tu ne peux pas dépasser 1,000,000 or sans Médaille de NosMarchand.</value>
+  </data>
 </root>

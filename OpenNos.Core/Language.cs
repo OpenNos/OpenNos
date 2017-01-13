@@ -70,7 +70,7 @@ namespace OpenNos.Core
             Result result = deserializer.Deserialize<Result>(response);
             Detection detection = result?.data?.detections.FirstOrDefault();
 
-            if(detection == null)
+            if (detection == null)
             {
                 return true;
             }

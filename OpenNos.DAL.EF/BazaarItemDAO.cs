@@ -105,6 +105,24 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public void RemoveOutDated()
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    foreach (BazaarItem entity in context.BazaarItem.Where(e => e.DateStart.AddHours(e.Duration).AddDays(e.MedalUsed ? 30 : 7) < DateTime.Now))
+                    {
+                        context.BazaarItem.Remove(entity);
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
         private BazaarItemDTO Insert(BazaarItemDTO bazaarItem, OpenNosContext context)
         {
             BazaarItem entity = _mapper.Map<BazaarItem>(bazaarItem);

@@ -105,18 +105,13 @@ namespace OpenNos.GameObject
 
                 return _transportId;
             }
-
-            set
-            {
-                _transportId = value;
-            }
         }
 
         #endregion
 
         #region Methods
 
-        public void PerfectSP(ClientSession Session, UpgradeProtection protect)
+        public void PerfectSP(ClientSession Session)
         {
             short[] upsuccess = { 50, 40, 30, 20, 10 };
 

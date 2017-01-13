@@ -151,7 +151,7 @@ namespace OpenNos.GameObject
             }
             else
             {
-                rnd = ServerManager.RandomNumber(0, 100);
+                rnd = ServerManager.RandomNumber();
             }
             if (protection == RarifyProtection.RedAmulet)
             {

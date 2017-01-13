@@ -38,10 +38,10 @@ namespace OpenNos.GameObject
                 new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
 
         private static ServerManager _instance;
-        private static List<Item> _items = new List<Item>();
-        private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
-        private static List<NpcMonster> _npcs = new List<NpcMonster>();
-        private static List<Skill> _skills = new List<Skill>();
+        private static readonly List<Item> _items = new List<Item>();
+        private static readonly ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
+        private static readonly List<NpcMonster> _npcs = new List<NpcMonster>();
+        private static readonly List<Skill> _skills = new List<Skill>();
         private static int seed = Environment.TickCount;
         private bool _disposed;
 
@@ -66,6 +66,7 @@ namespace OpenNos.GameObject
 
         private ServerManager()
         {
+            // do nothing
         }
 
         #endregion
@@ -80,34 +81,23 @@ namespace OpenNos.GameObject
 
         public static int GoldRate { get; set; }
 
-        public static List<MailDTO> Mails { get; set; }
+        public static List<MailDTO> Mails { get; private set; }
 
         public static int XPRate { get; set; }
 
         public int ChannelId { get; set; }
 
-        public List<Group> Groups
-        {
-            get
-            {
-                return _groups.GetAllItems();
-            }
-        }
+        public List<Group> Groups => _groups.GetAllItems();
 
         public static ServerManager Instance => _instance ?? (_instance = new ServerManager());
 
         public Task TaskShutdown { get; set; }
 
-        public Guid WorldId { get; set; }
+        public Guid WorldId { get; private set; }
 
         #endregion
 
         #region Methods
-
-        public static ConcurrentDictionary<Guid, Map> GetAllMap()
-        {
-            return _maps;
-        }
 
         public static IEnumerable<Skill> GetAllSkill()
         {
@@ -315,7 +305,6 @@ namespace OpenNos.GameObject
                                 {
                                     groupSession.SendPacket(groupSession.Character.GeneratePinit());
                                 }
-
                             }
                         }
                     }
@@ -583,7 +572,7 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
 
-            // initialize bazaar      
+            // initialize bazaar
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED")));
 
             // initialize npcmonsters

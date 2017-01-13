@@ -32,10 +32,10 @@ namespace OpenNos.GameObject
         private bool _disposed;
         private bool _isSleeping;
         private bool _isSleepingRequest;
-        private List<int> _mapMonsterIds;
-        private List<MapNpc> _npcs;
-        private List<PortalDTO> _portals;
-        private Random _random;
+        private readonly List<int> _mapMonsterIds;
+        private readonly List<MapNpc> _npcs;
+        private readonly List<PortalDTO> _portals;
+        private readonly Random _random;
         private Guid _uniqueIdentifier;
 
         #endregion
@@ -96,19 +96,13 @@ namespace OpenNos.GameObject
 
         public byte[] Data { get; set; }
 
-        public RespawnMapTypeDTO DefaultRespawn
-        {
-            get; set;
-        }
+        public RespawnMapTypeDTO DefaultRespawn { get; private set; }
 
-        public RespawnMapTypeDTO DefaultReturn
-        {
-            get; set;
-        }
+        public RespawnMapTypeDTO DefaultReturn { get; private set; }
 
-        public ThreadSafeSortedList<long, MapItem> DroppedList { get; set; }
+        public ThreadSafeSortedList<long, MapItem> DroppedList { get; }
 
-        public StaticGrid Grid { get; set; }
+        public StaticGrid Grid { get; private set; }
 
         public bool IsDancing { get; set; }
 
@@ -153,50 +147,29 @@ namespace OpenNos.GameObject
 
         public short MapId { get; set; }
 
-        public List<MapTypeDTO> MapTypes
-        {
-            get; set;
-        }
+        public List<MapTypeDTO> MapTypes { get; }
 
         /// <summary>
         /// This list ONLY for READ access to MapMonster, you CANNOT MODIFY them here. Use
         /// Add/RemoveMonster instead.
         /// </summary>
-        public List<MapMonster> Monsters
-        {
-            get
-            {
-                return _monsters.GetAllItems();
-            }
-        }
+        public List<MapMonster> Monsters => _monsters.GetAllItems();
 
         public int Music { get; set; }
 
         public string Name { get; set; }
 
-        public List<MapNpc> Npcs
-        {
-            get
-            {
-                return _npcs;
-            }
-        }
+        public IEnumerable<MapNpc> Npcs => _npcs;
 
-        public List<PortalDTO> Portals
-        {
-            get
-            {
-                return _portals;
-            }
-        }
+        public List<PortalDTO> Portals => _portals;
 
         public bool ShopAllowed { get; set; }
 
-        public Dictionary<long, MapShop> UserShops { get; set; }
+        public Dictionary<long, MapShop> UserShops { get; }
 
-        public int XLength { get; set; }
+        private int XLength { get; set; }
 
-        public int YLength { get; set; }
+        private int YLength { get; set; }
 
         #endregion
 
@@ -227,7 +200,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY, int gold = 0)
+        public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY)
         {
             try
             {
@@ -243,7 +216,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.RandomNumber(0,100)))
+                foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.RandomNumber()))
                 {
                     localMapX = (short)(mapX + possibilitie.X);
                     localMapY = (short)(mapY + possibilitie.Y);
@@ -299,7 +272,7 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        public bool IsBlockedZone(int firstX, int firstY, int mapX, int mapY)
+        private bool IsBlockedZone(int firstX, int firstY, int mapX, int mapY)
         {
             for (int i = 1; i <= Math.Abs(mapX - firstX); i++)
             {
@@ -319,7 +292,7 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        public List<GridPos> JPSPlus(JumpPointParam JumpPointParameters, GridPos cell1, GridPos cell2)
+        public static List<GridPos> JPSPlus(JumpPointParam JumpPointParameters, GridPos cell1, GridPos cell2)
         {
             if (JumpPointParameters != null)
             {
@@ -338,12 +311,12 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void LoadZone()
+        private void LoadZone()
         {
             using (Stream stream = new MemoryStream(Data))
             {
-                int numBytesToRead = 1;
-                int numBytesRead = 0;
+                const int numBytesToRead = 1;
+                const int numBytesRead = 0;
                 byte[] bytes = new byte[numBytesToRead];
 
                 byte[] xlength = new byte[2];
