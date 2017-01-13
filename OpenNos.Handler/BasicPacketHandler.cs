@@ -354,8 +354,18 @@ namespace OpenNos.Handler
                 return;
             }
             ItemInstance it = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory == 4 ? 0 : (InventoryType)packet.Inventory);
-            if (it == null || !it.Item.IsSoldable || it.IsBound || Session.Character.Inventory.CountItemInAnInventory(InventoryType.Bazaar) > 10 * (medal == null ? 1 : 10) || medal == null && packet.Price * packet.Amount >= 100000)
+            if (it == null || !it.Item.IsSoldable || it.IsBound)
             {
+                return;
+            }
+            if (Session.Character.Inventory.CountItemInAnInventory(InventoryType.Bazaar) > 10 * (medal == null ? 1 : 10))
+            {
+                //todo uppermost 
+                return;
+            }
+            if (medal == null && packet.Price * packet.Amount >= 1000000)
+            {
+                //todo uppermost
                 return;
             }
             ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory(packet.Inventory == 4 ? 0 : (InventoryType)packet.Inventory, packet.Slot, packet.Amount);
