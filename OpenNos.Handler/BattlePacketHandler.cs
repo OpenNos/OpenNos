@@ -120,7 +120,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
+            List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : (Session.Character.Skills == null ? null : Session.Character.Skills.GetAllItems());
 
             if (skills != null)
             {
