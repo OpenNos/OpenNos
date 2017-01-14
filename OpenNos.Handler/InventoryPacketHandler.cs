@@ -926,6 +926,8 @@ namespace OpenNos.Handler
                 specialistInstance.FireResistance = 0;
                 specialistInstance.WaterResistance = 0;
                 specialistInstance.CriticalDodge = 0;
+                specialistInstance.CloseDefence = 0;
+                specialistInstance.DistanceDefence = 0;
                 specialistInstance.MagicDefence = 0;
                 specialistInstance.HP = 0;
                 specialistInstance.MP = 0;
