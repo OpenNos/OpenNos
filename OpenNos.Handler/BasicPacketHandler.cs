@@ -226,7 +226,7 @@ namespace OpenNos.Handler
         public void BuyBazaar(CBuyPacket packet)
         {
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
-            if (bz != null || packet.Amount < 1)
+            if (bz != null && packet.Amount > 0)
             {
                 if (bz != null)
                 {
@@ -234,14 +234,15 @@ namespace OpenNos.Handler
 
                     if (Session.Character.Gold >= price)
                     {
-                        if (packet.Amount <= bz.Amount)
+                        BazaarItemLink bzcree = new BazaarItemLink { BazaarItem = bz };
+                        if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
                         {
-                            BazaarItemLink bzcree = new BazaarItemLink { BazaarItem = bz };
-                            if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
-                            {
-                                bzcree.Owner = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
-                                bzcree.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
-                            }
+                            bzcree.Owner = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
+                            bzcree.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                        }
+                        if (packet.Amount <= bzcree.Item.Amount)
+                        {
+                          
                             if (!Session.Character.Inventory.CanAddItem(bzcree.Item.ItemVNum))
                             {
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
