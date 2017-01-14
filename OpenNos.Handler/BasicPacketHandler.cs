@@ -254,11 +254,14 @@ namespace OpenNos.Handler
                                 {
                                     return;
                                 }
+                                ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDAO.LoadById(bzcree.BazaarItem.ItemInstanceId);
+                                if(bzitemdto.Amount < packet.Amount)
+                                {
+                                    return;
+                                }
+                                bzitemdto.Amount -= packet.Amount;
                                 Session.Character.Gold -= price;
                                 Session.SendPacket(Session.Character.GenerateGold());
-
-                                ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDAO.LoadById(bzcree.BazaarItem.ItemInstanceId);
-                                bzitemdto.Amount -= packet.Amount;
                                 DAOFactory.IteminstanceDAO.InsertOrUpdate(bzitemdto);
 
                                 Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {packet.Amount} {packet.Price} 0 0 0");
