@@ -336,7 +336,6 @@ namespace OpenNos.GameObject
                     {
                         inv.Type = InventoryType.Bazaar;
                         inv.Slot = i;
-                        inv.CharacterId = 1;
                         DAOFactory.IteminstanceDAO.InsertOrUpdate(inv);
                         break;
                     }
@@ -356,9 +355,7 @@ namespace OpenNos.GameObject
                 {
                     invcopy.Type = InventoryType.Bazaar;
                     invcopy.Slot = i;
-                    invcopy.CharacterId = 1;
                     ItemInstanceDTO itemdto = DAOFactory.IteminstanceDAO.InsertOrUpdate(invcopy);
-                    PutItem((ItemInstance)itemdto);
                     break;
                 }
             }

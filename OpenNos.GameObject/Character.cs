@@ -4393,7 +4393,7 @@ namespace OpenNos.GameObject
                         }
 
                         // create or update all which are new or do still exist
-                        foreach (ItemInstance itemInstance in inventories)
+                        foreach (ItemInstance itemInstance in inventories.Where(s=>s.Item.Type != InventoryType.Bazaar))
                         {
                             DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
                         }
