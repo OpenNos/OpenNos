@@ -1175,6 +1175,8 @@ namespace OpenNos.GameObject
             CloseShop();
             CloseExchangeOrTrade();
             GroupSentRequestCharacterIds.Clear();
+            FamilyInviteCharacters.Clear();
+            FriendRequestCharacters.Clear();
         }
 
         public string GenerateAt()

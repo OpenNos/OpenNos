@@ -60,6 +60,13 @@ namespace OpenNos.GameObject
             {
                 session.IsDisposing = true;
 
+                if(IsWorldServer && session.HasSelectedCharacter)
+                {
+                    session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                }
+
+                session.Destroy();
+
                 if (IsWorldServer)
                 {
                     if (session.HasSelectedCharacter)
@@ -75,13 +82,9 @@ namespace OpenNos.GameObject
                         }
 
                         session.Character.Save();
-
-                        // only remove the character from map if the character has been set
-                        session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
                     }
                 }
 
-                session.Destroy();
                 client.Disconnect();
                 Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + client.ClientId);
                 // session = null;
