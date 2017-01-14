@@ -33,7 +33,6 @@ namespace OpenNos.World
     {
         #region Members
 
-        private const string IPADDRESS = "127.0.0.1";
 
         private static EventHandler exitHandler;
         private static ManualResetEvent run = new ManualResetEvent(true);
@@ -111,7 +110,7 @@ namespace OpenNos.World
             portloop:
             try
             {
-                networkManager = new NetworkManager<WorldEncryption>(IPADDRESS, port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
+                networkManager = new NetworkManager<WorldEncryption>(System.Configuration.ConfigurationManager.AppSettings["IPADDRESS"], port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
             catch (System.Net.Sockets.SocketException ex)
             {
@@ -130,7 +129,7 @@ namespace OpenNos.World
 
             string serverGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
             int sessionLimit = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["SessionLimit"]);
-            int? newChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("RegisterWorldserver", serverGroup, new WorldserverDTO(ServerManager.Instance.WorldId, new ScsTcpEndPoint(IPADDRESS, port), sessionLimit)).Result;
+            int? newChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("RegisterWorldserver", serverGroup, new WorldserverDTO(ServerManager.Instance.WorldId, new ScsTcpEndPoint(System.Configuration.ConfigurationManager.AppSettings["IPADDRESS"], port), sessionLimit)).Result;
 
             if (newChannelId.HasValue)
             {
@@ -146,7 +145,7 @@ namespace OpenNos.World
         {
             string serverGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
-            ServerCommunicationClient.Instance.HubProxy.Invoke("UnregisterWorldserver", serverGroup, new ScsTcpEndPoint(IPADDRESS, port)).Wait();
+            ServerCommunicationClient.Instance.HubProxy.Invoke("UnregisterWorldserver", serverGroup, new ScsTcpEndPoint(System.Configuration.ConfigurationManager.AppSettings["IPADDRESS"], port)).Wait();
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.SaveAll();
