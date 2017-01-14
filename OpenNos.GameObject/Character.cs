@@ -3447,10 +3447,10 @@ namespace OpenNos.GameObject
                     DistanceRate += specialist.HitRate;
                     DefenceRate += specialist.DefenceDodge;
                     DistanceDefenceRate += specialist.DistanceDefenceDodge;
-                    FireResistance += specialist.Item.FireResistance;
-                    WaterResistance += specialist.Item.WaterResistance;
-                    LightResistance += specialist.Item.LightResistance;
-                    DarkResistance += specialist.Item.DarkResistance;
+                    FireResistance += specialist.Item.FireResistance + specialist.SpFire;
+                    WaterResistance += specialist.Item.WaterResistance + specialist.SpWater;
+                    LightResistance += specialist.Item.LightResistance + specialist.SpLight;
+                    DarkResistance += specialist.Item.DarkResistance + specialist.SpDark;
                     ElementRateSP += specialist.ElementRate + specialist.SpElement;
                     Defence += specialist.CloseDefence + specialist.SpDefence * 10;
                     DistanceDefence += specialist.DistanceDefence + specialist.SpDefence * 10;
