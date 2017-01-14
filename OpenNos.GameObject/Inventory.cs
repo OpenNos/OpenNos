@@ -329,7 +329,7 @@ namespace OpenNos.GameObject
                     }
                 }
                 Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inventory, slot, 0, 0, 0, 0));
-                return inv;
+                return invcopy;
             }
             if (amount >= inv.Amount)
             {
@@ -345,7 +345,7 @@ namespace OpenNos.GameObject
                     }
                 }
                 Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inventory, slot, 0, 0, 0, 0));
-                return inv;
+                return invcopy;
             }
 
             invcopy.Amount = amount;
