@@ -312,6 +312,8 @@ namespace OpenNos.GameObject
             if (inv == null || amount > inv.Amount)
                 return null;
 
+            ItemInstance invcopy = inv.DeepCopy();
+            invcopy.Id = Guid.NewGuid();
 
             if (inv.Item.Type == InventoryType.Equipment)
             {
@@ -319,9 +321,10 @@ namespace OpenNos.GameObject
                 {
                     if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) == null)
                     {
-                        inv.Type = InventoryType.Bazaar;
-                        inv.Slot = i;
-                        DAOFactory.IteminstanceDAO.InsertOrUpdate(inv);
+                        invcopy.Type = InventoryType.Bazaar;
+                        invcopy.Slot = i;
+                        invcopy.CharacterId = 1;
+                        DeleteFromSlotAndType(inv.Slot, inv.Type);
                         break;
                     }
                 }
@@ -334,17 +337,16 @@ namespace OpenNos.GameObject
                 {
                     if (LoadBySlotAndType<ItemInstance>(i, InventoryType.Bazaar) == null)
                     {
-                        inv.Type = InventoryType.Bazaar;
-                        inv.Slot = i;
-                        DAOFactory.IteminstanceDAO.InsertOrUpdate(inv);
+                        invcopy.Type = InventoryType.Bazaar;
+                        invcopy.Slot = i;
+                        invcopy.CharacterId = 1;
+                        DeleteFromSlotAndType(inv.Slot, inv.Type);
                         break;
                     }
                 }
                 Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inventory, slot, 0, 0, 0, 0));
                 return inv;
             }
-            ItemInstance invcopy = inv.DeepCopy();
-            invcopy.Id = Guid.NewGuid();
 
             invcopy.Amount = amount;
             inv.Amount -= amount;
@@ -355,7 +357,7 @@ namespace OpenNos.GameObject
                 {
                     invcopy.Type = InventoryType.Bazaar;
                     invcopy.Slot = i;
-                    ItemInstanceDTO itemdto = DAOFactory.IteminstanceDAO.InsertOrUpdate(invcopy);
+                    invcopy.CharacterId = 1;
                     break;
                 }
             }

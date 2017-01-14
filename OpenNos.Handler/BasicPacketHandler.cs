@@ -367,7 +367,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LIMIT_EXCEEDED"), 0));
                 return;
             }
-            if (medal == null && packet.Price >= (medal == null ? 1000000 : 1000000000))
+            if (price >= (medal == null ? 1000000 : 1000000000))
             {
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PRICE_EXCEEDED"), 0));
                 return;
@@ -396,6 +396,7 @@ namespace OpenNos.Handler
                     return;
             }
 
+            ItemInstanceDTO itemdto = DAOFactory.IteminstanceDAO.InsertOrUpdate(bazar);
 
             BazaarItemDTO bz = new BazaarItemDTO()
             {
