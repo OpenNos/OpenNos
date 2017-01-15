@@ -252,7 +252,6 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateCond());
                     session.SendPacket(session.Character.GenerateCMap());
                     session.SendPacket(session.Character.GenerateStatChar());
-                    session.SendPacket(session.Character.GenerateGidx()); // family
                     session.SendPacket("rsfp 0 -1");
 
                     // in 2 // send only when partner present cond 2 // send only when partner present
@@ -999,7 +998,7 @@ namespace OpenNos.GameObject
                     switch (message.Item4)
                     {
                         case MessageType.Whisper:
-                            targetSession?.SendPacket($"{message.Item2} <Channel: {message.Item3}>");
+                            targetSession?.SendPacket($"{message.Item2} <{Language.Instance.GetMessageFromKey("CHANNEL")}: {message.Item3}>");
                             break;
 
                         case MessageType.Shout:
@@ -1022,7 +1021,7 @@ namespace OpenNos.GameObject
                                         {
                                             if (s.Character.Family.FamilyId == familyId)
                                             {
-                                                s.SendPacket($"say 1 0 6 <Channel: {message.Item3}>{message.Item2}");
+                                                s.SendPacket($"say 1 0 6 <{Language.Instance.GetMessageFromKey("CHANNEL")}: {message.Item3}>{message.Item2}");
                                             }
                                         }
                                     }

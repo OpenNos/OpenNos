@@ -1198,7 +1198,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCInfo()
         {
-            return $"c_info {Name} - -1 -1 - {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
+            return $"c_info {Name} - -1 {((Family != null && FamilyCharacter != null) ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {(Family != null ? Family.FamilyLevel : 0)} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
 
         public string GenerateCMap()
@@ -2624,7 +2624,7 @@ namespace OpenNos.GameObject
         {
             if (Family != null && FamilyCharacter != null)
             {
-                return $"gidx 1 {CharacterId} {Family.FamilyId} {Family.Name}({FamilyCharacter.Authority.ToString()}) {Family.FamilyLevel}";
+                return $"gidx 1 {CharacterId} {Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())}) {Family.FamilyLevel}";
             }
             return $"gidx 1 {CharacterId} -1 - 0";
         }
@@ -3181,7 +3181,7 @@ namespace OpenNos.GameObject
             // tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph
             // talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary
             // ispvparmor herolvl desc
-            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} -1 - {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPVPPrimary ? 1 : 0)} {(isPVPSecondary ? 1 : 0)} {(isPVPArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
+            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} {((Family != null && FamilyCharacter != null) ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPVPPrimary ? 1 : 0)} {(isPVPSecondary ? 1 : 0)} {(isPVPArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
         }
 
         public string GenerateRest()
@@ -4393,7 +4393,7 @@ namespace OpenNos.GameObject
                         }
 
                         // create or update all which are new or do still exist
-                        foreach (ItemInstance itemInstance in inventories.Where(s=>s.Item.Type != InventoryType.Bazaar))
+                        foreach (ItemInstance itemInstance in inventories.Where(s => s.Item.Type != InventoryType.Bazaar))
                         {
                             DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
                         }
