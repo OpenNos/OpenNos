@@ -327,6 +327,7 @@ namespace OpenNos.GameObject
             // register for servermanager
             ServerManager.Instance.RegisterSession(this);
             Character.SetSession(this);
+            Character.Buff = new Buff.BuffContainer(this);
         }
 
         private void ClearReceiveQueue()
