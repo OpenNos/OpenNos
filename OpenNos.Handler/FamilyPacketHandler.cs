@@ -79,11 +79,10 @@ namespace OpenNos.Handler
                     FamilyExperience = 0,
                     FamilyLevel = 1,
                     FamilyMessage = string.Empty,
-                    MaxSize = 50,
-                    Size = 3
+                    MaxSize = 50
                 };
-
                 DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
+
                 ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_FOUNDED"), name), 0));
                 foreach (ClientSession c in Session.Character.Group.Characters)
                 {
@@ -92,22 +91,15 @@ namespace OpenNos.Handler
                         CharacterId = c.Character.CharacterId,
                         DailyMessage = string.Empty,
                         Experience = 0,
-                        Authority = FamilyAuthority.Assistant,
+                        Authority = Session.Character.CharacterId == c.Character.CharacterId ? FamilyAuthority.Head : FamilyAuthority.Assistant,
                         FamilyId = family.FamilyId,
                         JoinDate = DateTime.Now,
                         Rank = FamilyMemberRank.Member,
                     };
-                    if (Session.Character.CharacterId == c.Character.CharacterId)
-                    {
-                        familyCharacter.Authority = FamilyAuthority.Head;
-                    }
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
-                    c.Character.FamilyCharacterId = familyCharacter.FamilyCharacterId;
-                    c.Character.Family = family;
-                    c.Character.FamilyCharacter = familyCharacter;
-                    c.Character.Save();
-                    Session.CurrentMap.Broadcast(c.Character.GenerateGidx());
                 }
+                ServerManager.Instance.FamilyRefresh();
+                Session.Character.Group.Characters.ForEach(s => s.CurrentMap.Broadcast(s.Character.GenerateGidx()));
             }
             else
             {
@@ -118,7 +110,7 @@ namespace OpenNos.Handler
         [Packet("fmg")]
         public void FamilyManagement(string packet)
         {
-            if (Session.Character.Family == null || Session.Character.FamilyCharacter == null)
+            if (Session.Character.Family == null)
             {
                 return;
             }
@@ -134,107 +126,127 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                Session.Character.FamilyMessageChanged = true;
                 ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(targetId);
                 switch (packetsplit[2])
                 {
                     case "0":
                         if (targetSession == null)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("Player is not online!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("PLAYER_OFFLINE")));
                             return;
                         }
                         if (Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("You are not the family head!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NOT_FAMILY_HEAD")));
                             return;
                         }
                         if (targetSession.Character.FamilyCharacter.Authority != FamilyAuthority.Assistant)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("You can only promote an assistant to the family head!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("ONLY_PROMOTE_ASSISTANT")));
                             return;
                         }
                         targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Head;
                         Session.Character.FamilyCharacter.Authority = FamilyAuthority.Assistant;
-                        Session.SendPacket(Session.Character.GenerateInfo("Done!"));
-                        Session.Character.FamilyMessageChanged = true;
-                        targetSession.Character.FamilyMessageChanged = true;
-                        targetSession.Character.Save();
-                        Session.Character.Save();
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("DONE")));
+
+                        FamilyCharacterDTO chara = targetSession.Character.FamilyCharacter;
+                        DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
+
+                        chara = Session.Character.FamilyCharacter;
+                        DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
+
+                        ServerManager.Instance.FamilyRefresh();
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
+                        targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
+
                         break;
                     case "1":
                         if (targetSession == null)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("Player is not online!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("PLAYER_OFFLINE")));
                             return;
                         }
                         if (Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("You are not the family head!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NOT_FAMILY_HEAD")));
                             return;
                         }
                         if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("You cannot demote the family head!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("HEAD_UNDEMOTABLE")));
                             return;
                         }
                         if (DAOFactory.FamilyCharacterDAO.LoadByFamilyId(Session.Character.Family.FamilyId).Count(s => s.Authority == FamilyAuthority.Assistant) == 2)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("You already have two assistants!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("ALREADY_TWO_ASSISTANT")));
                             return;
                         }
                         targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Assistant;
-                        Session.SendPacket(Session.Character.GenerateInfo("Done!"));
-                        targetSession.Character.FamilyMessageChanged = true;
-                        targetSession.Character.Save();
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("DONE")));
+
+                        chara = targetSession.Character.FamilyCharacter;
+                        DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
+
+                        ServerManager.Instance.FamilyRefresh();
+
+                        targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
+
                         break;
                     case "2":
                         if (targetSession == null)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("Player is not online!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("PLAYER_OFFLINE")));
                             return;
                         }
                         if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("You cannot demote the family head!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("HEAD_UNDEMOTABLE")));
                             return;
                         }
                         if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant && Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("You cannot demote another assistant!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("ASSISTANT_UNDEMOTABLE")));
                             return;
                         }
                         targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Manager;
-                        Session.SendPacket(Session.Character.GenerateInfo("Done!"));
-                        targetSession.Character.FamilyMessageChanged = true;
-                        targetSession.Character.Save();
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("DONE")));
+
+                        chara = targetSession.Character.FamilyCharacter;
+                        DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
+
+                        ServerManager.Instance.FamilyRefresh();
+                        targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
                         break;
                     case "3":
                         if (targetSession == null)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("Player is not online!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("PLAYER_OFFLINE")));
                             return;
                         }
                         if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("You cannot demote the family head!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("HEAD_UNDEMOTABLE")));
                             return;
                         }
                         if (targetSession.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant && Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo("You cannot demote another assistant!"));
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("ASSISTANT_UNDEMOTABLE")));
                             return;
                         }
                         targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Member;
-                        Session.SendPacket(Session.Character.GenerateInfo("Done!"));
-                        targetSession.Character.FamilyMessageChanged = true;
-                        targetSession.Character.Save();
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("DONE")));
+
+                        chara = targetSession.Character.FamilyCharacter;
+                        DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
+                        ServerManager.Instance.FamilyRefresh();
+                        targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
                         break;
                 }
             }
         }
 
         [Packet("%Notice")]
+        [Packet("%Avertissement")]
         public void FamilyMessage(string packet)
         {
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
@@ -252,8 +264,13 @@ namespace OpenNos.Handler
                         i++;
                     }
                     Session.Character.Family.FamilyMessage = msg;
-                    Session.Character.FamilyMessageChanged = true;
-                    Session.Character.Save();
+                    FamilyDTO fam = Session.Character.Family;
+                    DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                    ServerManager.Instance.FamilyRefresh();
+                    if (!string.IsNullOrWhiteSpace(msg))
+                    {
+                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage), ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
+                    }
                 }
             }
         }
@@ -276,16 +293,7 @@ namespace OpenNos.Handler
                         }
                         i++;
                     }
-                    foreach (ClientSession s in ServerManager.Instance.Sessions)
-                    {
-                        if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
-                        {
-                            if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
-                            {
-                                s.SendPacket(s.Character.GenerateMsg($"<{Language.Instance.GetMessageFromKey("FAMILYCALL")}> {msg}", 0));
-                            }
-                        }
-                    }
+                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateMsg($"<{Language.Instance.GetMessageFromKey("FAMILYCALL")}> {msg}", 0), ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
                 }
             }
         }
@@ -312,7 +320,7 @@ namespace OpenNos.Handler
                     ccmsg = $"[GM {Session.Character.Name}]:{msg}";
                 }
 
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ccmsg, ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ccmsg, ServerManager.Instance.ChannelId, MessageType.FamilyChat, Session.Character.Family.FamilyId.ToString(), null).Result;
                 foreach (ClientSession s in ServerManager.Instance.Sessions)
                 {
                     if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
@@ -340,6 +348,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("%Familyinvite")]
+        [Packet("%Invitationdefamille")]
         public void InviteFamily(string packet)
         {
             string[] packetsplit = packet.Split(' ');
@@ -372,9 +381,9 @@ namespace OpenNos.Handler
                 return;
             }
 
-            if (otherSession.Character.Family != null || otherSession.Character.FamilyCharacter != null || otherSession.Character.FamilyCharacterId != null)
+            if (otherSession.Character.Family != null || otherSession.Character.FamilyCharacter != null)
             {
-                Session.SendPacket(Session.Character.GenerateInfo("This user is already in another family!"));
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("ALREADY_IN_FAMILY")));
                 return;
             }
 
@@ -393,8 +402,6 @@ namespace OpenNos.Handler
                 ClientSession inviteSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
                 if (inviteSession != null && inviteSession.Character.FamilyInviteCharacters.Contains(Session.Character.CharacterId))
                 {
-                    inviteSession.Character.Family.Size += 1;
-                    Session.Character.Family = inviteSession.Character.Family;
 
                     FamilyCharacterDTO familyCharacter = new FamilyCharacterDTO
                     {
@@ -402,31 +409,14 @@ namespace OpenNos.Handler
                         DailyMessage = string.Empty,
                         Experience = 0,
                         Authority = FamilyAuthority.Member,
-                        FamilyId = Session.Character.Family.FamilyId,
+                        FamilyId = inviteSession.Character.Family.FamilyId,
                         JoinDate = DateTime.Now,
                         Rank = FamilyMemberRank.Member,
                     };
-                    FamilyDTO family = DAOFactory.FamilyDAO.LoadById(inviteSession.Character.Family.FamilyId);
-                    family.Size += 1;
-                    DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
-
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
-
-                    Session.Character.FamilyCharacter = familyCharacter;
-                    Session.Character.FamilyCharacterId = familyCharacter.FamilyCharacterId;
-                    Session.Character.Save();
+                    ServerManager.Instance.FamilyRefresh();
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
-                    foreach (ClientSession s in ServerManager.Instance.Sessions)
-                    {
-                        if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
-                        {
-                            if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
-                            {
-                                s.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"), Session.Character.Name, Session.Character.Family.Name), 0);
-                            }
-                        }
-                    }
-                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"), Session.Character.Name, Session.Character.Family.Name),0), ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
+                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"), Session.Character.Name, Session.Character.Family.Name), 0), ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
                     Session.SendPacket(Session.Character.GenerateFamilyMember());
                     Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                     Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
@@ -446,12 +436,10 @@ namespace OpenNos.Handler
                     {
                         if (Session.Character.FamilyCharacter != null && Session.Character.Family != null)
                         {
-                            Session.Character.Family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
-                            FamilyCharacterDTO familyCharacter = DAOFactory.FamilyCharacterDAO.LoadByFamilyId(Session.Character.Family.FamilyId).FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                            FamilyCharacter familyCharacter = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
                             if (familyCharacter != null)
                             {
-                                string familyHead = DAOFactory.CharacterDAO.LoadById(familyCharacter.CharacterId).Name;
-                                Session.SendPacket($"ginfo {Session.Character.Family.Name} {familyHead} 0 {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.Size} {Session.Character.Family.MaxSize} {(byte)Session.Character.FamilyCharacter.Authority} 1 0 0 0 0 0 0 {Session.Character.Family.FamilyMessage.Replace(' ', '^')}");
+                                Session.SendPacket($"ginfo {Session.Character.Family.Name} {familyCharacter.Character.Name} 0 {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.FamilyCharacters.Count()} {Session.Character.Family.MaxSize} {(byte)Session.Character.FamilyCharacter.Authority} 1 0 0 0 0 0 0 {Session.Character.Family.FamilyMessage.Replace(' ', '^')}");
                             }
                             Session.SendPacket(Session.Character.GenerateFamilyMember());
                             Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
@@ -463,6 +451,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("%Familykick")]
+        [Packet("%Rejetdefamille")]
         public void FamilyKick(string packet)
         {
             string[] packetsplit = packet.Split(' ');
@@ -482,36 +471,17 @@ namespace OpenNos.Handler
                 {
                     if (kickSession.Character.FamilyCharacter?.Authority == FamilyAuthority.Head)
                     {
-                        Session.SendPacket(Session.Character.GenerateInfo("You can't kick the family head!"));
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CANT_KICK_HEAD")));
                         return;
                     }
                     if (kickSession.Character.CharacterId == Session.Character.CharacterId)
                     {
-                        Session.SendPacket(Session.Character.GenerateInfo("You can't kick yourself!"));
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CANT_KICK_YOURSELF")));
                         return;
                     }
-                    FamilyDTO family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
-                    family.Size += 1;
-                    DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
-                    Session.Character.Family.Size -= 1;
-
-                    kickSession.Character.Family = null;
                     DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
-                    kickSession.Character.FamilyCharacter = null;
-                    kickSession.Character.FamilyCharacterId = null;
-                    kickSession.Character.Save();
+                    ServerManager.Instance.FamilyRefresh();
                     kickSession.CurrentMap?.Broadcast(kickSession.Character.GenerateGidx());
-                    foreach (ClientSession s in ServerManager.Instance.Sessions)
-                    {
-                        if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
-                        {
-                            if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
-                            {
-                                string name = packetsplit[2];
-                                s.SendPacket(s.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_KICKED"), name), 0));
-                            }
-                        }
-                    }
                 }
                 else
                 {
@@ -522,16 +492,16 @@ namespace OpenNos.Handler
                         if (dbFamilyCharacter != null && dbFamilyCharacter.FamilyId == Session.Character.Family.FamilyId)
                         {
                             DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
-                            FamilyDTO family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
-                            family.Size -= 1;
-                            DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
+                            ServerManager.Instance.FamilyRefresh();
                         }
                     }
                 }
+
             }
         }
 
         [Packet("%Familyleave")]
+        [Packet("%Congédefamille")]
         public void FamilyLeave(string packet)
         {
             string[] packetsplit = packet.Split(' ');
@@ -546,26 +516,9 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CANNOT_LEAVE_FAMILY")));
                     return;
                 }
-                foreach (ClientSession s in ServerManager.Instance.Sessions)
-                {
-                    if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
-                    {
-                        if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
-                        {
-                            s.SendPacket(s.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CHARACTER_LEFT_FAMILY"), 0));
-                        }
-                    }
-                }
-                FamilyDTO family = DAOFactory.FamilyDAO.LoadById(Session.Character.Family.FamilyId);
-                family.Size += 1;
-                DAOFactory.FamilyDAO.InsertOrUpdate(ref family);
-                Session.Character.Family.Size -= 1;
 
-                Session.Character.Family = null;
                 DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
-                Session.Character.FamilyCharacter = null;
-                Session.Character.FamilyCharacterId = null;
-                Session.Character.Save();
+                ServerManager.Instance.FamilyRefresh();
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
             }
         }

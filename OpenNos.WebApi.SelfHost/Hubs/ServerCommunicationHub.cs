@@ -35,6 +35,14 @@ namespace OpenNos.WebApi.SelfHost
         }
 
         /// <summary>
+        /// Refresh Family
+        /// </summary>
+        public void FamilyRefresh()
+        {
+            Clients.All.refreshFamily();
+        }
+
+        /// <summary>
         /// Cleanup hold Data, this is for restarting the server
         /// </summary>
         public void Cleanup()
@@ -186,6 +194,10 @@ namespace OpenNos.WebApi.SelfHost
             return false;
         }
 
+        public bool CharacterIsConnected(long CharacterId)
+        {
+            return ServerCommunicationHelper.Instance.Worldservers.Any(c => c.ConnectedCharacters.ContainsValue(CharacterId));
+        }
         public IEnumerable<string> RetrieveServerStatistics()
         {
             List<string> result = new List<string>();
@@ -384,6 +396,11 @@ namespace OpenNos.WebApi.SelfHost
                     return null;
                 }
                 else if (messageType == MessageType.Family)
+                {
+                    Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
+                    return null;
+                }
+                else if (messageType == MessageType.FamilyChat)
                 {
                     Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
                     return null;

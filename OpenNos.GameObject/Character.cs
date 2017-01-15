@@ -25,6 +25,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using OpenNos.WebApi.SelfHost;
+using OpenNos.WebApi.Reference;
 
 namespace OpenNos.GameObject
 {
@@ -139,9 +141,13 @@ namespace OpenNos.GameObject
 
         public ExchangeInfo ExchangeInfo { get; set; }
 
-        public FamilyDTO Family { get; set; }
-
-        public FamilyCharacterDTO FamilyCharacter { get; set; }
+        public Family Family
+        {
+            get
+            {
+                return ServerManager.Instance.FamilyList.FirstOrDefault(s => s.FamilyCharacters.Any(c => c.CharacterId == CharacterId));
+            }
+        }
 
         public int FireResistance { get; set; }
 
@@ -163,19 +169,6 @@ namespace OpenNos.GameObject
 
         public List<long> FamilyInviteCharacters { get; set; }
 
-        public bool FamilyMessageChanged
-        {
-            get
-            {
-                return _familymessagechanged;
-            }
-
-            set
-            {
-                _familymessagechanged = value;
-            }
-        }
-
         public List<long> FriendRequestCharacters { get; set; }
 
         public bool InExchangeOrTrade => ExchangeInfo != null || Speed == 0;
@@ -192,7 +185,13 @@ namespace OpenNos.GameObject
                 _inventory = value;
             }
         }
-
+        public FamilyCharacterDTO FamilyCharacter
+        {
+            get
+            {
+                return Family?.FamilyCharacters.FirstOrDefault(s => s.CharacterId == CharacterId);
+            }
+        }
         public bool Invisible
         {
             get
@@ -694,7 +693,7 @@ namespace OpenNos.GameObject
             get
             {
                 byte bonusSpeed = (byte)Buff.Get(GameObject.Buff.BCard.Type.Speed, SubType.Increase, false)[0];
-                if(_speed+bonusSpeed > 59)
+                if (_speed + bonusSpeed > 59)
                 {
                     return 59;
                 }
@@ -1219,7 +1218,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCInfo()
         {
-            return $"c_info {Name} - -1 {((Family != null && FamilyCharacter != null) ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {(Family != null ? Family.FamilyLevel : 0)} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
+            return $"c_info {Name} - -1 {((Family != null) ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {(Family != null ? Family.FamilyLevel : 0)} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
 
         public string GenerateCMap()
@@ -2048,7 +2047,7 @@ namespace OpenNos.GameObject
                         mainMinDmg = secMinDmg;
                         mainUpgrade = secUpgrade;
                     }
-                    if(Class== ClassType.Magician)
+                    if (Class == ClassType.Magician)
                     {
                         boost = Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.Increase, true)[0]
     + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMagic, true)[0];
@@ -2704,9 +2703,10 @@ namespace OpenNos.GameObject
             string str = "gmbr 0";
             try
             {
-                foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+                foreach (FamilyCharacter TargetCharacter in Session.Character.Family?.FamilyCharacters)
                 {
-                    str += $" {groupClientSession.Character.CharacterId}|0|{groupClientSession.Character.Name}|{groupClientSession.Character.Level}|{(byte)groupClientSession.Character.Class}|{(byte)groupClientSession.Character.FamilyCharacter.Authority}|{(byte)groupClientSession.Character.FamilyCharacter.Rank}|1|{groupClientSession.Character.HeroLevel}";
+                        bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", TargetCharacter.Character.CharacterId).Result;
+                        str += $" {TargetCharacter.Character.CharacterId}|{Family.FamilyId}|{TargetCharacter.Character.Name}|{TargetCharacter.Character.Level}|{(byte)TargetCharacter.Character.Class}|{(byte)TargetCharacter.Authority}|{(byte)TargetCharacter.Rank}|{(isOnline?1:0)}|{TargetCharacter.Character.HeroLevel}";
                 }
             }
             catch (Exception ex)
@@ -2720,9 +2720,9 @@ namespace OpenNos.GameObject
             string str = "gmsg";
             try
             {
-                foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+                foreach (FamilyCharacter TargetCharacter in Session.Character.Family?.FamilyCharacters)
                 {
-                    str += $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.DailyMessage}";
+                        str += $" {TargetCharacter.CharacterId}|{TargetCharacter.DailyMessage}";  
                 }
             }
             catch (Exception ex)
@@ -2737,9 +2737,9 @@ namespace OpenNos.GameObject
             string str = "gexp";
             try
             {
-                foreach (ClientSession groupClientSession in ServerManager.Instance.Sessions.Where(s => s.Character.Family != null && s.Character.Family.FamilyId == Family.FamilyId))
+                foreach (FamilyCharacter TargetCharacter in Session.Character.Family?.FamilyCharacters)
                 {
-                    str += $" {groupClientSession.Character.CharacterId}|{groupClientSession.Character.FamilyCharacter.Experience}";
+                        str += $" {TargetCharacter.CharacterId}|{TargetCharacter.Experience}";     
                 }
             }
             catch (Exception ex)
@@ -2754,7 +2754,7 @@ namespace OpenNos.GameObject
             return $"fd {Reput} {GetReputIco()} {(int)Dignity} {Math.Abs(GetDignityIco())}";
         }
 
-        public string GenerateFinfo(long? relatedCharacterLoggedOutId = null, long? relatedCharacterLoggedInId = null)
+        public string GenerateFinfo(long? relatedCharacterLoggedId , bool isConnected)
         {
             string result = "finfo";
 
@@ -2762,14 +2762,11 @@ namespace OpenNos.GameObject
             {
                 foreach (CharacterRelationDTO relation in _friends)
                 {
-                    if (relatedCharacterLoggedInId.HasValue && relatedCharacterLoggedInId.Value == relation.RelatedCharacterId)
+                    if (relatedCharacterLoggedId.HasValue && relatedCharacterLoggedId.Value == relation.RelatedCharacterId)
                     {
-                        result += $" {relation.RelatedCharacterId}.1";
+                        result += $" {relation.RelatedCharacterId}.{(isConnected?1:0)}";
                     }
-                    else if (relatedCharacterLoggedOutId.HasValue && relation.RelatedCharacterId == relatedCharacterLoggedOutId.Value)
-                    {
-                        result += $" {relation.RelatedCharacterId}.0";
-                    }
+                   
                 }
             }
             return result;
@@ -2781,12 +2778,8 @@ namespace OpenNos.GameObject
             _friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
             foreach (CharacterRelationDTO relation in _friends)
             {
-                byte isOnline = 0;
-                if (ServerManager.Instance.GetSessionByCharacterId(relation.RelatedCharacterId) != null)
-                {
-                    isOnline = 1;
-                }
-                result += $" {relation.RelatedCharacterId}|{(short)relation.RelationType}|{isOnline}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
+                bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", relation.RelatedCharacterId).Result;
+                result += $" {relation.RelatedCharacterId}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
             }
             return result;
         }
@@ -2803,9 +2796,9 @@ namespace OpenNos.GameObject
 
         public string GenerateGidx()
         {
-            if (Family != null && FamilyCharacter != null)
+            if (Family != null)
             {
-                return $"gidx 1 {CharacterId} {Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())}) {Family.FamilyLevel}";
+                return $"gidx 1 {CharacterId} {Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(Family.FamilyCharacters.FirstOrDefault(s => s.CharacterId == CharacterId).Authority.ToString().ToUpper())}) {Family.FamilyLevel}";
             }
             return $"gidx 1 {CharacterId} -1 - 0";
         }
@@ -3189,8 +3182,7 @@ namespace OpenNos.GameObject
         public string GenerateGExp()
         {
             string str = "gexp";
-            IEnumerable<FamilyCharacterDTO> familyCharacters = DAOFactory.FamilyCharacterDAO.LoadByFamilyId(FamilyCharacter.FamilyId);
-            foreach (FamilyCharacterDTO familyCharacter in familyCharacters)
+            foreach (FamilyCharacterDTO familyCharacter in Family.FamilyCharacters)
             {
                 str += $" {familyCharacter.CharacterId}|{familyCharacter.Experience}";
             }
@@ -3362,7 +3354,7 @@ namespace OpenNos.GameObject
             // tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph
             // talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary
             // ispvparmor herolvl desc
-            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} {((Family != null && FamilyCharacter != null) ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPVPPrimary ? 1 : 0)} {(isPVPSecondary ? 1 : 0)} {(isPVPArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
+            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} {((Family != null) ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPVPPrimary ? 1 : 0)} {(isPVPSecondary ? 1 : 0)} {(isPVPArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
         }
 
         public string GenerateRest()
@@ -4607,13 +4599,10 @@ namespace OpenNos.GameObject
                 {
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
                 }
-
                 foreach (StaticBonusDTO bonus in Session.Character.StaticBonusList)
                 {
                     DAOFactory.StaticBonusDAO.InsertOrUpdate(bonus);
                 }
-
-
                 DAOFactory.StaticBonusDAO.RemoveOutDated();
 
                 foreach (GeneralLogDTO general in Session.Account.GeneralLogs)
@@ -4630,35 +4619,6 @@ namespace OpenNos.GameObject
                     {
                         DAOFactory.RespawnDAO.InsertOrUpdate(ref res);
                     }
-                }
-
-                if ((CollectedFamilyXp != 0 || _familymessagechanged) && Family != null && FamilyCharacter != null)
-                {
-                    string msg = Family.FamilyMessage;
-                    FamilyDTO _family = DAOFactory.FamilyDAO.LoadById(Family.FamilyId);
-                    FamilyCharacterDTO _familyCharacter = DAOFactory.FamilyCharacterDAO.LoadById(FamilyCharacter.FamilyCharacterId);
-                    _family.FamilyExperience += CollectedFamilyXp;
-                    _familyCharacter.Experience += CollectedFamilyXp;
-                    _familyCharacter.Authority = FamilyCharacter.Authority;
-                    _familyCharacter.DailyMessage = FamilyCharacter.DailyMessage;
-                    CollectedFamilyXp = 0;
-
-                    if (CharacterHelper.LoadFamilyXPData(_family.FamilyLevel) <= _family.FamilyExperience)
-                    {
-                        _family.FamilyExperience -= CharacterHelper.LoadFamilyXPData(_family.FamilyLevel);
-                        _family.FamilyLevel += 1;
-                    }
-
-                    _family.FamilyMessage = msg;
-                    DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref _familyCharacter);
-                    DAOFactory.FamilyDAO.InsertOrUpdate(ref _family);
-                    _familymessagechanged = false;
-                    Family = _family;
-                    FamilyCharacter = _familyCharacter;
-                }
-                else if (FamilyCharacter == null)
-                {
-                    DAOFactory.FamilyCharacterDAO.Delete(Name);
                 }
             }
             catch (Exception e)

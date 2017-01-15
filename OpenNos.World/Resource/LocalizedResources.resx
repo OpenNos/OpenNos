@@ -1246,4 +1246,22 @@
   <data name="MEMBER" xml:space="preserve">
     <value>Member</value>
   </data>
+  <data name="ALREADY_TWO_ASSISTANT" xml:space="preserve">
+    <value>You already have two assistants!</value>
+  </data>
+  <data name="ASSISTANT_UNDEMOTABLE" xml:space="preserve">
+    <value>You cannot demote another assistant!</value>
+  </data>
+  <data name="HEAD_UNDEMOTABLE" xml:space="preserve">
+    <value>You cannot demote the family head!</value>
+  </data>
+  <data name="NOT_FAMILY_HEAD" xml:space="preserve">
+    <value>You are not the family head!</value>
+  </data>
+  <data name="ONLY_PROMOTE_ASSISTANT" xml:space="preserve">
+    <value>You can only promote an assistant to the family head!</value>
+  </data>
+  <data name="PLAYER_OFFLINE" xml:space="preserve">
+    <value>Player not online!</value>
+  </data>
 </root>

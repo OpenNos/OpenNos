@@ -51,8 +51,6 @@ namespace OpenNos.Data
 
         public int Faction { get; set; }
 
-        public long? FamilyCharacterId { get; set; }
-
         public bool FamilyRequestBlocked { get; set; }
 
         public bool FriendRequestBlocked { get; set; }
