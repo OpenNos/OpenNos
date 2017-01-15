@@ -1587,6 +1587,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                     return;
                 }
+                Session.Character.Buff.Clear();
                 Session.Character.LastTransform = DateTime.Now;
                 Session.Character.UseSp = true;
                 Session.Character.Morph = sp.Item.Morph;
@@ -1681,6 +1682,8 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
+                Session.Character.Buff.Clear();
+
                 Logger.Debug(vnum.ToString(), Session.SessionId);
                 Session.Character.UseSp = false;
                 Session.Character.LoadSpeed();
