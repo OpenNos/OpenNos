@@ -201,29 +201,168 @@ namespace OpenNos.Handler
                             }
                         }
                     }
+                    else if (ski.Skill.TargetType == 2 && ski.Skill.HitType == 0)
+                    {
+                        Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
+                        Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -1 {ski.Skill.SkillType - 1}");
+                        ClientSession target = ServerManager.Instance.GetSessionByCharacterId(targetId);
+                        if (target == null)
+                        {
+                            target = Session;
+                        }
+                        switch (ski.Skill.Effect)
+                        {
+                            case 3409:
+                                IndicatorBase triplecharging = new GameObject.Buff.Indicators.SP3.Swordsman.FirstBlessing(target.Character.Level);
+                                target.Character.Buff.Add(triplecharging);
+                                break;
+                            case 3411:
+                                IndicatorBase shiningeffect = new GameObject.Buff.Indicators.SP3.Swordsman.ShiningEffect(target.Character.Level);
+                                target.Character.Buff.Add(shiningeffect);
+                                break;
+                            case 3403:
+                                IndicatorBase hawkeye = new GameObject.Buff.Indicators.SP1.Archer.HawkEye(target.Character.Level);
+                                target.Character.Buff.Add(hawkeye);
+                                break;
+                            case 3407:
+                                IndicatorBase windwalker = new GameObject.Buff.Indicators.SP1.Archer.WindWalker(target.Character.Level);
+                                target.Character.Buff.Add(windwalker);
+                                break;
+                            case 4403:
+                                IndicatorBase healing = new GameObject.Buff.Indicators.SP2.Magician.Healing(target.Character.Level);
+                                target.Character.Buff.Add(healing);
+                                break;
+                        }
+                    }
                     else if (ski.Skill.TargetType == 1 && ski.Skill.HitType != 1)
                     {
                         Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
-                        Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -1 {ski.Skill.SkillType - 1}");
-                        switch (ski.Skill.Effect)
+                        Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -1 {ski.Skill.SkillType - 1}");
+                        if (ski.Skill.HitType == 2)
                         {
-                            case 4106:
-                                IndicatorBase ironskin = new GameObject.Buff.Indicators.SP1.Swordsman.Sprint(Session.Character.Level);
-                                Session.Character.Buff.Add(ironskin);
-                                break;
-                            case 4117:
-                                IndicatorBase moraleincrease = new GameObject.Buff.Indicators.SP1.Swordsman.MoraleIncrease(Session.Character.Level);
-                                IndicatorBase sprint = new GameObject.Buff.Indicators.SP1.Swordsman.Sprint(Session.Character.Level);
-                                Session.Character.Buff.Add(moraleincrease);
-                                Session.Character.Buff.Add(sprint);
-                                break;
-                            case 3706:
-                                IndicatorBase wolfghost = new GameObject.Buff.Indicators.SP4.Archer.WolfGhost(Session.Character.Level);
-                                Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.153.{wolfghost.Duration} {Session.Character.Level}");
-                                Session.SendPacket(Session.Character.GenerateSay($"You are under the effect {wolfghost.Name}.", 20));
-                                Session.Character.Buff.Add(wolfghost);
-                                break;
+                            foreach (ClientSession target in Session.CurrentMap?.Sessions?.Where(s => s.Character.IsInRange(Session.Character.MapX, Session.Character.MapY, ski.Skill.TargetRange)))
+                            {
+                                switch (ski.Skill.Effect)
+                                {
+                                    case 4117:
+                                        IndicatorBase moraleincrease = new GameObject.Buff.Indicators.SP1.Swordsman.MoraleIncrease(Session.Character.Level);
+                                        IndicatorBase sprint = new GameObject.Buff.Indicators.SP1.Swordsman.Sprint(Session.Character.Level);
+                                        target.Character.Buff.Add(moraleincrease);
+                                        target.Character.Buff.Add(sprint);
+                                        break;
+                                    case 3417:
+                                        IndicatorBase prayerofdefence = new GameObject.Buff.Indicators.SP3.Swordsman.PrayerofDefence(Session.Character.Level);
+                                        target.Character.Buff.Add(prayerofdefence);
+                                        break;
+                                    case 3419:
+                                        IndicatorBase prayerofoffence = new GameObject.Buff.Indicators.SP3.Swordsman.PrayerofOffence(Session.Character.Level);
+                                        target.Character.Buff.Add(prayerofoffence);
+                                        break;
+                                    case 4013:
+                                        IndicatorBase fireblessing = new GameObject.Buff.Indicators.SP1.Magician.FireBlessing(Session.Character.Level);
+                                        target.Character.Buff.Add(fireblessing);
+                                        break;
+                                    case 4415:
+                                        IndicatorBase grouhealing = new GameObject.Buff.Indicators.SP2.Magician.GroupHealing(Session.Character.Level);
+                                        target.Character.Buff.Add(grouhealing);
+                                        break;
+                                    case 4417:
+                                        IndicatorBase holyweapon = new GameObject.Buff.Indicators.SP2.Magician.HolyWeapon(Session.Character.Level);
+                                        target.Character.Buff.Add(holyweapon);
+                                        break;
+                                    case 4419:
+                                        IndicatorBase blessing = new GameObject.Buff.Indicators.SP2.Magician.Blessing(Session.Character.Level);
+                                        target.Character.Buff.Add(blessing);
+                                        break;
+                                    case 3815:
+                                        IndicatorBase bow = new GameObject.Buff.Indicators.SP3.Magician.BlessingofWater(Session.Character.Level);
+                                        target.Character.Buff.Add(bow);
+                                        break;
+                                    case 3910:
+                                        IndicatorBase darkforce = new GameObject.Buff.Indicators.SP4.Magician.DarkForce(Session.Character.Level);
+                                        target.Character.Buff.Add(darkforce);
+                                        break;
+                                    case 3708:
+                                        IndicatorBase elementalshine = new GameObject.Buff.Indicators.SP4.Archer.ElementalShine(Session.Character.Level);
+                                        target.Character.Buff.Add(elementalshine);
+                                        break;
+                                    case 3706:
+                                        if (ski.Skill.SkillVNum == 931)
+                                        {
+                                            IndicatorBase bearspirit = new GameObject.Buff.Indicators.SP4.Archer.BearSpirit(Session.Character.Level);
+                                            target.Character.Buff.Add(bearspirit);
+                                        }
+                                        else if (ski.Skill.SkillVNum == 928)
+                                        {
+                                            IndicatorBase wolfghost = new GameObject.Buff.Indicators.SP4.Archer.WolfGhost(Session.Character.Level);
+                                            target.Character.Buff.Add(wolfghost);
+                                        }
+                                        break;
 
+                                }
+                            }
+                        }
+                        else if (ski.Skill.HitType == 0)
+                        {
+                            switch (ski.Skill.Effect)
+                            {
+                                case 4106:
+                                    IndicatorBase ironskin = new GameObject.Buff.Indicators.SP1.Swordsman.IronSkin(Session.Character.Level);
+                                    Session.Character.Buff.Add(ironskin);
+                                    break;
+                                case 4318:
+                                    IndicatorBase sharpedge = new GameObject.Buff.Indicators.SP2.Swordsman.SharpEdge(Session.Character.Level);
+                                    Session.Character.Buff.Add(sharpedge);
+                                    break;
+                                case 4314:
+                                    IndicatorBase breathofrecovery = new GameObject.Buff.Indicators.SP2.Swordsman.BreathofRecovery(Session.Character.Level);
+                                    Session.Character.Buff.Add(breathofrecovery);
+                                    break;
+                                case 3415:
+                                    IndicatorBase holyshield = new GameObject.Buff.Indicators.SP3.Swordsman.HolyShield(Session.Character.Level);
+                                    Session.Character.Buff.Add(holyshield);
+                                    break;
+                                case 3506:
+                                    IndicatorBase berserker = new GameObject.Buff.Indicators.SP4.Swordsman.Berserker(Session.Character.Level);
+                                    Session.Character.Buff.Add(berserker);
+                                    break;
+                                case 4504:
+                                    IndicatorBase crithit = new GameObject.Buff.Indicators.SP2.Archer.CriticalHit(Session.Character.Level);
+                                    Session.Character.Buff.Add(crithit);
+                                    IndicatorBase pod = new GameObject.Buff.Indicators.SP2.Archer.PactofDarkness(Session.Character.Level);
+                                    Session.Character.Buff.Add(pod);
+                                    IndicatorBase sinistershadow = new GameObject.Buff.Indicators.SP2.Archer.SinisterShadow(Session.Character.Level);
+                                    Session.Character.Buff.Add(sinistershadow);
+                                    break;
+                                case 3615:
+                                    IndicatorBase mh = new GameObject.Buff.Indicators.SP3.Archer.MiraclousHealing(Session.Character.Level);
+                                    Session.Character.Buff.Add(mh);
+                                    break;
+                                case 3607:
+                                    IndicatorBase boost = new GameObject.Buff.Indicators.SP3.Archer.BoosterOn(Session.Character.Level);
+                                    Session.Character.Buff.Add(boost);
+                                    break;
+                                case 3706:
+                                    IndicatorBase eaglespirit = new GameObject.Buff.Indicators.SP4.Archer.EagleSpirit(Session.Character.Level);
+                                    Session.Character.Buff.Add(eaglespirit);
+                                    break;
+                                case 4007:
+                                    IndicatorBase manatransfusion = new GameObject.Buff.Indicators.SP1.Magician.ManaTransfusion(Session.Character.Level);
+                                    Session.Character.Buff.Add(manatransfusion);
+                                    break;
+                                case 4407:
+                                    IndicatorBase manashield = new GameObject.Buff.Indicators.SP2.Magician.ManaShield(Session.Character.Level);
+                                    Session.Character.Buff.Add(manashield);
+                                    break;
+                                case 3811:
+                                    IndicatorBase frozenshield = new GameObject.Buff.Indicators.SP3.Magician.FrozenShield(Session.Character.Level);
+                                    Session.Character.Buff.Add(frozenshield);
+                                    break;
+                                case 3906:
+                                    IndicatorBase ghostguard = new GameObject.Buff.Indicators.SP4.Magician.GhostGuard(Session.Character.Level);
+                                    Session.Character.Buff.Add(ghostguard);
+                                    break;
+                            }
                         }
                     }
                     else if (ski.Skill.TargetType == 0 && Session.HasCurrentMap) // monster target
