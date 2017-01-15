@@ -290,12 +290,12 @@ namespace OpenNos.Handler
                                         if (ski.Skill.SkillVNum == 931)
                                         {
                                             IndicatorBase bearspirit = new GameObject.Buff.Indicators.SP4.Archer.BearSpirit(Session.Character.Level);
-                                            Session.Character.Buff.Add(bearspirit);
+                                            target.Character.Buff.Add(bearspirit);
                                         }
                                         else if (ski.Skill.SkillVNum == 928)
                                         {
                                             IndicatorBase wolfghost = new GameObject.Buff.Indicators.SP4.Archer.WolfGhost(Session.Character.Level);
-                                            Session.Character.Buff.Add(wolfghost);
+                                            target.Character.Buff.Add(wolfghost);
                                         }
                                         break;
 
