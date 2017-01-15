@@ -86,6 +86,15 @@
   <ItemGroup>
     <Compile Include="BazaarItemLink.cs" />
     <Compile Include="Account.cs" />
+    <Compile Include="Buff\BCardEntry.cs" />
+    <Compile Include="Buff\BCard\SubType.cs" />
+    <Compile Include="Buff\BCard\Type.cs" />
+    <Compile Include="Buff\BuffContainer.cs" />
+    <Compile Include="Buff\Indicators\IndicatorBase.cs" />
+    <Compile Include="Buff\Indicators\SP1\Swordsman\IronSkin.cs" />
+    <Compile Include="Buff\Indicators\SP1\Swordsman\MoraleIncrease.cs" />
+    <Compile Include="Buff\Indicators\SP1\Swordsman\Sprint.cs" />
+    <Compile Include="Buff\Indicators\SP4\Archer\WolfGhost.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="ExchangeInfo.cs" />
     <Compile Include="Helpers\MappingHelper.cs" />
@@ -269,6 +278,35 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Buff\Indicators\FunSP\Jajamaru\" />
+    <Folder Include="Buff\Indicators\FunSP\Pirate\" />
+    <Folder Include="Buff\Indicators\NoSP\Archer\" />
+    <Folder Include="Buff\Indicators\NoSP\Magician\" />
+    <Folder Include="Buff\Indicators\NoSP\Swordsman\" />
+    <Folder Include="Buff\Indicators\SP1\Archer\" />
+    <Folder Include="Buff\Indicators\SP1\Magician\" />
+    <Folder Include="Buff\Indicators\SP2\Archer\" />
+    <Folder Include="Buff\Indicators\SP2\Magician\" />
+    <Folder Include="Buff\Indicators\SP2\Swordsman\" />
+    <Folder Include="Buff\Indicators\SP3\Archer\" />
+    <Folder Include="Buff\Indicators\SP3\Magician\" />
+    <Folder Include="Buff\Indicators\SP3\Swordsman\" />
+    <Folder Include="Buff\Indicators\SP4\Magician\" />
+    <Folder Include="Buff\Indicators\SP4\Swordsman\" />
+    <Folder Include="Buff\Indicators\SP5\Archer\" />
+    <Folder Include="Buff\Indicators\SP5\Magician\" />
+    <Folder Include="Buff\Indicators\SP5\Swordsman\" />
+    <Folder Include="Buff\Indicators\SP6\Archer\" />
+    <Folder Include="Buff\Indicators\SP6\Magician\" />
+    <Folder Include="Buff\Indicators\SP6\Swordsman\" />
+    <Folder Include="Buff\Indicators\SP7\Archer\" />
+    <Folder Include="Buff\Indicators\SP7\Magician\" />
+    <Folder Include="Buff\Indicators\SP7\Swordsman\" />
+    <Folder Include="Buff\Indicators\SP8\Archer\" />
+    <Folder Include="Buff\Indicators\SP8\Magician\" />
+    <Folder Include="Buff\Indicators\SP8\Swordsman\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(ProgramFiles)\MSBuild\StyleCop\v4.7\StyleCop.targets" />
