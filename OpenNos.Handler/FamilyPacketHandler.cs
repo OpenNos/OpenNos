@@ -282,7 +282,7 @@ namespace OpenNos.Handler
                         {
                             if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
                             {
-                                s.SendPacket(s.Character.GenerateMsg($"<Familycall> {msg}", 0));
+                                s.SendPacket(s.Character.GenerateMsg($"<{Language.Instance.GetMessageFromKey("FAMILYCALL")}> {msg}", 0));
                             }
                         }
                     }
@@ -416,7 +416,17 @@ namespace OpenNos.Handler
                     Session.Character.FamilyCharacterId = familyCharacter.FamilyCharacterId;
                     Session.Character.Save();
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"), Session.Character.Name, Session.Character.Family.Name), 0));
+                    foreach (ClientSession s in ServerManager.Instance.Sessions)
+                    {
+                        if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
+                        {
+                            if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
+                            {
+                                s.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"), Session.Character.Name, Session.Character.Family.Name), 0);
+                            }
+                        }
+                    }
+                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"), Session.Character.Name, Session.Character.Family.Name),0), ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
                     Session.SendPacket(Session.Character.GenerateFamilyMember());
                     Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                     Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
