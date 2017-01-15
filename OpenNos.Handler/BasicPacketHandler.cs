@@ -1753,9 +1753,6 @@ namespace OpenNos.Handler
                 kdlinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Act4Points}|{character.Name}";
             }
 
-            Session.Character.Family = DAOFactory.FamilyDAO.LoadByCharacterId(Session.Character.CharacterId);
-            Session.Character.FamilyCharacter = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(Session.Character.CharacterId);
-
             Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
 
             Session.SendPacket(Session.Character.GenerateFinit());
