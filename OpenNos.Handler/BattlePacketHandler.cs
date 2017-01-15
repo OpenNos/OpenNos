@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.GameObject.Buff.Indicators;
 using OpenNos.GameObject.Networking;
 using System;
 using System.Collections.Generic;
@@ -198,6 +199,31 @@ namespace OpenNos.Handler
                                 }
                                 //}
                             }
+                        }
+                    }
+                    else if (ski.Skill.TargetType == 1 && ski.Skill.HitType != 1)
+                    {
+                        Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
+                        Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -1 {ski.Skill.SkillType - 1}");
+                        switch (ski.Skill.Effect)
+                        {
+                            case 4106:
+                                IndicatorBase ironskin = new GameObject.Buff.Indicators.SP1.Swordsman.Sprint(Session.Character.Level);
+                                Session.Character.Buff.Add(ironskin);
+                                break;
+                            case 4117:
+                                IndicatorBase moraleincrease = new GameObject.Buff.Indicators.SP1.Swordsman.MoraleIncrease(Session.Character.Level);
+                                IndicatorBase sprint = new GameObject.Buff.Indicators.SP1.Swordsman.Sprint(Session.Character.Level);
+                                Session.Character.Buff.Add(moraleincrease);
+                                Session.Character.Buff.Add(sprint);
+                                break;
+                            case 3706:
+                                IndicatorBase wolfghost = new GameObject.Buff.Indicators.SP4.Archer.WolfGhost(Session.Character.Level);
+                                Session.SendPacket($"bf 1 {Session.Character.CharacterId} 0.153.{wolfghost.Duration} {Session.Character.Level}");
+                                Session.SendPacket(Session.Character.GenerateSay($"You are under the effect {wolfghost.Name}.", 20));
+                                Session.Character.Buff.Add(wolfghost);
+                                break;
+
                         }
                     }
                     else if (ski.Skill.TargetType == 0 && Session.HasCurrentMap) // monster target
