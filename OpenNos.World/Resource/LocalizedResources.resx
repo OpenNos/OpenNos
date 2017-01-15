@@ -1225,4 +1225,25 @@
   <data name="PRICE_EXCEEDED" xml:space="preserve">
     <value>The price limit is exceeded.</value>
   </data>
+  <data name="ASSISTANT" xml:space="preserve">
+    <value>Assistant</value>
+  </data>
+  <data name="BAZAR_LOADED" xml:space="preserve">
+    <value>Bazaar Loaded!</value>
+  </data>
+  <data name="CHANNEL" xml:space="preserve">
+    <value>channel</value>
+  </data>
+  <data name="FAMILYCALL" xml:space="preserve">
+    <value>familycall</value>
+  </data>
+  <data name="HEAD" xml:space="preserve">
+    <value>Head</value>
+  </data>
+  <data name="MANAGER" xml:space="preserve">
+    <value>Manager</value>
+  </data>
+  <data name="MEMBER" xml:space="preserve">
+    <value>Member</value>
+  </data>
 </root>
