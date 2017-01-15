@@ -1789,7 +1789,7 @@ namespace OpenNos.Handler
 
             if (!Session.CurrentMap.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) && !Session.Character.IsChangingMap && !Session.Character.HasShopOpened)
             {
-                if (Session.Character.Speed >= walkPacket.Speed && !(distance > 60 && timeSpanSinceLastPortal > 10))
+                if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(1) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
                 {
                     Session.Character.MapX = walkPacket.XCoordinate;
                     Session.Character.MapY = walkPacket.YCoordinate;

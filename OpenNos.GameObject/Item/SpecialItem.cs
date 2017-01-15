@@ -165,6 +165,7 @@ namespace OpenNos.GameObject
                                 session.CurrentMap?.Broadcast(session.Character.GenerateEff(196), session.Character.MapX, session.Character.MapY);
                                 session.CurrentMap?.Broadcast(session.Character.GenerateCMode());
                                 session.SendPacket(session.Character.GenerateCond());
+                                session.Character.LastSpeedChange = DateTime.Now;
                             }
                             else if (session.Character.IsVehicled)
                             {
