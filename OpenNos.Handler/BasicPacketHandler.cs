@@ -1770,8 +1770,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
                 if (!string.IsNullOrWhiteSpace(Session.Character.Family.FamilyMessage))
                 {
-                    Session.SendPacket(Session.Character.GenerateInfo(@"--- Family Message ---
-" + Session.Character.Family.FamilyMessage));
+                    Session.SendPacket(Session.Character.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage));
                 }
             }
 

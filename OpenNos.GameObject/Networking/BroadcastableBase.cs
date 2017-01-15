@@ -116,7 +116,6 @@ namespace OpenNos.GameObject
                 _disposed = true;
             }
         }
-
         public ClientSession GetSessionByCharacterId(long characterId)
         {
             return _sessions.ContainsKey(characterId) ? _sessions[characterId] : null;

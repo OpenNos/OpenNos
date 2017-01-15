@@ -286,6 +286,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You cannot demote another assistant!.
+        /// </summary>
+        internal static string ASSISTANT_UNDEMOTABLE {
+            get {
+                return ResourceManager.GetString("ASSISTANT_UNDEMOTABLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bad dignity value..
         /// </summary>
         internal static string BAD_DIGNITY {
@@ -1443,6 +1452,15 @@ namespace OpenNos.World.Resource {
         internal static string HEAD {
             get {
                 return ResourceManager.GetString("HEAD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot demote the family head!.
+        /// </summary>
+        internal static string HEAD_UNDEMOTABLE {
+            get {
+                return ResourceManager.GetString("HEAD_UNDEMOTABLE", resourceCulture);
             }
         }
         

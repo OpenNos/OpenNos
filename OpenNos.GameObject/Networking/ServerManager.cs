@@ -87,6 +87,32 @@ namespace OpenNos.GameObject
 
         public int ChannelId { get; set; }
 
+        public void FamilyRefresh()
+        {
+            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh"); 
+        }
+        public void LoadFamilies()
+        {
+            if (FamilyList == null)
+            {
+                FamilyList = new List<Family>();
+            }
+            lock (FamilyList)
+            {
+                FamilyList = new List<Family>();
+                foreach (FamilyDTO fam in DAOFactory.FamilyDAO.LoadAll())
+                {
+                    Family fami = (Family)fam;
+                    fami.FamilyCharacters = new List<FamilyCharacter>();
+                    foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
+                    {
+                        fami.FamilyCharacters.Add((FamilyCharacter)famchar);
+                    }
+                    FamilyList.Add(fami);
+                }
+            }
+        }
+
         public List<Group> Groups => _groups.GetAllItems();
 
         public static ServerManager Instance => _instance ?? (_instance = new ServerManager());
@@ -94,6 +120,7 @@ namespace OpenNos.GameObject
         public Task TaskShutdown { get; set; }
 
         public Guid WorldId { get; private set; }
+        public List<Family> FamilyList { get; set; }
 
         #endregion
 
@@ -571,8 +598,8 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
 
-            // initialize bazaar
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED")));
+            // initialize Families
+            LoadFamilies();
 
             // initialize npcmonsters
             foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
@@ -968,7 +995,8 @@ namespace OpenNos.GameObject
 
             ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
             ServerCommunicationClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
-
+            ServerCommunicationClient.Instance.FamilyRefresh += OnFamilyRefresh;
+            
             lastGroupId = 1;
         }
 
@@ -984,7 +1012,6 @@ namespace OpenNos.GameObject
                 Logger.Error(e);
             }
         }
-
         private void OnMessageSentToCharacter(object sender, EventArgs e)
         {
             if (sender != null)
@@ -993,8 +1020,9 @@ namespace OpenNos.GameObject
 
                 ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.Name == message.Item1);
 
-                if (targetSession != null || message.Item4 == MessageType.Shout || message.Item4 == MessageType.Family) //shout doesnt need targetSession
+                if (targetSession != null || message.Item4 == MessageType.Shout || message.Item4 == MessageType.FamilyChat || message.Item4 == MessageType.Family) //shout doesnt need targetSession
                 {
+                    long familyId;
                     switch (message.Item4)
                     {
                         case MessageType.Whisper:
@@ -1009,15 +1037,14 @@ namespace OpenNos.GameObject
                             targetSession?.SendPacket(message.Item2);
                             break;
 
-                        case MessageType.Family:
-                            long familyId;
+                        case MessageType.FamilyChat:
                             if (long.TryParse(message.Item1, out familyId))
                             {
                                 if (message.Item3 != ChannelId)
                                 {
                                     foreach (ClientSession s in Instance.Sessions)
                                     {
-                                        if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
+                                        if (s.HasSelectedCharacter && s.Character.Family != null)
                                         {
                                             if (s.Character.Family.FamilyId == familyId)
                                             {
@@ -1028,9 +1055,30 @@ namespace OpenNos.GameObject
                                 }
                             }
                             break;
+
+                        case MessageType.Family:
+                            if (long.TryParse(message.Item1, out familyId))
+                            {
+                                foreach (ClientSession s in Instance.Sessions)
+                                {
+                                    if (s.HasSelectedCharacter && s.Character.Family != null)
+                                    {
+                                        if (s.Character.Family.FamilyId == familyId)
+                                        {
+                                            s.SendPacket(message.Item2);
+                                        }
+                                    }
+                                }
+
+                            }
+                            break;
                     }
                 }
             }
+        }
+        private void OnFamilyRefresh(object sender, EventArgs e)
+        {
+            
         }
 
         private void OnSessionKicked(object sender, EventArgs e)
