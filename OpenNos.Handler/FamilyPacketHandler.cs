@@ -282,7 +282,7 @@ namespace OpenNos.Handler
                         {
                             if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
                             {
-                                s.SendPacket(s.Character.GenerateMsg($"<Familycall> {msg}", 0));
+                                s.SendPacket(s.Character.GenerateMsg($"<{Language.Instance.GetMessageFromKey("FAMILYCALL")}> {msg}", 0));
                             }
                         }
                     }
