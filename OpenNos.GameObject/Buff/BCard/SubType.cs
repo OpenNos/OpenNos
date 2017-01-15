@@ -18,6 +18,9 @@ namespace OpenNos.GameObject.Buff.BCard
         IncreaseLight,
         IncreaseShadow,
         IncreaseLevel,
+        IncreaseCriticalDamage,
+        IncreaseCriticalChance,
+        AlwaysCritical,
         //Increase by Percentage
         IncreasePercentage,
         IncreaseMeleePercentage,
@@ -39,6 +42,9 @@ namespace OpenNos.GameObject.Buff.BCard
         DecreaseLight,
         DecreaseShadow,
         DecreaseLevel,
+        DecreaseCriticalDamage,
+        DecreaseCriticalChance,
+        NeverCritical,
         //Decrease by Percentage
         DecreasePercentage,
         DecreaseMeleePercentage,
@@ -48,6 +54,16 @@ namespace OpenNos.GameObject.Buff.BCard
         DecreasePercentageChance,
         DecreaseMeleePercentageChance,
         DecreaseDistancePercentageChance,
-        DecreaseMagicPercentageChance
+        DecreaseMagicPercentageChance,
+
+        //Recover, Steal etc
+        Recover,
+        RecoverPercentage,
+        Steal,
+        StealPercentage,
+        
+        //Effects
+        EagleEyes
+        
     }
 }

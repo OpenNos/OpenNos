@@ -16,6 +16,7 @@ using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Buff.BCard;
 using OpenNos.GameObject.Networking;
 using System;
 using System.Collections.Concurrent;
@@ -190,14 +191,14 @@ namespace OpenNos.GameObject
                 return 0;
             }
 
-            int playerDefense;
-            byte playerDefenseUpgrade = 0;
-            int playerDodge = 0;
+            int playerDefense = targetCharacter.Buff.Get(Buff.BCard.Type.Defense, Buff.BCard.SubType.Increase, false)[0];
+            byte playerDefenseUpgrade = (byte)targetCharacter.Buff.Get(Buff.BCard.Type.Defense, Buff.BCard.SubType.IncreaseLevel, false)[0];
+            int playerDodge = targetCharacter.Buff.Get(Buff.BCard.Type.Dodge, Buff.BCard.SubType.Increase, false)[0];
 
             WearableInstance playerArmor = targetCharacter.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
             if (playerArmor != null)
             {
-                playerDefenseUpgrade = playerArmor.Upgrade;
+                playerDefenseUpgrade += playerArmor.Upgrade;
             }
 
             short mainUpgrade = Monster.AttackUpgrade;
@@ -218,21 +219,36 @@ namespace OpenNos.GameObject
             #endregion
 
             #region Get Player defense
-
+            int boostpercentage;
             switch (Monster.AttackClass)
             {
                 case 0:
-                    playerDefense = targetCharacter.Defence;
-                    playerDodge = targetCharacter.DefenceRate;
+                    playerDefense += targetCharacter.Defence
+                        + targetCharacter.Buff.Get(Buff.BCard.Type.Defense, Buff.BCard.SubType.IncreaseMelee, false)[0];
+                    playerDodge += targetCharacter.DefenceRate
+                        + targetCharacter.Buff.Get(Buff.BCard.Type.Dodge, Buff.BCard.SubType.IncreaseDistance, false)[0];
+                    boostpercentage = targetCharacter.Buff.Get(Buff.BCard.Type.Defense, Buff.BCard.SubType.IncreaseMeleePercentage, false)[0];
+                    playerDefense = (int)(playerDefense * (1 + (boostpercentage / 100D)));
+                    boostpercentage = targetCharacter.Buff.Get(Buff.BCard.Type.Dodge, Buff.BCard.SubType.IncreaseMeleePercentage, false)[0];
+                    playerDodge = (int)(playerDodge * (1 + (boostpercentage / 100D)));
                     break;
 
                 case 1:
-                    playerDefense = targetCharacter.DistanceDefence;
-                    playerDodge = targetCharacter.DistanceDefenceRate;
+                    playerDefense += targetCharacter.DistanceDefence
+                        + targetCharacter.Buff.Get(Buff.BCard.Type.Defense, Buff.BCard.SubType.IncreaseDistance, false)[0];
+                    playerDodge += targetCharacter.DistanceDefenceRate
+                        + targetCharacter.Buff.Get(Buff.BCard.Type.Dodge, Buff.BCard.SubType.IncreaseDistance, false)[0];
+                    boostpercentage = targetCharacter.Buff.Get(Buff.BCard.Type.Defense, Buff.BCard.SubType.IncreaseDistancePercentage, false)[0];
+                    playerDefense = (int)(playerDefense * (1 + (boostpercentage / 100D)));
+                    boostpercentage = targetCharacter.Buff.Get(Buff.BCard.Type.Dodge, Buff.BCard.SubType.IncreaseDistancePercentage, false)[0];
+                    playerDodge = (int)(playerDodge * (1 + (boostpercentage / 100D)));
                     break;
 
                 case 2:
-                    playerDefense = targetCharacter.MagicalDefence;
+                    playerDefense += targetCharacter.MagicalDefence
+                        + targetCharacter.Buff.Get(Buff.BCard.Type.Defense, Buff.BCard.SubType.IncreaseMagic, false)[0];
+                    boostpercentage = targetCharacter.Buff.Get(Buff.BCard.Type.Defense, Buff.BCard.SubType.IncreaseMagicPercentage, false)[0];
+                    playerDefense = (int)(playerDefense * (1 + (boostpercentage / 100D)));
                     break;
 
                 default:
@@ -243,8 +259,10 @@ namespace OpenNos.GameObject
 
             #region Basic Damage Data Calculation
 
-            // TODO: Implement BCard damage boosts, see Issue
-
+            mainCritChance += targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.IncreaseCriticalChance, false)[0];
+            mainCritChance -= targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.DecreaseCriticalChance, false)[0];
+            mainCritHit += targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.IncreaseCriticalDamage, false)[0];
+            mainCritHit -= targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.DecreaseCriticalDamage, false)[0];
             mainUpgrade -= playerDefenseUpgrade;
             if (mainUpgrade < -10)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.GameObject.Buff.Indicators
 {
@@ -13,11 +14,42 @@ namespace OpenNos.GameObject.Buff.Indicators
         public int Duration;
         public int Id;
         public int Interval = -1;
+        public bool StaticBuff = false;
+        public bool BadBuff = false;
+        public int _level;
+        public int _buffLevel = 1;
         public bool Disabled { get; private set; }
         public virtual void Enable(ClientSession session)
         {
-            session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.{Duration} {session.Character.Level}");
-            session.SendPacket(session.Character.GenerateSay($"You are under the effect {Name}.", 20));
+            if (StaticBuff)
+            {
+                session.SendPacket($"vb {Id} 1 {Duration}");
+                session.SendPacket(session.Character.GenerateSay($"You are under the effect {Name}.", 12));
+            }
+            else
+            {
+                session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.{Duration} {session.Character.Level}");
+                session.SendPacket(session.Character.GenerateSay($"You are under the effect {Name}.", 20));
+            }
+            if (DirectBuffs.Any(s => s.Type == BCard.Type.Speed))
+            {
+                session.Character.LastSpeedChange = DateTime.Now;
+            }
+            if(Delay != -1)
+            {
+                System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(Duration * 100))
+           .Subscribe(
+           o =>
+           {
+               if (DelayedBuffs.Any(s => s.Type == BCard.Type.Speed))
+               {
+                   if (!Disabled && session != null && session.HasSelectedCharacter)
+                   {
+                       session.Character.LastSpeedChange = DateTime.Now;
+                   }
+               }
+           });
+            }
             System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(Duration * 100))
                        .Subscribe(
                        o =>
@@ -27,11 +59,23 @@ namespace OpenNos.GameObject.Buff.Indicators
         }
         public virtual void Disable(ClientSession session)
         {
-            if (!Disabled)
+            if (!Disabled && session != null && session.HasSelectedCharacter)
             {
-                session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.0 {session.Character.Level}");
-                session.SendPacket(session.Character.GenerateSay($"You are no longer under the effect {Name}.", 20));
+                if (StaticBuff)
+                {
+                    session.SendPacket($"vb {Id} 0 {Duration}");
+                    session.SendPacket(session.Character.GenerateSay($"You are no longer under the effect {Name}.", 11));
+                }
+                else
+                {
+                    session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.0 {session.Character.Level}");
+                    session.SendPacket(session.Character.GenerateSay($"You are no longer under the effect {Name}.", 20));
+                }
                 Disabled = true;
+                if (DirectBuffs.Concat(DelayedBuffs).Any(s => s.Type == BCard.Type.Speed))
+                {
+                    session.Character.LastSpeedChange = DateTime.Now;
+                }
             }
         }
     }
