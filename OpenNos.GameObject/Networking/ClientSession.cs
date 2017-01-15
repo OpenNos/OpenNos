@@ -381,10 +381,10 @@ namespace OpenNos.GameObject
                 // include PacketDefinition
                 foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any() || x.GetParameters().FirstOrDefault()?.ParameterType.BaseType == typeof(PacketDefinition)))
                 {
-                    PacketAttribute packetAttribute = methodInfo.GetCustomAttributes(false).OfType<PacketAttribute>().FirstOrDefault();
+                    List<PacketAttribute> packetAttributes = methodInfo.GetCustomAttributes(false).OfType<PacketAttribute>().ToList();
 
                     // assume PacketDefinition based handler method
-                    if (packetAttribute == null)
+                    if (!packetAttributes.Any())
                     {
                         HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, methodInfo.GetParameters().FirstOrDefault()?.ParameterType);
                         HandlerMethods.Add(methodReference.Identification, methodReference);
@@ -392,8 +392,11 @@ namespace OpenNos.GameObject
                     else
                     {
                         // assume string based handler method
-                        HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, packetAttribute);
-                        HandlerMethods.Add(methodReference.Identification, methodReference);
+                        foreach (PacketAttribute packetAttribute in packetAttributes)
+                        {
+                            HandlerMethodReference methodReference = new HandlerMethodReference(DelegateBuilder.BuildDelegate<Action<object, object>>(methodInfo), handler, packetAttribute);
+                            HandlerMethods.Add(methodReference.Identification, methodReference);
+                        }
                     }
                 }
             }
@@ -506,7 +509,7 @@ namespace OpenNos.GameObject
                                 if (packetHeader[1][0] == '/' || packetHeader[1][0] == ':' || packetHeader[1][0] == ';')
                                 {
                                     packetHeader[1] = packetHeader[1][0].ToString();
-                                  packetstring = packet.Insert(packet.IndexOf(' ')+2, " ");
+                                    packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
                                 }
 
                                 if (permit == 1)

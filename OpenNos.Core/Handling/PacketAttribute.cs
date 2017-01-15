@@ -14,7 +14,7 @@
 
 namespace OpenNos.Core
 {
-    [System.AttributeUsage(System.AttributeTargets.Method)]
+    [System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)]
     public class PacketAttribute : System.Attribute
     {
         #region Members

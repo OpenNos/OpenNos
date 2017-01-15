@@ -258,6 +258,7 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("%Cridefamille")]
         [Packet("%Familyshout")]
         public void FamilyCall(string packet)
         {
