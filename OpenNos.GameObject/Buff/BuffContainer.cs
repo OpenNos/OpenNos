@@ -16,11 +16,46 @@ namespace OpenNos.GameObject.Buff
             Indicators = new List<IndicatorBase>();
         }
 
-        public void Add(IndicatorBase indicator)
+        public void Clear()
         {
-            foreach (IndicatorBase i in Indicators.Where(s => s.Id.Equals(indicator.Id)))
+            foreach (IndicatorBase i in Indicators.Where(s => !s.StaticBuff).ToList())
             {
                 i.Disable(Session);
+            }
+        }
+
+        public void DisableEffects(bool good, bool bad, int level)
+        {
+            if (good)
+            {
+                lock (Indicators)
+                {
+                    foreach (IndicatorBase i in Indicators.Where(s => !s.BadBuff && s._buffLevel < level).ToList())
+                    {
+                        i.Disable(Session);
+                    }
+                }
+            }
+            if (bad)
+            {
+                lock (Indicators)
+                {
+                    foreach (IndicatorBase i in Indicators.Where(s => s.BadBuff && s._buffLevel < level).ToList())
+                    {
+                        i.Disable(Session);
+                    }
+                }
+            }
+        }
+
+        public void Add(IndicatorBase indicator)
+        {
+            lock (Indicators)
+            {
+                foreach (IndicatorBase i in Indicators.Where(s => s.Id.Equals(indicator.Id) && !s.Disabled))
+                {
+                    i.Disable(Session);
+                }
             }
             Indicators.Add(indicator);
             indicator.Enable(Session);
@@ -31,21 +66,24 @@ namespace OpenNos.GameObject.Buff
             int value1 = 0;
             int value2 = 0;
             List<string> appliedBuffs = new List<string>();
-            foreach (IndicatorBase buff in Indicators.Where(s => s.Start.AddMilliseconds(s.Duration * 100) > DateTime.Now && !s.Disabled))
+            lock (Indicators)
             {
-                List<BCardEntry> tmp = buff.DirectBuffs;
-                if (buff.Delay != -1 && buff.Start.AddMilliseconds(buff.Delay * 100) < DateTime.Now)
+                foreach (IndicatorBase buff in Indicators.Where(s => s.Start.AddMilliseconds(s.Duration * 100) > DateTime.Now && !s.Disabled))
                 {
-                    tmp.Concat(buff.DelayedBuffs);
-                }
-                if (!pvp)
-                {
-                    tmp = tmp.Where(s => !s.PVPOnly).ToList();
-                }
-                foreach (BCardEntry entry in tmp.Where(s => s.Type.Equals(type) && s.SubType.Equals(subType) && s.AffectingOpposite.Equals(affectingOpposite)))
-                {
-                    value1 += entry.Value1;
-                    value2 += entry.Value2;
+                    List<BCardEntry> tmp = buff.DirectBuffs;
+                    if (buff.Delay != -1 && buff.Start.AddMilliseconds(buff.Delay * 100) < DateTime.Now)
+                    {
+                        tmp = tmp.Concat(buff.DelayedBuffs).ToList();
+                    }
+                    if (!pvp)
+                    {
+                        tmp = tmp.Where(s => !s.PVPOnly).ToList();
+                    }
+                    foreach (BCardEntry entry in tmp.Where(s => s.Type.Equals(type) && s.SubType.Equals(subType) && s.AffectingOpposite.Equals(affectingOpposite)))
+                    {
+                        value1 += entry.Value1;
+                        value2 += entry.Value2;
+                    }
                 }
             }
 
