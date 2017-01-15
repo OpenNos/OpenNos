@@ -401,6 +401,7 @@ namespace OpenNos.GameObject
             #endregion
 
             #region Elementary Damage
+            int bonusrez = targetCharacter.Buff.Get(Buff.BCard.Type.Resistance, SubType.Increase, false)[0];
 
             #region Calculate Elemental Boost + Rate
 
@@ -412,6 +413,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1:
+                    bonusrez += targetCharacter.Buff.Get(Buff.BCard.Type.Resistance, SubType.IncreaseFire, false)[0];
                     playerRessistance = targetCharacter.FireResistance;
                     switch (targetCharacter.Element)
                     {
@@ -438,6 +440,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 2:
+                    bonusrez += targetCharacter.Buff.Get(Buff.BCard.Type.Resistance, SubType.IncreaseWater, false)[0];
                     playerRessistance = targetCharacter.WaterResistance;
                     switch (targetCharacter.Element)
                     {
@@ -464,6 +467,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 3:
+                    bonusrez += targetCharacter.Buff.Get(Buff.BCard.Type.Resistance, SubType.IncreaseLight, false)[0];
                     playerRessistance = targetCharacter.LightResistance;
                     switch (targetCharacter.Element)
                     {
@@ -490,6 +494,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 4:
+                    bonusrez += targetCharacter.Buff.Get(Buff.BCard.Type.Resistance, SubType.IncreaseShadow, false)[0];
                     playerRessistance = targetCharacter.DarkResistance;
                     switch (targetCharacter.Element)
                     {
@@ -545,9 +550,8 @@ namespace OpenNos.GameObject
                     elementalBoost = 0.2;
                 }
             }
-
             elementalDamage = (int)((elementalDamage + (elementalDamage + baseDamage) * (Monster.ElementRate / 100D)) * elementalBoost);
-            elementalDamage = elementalDamage / 100 * (100 - playerRessistance);
+            elementalDamage = elementalDamage / 100 * (100 - playerRessistance - bonusrez);
             if (elementalDamage < 0)
             {
                 elementalDamage = 0;

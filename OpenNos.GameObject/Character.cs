@@ -2315,6 +2315,7 @@ namespace OpenNos.GameObject
             #endregion
 
             #region Elementary Damage
+            int bonusrez = target.Buff.Get(GameObject.Buff.BCard.Type.Resistance, SubType.Increase, true)[0];
 
             #region Calculate Elemental Boost + Rate
 
@@ -2326,6 +2327,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1:
+                    bonusrez += target.Buff.Get(GameObject.Buff.BCard.Type.Resistance, SubType.IncreaseFire, true)[0];
                     elementalDamage += Buff.Get(GameObject.Buff.BCard.Type.Element, SubType.IncreaseFire, true)[0];
                     monsterResistance = target.FireResistance;
                     switch (target.Element)
@@ -2353,6 +2355,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 2:
+                    bonusrez += target.Buff.Get(GameObject.Buff.BCard.Type.Resistance, SubType.IncreaseWater, true)[0];
                     elementalDamage += Buff.Get(GameObject.Buff.BCard.Type.Element, SubType.IncreaseWater, true)[0];
                     monsterResistance = target.WaterResistance;
                     switch (target.Element)
@@ -2380,6 +2383,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 3:
+                    bonusrez += target.Buff.Get(GameObject.Buff.BCard.Type.Resistance, SubType.IncreaseLight, true)[0];
                     elementalDamage += Buff.Get(GameObject.Buff.BCard.Type.Element, SubType.IncreaseLight, true)[0];
                     monsterResistance = target.LightResistance;
                     switch (target.Element)
@@ -2407,6 +2411,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 4:
+                    bonusrez += target.Buff.Get(GameObject.Buff.BCard.Type.Resistance, SubType.IncreaseShadow, true)[0];
                     elementalDamage += Buff.Get(GameObject.Buff.BCard.Type.Element, SubType.IncreaseShadow, true)[0];
                     monsterResistance = target.DarkResistance;
                     switch (target.Element)
@@ -2469,7 +2474,7 @@ namespace OpenNos.GameObject
             }
 
             elementalDamage = (int)((elementalDamage + (elementalDamage + baseDamage) * ((ElementRate + ElementRateSP) / 100D)) * elementalBoost);
-            elementalDamage = elementalDamage / 100 * (100 - monsterResistance);
+            elementalDamage = elementalDamage / 100 * (100 - monsterResistance - bonusrez);
             if (elementalDamage < 0)
             {
                 elementalDamage = 0;
