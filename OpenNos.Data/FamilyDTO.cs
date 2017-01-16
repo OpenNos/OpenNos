@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
+
 namespace OpenNos.Data
 {
     public class FamilyDTO : MappingBaseDTO
@@ -28,7 +30,21 @@ namespace OpenNos.Data
 
         public byte MaxSize { get; set; }
 
-        public string Name { get; set; }       
+        public string Name { get; set; }
+
+        public bool ManagerCanInvite { get; set; }
+
+        public bool ManagerCanShout { get; set; }
+
+        public bool ManagerCanNotice { get; set; }
+
+        public FamilyAuthorityType ManagerAuthorityType { get; set; }
+
+        public bool ManagerCanGetHistory { get; set; }
+
+        public bool MemberCanGetHistory { get; set; }
+
+        public FamilyAuthorityType MemberAuthorityType { get; set; }
 
         #endregion
     }

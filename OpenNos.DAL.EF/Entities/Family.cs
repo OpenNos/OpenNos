@@ -14,6 +14,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using OpenNos.Domain;
 
 namespace OpenNos.DAL.EF
 {
@@ -48,6 +49,21 @@ namespace OpenNos.DAL.EF
 
         [MaxLength(255)]
         public string Name { get; set; }
+
+        public bool ManagerCanInvite { get; set; }
+
+        public bool ManagerCanShout { get; set; }
+
+        public bool ManagerCanNotice { get; set; }
+
+        public FamilyAuthorityType ManagerAuthorityType { get; set; }
+
+        public bool ManagerCanGetHistory { get; set; }
+
+        public bool MemberCanGetHistory { get; set; }
+
+        public FamilyAuthorityType MemberAuthorityType { get; set; }
+
 
         #endregion
     }
