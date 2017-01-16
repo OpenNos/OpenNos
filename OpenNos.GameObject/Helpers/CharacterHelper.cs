@@ -755,7 +755,7 @@ namespace OpenNos.GameObject
                     }
                     ++j;
                 }
-                _hp[(int)ClassType.Swordman, i] = (int)(hp*1.15);
+                _hp[(int)ClassType.Swordman, i] = (int)(hp);
             }
 
             // Magician HP
@@ -781,7 +781,7 @@ namespace OpenNos.GameObject
                     }
                     ++j;
                 }
-                _hp[(int)ClassType.Archer, i] = (int)(hp*1.45);
+                _hp[(int)ClassType.Archer, i] = (int)(hp);
             }
         }
 

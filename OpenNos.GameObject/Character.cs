@@ -100,8 +100,6 @@ namespace OpenNos.GameObject
 
         public bool CanFight => !IsSitting && ExchangeInfo == null;
 
-        public int CollectedFamilyXp { get; set; }
-
         public int DarkResistance { get; set; }
 
         public int Defence { get; set; }
@@ -3175,15 +3173,12 @@ namespace OpenNos.GameObject
                         {
                             foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapId == MapId))
                             {
+                                //TODO remove this part on release
                                 if (targetSession.Character.Level >= monsterToAttack.Monster.Level - 5 && targetSession.Character.Level <= monsterToAttack.Monster.Level + 5)
                                 {
                                     if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
                                     {
                                         targetSession.Character.Reput += monsterToAttack.Monster.Level;
-                                    }
-                                    if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockFExp && s.DateEnd > DateTime.Now))
-                                    {
-                                        targetSession.Character.CollectedFamilyXp += monsterToAttack.Monster.Level;
                                     }
                                 }
                                 else if (targetSession.Character.Level >= 90 && monsterToAttack.Monster.Level >= 88)
@@ -3192,11 +3187,9 @@ namespace OpenNos.GameObject
                                     {
                                         targetSession.Character.Reput += monsterToAttack.Monster.Level;
                                     }
-                                    if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockFExp && s.DateEnd > DateTime.Now))
-                                    {
-                                        targetSession.Character.CollectedFamilyXp += monsterToAttack.Monster.Level;
-                                    }
                                 }
+                                //END PART
+
                                 if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
                                 {
                                     targetSession.Character.GenerateXp(monsterToAttack, true);
@@ -3210,15 +3203,12 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
+                            //TODO Remove this part on Release
                             if (Level >= monsterToAttack.Monster.Level - 5 && Level <= monsterToAttack.Monster.Level + 5)
                             {
                                 if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
                                 {
                                     Reput += monsterToAttack.Monster.Level;
-                                }
-                                if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockFExp && s.DateEnd > DateTime.Now))
-                                {
-                                    CollectedFamilyXp += monsterToAttack.Monster.Level;
                                 }
                             }
                             else if (Level >= 90 && monsterToAttack.Monster.Level >= 88)
@@ -3227,11 +3217,9 @@ namespace OpenNos.GameObject
                                 {
                                     Reput += monsterToAttack.Monster.Level;
                                 }
-                                if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockFExp && s.DateEnd > DateTime.Now))
-                                {
-                                    CollectedFamilyXp += monsterToAttack.Monster.Level;
-                                }
                             }
+                            //END PART
+
                             if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId)
                             {
                                 GenerateXp(monsterToAttack, true);
@@ -3888,6 +3876,14 @@ namespace OpenNos.GameObject
         {
             return new[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
         }
+        public void GenerateFamilyXp(int FXP)
+        {
+
+            if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockFExp && s.DateEnd > DateTime.Now))
+            {
+                //CollectedFamilyXp += monsterToAttack.Monster.Level;
+            }
+        }
 
         private void GenerateXp(MapMonster monster, bool isMonsterOwner)
         {
@@ -3914,7 +3910,7 @@ namespace OpenNos.GameObject
                         InventoryType.Wear);
                 }
 
-                if (Level < 120)
+                if (Level < 120)//TODO configurable lvl
                 {
                     if (isMonsterOwner)
                     {
@@ -3947,7 +3943,7 @@ namespace OpenNos.GameObject
                     LevelXp -= (long)t;
                     Level++;
                     t = XPLoad();
-                    if (Level >= 120)
+                    if (Level >= 120)//TODO configurable lvl
                     {
                         Level = 120;
                         LevelXp = 0;
