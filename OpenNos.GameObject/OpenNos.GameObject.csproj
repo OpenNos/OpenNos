@@ -165,6 +165,7 @@
     <Compile Include="Packets\ClientPackets\ExchangeRequestPacket.cs" />
     <Compile Include="Packets\ClientPackets\CClosePacket.cs" />
     <Compile Include="Packets\ClientPackets\GameStart.cs" />
+    <Compile Include="Packets\ClientPackets\FrankCtsPacket.cs" />
     <Compile Include="Packets\ClientPackets\GetPacket.cs" />
     <Compile Include="Packets\ClientPackets\FStashEndPacket.cs" />
     <Compile Include="Packets\ClientPackets\DirectionPacket.cs" />
