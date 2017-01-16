@@ -353,7 +353,7 @@ namespace OpenNos.GameObject
             if (Character.Family != null)
             {
                 FamilyCharacter chara = Character.Family.FamilyCharacters.FirstOrDefault(s => s.CharacterId == loggedInCharacter.Item2);
-                if (chara != null)
+                if (chara != null && loggedInCharacter.Item2 != Character?.CharacterId)
                 {
                     _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_FAMILLY_LOGGED_IN"), loggedInCharacter.Item1, Language.Instance.GetMessageFromKey(chara.Authority.ToString().ToUpper())), 10));
                 }
