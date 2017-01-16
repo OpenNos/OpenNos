@@ -3885,6 +3885,8 @@ namespace OpenNos.GameObject
                 {
                     FamilyCharacterDTO famchar = FamilyCharacter;
                     FamilyDTO fam = (FamilyDTO)Family;
+                    fam.FamilyExperience += FXP;
+                    famchar.Experience += FXP;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref famchar);
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                     ServerManager.Instance.FamilyRefresh();
@@ -3958,6 +3960,10 @@ namespace OpenNos.GameObject
                     Hp = (int)HPLoad();
                     Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
+                    if (Level > 20 && Level % 10 == 0)
+                    {
+                        GenerateFamilyXp(20 * Level);
+                    }
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
                     Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
