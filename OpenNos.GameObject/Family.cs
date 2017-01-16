@@ -31,6 +31,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<FamilyCharacter> FamilyCharacters { get; set; }
+        public List<FamilyLogDTO> FamilyLogs { get; set; }
 
         #endregion
 
