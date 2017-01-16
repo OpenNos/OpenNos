@@ -1264,4 +1264,7 @@
   <data name="PLAYER_OFFLINE" xml:space="preserve">
     <value>Player not online!</value>
   </data>
+  <data name="CHARACTER_FAMILY_LOGGED_IN" xml:space="preserve">
+    <value>{0}({1} logged in!</value>
+  </data>
 </root>
