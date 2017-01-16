@@ -47,6 +47,7 @@ namespace OpenNos.WebApi.Reference
 
         public event EventHandler FamilyRefresh;
 
+        public event EventHandler BazaarRefresh;
         #endregion
 
         #region Properties
@@ -105,6 +106,8 @@ namespace OpenNos.WebApi.Reference
 
             _hubProxy.On("refreshFamily", OnFamilyRefresh);
 
+            _hubProxy.On("refreshBazaar", OnBazaarRefresh);
+
             _hubProxy.On<string, string, int, MessageType>("sendMessageToCharacter", OnMessageSentToCharacter);
 
             _hubconnection.Start().Wait();
@@ -114,7 +117,10 @@ namespace OpenNos.WebApi.Reference
         {
             FamilyRefresh?.Invoke(null, new EventArgs());
         }
-
+        private void OnBazaarRefresh()
+        {
+            BazaarRefresh?.Invoke(null, new EventArgs());
+        }
         private void OnMessageSentToCharacter(string characterName, string message, int fromChannel, MessageType messageType)
         {
             MessageSentToCharacter?.Invoke(new Tuple<string, string, int, MessageType>(characterName, message, fromChannel, messageType), new EventArgs());

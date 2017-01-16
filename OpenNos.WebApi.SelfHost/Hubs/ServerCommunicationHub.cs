@@ -41,6 +41,13 @@ namespace OpenNos.WebApi.SelfHost
         {
             Clients.All.refreshFamily();
         }
+        /// <summary>
+        /// Refresh Bazaar
+        /// </summary>
+        public void BazaarRefresh()
+        {
+            Clients.All.refreshBazaar();
+        }
 
         /// <summary>
         /// Cleanup hold Data, this is for restarting the server
