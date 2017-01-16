@@ -91,6 +91,10 @@ namespace OpenNos.GameObject
         {
             ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh"); 
         }
+        public void BazaarRefresh()
+        {
+            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh");
+        }
         public void LoadFamilies()
         {
             if (FamilyList == null)
@@ -113,6 +117,30 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void LoadBazaar()
+        {
+            if (BazaarList == null)
+            {
+                BazaarList = new List<BazaarItemLink>();
+            }
+            lock (BazaarList)
+            {
+                BazaarList = new List<BazaarItemLink>();
+                foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
+                {
+                    BazaarItemLink item = new BazaarItemLink();
+                    item.BazaarItem = bz;
+                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
+                    if (chara != null)
+                    {
+                        item.Owner = chara.Name;
+                        item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                    }
+                    BazaarList.Add(item);
+                }
+            }
+        }
+
         public List<Group> Groups => _groups.GetAllItems();
 
         public static ServerManager Instance => _instance ?? (_instance = new ServerManager());
@@ -121,6 +149,7 @@ namespace OpenNos.GameObject
 
         public Guid WorldId { get; private set; }
         public List<Family> FamilyList { get; set; }
+        public List<BazaarItemLink> BazaarList { get; set; }
 
         #endregion
 
@@ -601,6 +630,10 @@ namespace OpenNos.GameObject
             // initialize Families
             LoadFamilies();
 
+            // initialize Families
+            LoadBazaar();
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
+
             // initialize npcmonsters
             foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
             {
@@ -996,7 +1029,8 @@ namespace OpenNos.GameObject
             ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
             ServerCommunicationClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
             ServerCommunicationClient.Instance.FamilyRefresh += OnFamilyRefresh;
-            
+            ServerCommunicationClient.Instance.BazaarRefresh += OnBazaarRefresh;
+
             lastGroupId = 1;
         }
 
@@ -1078,9 +1112,12 @@ namespace OpenNos.GameObject
         }
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
-            
+            LoadFamilies();
         }
-
+        private void OnBazaarRefresh(object sender, EventArgs e)
+        {
+            LoadBazaar();
+        }
         private void OnSessionKicked(object sender, EventArgs e)
         {
             if (sender != null)
