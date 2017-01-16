@@ -494,7 +494,7 @@ namespace OpenNos.Handler
             Logger.Debug("Change HeroLevel Command", Session.SessionId);
             if (changeHeroLevelPacket != null)
             {
-                if (changeHeroLevelPacket.HeroLevel < 51)
+                if (changeHeroLevelPacket.HeroLevel <= 255)
                 {
                     Session.Character.HeroLevel = changeHeroLevelPacket.HeroLevel;
                     Session.Character.HeroXp = 0;

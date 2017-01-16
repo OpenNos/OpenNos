@@ -12,25 +12,34 @@
  * GNU General Public License for more details.
  */
 
-using System.Collections.Generic;
 using OpenNos.Data;
-using OpenNos.Data.Enums;
+using System.Collections.Generic;
 
-namespace OpenNos.DAL.Interface
+namespace OpenNos.GameObject
 {
-    public interface IFamilyDAO : IMappingBaseDAO
+    public class Family : FamilyDTO
     {
+        #region Instantiation
+
+        public Family()
+        {
+            FamilyCharacters = new List<FamilyCharacter>();
+        }
+
+        #endregion
+
+        #region Properties
+
+        public List<FamilyCharacter> FamilyCharacters { get; set; }
+
+        #endregion
+
         #region Methods
-        DeleteResult Delete(long familyId);
 
-        SaveResult InsertOrUpdate(ref FamilyDTO family);
-
-        FamilyDTO LoadByCharacterId(long characterId);
-
-        FamilyDTO LoadById(long familyId);
-
-        FamilyDTO LoadByName(string name);
-        IEnumerable<FamilyDTO> LoadAll();
+        public override void Initialize()
+        {
+        
+        }
 
         #endregion
     }

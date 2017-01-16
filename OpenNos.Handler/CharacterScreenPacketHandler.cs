@@ -355,11 +355,8 @@ namespace OpenNos.Handler
                             Session.Character.SpAdditionPoint += Session.Character.SpPoint;
                             Session.Character.SpPoint = 10000;
                         }
-                        Session.Character.Family = DAOFactory.FamilyDAO.LoadByCharacterId(Session.Character.CharacterId);
-                        Session.Character.FamilyCharacter = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(Session.Character.CharacterId);
                         Session.Character.LastLogin = DateTime.Now;
                         Session.Character.Respawns = DAOFactory.RespawnDAO.LoadByCharacter(Session.Character.CharacterId).ToList();
-                        Session.Character.Update();
                         Session.Character.StaticBonusList = DAOFactory.StaticBonusDAO.LoadByCharacterId(Session.Character.CharacterId).ToList();
                         Session.Character.LoadInventory();
                         Session.Character.LoadQuicklists();

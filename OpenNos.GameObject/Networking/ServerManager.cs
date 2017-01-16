@@ -34,8 +34,7 @@ namespace OpenNos.GameObject
 
         public bool ShutdownStop;
 
-        private static readonly ThreadLocal<Random> random =
-                new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
+        private static readonly ThreadLocal<Random> random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
 
         private static ServerManager _instance;
         private static readonly List<Item> _items = new List<Item>();
@@ -85,7 +84,66 @@ namespace OpenNos.GameObject
 
         public static int XPRate { get; set; }
 
+        public static byte MaxLevel { get; set; }
+        public static byte MaxJobLevel { get; set; }
+        public static byte MaxSPLevel { get; set; }
+        public static byte MaxHeroLevel { get; set; }
+
         public int ChannelId { get; set; }
+
+        public void FamilyRefresh()
+        {
+            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh"); 
+        }
+        public void BazaarRefresh()
+        {
+            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh");
+        }
+        public void LoadFamilies()
+        {
+            if (FamilyList == null)
+            {
+                FamilyList = new List<Family>();
+            }
+            lock (FamilyList)
+            {
+                FamilyList = new List<Family>();
+                foreach (FamilyDTO fam in DAOFactory.FamilyDAO.LoadAll())
+                {
+                    Family fami = (Family)fam;
+                    fami.FamilyCharacters = new List<FamilyCharacter>();
+                    foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
+                    {
+                        fami.FamilyCharacters.Add((FamilyCharacter)famchar);
+                    }
+                    FamilyList.Add(fami);
+                }
+            }
+        }
+
+        public void LoadBazaar()
+        {
+            if (BazaarList == null)
+            {
+                BazaarList = new List<BazaarItemLink>();
+            }
+            lock (BazaarList)
+            {
+                BazaarList = new List<BazaarItemLink>();
+                foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
+                {
+                    BazaarItemLink item = new BazaarItemLink();
+                    item.BazaarItem = bz;
+                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
+                    if (chara != null)
+                    {
+                        item.Owner = chara.Name;
+                        item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                    }
+                    BazaarList.Add(item);
+                }
+            }
+        }
 
         public List<Group> Groups => _groups.GetAllItems();
 
@@ -94,6 +152,8 @@ namespace OpenNos.GameObject
         public Task TaskShutdown { get; set; }
 
         public Guid WorldId { get; private set; }
+        public List<Family> FamilyList { get; set; }
+        public List<BazaarItemLink> BazaarList { get; set; }
 
         #endregion
 
@@ -145,7 +205,7 @@ namespace OpenNos.GameObject
                 }
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
-                Session.SendPackets(Session.Character.GenerateVb());
+                Session.SendPackets(Character.GenerateVb());
 
                 Session.SendPacket("eff_ob -1 -1 0 4269");
                 Session.SendPacket(Session.Character.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
@@ -181,7 +241,7 @@ namespace OpenNos.GameObject
                 }
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
-                Session.SendPackets(Session.Character.GenerateVb());
+                Session.SendPackets(Character.GenerateVb());
                 if (Session.Character.Level > 20)
                 {
                     Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
@@ -438,6 +498,10 @@ namespace OpenNos.GameObject
             GoldDropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["GoldRateDrop"]);
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
             FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
+            MaxLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxLevel"]);
+            MaxJobLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxJobLevel"]);
+            MaxSPLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxSPLevel"]);
+            MaxHeroLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxHeroLevel"]);
 
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
 
@@ -571,8 +635,12 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
 
-            // initialize bazaar
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED")));
+            // initialize Families
+            LoadFamilies();
+
+            // initialize Families
+            LoadBazaar();
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("BAZAR_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
 
             // initialize npcmonsters
             foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
@@ -968,6 +1036,8 @@ namespace OpenNos.GameObject
 
             ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
             ServerCommunicationClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
+            ServerCommunicationClient.Instance.FamilyRefresh += OnFamilyRefresh;
+            ServerCommunicationClient.Instance.BazaarRefresh += OnBazaarRefresh;
 
             lastGroupId = 1;
         }
@@ -984,7 +1054,6 @@ namespace OpenNos.GameObject
                 Logger.Error(e);
             }
         }
-
         private void OnMessageSentToCharacter(object sender, EventArgs e)
         {
             if (sender != null)
@@ -993,8 +1062,9 @@ namespace OpenNos.GameObject
 
                 ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.Name == message.Item1);
 
-                if (targetSession != null || message.Item4 == MessageType.Shout || message.Item4 == MessageType.Family) //shout doesnt need targetSession
+                if (targetSession != null || message.Item4 == MessageType.Shout || message.Item4 == MessageType.FamilyChat || message.Item4 == MessageType.Family) //shout doesnt need targetSession
                 {
+                    long familyId;
                     switch (message.Item4)
                     {
                         case MessageType.Whisper:
@@ -1009,15 +1079,14 @@ namespace OpenNos.GameObject
                             targetSession?.SendPacket(message.Item2);
                             break;
 
-                        case MessageType.Family:
-                            long familyId;
+                        case MessageType.FamilyChat:
                             if (long.TryParse(message.Item1, out familyId))
                             {
                                 if (message.Item3 != ChannelId)
                                 {
                                     foreach (ClientSession s in Instance.Sessions)
                                     {
-                                        if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
+                                        if (s.HasSelectedCharacter && s.Character.Family != null)
                                         {
                                             if (s.Character.Family.FamilyId == familyId)
                                             {
@@ -1028,11 +1097,35 @@ namespace OpenNos.GameObject
                                 }
                             }
                             break;
+
+                        case MessageType.Family:
+                            if (long.TryParse(message.Item1, out familyId))
+                            {
+                                foreach (ClientSession s in Instance.Sessions)
+                                {
+                                    if (s.HasSelectedCharacter && s.Character.Family != null)
+                                    {
+                                        if (s.Character.Family.FamilyId == familyId)
+                                        {
+                                            s.SendPacket(message.Item2);
+                                        }
+                                    }
+                                }
+
+                            }
+                            break;
                     }
                 }
             }
         }
-
+        private void OnFamilyRefresh(object sender, EventArgs e)
+        {
+            LoadFamilies();
+        }
+        private void OnBazaarRefresh(object sender, EventArgs e)
+        {
+            LoadBazaar();
+        }
         private void OnSessionKicked(object sender, EventArgs e)
         {
             if (sender != null)
