@@ -20,6 +20,7 @@ using OpenNos.Data.Enums;
 using System;
 using System.Linq;
 using OpenNos.DAL.Interface;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.EF
 {
@@ -74,6 +75,17 @@ namespace OpenNos.DAL.EF
             {
                 Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_FAMILY_ERROR"), family.FamilyId, e.Message), e);
                 return SaveResult.Error;
+            }
+        }
+
+        public IEnumerable<FamilyDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Family entity in context.Family)
+                {
+                    yield return _mapper.Map<FamilyDTO>(entity);
+                }
             }
         }
 
@@ -153,7 +165,6 @@ namespace OpenNos.DAL.EF
         {
             if (entity != null)
             {
-                entity.Size = family.Size;
                 entity.Name = family.Name;
                 entity.MaxSize = family.MaxSize;
                 entity.FamilyExperience = family.FamilyExperience;

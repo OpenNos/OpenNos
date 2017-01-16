@@ -129,6 +129,7 @@
     <Compile Include="Buff\Indicators\SP4\Swordsman\Berserker.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="ExchangeInfo.cs" />
+    <Compile Include="FamilyCharacter.cs" />
     <Compile Include="Helpers\MappingHelper.cs" />
     <Compile Include="Item\FoodItem.cs" />
     <Compile Include="Item\Instance\BoxInstance.cs" />
@@ -273,6 +274,7 @@
     <Compile Include="Npc\NpcMonster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\CharacterHelper.cs" />
+    <Compile Include="Family.cs" />
     <Compile Include="Skill.cs" />
     <Compile Include="CharacterSkill.cs" />
     <Compile Include="Item\Instance\SpecialistInstance.cs" />
@@ -306,6 +308,10 @@
     <ProjectReference Include="..\OpenNos.WebApi.Reference\OpenNos.WebApi.Reference.csproj">
       <Project>{F36E27AB-7274-48D5-8693-1CCF7919D32C}</Project>
       <Name>OpenNos.WebApi.Reference</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.WebApi.SelfHost\OpenNos.WebApi.SelfHost.csproj">
+      <Project>{5D69B6BE-062B-408D-913E-5CD2F21D5D17}</Project>
+      <Name>OpenNos.WebApi.SelfHost</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

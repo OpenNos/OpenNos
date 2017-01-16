@@ -45,6 +45,9 @@ namespace OpenNos.WebApi.Reference
 
         public event EventHandler MessageSentToCharacter;
 
+        public event EventHandler FamilyRefresh;
+
+        public event EventHandler BazaarRefresh;
         #endregion
 
         #region Properties
@@ -101,16 +104,27 @@ namespace OpenNos.WebApi.Reference
 
             _hubProxy.On<long?, string>("kickSession", OnSessionKicked);
 
+            _hubProxy.On("refreshFamily", OnFamilyRefresh);
+
+            _hubProxy.On("refreshBazaar", OnBazaarRefresh);
+
             _hubProxy.On<string, string, int, MessageType>("sendMessageToCharacter", OnMessageSentToCharacter);
 
             _hubconnection.Start().Wait();
         }
 
+        private void OnFamilyRefresh()
+        {
+            FamilyRefresh?.Invoke(null, new EventArgs());
+        }
+        private void OnBazaarRefresh()
+        {
+            BazaarRefresh?.Invoke(null, new EventArgs());
+        }
         private void OnMessageSentToCharacter(string characterName, string message, int fromChannel, MessageType messageType)
         {
             MessageSentToCharacter?.Invoke(new Tuple<string, string, int, MessageType>(characterName, message, fromChannel, messageType), new EventArgs());
         }
-
         private void OnAccountDisconnected(string accountName)
         {
             if (AccountDisconnectedEvent != null && !string.IsNullOrEmpty(accountName))
@@ -155,7 +169,7 @@ namespace OpenNos.WebApi.Reference
         {
             if (CharacterConnectedEvent != null && !string.IsNullOrEmpty(characterName))
             {
-                CharacterConnectedEvent(new Tuple<string,long>(characterName, characterId), new EventArgs());
+                CharacterConnectedEvent(new Tuple<string, long>(characterName, characterId), new EventArgs());
             }
         }
 

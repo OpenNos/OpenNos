@@ -109,7 +109,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<FamilyCharacterDTO>(context.FamilyCharacter.FirstOrDefault(c => c.Character.FirstOrDefault(fc => fc.CharacterId.Equals(characterId)) != null));
+                    return _mapper.Map<FamilyCharacterDTO>(context.FamilyCharacter.FirstOrDefault(c => c.CharacterId == characterId));
                 }
             }
             catch (Exception e)

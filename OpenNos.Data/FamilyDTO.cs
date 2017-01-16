@@ -28,9 +28,7 @@ namespace OpenNos.Data
 
         public byte MaxSize { get; set; }
 
-        public string Name { get; set; }
-
-        public byte Size { get; set; }
+        public string Name { get; set; }       
 
         #endregion
     }

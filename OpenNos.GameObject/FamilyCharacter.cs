@@ -12,42 +12,45 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL;
+using OpenNos.Data;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.GameObject
 {
-    public class Family
+    public class FamilyCharacter : FamilyCharacterDTO
     {
         #region Instantiation
-
-        public Family()
+        private CharacterDTO _character;
+        public FamilyCharacter()
         {
-            FamilyCharacters = new HashSet<FamilyCharacter>();
-            FamilyLogs = new HashSet<FamilyLog>();
+
         }
 
         #endregion
 
         #region Properties
 
-        public virtual ICollection<FamilyCharacter> FamilyCharacters { get; set; }
+        public CharacterDTO Character
+        {
+            get
+            {
+                if (_character == null)
+                {
+                    _character = DAOFactory.CharacterDAO.LoadById(CharacterId);
+                }
+                return _character;
+             }
+        }
 
-        public int FamilyExperience { get; set; }
+        #endregion
 
-        public long FamilyId { get; set; }
+        #region Methods
 
-        public byte FamilyLevel { get; set; }
+        public override void Initialize()
+        {
 
-        public virtual ICollection<FamilyLog> FamilyLogs { get; set; }
-
-        [MaxLength(255)]
-        public string FamilyMessage { get; set; }
-
-        public byte MaxSize { get; set; }
-
-        [MaxLength(255)]
-        public string Name { get; set; }
+        }
 
         #endregion
     }

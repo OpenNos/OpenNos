@@ -276,7 +276,7 @@ namespace OpenNos.Handler
                     }
                     Session.SendPacket(inventory.Item.EquipmentSlot != EquipmentType.Sp ?
                         Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ?
-                        Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
+                        Session.Character.GeneratePslInfo(inventory as SpecialistInstance) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
                 }
             }
         }

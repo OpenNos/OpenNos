@@ -264,7 +264,7 @@ namespace OpenNos.Handler
                                 Session.Character.Gold -= price;
                                 Session.SendPacket(Session.Character.GenerateGold());
                                 DAOFactory.IteminstanceDAO.InsertOrUpdate(bzitemdto);
-
+                                ServerManager.Instance.BazaarRefresh();
                                 Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {packet.Amount} {packet.Price} 0 0 0");
                                 ItemInstance newBz = bzcree.Item.DeepCopy();
                                 newBz.Id = Guid.NewGuid();
@@ -277,6 +277,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
                                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: { bzcree.Item.Item.Name} x {packet.Amount}", 10));
                                 }
+                           
                             }
 
                         }
@@ -412,7 +413,7 @@ namespace OpenNos.Handler
 
 
             DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bz);
-
+            ServerManager.Instance.BazaarRefresh();
 
             Session.Character.Gold -= tax;
             Session.SendPacket(Session.Character.GenerateGold());
@@ -421,7 +422,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("OBJECT_IN_BAZAAR"), 0));
 
             Session.SendPacket("rc_reg 1");
-
 
         }
 
@@ -1770,8 +1770,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
                 if (!string.IsNullOrWhiteSpace(Session.Character.Family.FamilyMessage))
                 {
-                    Session.SendPacket(Session.Character.GenerateInfo(@"--- Family Message ---
-" + Session.Character.Family.FamilyMessage));
+                    Session.SendPacket(Session.Character.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage));
                 }
             }
 
