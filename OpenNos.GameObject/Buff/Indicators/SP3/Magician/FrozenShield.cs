@@ -13,6 +13,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Magician
             Name = "Frozen Shield";
             Duration = 30;
             Id = 144;
+            _level = Level;
             DirectBuffs.Add(new BCardEntry(BCard.Type.Damage, BCard.SubType.DecreasePercentage, 100, 0, false, true));
         }
     }
