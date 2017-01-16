@@ -13,6 +13,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
             Name = "Mana Shield";
             Duration = 1800;
             Id = 88;
+            _level = Level;
             DirectBuffs.Add(new BCardEntry(BCard.Type.Damage, BCard.SubType.DecreasePercentage, 20, 0, false, true));
         }
     }
