@@ -93,7 +93,7 @@ namespace OpenNos.GameObject
 
         public void FamilyRefresh()
         {
-            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh"); 
+            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh");
         }
         public void BazaarRefresh()
         {

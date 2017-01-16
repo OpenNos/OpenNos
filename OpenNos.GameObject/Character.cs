@@ -641,6 +641,19 @@ namespace OpenNos.GameObject
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
+        public string GenerateGInfo()
+        {
+            if (Family != null)
+            {
+                FamilyCharacter familyCharacter = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                if (familyCharacter != null)
+                {
+                    return $"ginfo {Session.Character.Family.Name} {familyCharacter.Character.Name} {(byte)Family.FamilyHeadGender} {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.FamilyCharacters.Count()} {Session.Character.Family.MaxSize} {(byte)Session.Character.FamilyCharacter.Authority} {(Family.ManagerCanInvite?1:0)} {(Family.ManagerCanNotice ? 1 : 0)} {(Family.ManagerCanShout ? 1 : 0)} {(Family.ManagerCanGetHistory?1:0)} {(byte)Family.ManagerAuthorityType} {(Family.MemberCanGetHistory ? 1 : 0)} {(byte)Family.MemberAuthorityType} {Session.Character.Family.FamilyMessage.Replace(' ', '^')}";
+                }
+            }
+            return string.Empty;
+        }
+
         public string GenerateFrank(byte type)
         {
             string packet = "frank_stc";
@@ -4049,7 +4062,7 @@ namespace OpenNos.GameObject
                 if (specialist != null && UseSp && specialist.SpLevel < ServerManager.MaxSPLevel)
                 {
                     int multiplier = specialist.SpLevel < 10 ? 10 : specialist.SpLevel < 19 ? 5 : 1;
-                    specialist.XP += (int)(GetJXP(monsterinfo, grp) * (multiplier + (Buff.Get(GameObject.Buff.BCard.Type.SPExperience, SubType.IncreasePercentage, false)[0]/100D)));
+                    specialist.XP += (int)(GetJXP(monsterinfo, grp) * (multiplier + (Buff.Get(GameObject.Buff.BCard.Type.SPExperience, SubType.IncreasePercentage, false)[0] / 100D)));
                 }
                 double t = XPLoad();
                 while (LevelXp >= t)

@@ -165,12 +165,7 @@ namespace OpenNos.DAL.EF
         {
             if (entity != null)
             {
-                entity.Name = family.Name;
-                entity.MaxSize = family.MaxSize;
-                entity.FamilyExperience = family.FamilyExperience;
-                entity.FamilyLevel = family.FamilyLevel;
-                entity.FamilyMessage = family.FamilyMessage;
-
+                _mapper.Map(family, entity);
                 context.SaveChanges();
             }
             return _mapper.Map<FamilyDTO>(entity);
