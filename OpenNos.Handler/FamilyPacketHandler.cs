@@ -245,6 +245,83 @@ namespace OpenNos.Handler
             }
         }
 
+        public void ChangeAuthority(FauthPacket packet)
+        {
+            if (Session.Character.Family == null)
+            {
+                return;
+            }
+         
+            switch (packet.MemberType)
+            {
+                case FamilyAuthority.Manager:
+                    switch (packet.AuthorityId)
+                    {
+                        case 0:
+                            Session.Character.Family.ManagerCanInvite = packet.Value == 1?true:false;
+                            break;
+                        case 1:
+                            Session.Character.Family.ManagerCanNotice = packet.Value == 1 ? true : false;
+                            break;
+                        case 2:
+                            Session.Character.Family.ManagerCanShout = packet.Value == 1 ? true : false;
+                            break;
+                        case 3:
+                            Session.Character.Family.ManagerCanGetHistory = packet.Value == 1 ? true : false;
+                            break;
+                        case 4:
+                            Session.Character.Family.ManagerAuthorityType = (FamilyAuthorityType)packet.Value;
+                            break;
+                    }
+                    break;
+                case FamilyAuthority.Member:
+                    switch (packet.AuthorityId)
+                    {                      
+                        case 0:
+                            Session.Character.Family.MemberCanGetHistory = packet.Value == 1 ? true : false;
+                            break;
+                        case 1:
+                            Session.Character.Family.MemberAuthorityType = (FamilyAuthorityType)packet.Value;
+                            break;
+                    }
+                    break;
+            }
+            FamilyDTO fam = Session.Character.Family;
+            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+            ServerManager.Instance.FamilyRefresh();
+            Session.SendPacket(Session.Character.GenerateGInfo());
+        }
+
+        [Packet("%Sexe")]
+        public void ResetSexe(string packet)
+        {
+            byte rank = 0;
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length != 3)
+            {
+                return;
+            }
+
+
+            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null && Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head && byte.TryParse(packetsplit[2], out rank))
+            {
+                foreach (FamilyCharacterDTO fchar in Session.Character.Family.FamilyCharacters)
+                {
+                    FamilyCharacterDTO fchar2 = fchar;
+                    fchar2.Rank = 0;
+                    DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref fchar2);
+
+                }
+                FamilyDTO fam = Session.Character.Family;
+                fam.FamilyHeadGender = (GenderType)rank;
+                DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                ServerManager.Instance.FamilyRefresh();
+                Session.SendPacket(Session.Character.GenerateGInfo());
+                Session.SendPacket(Session.Character.GenerateFamilyMember());
+                Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_HEAD_CHANGE_GENDER")), 0), ServerManager.Instance.ChannelId, MessageType.Family, fam.FamilyId.ToString(), null).Result;
+            }
+        }
         [Packet("%Today")]
         [Packet("%Aujourd'hui")]
         public void TodayMessage(string packet)
@@ -305,7 +382,7 @@ namespace OpenNos.Handler
         {
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
-                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerCanShout) || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                 {
                     string msg = string.Empty;
                     int i = 0;
@@ -335,7 +412,7 @@ namespace OpenNos.Handler
         {
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
-                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerCanShout) || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                 {
                     string msg = string.Empty;
                     int i = 0;
@@ -420,7 +497,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member)
+            if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && !Session.Character.Family.ManagerCanInvite))
             {
                 Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("FAMILY_INVITATION_NOT_ALLOWED"))));
                 return;
@@ -500,11 +577,9 @@ o =>
                     {
                         if (Session.Character.FamilyCharacter != null && Session.Character.Family != null)
                         {
-                            FamilyCharacter familyCharacter = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
-                            if (familyCharacter != null)
-                            {
-                                Session.SendPacket($"ginfo {Session.Character.Family.Name} {familyCharacter.Character.Name} 0 {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.FamilyCharacters.Count()} {Session.Character.Family.MaxSize} {(byte)Session.Character.FamilyCharacter.Authority} 1 0 0 0 0 0 0 {Session.Character.Family.FamilyMessage.Replace(' ', '^')}");
-                            }
+                            
+                            Session.SendPacket(Session.Character.GenerateGInfo());
+                            
                             Session.SendPacket(Session.Character.GenerateFamilyMember());
                             Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                             Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
