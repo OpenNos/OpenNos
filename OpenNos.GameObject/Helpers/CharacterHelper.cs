@@ -316,39 +316,39 @@ namespace OpenNos.GameObject
                 case 1:
                     return 100000;
                 case 2:
-                    return 130000;
+                    return 250000;
                 case 3:
-                    return 170000;
+                    return 370000;
                 case 4:
-                    return 220000;
+                    return 560000;
                 case 5:
-                    return 270000;
+                    return 840000;
                 case 6:
-                    return 360000;
+                    return 1260000;
                 case 7:
-                    return 550000;
+                    return 1900000;
                 case 8:
-                    return 900000;
+                    return 2850000;
                 case 9:
-                    return 1570000;
+                    return 3570000;
                 case 10:
-                    return 1830000;
+                    return 3830000;
                 case 11:
-                    return 2150000;
+                    return 4150000;
                 case 12:
-                    return 2750000;
+                    return 4750000;
                 case 13:
-                    return 3500000;
+                    return 5500000;
                 case 14:
-                    return 4500000;
+                    return 6500000;
                 case 15:
-                    return 6000000;
+                    return 7000000;
                 case 16:
-                    return 7500000;
+                    return 8500000;
                 case 17:
                     return 9500000;
                 case 18:
-                    return 13000000;
+                    return 10000000;
                 case 19:
                     return 17000000;
                 default:
