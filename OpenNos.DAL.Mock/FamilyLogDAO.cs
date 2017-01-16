@@ -14,10 +14,16 @@
 
 using OpenNos.Data;
 using OpenNos.DAL.Interface;
+using System;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
     public class FamilyLogDAO : BaseDAO<FamilyLogDTO>, IFamilyLogDAO
     {
+        public IEnumerable<FamilyLogDTO> LoadByFamilyId(long familyId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

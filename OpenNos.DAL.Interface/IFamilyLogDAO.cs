@@ -13,9 +13,13 @@
  */
 
 
+using OpenNos.Data;
+using System.Collections.Generic;
+
 namespace OpenNos.DAL.Interface
 {
     public interface IFamilyLogDAO : IMappingBaseDAO
     {
+        IEnumerable<FamilyLogDTO> LoadByFamilyId(long familyId);
     }
 }

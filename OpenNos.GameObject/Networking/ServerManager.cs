@@ -116,6 +116,7 @@ namespace OpenNos.GameObject
                     {
                         fami.FamilyCharacters.Add((FamilyCharacter)famchar);
                     }
+                    fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
                     FamilyList.Add(fami);
                 }
             }

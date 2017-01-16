@@ -14,10 +14,24 @@
 
 using OpenNos.Data;
 using OpenNos.DAL.Interface;
+using System.Collections.Generic;
+using System;
+using OpenNos.DAL.EF.Helpers;
+using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
     public class FamilyLogDAO : MappingBaseDAO<FamilyLog, FamilyLogDTO>, IFamilyLogDAO
     {
+        public IEnumerable<FamilyLogDTO> LoadByFamilyId(long familyId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (FamilyLog familylog in context.FamilyLog.Where(fc => fc.FamilyId.Equals(familyId)))
+                {
+                    yield return _mapper.Map<FamilyLogDTO>(familylog);
+                }
+            }
+        }
     }
 }
