@@ -443,7 +443,7 @@ namespace OpenNos.GameObject
 
             List<string> itemssearch = packet.ItemVNumFilter == "0" ? new List<string>() : packet.ItemVNumFilter.Split(' ').ToList();
             List<BazaarItemLink> bzlist = new List<BazaarItemLink>();
-            BazaarItemLink[] billist = new BazaarItemLink[ServerManager.Instance.BazaarList.Count];
+            BazaarItemLink[] billist = new BazaarItemLink[ServerManager.Instance.BazaarList.Count + 100];
             ServerManager.Instance.BazaarList.CopyTo(billist);
             foreach (BazaarItemLink bz in billist)
             {
@@ -937,7 +937,7 @@ namespace OpenNos.GameObject
         public string GenerateRCSList(CSListnPacket packet)
         {
             string list = string.Empty;
-            BazaarItemLink[] billist = new BazaarItemLink[ServerManager.Instance.BazaarList.Count];
+            BazaarItemLink[] billist = new BazaarItemLink[ServerManager.Instance.BazaarList.Count + 100];
             ServerManager.Instance.BazaarList.CopyTo(billist);
             foreach (BazaarItemLink bz in billist.Where(s => s.BazaarItem.SellerId == CharacterId).Skip(packet.Index * 50).Take(50))
             {
