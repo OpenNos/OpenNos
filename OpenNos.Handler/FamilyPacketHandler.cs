@@ -449,6 +449,10 @@ namespace OpenNos.Handler
                 }
             }
         }
+        public void FamilyRank(FrankCtsPacket frank)
+        {
+            Session.SendPacket(Session.Character.GenerateFrank(frank.Type));
+        }
 
         [Packet("%Familykick")]
         [Packet("%Rejetdefamille")]
