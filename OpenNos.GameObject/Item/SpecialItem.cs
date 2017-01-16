@@ -86,6 +86,7 @@ namespace OpenNos.GameObject
                             session.Character.Buff.Add(buff4);
                             break;
                     }
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
                 
                 // Divorce letter
