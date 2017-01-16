@@ -13,6 +13,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
             Name = "Bear Spirit";
             Duration = 3000;
             Id = 155;
+            _level = Level;
             DirectBuffs.Add(new BCardEntry(BCard.Type.HP, BCard.SubType.IncreasePercentage, 30, 0, false));
             DirectBuffs.Add(new BCardEntry(BCard.Type.MP, BCard.SubType.IncreasePercentage, 30, 0, false));
         }
