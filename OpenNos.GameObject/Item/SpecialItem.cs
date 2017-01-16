@@ -71,18 +71,22 @@ namespace OpenNos.GameObject
                     {
                         case 1:
                             IndicatorBase buff1 = new Buff.Indicators.Item.AttackPotion(session.Character.Level);
+                            session.CurrentMap?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff1);
                             break;
                         case 2:
                             IndicatorBase buff2 = new Buff.Indicators.Item.DefensePotion(session.Character.Level);
+                            session.CurrentMap?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff2);
                             break;
                         case 3:
                             IndicatorBase buff3 = new Buff.Indicators.Item.EnergyPotion(session.Character.Level);
+                            session.CurrentMap?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff3);
                             break;
                         case 4:
                             IndicatorBase buff4 = new Buff.Indicators.Item.ExperiencePotion(session.Character.Level);
+                            session.CurrentMap?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff4);
                             break;
                     }
