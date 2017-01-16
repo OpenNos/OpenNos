@@ -649,13 +649,13 @@ namespace OpenNos.GameObject
             switch (type)
             {
                 case 0:
-                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s=>s.FamilyExperience).ToList();//use month instead log
+                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyExperience).ToList();
                     break;
                 case 1:
-                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyCharacters.Sum(c=>c.Character.Reput)).ToList();//use month instead log
+                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyExperience).ToList();//use month instead log
                     break;
                 case 2:
-                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyExperience).ToList();
+                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyCharacters.Sum(c => c.Character.Reput)).ToList();//use month instead log
                     break;
                 case 3:
                     familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyCharacters.Sum(c => c.Character.Reput)).ToList();
@@ -665,10 +665,11 @@ namespace OpenNos.GameObject
             foreach (Family fam in familyordered.Take(100))
             {
                 i++;
-                switch(type)
+                long sum = 0;
+                switch (type)
                 {
                     case 0:
-                        if(savecount != fam.FamilyExperience)
+                        if (savecount != fam.FamilyExperience)
                         {
                             rank++;
                         }
@@ -679,31 +680,8 @@ namespace OpenNos.GameObject
                         savecount = fam.FamilyExperience;
                         packet += $" {rank}|{fam.Name}|{fam.FamilyLevel}|{fam.FamilyExperience}";//replace by month log
                         break;
+
                     case 1:
-                        if (savecount != fam.FamilyExperience)
-                        {
-                            rank++;
-                        }
-                        else
-                        {
-                            rank = i;
-                        }
-                        savecount = fam.FamilyCharacters.Sum(c => c.Character.Reput);//replace by month log
-                        packet += $" {rank}|{fam.Name}|{fam.FamilyLevel}|{savecount}";
-                        break;
-                    case 2:
-                        if (savecount != fam.FamilyExperience)
-                        {
-                            rank++;
-                        }
-                        else
-                        {
-                            rank = i;
-                        }
-                        savecount = fam.FamilyCharacters.Sum(c => c.Character.Reput);
-                        packet += $" {rank}|{fam.Name}|{fam.FamilyLevel}|{savecount}";
-                        break;
-                    case 3:
                         if (savecount != fam.FamilyExperience)
                         {
                             rank++;
@@ -715,6 +693,34 @@ namespace OpenNos.GameObject
                         savecount = fam.FamilyExperience;
                         packet += $" {rank}|{fam.Name}|{fam.FamilyLevel}|{fam.FamilyExperience}";
                         break;
+
+                    case 2:
+                        sum = fam.FamilyCharacters.Sum(c => c.Character.Reput);
+                        if (savecount != sum)
+                        {
+                            rank++;
+                        }
+                        else
+                        {
+                            rank = i;
+                        }
+                        savecount = sum;//replace by month log
+                        packet += $" {rank}|{fam.Name}|{fam.FamilyLevel}|{savecount}";
+                        break;
+                    case 3:
+                        sum = fam.FamilyCharacters.Sum(c => c.Character.Reput);
+                        if (savecount != sum)
+                        {
+                            rank++;
+                        }
+                        else
+                        {
+                            rank = i;
+                        }
+                        savecount = sum;
+                        packet += $" {rank}|{fam.Name}|{fam.FamilyLevel}|{savecount}";
+                        break;
+
                 }
             }
             return packet;
@@ -4080,7 +4086,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            Session.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name),10));
+                            Session.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
                         }
                         Session.SendPacket(GeneratePairy());
                     }
