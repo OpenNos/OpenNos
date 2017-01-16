@@ -62,6 +62,8 @@ namespace OpenNos.DAL.EF
 
         public bool MemberCanGetHistory { get; set; }
 
+        public GenderType FamilyHeadGender { get; set; }
+
         public FamilyAuthorityType MemberAuthorityType { get; set; }
 
 
