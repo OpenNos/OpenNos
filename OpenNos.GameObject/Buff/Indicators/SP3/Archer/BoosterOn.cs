@@ -13,6 +13,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Archer
             Name = "Booster On";
             Duration = 50;
             Id = 136;
+            _level = Level;
             DirectBuffs.Add(new BCardEntry(BCard.Type.Speed, BCard.SubType.Increase, 10, 0, false));
         }
 

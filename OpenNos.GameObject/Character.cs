@@ -3931,28 +3931,28 @@ namespace OpenNos.GameObject
                 {
                     if (isMonsterOwner)
                     {
-                        LevelXp += GetXP(monsterinfo, grp);
+                        LevelXp += (int)(GetXP(monsterinfo, grp) * (1 + (Buff.Get(GameObject.Buff.BCard.Type.Experience, SubType.IncreasePercentage, false)[0] / 100D)));
                     }
                     else
                     {
-                        LevelXp += GetXP(monsterinfo, grp) / 3;
+                        LevelXp += (int)((GetXP(monsterinfo, grp) / 3) * (1 + (Buff.Get(GameObject.Buff.BCard.Type.Experience, SubType.IncreasePercentage, false)[0] / 100D)));
                     }
                 }
                 if (Class == 0 && JobLevel < 20 || Class != 0 && JobLevel < ServerManager.MaxJobLevel)
                 {
                     if (specialist != null && UseSp && specialist.SpLevel < ServerManager.MaxSPLevel && specialist.SpLevel > 19)
                     {
-                        JobLevelXp += GetJXP(monsterinfo, grp) / 2;
+                        JobLevelXp += (int)((GetJXP(monsterinfo, grp) / 2) * (1 + (Buff.Get(GameObject.Buff.BCard.Type.JobExperience, SubType.IncreasePercentage, false)[0] / 100D)));
                     }
                     else
                     {
-                        JobLevelXp += GetJXP(monsterinfo, grp);
+                        JobLevelXp += (int)(GetJXP(monsterinfo, grp) * (1 + (Buff.Get(GameObject.Buff.BCard.Type.JobExperience, SubType.IncreasePercentage, false)[0] / 100D)));
                     }
                 }
                 if (specialist != null && UseSp && specialist.SpLevel < ServerManager.MaxSPLevel)
                 {
                     int multiplier = specialist.SpLevel < 10 ? 10 : specialist.SpLevel < 19 ? 5 : 1;
-                    specialist.XP += GetJXP(monsterinfo, grp) * multiplier;
+                    specialist.XP += (int)(GetJXP(monsterinfo, grp) * (multiplier + (Buff.Get(GameObject.Buff.BCard.Type.SPExperience, SubType.IncreasePercentage, false)[0]/100D)));
                 }
                 double t = XPLoad();
                 while (LevelXp >= t)

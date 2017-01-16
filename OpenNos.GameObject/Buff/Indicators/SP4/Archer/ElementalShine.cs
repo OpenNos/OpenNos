@@ -13,6 +13,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
             Name = "Elemental Shine";
             Duration = 3000;
             Id = 152;
+            _level = Level;
             DirectBuffs.Add(new BCardEntry(BCard.Type.Resistance, BCard.SubType.IncreaseLight, 30, 0, false));
         }
     }

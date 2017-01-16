@@ -1029,6 +1029,7 @@ namespace OpenNos.Handler
                             target.SendPacket(target.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), (short)(target.Character.Level * 50)), 11));
                         }
                         target.SendPacket(target.Character.GenerateFd());
+                        Session.Character.Buff.Clear();
                         target.CurrentMap?.Broadcast(target, target.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         target.CurrentMap?.Broadcast(target, target.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         target.SendPacket(target.Character.GenerateSay(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 11));

@@ -91,6 +91,10 @@
     <Compile Include="Buff\BCard\Type.cs" />
     <Compile Include="Buff\BuffContainer.cs" />
     <Compile Include="Buff\Indicators\IndicatorBase.cs" />
+    <Compile Include="Buff\Indicators\Item\AttackPotion.cs" />
+    <Compile Include="Buff\Indicators\Item\DefensePotion.cs" />
+    <Compile Include="Buff\Indicators\Item\EnergyPotion.cs" />
+    <Compile Include="Buff\Indicators\Item\ExperiencePotion.cs" />
     <Compile Include="Buff\Indicators\SP1\Archer\HawkEye.cs" />
     <Compile Include="Buff\Indicators\SP1\Archer\WindWalker.cs" />
     <Compile Include="Buff\Indicators\SP1\Magician\FireBlessing.cs" />
