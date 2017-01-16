@@ -49,8 +49,6 @@ namespace OpenNos.DAL.EF
         [MaxLength(255)]
         public string Name { get; set; }
 
-        public byte Size { get; set; }
-
         #endregion
     }
 }
