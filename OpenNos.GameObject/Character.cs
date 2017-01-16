@@ -4846,19 +4846,6 @@ namespace OpenNos.GameObject
             return specialist != null ? CharacterHelper.SPXPData[specialist.SpLevel - 1] : 0;
         }
 
-        public void Update()
-        {
-            try
-            {
-                CharacterDTO characterToUpdate = this;
-                DAOFactory.CharacterDAO.InsertOrUpdate(ref characterToUpdate);
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.Error("Character update exception:", ex);
-            }
-        }
-
         public bool WeaponLoaded(CharacterSkill ski)
         {
             if (ski != null)
