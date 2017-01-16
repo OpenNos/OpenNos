@@ -31,7 +31,7 @@ namespace OpenNos.Test
             _sessionManager.AddSession(client);
 
             long id = ServerManager.RandomNumber(0, 999999);
-            AccountDTO account = new AccountDTO()
+            AccountDTO account = new AccountDTO
             {
                 AccountId = id,
                 Authority = AuthorityType.Admin,

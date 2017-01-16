@@ -34,8 +34,7 @@ namespace OpenNos.GameObject
 
         public bool ShutdownStop;
 
-        private static readonly ThreadLocal<Random> random =
-                new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
+        private static readonly ThreadLocal<Random> random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
 
         private static ServerManager _instance;
         private static readonly List<Item> _items = new List<Item>();
@@ -84,6 +83,11 @@ namespace OpenNos.GameObject
         public static List<MailDTO> Mails { get; private set; }
 
         public static int XPRate { get; set; }
+
+        public static byte MaxLevel { get; set; }
+        public static byte MaxJobLevel { get; set; }
+        public static byte MaxSPLevel { get; set; }
+        public static byte MaxHeroLevel { get; set; }
 
         public int ChannelId { get; set; }
 
@@ -202,7 +206,7 @@ namespace OpenNos.GameObject
                 }
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
-                Session.SendPackets(Session.Character.GenerateVb());
+                Session.SendPackets(Character.GenerateVb());
 
                 Session.SendPacket("eff_ob -1 -1 0 4269");
                 Session.SendPacket(Session.Character.GenerateDialog($"#revival^2 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE_PVP")}"));
@@ -238,7 +242,7 @@ namespace OpenNos.GameObject
                 }
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
-                Session.SendPackets(Session.Character.GenerateVb());
+                Session.SendPackets(Character.GenerateVb());
                 if (Session.Character.Level > 20)
                 {
                     Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
@@ -495,6 +499,10 @@ namespace OpenNos.GameObject
             GoldDropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["GoldRateDrop"]);
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
             FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
+            MaxLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxLevel"]);
+            MaxJobLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxJobLevel"]);
+            MaxSPLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxSPLevel"]);
+            MaxHeroLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxHeroLevel"]);
 
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
 
