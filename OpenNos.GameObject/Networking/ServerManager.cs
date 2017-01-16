@@ -204,6 +204,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.RemoveVehicle();
                 }
+                Session.Character.Buff.Clear();
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPackets(Character.GenerateVb());
@@ -240,6 +241,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.RemoveVehicle();
                 }
+                Session.Character.Buff.Clear();
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPackets(Character.GenerateVb());
@@ -467,9 +469,8 @@ namespace OpenNos.GameObject
                         grp.LeaveGroup(session);
                         foreach (ClientSession groupSession in grp.Characters)
                         {
-                            ClientSession sess = GetSessionByCharacterId(groupSession.Character.CharacterId);
-                            sess.SendPacket(sess.Character.GeneratePinit());
-                            sess.SendPacket(sess.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
+                            groupSession.SendPacket(groupSession.Character.GeneratePinit());
+                            groupSession.SendPacket(groupSession.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
                         session.SendPacket("pinit 0");
                         Broadcast(session.Character.GeneratePidx(true));

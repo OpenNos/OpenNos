@@ -19,6 +19,9 @@ namespace OpenNos.GameObject.Buff.BCard
         MP,
         Speed,
         Effect,
-        Cooldown
+        Cooldown,
+        Experience,
+        JobExperience,
+        SPExperience
     }
 }

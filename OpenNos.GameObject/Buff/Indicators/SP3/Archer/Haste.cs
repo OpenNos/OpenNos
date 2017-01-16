@@ -13,6 +13,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Archer
             Name = "Haste";
             Duration = 1200;
             Id = 29;
+            _level = Level;
             DirectBuffs.Add(new BCardEntry(BCard.Type.Speed, BCard.SubType.Increase, 2, 0, false));
         }
     }

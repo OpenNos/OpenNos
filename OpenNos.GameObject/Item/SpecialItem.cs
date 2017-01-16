@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Buff.Indicators;
 using System;
 using System.Linq;
 
@@ -64,7 +65,30 @@ namespace OpenNos.GameObject
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     session.SendPacket(session.Character.GenerateSpPoint());
                     break;
-
+                //Atk/Def/HP/Exp potions
+                case 6600:
+                    switch (EffectValue)
+                    {
+                        case 1:
+                            IndicatorBase buff1 = new Buff.Indicators.Item.AttackPotion(session.Character.Level);
+                            session.Character.Buff.Add(buff1);
+                            break;
+                        case 2:
+                            IndicatorBase buff2 = new Buff.Indicators.Item.DefensePotion(session.Character.Level);
+                            session.Character.Buff.Add(buff2);
+                            break;
+                        case 3:
+                            IndicatorBase buff3 = new Buff.Indicators.Item.EnergyPotion(session.Character.Level);
+                            session.Character.Buff.Add(buff3);
+                            break;
+                        case 4:
+                            IndicatorBase buff4 = new Buff.Indicators.Item.ExperiencePotion(session.Character.Level);
+                            session.Character.Buff.Add(buff4);
+                            break;
+                    }
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    break;
+                
                 // Divorce letter
                 case 6969: // this is imaginary number I = √(-1)
                     break;

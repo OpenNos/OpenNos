@@ -28,12 +28,13 @@ namespace OpenNos.GameObject.Buff.Indicators
             }
             else
             {
-                session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.{Duration} {session.Character.Level}");
+                session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.{Duration} {_level}");
                 session.SendPacket(session.Character.GenerateSay($"You are under the effect {Name}.", 20));
             }
             if (DirectBuffs.Any(s => s.Type == BCard.Type.Speed))
             {
                 session.Character.LastSpeedChange = DateTime.Now;
+                session.SendPacket(session.Character.GenerateCond());
             }
             if(Delay != -1)
             {
@@ -46,6 +47,7 @@ namespace OpenNos.GameObject.Buff.Indicators
                    if (!Disabled && session != null && session.HasSelectedCharacter)
                    {
                        session.Character.LastSpeedChange = DateTime.Now;
+                       session.SendPacket(session.Character.GenerateCond());
                    }
                }
            });
@@ -68,13 +70,14 @@ namespace OpenNos.GameObject.Buff.Indicators
                 }
                 else
                 {
-                    session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.0 {session.Character.Level}");
+                    session.SendPacket($"bf 1 {session.Character.CharacterId} 0.{Id}.0 {_level}");
                     session.SendPacket(session.Character.GenerateSay($"You are no longer under the effect {Name}.", 20));
                 }
                 Disabled = true;
                 if (DirectBuffs.Concat(DelayedBuffs).Any(s => s.Type == BCard.Type.Speed))
                 {
                     session.Character.LastSpeedChange = DateTime.Now;
+                    session.SendPacket(session.Character.GenerateCond());
                 }
             }
         }

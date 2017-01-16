@@ -13,6 +13,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Magician
             Name = "Fire Blessing";
             Duration = 3000;
             Id = 67;
+            _level = Level;
             DirectBuffs.Add(new BCardEntry(BCard.Type.Element, BCard.SubType.IncreaseFire, Level * 6, 0, false));
             DirectBuffs.Add(new BCardEntry(BCard.Type.Resistance, BCard.SubType.IncreaseFire, 25, 0, false));
         }

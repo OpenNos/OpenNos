@@ -2821,6 +2821,30 @@ namespace OpenNos.Import.Console
                             case ItemType.Special:
                                 switch (item.VNum)
                                 {
+                                    case 1246:
+                                    case 9020:
+                                        item.Effect = 6600;
+                                        item.EffectValue = 1;
+                                        break;
+
+                                    case 1247:
+                                    case 9021:
+                                        item.Effect = 6600;
+                                        item.EffectValue = 2;
+                                        break;
+
+                                    case 1248:
+                                    case 9022:
+                                        item.Effect = 6600;
+                                        item.EffectValue = 3;
+                                        break;
+
+                                    case 1249:
+                                    case 9023:
+                                        item.Effect = 6600;
+                                        item.EffectValue = 4;
+                                        break;
+
                                     case 1272:
                                     case 1858:
                                     case 9047:
