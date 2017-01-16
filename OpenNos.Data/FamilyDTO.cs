@@ -40,6 +40,8 @@ namespace OpenNos.Data
 
         public FamilyAuthorityType ManagerAuthorityType { get; set; }
 
+        public GenderType FamilyHeadGender { get; set; }
+
         public bool ManagerCanGetHistory { get; set; }
 
         public bool MemberCanGetHistory { get; set; }
