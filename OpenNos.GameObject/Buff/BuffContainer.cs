@@ -18,7 +18,9 @@ namespace OpenNos.GameObject.Buff
 
         public void Clear()
         {
-            foreach (IndicatorBase i in Indicators.Where(s => !s.StaticBuff).ToList())
+            IndicatorBase[] items = new IndicatorBase[Indicators.Count];
+            Indicators.CopyTo(items);
+            foreach (IndicatorBase i in items.Where(s => !s.StaticBuff).ToList())
             {
                 i.Disable(Session);
             }
@@ -30,7 +32,9 @@ namespace OpenNos.GameObject.Buff
             {
                 lock (Indicators)
                 {
-                    foreach (IndicatorBase i in Indicators.Where(s => !s.BadBuff && s._buffLevel < level).ToList())
+                    IndicatorBase[] items = new IndicatorBase[Indicators.Count];
+                    Indicators.CopyTo(items);
+                    foreach (IndicatorBase i in items.Where(s => !s.BadBuff && s._buffLevel < level).ToList())
                     {
                         i.Disable(Session);
                     }
@@ -40,7 +44,9 @@ namespace OpenNos.GameObject.Buff
             {
                 lock (Indicators)
                 {
-                    foreach (IndicatorBase i in Indicators.Where(s => s.BadBuff && s._buffLevel < level).ToList())
+                    IndicatorBase[] items = new IndicatorBase[Indicators.Count];
+                    Indicators.CopyTo(items);
+                    foreach (IndicatorBase i in items.Where(s => s.BadBuff && s._buffLevel < level).ToList())
                     {
                         i.Disable(Session);
                     }
@@ -52,7 +58,10 @@ namespace OpenNos.GameObject.Buff
         {
             lock (Indicators)
             {
-                foreach (IndicatorBase i in Indicators.Where(s => s.Id.Equals(indicator.Id) && !s.Disabled))
+                IndicatorBase[] items = new IndicatorBase[Indicators.Count];
+                Indicators.CopyTo(items);
+
+                foreach (IndicatorBase i in items.Where(s => s.Id.Equals(indicator.Id) && !s.Disabled))
                 {
                     i.Disable(Session);
                 }
@@ -61,14 +70,16 @@ namespace OpenNos.GameObject.Buff
             indicator.Enable(Session);
         }
 
-        public int[] Get(BCard.Type type, BCard.SubType subType, bool pvp, bool affectingOpposite=false)
+        public int[] Get(BCard.Type type, BCard.SubType subType, bool pvp, bool affectingOpposite = false)
         {
             int value1 = 0;
             int value2 = 0;
             List<string> appliedBuffs = new List<string>();
             lock (Indicators)
             {
-                foreach (IndicatorBase buff in Indicators.Where(s => s.Start.AddMilliseconds(s.Duration * 100) > DateTime.Now && !s.Disabled))
+                IndicatorBase[] items = new IndicatorBase[Indicators.Count];
+                Indicators.CopyTo(items);
+                foreach (IndicatorBase buff in items.Where(s => s.Start.AddMilliseconds(s.Duration * 100) > DateTime.Now && !s.Disabled))
                 {
                     List<BCardEntry> tmp = buff.DirectBuffs;
                     if (buff.Delay != -1 && buff.Start.AddMilliseconds(buff.Delay * 100) < DateTime.Now)

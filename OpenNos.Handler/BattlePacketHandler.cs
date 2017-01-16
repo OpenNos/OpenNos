@@ -213,23 +213,23 @@ namespace OpenNos.Handler
                         switch (ski.Skill.Effect)
                         {
                             case 3409:
-                                IndicatorBase triplecharging = new GameObject.Buff.Indicators.SP3.Swordsman.FirstBlessing(target.Character.Level);
+                                IndicatorBase triplecharging = new GameObject.Buff.Indicators.SP3.Swordsman.FirstBlessing(Session.Character.Level);
                                 target.Character.Buff.Add(triplecharging);
                                 break;
                             case 3411:
-                                IndicatorBase shiningeffect = new GameObject.Buff.Indicators.SP3.Swordsman.ShiningEffect(target.Character.Level);
+                                IndicatorBase shiningeffect = new GameObject.Buff.Indicators.SP3.Swordsman.ShiningEffect(Session.Character.Level);
                                 target.Character.Buff.Add(shiningeffect);
                                 break;
-                            case 3403:
-                                IndicatorBase hawkeye = new GameObject.Buff.Indicators.SP1.Archer.HawkEye(target.Character.Level);
+                            case 4203:
+                                IndicatorBase hawkeye = new GameObject.Buff.Indicators.SP1.Archer.HawkEye(Session.Character.Level);
                                 target.Character.Buff.Add(hawkeye);
                                 break;
-                            case 3407:
-                                IndicatorBase windwalker = new GameObject.Buff.Indicators.SP1.Archer.WindWalker(target.Character.Level);
+                            case 4207:
+                                IndicatorBase windwalker = new GameObject.Buff.Indicators.SP1.Archer.WindWalker(Session.Character.Level);
                                 target.Character.Buff.Add(windwalker);
                                 break;
                             case 4403:
-                                IndicatorBase healing = new GameObject.Buff.Indicators.SP2.Magician.Healing(target.Character.Level);
+                                IndicatorBase healing = new GameObject.Buff.Indicators.SP2.Magician.Healing(Session.Character.Level);
                                 target.Character.Buff.Add(healing);
                                 break;
                         }
