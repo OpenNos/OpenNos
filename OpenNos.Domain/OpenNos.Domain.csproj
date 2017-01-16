@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FamilyAuthorityType.cs" />
     <Compile Include="MedalType.cs" />
     <Compile Include="BCardType.cs" />
     <Compile Include="BuyShopType.cs" />
