@@ -3985,6 +3985,13 @@ namespace OpenNos.GameObject
                     FamilyDTO fam = Family;
                     fam.FamilyExperience += FXP;
                     famchar.Experience += FXP;
+                    //family log xp
+                    if (CharacterHelper.LoadFamilyXPData(Family.FamilyLevel) <= fam.FamilyExperience)
+                    {
+                        fam.FamilyExperience -= CharacterHelper.LoadFamilyXPData(Family.FamilyLevel);
+                        fam.FamilyLevel++;
+                        //FamilySendMessage and log when levelup
+                    }
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref famchar);
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                     ServerManager.Instance.FamilyRefresh();

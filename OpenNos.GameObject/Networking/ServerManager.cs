@@ -107,7 +107,7 @@ namespace OpenNos.GameObject
             }
             lock (FamilyList)
             {
-                FamilyList = new List<Family>();
+                List<Family> tempList = new List<Family>();
                 foreach (FamilyDTO fam in DAOFactory.FamilyDAO.LoadAll())
                 {
                     Family fami = (Family)fam;
@@ -117,8 +117,9 @@ namespace OpenNos.GameObject
                         fami.FamilyCharacters.Add((FamilyCharacter)famchar);
                     }
                     fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
-                    FamilyList.Add(fami);
+                    tempList.Add(fami);
                 }
+                FamilyList = tempList;
             }
         }
 
