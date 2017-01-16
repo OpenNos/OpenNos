@@ -94,7 +94,7 @@ namespace OpenNos.Handler
                         Authority = Session.Character.CharacterId == c.Character.CharacterId ? FamilyAuthority.Head : FamilyAuthority.Assistant,
                         FamilyId = family.FamilyId,
                         JoinDate = DateTime.Now,
-                        Rank = FamilyMemberRank.Member,
+                        Rank = 0,
                     };
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
                 }
@@ -245,6 +245,60 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("%Today")]
+        [Packet("%Aujourd'hui")]
+        public void TodayMessage(string packet)
+        {
+            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
+            {
+                string msg = string.Empty;
+                int i = 0;
+                foreach (string str in packet.Split(' '))
+                {
+                    if (i > 1)
+                    {
+                        msg += str + " ";
+                    }
+                    i++;
+                }
+                if (true)//TODO check last log of family message change
+                {
+                    Session.Character.FamilyCharacter.DailyMessage = msg;
+                    FamilyCharacterDTO fchar = Session.Character.FamilyCharacter;
+                    DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref fchar);
+                    ServerManager.Instance.FamilyRefresh();
+                    Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CAN_T_CHANGE_MESSAGE")));
+                }
+            }
+        }
+        [Packet("%Title")]
+        [Packet("%Titre")]
+        public void TitleChange(string packet)
+        {
+            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null && Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+            {
+                string[] packetsplit = packet.Split(' ');
+                byte rank = 0;
+                if (packetsplit.Length != 4)
+                {
+                    return;
+                }
+
+                FamilyCharacterDTO fchar = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Character.Name == packetsplit[2]);
+                if (fchar != null && byte.TryParse(packetsplit[3], out rank))
+                {
+                    fchar.Rank = (FamilyMemberRank)rank;
+                    DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref fchar);
+                    ServerManager.Instance.FamilyRefresh();
+                    Session.SendPacket(Session.Character.GenerateFamilyMember());
+                    Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
+                }
+            }
+        }
         [Packet("%Notice")]
         [Packet("%Avertissement")]
         public void FamilyMessage(string packet)
@@ -296,6 +350,10 @@ namespace OpenNos.Handler
                     int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateMsg($"<{Language.Instance.GetMessageFromKey("FAMILYCALL")}> {msg}", 0), ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
                 }
             }
+        }
+        public void FamilyChangeMessage(TodayPacket packet)
+        {
+            Session.SendPacket("today_stc");
         }
 
         [Packet(":")]
@@ -411,7 +469,7 @@ namespace OpenNos.Handler
                         Authority = FamilyAuthority.Member,
                         FamilyId = inviteSession.Character.Family.FamilyId,
                         JoinDate = DateTime.Now,
-                        Rank = FamilyMemberRank.Member,
+                        Rank = 0,
                     };
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
                     ServerManager.Instance.FamilyRefresh();
