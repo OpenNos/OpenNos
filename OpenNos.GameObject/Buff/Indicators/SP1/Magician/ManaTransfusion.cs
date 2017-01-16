@@ -13,6 +13,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Magician
             Name = "Mana Transfusion";
             Duration = 1800;
             Id = 370;
+            _level = Level;
             DirectBuffs.Add(new BCardEntry(BCard.Type.Damage, BCard.SubType.DecreasePercentage, 20, 0, false, true));
         }
     }

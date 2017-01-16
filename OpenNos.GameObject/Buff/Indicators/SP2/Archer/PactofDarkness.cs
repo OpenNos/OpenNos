@@ -13,6 +13,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Archer
             Name = "Pact of Darkness";
             Duration = 30;
             Id = 630;
+            _level = Level;
             DirectBuffs.Add(new BCardEntry(BCard.Type.Damage, BCard.SubType.IncreaseCriticalChance, 30, 0, false));
         }
     }

@@ -11,6 +11,7 @@
             DirectBuffs.Add(new BCardEntry(BCard.Type.Speed, BCard.SubType.Increase, 2, 0, false));
             DirectBuffs.Add(new BCardEntry(BCard.Type.Defense, BCard.SubType.Decrease, 200, 0, false));
 
+            _level = Level;
             DelayedBuffs.Add(new BCardEntry(BCard.Type.Speed, BCard.SubType.Increase, 4, 0, false));
             DelayedBuffs.Add(new BCardEntry(BCard.Type.Damage, BCard.SubType.IncreasePercentage, 20, 0, true));
             Delay = 400;
