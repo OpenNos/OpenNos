@@ -631,7 +631,7 @@ namespace OpenNos.GameObject
                 if (bzlink.Item.Item.Type == InventoryType.Equipment)
                     info = (bzlink.Item.Item.EquipmentSlot != EquipmentType.Sp ?
                         Session.Character.GenerateEInfo(bzlink.Item as WearableInstance) : bzlink.Item.Item.SpType == 0 && bzlink.Item.Item.ItemSubType == 4 ?
-                        Session.Character.GeneratePslInfo(bzlink.Item as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(bzlink.Item as SpecialistInstance, 0)).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
+                        Session.Character.GeneratePslInfo(bzlink.Item as SpecialistInstance) : Session.Character.GenerateSlInfo(bzlink.Item as SpecialistInstance, 0)).Replace(' ', '^').Replace("slinfo^", "").Replace("e_info^", "");
 
                 itembazar += $"{bzlink.BazaarItem.BazaarItemId}|{bzlink.BazaarItem.SellerId}|{bzlink.Owner}|{bzlink.Item.Item.VNum}|{bzlink.Item.Amount}|{(bzlink.BazaarItem.IsPackage ? 1 : 0)}|{bzlink.BazaarItem.Price}|{time}|2|0|{bzlink.Item.Rare}|{bzlink.Item.Upgrade}|{info} ";
             }
@@ -1863,25 +1863,20 @@ namespace OpenNos.GameObject
         {
             #region Definitions
 
-            if (target == null)
-            {
-                return 0;
-            }
-            if (Inventory == null)
+            if (target == null || Inventory == null)
             {
                 return 0;
             }
 
             // int miss_chance = 20;
             int monsterMorale = target.Level + target.Buff.Get(GameObject.Buff.BCard.Type.Morale, SubType.Increase, true)[0];
-            int monsterDefence = target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.Increase, true)[0]
-                - target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.Decrease, true)[0] + monsterMorale;
+            int monsterDefence = target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.Increase, true)[0] - target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.Decrease, true)[0] + monsterMorale;
 
             int monsterDodge = target.Buff.Get(GameObject.Buff.BCard.Type.Dodge, SubType.Increase, true)[0] + monsterMorale;
             short monsterDefLevel = (short)target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.IncreaseLevel, true)[0];
 
             int morale = Level + Buff.Get(GameObject.Buff.BCard.Type.Morale, SubType.Increase, true)[0];
-            short mainUpgrade = (short)Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseLevel, true)[0]; ;
+            short mainUpgrade = (short)Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseLevel, true)[0];
             int mainCritChance = 0;
             int mainCritHit = 0;
             int mainMinDmg = 0;
@@ -2798,10 +2793,13 @@ namespace OpenNos.GameObject
             string str = "gmbr 0";
             try
             {
-                foreach (FamilyCharacter TargetCharacter in Session.Character.Family?.FamilyCharacters)
+                if (Session.Character.Family?.FamilyCharacters != null)
                 {
-                    bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", TargetCharacter.Character.CharacterId).Result;
-                    str += $" {TargetCharacter.Character.CharacterId}|{Family.FamilyId}|{TargetCharacter.Character.Name}|{TargetCharacter.Character.Level}|{(byte)TargetCharacter.Character.Class}|{(byte)TargetCharacter.Authority}|{(byte)TargetCharacter.Rank}|{(isOnline ? 1 : 0)}|{TargetCharacter.Character.HeroLevel}";
+                    foreach (FamilyCharacter TargetCharacter in Session.Character.Family?.FamilyCharacters)
+                    {
+                        bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", TargetCharacter.Character.CharacterId).Result;
+                        str += $" {TargetCharacter.Character.CharacterId}|{Family.FamilyId}|{TargetCharacter.Character.Name}|{TargetCharacter.Character.Level}|{(byte)TargetCharacter.Character.Class}|{(byte)TargetCharacter.Authority}|{(byte)TargetCharacter.Rank}|{(isOnline ? 1 : 0)}|{TargetCharacter.Character.HeroLevel}";
+                    }
                 }
             }
             catch (Exception ex)
@@ -2815,9 +2813,12 @@ namespace OpenNos.GameObject
             string str = "gmsg";
             try
             {
-                foreach (FamilyCharacter TargetCharacter in Session.Character.Family?.FamilyCharacters)
+                if (Session.Character.Family?.FamilyCharacters != null)
                 {
-                    str += $" {TargetCharacter.CharacterId}|{TargetCharacter.DailyMessage}";
+                    foreach (FamilyCharacter TargetCharacter in Session.Character.Family?.FamilyCharacters)
+                    {
+                        str += $" {TargetCharacter.CharacterId}|{TargetCharacter.DailyMessage}";
+                    }
                 }
             }
             catch (Exception ex)
@@ -2832,9 +2833,12 @@ namespace OpenNos.GameObject
             string str = "gexp";
             try
             {
-                foreach (FamilyCharacter TargetCharacter in Session.Character.Family?.FamilyCharacters)
+                if (Session.Character.Family?.FamilyCharacters != null)
                 {
-                    str += $" {TargetCharacter.CharacterId}|{TargetCharacter.Experience}";
+                    foreach (FamilyCharacter TargetCharacter in Session.Character.Family?.FamilyCharacters)
+                    {
+                        str += $" {TargetCharacter.CharacterId}|{TargetCharacter.Experience}";
+                    }
                 }
             }
             catch (Exception ex)
@@ -2891,11 +2895,7 @@ namespace OpenNos.GameObject
 
         public string GenerateGidx()
         {
-            if (Family != null)
-            {
-                return $"gidx 1 {CharacterId} {Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(Family.FamilyCharacters.FirstOrDefault(s => s.CharacterId == CharacterId).Authority.ToString().ToUpper())}) {Family.FamilyLevel}";
-            }
-            return $"gidx 1 {CharacterId} -1 - 0";
+            return Family != null ? $"gidx 1 {CharacterId} {Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(Family.FamilyCharacters.FirstOrDefault(s => s.CharacterId == CharacterId)?.Authority.ToString().ToUpper())}) {Family.FamilyLevel}" : $"gidx 1 {CharacterId} -1 - 0";
         }
 
         public string GenerateGold()
@@ -3267,7 +3267,7 @@ namespace OpenNos.GameObject
         public string GenerateGExp()
         {
             string str = "gexp";
-            foreach (FamilyCharacterDTO familyCharacter in Family.FamilyCharacters)
+            foreach (FamilyCharacter familyCharacter in Family.FamilyCharacters)
             {
                 str += $" {familyCharacter.CharacterId}|{familyCharacter.Experience}";
             }
@@ -3378,7 +3378,7 @@ namespace OpenNos.GameObject
             return $"post 5 {type} {MailList.First(s => s.Value == mailDTO).Key} 0 0 {(byte)mailDTO.SenderClass} {(byte)mailDTO.SenderGender} {mailDTO.SenderMorphId} {(byte)mailDTO.SenderHairStyle} {(byte)mailDTO.SenderHairColor} {mailDTO.EqPacket} {sender.Name} {mailDTO.Title} {mailDTO.Message}";
         }
 
-        public string GeneratePslInfo(SpecialistInstance inventoryItem, int type)
+        public string GeneratePslInfo(SpecialistInstance inventoryItem)
         {
             // 1235.3 1237.4 1239.5 <= skills SkillVNum.Grade
             return $"pslinfo {inventoryItem.Item.VNum} {inventoryItem.Item.Element} {inventoryItem.Item.ElementRate} {inventoryItem.Item.LevelJobMinimum} {inventoryItem.Item.Speed} {inventoryItem.Item.FireResistance} {inventoryItem.Item.WaterResistance} {inventoryItem.Item.LightResistance} {inventoryItem.Item.DarkResistance} 0.0 0.0 0.0";
@@ -3572,15 +3572,19 @@ namespace OpenNos.GameObject
                         case InventoryType.Equipment:
                             if (inv.Item.EquipmentSlot == EquipmentType.Sp)
                             {
-                                var specialistInstance = inv as SpecialistInstance;
+                                SpecialistInstance specialistInstance = inv as SpecialistInstance;
                                 if (specialistInstance != null)
+                                {
                                     inv0 += $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
+                                }
                             }
                             else
                             {
-                                var wearableInstance = inv as WearableInstance;
+                                WearableInstance wearableInstance = inv as WearableInstance;
                                 if (wearableInstance != null)
+                                {
                                     inv0 += $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
+                                }
                             }
                             break;
 
@@ -3597,15 +3601,19 @@ namespace OpenNos.GameObject
                             break;
 
                         case InventoryType.Specialist:
-                            var specialist = inv as SpecialistInstance;
+                            SpecialistInstance specialist = inv as SpecialistInstance;
                             if (specialist != null)
+                            {
                                 inv6 += $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
+                            }
                             break;
 
                         case InventoryType.Costume:
-                            var costumeInstance = inv as WearableInstance;
+                            WearableInstance costumeInstance = inv as WearableInstance;
                             if (costumeInstance != null)
+                            {
                                 inv7 += $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
+                            }
                             break;
                     }
                 }
@@ -3872,7 +3880,7 @@ namespace OpenNos.GameObject
             return $"tp 1 {CharacterId} {MapX} {MapY} 0";
         }
 
-        public IEnumerable<string> GenerateVb()
+        public static IEnumerable<string> GenerateVb()
         {
             return new[] { "vb 340 0 0", "vb 339 0 0", "vb 472 0 0", "vb 471 0 0" };
         }
@@ -3884,7 +3892,7 @@ namespace OpenNos.GameObject
                 if (Family != null && FamilyCharacter != null)
                 {
                     FamilyCharacterDTO famchar = FamilyCharacter;
-                    FamilyDTO fam = (FamilyDTO)Family;
+                    FamilyDTO fam = Family;
                     fam.FamilyExperience += FXP;
                     famchar.Experience += FXP;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref famchar);
@@ -3919,7 +3927,7 @@ namespace OpenNos.GameObject
                         InventoryType.Wear);
                 }
 
-                if (Level < 120)//TODO configurable lvl
+                if (Level < ServerManager.MaxLevel)
                 {
                     if (isMonsterOwner)
                     {
@@ -3930,9 +3938,9 @@ namespace OpenNos.GameObject
                         LevelXp += GetXP(monsterinfo, grp) / 3;
                     }
                 }
-                if (Class == 0 && JobLevel < 20 || Class != 0 && JobLevel < 80)
+                if (Class == 0 && JobLevel < 20 || Class != 0 && JobLevel < ServerManager.MaxJobLevel)
                 {
-                    if (specialist != null && UseSp && specialist.SpLevel < 99 && specialist.SpLevel > 19)
+                    if (specialist != null && UseSp && specialist.SpLevel < ServerManager.MaxSPLevel && specialist.SpLevel > 19)
                     {
                         JobLevelXp += GetJXP(monsterinfo, grp) / 2;
                     }
@@ -3941,7 +3949,7 @@ namespace OpenNos.GameObject
                         JobLevelXp += GetJXP(monsterinfo, grp);
                     }
                 }
-                if (specialist != null && UseSp && specialist.SpLevel < 99)
+                if (specialist != null && UseSp && specialist.SpLevel < ServerManager.MaxSPLevel)
                 {
                     int multiplier = specialist.SpLevel < 10 ? 10 : specialist.SpLevel < 19 ? 5 : 1;
                     specialist.XP += GetJXP(monsterinfo, grp) * multiplier;
@@ -3952,9 +3960,9 @@ namespace OpenNos.GameObject
                     LevelXp -= (long)t;
                     Level++;
                     t = XPLoad();
-                    if (Level >= 120)//TODO configurable lvl
+                    if (Level >= ServerManager.MaxLevel)
                     {
-                        Level = 120;
+                        Level = ServerManager.MaxLevel;
                         LevelXp = 0;
                     }
                     Hp = (int)HPLoad();
@@ -3987,16 +3995,11 @@ namespace OpenNos.GameObject
                         if (fairy.ElementRate + fairy.Item.ElementRate == fairy.Item.MaxElementRate)
                         {
                             fairy.XP = 0;
-                            Session.SendPacket(
-                                GenerateMsg(
-                                    string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
+                            Session.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
                         }
                         else
                         {
-                            Session.SendPacket(
-                                GenerateMsg(
-                                    string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name),
-                                    10));
+                            Session.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name),10));
                         }
                         Session.SendPacket(GeneratePairy());
                     }
@@ -4013,9 +4016,9 @@ namespace OpenNos.GameObject
                         JobLevel = 20;
                         JobLevelXp = 0;
                     }
-                    else if (JobLevel >= 80)
+                    else if (JobLevel >= ServerManager.MaxJobLevel)
                     {
-                        JobLevel = 80;
+                        JobLevel = ServerManager.MaxJobLevel;
                         JobLevelXp = 0;
                     }
                     Hp = (int)HPLoad();
@@ -4038,9 +4041,9 @@ namespace OpenNos.GameObject
                         t = SPXPLoad();
                         Session.SendPacket(GenerateStat());
                         Session.SendPacket($"levelup {CharacterId}");
-                        if (specialist.SpLevel >= 99)
+                        if (specialist.SpLevel >= ServerManager.MaxSPLevel)
                         {
-                            specialist.SpLevel = 99;
+                            specialist.SpLevel = ServerManager.MaxSPLevel;
                             specialist.XP = 0;
                         }
                         LearnSPSkill();
