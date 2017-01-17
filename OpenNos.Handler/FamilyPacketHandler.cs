@@ -341,7 +341,7 @@ namespace OpenNos.Handler
                     }
                     i++;
                 }
-                bool islog = Session.Character.Family.FamilyLogs.Any(s=>s.FamilyLogType == FamilyLogType.DailyMessage && s.FamilyLogValue.StartsWith(Session.Character.Name) && s.CreationDate.AddDays(1) > DateTime.Now );
+                bool islog = Session.Character.Family.FamilyLogs.Any(s=>s.FamilyLogType == FamilyLogType.DailyMessage && s.FamilyLogData.StartsWith(Session.Character.Name) && s.Timestamp.AddDays(1) > DateTime.Now );
                 if(!islog)
                 {
                     Session.Character.FamilyCharacter.DailyMessage = msg;
