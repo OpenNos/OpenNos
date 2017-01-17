@@ -33,6 +33,7 @@ namespace OpenNos.GameObject
         #region Members
 
         public bool ShutdownStop;
+        public bool UpdateBazaar;
 
         private static readonly ThreadLocal<Random> random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
 
@@ -91,8 +92,9 @@ namespace OpenNos.GameObject
 
         public int ChannelId { get; set; }
 
-        public void FamilyRefresh()
+        public void FamilyRefresh(long FamilyId)
         {
+            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family, FamilyId.ToString(), null).Result;
             ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh");
         }
         public void BazaarRefresh()
@@ -125,13 +127,14 @@ namespace OpenNos.GameObject
 
         public void LoadBazaar()
         {
+            UpdateBazaar = false;
             if (BazaarList == null)
             {
                 BazaarList = new List<BazaarItemLink>();
             }
             lock (BazaarList)
             {
-                BazaarList = new List<BazaarItemLink>();
+                List<BazaarItemLink> tempList = new List<BazaarItemLink>(); ;
                 foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
                 {
                     BazaarItemLink item = new BazaarItemLink();
@@ -142,8 +145,9 @@ namespace OpenNos.GameObject
                         item.Owner = chara.Name;
                         item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
                     }
-                    BazaarList.Add(item);
+                    tempList.Add(item);
                 }
+                BazaarList = tempList;
             }
         }
 
@@ -1127,7 +1131,17 @@ namespace OpenNos.GameObject
         }
         private void OnBazaarRefresh(object sender, EventArgs e)
         {
-            LoadBazaar();
+            UpdateBazaar = true;
+
+            System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(RandomNumber(1000, 30000)))
+           .Subscribe(
+           o =>
+           {
+               if (UpdateBazaar)
+               {
+                   LoadBazaar();
+               }
+           });
         }
         private void OnSessionKicked(object sender, EventArgs e)
         {

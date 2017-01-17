@@ -12,6 +12,9 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
+using System;
+
 namespace OpenNos.Data
 {
     public class FamilyLogDTO : MappingBaseDTO
@@ -22,7 +25,11 @@ namespace OpenNos.Data
 
         public long FamilyLogId { get; set; }
 
-        public string Message { get; set; }
+        public FamilyLogType FamilyLogType { get; set; }
+
+        public string FamilyLogData { get; set; }
+
+        public DateTime Timestamp { get; set; }
 
         #endregion
     }

@@ -36,7 +36,6 @@ namespace OpenNos.DAL.EF
                     FamilyCharacter familyCharacter = context.FamilyCharacter.FirstOrDefault(c => c.CharacterId.Equals(character.CharacterId));
                     if (character != null && familyCharacter != null)
                     {
-                        character.FamilyCharacterId = null;
                         context.FamilyCharacter.Remove(familyCharacter);
                         context.SaveChanges();
                     }
