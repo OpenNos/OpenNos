@@ -592,6 +592,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à You already modify your message today. Retry tomorrow!.
+        /// </summary>
+        internal static string CANT_CHANGE_MESSAGE {
+            get {
+                return ResourceManager.GetString("CANT_CHANGE_MESSAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à You can&apos;t equip destroyed sp!.
         /// </summary>
         internal static string CANT_EQUIP_DESTROYED_SP {
@@ -637,7 +646,7 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à {0}({1} logged in!.
+        ///   Recherche une chaîne localisée semblable à {0}({1}) logged in!.
         /// </summary>
         internal static string CHARACTER_FAMILY_LOGGED_IN {
             get {
