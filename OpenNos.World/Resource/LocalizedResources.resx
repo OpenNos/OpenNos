@@ -1265,6 +1265,9 @@
     <value>Player not online!</value>
   </data>
   <data name="CHARACTER_FAMILY_LOGGED_IN" xml:space="preserve">
-    <value>{0}({1} logged in!</value>
+    <value>{0}({1}) logged in!</value>
+  </data>
+  <data name="CANT_CHANGE_MESSAGE" xml:space="preserve">
+    <value>You already modify your message today. Retry tomorrow!</value>
   </data>
 </root>
