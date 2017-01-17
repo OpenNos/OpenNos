@@ -15,6 +15,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using OpenNos.Domain;
+using OpenNos.Data;
 
 namespace OpenNos.DAL.EF
 {
@@ -28,6 +29,49 @@ namespace OpenNos.DAL.EF
             FamilyLogs = new HashSet<FamilyLog>();
         }
 
+        #endregion
+
+        #region Method
+        public void InsertFamilyLog(FamilyLogType logtype, string CharacterName, string CharacterName2, string RainBowFamily, string Message, byte Level, int Experience, int ItemVNum, byte Upgrade, int RaidType)
+        {
+            string value = string.Empty;
+            switch (logtype)
+            {
+                case FamilyLogType.DailyMessage:
+                    value = Message;
+                    break;
+                case FamilyLogType.FamilyXP:
+                    value = Experience.ToString();
+                    break;
+                case FamilyLogType.Level:
+                    value = Level.ToString();
+                    break;
+                case FamilyLogType.Raid:
+                    value = RaidType.ToString();
+                    break;
+                case FamilyLogType.Upgrade:
+                    value = $"{ItemVNum}|{Upgrade}";
+                    break;
+                case FamilyLogType.UserManage:
+                    value = CharacterName2;
+                    break;
+                case FamilyLogType.FamilyLevel:
+                    value = Level.ToString();
+                    break;
+                case FamilyLogType.FamilyManage:
+                    value = CharacterName;
+                    break;
+                case FamilyLogType.RainbowBattle:
+                    value = RainBowFamily;
+                    break;
+            }
+            FamilyLogDTO log = new FamilyLogDTO();
+            if(log!=null)
+            {
+               //insert
+               //refresh
+            }
+        }
         #endregion
 
         #region Properties
