@@ -127,9 +127,11 @@ namespace OpenNos.Handler
                     return;
                 }
                 ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(targetId);
-                switch (packetsplit[2])
+                byte auth;
+                byte.TryParse(packetsplit[2], out auth);
+                switch (auth)
                 {
-                    case "0":
+                    case 0:
                         if (targetSession == null)
                         {
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("PLAYER_OFFLINE")));
@@ -155,12 +157,11 @@ namespace OpenNos.Handler
                         chara = Session.Character.FamilyCharacter;
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
 
-                        ServerManager.Instance.FamilyRefresh();
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
                         targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
 
                         break;
-                    case "1":
+                    case 1:
                         if (targetSession == null)
                         {
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("PLAYER_OFFLINE")));
@@ -192,7 +193,7 @@ namespace OpenNos.Handler
                         targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
 
                         break;
-                    case "2":
+                    case 2:
                         if (targetSession == null)
                         {
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("PLAYER_OFFLINE")));
@@ -217,7 +218,7 @@ namespace OpenNos.Handler
                         ServerManager.Instance.FamilyRefresh();
                         targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
                         break;
-                    case "3":
+                    case 3:
                         if (targetSession == null)
                         {
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("PLAYER_OFFLINE")));
@@ -242,23 +243,25 @@ namespace OpenNos.Handler
                         targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
                         break;
                 }
+                Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChange, Session.Character.Name, targetSession.Character.Name, "", "", 0, 0, 0, auth, 0);
             }
         }
 
         public void ChangeAuthority(FauthPacket packet)
         {
-            if (Session.Character.Family == null)
+            if (Session.Character.Family == null || Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
             {
                 return;
             }
-         
+            
+            Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChange, "", "", "", "", 0, 0, 0, (byte)packet.MemberType, packet.AuthorityId);
             switch (packet.MemberType)
             {
                 case FamilyAuthority.Manager:
                     switch (packet.AuthorityId)
                     {
                         case 0:
-                            Session.Character.Family.ManagerCanInvite = packet.Value == 1?true:false;
+                            Session.Character.Family.ManagerCanInvite = packet.Value == 1 ? true : false;
                             break;
                         case 1:
                             Session.Character.Family.ManagerCanNotice = packet.Value == 1 ? true : false;
@@ -276,7 +279,7 @@ namespace OpenNos.Handler
                     break;
                 case FamilyAuthority.Member:
                     switch (packet.AuthorityId)
-                    {                      
+                    {
                         case 0:
                             Session.Character.Family.MemberCanGetHistory = packet.Value == 1 ? true : false;
                             break;
@@ -338,13 +341,16 @@ namespace OpenNos.Handler
                     }
                     i++;
                 }
-                if (true)//TODO check last log of family message change
+                bool islog = Session.Character.Family.FamilyLogs.Any(s=>s.FamilyLogType == FamilyLogType.DailyMessage && s.FamilyLogValue.StartsWith(Session.Character.Name) && s.CreationDate.AddDays(1) > DateTime.Now );
+                if(!islog)
                 {
                     Session.Character.FamilyCharacter.DailyMessage = msg;
                     FamilyCharacterDTO fchar = Session.Character.FamilyCharacter;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref fchar);
                     ServerManager.Instance.FamilyRefresh();
                     Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
+                    Session.Character.Family.InsertFamilyLog(FamilyLogType.DailyMessage, Session.Character.Name, "", "", msg, 0, 0, 0, 0, 0);
+
                 }
                 else
                 {
@@ -549,7 +555,7 @@ namespace OpenNos.Handler
                         Rank = 0,
                     };
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
-                    ServerManager.Instance.FamilyRefresh();
+                    Session.Character.Family.InsertFamilyLog(FamilyLogType.UserManage, Session.Character.Name, inviteSession.Character.Family.Name, "", "", 0, 0, 0, 0, 0);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
                     int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"), Session.Character.Name, inviteSession.Character.Family.Name), 0), ServerManager.Instance.ChannelId, MessageType.Family, inviteSession.Character.Family.FamilyId.ToString(), null).Result;
                     System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(5000))
@@ -577,9 +583,9 @@ o =>
                     {
                         if (Session.Character.FamilyCharacter != null && Session.Character.Family != null)
                         {
-                            
+
                             Session.SendPacket(Session.Character.GenerateGInfo());
-                            
+
                             Session.SendPacket(Session.Character.GenerateFamilyMember());
                             Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                             Session.SendPacket(Session.Character.GenerateFamilyMemberExp());

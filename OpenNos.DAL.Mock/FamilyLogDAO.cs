@@ -16,11 +16,17 @@ using OpenNos.Data;
 using OpenNos.DAL.Interface;
 using System;
 using System.Collections.Generic;
+using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL.Mock
 {
     public class FamilyLogDAO : BaseDAO<FamilyLogDTO>, IFamilyLogDAO
     {
+        public SaveResult InsertOrUpdate(ref FamilyLogDTO famlog)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<FamilyLogDTO> LoadByFamilyId(long familyId)
         {
             throw new NotImplementedException();

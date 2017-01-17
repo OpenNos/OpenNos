@@ -14,6 +14,7 @@
 
 
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
@@ -21,5 +22,7 @@ namespace OpenNos.DAL.Interface
     public interface IFamilyLogDAO : IMappingBaseDAO
     {
         IEnumerable<FamilyLogDTO> LoadByFamilyId(long familyId);
+        SaveResult InsertOrUpdate(ref FamilyLogDTO famlog);
+
     }
 }

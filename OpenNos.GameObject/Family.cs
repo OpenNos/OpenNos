@@ -12,7 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.Domain;
+using System;
 using System.Collections.Generic;
 
 namespace OpenNos.GameObject
@@ -39,7 +42,54 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
-        
+
+        }
+        public void InsertFamilyLog(FamilyLogType logtype, string CharacterName = "", string CharacterName2 = "", string RainBowFamily = "", string Message = "", byte Level = 0, int Experience = 0, int ItemVNum = 0, byte Upgrade = 0, int RaidType = 0, int right = 0, int righttype = 0)
+        {
+            string value = string.Empty;
+            switch (logtype)
+            {
+                case FamilyLogType.DailyMessage:
+                    value = $"{CharacterName}|{Message}";
+                    break;
+                case FamilyLogType.FamilyXP:
+                    value = $"{CharacterName}|{Experience}";
+                    break;
+                case FamilyLogType.Level:
+                    value = $"{CharacterName}|{Level}";
+                    break;
+                case FamilyLogType.Raid:
+                    value = RaidType.ToString();
+                    break;
+                case FamilyLogType.Upgrade:
+                    value = $"{CharacterName}|{ItemVNum}|{Upgrade}";
+                    break;
+                case FamilyLogType.UserManage:
+                    value = $"{CharacterName}|{CharacterName2}";
+                    break;
+                case FamilyLogType.FamilyLevel:
+                    value = Level.ToString();
+                    break;
+                case FamilyLogType.AuthorityChange:
+                    value = $"{CharacterName}|{right}|{CharacterName2}";
+                    break;
+                case FamilyLogType.FamilyManage:
+                    value = CharacterName;
+                    break;
+                case FamilyLogType.RainbowBattle:
+                    value = RainBowFamily;
+                    break;
+                case FamilyLogType.RightChange:
+                    value = $"{CharacterName}|{right}|{righttype}";
+                    break;
+            }
+            FamilyLogDTO log = new FamilyLogDTO();
+            log.FamilyId = FamilyId;
+            log.FamilyLogValue = value;
+            log.FamilyLogType = logtype;
+            log.CreationDate = DateTime.Now;
+            DAOFactory.FamilyLogDAO.InsertOrUpdate(ref log);
+            ServerManager.Instance.FamilyRefresh();
         }
 
         #endregion

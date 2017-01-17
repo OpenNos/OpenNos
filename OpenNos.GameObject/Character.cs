@@ -646,17 +646,20 @@ namespace OpenNos.GameObject
             List<string> packetList = new List<string>();
             string packet = string.Empty;
             int i = 0;
-            foreach(FamilyLogDTO log in Family.FamilyLogs)
-            { 
-                packet += " {(byte)log.FamilyLogType}|{log.CharacterName}|{log.FamilyExperience}|{DateTimeInHour}";
+            int amount =0;
+            foreach (FamilyLogDTO log in Family.FamilyLogs)
+            {
+                packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogValue}|{(DateTime.Now - log.CreationDate).TotalHours}";
                 i++;
-                if(i == 50)
+                if (i == 50)
                 {
                     i = 0;
-                    packetList.Add(packetheader+packet);
+                    packetList.Add($"{packetheader}{(amount==0?" 0 ":"")}{packet}");
+                    amount++;
+                    
                 }
             }
-            
+
             return packetList;
         }
 
@@ -667,7 +670,7 @@ namespace OpenNos.GameObject
                 FamilyCharacter familyCharacter = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
                 if (familyCharacter != null)
                 {
-                    return $"ginfo {Session.Character.Family.Name} {familyCharacter.Character.Name} {(byte)Family.FamilyHeadGender} {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.FamilyCharacters.Count()} {Session.Character.Family.MaxSize} {(byte)Session.Character.FamilyCharacter.Authority} {(Family.ManagerCanInvite?1:0)} {(Family.ManagerCanNotice ? 1 : 0)} {(Family.ManagerCanShout ? 1 : 0)} {(Family.ManagerCanGetHistory?1:0)} {(byte)Family.ManagerAuthorityType} {(Family.MemberCanGetHistory ? 1 : 0)} {(byte)Family.MemberAuthorityType} {Session.Character.Family.FamilyMessage.Replace(' ', '^')}";
+                    return $"ginfo {Session.Character.Family.Name} {familyCharacter.Character.Name} {(byte)Family.FamilyHeadGender} {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.FamilyCharacters.Count()} {Session.Character.Family.MaxSize} {(byte)Session.Character.FamilyCharacter.Authority} {(Family.ManagerCanInvite ? 1 : 0)} {(Family.ManagerCanNotice ? 1 : 0)} {(Family.ManagerCanShout ? 1 : 0)} {(Family.ManagerCanGetHistory ? 1 : 0)} {(byte)Family.ManagerAuthorityType} {(Family.MemberCanGetHistory ? 1 : 0)} {(byte)Family.MemberAuthorityType} {Session.Character.Family.FamilyMessage.Replace(' ', '^')}";
                 }
             }
             return string.Empty;
@@ -686,7 +689,7 @@ namespace OpenNos.GameObject
                     familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyExperience).ToList();
                     break;
                 case 1:
-                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyExperience).ToList();//use month instead log
+                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyLogs.Where(l=>l.FamilyLogType == FamilyLogType.FamilyXP && l.CreationDate.AddDays(30) < DateTime.Now).ToList().Sum(c=>long.Parse(c.FamilyLogValue))).ToList();//use month instead log
                     break;
                 case 2:
                     familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyCharacters.Sum(c => c.Character.Reput)).ToList();//use month instead log
@@ -4016,12 +4019,12 @@ namespace OpenNos.GameObject
                     FamilyDTO fam = Family;
                     fam.FamilyExperience += FXP;
                     famchar.Experience += FXP;
-                    //family log xp
                     if (CharacterHelper.LoadFamilyXPData(Family.FamilyLevel) <= fam.FamilyExperience)
                     {
                         fam.FamilyExperience -= CharacterHelper.LoadFamilyXPData(Family.FamilyLevel);
                         fam.FamilyLevel++;
-                        //FamilySendMessage and log when levelup
+                        Family.InsertFamilyLog(FamilyLogType.FamilyLevel, "", "", "", "", fam.FamilyLevel, 0, 0, 0, 0);
+                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_UP")), 0), ServerManager.Instance.ChannelId, MessageType.Family, Family.FamilyId.ToString(), null).Result;
                     }
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref famchar);
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
@@ -4096,10 +4099,16 @@ namespace OpenNos.GameObject
                     Hp = (int)HPLoad();
                     Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
-                    if (Level > 20 && Level % 10 == 0)
+                    if (Family != null && ((Level > 20 && Level % 10 == 0) || Level > 80))
                     {
+                        Family.InsertFamilyLog(FamilyLogType.Level, "", "", "", "", Level, 0, 0, 0, 0);
+                    }
+                    if (Family != null && Level > 20 && Level % 10 == 0)
+                    {
+                        Family.InsertFamilyLog(FamilyLogType.FamilyXP, "", "", "", "", 0, 20 * Level, 0, 0, 0);
                         GenerateFamilyXp(20 * Level);
                     }
+
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
                     Session.CurrentMap?.Broadcast(GenerateEff(6), MapX, MapY);
