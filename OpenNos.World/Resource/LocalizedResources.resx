@@ -1210,7 +1210,7 @@
   <data name="INVITED_YOU_SHARE" xml:space="preserve">
     <value>Do you want to set as a return point from : {0} ?</value>
   </data>
-  <data name="ACCEPTED_SHARE" xml:space="preserve">
+  <data name="ai t" xml:space="preserve">
     <value>{0} has modified the return point.</value>
   </data>
   <data name="CHANGED_SHARE" xml:space="preserve">
