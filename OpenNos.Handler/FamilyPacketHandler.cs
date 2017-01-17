@@ -93,7 +93,6 @@ namespace OpenNos.Handler
                         Experience = 0,
                         Authority = Session.Character.CharacterId == c.Character.CharacterId ? FamilyAuthority.Head : FamilyAuthority.Assistant,
                         FamilyId = family.FamilyId,
-                        JoinDate = DateTime.Now,
                         Rank = 0,
                     };
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
@@ -551,7 +550,6 @@ namespace OpenNos.Handler
                         Experience = 0,
                         Authority = FamilyAuthority.Member,
                         FamilyId = inviteSession.Character.Family.FamilyId,
-                        JoinDate = DateTime.Now,
                         Rank = 0,
                     };
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);

@@ -41,8 +41,6 @@ namespace OpenNos.DAL.EF
 
         public long FamilyId { get; set; }
 
-        public DateTime JoinDate { get; set; }
-
         public FamilyMemberRank Rank { get; set; }
 
         #endregion
