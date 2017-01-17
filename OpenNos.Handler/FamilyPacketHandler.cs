@@ -555,7 +555,7 @@ namespace OpenNos.Handler
                         Rank = 0,
                     };
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
-                    Session.Character.Family.InsertFamilyLog(FamilyLogType.UserManage, Session.Character.Name, inviteSession.Character.Family.Name, "", "", 0, 0, 0, 0, 0);
+                    Session.Character.Family.InsertFamilyLog(FamilyLogType.UserManage, Session.Character.Name, inviteSession.Character.Name, "", "", 0, 0, 0, 0, 0);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
                     int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"), Session.Character.Name, inviteSession.Character.Family.Name), 0), ServerManager.Instance.ChannelId, MessageType.Family, inviteSession.Character.Family.FamilyId.ToString(), null).Result;
                     System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(5000))
