@@ -642,28 +642,32 @@ namespace OpenNos.GameObject
 
         public List<string> GetFamilyHistory()
         {
-            string packetheader = "ghis";
-            List<string> packetList = new List<string>();
-            string packet = string.Empty;
-            int i = 0;
-            int amount =0;
-            foreach (FamilyLogDTO log in Family.FamilyLogs)
+            if (Family != null)
             {
-                packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(DateTime.Now - log.Timestamp).TotalHours}";
-                i++;
-                if (i == 50)
+                string packetheader = "ghis";
+                List<string> packetList = new List<string>();
+                string packet = string.Empty;
+                int i = 0;
+                int amount = 0;
+                foreach (FamilyLogDTO log in Family.FamilyLogs.OrderByDescending(s => s.Timestamp))
                 {
-                    i = 0;
-                    packetList.Add($"{packetheader}{(amount==0?" 0 ":"")}{packet}");
-                    amount++;             
+                    packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(DateTime.Now - log.Timestamp).TotalHours}";
+                    i++;
+                    if (i == 50)
+                    {
+                        i = 0;
+                        packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
+                        amount++;
+                    }
+                    else if (i == Family.FamilyLogs.Count)
+                    {
+                        packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
+                    }
                 }
-                else if(i == Family.FamilyLogs.Count)
-                {
-                    packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
-                }
-            }
 
-            return packetList;
+                return packetList;
+            }
+            return new List<string>();
         }
 
         public string GenerateGInfo()
@@ -692,7 +696,7 @@ namespace OpenNos.GameObject
                     familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyExperience).ToList();
                     break;
                 case 1:
-                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyLogs.Where(l=>l.FamilyLogType == FamilyLogType.FamilyXP && l.Timestamp.AddDays(30) < DateTime.Now).ToList().Sum(c=>long.Parse(c.FamilyLogData))).ToList();//use month instead log
+                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyLogs.Where(l => l.FamilyLogType == FamilyLogType.FamilyXP && l.Timestamp.AddDays(30) < DateTime.Now).ToList().Sum(c => long.Parse(c.FamilyLogData))).ToList();//use month instead log
                     break;
                 case 2:
                     familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyCharacters.Sum(c => c.Character.Reput)).ToList();//use month instead log
@@ -4102,14 +4106,23 @@ namespace OpenNos.GameObject
                     Hp = (int)HPLoad();
                     Mp = (int)MPLoad();
                     Session.SendPacket(GenerateStat());
-                    if (Family != null && ((Level > 20 && Level % 10 == 0) || Level > 80))
+                    if (Session.Character.Family != null)
                     {
-                        Family.InsertFamilyLog(FamilyLogType.Level, "", "", "", "", Level, 0, 0, 0, 0);
-                    }
-                    if (Family != null && Level > 20 && Level % 10 == 0)
-                    {
-                        Family.InsertFamilyLog(FamilyLogType.FamilyXP, "", "", "", "", 0, 20 * Level, 0, 0, 0);
-                        GenerateFamilyXp(20 * Level);
+
+                        if (Level > 20 && Level % 10 == 0)
+                        {
+                            Family.InsertFamilyLog(FamilyLogType.Level, "", "", "", "", Level, 0, 0, 0, 0);
+                            Family.InsertFamilyLog(FamilyLogType.FamilyXP, "", "", "", "", 0, 20 * Level, 0, 0, 0);
+                            GenerateFamilyXp(20 * Level);
+                        }
+                        else if (Level > 80)
+                        {
+                            Family.InsertFamilyLog(FamilyLogType.Level, "", "", "", "", Level, 0, 0, 0, 0);
+                        }
+                        else
+                        {
+                            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                        }
                     }
 
                     Session.SendPacket($"levelup {CharacterId}");
