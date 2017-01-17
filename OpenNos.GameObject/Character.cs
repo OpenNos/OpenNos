@@ -655,8 +655,11 @@ namespace OpenNos.GameObject
                 {
                     i = 0;
                     packetList.Add($"{packetheader}{(amount==0?" 0 ":"")}{packet}");
-                    amount++;
-                    
+                    amount++;             
+                }
+                else if(i == Family.FamilyLogs.Count)
+                {
+                    packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
                 }
             }
 
