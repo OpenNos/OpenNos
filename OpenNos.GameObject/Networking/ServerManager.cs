@@ -33,6 +33,7 @@ namespace OpenNos.GameObject
         #region Members
 
         public bool ShutdownStop;
+        public bool UpdateBazaar;
 
         private static readonly ThreadLocal<Random> random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
 
@@ -126,6 +127,7 @@ namespace OpenNos.GameObject
 
         public void LoadBazaar()
         {
+            UpdateBazaar = false;
             if (BazaarList == null)
             {
                 BazaarList = new List<BazaarItemLink>();
@@ -147,7 +149,6 @@ namespace OpenNos.GameObject
                 }
                 BazaarList = tempList;
             }
-
         }
 
         public List<Group> Groups => _groups.GetAllItems();
@@ -1130,7 +1131,17 @@ namespace OpenNos.GameObject
         }
         private void OnBazaarRefresh(object sender, EventArgs e)
         {
-            LoadBazaar();
+            UpdateBazaar = true;
+
+            System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(RandomNumber(1000, 30000)))
+           .Subscribe(
+           o =>
+           {
+               if (UpdateBazaar)
+               {
+                   LoadBazaar();
+               }
+           });
         }
         private void OnSessionKicked(object sender, EventArgs e)
         {
