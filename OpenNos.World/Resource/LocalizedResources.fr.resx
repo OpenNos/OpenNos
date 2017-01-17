@@ -1166,4 +1166,31 @@ Veux-tu le porter ?</value>
   <data name="PRICE_EXCEEDED" xml:space="preserve">
     <value>Tu ne peux pas dépasser 1,000,000 or sans Médaille de NosMarchand.</value>
   </data>
+  <data name="CHARACTER_FAMILY_LOGGED_IN" xml:space="preserve">
+    <value>{0}(({1})s'est connecté.</value>
+  </data>
+  <data name="CHANNEL" xml:space="preserve">
+    <value>Canal</value>
+  </data>
+  <data name="FAMILYCALL" xml:space="preserve">
+    <value>Cridefamille</value>
+  </data>
+  <data name="CANT_KICK_HEAD" xml:space="preserve">
+    <value>Tu n'as pas le droit d'effectuer cette action.</value>
+  </data>
+  <data name="CANT_KICK_YOURSELF" xml:space="preserve">
+    <value>Tu n'as pas le droit d'effectuer cette action.</value>
+  </data>
+  <data name="HEAD" xml:space="preserve">
+    <value>Tête</value>
+  </data>
+  <data name="MANAGER" xml:space="preserve">
+    <value>Gardien</value>
+  </data>
+  <data name="ASSISTANT" xml:space="preserve">
+    <value>Assistant</value>
+    </data>
+    <data name="FAMILY_HEAD_CHANGE_GENDER" xml:space="preserve">
+    <value>La tête de famille a changé de sexe.</value>
+  </data>
 </root>
