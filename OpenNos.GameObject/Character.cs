@@ -4111,13 +4111,13 @@ namespace OpenNos.GameObject
 
                         if (Level > 20 && Level % 10 == 0)
                         {
-                            Family.InsertFamilyLog(FamilyLogType.Level, "", "", "", "", Level, 0, 0, 0, 0);
-                            Family.InsertFamilyLog(FamilyLogType.FamilyXP, "", "", "", "", 0, 20 * Level, 0, 0, 0);
+                            Family.InsertFamilyLog(FamilyLogType.Level, Name, "", "", "", Level, 0, 0, 0, 0);
+                            Family.InsertFamilyLog(FamilyLogType.FamilyXP, Name, "", "", "", 0, 20 * Level, 0, 0, 0);
                             GenerateFamilyXp(20 * Level);
                         }
                         else if (Level > 80)
                         {
-                            Family.InsertFamilyLog(FamilyLogType.Level, "", "", "", "", Level, 0, 0, 0, 0);
+                            Family.InsertFamilyLog(FamilyLogType.Level, Name, "", "", "", Level, 0, 0, 0, 0);
                         }
                         else
                         {
