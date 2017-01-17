@@ -130,22 +130,24 @@ namespace OpenNos.GameObject
             {
                 BazaarList = new List<BazaarItemLink>();
             }
+            List<BazaarItemLink> tmp = new List<BazaarItemLink>();
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
+            {
+                BazaarItemLink item = new BazaarItemLink();
+                item.BazaarItem = bz;
+                CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
+                if (chara != null)
+                {
+                    item.Owner = chara.Name;
+                    item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                }
+                tmp.Add(item);
+            }
             lock (BazaarList)
             {
-                BazaarList = new List<BazaarItemLink>();
-                foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
-                {
-                    BazaarItemLink item = new BazaarItemLink();
-                    item.BazaarItem = bz;
-                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
-                    if (chara != null)
-                    {
-                        item.Owner = chara.Name;
-                        item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
-                    }
-                    BazaarList.Add(item);
-                }
+                BazaarList = tmp;
             }
+
         }
 
         public List<Group> Groups => _groups.GetAllItems();
