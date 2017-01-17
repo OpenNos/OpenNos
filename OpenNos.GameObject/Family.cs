@@ -89,7 +89,7 @@ namespace OpenNos.GameObject
             log.FamilyLogType = logtype;
             log.CreationDate = DateTime.Now;
             DAOFactory.FamilyLogDAO.InsertOrUpdate(ref log);
-            ServerManager.Instance.FamilyRefresh();
+            ServerManager.Instance.FamilyRefresh(FamilyId);
         }
 
         #endregion

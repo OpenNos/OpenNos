@@ -91,8 +91,9 @@ namespace OpenNos.GameObject
 
         public int ChannelId { get; set; }
 
-        public void FamilyRefresh()
+        public void FamilyRefresh(long FamilyId)
         {
+            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family, FamilyId.ToString(), null).Result;
             ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh");
         }
         public void BazaarRefresh()
