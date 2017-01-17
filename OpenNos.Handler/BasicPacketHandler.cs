@@ -1765,6 +1765,7 @@ namespace OpenNos.Handler
 
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
+                Session.SendPackets(Session.Character.GetFamilyHistory());
                 Session.SendPacket(Session.Character.GenerateFamilyMember());
                 Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                 Session.SendPacket(Session.Character.GenerateFamilyMemberExp());

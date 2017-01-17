@@ -557,6 +557,10 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
                 wearable.Upgrade++;
+                if (Session.Character.Family != null)
+                {
+                    Session.Character.Family.InsertFamilyLog(FamilyLogType.Upgrade, Session.Character.Name, "", "", "", 0, 0, wearable.ItemVNum, wearable.Upgrade, 0);
+                }
                 Session.SendPacket(Session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, SpStoneUpgrade));
             }
             else
