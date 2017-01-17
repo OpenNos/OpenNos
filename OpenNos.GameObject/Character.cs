@@ -640,6 +640,26 @@ namespace OpenNos.GameObject
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
+        public List<string> GetFamilyHistory()
+        {
+            string packetheader = "ghis";
+            List<string> packetList = new List<string>();
+            string packet = string.Empty;
+            int i = 0;
+            foreach(FamilyLogDTO log in Family.FamilyLogs)
+            { 
+                packet += " {(byte)log.FamilyLogType}|{log.CharacterName}|{log.FamilyExperience}|{DateTimeInHour}";
+                i++;
+                if(i == 50)
+                {
+                    i = 0;
+                    packetList.Add(packetheader+packet);
+                }
+            }
+            
+            return packetList;
+        }
+
         public string GenerateGInfo()
         {
             if (Family != null)
