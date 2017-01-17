@@ -82,9 +82,8 @@ namespace OpenNos.DAL.EF
 
         public int Faction { get; set; }
 
-        public virtual FamilyCharacter FamilyCharacter { get; set; }
+        public virtual ICollection<FamilyCharacter> FamilyCharacter { get; set; }
 
-        public long? FamilyCharacterId { get; set; }
 
         public bool FamilyRequestBlocked { get; set; }
 

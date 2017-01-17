@@ -18,11 +18,93 @@ using System.Collections.Generic;
 using System;
 using OpenNos.DAL.EF.Helpers;
 using System.Linq;
+using OpenNos.Data.Enums;
+using OpenNos.Core;
+using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
     public class FamilyLogDAO : MappingBaseDAO<FamilyLog, FamilyLogDTO>, IFamilyLogDAO
     {
+        public DeleteResult Delete(long FamilyLogId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    FamilyLog famlog = context.FamilyLog.FirstOrDefault(c => c.FamilyLogId.Equals(FamilyLogId));
+
+                    if (famlog != null)
+                    {
+                        context.FamilyLog.Remove(famlog);
+                        context.SaveChanges();
+                    }
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_ERROR"), FamilyLogId, e.Message), e);
+                return DeleteResult.Error;
+            }
+        }
+
+        public SaveResult InsertOrUpdate(ref FamilyLogDTO famlog)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    long FamilyLog = famlog.FamilyLogId;
+                    FamilyLog entity = context.FamilyLog.FirstOrDefault(c => c.FamilyLogId.Equals(FamilyLog));
+
+                    if (entity == null)
+                    {
+                        famlog = Insert(famlog, context);
+                        return SaveResult.Inserted;
+                    }
+
+                    famlog = Update(entity, famlog, context);
+                    return SaveResult.Updated;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), famlog.FamilyLogId, e.Message), e);
+                return SaveResult.Error;
+            }
+        }
+
+        public IEnumerable<BazaarItemDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (BazaarItem bazaarItem in context.BazaarItem)
+                {
+                    yield return _mapper.Map<BazaarItemDTO>(bazaarItem);
+                }
+            }
+        }
+        private FamilyLogDTO Insert(FamilyLogDTO famlog, OpenNosContext context)
+        {
+            FamilyLog entity = _mapper.Map<FamilyLog>(famlog);
+            context.FamilyLog.Add(entity);
+            context.SaveChanges();
+            return _mapper.Map<FamilyLogDTO>(entity);
+        }
+
+        private FamilyLogDTO Update(FamilyLog entity, FamilyLogDTO famlog, OpenNosContext context)
+        {
+            if (entity != null)
+            {
+                _mapper.Map(famlog, entity);
+                context.SaveChanges();
+            }
+
+            return _mapper.Map<FamilyLogDTO>(entity);
+        }
+
         public IEnumerable<FamilyLogDTO> LoadByFamilyId(long familyId)
         {
             using (var context = DataAccessHelper.CreateContext())

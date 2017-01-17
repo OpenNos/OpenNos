@@ -191,10 +191,10 @@ namespace OpenNos.DAL.EF.DB
                 .HasForeignKey(e => e.FamilyId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Character>()
-                .HasOptional(e => e.FamilyCharacter)
-                .WithMany(e => e.Character)
-                .HasForeignKey(e => e.FamilyCharacterId)
+            modelBuilder.Entity<FamilyCharacter>()
+                .HasRequired(e => e.Character)
+                .WithMany(e => e.FamilyCharacter)
+                .HasForeignKey(e => e.CharacterId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<BazaarItem>()

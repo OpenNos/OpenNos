@@ -173,6 +173,22 @@
     <Compile Include="Migrations\201701162025524_Aphrodite12.Designer.cs">
       <DependentUpon>201701162025524_Aphrodite12.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701171238484_Aphrodite13.cs" />
+    <Compile Include="Migrations\201701171238484_Aphrodite13.Designer.cs">
+      <DependentUpon>201701171238484_Aphrodite13.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701171246311_Aphrodite14.cs" />
+    <Compile Include="Migrations\201701171246311_Aphrodite14.Designer.cs">
+      <DependentUpon>201701171246311_Aphrodite14.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701171250521_Aphrodite15.cs" />
+    <Compile Include="Migrations\201701171250521_Aphrodite15.Designer.cs">
+      <DependentUpon>201701171250521_Aphrodite15.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701171351476_Aphrodite16.cs" />
+    <Compile Include="Migrations\201701171351476_Aphrodite16.Designer.cs">
+      <DependentUpon>201701171351476_Aphrodite16.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
     <Compile Include="DB\OpenNosContext.cs" />
@@ -283,6 +299,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701162025524_Aphrodite12.resx">
       <DependentUpon>201701162025524_Aphrodite12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701171238484_Aphrodite13.resx">
+      <DependentUpon>201701171238484_Aphrodite13.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701171246311_Aphrodite14.resx">
+      <DependentUpon>201701171246311_Aphrodite14.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701171250521_Aphrodite15.resx">
+      <DependentUpon>201701171250521_Aphrodite15.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701171351476_Aphrodite16.resx">
+      <DependentUpon>201701171351476_Aphrodite16.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
