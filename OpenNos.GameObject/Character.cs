@@ -649,7 +649,7 @@ namespace OpenNos.GameObject
             int amount =0;
             foreach (FamilyLogDTO log in Family.FamilyLogs)
             {
-                packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogValue}|{(DateTime.Now - log.CreationDate).TotalHours}";
+                packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(DateTime.Now - log.Timestamp).TotalHours}";
                 i++;
                 if (i == 50)
                 {
@@ -689,7 +689,7 @@ namespace OpenNos.GameObject
                     familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyExperience).ToList();
                     break;
                 case 1:
-                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyLogs.Where(l=>l.FamilyLogType == FamilyLogType.FamilyXP && l.CreationDate.AddDays(30) < DateTime.Now).ToList().Sum(c=>long.Parse(c.FamilyLogValue))).ToList();//use month instead log
+                    familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyLogs.Where(l=>l.FamilyLogType == FamilyLogType.FamilyXP && l.Timestamp.AddDays(30) < DateTime.Now).ToList().Sum(c=>long.Parse(c.FamilyLogData))).ToList();//use month instead log
                     break;
                 case 2:
                     familyordered = ServerManager.Instance.FamilyList.OrderByDescending(s => s.FamilyCharacters.Sum(c => c.Character.Reput)).ToList();//use month instead log

@@ -27,9 +27,9 @@ namespace OpenNos.Data
 
         public FamilyLogType FamilyLogType { get; set; }
 
-        public string FamilyLogValue { get; set; }
+        public string FamilyLogData { get; set; }
 
-        public DateTime CreationDate { get; set; }
+        public DateTime Timestamp { get; set; }
 
         #endregion
     }

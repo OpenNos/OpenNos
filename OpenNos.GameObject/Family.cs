@@ -83,11 +83,13 @@ namespace OpenNos.GameObject
                     value = $"{CharacterName}|{right}|{righttype}";
                     break;
             }
-            FamilyLogDTO log = new FamilyLogDTO();
-            log.FamilyId = FamilyId;
-            log.FamilyLogValue = value;
-            log.FamilyLogType = logtype;
-            log.CreationDate = DateTime.Now;
+            FamilyLogDTO log = new FamilyLogDTO
+            {
+                FamilyId = FamilyId,
+                FamilyLogData = value,
+                FamilyLogType = logtype,
+                Timestamp = DateTime.Now
+            };
             DAOFactory.FamilyLogDAO.InsertOrUpdate(ref log);
             ServerManager.Instance.FamilyRefresh(FamilyId);
         }
