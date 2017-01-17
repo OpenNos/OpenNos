@@ -148,7 +148,7 @@
     <value>La carte spécialiste et ta fée ont des attributs différents.</value>
   </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
-    <value>Erreur : Votre identifiant ou mot de passe est incorrect. La saisie répétée de données incorrectes entrainera un blocage temporaire de votre compte.                                                                                                                                        </value>
+    <value>Erreur : Votre identifiant ou mot de passe est incorrect.</value>
   </data>
   <data name="BN0" xml:space="preserve">
     <value>Lisez^le^règlement,^vous^éviterez^des^embêtements^!</value>
@@ -181,6 +181,7 @@
     <value>{0}: Acheté &lt;{1} {2}: pièces &gt;</value>
   </data>
   <data name="BUY_ITEM_VALID" xml:space="preserve">
+    <value>Commerce effectué.</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>Tu pourras bientôt te déplacer.</value>
@@ -273,6 +274,7 @@
     <value>Groupe dissous.</value>
   </data>
   <data name="GROUP_DENIED" xml:space="preserve">
+    <value>{0} a refusé ton invitation.</value>
   </data>
   <data name="GROUP_FULL" xml:space="preserve">
     <value>Le groupe est plein.</value>
@@ -325,7 +327,7 @@
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Niveau de mise à niveau d'objet est verrouillé.</value>
   </data>
-  <data name="ITEMS_LOADED" xml:space="preserve">
+  <data name="ITEM_LOADED" xml:space="preserve">
     <value>{0} Objets chargés !</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
@@ -364,7 +366,7 @@
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magicien</value>
   </data>
-  <data name="MAPS_LOADED" xml:space="preserve">
+  <data name="MAP_LOADED" xml:space="preserve">
     <value>{0} Carte chargées !</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
@@ -379,8 +381,8 @@
   <data name="MINI_INV_UNLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu débloques les invitations Mini-Pays.</value>
   </data>
-  <data name="MAPMONSTERS_LOADED" xml:space="preserve">
-    <value>{0} MapMonstres chargés !</value>
+  <data name="MONSTERS_LOADED" xml:space="preserve">
+    <value>{0} Monstres chargés !</value>
   </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques le suivi de cible.</value>
@@ -439,7 +441,7 @@
   <data name="NPCMONSTERS_LOADED" xml:space="preserve">
     <value>{0} Pnj-Monstres chargés !</value>
   </data>
-  <data name="MAPNPCS_LOADED" xml:space="preserve">
+  <data name="NPCS_LOADED" xml:space="preserve">
     <value>{0} Pnj chargés !</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
@@ -500,6 +502,7 @@
     <value>Pari réussi ! Niveau de rareté : {0}</value>
   </data>
   <data name="EXCHANGE_REFUSED" xml:space="preserve">
+    <value>Ta demande d'échange a été refusée.</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Réputation modifiée.</value>
@@ -520,22 +523,22 @@
     <value>{0} Magasins chargés !</value>
   </data>
   <data name="SHOP_EMPTY" xml:space="preserve">
-    <value>Tu ne peux pas ouvrir un magasin si il est vide.</value>
+    <value>Aucun objet ne peut être vendu.</value>
   </data>
   <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
-    <value>Ton magasin ne peut pas être ouvert, tu es trop près du portail.</value>
+    <value>Tu ne peux pas ouvrir le magasin près du portail.</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Magasin ouvert.</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
-    <value>Le serveur sera déconnecté dans {0} minute(s).</value>
+    <value>Le serveur sera déconnecté dans {0} minutes.</value>
   </data>
   <data name="SHUTDOWN_SEC" xml:space="preserve">
     <value>Le serveur sera déconnecté dans {0} secondes.</value>
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
-    <value>Le niveau de votre Carte de Spécialiste a bien été changé.</value>
+    <value>Le niveau de votre carte spécialiste a bien été changé.</value>
   </data>
   <data name="SPUSE_NEEDED" xml:space="preserve">
     <value>Vous devez vous transformer en spécialiste pour accepter les changements de points.</value>
@@ -559,10 +562,10 @@
     <value>Escrimeur</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
-    <value>Le message est trop gros ({0} bytes). La taille maximum autorisée est  {1} bytes.</value>
+    <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>[Sessions en ligne] : </value>
+    <value>Utilisateurs connectés</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>L'utilisateur a bloqué les demandes d'échanges.</value>
@@ -589,10 +592,10 @@
     <value>L'amélioration au niveau suivant a réussi avec succès !</value>
   </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
-    <value>L'utilisateur est hors ligne.</value>
+    <value>Ce joueur n'est pas connecté.</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
-    <value>Seul les héros peuvent utiliser ce message.</value>
+    <value>Seuls les héros peuvent utiliser des messages de héros.</value>
   </data>
   <data name="USER_WHISPER_BLOCKED" xml:space="preserve">
     <value>Ce joueur ne veut pas qu'on lui chuchote des choses.</value>
@@ -604,7 +607,7 @@
     <value>À partir de maintenant, tu débloques les chuchotements.</value>
   </data>
   <data name="WRONG_VALUE" xml:space="preserve">
-    <value>Valeur invalide.</value>
+    <value>Mauvaise valeur.</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Tu as fait une demande d'échange avec {0}</value>
@@ -640,10 +643,13 @@
     <value>La connexion au serveur a été perdue.</value>
   </data>
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
-    <value>Ton niveau héroïque a été changé !</value>
+    <value>Ton niveau héroïque a bien été changé !</value>
   </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>Dignité réduite : --{0}</value>
+  </data>
+  <data name="MUTED" xml:space="preserve">
+    <value>Vous avez été sanctionné.</value>
   </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>La sanction est terminée.</value>
@@ -664,7 +670,7 @@
     <value>Tu as refusé la demande d'échange.</value>
   </data>
   <data name="SP_REFILL" xml:space="preserve">
-    <value>Les points de spécialiste ont été ajoutés !</value>
+    <value>Les points de spécialiste ont bien été ajoutés !</value>
   </data>
   <data name="USER_NOT_FOUND" xml:space="preserve">
     <value>L'utilisateur est introuvable.</value>
@@ -706,7 +712,7 @@
     <value>Tu ne peux pas encore l'utiliser.</value>
   </data>
   <data name="LVL_REQUIRED" xml:space="preserve">
-    <value>{0} niveaux sont nécessaire pour améliorer la Carte de Spécialiste.</value>
+    <value>{0} niveaux sont nécessaire pour améliorer la carte spécialiste.</value>
   </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
     <value>L'amélioration de la carte spécialiste a échoué.</value>
@@ -721,13 +727,13 @@
     <value>Bienvenue.</value>
   </data>
   <data name="DROP_RATE_NOW" xml:space="preserve">
-    <value>[Taux d'apparition d'objets] : </value>
+    <value>Taux de drop </value>
   </data>
   <data name="GOLD_RATE_NOW" xml:space="preserve">
-    <value>[Taux d'or] : </value>
+    <value>Taux d'or </value>
   </data>
   <data name="XP_RATE_NOW" xml:space="preserve">
-    <value>[Taux d'expérience] : </value>
+    <value>Taux d'expérience </value>
   </data>
   <data name="SP_LEVELUP" xml:space="preserve">
     <value>Le niveau spécialiste est augmenté.</value>
@@ -742,7 +748,7 @@
     <value>Le taux d'expérience des fées a bien été modifié.</value>
   </data>
   <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
-    <value>[Taux d'expérience féerique] : </value>
+    <value>Taux d'expérience des fées </value>
   </data>
   <data name="FAIRYMAX" xml:space="preserve">
     <value>Ta fée a atteint le niveau maximum !</value>
@@ -787,6 +793,7 @@
     <value>Tu n'as pas assez de carreaux. Achètes-en dans le magasin d'équipement.</value>
   </data>
   <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
+    <value>L'invitation de groupe a été refusée.</value>
   </data>
   <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
     <value>C'est maintenant impossible de l'utiliser, car l'âme a été détruite.</value>
@@ -807,7 +814,7 @@
     <value>Tu ne portes pas de coiffures spéciales</value>
   </data>
   <data name="SERVER_WORKING_TIME" xml:space="preserve">
-    <value>[Le serveur est en ligne depuis] : </value>
+    <value>Serveur connecté depuis </value>
   </data>
   <data name="LEVELUP" xml:space="preserve">
     <value>Ton niveau de combat a augmenté !</value>
@@ -850,10 +857,10 @@ Veux-tu le porter ?</value>
     <value>Groupe rejoint</value>
   </data>
   <data name="USER_NOT_BANNED" xml:space="preserve">
-    <value>L'utilisateur a été débanni avec succès.</value>
+    <value>Le joueur a été débanni.</value>
   </data>
   <data name="USER_NOT_MUTED" xml:space="preserve">
-    <value>Le joueur ne subis plus l'effet de la sourdine.</value>
+    <value>Le joueur ne subis plus la sourdine.</value>
   </data>
   <data name="MUTED_PLURAL" xml:space="preserve">
     <value>Tu as été sanctionné  ! Raison : {0} pour : {1} heures.</value>
@@ -868,7 +875,7 @@ Veux-tu le porter ?</value>
     <value>La tentative a échoué !</value>
   </data>
   <data name="TRY_FAILED_WAIT" xml:space="preserve">
-    <value>Ça ne marche pas ! Essaie à nouveau dans {0} secondes.</value>
+    <value>Réessayez dans :  {0} secondes.</value>
   </data>
   <data name="NOT_ENOUGH_POINTS" xml:space="preserve">
     <value>Tu n'as pas assez de points.</value>
@@ -913,7 +920,7 @@ Veux-tu le porter ?</value>
     <value>Tu ne peux pas apprendre cette compétence.</value>
   </data>
   <data name="MEMORY" xml:space="preserve">
-    <value>[Mémoire en cours d'utilisation] : </value>
+    <value>Mémoire utilisée </value>
   </data>
   <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
     <value>Tu ne peux pas ouvrir de magasin dans cette zone.</value>
@@ -925,8 +932,10 @@ Veux-tu le porter ?</value>
     <value>La compétence n'existe pas !</value>
   </data>
   <data name="DROPPED_ITEM" xml:space="preserve">
+    <value>(Groupe) [{0}], priorité : Tous les membres du groupe.</value>
   </data>
   <data name="ITEM_BOUND_TO" xml:space="preserve">
+    <value>(Groupe) [{0}], priorité : {1}</value>
   </data>
   <data name="NOT_YOUR_ITEM" xml:space="preserve">
     <value>Cet objet ne t'appartient pas.</value>
@@ -976,6 +985,9 @@ Veux-tu le porter ?</value>
   <data name="SP_RESURRECTED" xml:space="preserve">
     <value>L'âme reprend vie.</value>
   </data>
+  <data name="ITEM_IS_NOT_FIXED" xml:space="preserve">
+    <value>Tu ne peux pas l'utiliser. Ton objet ne remplis pas les conditions</value>
+  </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
   </data>
@@ -991,17 +1003,23 @@ Veux-tu le porter ?</value>
   <data name="BOT_MESSAGE_3" xml:space="preserve">
     <value>Astuce : Une arnaque ou un abus? Contactez le support !</value>
   </data>
+  <data name="BOT_MESSAGE_4" xml:space="preserve">
+    <value>Astuce : Qu'il soit grand ou petit, un seul cheat et c'est le pilori !</value>
+  </data>
+  <data name="BOT_MESSAGE_5" xml:space="preserve">
+    <value>Astuce : Un problème ? reportez le sur notre page github !</value>
+  </data>
   <data name="MONSTER_NOT_ALIVE" xml:space="preserve">
     <value>Le monstre doit être en vie. Sinon, essayez de cliquer dessus et ressayez !</value>
   </data>
   <data name="MONSTER_REMOVED" xml:space="preserve">
-    <value>Le monstre a été supprimé.(MapMonsterId: {0}, Name: {1}, MapId: {2}, MapX: {3}, MapY: {4})</value>
+    <value>Le monstre a été supprimé.</value>
   </data>
   <data name="INTRODUCTION_SET" xml:space="preserve">
     <value>Ton message de présentation a été édité.</value>
   </data>
   <data name="NOT_ENOUGH_ITEMS" xml:space="preserve">
-    <value>Tu n'as pas les objets requis ! {0}x{1}</value>
+    <value>Tu n'as pas les objets requis !</value>
   </data>
   <data name="GM_BLOCK_DISABLE" xml:space="preserve">
     <value>À partir de maintenant, tu pourras reçevoir des messages privés.</value>
@@ -1013,184 +1031,258 @@ Veux-tu le porter ?</value>
     <value>Ce Maître du Jeu n'accepte pas de reçevoir des messages privés.</value>
   </data>
   <data name="SPEAKER_CANT_BE_USED" xml:space="preserve">
-    <value>Tu n'es pas autorisé à utiliser cet objet lorsque tu subis une sanction.</value>
-  </data>
-  <data name="ITEM_NOT_DROPPABLE_HERE" xml:space="preserve">
-    <value>L'objet ne peut pas être jeté ici.</value>
-  </data>
-  <data name="ITEM_UNFIXED" xml:space="preserve">
-    <value>Tu ne peux pas l'utiliser. Ton objet ne remplis pas les conditions</value>
-  </data>
-  <data name="BOT_MESSAGE_4" xml:space="preserve">
-    <value>Ne^donnez^JAMAIS^vos^identifiants^de^connexion^!</value>
-  </data>
-  <data name="BOT_MESSAGE_5" xml:space="preserve">
-    <value>Un^GM^ne^vous^demandera^jamais^vos^identifiants^!</value>
-  </data>
-  <data name="SP_NOPOINTS" xml:space="preserve">
-    <value>Tu n'as plus assez de point assez, tu ne peux plus te transformer !</value>
-  </data>
-  <data name="SP_POINTSADDED" xml:space="preserve">
-    <value>Les points de base SP ont été augmenté de  {0}.</value>
-  </data>
-  <data name="SP_POINTSADDEDBOTH" xml:space="preserve"/>
-  <data name="SP_NOPOINTSCANCELED" xml:space="preserve">
-    <value>La transformation a été annulée, tu n'as plus assez de point SP.</value>
-  </data>
-  <data name="XP_NOTFIRSTHIT" xml:space="preserve">
-    <value>Vu que tu n'as pas attaqué le premier,  tu n'obtiens qu'une partie des points d'EXP.</value>
-  </data>
-  <data name="WANT_TO_SAVE_POSITION" xml:space="preserve">
-    <value>Souhaites-tu enregistrer ta position actuelle et retourner au village ?</value>
-  </data>
-  <data name="BLACKLIST_ADDED" xml:space="preserve">
-    <value>Enregistré</value>
-  </data>
-  <data name="BLACKLIST_DELETED" xml:space="preserve">
-    <value>Supprimé</value>
-  </data>
-  <data name="FRIEND_ADD" xml:space="preserve">
-    <value>Veux-tu devenir ami avec {0} ?</value>
-  </data>
-  <data name="FRIEND_ADDED" xml:space="preserve">
-    <value>Enregistré</value>
-  </data>
-  <data name="FRIEND_DELETED" xml:space="preserve">
-    <value>Supprimé</value>
-  </data>
-  <data name="FRIEND_OFFLINE" xml:space="preserve">
-    <value>Votre amis est hors ligne.</value>
-  </data>
-  <data name="FRIEND_REJECTED" xml:space="preserve">
-    <value>Tu es bloqué.</value>
-  </data>
-  <data name="MESSAGE_SENT_TO_CHARACTER" xml:space="preserve">
-    <value>Sending message to  '{0}' on channel {1}.</value>
-  </data>
-  <data name="NO_WINGS" xml:space="preserve">
-    <value>Tu n'as pas d'aile d'amitié à utiliser.</value>
-  </data>
-  <data name="CREATE_FAMILY" xml:space="preserve">
-    <value>Voulez-vous fonder cette famille ?</value>
-  </data>
-  <data name="DISMISS_FAMILY" xml:space="preserve">
-    <value>Voulez-vous dissoudre votre famille ?</value>
-  </data>
-  <data name="FAMILY_INVITATION_NOT_ALLOWED" xml:space="preserve">
-    <value>Tu n'es pas autorisé à effectué cette action car ton rang est trop bas.</value>
-  </data>
-  <data name="FAMILY_NAME_ALREADY_USED" xml:space="preserve">
-    <value>Ce nom de famille est déjà utilisé.</value>
-  </data>
-  <data name="NOT_ALLOWED_KICK" xml:space="preserve">
-    <value>Tu n'es pas autorisé à effectué cette action car ton rang est trop bas.</value>
-  </data>
-  <data name="GROUP_MEMBER_ALREADY_IN_FAMILY" xml:space="preserve">
-    <value>Au moins un membre du groupe possède déjà une famille.</value>
-  </data>
- <data name="DEMON" xml:space="preserve">
-    <value>Démon</value>
-  </data>
-  <data name="ANGEL" xml:space="preserve">
-    <value>Ange</value>
-  </data>
-  <data name="FAMILY_FOUNDED" xml:space="preserve">
-    <value>Félicitations ! La famille {0} a été fondée !</value>
-  </data>
-  <data name="FAMILY_GROUP_NOT_FULL" xml:space="preserve">
-    <value>Il n'y a pas assez de membres pour crée une famille.</value>
-  </data>
-  <data name="FAMILY_INVITED" xml:space="preserve">
-    <value>{0} a été invité !</value>
-  </data>
-  <data name="ASK_FAMILY_INVITED" xml:space="preserve">
-    <value>Tu as reçu une demande d'adhésion à la famille {0}</value>
-  </data>
-  <data name="FAMILY_JOINED" xml:space="preserve">
-    <value>{0} A rejoint la famille  "{1}" !</value>
-  </data>
-  <data name="FAMILY_KICKED" xml:space="preserve">
-    <value>{0} a été exclus de la famille.</value>
-  </data>
-  <data name="LANGUAGE_REQUIRED" xml:space="preserve">
-    <value>Le language autorisé est le {0}, il est interdit de parler un autre language !</value>
-  </data>
-  <data name="ASK_REVIVE_PVP" xml:space="preserve">
-    <value>Voulez-vous continuer ? Cela vous coûtera 100 or !</value>
-  </data>
-  <data name="LOSE_REP" xml:space="preserve">
-    <value>Réputation -{0}</value>
-  </data>
-  <data name="ACT4_PVP_DIE" xml:space="preserve">
-    <value>La malédiction de la Courrone de Glace t'a transformé en phoque pour 30 secondes !</value>
-  </data>
-  <data name="EFFECT_ACTIVATED" xml:space="preserve">
-    <value>L'effet de {0} a été activé.</value>
-  </data>
-  <data name="INFO_BAZAAR" xml:space="preserve">
-    <value>Avec la médaille NosMarchand, tu peux utiliser le NosBazar à tout moment sur toutes les cartes générales.</value>
-  </data>
-  <data name="NOTICE_BAZAAR" xml:space="preserve">
-    <value>N'oublie pas que tu peux aussi être attaqué pendant que la fenêtre du NosBazar est ouverte.</value>
-  </data>
-  <data name="OBJECT_IN_BAZAAR" xml:space="preserve">
-    <value>Tes objets se trouvent désormais dans le NosBazar.</value>
-  </data>
-  <data name="REMOVE_FROM_BAZAAR" xml:space="preserve">
-    <value>La vente est terminée. Or : {0}.</value>
-  </data>
-  <data name="STATE_CHANGED" xml:space="preserve">
-    <value>L'offre a été mise à jour. La vente a été annulée.</value>
-  </data>
-  <data name="LOGIN_MEDAL" xml:space="preserve">
-    <value>L'effet de la Médaille de NosMarchand est actif.</value>
-  </data>
-  <data name="GROUP_SHARE_INFO" xml:space="preserve">
-    <value>Tu a envoyé une demande pour partager le point de retour avec les membres de ton groupe.</value>
-  </data>
-  <data name="INVITED_YOU_SHARE" xml:space="preserve">
-    <value>Veux-tu établir comme point de retour : {0} ?</value>
+    <value>Tu subis une sanction. par conséquant, tu ne peux pas utiliser cet objet.</value>
   </data>
   <data name="ACCEPTED_SHARE" xml:space="preserve">
     <value>{0} a modifié le point de retour.</value>
   </data>
+  <data name="ACT4_PVP_DIE" xml:space="preserve">
+    <value>La malédiction de la Courrone de Glace t'a transformé en phoque pour 30 secondes !</value>
+  </data>
+  <data name="ALREADY_FRIEND" xml:space="preserve">
+    <value>Vous êtes déjà amis.</value>
+  </data>
+  <data name="ALREADY_TWO_ASSISTANT" xml:space="preserve">
+    <value>Tu ne peux pas assigner plus de deux assistants.</value>
+  </data>
+  <data name="ANGEL" xml:space="preserve">
+    <value>Ange</value>
+  </data>
+  <data name="ASK_FAMILY_INVITED" xml:space="preserve">
+    <value>Tu as été invité à rejoindre la famille {0}, rejoindre ?</value>
+  </data>
+  <data name="ASK_REVIVE_PVP" xml:space="preserve">
+    <value>Voulez-vous revivre ? Cela vous coûtera 100 or !</value>
+  </data>
+  <data name="ASSISTANT" xml:space="preserve">
+    <value>Assistant</value>
+  </data>
+  <data name="ASSISTANT_UNDEMOTABLE" xml:space="preserve">
+    <value>Tu ne peux pas enlever le pouvoir de cet assistant.</value>
+  </data>
+  <data name="BAD_DIGNITY" xml:space="preserve">
+    <value>Mauvaise quantitée de dignité.</value>
+  </data>
+  <data name="BANNED" xml:space="preserve">
+    <value>Échec : Votre compte a été banni. Veuillez contactez l'équipe du jeu.  Raison : {0} Jusqu'au : {1}.</value>
+  </data>
+  <data name="BAZAR_LOADED" xml:space="preserve">
+    <value>NosBazard initialisé.</value>
+  </data>
+  <data name="BLACKLIST_ADDED" xml:space="preserve">
+    <value>Ajouté.</value>
+  </data>
+  <data name="BLACKLIST_BLOCKED" xml:space="preserve">
+    <value>Vous êtes dans sa liste noire.</value>
+  </data>
+  <data name="BLACKLIST_BLOCKING" xml:space="preserve">
+    <value>Tu as bloqué ce joueur.</value>
+  </data>
+  <data name="BLACKLIST_DELETED" xml:space="preserve">
+    <value>Supprimé</value>
+  </data>
   <data name="CHANGED_SHARE" xml:space="preserve">
-    <value>Tu as changé le point de retour commun des membres du groupe.</value>
-  </data>
-  <data name="REFUSED_SHARE" xml:space="preserve">
-    <value>Tu as refusé de partager le point de retour avec les membres du groupe.</value>
-  </data>
- <data name="LIMIT_EXCEEDED" xml:space="preserve">
-    <value>Tu as atteint la limite d'objet qui peuvent être dans ton NosBazard simultanément.</value>
-  </data>
-  <data name="PRICE_EXCEEDED" xml:space="preserve">
-    <value>Tu ne peux pas dépasser 1,000,000 or sans Médaille de NosMarchand.</value>
-  </data>
-  <data name="CHARACTER_FAMILY_LOGGED_IN" xml:space="preserve">
-    <value>{0}(({1})s'est connecté.</value>
+    <value>Tu as changé le point du retour commun au groupe.</value>
   </data>
   <data name="CHANNEL" xml:space="preserve">
     <value>Canal</value>
   </data>
+  <data name="CHARACTER_FAMILY_LOGGED_IN" xml:space="preserve">
+    <value>{0}({1})s'est connecté.</value>
+  </data>
+  <data name="CHARACTER_NOT_IN_FRIENDLIST" xml:space="preserve">
+    <value>Tu n'es pas amis avec ce joueur.</value>
+  </data>
+  <data name="CREATE_FAMILY" xml:space="preserve">
+    <value>Voulez-vous crée cette famille ?</value>
+  </data>
+  <data name="DEMON" xml:space="preserve">
+    <value>Démon</value>
+  </data>
+  <data name="DIGNITY_CHANGED" xml:space="preserve">
+    <value>Dignité modifiée.</value>
+  </data>
+  <data name="DISMISS_FAMILY" xml:space="preserve">
+    <value>Voulez-vous dissoudre votre famille ?</value>
+  </data>
+  <data name="DROPS_LOADED" xml:space="preserve">
+    <value>{0} Drop chargés.</value>
+  </data>
+  <data name="DROP_MAP_FULL" xml:space="preserve">
+    <value>Il y a trop d'objets au sol, réssaye plus tard !</value>
+  </data>
+  <data name="EFFECT_ACTIVATED" xml:space="preserve">
+    <value>L'effet {0} a été activé.</value>
+  </data>
   <data name="FAMILYCALL" xml:space="preserve">
     <value>Cridefamille</value>
   </data>
-  <data name="CANT_KICK_HEAD" xml:space="preserve">
-    <value>Tu n'as pas le droit d'effectuer cette action.</value>
+  <data name="FAMILY_FOUNDED" xml:space="preserve">
+    <value>Félicitations. La famille {0} a été fondée !</value>
   </data>
-  <data name="CANT_KICK_YOURSELF" xml:space="preserve">
-    <value>Tu n'as pas le droit d'effectuer cette action.</value>
+  <data name="FAMILY_GROUP_NOT_FULL" xml:space="preserve">
+    <value>Il faut minimum trois membres dans le groupe pour pouvoir crée une famille !</value>
+  </data>
+  <data name="FAMILY_INVITATION_NOT_ALLOWED" xml:space="preserve">
+    <value>Tu n'as pas les autorisations nécessaire pour inviter des joueurs.</value>
+  </data>
+  <data name="FAMILY_INVITED" xml:space="preserve">
+    <value>{0} a été invité.</value>
+  </data>
+  <data name="FAMILY_JOINED" xml:space="preserve">
+    <value>{0} a rejoint :  {1} !</value>
+  </data>
+  <data name="FAMILY_KICKED" xml:space="preserve">
+    <value>{0}  a été exclu de la famille.</value>
+  </data>
+  <data name="FAMILY_NAME_ALREADY_USED" xml:space="preserve">
+    <value>Tu ne peux pas utiliser ce nom de famille car il est déjà utilisé !</value>
+  </data>
+  <data name="FRIEND_ADD" xml:space="preserve">
+    <value>Veux-tu être amis avec :  {0} ?</value>
+  </data>
+  <data name="FRIEND_ADDED" xml:space="preserve">
+    <value>Demande d'amitié acceptée.</value>
+  </data>
+  <data name="FRIEND_DELETED" xml:space="preserve">
+    <value>Supprimé.</value>
+  </data>
+  <data name="FRIEND_FULL" xml:space="preserve">
+    <value>Tu n'as plus assez de place pour ajouter de nouveaux amis !</value>
+  </data>
+  <data name="FRIEND_OFFLINE" xml:space="preserve">
+    <value>Votre amis n'est actuellement pas connecté.</value>
+  </data>
+  <data name="FRIEND_REJECTED" xml:space="preserve">
+    <value>Demande d'amis déclinée.</value>
+  </data>
+  <data name="GOLD_DROPRATE_NOW" xml:space="preserve">
+    <value>Gold Drop Rate</value>
+  </data>
+  <data name="GOLD_DROP_RATE_CHANGED" xml:space="preserve">
+    <value>Gold drop rate changed!</value>
+  </data>
+  <data name="GROUP_MEMBER_ALREADY_IN_FAMILY" xml:space="preserve">
+    <value>Un membre du groupe possède déjà une famille.</value>
+  </data>
+  <data name="GROUP_SHARE_INFO" xml:space="preserve">
+    <value>Tu a envoyé une demande pour partager le point de retour avec les membres de ton groupe.</value>
   </data>
   <data name="HEAD" xml:space="preserve">
     <value>Tête</value>
   </data>
+  <data name="HEAD_UNDEMOTABLE" xml:space="preserve">
+    <value>Tu ne peux pas enlever le pouvoir de la Tête de famille.</value>
+  </data>
+  <data name="INFO_BAZAAR" xml:space="preserve">
+    <value>Avec la médaille NosMarchand, tu peux utiliser le NosBazar à tout moment sur toutes les cartes générales.</value>
+  </data>
+  <data name="INVITED_YOU_SHARE" xml:space="preserve">
+    <value>Veux-tu établir comme point de retour : {0} ?</value>
+  </data>
+  <data name="ITEMS_LOADED" xml:space="preserve">
+    <value>{0} Objets chargés.</value>
+  </data>
+  <data name="ITEM_NOT_DROPPABLE_HERE" xml:space="preserve">
+    <value>L'objet ne peut pas être ramassé ici.</value>
+  </data>
+  <data name="ITEM_UNFIXED" xml:space="preserve">
+    <value>Tu as supprimé l'effet négatif qui empêchait toutes améliorations de ton arme.</value>
+  </data>
+  <data name="LANGUAGE_REQUIRED" xml:space="preserve">
+    <value>Le language autorisé est le : {0}.</value>
+  </data>
+  <data name="LIMIT_EXCEEDED" xml:space="preserve">
+    <value>Tu ne peux plus ajouter d'objet au NosBazard car tu as dépassé la limite autorisée.</value>
+  </data>
+  <data name="LOGIN_MEDAL" xml:space="preserve">
+    <value>L'effet de la médaille de NosMarchand est actif.</value>
+  </data>
+  <data name="LOSE_REP" xml:space="preserve">
+    <value>Réputation - {0}</value>
+  </data>
   <data name="MANAGER" xml:space="preserve">
     <value>Gardien</value>
   </data>
-  <data name="ASSISTANT" xml:space="preserve">
-    <value>Assistant</value>
-    </data>
-    <data name="FAMILY_HEAD_CHANGE_GENDER" xml:space="preserve">
-    <value>La tête de famille a changé de sexe.</value>
+  <data name="MAPMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} Monstres sur les cartes chargés.</value>
+  </data>
+  <data name="MAPNPCS_LOADED" xml:space="preserve">
+    <value>{0} Pnj sur les cartes chargés.</value>
+  </data>
+  <data name="MAPS_LOADED" xml:space="preserve">
+    <value>{0} Carte chargées.</value>
+  </data>
+  <data name="MEMBER" xml:space="preserve">
+    <value>Membre</value>
+  </data>
+  <data name="MESSAGE_SENT_TO_CHARACTER" xml:space="preserve">
+    <value>Message envoyé à '{0}' &lt;Canal&gt; {1}.</value>
+  </data>
+  <data name="MONSTERSKILLS_LOADED" xml:space="preserve">
+    <value>{0} Compétences de monstres chargés.</value>
+  </data>
+  <data name="NOTICE_BAZAAR" xml:space="preserve">
+    <value>N'oublie pas que tu peux aussi être attaqué pendant que la fenêtre du NosBazar est ouverte.</value>
+  </data>
+  <data name="NOT_ALLOWED_KICK" xml:space="preserve">
+    <value>Tu ne possèdes pas les droits d'exclusions de joueur.</value>
+  </data>
+  <data name="NOT_FAMILY_HEAD" xml:space="preserve">
+    <value>Tu ne possèdes pas les droits de la Tête de famille</value>
+  </data>
+  <data name="NO_FAIRY" xml:space="preserve">
+    <value>Tu dois équiper une fée pour pouvoir faire cette action.</value>
+  </data>
+  <data name="NO_WINGS" xml:space="preserve">
+    <value>Tu n'as pas assez d'aile d'amitié.</value>
+  </data>
+  <data name="OBJECT_IN_BAZAAR" xml:space="preserve">
+    <value>Tes objets se trouvent désormais dans le NosBazard.</value>
+  </data>
+  <data name="ONLY_PROMOTE_ASSISTANT" xml:space="preserve">
+    <value>Seul les assistants peuvent être promu au rang de Tête de famille.</value>
+  </data>
+  <data name="PLAYER_OFFLINE" xml:space="preserve">
+    <value>Joueur hors ligne</value>
+  </data>
+  <data name="PRICE_EXCEEDED" xml:space="preserve">
+    <value>La limite de prix est dépassée.</value>
+  </data>
+  <data name="REFUSED_SHARE" xml:space="preserve">
+    <value>Tu as refusé de partager le point de retour avec les membres du groupe.</value>
+  </data>
+  <data name="REMOVE_FROM_BAZAAR" xml:space="preserve">
+    <value>La vente est terminée. Or : {0}.</value>
+  </data>
+  <data name="SHOPITEMS_LOADED" xml:space="preserve">
+    <value>{0} Vendeur d'objets chargés.</value>
+  </data>
+  <data name="SHOPSKILLS_LOADED" xml:space="preserve">
+    <value>{0} Vendeur de compétences chargés</value>
+  </data>
+  <data name="SP_NOPOINTS" xml:space="preserve">
+    <value>Tu n'as plus de point SP. Par conséquant la transformation est impossible.</value>
+  </data>
+  <data name="SP_NOPOINTSCANCELED" xml:space="preserve">
+    <value>La transformation a été interrompue. Tu n'as plus assez de point SP</value>
+  </data>
+  <data name="SP_POINTSADDED" xml:space="preserve">
+    <value>Tu as reçu {0} points pour ta Carte Spécialiste !</value>
+  </data>
+  <data name="SP_POINTSADDEDBOTH" xml:space="preserve">
+    <value>Tu as reçu {0} points de base et {1} points additionnels</value>
+  </data>
+  <data name="STATE_CHANGED" xml:space="preserve">
+    <value>L'offre a été mise à jour. La vente a été annulée.</value>
+  </data>
+  <data name="TELEPORTERS_LOADED" xml:space="preserve">
+    <value>{0} Téléporteurs chargés.</value>
+  </data>
+  <data name="WANT_TO_SAVE_POSITION" xml:space="preserve">
+    <value>Voulez-vous sauvegarder votre position ?</value>
+  </data>
+  <data name="XP_NOTFIRSTHIT" xml:space="preserve">
+    <value>Tu n'as fait que te défendre, tu n'obtiens donc qu'une partie de l'expérience.</value>
   </data>
 </root>
