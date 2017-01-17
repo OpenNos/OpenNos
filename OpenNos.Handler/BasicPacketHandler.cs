@@ -355,7 +355,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket($"rc_scalc 1 {bz.Price} 0 {bz.Amount} 0 0");
+                Session.SendPacket($"rc_scalc 1 0 0 0 0 0");
             }
         }
         public void SellBazaar(CRegPacket packet)
