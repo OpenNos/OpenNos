@@ -44,7 +44,7 @@ namespace OpenNos.GameObject
         {
 
         }
-        public void InsertFamilyLog(FamilyLogType logtype, string CharacterName = "", string CharacterName2 = "", string RainBowFamily = "", string Message = "", byte Level = 0, int Experience = 0, int ItemVNum = 0, byte Upgrade = 0, int RaidType = 0, int right = 0, int righttype = 0)
+        public void InsertFamilyLog(FamilyLogType logtype, string CharacterName = "", string CharacterName2 = "", string RainBowFamily = "", string Message = "", byte Level = 0, int Experience = 0, int ItemVNum = 0, byte Upgrade = 0, int RaidType = 0, int right = 0, int righttype = 0,int rightvalue=0)
         {
             string value = string.Empty;
             switch (logtype)
@@ -80,7 +80,7 @@ namespace OpenNos.GameObject
                     value = RainBowFamily;
                     break;
                 case FamilyLogType.RightChange:
-                    value = $"{CharacterName}|{right}|{righttype}";
+                    value = $"{CharacterName}|{right}|{righttype}|{rightvalue}";
                     break;
             }
             FamilyLogDTO log = new FamilyLogDTO
