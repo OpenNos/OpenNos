@@ -21,20 +21,12 @@ namespace OpenNos.DAL.EF
 {
     public class FamilyCharacter
     {
-        #region Instantiation
-
-        public FamilyCharacter()
-        {
-            Character = new HashSet<Character>();
-        }
-
-        #endregion
 
         #region Properties
 
         public FamilyAuthority Authority { get; set; }
 
-        public virtual ICollection<Character> Character { get; set; }
+        public virtual Character Character { get; set; }
 
         public long CharacterId { get; set; }
 
