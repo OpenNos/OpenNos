@@ -98,7 +98,7 @@ namespace OpenNos.Handler
                     };
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
                 }
-                ServerManager.Instance.FamilyRefresh();
+                ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                 Session.Character.Group.Characters.ForEach(s => s.CurrentMap.Broadcast(s.Character.GenerateGidx()));
             }
             else
@@ -188,7 +188,7 @@ namespace OpenNos.Handler
                         chara = targetSession.Character.FamilyCharacter;
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
 
-                        ServerManager.Instance.FamilyRefresh();
+                        ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
 
                         targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
 
@@ -215,7 +215,7 @@ namespace OpenNos.Handler
                         chara = targetSession.Character.FamilyCharacter;
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
 
-                        ServerManager.Instance.FamilyRefresh();
+                        ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                         targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
                         break;
                     case 3:
@@ -239,7 +239,7 @@ namespace OpenNos.Handler
 
                         chara = targetSession.Character.FamilyCharacter;
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
-                        ServerManager.Instance.FamilyRefresh();
+                        ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                         targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
                         break;
                 }
@@ -291,7 +291,7 @@ namespace OpenNos.Handler
             }
             FamilyDTO fam = Session.Character.Family;
             DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
-            ServerManager.Instance.FamilyRefresh();
+            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
             Session.SendPacket(Session.Character.GenerateGInfo());
         }
 
@@ -318,7 +318,7 @@ namespace OpenNos.Handler
                 FamilyDTO fam = Session.Character.Family;
                 fam.FamilyHeadGender = (GenderType)rank;
                 DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
-                ServerManager.Instance.FamilyRefresh();
+                ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                 Session.SendPacket(Session.Character.GenerateGInfo());
                 Session.SendPacket(Session.Character.GenerateFamilyMember());
                 Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
@@ -347,7 +347,7 @@ namespace OpenNos.Handler
                     Session.Character.FamilyCharacter.DailyMessage = msg;
                     FamilyCharacterDTO fchar = Session.Character.FamilyCharacter;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref fchar);
-                    ServerManager.Instance.FamilyRefresh();
+                    ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                     Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                     Session.Character.Family.InsertFamilyLog(FamilyLogType.DailyMessage, Session.Character.Name, "", "", msg, 0, 0, 0, 0, 0);
 
@@ -376,7 +376,7 @@ namespace OpenNos.Handler
                 {
                     fchar.Rank = (FamilyMemberRank)rank;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref fchar);
-                    ServerManager.Instance.FamilyRefresh();
+                    ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                     Session.SendPacket(Session.Character.GenerateFamilyMember());
                     Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                 }
@@ -403,7 +403,7 @@ namespace OpenNos.Handler
                     Session.Character.Family.FamilyMessage = msg;
                     FamilyDTO fam = Session.Character.Family;
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
-                    ServerManager.Instance.FamilyRefresh();
+                    ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                     if (!string.IsNullOrWhiteSpace(msg))
                     {
                         int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage), ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
@@ -629,7 +629,7 @@ o =>
                         return;
                     }
                     DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
-                    ServerManager.Instance.FamilyRefresh();
+                    ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                     kickSession.CurrentMap?.Broadcast(kickSession.Character.GenerateGidx());
                 }
                 else
@@ -641,14 +641,17 @@ o =>
                         if (dbFamilyCharacter != null && dbFamilyCharacter.FamilyId == Session.Character.Family.FamilyId)
                         {
                             DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
-                            ServerManager.Instance.FamilyRefresh();
+                            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                         }
                     }
                 }
 
             }
         }
-
+        public void FamilyRefreshHist(FhistctsPacket packet)
+        {
+            Session.SendPackets(Session.Character.GetFamilyHistory());
+        }
         [Packet("%Familyleave")]
         [Packet("%Congédefamille")]
         public void FamilyLeave(string packet)
@@ -667,7 +670,7 @@ o =>
                 }
 
                 DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
-                ServerManager.Instance.FamilyRefresh();
+                ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
             }
         }

@@ -4028,7 +4028,7 @@ namespace OpenNos.GameObject
                     }
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref famchar);
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
-                    ServerManager.Instance.FamilyRefresh();
+                    ServerManager.Instance.FamilyRefresh(Family.FamilyId);
                 }
             }
         }
