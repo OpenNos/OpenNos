@@ -15,17 +15,19 @@
 using OpenNos.Core;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
-using System.Linq;
-using OpenNos.DAL.Interface;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
     public class FamilyDAO : MappingBaseDAO<Family, FamilyDTO>, IFamilyDAO
     {
+        #region Methods
+
         public DeleteResult Delete(long familyId)
         {
             try
@@ -89,29 +91,29 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        //public FamilyDTO LoadByCharacterId(long characterId)
-        //{
-        //    try
-        //    {
-        //        using (var context = DataAccessHelper.CreateContext())
-        //        {
-        //            FamilyCharacter familyCharacter = context.FamilyCharacter.FirstOrDefault(fc => fc.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId)) != null);
-        //            if (familyCharacter != null)
-        //            {
-        //                Family family = context.Family.FirstOrDefault(a => a.FamilyId.Equals(familyCharacter.FamilyId));
-        //                if (family != null)
-        //                {
-        //                    return _mapper.Map<FamilyDTO>(family);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Logger.Error(e);
-        //    }
-        //    return null;
-        //}
+        public FamilyDTO LoadByCharacterId(long characterId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    FamilyCharacter familyCharacter = context.FamilyCharacter.FirstOrDefault(fc => fc.Character.CharacterId.Equals(characterId));
+                    if (familyCharacter != null)
+                    {
+                        Family family = context.Family.FirstOrDefault(a => a.FamilyId.Equals(familyCharacter.FamilyId));
+                        if (family != null)
+                        {
+                            return _mapper.Map<FamilyDTO>(family);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+            return null;
+        }
 
         public FamilyDTO LoadById(long familyId)
         {
@@ -171,9 +173,6 @@ namespace OpenNos.DAL.EF
             return _mapper.Map<FamilyDTO>(entity);
         }
 
-        public FamilyDTO LoadByCharacterId(long characterId)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
     }
 }
