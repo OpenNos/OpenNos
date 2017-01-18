@@ -167,10 +167,8 @@ namespace OpenNos.Handler
                             compliment++;
                             ServerManager.Instance.SetProperty(complimentedCharacterId, nameof(Character.Compliment), compliment);
                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentedCharacterId, nameof(Character.Name))), 12));
-                            AccountDTO account = Session.Account;
-                            account.LastCompliment = DateTime.Now;
-                            DAOFactory.AccountDAO.InsertOrUpdate(ref account);
-
+                            Session.Account.LastCompliment = DateTime.Now;
+                           
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
                         }
                         else
@@ -796,14 +794,14 @@ namespace OpenNos.Handler
                 long characterId;
                 if (long.TryParse(packetsplit[2], out characterId))
                 {
-                    Session.Character.DeleteFriend(characterId);
+                    Session.Character.DeleteRelation(characterId);
                     Session.SendPacket(Session.Character.GenerateFinit());
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_DELETED")));
 
                     ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
                     if (otherSession != null)
                     {
-                        otherSession.Character.DeleteFriend(Session.Character.CharacterId);
+                        otherSession.Character.DeleteRelation(Session.Character.CharacterId);
                         otherSession.SendPacket(otherSession.Character.GenerateFinit());
                     }
                     else
@@ -877,16 +875,16 @@ namespace OpenNos.Handler
                         {
                             if (packetsplit[2] == "-1")
                             {
-                                Session.Character.AddFriend(characterId);
+                                Session.Character.AddRelation(characterId,CharacterRelationType.Friend);
                                 Session.SendPacket(Session.Character.GenerateFinit());
-                                otherSession.Character.AddFriend(Session.Character.CharacterId);
+                                otherSession.Character.AddRelation(Session.Character.CharacterId, CharacterRelationType.Friend);
                                 otherSession.SendPacket(otherSession.Character.GenerateFinit());
                                 Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
                                 otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
                             }
                             else if (packetsplit[2] == "-99")
                             {
-                                otherSession.Character.DeleteFriend(Session.Character.CharacterId);
+                                otherSession.Character.DeleteRelation(Session.Character.CharacterId);
                                 otherSession.SendPacket(Language.Instance.GetMessageFromKey("FRIEND_REJECTED"));
                             }
                             else if (Session.Character.IsFriendlistFull())
@@ -909,7 +907,7 @@ namespace OpenNos.Handler
                 long characterId;
                 if (long.TryParse(packetsplit[2], out characterId))
                 {
-                    Session.Character.DeleteBlacklisted(characterId);
+                    Session.Character.DeleteRelation(characterId);
                     Session.SendPacket(Session.Character.GenerateBlinit());
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_DELETED")));
                 }
@@ -925,7 +923,7 @@ namespace OpenNos.Handler
                 long characterId;
                 if (long.TryParse(packetsplit[2], out characterId))
                 {
-                    Session.Character.AddBlacklisted(characterId);
+                    Session.Character.AddRelation(characterId, CharacterRelationType.Blocked);
                     Session.SendPacket(Session.Character.GenerateBlinit());
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_ADDED")));
                 }

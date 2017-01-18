@@ -36,15 +36,12 @@ namespace OpenNos.GameObject
 
         private AuthorityType _authority;
         private BuffContainer _buff;
-        private IList<CharacterRelationDTO> _blacklisted;
         private byte _cmapcount;
         private int _direction;
-        private IList<CharacterRelationDTO> _friends;
         private Inventory _inventory;
         private bool _invisible;
         private bool _isDancing;
         private bool _issitting;
-        private bool _familymessagechanged;
         private double _lastPortal;
         private int _lastPulse;
         private int _morph;
@@ -123,6 +120,7 @@ namespace OpenNos.GameObject
 
         public List<StaticBonusDTO> StaticBonusList { get; set; }
 
+        public List<CharacterRelationDTO> CharacterRelations { get; set; }
         public int DistanceCriticalRate { get; set; }
 
         public int DistanceDefence { get; set; }
@@ -856,40 +854,26 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void AddBlacklisted(long characterId)
+
+        public void AddRelation(long characterId, CharacterRelationType Relation)
         {
             CharacterRelationDTO addRelation = new CharacterRelationDTO
             {
                 CharacterId = CharacterId,
                 RelatedCharacterId = characterId,
-                RelationType = CharacterRelationType.Blocked
+                RelationType = Relation
             };
-            DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
+            if (!CharacterRelations.Contains(addRelation))
+            {
+                CharacterRelations.Add(addRelation);
+            }
+            else
+            {
+                CharacterRelationDTO chara = CharacterRelations.FirstOrDefault(s => s.CharacterId == CharacterId && s.CharacterRelationId == characterId);
+                chara = addRelation;
+            }
         }
 
-        public void AddFriend(long characterId)
-        {
-            CharacterRelationDTO addRelation = new CharacterRelationDTO
-            {
-                CharacterId = CharacterId,
-                RelatedCharacterId = characterId,
-                RelationType = CharacterRelationType.Friend
-            };
-            DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
-            _friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
-        }
-
-        public void AddSpouse(long characterId)
-        {
-            CharacterRelationDTO addRelation = new CharacterRelationDTO
-            {
-                CharacterId = CharacterId,
-                RelatedCharacterId = characterId,
-                RelationType = CharacterRelationType.Spouse
-            };
-            DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
-            _friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
-        }
 
         public void ChangeClass(ClassType characterClass)
         {
@@ -1242,30 +1226,14 @@ namespace OpenNos.GameObject
             return clonedCharacter;
         }
 
-        public void DeleteBlacklisted(long characterId)
+        public void DeleteRelation(long characterId)
         {
-            DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
-        }
-
-        public void DeleteFriend(long characterId)
-        {
-            DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
-            CharacterRelationDTO deleteReleation = _friends.FirstOrDefault(f => f.RelatedCharacterId == characterId);
-            if (deleteReleation != null)
+            CharacterRelationDTO chrel = CharacterRelations.FirstOrDefault(s => s.CharacterId == CharacterId && s.CharacterRelationId == characterId);
+            if (chrel != null)
             {
-                _friends.Remove(deleteReleation);
+                CharacterRelations.Remove(chrel);
             }
         }
-        public void DeleteSpouse(long characterId)
-        {
-            DAOFactory.CharacterRelationDAO.Delete(CharacterId, characterId);
-            CharacterRelationDTO deleteReleation = _friends.FirstOrDefault(f => f.RelatedCharacterId == characterId);
-            if (deleteReleation != null)
-            {
-                _friends.Remove(deleteReleation);
-            }
-        }
-
         public void DeleteItem(InventoryType type, short slot)
         {
             if (Inventory != null)
@@ -1332,8 +1300,7 @@ namespace OpenNos.GameObject
         public string GenerateBlinit()
         {
             string result = "blinit";
-            _blacklisted = DAOFactory.CharacterRelationDAO.GetBlacklisted(CharacterId);
-            foreach (CharacterRelationDTO relation in _blacklisted)
+            foreach (CharacterRelationDTO relation in CharacterRelations.Where(s => s.RelationType == CharacterRelationType.Blocked))
             {
                 result += $" {relation.RelatedCharacterId}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
             }
@@ -2988,25 +2955,23 @@ namespace OpenNos.GameObject
         {
             string result = "finfo";
 
-            if (_friends != null)
-            {
-                foreach (CharacterRelationDTO relation in _friends)
-                {
-                    if (relatedCharacterLoggedId.HasValue && relatedCharacterLoggedId.Value == relation.RelatedCharacterId)
-                    {
-                        result += $" {relation.RelatedCharacterId}.{(isConnected ? 1 : 0)}";
-                    }
 
+            foreach (CharacterRelationDTO relation in CharacterRelations.Where(c => c.RelationType == CharacterRelationType.Friend))
+            {
+                if (relatedCharacterLoggedId.HasValue && relatedCharacterLoggedId.Value == relation.RelatedCharacterId)
+                {
+                    result += $" {relation.RelatedCharacterId}.{(isConnected ? 1 : 0)}";
                 }
+
             }
+
             return result;
         }
 
         public string GenerateFinit()
         {
             string result = "finit";
-            _friends = DAOFactory.CharacterRelationDAO.GetFriends(CharacterId);
-            foreach (CharacterRelationDTO relation in _friends)
+            foreach (CharacterRelationDTO relation in CharacterRelations.Where(c => c.RelationType == CharacterRelationType.Friend))
             {
                 bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", relation.RelatedCharacterId).Result;
                 result += $" {relation.RelatedCharacterId}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
@@ -4483,22 +4448,22 @@ namespace OpenNos.GameObject
             {
                 return otherSession.Character.IsBlockingCharacter(CharacterId);
             }
-            return DAOFactory.CharacterRelationDAO.GetBlacklisted(characterId).FirstOrDefault(b => b.RelatedCharacterId.Equals(CharacterId)) != null;
+            return DAOFactory.CharacterRelationDAO.LoadByCharacterId(characterId).FirstOrDefault(b => b.RelatedCharacterId.Equals(CharacterId)) != null;
         }
-
+        
         public bool IsBlockingCharacter(long characterId)
         {
-            return _blacklisted != null && _blacklisted.Any(c => c.RelatedCharacterId.Equals(characterId));
+            return CharacterRelations.Any(c => c.RelationType == CharacterRelationType.Blocked && c.RelatedCharacterId.Equals(characterId));
         }
 
         public bool IsFriendlistFull()
         {
-            return _friends?.Count >= 80;
+            return CharacterRelations.Where(s => s.RelationType == CharacterRelationType.Friend).ToList().Count >= 80;
         }
 
         public bool IsFriendOfCharacter(long characterId)
         {
-            return _friends?.FirstOrDefault(c => c.RelatedCharacterId.Equals(characterId)) != null;
+            return CharacterRelations.Any(c => c.RelationType == CharacterRelationType.Friend && c.RelatedCharacterId.Equals(characterId));
         }
 
         /// <summary>
@@ -4796,6 +4761,9 @@ namespace OpenNos.GameObject
         {
             try
             {
+                AccountDTO account = Session.Account;
+                DAOFactory.AccountDAO.InsertOrUpdate(ref account);
+
                 CharacterDTO character = DeepCopy();
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
@@ -4862,6 +4830,17 @@ namespace OpenNos.GameObject
                 {
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
                 }
+
+                foreach (CharacterRelationDTO EntryToDelete in DAOFactory.CharacterRelationDAO.LoadByCharacterId(CharacterId).Except(CharacterRelations))
+                {
+                    DAOFactory.CharacterRelationDAO.Delete(EntryToDelete.CharacterId, EntryToDelete.CharacterRelationId);
+                }
+                foreach (CharacterRelationDTO relat in CharacterRelations)
+                {
+                    CharacterRelationDTO relat2 = relat;
+                    DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref relat2);
+                }
+
                 foreach (StaticBonusDTO bonus in Session.Character.StaticBonusList)
                 {
                     DAOFactory.StaticBonusDAO.InsertOrUpdate(bonus);
