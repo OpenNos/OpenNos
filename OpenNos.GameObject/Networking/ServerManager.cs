@@ -336,6 +336,11 @@ namespace OpenNos.GameObject
                     if (session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseInstance)
                     {
                         session.Character.MapId = session.Character.MapInstance.Map.MapId;
+                        if (mapX != null && mapY != null)
+                        {
+                            session.Character.MapX = (short)mapX;
+                            session.Character.MapY = (short)mapY;
+                        }
                     }
                     if (mapX != null && mapY != null)
                     {
