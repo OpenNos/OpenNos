@@ -165,14 +165,8 @@ namespace OpenNos.DAL.EF
             {
                 var entity = context.ItemInstance.FirstOrDefault(c => c.Id == itemInstance.Id);
 
-                if (entity == null)
-                {
-                    itemInstance = Insert(itemInstance, context);
-                }
-                else
-                {
-                    itemInstance = Update(entity, itemInstance, context);
-                }
+                itemInstance = entity == null ? Insert(itemInstance, context) : Update(entity, itemInstance, context);
+
                 return itemInstance;
             }
             catch (Exception e)

@@ -4856,7 +4856,8 @@ namespace OpenNos.GameObject
 
                 foreach (StaticBonusDTO bonus in Session.Character.StaticBonusList)
                 {
-                    DAOFactory.StaticBonusDAO.InsertOrUpdate(bonus);
+                    StaticBonusDTO bonus2 = bonus;
+                    DAOFactory.StaticBonusDAO.InsertOrUpdate(ref bonus2);
                 }
                 DAOFactory.StaticBonusDAO.RemoveOutDated();
 
