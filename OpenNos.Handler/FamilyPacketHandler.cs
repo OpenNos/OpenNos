@@ -360,7 +360,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CAN_T_CHANGE_MESSAGE")));
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CANT_CHANGE_MESSAGE")));
                 }
             }
         }

@@ -223,6 +223,10 @@ namespace OpenNos.Handler
 
         public void BuyBazaar(CBuyPacket packet)
         {
+            if (ServerManager.Instance.UpdateBazaar)
+            {
+                ServerManager.Instance.LoadBazaar();
+            }
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null && packet.Amount > 0)
             {
@@ -300,6 +304,10 @@ namespace OpenNos.Handler
 
         public void GetBazaar(CScalcPacket packet)
         {
+            if (ServerManager.Instance.UpdateBazaar)
+            {
+                ServerManager.Instance.LoadBazaar();
+            }
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null)
             {
@@ -345,11 +353,15 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket($"rc_scalc 1 {bz.Price} 0 {bz.Amount} 0 0");
+                Session.SendPacket($"rc_scalc 1 0 0 0 0 0");
             }
         }
         public void SellBazaar(CRegPacket packet)
         {
+            if (ServerManager.Instance.UpdateBazaar)
+            {
+                ServerManager.Instance.LoadBazaar();
+            }
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
 
             long price = packet.Price * packet.Amount;
