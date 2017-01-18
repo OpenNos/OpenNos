@@ -111,9 +111,13 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    foreach (BazaarItem entity in context.BazaarItem.Where(e => e.DateStart.AddHours(e.Duration).AddDays(e.MedalUsed ? 30 : 7) < DateTime.Now))
+                    foreach (BazaarItem e in context.BazaarItem)
                     {
-                        context.BazaarItem.Remove(entity);
+                        if ( e.DateStart.AddHours(e.Duration).AddDays(e.MedalUsed ? 30 : 7) < DateTime.Now)
+                        {
+                            context.BazaarItem.Remove(e);
+                        }
+
                     }
                 }
             }
