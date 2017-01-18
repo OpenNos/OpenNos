@@ -1677,7 +1677,7 @@ namespace OpenNos.Handler
                 // character should have been selected in SelectCharacter
                 return;
             }
-
+            Session.CurrentMapInstance = Session.Character.MapInstance;
             if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & DAOFactory.GeneralLogDAO.LoadByLogType("Connection", Session.Character.CharacterId).Count() == 1)
             {
                 Session.SendPacket("scene 40");
