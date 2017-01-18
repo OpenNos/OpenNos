@@ -1478,6 +1478,10 @@ namespace OpenNos.Handler
             }
             else
             {
+                if (message == null)
+                {
+                    return;
+                }
                 string language = new CultureInfo(System.Configuration.ConfigurationManager.AppSettings["Language"]).EnglishName;
                 if (message.Split(' ').Length > 3 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(message))
                 {
