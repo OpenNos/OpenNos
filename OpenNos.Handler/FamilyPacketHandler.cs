@@ -97,8 +97,13 @@ namespace OpenNos.Handler
                     };
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
                 }
-                ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-                Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
+                ServerManager.Instance.FamilyRefresh(family.FamilyId);
+                System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(3000))
+  .Subscribe(
+  o =>
+  {
+      Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
+  });
             }
             else
             {
