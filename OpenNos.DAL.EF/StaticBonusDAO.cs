@@ -20,7 +20,6 @@ using OpenNos.Data.Enums;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
 using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
@@ -29,26 +28,23 @@ namespace OpenNos.DAL.EF
     {
         #region Methods
 
-        public SaveResult InsertOrUpdate( StaticBonusDTO sb)
+        public SaveResult InsertOrUpdate(ref StaticBonusDTO staticBonus)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long id = sb.StaticBonusId;
+                    long id = staticBonus.StaticBonusId;
                     StaticBonus entity = context.StaticBonus.FirstOrDefault(c => c.StaticBonusId.Equals(id));
 
                     if (entity == null)
                     {
-                        sb = Insert(sb, context);
+                        staticBonus = Insert(staticBonus, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        sb.StaticBonusId = entity.StaticBonusId;
-                        sb = Update(entity, sb, context);
-                        return SaveResult.Updated;
-                    }
+                    staticBonus.StaticBonusId = entity.StaticBonusId;
+                    staticBonus = Update(entity, staticBonus, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)
@@ -113,9 +109,9 @@ namespace OpenNos.DAL.EF
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
-
+                Logger.Log.Error(e);
             }
         }
 
