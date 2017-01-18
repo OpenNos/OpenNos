@@ -107,6 +107,10 @@ namespace OpenNos.GameObject
         {
             if (!_disposed)
             {
+                foreach (ClientSession Session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapInstanceId == MapInstanceId))
+                {
+                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
+                }
                 Dispose(true);
                 GC.SuppressFinalize(this);
                 _disposed = true;
