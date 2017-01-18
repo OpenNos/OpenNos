@@ -50,7 +50,15 @@ namespace OpenNos.Handler
         #endregion
 
         #region Methods
-
+        public void JoinMiniland(MJoinPacket mjoin)
+        {
+            ClientSession sess = ServerManager.Instance.GetSessionByCharacterId(mjoin.CharacterId);
+            if (sess != null && sess.Character != null)
+            {
+                ServerManager.Instance.LeaveMap(sess.Character.CharacterId);
+                ServerManager.Instance.ChangeMapInstance(sess.Character.CharacterId, sess.Character.MapInstanceId, 3, 8);
+            }
+        }
         public void CharacterOptionChange(CharacterOptionPacket characteroptionpacket)
         {
             switch (characteroptionpacket.Option)
