@@ -98,7 +98,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return Session.Character.MapInstance;
+                return ServerManager.GetMapInstance(MapInstanceId);
             }
         }
         public bool CanFight => !IsSitting && ExchangeInfo == null;
