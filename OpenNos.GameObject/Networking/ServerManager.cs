@@ -184,8 +184,8 @@ namespace OpenNos.GameObject
                 Guid guid = Guid.NewGuid();
                 MapInstance Instance = new MapInstance(map, guid, false, type);
                 MapInstancePortalHandler.GetMapInstanceExitPortals(MapId, guid).ForEach(s => Instance.Portals.Add(s));
-                
-                _mapinstances.TryAdd(guid, Instance);   
+
+                _mapinstances.TryAdd(guid, Instance);
                 return guid;
             }
             return default(Guid);
@@ -1227,11 +1227,13 @@ namespace OpenNos.GameObject
 
         public void RemoveMapInstance(Guid MapId)
         {
-            var map = _mapinstances.FirstOrDefault(s=>s.Key == MapId);
+            KeyValuePair<Guid,MapInstance> map = _mapinstances.FirstOrDefault(s => s.Key == MapId);
+            if (!map.Equals(default(KeyValuePair<Guid, MapInstance>)))
             {
-                ((IDictionary)_mapinstances).Remove(map); 
+                map.Value.Dispose();
+                ((IDictionary)_mapinstances).Remove(map);
             }
-           
+
         }
 
         #endregion
