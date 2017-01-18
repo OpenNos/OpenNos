@@ -121,7 +121,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public Map CurrentMap { get; set; }
+        public MapInstance CurrentMapInstance { get; set; }
 
         public IDictionary<string, HandlerMethodReference> HandlerMethods
         {
@@ -136,11 +136,11 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool HasCurrentMap
+        public bool HasCurrentMapInstance
         {
             get
             {
-                return CurrentMap != null;
+                return CurrentMapInstance != null;
             }
         }
 
@@ -197,7 +197,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return CurrentMap != null;
+                return CurrentMapInstance != null;
             }
         }
 
@@ -230,10 +230,10 @@ namespace OpenNos.GameObject
                 ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectCharacter", Character.Name, Character.CharacterId).Wait();
 
                 // unregister from map if registered
-                if (CurrentMap != null)
+                if (CurrentMapInstance != null)
                 {
-                    CurrentMap.UnregisterSession(Character.CharacterId);
-                    CurrentMap = null;
+                    CurrentMapInstance.UnregisterSession(Character.CharacterId);
+                    CurrentMapInstance = null;
                     ServerManager.Instance.UnregisterSession(Character.CharacterId);
                 }
             }

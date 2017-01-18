@@ -130,9 +130,9 @@ namespace OpenNos.GameObject
 
             // Create a ChatClient and store it in a collection
             _sessions[session.Character.CharacterId] = session;
-            if (session.HasCurrentMap)
+            if (session.HasCurrentMapInstance)
             {
-                session.CurrentMap.IsSleeping = false;
+                session.CurrentMapInstance.IsSleeping = false;
             }
         }
 
@@ -282,9 +282,9 @@ namespace OpenNos.GameObject
 
             // Remove client from online clients list
             _sessions.Remove(characterId);
-            if (session.HasCurrentMap && _sessions.Count == 0)
+            if (session.HasCurrentMapInstance && _sessions.Count == 0)
             {
-                session.CurrentMap.IsSleeping = true;
+                session.CurrentMapInstance.IsSleeping = true;
             }
             LastUnregister = DateTime.Now;
         }

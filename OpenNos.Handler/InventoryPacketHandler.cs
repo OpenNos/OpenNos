@@ -57,7 +57,7 @@ namespace OpenNos.Handler
             long characterId;
             if (byte.TryParse(packetsplit[2], out mode) && long.TryParse(packetsplit[3], out characterId))
             {
-                if (Session.Character.MapId != ServerManager.Instance.GetProperty<short>(characterId, nameof(Character.MapId)))
+                if (Session.Character.MapInstanceId != ServerManager.Instance.GetProperty<Guid>(characterId, nameof(Character.MapInstanceId)))
                 {
                     ServerManager.Instance.SetProperty(characterId, nameof(Character.ExchangeInfo), null);
                     Session.Character.ExchangeInfo = null;
@@ -82,11 +82,11 @@ namespace OpenNos.Handler
                                 };
                                 Session.Character.ExchangeInfo = exc;
                                 ServerManager.Instance.SetProperty(characterId, nameof(Character.ExchangeInfo), new ExchangeInfo { TargetCharacterId = Session.Character.CharacterId, Confirm = false });
-                                Session.CurrentMap?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, string.Empty, characterId);
+                                Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, string.Empty, characterId);
                             }
                             else
                             {
-                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE"), 0), ReceiverType.OnlySomeone, string.Empty, characterId);
+                                Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE"), 0), ReceiverType.OnlySomeone, string.Empty, characterId);
                             }
                             break;
 
@@ -95,7 +95,7 @@ namespace OpenNos.Handler
                             ServerManager.Instance.SetProperty(characterId, nameof(Character.ExchangeInfo), null);
                             Session.Character.ExchangeInfo = null;
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("YOU_REFUSED"), 10));
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EXCHANGE_REFUSED"), Session.Character.Name), 10), ReceiverType.OnlySomeone, string.Empty, characterId);
+                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EXCHANGE_REFUSED"), Session.Character.Name), 10), ReceiverType.OnlySomeone, string.Empty, characterId);
                             break;
                     }
                 }
@@ -232,7 +232,7 @@ namespace OpenNos.Handler
                         long shopOwnerId;
                         if (long.TryParse(packetsplit[5], out shopOwnerId))
                         {
-                            KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(shopOwnerId));
+                            KeyValuePair<long, MapShop> shop = Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(shopOwnerId));
                             PersonalShopItem item = shop.Value?.Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
                             if (item != null)
                             {
@@ -340,7 +340,7 @@ namespace OpenNos.Handler
                 else if (it.IsBound)
                 {
                     Session.SendPacket("exc_close 0");
-                    Session.CurrentMap?.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
+                    Session.CurrentMapInstance?.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
 
                     ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.TargetCharacterId, nameof(Character.ExchangeInfo), null);
                     Session.Character.ExchangeInfo = null;
@@ -348,7 +348,7 @@ namespace OpenNos.Handler
                 }
             }
             Session.Character.ExchangeInfo.Gold = gold;
-            Session.CurrentMap?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {gold} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
+            Session.CurrentMapInstance?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {gold} {packetList}", ReceiverType.OnlySomeone, string.Empty, Session.Character.ExchangeInfo.TargetCharacterId);
             Session.Character.ExchangeInfo.Validate = true;
         }
 
@@ -363,11 +363,11 @@ namespace OpenNos.Handler
                 {
                     case RequestExchangeType.Requested: // send the request trade
                         {
-                            if (!Session.HasCurrentMap)
+                            if (!Session.HasCurrentMapInstance)
                             {
                                 return;
                             }
-                            ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(packet.CharacterId);
+                            ClientSession targetSession = Session.CurrentMapInstance.GetSessionByCharacterId(packet.CharacterId);
 
                             if (targetSession == null)
                             {
@@ -423,14 +423,14 @@ namespace OpenNos.Handler
                         }
                     case RequestExchangeType.Confirmed: // click Trade button in exchange window
                         {
-                            if (Session.HasCurrentMap && Session.HasSelectedCharacter
+                            if (Session.HasCurrentMapInstance && Session.HasSelectedCharacter
                                 && Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.TargetCharacterId != Session.Character.CharacterId)
                             {
-                                if (!Session.HasCurrentMap)
+                                if (!Session.HasCurrentMapInstance)
                                 {
                                     return;
                                 }
-                                ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
+                                ClientSession targetSession = Session.CurrentMapInstance.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
 
                                 if (targetSession == null)
                                 {
@@ -529,9 +529,9 @@ namespace OpenNos.Handler
                         }
                     case RequestExchangeType.Cancelled: // cancel trade thru exchange window
                         {
-                            if (Session.HasCurrentMap && Session.Character.ExchangeInfo != null)
+                            if (Session.HasCurrentMapInstance && Session.Character.ExchangeInfo != null)
                             {
-                                ClientSession targetSession = Session.CurrentMap.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
+                                ClientSession targetSession = Session.CurrentMapInstance.GetSessionByCharacterId(Session.Character.ExchangeInfo.TargetCharacterId);
                                 CloseExchange(Session, targetSession);
                             }
                             break;
@@ -551,19 +551,19 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet.ToString(), Session.SessionId);
 
-            if (!Session.HasCurrentMap || !Session.CurrentMap.DroppedList.ContainsKey(packet.TransportId))
+            if (!Session.HasCurrentMapInstance || !Session.CurrentMapInstance.DroppedList.ContainsKey(packet.TransportId))
             {
                 return;
             }
 
-            MapItem mapItem = Session.CurrentMap.DroppedList[packet.TransportId];
+            MapItem mapItem = Session.CurrentMapInstance.DroppedList[packet.TransportId];
             if (Session.Character.LastSkillUse.AddSeconds(1) > DateTime.Now || Session.Character.IsVehicled)
             {
                 return;
             }
             if (mapItem != null)
             {
-                if (Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8) && Session.HasCurrentMap)
+                if (Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8) && Session.HasCurrentMapInstance)
                 {
                     MonsterMapItem item = mapItem as MonsterMapItem;
                     if (item != null)
@@ -598,8 +598,8 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
                                 Session.SendPacket(Session.Character.GenerateSpPoint());
                             }
-                            Session.CurrentMap.DroppedList.Remove(packet.TransportId);
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
+                            Session.CurrentMapInstance.DroppedList.Remove(packet.TransportId);
+                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                         }
                         else
                         {
@@ -608,8 +608,8 @@ namespace OpenNos.Handler
                                 ItemInstance newInv = Session.Character.Inventory.AddToInventory(mapItemInstance);
                                 if (newInv != null)
                                 {
-                                    Session.CurrentMap.DroppedList.Remove(packet.TransportId);
-                                    Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
+                                    Session.CurrentMapInstance.DroppedList.Remove(packet.TransportId);
+                                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                                     Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
                                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.Item.Name} x {mapItem.Amount}", 12));
                                 }
@@ -635,8 +635,8 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                         }
                         Session.SendPacket(Session.Character.GenerateGold());
-                        Session.CurrentMap.DroppedList.Remove(packet.TransportId);
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
+                        Session.CurrentMapInstance.DroppedList.Remove(packet.TransportId);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                     }
                 }
             }
@@ -726,9 +726,9 @@ namespace OpenNos.Handler
                 {
                     if (putPacket.Amount > 0 && putPacket.Amount < 100)
                     {
-                        if (ServerManager.GetMap(Session.Character.MapId).DroppedList.GetAllItems().Count < 200 && Session.HasCurrentMap)
+                        if (Session.Character.MapInstance.DroppedList.GetAllItems().Count < 200 && Session.HasCurrentMapInstance)
                         {
-                            MapItem droppedItem = Session.CurrentMap.PutItem(putPacket.InventoryType, putPacket.Slot, putPacket.Amount, ref invitem, Session);
+                            MapItem droppedItem = Session.CurrentMapInstance.PutItem(putPacket.InventoryType, putPacket.Slot, putPacket.Amount, ref invitem, Session);
                             if (droppedItem == null)
                             {
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
@@ -740,7 +740,7 @@ namespace OpenNos.Handler
                             {
                                 Session.Character.DeleteItem(invitem.Type, invitem.Slot);
                             }
-                            Session.CurrentMap?.Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.Amount} 0 -1");
+                            Session.CurrentMapInstance?.Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.Amount} 0 -1");
                         }
                         else
                         {
@@ -765,7 +765,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             short slot;
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3 && Session.HasCurrentMap && Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || !(Session.Character.ExchangeInfo?.ExchangeList).Any()) && short.TryParse(packetsplit[2], out slot))
+            if (packetsplit.Length > 3 && Session.HasCurrentMapInstance && Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || !(Session.Character.ExchangeInfo?.ExchangeList).Any()) && short.TryParse(packetsplit[2], out slot))
             {
                 ItemInstance inventory = slot != (byte)EquipmentType.Sp ? Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(slot, InventoryType.Wear) : Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Wear);
                 if (inventory != null)
@@ -806,9 +806,9 @@ namespace OpenNos.Handler
                     }
 
                     Session.SendPacket(Session.Character.GenerateStatChar());
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEq());
                     Session.SendPacket(Session.Character.GenerateEquipment());
-                    Session.CurrentMap?.Broadcast(Session.Character.GeneratePairy());
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePairy());
                 }
             }
         }
@@ -1356,7 +1356,7 @@ namespace OpenNos.Handler
                     if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
                         Session.SendPacket(Session.Character.GenerateDelay(5000, 3, "#sl^1"));
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.MapX, Session.Character.MapY);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.MapX, Session.Character.MapY);
                     }
                     else
                     {
@@ -1555,7 +1555,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            if (packetsplit.Length > 3 && Session.HasCurrentMap && Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
+            if (packetsplit.Length > 3 && Session.HasCurrentMapInstance && Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
             {
                 InventoryType type;
                 short slot;
@@ -1593,10 +1593,10 @@ namespace OpenNos.Handler
                 Session.Character.Morph = sp.Item.Morph;
                 Session.Character.MorphUpgrade = sp.Upgrade;
                 Session.Character.MorphUpgrade2 = sp.Design;
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
                 Session.SendPacket(Session.Character.GenerateLev());
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196), Session.Character.MapX, Session.Character.MapY);
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
                 Session.SendPacket(Session.Character.GenerateSpPoint());
                 Session.Character.LoadSpeed();
                 Session.SendPacket(Session.Character.GenerateCond());
@@ -1702,8 +1702,8 @@ namespace OpenNos.Handler
                 }
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
                 Session.SendPacket($"sd {Session.Character.SpCooldown}");
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
 
                 // ms_c
                 Session.SendPacket(Session.Character.GenerateSki());
