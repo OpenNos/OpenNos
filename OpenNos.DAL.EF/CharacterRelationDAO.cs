@@ -61,33 +61,14 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IList<CharacterRelationDTO> GetFriends(long characterId)
+        public IEnumerable<CharacterRelationDTO> LoadByCharacterId(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return context.CharacterRelation
-                    .Where(c => c.RelationType != CharacterRelationType.Blocked && c.CharacterId == characterId)
-                    .OrderByDescending(c => c.RelationType)
-                    .ThenBy(c => c.RelatedCharacterId)
-                    .ToList()
-                    .Select(c => _mapper.Map<CharacterRelationDTO>(c))
-                    .ToList();
+                return context.CharacterRelation.Select(c => _mapper.Map<CharacterRelationDTO>(c));
             }
         }
-
-        public IList<CharacterRelationDTO> GetBlacklisted(long characterId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return context.CharacterRelation
-                    .Where(c => c.RelationType == CharacterRelationType.Blocked && c.CharacterId == characterId)
-                    .OrderBy(c => c.RelatedCharacterId)
-                    .ToList()
-                    .Select(c => _mapper.Map<CharacterRelationDTO>(c))
-                    .ToList();
-            }
-        }
-
+        
         public SaveResult InsertOrUpdate(ref CharacterRelationDTO relation)
         {
             try
