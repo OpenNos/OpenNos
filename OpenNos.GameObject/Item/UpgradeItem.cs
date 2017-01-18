@@ -76,7 +76,7 @@ namespace OpenNos.GameObject
                                         {
                                             specialist.Rare = 0;
                                             session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
-                                            session.CurrentMap?.Broadcast(session.Character.GenerateGuri(13, 1, 1), session.Character.MapX, session.Character.MapY);
+                                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateGuri(13, 1, 1), session.Character.MapX, session.Character.MapY);
                                             session.Character.SpPoint = 10000;
                                             if (session.Character.SpPoint > 10000)
                                             {
@@ -97,7 +97,7 @@ namespace OpenNos.GameObject
                                         {
                                             specialist.Rare = 0;
                                             session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
-                                            session.CurrentMap?.Broadcast(session.Character.GenerateGuri(13, 1, 1), session.Character.MapX, session.Character.MapY);
+                                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateGuri(13, 1, 1), session.Character.MapX, session.Character.MapY);
                                             session.Character.SpPoint = 10000;
                                             session.SendPacket(session.Character.GenerateSpPoint());
                                             session.SendPacket(session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (Domain.InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
