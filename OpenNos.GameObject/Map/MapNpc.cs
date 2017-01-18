@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
 
         public IDisposable LifeEvent { get; set; }
 
-        public Map Map { get; set; }
+        public MapInstance MapInstance { get; set; }
 
         public List<GridPos> Path { get; set; }
 
@@ -114,7 +114,7 @@ namespace OpenNos.GameObject
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
-                Map.Broadcast(GenerateEff(), MapX, MapY);
+                MapInstance.Broadcast(GenerateEff(), MapX, MapY);
                 LastEffect = DateTime.Now;
             }
 
@@ -131,7 +131,7 @@ namespace OpenNos.GameObject
                 short mapX = FirstX;
                 short mapY = FirstY;
 
-                if (Map.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
+                if (MapInstance.Map.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                 {
                     Observable.Timer(TimeSpan.FromMilliseconds(1000 * (xpoint + ypoint) / (2 * Npc.Speed)))
                       .Subscribe(
@@ -142,15 +142,15 @@ namespace OpenNos.GameObject
                           });
 
                     LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Npc.Speed));
-                    Map.Broadcast(new BroadcastPacket(null, GenerateMv2(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
+                    MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv2(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                 }
             }
             if (Target == -1)
             {
                 if (Npc.IsHostile && Shop == null)
                 {
-                    MapMonster monster = Map.Monsters.FirstOrDefault(s => MapId == s.MapId && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.MapX, Y = s.MapY }) < (Npc.NoticeRange > 5 ? Npc.NoticeRange / 2 : Npc.NoticeRange));
-                    ClientSession session = Map.Sessions.FirstOrDefault(s => MapId == s.Character.MapId && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.MapX, Y = s.Character.MapY }) < Npc.NoticeRange);
+                    MapMonster monster = MapInstance.Monsters.FirstOrDefault(s => MapInstance == s.MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.MapX, Y = s.MapY }) < (Npc.NoticeRange > 5 ? Npc.NoticeRange / 2 : Npc.NoticeRange));
+                    ClientSession session = MapInstance.Sessions.FirstOrDefault(s => MapInstance == s.Character.MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.MapX, Y = s.Character.MapY }) < Npc.NoticeRange);
 
                     if (monster != null && session != null)
                     {
@@ -160,7 +160,7 @@ namespace OpenNos.GameObject
             }
             else if (Target != -1)
             {
-                MapMonster monster = Map.Monsters.FirstOrDefault(s => s.MapMonsterId == Target);
+                MapMonster monster = MapInstance.Monsters.FirstOrDefault(s => s.MapMonsterId == Target);
                 if (monster == null || monster.CurrentHp < 1)
                 {
                     Target = -1;
@@ -181,17 +181,17 @@ namespace OpenNos.GameObject
                         if (npcMonsterSkill != null)
                         {
                             npcMonsterSkill.LastSkillUse = DateTime.Now;
-                            Map.Broadcast($"ct 2 {MapNpcId} 3 {Target} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
+                            MapInstance.Broadcast($"ct 2 {MapNpcId} 3 {Target} {npcMonsterSkill.Skill.CastAnimation} {npcMonsterSkill.Skill.CastEffect} {npcMonsterSkill.Skill.SkillVNum}");
                         }
 
                         if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                         {
-                            Map.Broadcast(GenerateEff());
+                            MapInstance.Broadcast(GenerateEff());
                         }
 
                         monster.CurrentHp -= damage;
 
-                        Map.Broadcast(npcMonsterSkill != null
+                        MapInstance.Broadcast(npcMonsterSkill != null
                             ? $"su 2 {MapNpcId} 3 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} {monster.CurrentHp / monster.Monster.MaxHP * 100} {damage} 0 0"
                             : $"su 2 {MapNpcId} 3 {Target} 0 {Npc.BasicCooldown} 11 {Npc.BasicSkill} 0 0 {(monster.CurrentHp > 0 ? 1 : 0)} {monster.CurrentHp / monster.Monster.MaxHP * 100} {damage} 0 0");
 
@@ -200,7 +200,7 @@ namespace OpenNos.GameObject
                         {
                             if (IsMoving)
                             {
-                                Path = Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                                Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
                                 if (!Path.Any())
                                 {
                                     Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
@@ -227,7 +227,7 @@ namespace OpenNos.GameObject
                             short xoffset = (short)ServerManager.RandomNumber(-1, 1);
                             short yoffset = (short)ServerManager.RandomNumber(-1, 1);
 
-                            Path = Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
+                            Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
                             if (!Path.Any())
                             {
                                 Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
@@ -238,8 +238,8 @@ namespace OpenNos.GameObject
                             int maxindex = Path.Count > Npc.Speed / 2 && Npc.Speed > 1 ? Npc.Speed / 2 : Path.Count;
                             short mapX = (short)Path.ElementAt(maxindex - 1).x;
                             short mapY = (short)Path.ElementAt(maxindex - 1).y;
-                            double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY, MapId = MapId }, new MapCell { X = MapX, Y = MapY, MapId = MapId }) / (double)Npc.Speed;
-                            Map.Broadcast(new BroadcastPacket(null, $"mv 2 {MapNpcId} {mapX} {mapY} {Npc.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
+                            double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY}, new MapCell { X = MapX, Y = MapY}) / (double)Npc.Speed;
+                            MapInstance.Broadcast(new BroadcastPacket(null, $"mv 2 {MapNpcId} {mapX} {mapY} {Npc.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
                             LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
                             Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000)))
@@ -257,7 +257,7 @@ namespace OpenNos.GameObject
                         }
                         if (Path.Any() && (MapId != monster.MapId || distance > maxDistance))
                         {
-                            Path = Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                            Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
                             if (!Path.Any())
                             {
                                 Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
@@ -284,7 +284,7 @@ namespace OpenNos.GameObject
                 {
                     try
                     {
-                        if (!Map.IsSleeping)
+                        if (!MapInstance.IsSleeping)
                         {
                             NpcLife();
                         }

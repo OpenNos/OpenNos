@@ -151,6 +151,7 @@
     <Compile Include="Map\Map.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Map\MapCell.cs" />
+    <Compile Include="Map\MapInstance.cs" />
     <Compile Include="Map\MapMonster.cs" />
     <Compile Include="Map\MonsterMapItem.cs" />
     <Compile Include="Networking\BroadcastableBase.cs" />

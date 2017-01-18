@@ -71,22 +71,22 @@ namespace OpenNos.GameObject
                     {
                         case 1:
                             IndicatorBase buff1 = new Buff.Indicators.Item.AttackPotion(session.Character.Level);
-                            session.CurrentMap?.Broadcast(session.Character.GenerateEff(203));
+                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff1);
                             break;
                         case 2:
                             IndicatorBase buff2 = new Buff.Indicators.Item.DefensePotion(session.Character.Level);
-                            session.CurrentMap?.Broadcast(session.Character.GenerateEff(203));
+                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff2);
                             break;
                         case 3:
                             IndicatorBase buff3 = new Buff.Indicators.Item.EnergyPotion(session.Character.Level);
-                            session.CurrentMap?.Broadcast(session.Character.GenerateEff(203));
+                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff3);
                             break;
                         case 4:
                             IndicatorBase buff4 = new Buff.Indicators.Item.ExperiencePotion(session.Character.Level);
-                            session.CurrentMap?.Broadcast(session.Character.GenerateEff(203));
+                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff4);
                             break;
                     }
@@ -124,7 +124,7 @@ namespace OpenNos.GameObject
                         {
                             specialistInstance.Design = (byte)EffectValue;
                             session.Character.MorphUpgrade2 = EffectValue;
-                            session.CurrentMap?.Broadcast(session.Character.GenerateCMode());
+                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
                             session.SendPacket(session.Character.GenerateStat());
                             session.SendPacket(session.Character.GenerateStatChar());
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -176,7 +176,7 @@ namespace OpenNos.GameObject
                             if (session.Character.IsSitting)
                             {
                                 session.Character.IsSitting = false;
-                                session.CurrentMap?.Broadcast(session.Character.GenerateRest());
+                                session.CurrentMapInstance?.Broadcast(session.Character.GenerateRest());
                             }
                             session.SendPacket(session.Character.GenerateDelay(3000, 3, $"#u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2"));
                         }
@@ -190,8 +190,8 @@ namespace OpenNos.GameObject
                                 session.Character.MorphUpgrade = 0;
                                 session.Character.MorphUpgrade2 = 0;
                                 session.Character.Morph = Morph + (byte)session.Character.Gender;
-                                session.CurrentMap?.Broadcast(session.Character.GenerateEff(196), session.Character.MapX, session.Character.MapY);
-                                session.CurrentMap?.Broadcast(session.Character.GenerateCMode());
+                                session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(196), session.Character.MapX, session.Character.MapY);
+                                session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
                                 session.SendPacket(session.Character.GenerateCond());
                                 session.Character.LastSpeedChange = DateTime.Now;
                             }
@@ -231,9 +231,9 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        if (session.HasCurrentMap)
+                        if (session.HasCurrentMapInstance)
                         {
-                            if (session.CurrentMap.MapTypes.All(m => m.MapTypeId != (short)MapTypeEnum.Act4))
+                            if (session.CurrentMapInstance.Map.MapTypes.All(m => m.MapTypeId != (short)MapTypeEnum.Act4))
                             {
                                 short[] vnums = { 1386, 1387, 1388, 1389, 1390, 1391, 1392, 1393, 1394, 1395, 1396, 1397, 1398, 1399, 1400, 1401, 1402, 1403, 1404, 1405 };
                                 short vnum = vnums[ServerManager.RandomNumber(0, 20)];
@@ -243,12 +243,12 @@ namespace OpenNos.GameObject
                                 {
                                     return;
                                 }
-                                // ReSharper disable once PossibleNullReferenceException HasCurrentMap NullCheck
-                                MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = session.Character.MapY, MapX = session.Character.MapX, MapId = session.Character.MapId, Position = (byte)session.Character.Direction, IsMoving = true, MapMonsterId = session.CurrentMap.GetNextMonsterId(), ShouldRespawn = false };
-                                monster.Initialize(session.CurrentMap);
+                                // ReSharper disable once PossibleNullReferenceException HasCurrentMapInstance NullCheck
+                                MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = session.Character.MapY, MapX = session.Character.MapX, MapId = session.Character.MapInstance.Map.MapId, Position = (byte)session.Character.Direction, IsMoving = true, MapMonsterId = session.CurrentMapInstance.GetNextMonsterId(), ShouldRespawn = false };
+                                monster.Initialize(session.CurrentMapInstance);
                                 monster.StartLife();
-                                session.CurrentMap.AddMonster(monster);
-                                session.CurrentMap.Broadcast(monster.GenerateIn3());
+                                session.CurrentMapInstance.AddMonster(monster);
+                                session.CurrentMapInstance.Broadcast(monster.GenerateIn3());
                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             }
                         }

@@ -29,7 +29,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
                 hpbonus = (int)session.Character.HPLoad() - session.Character.Hp;
                 session.Character.Hp = (int)session.Character.HPLoad();
             }
-            session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(hpbonus));
+            session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRc(hpbonus));
             session.SendPacket(session.Character.GenerateStat());
             Disable(session);
         }

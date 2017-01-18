@@ -62,7 +62,7 @@ namespace OpenNos.GameObject
 
                 if(IsWorldServer && session.HasSelectedCharacter)
                 {
-                    session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
                 }
 
                 session.Destroy();
