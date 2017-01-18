@@ -49,7 +49,7 @@ namespace OpenNos.GameObject
                     {
                         SourceX = 48,
                         SourceY = 132,
-                        DestinationX = 3,
+                        DestinationX = 5,
                         DestinationY = 8,
                         Type = (short)PortalType.Miniland,
                         SourceMapId = 1,
@@ -61,7 +61,7 @@ namespace OpenNos.GameObject
                     {
                         SourceX = 9,
                         SourceY = 171,
-                        DestinationX = 3,
+                        DestinationX = 5,
                         DestinationY = 8,
                         Type = (short)PortalType.Miniland,
                         SourceMapId = 145,
