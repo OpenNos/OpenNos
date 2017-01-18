@@ -20,6 +20,7 @@ using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 
 namespace OpenNos.DAL.EF
@@ -111,13 +112,9 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    foreach (BazaarItem e in context.BazaarItem)
+                    foreach (BazaarItem entity in context.BazaarItem.Where(e => DbFunctions.AddDays(DbFunctions.AddHours(e.DateStart, e.Duration), e.MedalUsed ? 30 : 7) < DateTime.Now))
                     {
-                        if ( e.DateStart.AddHours(e.Duration).AddDays(e.MedalUsed ? 30 : 7) < DateTime.Now)
-                        {
-                            context.BazaarItem.Remove(e);
-                        }
-
+                        context.BazaarItem.Remove(entity);
                     }
                 }
             }
