@@ -56,7 +56,7 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                //Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("DELETE_CHARACTER_ERROR"), characterSlot, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_CHARACTER_ERROR"), characterId, e.Message), e);
                 return DeleteResult.Error;
             }
         }
@@ -87,16 +87,13 @@ namespace OpenNos.DAL.EF
                         relation = Insert(relation, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        relation = Update(entity, relation, context);
-                        return SaveResult.Updated;
-                    }
+                    relation = Update(entity, relation, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)
             {
-                //Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("INSERT_ERROR"), character, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_CHARACTERRELATION_ERROR"), relation.CharacterRelationId, e.Message), e);
                 return SaveResult.Error;
             }
         }

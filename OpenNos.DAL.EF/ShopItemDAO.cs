@@ -13,7 +13,6 @@
  */
 
 using OpenNos.Core;
-using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -129,16 +128,6 @@ namespace OpenNos.DAL.EF
                     yield return _mapper.Map<ShopItemDTO>(ShopItem);
                 }
             }
-        }
-
-        private ShopItemDTO Update(ShopItem entity, ShopItemDTO shopItem, OpenNosContext context)
-        {
-            if (entity != null)
-            {
-                _mapper.Map(shopItem, entity);
-                context.SaveChanges();
-            }
-            return _mapper.Map<ShopItemDTO>(entity);
         }
 
         #endregion

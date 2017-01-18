@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.Data;
 using System.Collections.Generic;
 
@@ -21,7 +22,7 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-        IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(long inventoryitemId);
+        IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(Guid inventoryitemId);
 
         #endregion
     }

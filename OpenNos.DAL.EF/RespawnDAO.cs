@@ -43,12 +43,10 @@ namespace OpenNos.DAL.EF
                         respawn = Insert(respawn, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        respawn.RespawnId = entity.RespawnId;
-                        respawn = Update(entity, respawn, context);
-                        return SaveResult.Updated;
-                    }
+
+                    respawn.RespawnId = entity.RespawnId;
+                    respawn = Update(entity, respawn, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)
