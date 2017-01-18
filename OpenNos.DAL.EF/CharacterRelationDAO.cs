@@ -65,7 +65,10 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return context.CharacterRelation.Select(c => _mapper.Map<CharacterRelationDTO>(c));
+                foreach (CharacterRelation entity in context.CharacterRelation.Where(i => i.CharacterId == characterId))
+                {
+                    yield return _mapper.Map<CharacterRelationDTO>(entity);
+                }
             }
         }
         
