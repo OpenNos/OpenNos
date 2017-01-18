@@ -728,7 +728,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), 0));
                     if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
                     {
-                        Session.Character.SetReturnPoint(Session.Character.MapInstance.Map.MapId, targetSession.Character.MapX, targetSession.Character.MapY);
+                        Session.Character.SetReturnPoint(Session.Character.MapInstance.Map.MapId, targetSession.Character.PositionX, targetSession.Character.PositionY);
                         targetSession.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
                     }
                 }
@@ -952,7 +952,7 @@ namespace OpenNos.Handler
             }
             if (guriPacket[2] == "2")
             {
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.PositionX, Session.Character.PositionY);
             }
             else if (guriPacket[2] == "4")
             {
@@ -1145,8 +1145,8 @@ namespace OpenNos.Handler
                         ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
                         if (session != null)
                         {
-                            short mapy = session.Character.MapY;
-                            short mapx = session.Character.MapX;
+                            short mapy = session.Character.PositionY;
+                            short mapx = session.Character.PositionX;
                             short mapId = session.Character.MapInstance.Map.MapId;
 
                             ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
@@ -1300,8 +1300,8 @@ namespace OpenNos.Handler
             }
             foreach (PortalDTO portal in Session.CurrentMapInstance.Portals)
             {
-                if (Session.Character.MapY >= portal.SourceY - 1 && Session.Character.MapY <= portal.SourceY + 1
-                    && Session.Character.MapX >= portal.SourceX - 1 && Session.Character.MapX <= portal.SourceX + 1)
+                if (Session.Character.PositionY >= portal.SourceY - 1 && Session.Character.PositionY <= portal.SourceY + 1
+                    && Session.Character.PositionX >= portal.SourceX - 1 && Session.Character.PositionX <= portal.SourceX + 1)
                 {
                     switch (portal.Type)
                     {
@@ -1800,14 +1800,20 @@ namespace OpenNos.Handler
         {
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
+            int distance = Map.GetDistance(new MapCell() { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell() { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
 
             if (!Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) && !Session.Character.IsChangingMapInstance && !Session.Character.HasShopOpened)
             {
                 if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(1) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
                 {
-                    Session.Character.MapX = walkPacket.XCoordinate;
-                    Session.Character.MapY = walkPacket.YCoordinate;
+                    if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                    {
+                        Session.Character.MapX = walkPacket.XCoordinate;
+                        Session.Character.MapY = walkPacket.YCoordinate;
+                    }
+                    Session.Character.PositionX = walkPacket.XCoordinate;
+                    Session.Character.PositionY = walkPacket.YCoordinate;
+
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;

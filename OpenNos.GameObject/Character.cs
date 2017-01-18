@@ -4772,12 +4772,6 @@ namespace OpenNos.GameObject
                 DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                 
                 CharacterDTO character = DeepCopy();
-                if(MapInstance.IsBaseInstance == true)
-                {
-                    character.MapX = PositionX;
-                    character.MapY = PositionY;
-                    character.MapId = MapInstance.Map.MapId;
-                }
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
                 // wait for any exchange to be finished
