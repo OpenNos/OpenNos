@@ -186,6 +186,7 @@ namespace OpenNos.World
             DAOFactory.NpcMonsterSkillDAO.RegisterMapping(typeof(NpcMonsterSkill)).InitializeMapper();
             DAOFactory.PenaltyLogDAO.RegisterMapping(typeof(PenaltyLogDTO)).InitializeMapper();
             DAOFactory.PortalDAO.RegisterMapping(typeof(PortalDTO)).InitializeMapper();
+            DAOFactory.PortalDAO.RegisterMapping(typeof(Portal)).InitializeMapper();
             DAOFactory.QuicklistEntryDAO.RegisterMapping(typeof(QuicklistEntryDTO)).InitializeMapper();
             DAOFactory.RecipeDAO.RegisterMapping(typeof(Recipe)).InitializeMapper();
             DAOFactory.RecipeItemDAO.RegisterMapping(typeof(RecipeItemDTO)).InitializeMapper();

@@ -871,7 +871,7 @@ namespace OpenNos.Handler
                 short mapId = Session.Character.MapId;
                 short mapX = Session.Character.PositionX;
                 short mapY = Session.Character.PositionY;
-                PortalDTO portal = new PortalDTO
+                Portal portal = new Portal()
                 {
                     SourceMapId = mapId,
                     SourceX = mapX,
@@ -1564,7 +1564,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             if (Session.HasCurrentMapInstance)
             {
-                PortalDTO pt = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapId == Session.Character.MapInstance.Map.MapId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell {  X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
+                Portal pt = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapInstanceId == Session.Character.MapInstanceId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell {  X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
                 if (pt != null)
                 {
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));

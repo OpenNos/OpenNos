@@ -19,6 +19,7 @@ namespace OpenNos.Domain
         BaseInstance,
         FamilyInstance,
         PersonalInstance,
-        GroupInstance
+        GroupInstance,
+        FactionInstance
     }
 }

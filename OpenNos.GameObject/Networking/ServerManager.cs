@@ -18,6 +18,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.WebApi.Reference;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -175,7 +176,20 @@ namespace OpenNos.GameObject
         {
             return _items.FirstOrDefault(m => m.VNum.Equals(vnum));
         }
-
+        public static Guid GenerateMapInstance(short MapId, MapInstanceType type)
+        {
+            Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
+            if (map != null)
+            {
+                Guid guid = Guid.NewGuid();
+                MapInstance Instance = new MapInstance(map, guid, false, type);
+                MapInstancePortalHandler.GetMapInstanceExitPortals(MapId, guid).ForEach(s => Instance.Portals.Add(s));
+                
+                _mapinstances.TryAdd(guid, Instance);   
+                return guid;
+            }
+            return default(Guid);
+        }
         public static MapInstance GetMapInstance(Guid id)
         {
             return _mapinstances.FirstOrDefault(m => m.Key.Equals(id)).Value;
@@ -746,11 +760,7 @@ namespace OpenNos.GameObject
                     };
                     _maps.Add(mapinfo);
 
-                    MapInstance newMap = new MapInstance(mapinfo, guid)
-                    {
-                        ShopAllowed = map.ShopAllowed,
-                        MapInstanceType = MapInstanceType.BaseInstance
-                    };
+                    MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseInstance);
 
                     // register for broadcast
                     _mapinstances.TryAdd(guid, newMap);
@@ -1210,6 +1220,15 @@ namespace OpenNos.GameObject
             {
                 Logger.Error(e);
             }
+        }
+
+        public void RemoveMapInstance(Guid MapId)
+        {
+            var map = _mapinstances.FirstOrDefault(s=>s.Key == MapId);
+            {
+                ((IDictionary)_mapinstances).Remove(map); 
+            }
+           
         }
 
         #endregion
