@@ -56,7 +56,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public RecipeItemDTO LoadById(int recipeItemId)
+        public RecipeItemDTO LoadById(short recipeItemId)
         {
             try
             {

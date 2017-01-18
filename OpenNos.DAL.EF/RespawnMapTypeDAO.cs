@@ -64,12 +64,10 @@ namespace OpenNos.DAL.EF
                         respawnMapType = Insert(respawnMapType, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        respawnMapType.RespawnMapTypeId = entity.RespawnMapTypeId;
-                        respawnMapType = Update(entity, respawnMapType, context);
-                        return SaveResult.Updated;
-                    }
+
+                    respawnMapType.RespawnMapTypeId = entity.RespawnMapTypeId;
+                    respawnMapType = Update(entity, respawnMapType, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)

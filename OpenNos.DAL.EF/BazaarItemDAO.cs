@@ -58,8 +58,8 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long BazaarItemId = bazaarItem.BazaarItemId;
-                    BazaarItem entity = context.BazaarItem.FirstOrDefault(c => c.BazaarItemId.Equals(BazaarItemId));
+                    long bazaarItemId = bazaarItem.BazaarItemId;
+                    BazaarItem entity = context.BazaarItem.FirstOrDefault(c => c.BazaarItemId.Equals(bazaarItemId));
 
                     if (entity == null)
                     {
@@ -117,9 +117,9 @@ namespace OpenNos.DAL.EF
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
-
+                Logger.Error(e);
             }
         }
 

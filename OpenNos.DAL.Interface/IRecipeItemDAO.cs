@@ -25,7 +25,7 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<RecipeItemDTO> LoadAll();
 
-        RecipeItemDTO LoadById(int RecipeItemId);
+        RecipeItemDTO LoadById(short RecipeItemId);
 
         IEnumerable<RecipeItemDTO> LoadByRecipe(short recipeId);
 
