@@ -333,7 +333,10 @@ namespace OpenNos.GameObject
                     session.ClearLowPriorityQueue();
 
                     session.Character.MapInstanceId = MapInstanceId;
-
+                    if (session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                    {
+                        session.Character.MapId = session.Character.MapInstance.Map.MapId;
+                    }
                     if (mapX != null && mapY != null)
                     {
                         session.Character.PositionX = (short)mapX;
