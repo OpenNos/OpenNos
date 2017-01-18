@@ -13,7 +13,7 @@ namespace OpenNos.GameObject
 {
     public class MapInstance : BroadcastableBase
     {
-        public bool IsBaseInstance { get; set; }
+        public MapInstanceType MapInstanceType { get; set; }
         public Map Map { get; set; }
         public ThreadSafeSortedList<long, MapItem> DroppedList { get; }
 

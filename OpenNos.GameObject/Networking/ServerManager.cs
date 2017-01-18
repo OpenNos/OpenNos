@@ -286,7 +286,7 @@ namespace OpenNos.GameObject
         }
         public Guid GetBaseMapInstanceIdByMapId(short MapId)
         {
-            return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == MapId && s.Value?.IsBaseInstance == true).Key;
+            return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == MapId && s.Value.MapInstanceType == MapInstanceType.BaseInstance).Key;
         }
 
         public void ChangeMap(long id, short? MapId = null, short? mapX = null, short? mapY = null)
@@ -749,7 +749,7 @@ namespace OpenNos.GameObject
                     MapInstance newMap = new MapInstance(mapinfo, guid)
                     {
                         ShopAllowed = map.ShopAllowed,
-                        IsBaseInstance = true
+                        MapInstanceType = MapInstanceType.BaseInstance
                     };
 
                     // register for broadcast
