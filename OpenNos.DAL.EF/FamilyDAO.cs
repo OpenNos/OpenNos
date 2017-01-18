@@ -66,11 +66,9 @@ namespace OpenNos.DAL.EF
                         family = Insert(family, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        family = Update(entity, family, context);
-                        return SaveResult.Updated;
-                    }
+
+                    family = Update(entity, family, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)
