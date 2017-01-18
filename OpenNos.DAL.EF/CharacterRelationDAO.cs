@@ -56,38 +56,22 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                //Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("DELETE_CHARACTER_ERROR"), characterSlot, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_CHARACTER_ERROR"), characterId, e.Message), e);
                 return DeleteResult.Error;
             }
         }
 
-        public IList<CharacterRelationDTO> GetFriends(long characterId)
+        public IEnumerable<CharacterRelationDTO> LoadByCharacterId(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return context.CharacterRelation
-                    .Where(c => c.RelationType != CharacterRelationType.Blocked && c.CharacterId == characterId)
-                    .OrderByDescending(c => c.RelationType)
-                    .ThenBy(c => c.RelatedCharacterId)
-                    .ToList()
-                    .Select(c => _mapper.Map<CharacterRelationDTO>(c))
-                    .ToList();
+                foreach (CharacterRelation entity in context.CharacterRelation.Where(i => i.CharacterId == characterId))
+                {
+                    yield return _mapper.Map<CharacterRelationDTO>(entity);
+                }
             }
         }
-
-        public IList<CharacterRelationDTO> GetBlacklisted(long characterId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return context.CharacterRelation
-                    .Where(c => c.RelationType == CharacterRelationType.Blocked && c.CharacterId == characterId)
-                    .OrderBy(c => c.RelatedCharacterId)
-                    .ToList()
-                    .Select(c => _mapper.Map<CharacterRelationDTO>(c))
-                    .ToList();
-            }
-        }
-
+        
         public SaveResult InsertOrUpdate(ref CharacterRelationDTO relation)
         {
             try
@@ -103,16 +87,13 @@ namespace OpenNos.DAL.EF
                         relation = Insert(relation, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        relation = Update(entity, relation, context);
-                        return SaveResult.Updated;
-                    }
+                    relation = Update(entity, relation, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)
             {
-                //Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("INSERT_ERROR"), character, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_CHARACTERRELATION_ERROR"), relation.CharacterRelationId, e.Message), e);
                 return SaveResult.Error;
             }
         }

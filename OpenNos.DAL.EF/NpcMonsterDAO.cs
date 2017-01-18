@@ -94,11 +94,9 @@ namespace OpenNos.DAL.EF
                         npcMonster = Insert(npcMonster, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        npcMonster = Update(entity, npcMonster, context);
-                        return SaveResult.Updated;
-                    }
+
+                    npcMonster = Update(entity, npcMonster, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)

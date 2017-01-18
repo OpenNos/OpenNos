@@ -25,8 +25,6 @@ namespace OpenNos.DAL.Interface
         /// <summary>
         /// Deletes already existing object from database
         /// </summary>
-        /// <param name="staticBonusId"></param>
-        /// <returns></returns>
         void RemoveOutDated();
 
         /// <summary>
@@ -34,11 +32,11 @@ namespace OpenNos.DAL.Interface
         /// </summary>
         /// <param name="staticBonus"></param>
         /// <returns></returns>
-        SaveResult InsertOrUpdate(StaticBonusDTO staticbonus);
+        SaveResult InsertOrUpdate(ref StaticBonusDTO staticBonus);
 
 
         /// <summary>
-        /// Loads staticbonus by characterid
+        /// Loads staticBonus by characterid
         /// </summary>
         /// <param name="characterId"></param>
         /// <returns></returns>

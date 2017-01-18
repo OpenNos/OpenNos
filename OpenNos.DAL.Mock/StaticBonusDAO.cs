@@ -24,7 +24,7 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
-        public SaveResult InsertOrUpdate(StaticBonusDTO staticbonus)
+        public SaveResult InsertOrUpdate(ref StaticBonusDTO staticBonus)
         {
             throw new NotImplementedException();
         }

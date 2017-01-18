@@ -12,18 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using OpenNos.Data;
-using System.Collections.Generic;
-
-namespace OpenNos.DAL.Interface
+namespace OpenNos.Domain
 {
-    public interface ICellonOptionDAO : ISynchronizableBaseDAO<CellonOptionDTO>
+    public enum MapInstanceType
     {
-        #region Methods
-
-        IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(Guid inventoryitemId);
-
-        #endregion
+        BaseInstance,
+        FamilyInstance,
+        PersonalInstance,
+        GroupInstance
     }
 }

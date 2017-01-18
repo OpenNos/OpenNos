@@ -64,11 +64,9 @@ namespace OpenNos.DAL.EF
                         character = Insert(character, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        character = Update(entity, character, context);
-                        return SaveResult.Updated;
-                    }
+
+                    character = Update(entity, character, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)
