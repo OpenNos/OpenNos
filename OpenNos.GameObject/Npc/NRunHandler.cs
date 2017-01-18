@@ -27,11 +27,11 @@ namespace OpenNos.GameObject
 
         public static void NRun(ClientSession Session, byte type, short runner, short npcid)
         {
-            if (!Session.HasCurrentMap)
+            if (!Session.HasCurrentMapInstance)
             {
                 return;
             }
-            MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == npcid);
+            MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == npcid);
             switch (runner)
             {
                 case 1:
@@ -69,7 +69,7 @@ namespace OpenNos.GameObject
                                 Session.Character.Inventory.AddNewToInventory(86, type: InventoryType.Wear);
                                 break;
                         }
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEq());
                         Session.SendPacket(Session.Character.GenerateEquipment());
                         Session.Character.ChangeClass((ClassType)type);
                     }

@@ -40,7 +40,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Swordsman
                 session.Character.Mp = (int)session.Character.MPLoad();
             }
             session.Character.Buff.DisableEffects(false, true, 4);
-            session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(hpbonus));
+            session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRc(hpbonus));
             session.SendPacket(session.Character.GenerateStat());
             Disable(session);
         }
