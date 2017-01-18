@@ -1158,7 +1158,7 @@ namespace OpenNos.GameObject
         {
             UpdateBazaar = true;
 
-            System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(RandomNumber(1000, 30000)))
+            System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(RandomNumber(30000, 90000)))
            .Subscribe(
            o =>
            {
