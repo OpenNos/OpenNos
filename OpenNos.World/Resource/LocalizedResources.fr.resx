@@ -1285,4 +1285,7 @@ Veux-tu le porter ?</value>
   <data name="XP_NOTFIRSTHIT" xml:space="preserve">
     <value>Tu n'as fait que te défendre, tu n'obtiens donc qu'une partie de l'expérience.</value>
   </data>
+  <data name="CANT_CHANGE_MESSAGE" xml:space="preserve">
+    <value>Tu ne peux pas modifier ton message aujourd'hui car il a déjà été modifié.</value>
+  </data>
 </root>
