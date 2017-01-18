@@ -859,12 +859,12 @@ namespace OpenNos.Handler
         /// $PortalTo Command
         /// </summary>
         /// <param name="portalToPacket"></param>
-      /*  public void CreatePortal(PortalToPacket portalToPacket)
+        public void CreatePortal(PortalToPacket portalToPacket)
         {
             Logger.Debug("PortalTo Command", Session.SessionId);
             if (portalToPacket != null)
             {
-                if (ServerManager.GetMapInstance(portalToPacket.DestinationMapId) == null || !Session.HasCurrentMapInstance)
+                if ( !Session.HasCurrentMapInstance)
                 {
                     return;
                 }
@@ -890,7 +890,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 10));
             }
         }
-        */
+        
         /// <summary>
         /// $Demote Command
         /// </summary>
