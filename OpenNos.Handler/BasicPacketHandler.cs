@@ -55,8 +55,8 @@ namespace OpenNos.Handler
             ClientSession sess = ServerManager.Instance.GetSessionByCharacterId(mjoin.CharacterId);
             if (sess != null && sess.Character != null)
             {
-                ServerManager.Instance.LeaveMap(sess.Character.CharacterId);
-                ServerManager.Instance.ChangeMapInstance(sess.Character.CharacterId, sess.Character.MapInstanceId, 3, 8);
+                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, sess.Character.MinilandId, 5, 8);
             }
         }
         public void CharacterOptionChange(CharacterOptionPacket characteroptionpacket)
@@ -1153,13 +1153,25 @@ namespace OpenNos.Handler
                         ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
                         if (session != null)
                         {
-                            short mapy = session.Character.PositionY;
-                            short mapx = session.Character.PositionX;
-                            short mapId = session.Character.MapInstance.Map.MapId;
+                            if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                            {
+                                if (Session.Character.MapInstance.MapInstanceType != MapInstanceType.BaseInstance)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
+                                    return;
+                                }
+                                short mapy = session.Character.PositionY;
+                                short mapx = session.Character.PositionX;
+                                short mapId = session.Character.MapInstance.Map.MapId;
 
-                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
-                            Session.Character.Inventory.RemoveItemAmount(vnumToUse);
+                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
+                                Session.Character.Inventory.RemoveItemAmount(vnumToUse);
+                            }
+                            else
+                            {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_ON_INSTANCEMAP"), 0));
+                            }
                         }
                         else
                         {
