@@ -26,30 +26,6 @@ namespace OpenNos.DAL.EF
 {
     public class FamilyLogDAO : MappingBaseDAO<FamilyLog, FamilyLogDTO>, IFamilyLogDAO
     {
-        public DeleteResult Delete(long FamilyLogId)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    FamilyLog famlog = context.FamilyLog.FirstOrDefault(c => c.FamilyLogId.Equals(FamilyLogId));
-
-                    if (famlog != null)
-                    {
-                        context.FamilyLog.Remove(famlog);
-                        context.SaveChanges();
-                    }
-
-                    return DeleteResult.Deleted;
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_ERROR"), FamilyLogId, e.Message), e);
-                return DeleteResult.Error;
-            }
-        }
-
         public SaveResult InsertOrUpdate(ref FamilyLogDTO famlog)
         {
             try
@@ -71,21 +47,11 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), famlog.FamilyLogId, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("UPDATE_FAMILYLOG_ERROR"), famlog.FamilyLogId, e.Message), e);
                 return SaveResult.Error;
             }
         }
 
-        public IEnumerable<BazaarItemDTO> LoadAll()
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (BazaarItem bazaarItem in context.BazaarItem)
-                {
-                    yield return _mapper.Map<BazaarItemDTO>(bazaarItem);
-                }
-            }
-        }
         private FamilyLogDTO Insert(FamilyLogDTO famlog, OpenNosContext context)
         {
             FamilyLog entity = _mapper.Map<FamilyLog>(famlog);

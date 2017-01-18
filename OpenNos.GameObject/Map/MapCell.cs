@@ -18,11 +18,6 @@ namespace OpenNos.GameObject
     {
         #region Properties
 
-        public short MapId
-        {
-            get; set;
-        }
-
         public short X
         {
             get; set;

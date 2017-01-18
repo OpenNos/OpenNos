@@ -66,12 +66,10 @@ namespace OpenNos.DAL.EF
                         mail = Insert(mail, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        mail.MailId = entity.MailId;
-                        mail = Update(entity, mail, context);
-                        return SaveResult.Updated;
-                    }
+
+                    mail.MailId = entity.MailId;
+                    mail = Update(entity, mail, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)

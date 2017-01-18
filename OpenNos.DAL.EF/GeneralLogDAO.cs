@@ -72,7 +72,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<GeneralLogDTO> LoadByLogType(string logType, Nullable<long> characterId)
+        public IEnumerable<GeneralLogDTO> LoadByLogType(string logType, long? characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -102,13 +102,13 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData)
+        public void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    GeneralLog log = new GeneralLog()
+                    GeneralLog log = new GeneralLog
                     {
                         AccountId = accountId,
                         IpAddress = ipAddress,

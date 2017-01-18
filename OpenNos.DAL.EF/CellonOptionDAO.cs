@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -24,7 +25,7 @@ namespace OpenNos.DAL.EF
     {
         #region Methods
 
-        public IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(long wearableInstanceId)
+        public IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(Guid wearableInstanceId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {

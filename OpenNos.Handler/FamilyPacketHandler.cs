@@ -242,7 +242,7 @@ namespace OpenNos.Handler
                   .Subscribe(
                   o =>
                   {
-                      targetSession.CurrentMap?.Broadcast(targetSession.Character.GenerateGidx());
+                      targetSession.CurrentMapInstance?.Broadcast(targetSession.Character.GenerateGidx());
                   });
 
             
@@ -365,7 +365,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CAN_T_CHANGE_MESSAGE")));
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CANT_CHANGE_MESSAGE")));
                 }
             }
         }
@@ -485,7 +485,7 @@ namespace OpenNos.Handler
                     {
                         if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
                         {
-                            if (Session.HasCurrentMap && s.HasCurrentMap && Session.CurrentMap == s.CurrentMap && !Session.Character.InvisibleGm)
+                            if (Session.HasCurrentMapInstance && s.HasCurrentMapInstance && Session.CurrentMapInstance == s.CurrentMapInstance && !Session.Character.InvisibleGm)
                             {
                                 s.SendPacket(Session.Character.GenerateSay(msg, 6));
                             }
@@ -578,7 +578,7 @@ namespace OpenNos.Handler
                     .Subscribe(
                     o =>
                     {
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
                         Session.SendPacket(Session.Character.GenerateFamilyMember());
                         Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                         Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
@@ -652,7 +652,7 @@ namespace OpenNos.Handler
                    .Subscribe(
                    o =>
                    {
-                       kickSession.CurrentMap?.Broadcast(kickSession.Character.GenerateGidx());
+                       kickSession.CurrentMapInstance?.Broadcast(kickSession.Character.GenerateGidx());
                    });
                 }
                 else
@@ -699,7 +699,7 @@ namespace OpenNos.Handler
                        .Subscribe(
                        o =>
                        {
-                           Session.CurrentMap?.Broadcast(Session.Character.GenerateGidx());
+                           Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
                        });
             }
         }

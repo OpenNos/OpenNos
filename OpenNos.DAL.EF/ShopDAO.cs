@@ -61,10 +61,7 @@ namespace OpenNos.DAL.EF
                         context.SaveChanges();
                         return _mapper.Map<ShopDTO>(entity);
                     }
-                    else
-                    {
-                        return new ShopDTO();
-                    }
+                    return new ShopDTO();
                 }
             }
             catch (Exception e)

@@ -122,9 +122,9 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.MoveInInventory(inv.Slot, itemToWearType, InventoryType.Wear);
                         session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, itemToWearType, slot, 0, 0, 0, 0));
                         session.SendPacket(session.Character.GenerateStatChar());
-                        session.CurrentMap?.Broadcast(session.Character.GenerateEq());
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateEq());
                         session.SendPacket(session.Character.GenerateEquipment());
-                        session.CurrentMap?.Broadcast(session.Character.GeneratePairy());
+                        session.CurrentMapInstance?.Broadcast(session.Character.GeneratePairy());
                     }
                     else
                     {
@@ -136,9 +136,9 @@ namespace OpenNos.GameObject
                             currentlyEquippedItem.Type, currentlyEquippedItem.Slot, currentlyEquippedItem.Rare, currentlyEquippedItem.Design, currentlyEquippedItem.Upgrade, (currentlyEquippedItem as SpecialistInstance)?.SpStoneUpgrade ?? (byte)0));
 
                         session.SendPacket(session.Character.GenerateStatChar());
-                        session.CurrentMap?.Broadcast(session.Character.GenerateEq());
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateEq());
                         session.SendPacket(session.Character.GenerateEquipment());
-                        session.CurrentMap?.Broadcast(session.Character.GeneratePairy());
+                        session.CurrentMapInstance?.Broadcast(session.Character.GeneratePairy());
                     }
 
                     if (EquipmentSlot == EquipmentType.Fairy)

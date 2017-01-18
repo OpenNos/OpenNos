@@ -62,11 +62,11 @@ namespace OpenNos.Handler
                 case BuyShopType.CharacterShop:
                     {
                         // User shop
-                        if (!Session.HasCurrentMap)
+                        if (!Session.HasCurrentMapInstance)
                         {
                             return;
                         }
-                        KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(buyPacket.OwnerId));
+                        KeyValuePair<long, MapShop> shop = Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(buyPacket.OwnerId));
                         PersonalShopItem item = shop.Value?.Items.FirstOrDefault(i => i.ShopSlot.Equals(buyPacket.Slot));
                         if (item == null || amount <= 0 || amount > 99)
                         {
@@ -101,7 +101,7 @@ namespace OpenNos.Handler
                                 Session.Character.Gold -= item.Price * amount;
                                 Session.SendPacket(Session.Character.GenerateGold());
 
-                                KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(buyPacket.OwnerId));
+                                KeyValuePair<long, MapShop> shop2 = Session.CurrentMapInstance.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(buyPacket.OwnerId));
                                 LoadShopItem(buyPacket.OwnerId, shop2);
                             }
                             else
@@ -115,14 +115,14 @@ namespace OpenNos.Handler
                 case BuyShopType.ItemShop:
                     {
                         // load shop
-                        if (!Session.HasCurrentMap)
+                        if (!Session.HasCurrentMapInstance)
                         {
                             return;
                         }
-                        MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)buyPacket.OwnerId));
+                        MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)buyPacket.OwnerId));
                         if (npc != null)
                         {
-                            int dist = Map.GetDistance(new MapCell { MapId = Session.CurrentMap.MapId, X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell { MapId = npc.MapId, X = npc.MapX, Y = npc.MapY });
+                            int dist = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell {X = npc.MapX, Y = npc.MapY });
                             if (npc.Shop == null || dist > 5)
                             {
                                 return;
@@ -354,19 +354,19 @@ namespace OpenNos.Handler
             {
                 short typePacket;
                 short.TryParse(packetsplit[2], out typePacket);
-                if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMap)
+                if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMapInstance)
                 {
                     return;
                 }
-                foreach (PortalDTO por in Session.CurrentMap.Portals)
+                foreach (PortalDTO por in Session.CurrentMapInstance.Portals)
                 {
-                    if (Session.Character.MapX < por.SourceX + 6 && Session.Character.MapX > por.SourceX - 6 && Session.Character.MapY < por.SourceY + 6 && Session.Character.MapY > por.SourceY - 6)
+                    if (Session.Character.PositionX < por.SourceX + 6 && Session.Character.PositionX > por.SourceX - 6 && Session.Character.PositionY < por.SourceY + 6 && Session.Character.PositionY > por.SourceY - 6)
                     {
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"), 0));
                         return;
                     }
                 }
-                if (!Session.CurrentMap.ShopAllowed)
+                if (!Session.CurrentMapInstance.ShopAllowed)
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NOT_ALLOWED"), 0));
                     return;
@@ -377,7 +377,7 @@ namespace OpenNos.Handler
                 }
                 else if (typePacket == 0)
                 {
-                    if (Session.CurrentMap.UserShops.Count(s => s.Value.OwnerId == Session.Character.CharacterId) != 0)
+                    if (Session.CurrentMapInstance.UserShops.Count(s => s.Value.OwnerId == Session.Character.CharacterId) != 0)
                     {
                         return;
                     }
@@ -446,12 +446,12 @@ namespace OpenNos.Handler
                             shopname = StringHelper.Truncate(shopname, 20);
                             myShop.OwnerId = Session.Character.CharacterId;
                             myShop.Name = shopname;
-                            Session.CurrentMap.UserShops.Add(Session.CurrentMap.LastUserShopId++, myShop);
+                            Session.CurrentMapInstance.UserShops.Add(Session.CurrentMapInstance.LastUserShopId++, myShop);
 
                             Session.Character.HasShopOpened = true;
 
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.LastUserShopId), ReceiverType.AllExceptMe);
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateShop(shopname));
+                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMapInstance.LastUserShopId), ReceiverType.AllExceptMe);
+                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateShop(shopname));
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
 
                             Session.Character.IsSitting = true;
@@ -459,7 +459,7 @@ namespace OpenNos.Handler
 
                             Session.Character.LoadSpeed();
                             Session.SendPacket(Session.Character.GenerateCond());
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
+                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateRest());
                         }
                         else
                         {
@@ -509,7 +509,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length < 4 || !Session.HasCurrentMap)
+            if (packetsplit.Length < 4 || !Session.HasCurrentMapInstance)
             {
                 return;
             }
@@ -521,11 +521,11 @@ namespace OpenNos.Handler
             }
             if (type == 1)
             {
-                MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
+                MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
                 if (npc != null)
                 {
-                    int distance = Map.GetDistance(new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell { X = npc.MapX, Y = npc.MapY });
-                    if (npc.MapId == Session.CurrentMap.MapId && distance <= 5)
+                    int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = npc.MapX, Y = npc.MapY });
+                    if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
                     {
                         Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
                         if (rec != null && rec.Amount > 0)
@@ -543,11 +543,11 @@ namespace OpenNos.Handler
             }
             else
             {
-                MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
+                MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
                 if (npc != null)
                 {
-                    int distance = Map.GetDistance(new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell { X = npc.MapX, Y = npc.MapY });
-                    if (npc.MapId == Session.CurrentMap.MapId && distance <= 5)
+                    int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = npc.MapX, Y = npc.MapY });
+                    if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
                     {
                         Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
                         if (rec != null)
@@ -670,11 +670,11 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             byte type, typeshop = 0;
             int NpcId;
-            if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type) || Session.Character.IsShopping || !Session.HasCurrentMap)
+            if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type) || Session.Character.IsShopping || !Session.HasCurrentMapInstance)
             {
                 return;
             }
-            MapNpc mapnpc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(NpcId));
+            MapNpc mapnpc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(NpcId));
             if (mapnpc?.Shop == null)
             {
                 return;
@@ -708,30 +708,30 @@ namespace OpenNos.Handler
                         break;
 
                     default:
-                        if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                        if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                         {
                             percent *= 1.5;
                             typeshop = 150;
                         }
                         break;
                 }
-                if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 3))
+                if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 3))
                 {
                     percent = 1.6;
                     typeshop = 160;
                 }
-                else if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 4))
+                else if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 4))
                 {
                     percent = 1.7;
                     typeshop = 170;
                 }
-                else if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 5))
+                else if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 5))
                 {
                     percent = 2;
                     typeshop = 200;
                 }
                 else if
-                    (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 6))
+                    (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 6))
                 {
                     percent = 2;
                     typeshop = 200;
@@ -784,7 +784,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 2)
             {
                 int mode;
-                if (!int.TryParse(packetsplit[2], out mode) || !Session.HasCurrentMap)
+                if (!int.TryParse(packetsplit[2], out mode) || !Session.HasCurrentMapInstance)
                 {
                     return;
                 }
@@ -799,7 +799,7 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    KeyValuePair<long, MapShop> shopList = Session.CurrentMap.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
+                    KeyValuePair<long, MapShop> shopList = Session.CurrentMapInstance.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
                     LoadShopItem(owner, shopList);
                 }
                 else
@@ -810,7 +810,7 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
+                    MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
                     if (npc == null)
                     {
                         return;
@@ -838,11 +838,11 @@ namespace OpenNos.Handler
 
         private bool BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, byte amount)
         {
-            if (!clientSession.HasCurrentMap)
+            if (!clientSession.HasCurrentMapInstance)
             {
                 return false;
             }
-            PersonalShopItem shopitem = clientSession.CurrentMap.UserShops[shop.Key].Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
+            PersonalShopItem shopitem = clientSession.CurrentMapInstance.UserShops[shop.Key].Items.FirstOrDefault(i => i.ShopSlot.Equals(slot));
             if (shopitem == null)
             {
                 return false;
@@ -863,7 +863,7 @@ namespace OpenNos.Handler
             shopOwnerSession.Character.Gold += shopitem.Price * amount;
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateGold());
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), Session.Character.Name, shopitem.ItemInstance.Item.Name, amount)));
-            clientSession.CurrentMap.UserShops[shop.Key].Sell += shopitem.Price * amount;
+            clientSession.CurrentMapInstance.UserShops[shop.Key].Sell += shopitem.Price * amount;
 
             if (shopitem.ItemInstance.Type != InventoryType.Equipment)
             {
@@ -888,14 +888,14 @@ namespace OpenNos.Handler
             // remove item from shop if the amount the user wanted to sell has been sold
             if (shopitem.SellAmount == 0)
             {
-                clientSession.CurrentMap.UserShops[shop.Key].Items.Remove(shopitem);
+                clientSession.CurrentMapInstance.UserShops[shop.Key].Items.Remove(shopitem);
             }
 
             // update currently sold item
             shopOwnerSession.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{shopitem.SellAmount}");
 
             // end shop
-            if (!clientSession.CurrentMap.UserShops[shop.Key].Items.Any(s => s.SellAmount > 0))
+            if (!clientSession.CurrentMapInstance.UserShops[shop.Key].Items.Any(s => s.SellAmount > 0))
             {
                 shopOwnerSession.Character.CloseShop();
             }

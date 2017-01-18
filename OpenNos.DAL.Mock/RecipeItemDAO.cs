@@ -33,7 +33,7 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        public RecipeItemDTO LoadById(int RecipeItemId)
+        public RecipeItemDTO LoadById(short RecipeItemId)
         {
             throw new NotImplementedException();
         }

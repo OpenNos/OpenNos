@@ -57,19 +57,16 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long AccountId = account.AccountId;
-                    Account entity = context.Account.FirstOrDefault(c => c.AccountId.Equals(AccountId));
+                    long accountId = account.AccountId;
+                    Account entity = context.Account.FirstOrDefault(c => c.AccountId.Equals(accountId));
 
                     if (entity == null)
                     {
                         account = Insert(account, context);
                         return SaveResult.Inserted;
                     }
-                    else
-                    {
-                        account = Update(entity, account, context);
-                        return SaveResult.Updated;
-                    }
+                    account = Update(entity, account, context);
+                    return SaveResult.Updated;
                 }
             }
             catch (Exception e)
@@ -119,33 +116,12 @@ namespace OpenNos.DAL.EF
             return null;
         }
 
-        public AccountDTO LoadBySessionId(int sessionId)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    Account Account = context.Account.FirstOrDefault(a => a.LastSession.Equals(sessionId));
-                    if (Account != null)
-                    {
-                        return _mapper.Map<AccountDTO>(Account);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-            return null;
-        }
-
         public void LogIn(string name)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
                     context.SaveChanges();
                 }
             }
@@ -162,8 +138,11 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
-                    Account.LastSession = session;
-                    context.SaveChanges();
+                    if (Account != null)
+                    {
+                        Account.LastSession = session;
+                        context.SaveChanges();
+                    }
                 }
             }
             catch (Exception e)

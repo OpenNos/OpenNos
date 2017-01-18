@@ -24,11 +24,9 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult Delete(long characterId, long relatedCharacterId);
 
-        IList<CharacterRelationDTO> GetFriends(long characterId);
-
-        IList<CharacterRelationDTO> GetBlacklisted(long characterId);
-
         SaveResult InsertOrUpdate(ref CharacterRelationDTO relation);
+
+        IEnumerable<CharacterRelationDTO> LoadByCharacterId(long characterId);
 
         #endregion
     }
