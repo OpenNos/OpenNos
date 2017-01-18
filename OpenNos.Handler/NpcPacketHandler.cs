@@ -358,7 +358,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                foreach (PortalDTO por in Session.CurrentMapInstance.Portals)
+                foreach (Portal por in Session.CurrentMapInstance.Portals)
                 {
                     if (Session.Character.PositionX < por.SourceX + 6 && Session.Character.PositionX > por.SourceX - 6 && Session.Character.PositionY < por.SourceY + 6 && Session.Character.PositionY > por.SourceY - 6)
                     {

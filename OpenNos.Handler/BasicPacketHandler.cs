@@ -168,7 +168,7 @@ namespace OpenNos.Handler
                             ServerManager.Instance.SetProperty(complimentedCharacterId, nameof(Character.Compliment), compliment);
                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentedCharacterId, nameof(Character.Name))), 12));
                             Session.Account.LastCompliment = DateTime.Now;
-                           
+
                             Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
                         }
                         else
@@ -244,7 +244,7 @@ namespace OpenNos.Handler
                         }
                         if (packet.Amount <= bzcree.Item.Amount)
                         {
-                          
+
                             if (!Session.Character.Inventory.CanAddItem(bzcree.Item.ItemVNum))
                             {
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
@@ -258,7 +258,7 @@ namespace OpenNos.Handler
                                     return;
                                 }
                                 ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDAO.LoadById(bzcree.BazaarItem.ItemInstanceId);
-                                if(bzitemdto.Amount < packet.Amount)
+                                if (bzitemdto.Amount < packet.Amount)
                                 {
                                     return;
                                 }
@@ -279,7 +279,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
                                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: { bzcree.Item.Item.Name} x {packet.Amount}", 10));
                                 }
-                           
+
                             }
 
                         }
@@ -887,7 +887,7 @@ namespace OpenNos.Handler
                         {
                             if (packetsplit[2] == "-1")
                             {
-                                Session.Character.AddRelation(characterId,CharacterRelationType.Friend);
+                                Session.Character.AddRelation(characterId, CharacterRelationType.Friend);
                                 Session.SendPacket(Session.Character.GenerateFinit());
                                 otherSession.Character.AddRelation(Session.Character.CharacterId, CharacterRelationType.Friend);
                                 otherSession.SendPacket(otherSession.Character.GenerateFinit());
@@ -1298,7 +1298,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
             }
-            foreach (PortalDTO portal in Session.CurrentMapInstance.Portals)
+            foreach (Portal portal in Session.CurrentMapInstance.Portals.Concat(Session.Character.GetExtraPortal()))
             {
                 if (Session.Character.PositionY >= portal.SourceY - 1 && Session.Character.PositionY <= portal.SourceY + 1
                     && Session.Character.PositionX >= portal.SourceX - 1 && Session.Character.PositionX <= portal.SourceX + 1)
@@ -1321,7 +1321,16 @@ namespace OpenNos.Handler
                     }
                     ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                     Session.Character.LastPortal = currentRunningSeconds;
-                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, portal.DestinationMapId, portal.DestinationX, portal.DestinationY);
+
+                    if (ServerManager.GetMapInstance(portal.SourceMapInstanceId).MapInstanceType != MapInstanceType.BaseInstance && ServerManager.GetMapInstance(portal.DestinationMapInstanceId).MapInstanceType == MapInstanceType.BaseInstance)
+                    {
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
+                    }
+                    else
+                    {
+                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
+                    }
+
                     break;
                 }
             }

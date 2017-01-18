@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
 
         public IEnumerable<MapNpc> Npcs => _npcs;
 
-        public List<PortalDTO> Portals => _portals;
+        public List<Portal> Portals => _portals;
 
         public bool ShopAllowed { get; set; }
 
@@ -66,15 +66,17 @@ namespace OpenNos.GameObject
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
         private readonly List<int> _mapMonsterIds;
         private readonly List<MapNpc> _npcs;
-        private readonly List<PortalDTO> _portals;
+        private readonly List<Portal> _portals;
         private bool _disposed;
         private bool _isSleeping;
         private bool _isSleepingRequest;
      
         private readonly Random _random;
-        public MapInstance(Map map, Guid guid)
+        public MapInstance(Map map, Guid guid,bool shopAllowed, MapInstanceType type)
         {
 
+            ShopAllowed = shopAllowed;
+            MapInstanceType = type;
             _isSleeping = true;
             LastUserShopId = 0;
             _random = new Random();
@@ -83,25 +85,24 @@ namespace OpenNos.GameObject
             MapInstanceId = guid;
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
-            IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(Map.MapId).ToList();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
-            _portals = new List<PortalDTO>();
-            foreach (PortalDTO portal in portals)
+            _portals = new List<Portal>();
+            foreach (PortalDTO portal in DAOFactory.PortalDAO.LoadByMap(Map.MapId).ToList())
             {
-                _portals.Add(portal);
+                _portals.Add((Portal)portal);
             }
 
             UserShops = new Dictionary<long, MapShop>();
             _npcs = new List<MapNpc>();
             _npcs.AddRange(ServerManager.Instance.GetMapNpcsByMapId(Map.MapId).AsEnumerable());
         }
-
+   
         #region Methods
         public void AddMonster(MapMonster monster)
         {
             _monsters[monster.MapMonsterId] = monster;
         }
-
+       
         public override void Dispose()
         {
             if (!_disposed)
@@ -292,6 +293,7 @@ namespace OpenNos.GameObject
                 _monsters.Dispose();
             }
         }
+       
 
         #endregion
 
