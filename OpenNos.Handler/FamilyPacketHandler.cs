@@ -102,7 +102,7 @@ namespace OpenNos.Handler
   .Subscribe(
   o =>
   {
-      Session.Character.Group.Characters.ForEach(s => s.CurrentMap.Broadcast(s.Character.GenerateGidx()));
+      Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
   });
             }
             else
