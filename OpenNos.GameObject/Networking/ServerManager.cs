@@ -90,17 +90,23 @@ namespace OpenNos.GameObject
         public static byte MaxJobLevel { get; set; }
         public static byte MaxSPLevel { get; set; }
         public static byte MaxHeroLevel { get; set; }
-
+        public bool inFamilyRefreshMode { get; set; }
+        public bool inBazaarRefreshMode { get; set; }
         public int ChannelId { get; set; }
 
         public void FamilyRefresh(long FamilyId)
         {
+            inFamilyRefreshMode = true;
             int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family, FamilyId.ToString(), null).Result;
             ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", FamilyId);
+            SpinWait.SpinUntil(() => !inFamilyRefreshMode);
+
         }
         public void BazaarRefresh(long BazaarItemId)
         {
+            inBazaarRefreshMode = true;
             ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh", BazaarItemId);
+            SpinWait.SpinUntil(() => !inBazaarRefreshMode);
         }
         public void LoadFamilies()
         {
@@ -1212,6 +1218,7 @@ namespace OpenNos.GameObject
                 }
 
             }
+            inFamilyRefreshMode = false;
         }
 
         private void OnBazaarRefresh(object sender, EventArgs e)
@@ -1249,6 +1256,7 @@ namespace OpenNos.GameObject
                     BazaarList.Remove(bzlink);
                 }
             }
+            inBazaarRefreshMode = false;
         }
         private void OnSessionKicked(object sender, EventArgs e)
         {
