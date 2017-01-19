@@ -192,7 +192,7 @@ namespace OpenNos.GameObject
         }
         public static MapInstance GetMapInstance(Guid id)
         {
-            return _mapinstances.FirstOrDefault(m => m.Key.Equals(id)).Value;
+            return _mapinstances[id];
         }
 
         public static NpcMonster GetNpc(short npcVNum)
