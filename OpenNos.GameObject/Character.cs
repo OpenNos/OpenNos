@@ -59,6 +59,7 @@ namespace OpenNos.GameObject
 
         public Character()
         {
+            CharacterRelations = new List<CharacterRelationDTO>();
             GroupSentRequestCharacterIds = new List<long>();
             FamilyInviteCharacters = new List<long>();
             FriendRequestCharacters = new List<long>();
