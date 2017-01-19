@@ -183,8 +183,15 @@ namespace OpenNos.GameObject
                 case 150:
                     if (npc != null)
                     {
-                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 150, 153, 145);
+                        if (Session.Character.Family != null)
+                        {
+                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.LandOfDeathId, 153, 145);
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
+                        }
                     }
                     break;
                 case 301:

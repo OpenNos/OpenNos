@@ -186,15 +186,19 @@ namespace OpenNos.Core
         /// <returns>Item list</returns>
         public List<TV> GetAllItems()
         {
-            Lock.EnterReadLock();
-            try
+            if (!_disposed)
             {
-                return new List<TV>(Items.Values);
+                Lock.EnterReadLock();
+                try
+                {
+                    return new List<TV>(Items.Values);
+                }
+                finally
+                {
+                    Lock.ExitReadLock();
+                }
             }
-            finally
-            {
-                Lock.ExitReadLock();
-            }
+            return new List<TV>();
         }
 
         /// <summary>

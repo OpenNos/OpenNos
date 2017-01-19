@@ -34,6 +34,15 @@ namespace OpenNos.GameObject
                         SourceMapInstanceId = SourceMap,
                     });
                     break;
+                case 150:
+                    list.Add(new Portal
+                    {
+                        SourceX = 172,
+                        SourceY = 170,
+                        Type = (short)PortalType.MapPortal,
+                        SourceMapInstanceId = SourceMap,
+                    });
+                    break;
             }
             return list;
         }
