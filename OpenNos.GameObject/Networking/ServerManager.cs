@@ -34,7 +34,6 @@ namespace OpenNos.GameObject
         #region Members
 
         public bool ShutdownStop;
-        public bool UpdateBazaar;
 
         private static readonly ThreadLocal<Random> random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
 
@@ -97,59 +96,44 @@ namespace OpenNos.GameObject
         public void FamilyRefresh(long FamilyId)
         {
             int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family, FamilyId.ToString(), null).Result;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh");
+            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", FamilyId);
         }
-        public void BazaarRefresh()
+        public void BazaarRefresh(long BazaarItemId)
         {
-            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh");
+            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh", BazaarItemId);
         }
         public void LoadFamilies()
         {
-            if (FamilyList == null)
+
+            FamilyList = new List<Family>();
+            foreach (FamilyDTO fam in DAOFactory.FamilyDAO.LoadAll())
             {
-                FamilyList = new List<Family>();
-            }
-            lock (FamilyList)
-            {
-                List<Family> tempList = new List<Family>();
-                foreach (FamilyDTO fam in DAOFactory.FamilyDAO.LoadAll())
+                Family fami = (Family)fam;
+                fami.FamilyCharacters = new List<FamilyCharacter>();
+                foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
                 {
-                    Family fami = (Family)fam;
-                    fami.FamilyCharacters = new List<FamilyCharacter>();
-                    foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
-                    {
-                        fami.FamilyCharacters.Add((FamilyCharacter)famchar);
-                    }
-                    fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
-                    tempList.Add(fami);
+                    fami.FamilyCharacters.Add((FamilyCharacter)famchar);
                 }
-                FamilyList = tempList;
+                fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
+                FamilyList.Add(fami);
             }
         }
 
+
         public void LoadBazaar()
         {
-            UpdateBazaar = false;
-            if (BazaarList == null)
+            List<BazaarItemLink> tempList = new List<BazaarItemLink>(); ;
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
             {
-                BazaarList = new List<BazaarItemLink>();
-            }
-            lock (BazaarList)
-            {
-                List<BazaarItemLink> tempList = new List<BazaarItemLink>(); ;
-                foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
+                BazaarItemLink item = new BazaarItemLink();
+                item.BazaarItem = bz;
+                CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
+                if (chara != null)
                 {
-                    BazaarItemLink item = new BazaarItemLink();
-                    item.BazaarItem = bz;
-                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
-                    if (chara != null)
-                    {
-                        item.Owner = chara.Name;
-                        item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
-                    }
-                    tempList.Add(item);
+                    item.Owner = chara.Name;
+                    item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
                 }
-                BazaarList = tempList;
+                tempList.Add(item);
             }
         }
 
@@ -1170,21 +1154,81 @@ namespace OpenNos.GameObject
         }
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
-            LoadFamilies();
+            long FamilyId = (long)sender;
+            FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(FamilyId);
+            Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == FamilyId);
+
+            lock (FamilyList)
+            {
+                if (famdto != null)
+                {
+                    if (fam != null)
+                    {
+                        FamilyList.Remove(fam);
+                        fam = (Family)famdto;
+                        fam.FamilyCharacters = new List<FamilyCharacter>();
+                        foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fam.FamilyId).ToList())
+                        {
+                            fam.FamilyCharacters.Add((FamilyCharacter)famchar);
+                        }
+                        fam.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fam.FamilyId).ToList();
+                        FamilyList.Add(fam);
+                    }
+                    else
+                    {
+                        Family fami = (Family)famdto;
+                        fami.FamilyCharacters = new List<FamilyCharacter>();
+                        foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
+                        {
+                            fami.FamilyCharacters.Add((FamilyCharacter)famchar);
+                        }
+                        fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
+                        FamilyList.Add(fami);
+                    }
+                }
+                else if (fam != null)
+                {
+                    FamilyList.Remove(fam);
+                }
+
+            }
         }
+
         private void OnBazaarRefresh(object sender, EventArgs e)
         {
-            UpdateBazaar = true;
-
-            System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(RandomNumber(30000, 90000)))
-           .Subscribe(
-           o =>
-           {
-               if (UpdateBazaar)
-               {
-                   LoadBazaar();
-               }
-           });
+            long BazaarId = (long)sender;
+            BazaarItemDTO bzdto = DAOFactory.BazaarItemDAO.LoadById(BazaarId);
+            BazaarItemLink bzlink = BazaarList.FirstOrDefault(s => s.BazaarItem.BazaarItemId == BazaarId);
+            lock (BazaarList)
+            {
+                if (bzdto != null)
+                {
+                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bzdto.SellerId);
+                    if (bzlink != null)
+                    {
+                        BazaarList.Remove(bzlink);
+                        bzlink.BazaarItem = bzdto;
+                        bzlink.Owner = chara.Name;
+                        bzlink.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bzdto.ItemInstanceId);
+                        BazaarList.Add(bzlink);
+                    }
+                    else
+                    {
+                        BazaarItemLink item = new BazaarItemLink();
+                        item.BazaarItem = bzdto;
+                        if (chara != null)
+                        {
+                            item.Owner = chara.Name;
+                            item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bzdto.ItemInstanceId);
+                        }
+                        BazaarList.Add(item);
+                    }
+                }
+                else if (bzlink != null)
+                {
+                    BazaarList.Remove(bzlink);
+                }
+            }
         }
         private void OnSessionKicked(object sender, EventArgs e)
         {
@@ -1232,7 +1276,7 @@ namespace OpenNos.GameObject
 
         public void RemoveMapInstance(Guid MapId)
         {
-            KeyValuePair<Guid,MapInstance> map = _mapinstances.FirstOrDefault(s => s.Key == MapId);
+            KeyValuePair<Guid, MapInstance> map = _mapinstances.FirstOrDefault(s => s.Key == MapId);
             if (!map.Equals(default(KeyValuePair<Guid, MapInstance>)))
             {
                 map.Value.Dispose();
