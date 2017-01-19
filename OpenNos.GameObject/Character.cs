@@ -971,7 +971,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateRCSList(CSListnPacket packet)
+        public string GenerateRCSList(CSListPacket packet)
         {
             string list = string.Empty;
             List<BazaarItemLink> billist = ServerManager.Instance.BazaarList;
