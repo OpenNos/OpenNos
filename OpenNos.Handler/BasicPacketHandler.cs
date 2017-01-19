@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace OpenNos.Handler
 {
@@ -206,15 +207,18 @@ namespace OpenNos.Handler
         }
         public void RefreshBazarList(CBListPacket packet)
         {
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             Session.SendPacket(Session.Character.GenerateRCBList(packet));
         }
         public void RefreshPersonalBazarList(CSListnPacket packet)
         {
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             Session.SendPacket(Session.Character.GenerateRCSList(packet));
         }
 
         public void OpenBazaar(CSkillPacket packet)
         {
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
             if (medal != null)
             {
@@ -308,6 +312,7 @@ namespace OpenNos.Handler
 
         public void GetBazaar(CScalcPacket packet)
         {
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null)
             {
@@ -358,6 +363,7 @@ namespace OpenNos.Handler
         }
         public void SellBazaar(CRegPacket packet)
         {
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
 
             long price = packet.Price * packet.Amount;
