@@ -129,7 +129,7 @@ namespace OpenNos.GameObject
 
         public void LoadBazaar()
         {
-            List<BazaarItemLink> tempList = new List<BazaarItemLink>(); ;
+           BazaarList = new List<BazaarItemLink>(); ;
             foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
             {
                 BazaarItemLink item = new BazaarItemLink();
@@ -140,7 +140,7 @@ namespace OpenNos.GameObject
                     item.Owner = chara.Name;
                     item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
                 }
-                tempList.Add(item);
+                BazaarList.Add(item);
             }
         }
 
