@@ -168,7 +168,7 @@ namespace OpenNos.Handler
                             ServerManager.Instance.SetProperty(complimentedCharacterId, nameof(Character.Compliment), compliment);
                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentedCharacterId, nameof(Character.Name))), 12));
                             Session.Account.LastCompliment = DateTime.Now;
-                           
+
                             Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
                         }
                         else
@@ -244,7 +244,7 @@ namespace OpenNos.Handler
                         }
                         if (packet.Amount <= bzcree.Item.Amount)
                         {
-                          
+
                             if (!Session.Character.Inventory.CanAddItem(bzcree.Item.ItemVNum))
                             {
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
@@ -258,7 +258,7 @@ namespace OpenNos.Handler
                                     return;
                                 }
                                 ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDAO.LoadById(bzcree.BazaarItem.ItemInstanceId);
-                                if(bzitemdto.Amount < packet.Amount)
+                                if (bzitemdto.Amount < packet.Amount)
                                 {
                                     return;
                                 }
@@ -279,7 +279,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
                                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: { bzcree.Item.Item.Name} x {packet.Amount}", 10));
                                 }
-                           
+
                             }
 
                         }
@@ -719,22 +719,27 @@ namespace OpenNos.Handler
                     ServerManager.Instance.UpdateGroup(pjoinPacket.CharacterId);
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePidx());
                 }
-                else if (pjoinPacket.RequestType == GroupRequestType.Declined)
+                else
                 {
-                    targetSession.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10));
-                }
-                else if (pjoinPacket.RequestType == GroupRequestType.AcceptedShare)
-                {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), 0));
-                    if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
+                    switch (pjoinPacket.RequestType)
                     {
-                        Session.Character.SetReturnPoint(Session.Character.MapInstance.Map.MapId, targetSession.Character.MapX, targetSession.Character.MapY);
-                        targetSession.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
+                        case GroupRequestType.Declined:
+                            targetSession.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10));
+                            break;
+
+                        case GroupRequestType.AcceptedShare:
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), 0));
+                            if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
+                            {
+                                Session.Character.SetReturnPoint(Session.Character.MapInstance.Map.MapId, targetSession.Character.MapX, targetSession.Character.MapY);
+                                targetSession.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
+                            }
+                            break;
+
+                        case GroupRequestType.DeclinedShare:
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REFUSED_SHARE"), 0));
+                            break;
                     }
-                }
-                else if (pjoinPacket.RequestType == GroupRequestType.DeclinedShare)
-                {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REFUSED_SHARE"), 0));
                 }
             }
         }
@@ -887,7 +892,7 @@ namespace OpenNos.Handler
                         {
                             if (packetsplit[2] == "-1")
                             {
-                                Session.Character.AddRelation(characterId,CharacterRelationType.Friend);
+                                Session.Character.AddRelation(characterId, CharacterRelationType.Friend);
                                 Session.SendPacket(Session.Character.GenerateFinit());
                                 otherSession.Character.AddRelation(Session.Character.CharacterId, CharacterRelationType.Friend);
                                 otherSession.SendPacket(otherSession.Character.GenerateFinit());

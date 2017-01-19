@@ -107,11 +107,13 @@ namespace OpenNos.Import.Console
                 }
                 if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "2")
                 {
-                    MapNpcDTO npctest = new MapNpcDTO();
-                    npctest.MapX = short.Parse(currentPacket[4]);
-                    npctest.MapY = short.Parse(currentPacket[5]);
-                    npctest.MapId = map;
-                    npctest.NpcVNum = short.Parse(currentPacket[2]);
+                    MapNpcDTO npctest = new MapNpcDTO
+                    {
+                        MapX = short.Parse(currentPacket[4]),
+                        MapY = short.Parse(currentPacket[5]),
+                        MapId = map,
+                        NpcVNum = short.Parse(currentPacket[2])
+                    };
                     if (long.Parse(currentPacket[3]) > 20000)
                     {
                         continue;
