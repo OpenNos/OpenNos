@@ -104,22 +104,22 @@ namespace OpenNos.WebApi.Reference
 
             _hubProxy.On<long?, string>("kickSession", OnSessionKicked);
 
-            _hubProxy.On("refreshFamily", OnFamilyRefresh);
+            _hubProxy.On<long>("refreshFamily", OnFamilyRefresh);
 
-            _hubProxy.On("refreshBazaar", OnBazaarRefresh);
+            _hubProxy.On<long>("refreshBazaar", OnBazaarRefresh);
 
             _hubProxy.On<string, string, int, MessageType>("sendMessageToCharacter", OnMessageSentToCharacter);
 
             _hubconnection.Start().Wait();
         }
 
-        private void OnFamilyRefresh()
+        private void OnFamilyRefresh(long FamilyId)
         {
-            FamilyRefresh?.Invoke(null, new EventArgs());
+            FamilyRefresh?.Invoke(FamilyId, new EventArgs());
         }
-        private void OnBazaarRefresh()
+        private void OnBazaarRefresh(long BazaarItemId)
         {
-            BazaarRefresh?.Invoke(null, new EventArgs());
+            BazaarRefresh?.Invoke(BazaarItemId, new EventArgs());
         }
         private void OnMessageSentToCharacter(string characterName, string message, int fromChannel, MessageType messageType)
         {

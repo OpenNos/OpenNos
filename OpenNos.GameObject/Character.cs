@@ -645,6 +645,17 @@ namespace OpenNos.GameObject
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
+        public void GenerateMiniland()
+        {
+            if (MinilandId == default(Guid))
+            {
+                MinilandId = ServerManager.GenerateMapInstance(20001, MapInstanceType.PersonalInstance);
+            }
+        }
+       public List<Portal> GetExtraPortal()
+        {
+            return MapInstancePortalHandler.GenerateMinilandEntryPortals(MapInstance.Map.MapId, MinilandId);
+        }
         public List<string> GetFamilyHistory()
         {
             if (Family != null)
@@ -654,11 +665,11 @@ namespace OpenNos.GameObject
                 string packet = string.Empty;
                 int i = 0;
                 int amount = 0;
-                foreach (FamilyLogDTO log in Family.FamilyLogs.OrderByDescending(s => s.Timestamp))
+                foreach (FamilyLogDTO log in Family.FamilyLogs.OrderByDescending(s => s.Timestamp).Take(100))
                 {
-                    packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(DateTime.Now - log.Timestamp).TotalHours}";
+                    packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|({(int)((DateTime.Now - log.Timestamp).TotalHours)}";
                     i++;
-                    if (i == 50)
+                    if (i == 25)
                     {
                         i = 0;
                         packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
@@ -857,6 +868,12 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; set; }
 
+        public Guid MinilandId { get; set; }
+
+        public MapInstance Miniland
+        {
+            get { return ServerManager.GetMapInstance(MinilandId); }
+        }
         #endregion
 
         #region Methods
@@ -1291,6 +1308,7 @@ namespace OpenNos.GameObject
         /// </summary>
         public void Dispose()
         {
+            ServerManager.Instance.RemoveMapInstance(MinilandId);
             CloseShop();
             CloseExchangeOrTrade();
             GroupSentRequestCharacterIds.Clear();
@@ -1704,7 +1722,7 @@ namespace OpenNos.GameObject
             }
             if (skill.Type == 1)
             {
-                if (Map.GetDistance(new MapCell() { X = PositionX, Y = PositionY }, new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY}) < 4)
+                if (Map.GetDistance(new MapCell() { X = PositionX, Y = PositionY }, new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) < 4)
                     baseDamage = (int)(baseDamage * 0.85);
             }
 
@@ -3010,19 +3028,19 @@ namespace OpenNos.GameObject
         {
             List<string> gpList = new List<string>();
             int i = 0;
-            foreach (PortalDTO portal in Session.Character.MapInstance.Portals)
+            foreach (Portal portal in Session.Character.MapInstance.Portals.Concat(GetExtraPortal()))
             {
-                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {i} {(portal.IsDisabled ? 1 : 0)}");
+                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {ServerManager.GetMapInstance(portal.DestinationMapInstanceId)?.Map.MapId} {portal.Type} {i} {(portal.IsDisabled ? 1 : 0)}");
                 i++;
             }
 
             return gpList;
         }
 
-        public string GenerateGp(PortalDTO portal)
+        public string GenerateGp(Portal portal)
         {
-            List<PortalDTO> portalList = Session.Character.MapInstance.Portals;
-            return $"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {portalList.Count} {(portalList.Contains(portal) ? (portal.IsDisabled ? 1 : 0) : 1)}";
+            List<Portal> portalList = Session.Character.MapInstance.Portals;
+            return $"gp {portal.SourceX} {portal.SourceY} {ServerManager.GetMapInstance(portal.DestinationMapInstanceId)?.Map.MapId} {portal.Type} {portalList.Count} {(portalList.Contains(portal) ? (portal.IsDisabled ? 1 : 0) : 1)}";
         }
 
         public string GenerateGuri(byte type, byte argument, int value = 0)
@@ -4457,7 +4475,7 @@ namespace OpenNos.GameObject
             }
             return DAOFactory.CharacterRelationDAO.LoadByCharacterId(characterId).FirstOrDefault(b => b.RelatedCharacterId.Equals(CharacterId)) != null;
         }
-        
+
         public bool IsBlockingCharacter(long characterId)
         {
             return CharacterRelations.Any(c => c.RelationType == CharacterRelationType.Blocked && c.RelatedCharacterId.Equals(characterId));
@@ -4770,14 +4788,8 @@ namespace OpenNos.GameObject
             {
                 AccountDTO account = Session.Account;
                 DAOFactory.AccountDAO.InsertOrUpdate(ref account);
-                
+
                 CharacterDTO character = DeepCopy();
-                if(MapInstance.IsBaseInstance == true)
-                {
-                    character.MapX = PositionX;
-                    character.MapY = PositionY;
-                    character.MapId = MapInstance.Map.MapId;
-                }
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
                 // wait for any exchange to be finished

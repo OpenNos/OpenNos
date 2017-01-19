@@ -122,7 +122,7 @@ namespace OpenNos.Handler
                         MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)buyPacket.OwnerId));
                         if (npc != null)
                         {
-                            int dist = Map.GetDistance(new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell {X = npc.MapX, Y = npc.MapY });
+                            int dist = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell {X = npc.MapX, Y = npc.MapY });
                             if (npc.Shop == null || dist > 5)
                             {
                                 return;
@@ -358,9 +358,9 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                foreach (PortalDTO por in Session.CurrentMapInstance.Portals)
+                foreach (Portal por in Session.CurrentMapInstance.Portals)
                 {
-                    if (Session.Character.MapX < por.SourceX + 6 && Session.Character.MapX > por.SourceX - 6 && Session.Character.MapY < por.SourceY + 6 && Session.Character.MapY > por.SourceY - 6)
+                    if (Session.Character.PositionX < por.SourceX + 6 && Session.Character.PositionX > por.SourceX - 6 && Session.Character.PositionY < por.SourceY + 6 && Session.Character.PositionY > por.SourceY - 6)
                     {
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"), 0));
                         return;
@@ -524,7 +524,7 @@ namespace OpenNos.Handler
                 MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
                 if (npc != null)
                 {
-                    int distance = Map.GetDistance(new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell { X = npc.MapX, Y = npc.MapY });
+                    int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = npc.MapX, Y = npc.MapY });
                     if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
                     {
                         Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);
@@ -546,7 +546,7 @@ namespace OpenNos.Handler
                 MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
                 if (npc != null)
                 {
-                    int distance = Map.GetDistance(new MapCell { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell { X = npc.MapX, Y = npc.MapY });
+                    int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = npc.MapX, Y = npc.MapY });
                     if (npc.MapInstance == Session.CurrentMapInstance && distance <= 5)
                     {
                         Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == VNum);

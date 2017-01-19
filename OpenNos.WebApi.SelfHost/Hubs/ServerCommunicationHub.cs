@@ -37,16 +37,16 @@ namespace OpenNos.WebApi.SelfHost
         /// <summary>
         /// Refresh Family
         /// </summary>
-        public void FamilyRefresh()
+        public void FamilyRefresh(long FamilyId)
         {
-            Clients.All.refreshFamily();
+            Clients.All.refreshFamily(FamilyId);
         }
         /// <summary>
         /// Refresh Bazaar
         /// </summary>
-        public void BazaarRefresh()
+        public void BazaarRefresh(long BazaarItemId)
         {
-            Clients.All.refreshBazaar();
+            Clients.All.refreshBazaar(BazaarItemId);
         }
 
         /// <summary>

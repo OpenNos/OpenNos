@@ -17,13 +17,15 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public class Family : FamilyDTO
     {
         #region Instantiation
-
+        
         public Family()
         {
             FamilyCharacters = new List<FamilyCharacter>();
@@ -34,6 +36,21 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<FamilyCharacter> FamilyCharacters { get; set; }
+        public void GenerateLod()
+        {
+            if (LandOfDeathId == default(Guid))
+            {
+                LandOfDeathId = ServerManager.GenerateMapInstance(150, MapInstanceType.PersonalInstance);
+                
+            }
+        }
+        public Guid LandOfDeathId { get; set; }
+
+        public MapInstance LandOfDeath
+        {
+            get { return ServerManager.GetMapInstance(LandOfDeathId); }
+        }
+
         public List<FamilyLogDTO> FamilyLogs { get; set; }
 
         #endregion
