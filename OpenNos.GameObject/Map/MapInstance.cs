@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
                 {
                     return true;
                 }
-              
+
                 return false;
             }
             set
@@ -70,9 +70,9 @@ namespace OpenNos.GameObject
         private bool _disposed;
         private bool _isSleeping;
         private bool _isSleepingRequest;
-     
+
         private readonly Random _random;
-        public MapInstance(Map map, Guid guid,bool shopAllowed, MapInstanceType type)
+        public MapInstance(Map map, Guid guid, bool shopAllowed, MapInstanceType type)
         {
 
             ShopAllowed = shopAllowed;
@@ -87,22 +87,17 @@ namespace OpenNos.GameObject
             _mapMonsterIds = new List<int>();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
             _portals = new List<Portal>();
-            foreach (PortalDTO portal in DAOFactory.PortalDAO.LoadByMap(Map.MapId).ToList())
-            {
-                _portals.Add((Portal)portal);
-            }
-
             UserShops = new Dictionary<long, MapShop>();
             _npcs = new List<MapNpc>();
             _npcs.AddRange(ServerManager.Instance.GetMapNpcsByMapId(Map.MapId).AsEnumerable());
         }
-   
+
         #region Methods
         public void AddMonster(MapMonster monster)
         {
             _monsters[monster.MapMonsterId] = monster;
         }
-       
+
         public override void Dispose()
         {
             if (!_disposed)
@@ -182,6 +177,15 @@ namespace OpenNos.GameObject
             {
                 _monsters[monster.MapMonsterId] = monster as MapMonster;
                 _mapMonsterIds.Add(monster.MapMonsterId);
+            }
+        }
+        public void LoadPortals()
+        {
+            foreach (PortalDTO portal in DAOFactory.PortalDAO.LoadByMap(Map.MapId).ToList())
+            {
+                Portal portal2 = (Portal)portal;
+                portal2.SourceMapInstanceId = MapInstanceId;
+                _portals.Add(portal2);
             }
         }
         public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
@@ -297,7 +301,7 @@ namespace OpenNos.GameObject
                 _monsters.Dispose();
             }
         }
-       
+
 
         #endregion
 

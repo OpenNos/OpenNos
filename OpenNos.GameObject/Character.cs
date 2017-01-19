@@ -665,11 +665,11 @@ namespace OpenNos.GameObject
                 string packet = string.Empty;
                 int i = 0;
                 int amount = 0;
-                foreach (FamilyLogDTO log in Family.FamilyLogs.OrderByDescending(s => s.Timestamp))
+                foreach (FamilyLogDTO log in Family.FamilyLogs.OrderByDescending(s => s.Timestamp).Take(100))
                 {
                     packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|({(int)((DateTime.Now - log.Timestamp).TotalHours)}";
                     i++;
-                    if (i == 50)
+                    if (i == 25)
                     {
                         i = 0;
                         packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
