@@ -905,7 +905,7 @@ namespace OpenNos.GameObject
                         });
 
                         LastMove = DateTime.Now;
-                        MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
+                        MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv3(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                         return;
                     }
                 }
