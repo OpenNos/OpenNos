@@ -192,9 +192,9 @@ namespace OpenNos.Core
         {
             if (!_disposed)
             {
+                _disposed = true;
                 Dispose(true);
                 GC.SuppressFinalize(this);
-                _disposed = true;
             }
         }
 
