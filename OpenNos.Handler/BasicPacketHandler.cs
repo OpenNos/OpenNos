@@ -51,76 +51,86 @@ namespace OpenNos.Handler
         #endregion
 
         #region Methods
-        public void JoinMiniland(MJoinPacket mjoin)
+
+        /// <summary>
+        /// mJoinPacket packet
+        /// </summary>
+        /// <param name="mJoinPacket"></param>
+        public void JoinMiniland(MJoinPacket mJoinPacket)
         {
-            ClientSession sess = ServerManager.Instance.GetSessionByCharacterId(mjoin.CharacterId);
-            if (sess != null && sess.Character != null)
+            ClientSession sess = ServerManager.Instance.GetSessionByCharacterId(mJoinPacket.CharacterId);
+            if (sess?.Character != null)
             {
                 ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                 ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, sess.Character.MinilandId, 5, 8);
             }
         }
-        public void CharacterOptionChange(CharacterOptionPacket characteroptionpacket)
+
+        /// <summary>
+        /// gop packet
+        /// </summary>
+        /// <param name="characterOptionPacket"></param>
+        public void CharacterOptionChange(CharacterOptionPacket characterOptionPacket)
         {
-            switch (characteroptionpacket.Option)
+            switch (characterOptionPacket.Option)
             {
                 case CharacterOption.BuffBlocked:
-                    Session.Character.BuffBlocked = characteroptionpacket.IsActive;
+                    Session.Character.BuffBlocked = characterOptionPacket.IsActive;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.BuffBlocked ? "BUFF_BLOCKED" : "BUFF_UNLOCKED"), 0));
                     break;
 
                 case CharacterOption.EmoticonsBlocked:
-                    Session.Character.EmoticonsBlocked = characteroptionpacket.IsActive;
+                    Session.Character.EmoticonsBlocked = characterOptionPacket.IsActive;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.EmoticonsBlocked ? "EMO_BLOCKED" : "EMO_UNLOCKED"), 0));
                     break;
 
                 case CharacterOption.ExchangeBlocked:
-                    Session.Character.ExchangeBlocked = characteroptionpacket.IsActive == false;
+                    Session.Character.ExchangeBlocked = characterOptionPacket.IsActive == false;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.ExchangeBlocked ? "EXCHANGE_BLOCKED" : "EXCHANGE_UNLOCKED"), 0));
                     break;
 
                 case CharacterOption.FriendRequestBlocked:
-                    Session.Character.FriendRequestBlocked = characteroptionpacket.IsActive == false;
+                    Session.Character.FriendRequestBlocked = characterOptionPacket.IsActive == false;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.FriendRequestBlocked ? "FRIEND_REQ_BLOCKED" : "FRIEND_REQ_UNLOCKED"), 0));
                     break;
 
                 case CharacterOption.GroupRequestBlocked:
-                    Session.Character.GroupRequestBlocked = characteroptionpacket.IsActive == false;
+                    Session.Character.GroupRequestBlocked = characterOptionPacket.IsActive == false;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.GroupRequestBlocked ? "GROUP_REQ_BLOCKED" : "GROUP_REQ_UNLOCKED"), 0));
                     break;
 
                 case CharacterOption.HeroChatBlocked:
-                    Session.Character.HeroChatBlocked = characteroptionpacket.IsActive;
+                    Session.Character.HeroChatBlocked = characterOptionPacket.IsActive;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.HeroChatBlocked ? "HERO_CHAT_BLOCKED" : "HERO_CHAT_UNLOCKED"), 0));
                     break;
 
                 case CharacterOption.HpBlocked:
-                    Session.Character.HpBlocked = characteroptionpacket.IsActive;
+                    Session.Character.HpBlocked = characterOptionPacket.IsActive;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.HpBlocked ? "HP_BLOCKED" : "HP_UNLOCKED"), 0));
                     break;
 
                 case CharacterOption.MinilandInviteBlocked:
-                    Session.Character.MinilandInviteBlocked = characteroptionpacket.IsActive;
+                    Session.Character.MinilandInviteBlocked = characterOptionPacket.IsActive;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.MinilandInviteBlocked ? "MINI_INV_BLOCKED" : "MINI_INV_UNLOCKED"), 0));
                     break;
 
                 case CharacterOption.MouseAimLock:
-                    Session.Character.MouseAimLock = characteroptionpacket.IsActive;
+                    Session.Character.MouseAimLock = characterOptionPacket.IsActive;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.MouseAimLock ? "MOUSE_LOCKED" : "MOUSE_UNLOCKED"), 0));
                     break;
 
                 case CharacterOption.QuickGetUp:
-                    Session.Character.QuickGetUp = characteroptionpacket.IsActive;
+                    Session.Character.QuickGetUp = characterOptionPacket.IsActive;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.QuickGetUp ? "QUICK_GET_UP_ENABLED" : "QUICK_GET_UP_DISABLED"), 0));
                     break;
 
                 case CharacterOption.WhisperBlocked:
-                    Session.Character.WhisperBlocked = characteroptionpacket.IsActive == false;
+                    Session.Character.WhisperBlocked = characterOptionPacket.IsActive == false;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.WhisperBlocked ? "WHISPER_BLOCKED" : "WHISPER_UNLOCKED"), 0));
                     break;
 
                 case CharacterOption.FamilyRequestBlocked:
-                    Session.Character.FamilyRequestBlocked = characteroptionpacket.IsActive == false;
+                    Session.Character.FamilyRequestBlocked = characterOptionPacket.IsActive == false;
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(Session.Character.FamilyRequestBlocked ? "FAMILY_REQ_LOCKED" : "FAMILY_REQ_UNLOCKED"), 0));
                     break;
 
@@ -135,7 +145,7 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_MASTER"), 0));
                         return;
                     }
-                    if (characteroptionpacket.IsActive == false)
+                    if (characterOptionPacket.IsActive == false)
                     {
                         Group group = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId));
                         if (group != null)
@@ -197,26 +207,44 @@ namespace OpenNos.Handler
             }
         }
 
-        public void Dir(DirectionPacket directionpacket)
+        /// <summary>
+        /// dir packet
+        /// </summary>
+        /// <param name="directionPacket"></param>
+        public void Dir(DirectionPacket directionPacket)
         {
-            if (directionpacket.CharacterId == Session.Character.CharacterId)
+            if (directionPacket.CharacterId == Session.Character.CharacterId)
             {
-                Session.Character.Direction = directionpacket.Direction;
+                Session.Character.Direction = directionPacket.Direction;
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateDir());
             }
         }
-        public void RefreshBazarList(CBListPacket packet)
+
+        /// <summary>
+        /// c_blist cbListPacket
+        /// </summary>
+        /// <param name="cbListPacket"></param>
+        public void RefreshBazarList(CBListPacket cbListPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
-            Session.SendPacket(Session.Character.GenerateRCBList(packet));
-        }
-        public void RefreshPersonalBazarList(CSListnPacket packet)
-        {
-            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
-            Session.SendPacket(Session.Character.GenerateRCSList(packet));
+            Session.SendPacket(Session.Character.GenerateRCBList(cbListPacket));
         }
 
-        public void OpenBazaar(CSkillPacket packet)
+        /// <summary>
+        /// c_slist csListPacket
+        /// </summary>
+        /// <param name="csListPacket"></param>
+        public void RefreshPersonalBazarList(CSListPacket csListPacket)
+        {
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
+            Session.SendPacket(Session.Character.GenerateRCSList(csListPacket));
+        }
+
+        /// <summary>
+        /// c_skill cSkillPacket
+        /// </summary>
+        /// <param name="cSkillPacket"></param>
+        public void OpenBazaar(CSkillPacket cSkillPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
@@ -233,74 +261,75 @@ namespace OpenNos.Handler
             }
         }
 
-        public void BuyBazaar(CBuyPacket packet)
+        /// <summary>
+        /// c_buy cBuyPacket
+        /// </summary>
+        /// <param name="cBuyPacket"></param>
+        public void BuyBazaar(CBuyPacket cBuyPacket)
         {
-            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
-            if (bz != null && packet.Amount > 0)
+            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == cBuyPacket.BazaarId);
+            if (bz != null && cBuyPacket.Amount > 0)
             {
-                if (bz != null)
+                long price = cBuyPacket.Amount * bz.Price;
+
+                if (Session.Character.Gold >= price)
                 {
-                    long price = packet.Amount * bz.Price;
-
-                    if (Session.Character.Gold >= price)
+                    BazaarItemLink bzcree = new BazaarItemLink { BazaarItem = bz };
+                    if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
                     {
-                        BazaarItemLink bzcree = new BazaarItemLink { BazaarItem = bz };
-                        if (DAOFactory.CharacterDAO.LoadById(bz.SellerId) != null)
-                        {
-                            bzcree.Owner = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
-                            bzcree.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
-                        }
-                        if (packet.Amount <= bzcree.Item.Amount)
-                        {
+                        bzcree.Owner = DAOFactory.CharacterDAO.LoadById(bz.SellerId)?.Name;
+                        bzcree.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                    }
+                    if (cBuyPacket.Amount <= bzcree.Item.Amount)
+                    {
 
-                            if (!Session.Character.Inventory.CanAddItem(bzcree.Item.ItemVNum))
+                        if (!Session.Character.Inventory.CanAddItem(bzcree.Item.ItemVNum))
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                            return;
+                        }
+
+                        if (bzcree.Item != null)
+                        {
+                            if (bz.IsPackage && cBuyPacket.Amount != bz.Amount)
                             {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                                 return;
                             }
-
-                            if (bzcree.Item != null)
+                            ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDAO.LoadById(bzcree.BazaarItem.ItemInstanceId);
+                            if (bzitemdto.Amount < cBuyPacket.Amount)
                             {
-                                if (bz.IsPackage && packet.Amount != bz.Amount)
-                                {
-                                    return;
-                                }
-                                ItemInstanceDTO bzitemdto = DAOFactory.IteminstanceDAO.LoadById(bzcree.BazaarItem.ItemInstanceId);
-                                if (bzitemdto.Amount < packet.Amount)
-                                {
-                                    return;
-                                }
-                                bzitemdto.Amount -= packet.Amount;
-                                Session.Character.Gold -= price;
-                                Session.SendPacket(Session.Character.GenerateGold());
-                                DAOFactory.IteminstanceDAO.InsertOrUpdate(bzitemdto);
-                                ServerManager.Instance.BazaarRefresh(bzcree.BazaarItem.BazaarItemId);
-                                Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {packet.Amount} {packet.Price} 0 0 0");
-                                ItemInstance newBz = bzcree.Item.DeepCopy();
-                                newBz.Id = Guid.NewGuid();
-                                newBz.Amount = packet.Amount;
-                                newBz.Type = newBz.Item.Type;
+                                return;
+                            }
+                            bzitemdto.Amount -= cBuyPacket.Amount;
+                            Session.Character.Gold -= price;
+                            Session.SendPacket(Session.Character.GenerateGold());
+                            DAOFactory.IteminstanceDAO.InsertOrUpdate(bzitemdto);
+                            ServerManager.Instance.BazaarRefresh(bzcree.BazaarItem.BazaarItemId);
+                            Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {cBuyPacket.Amount} {cBuyPacket.Price} 0 0 0");
+                            ItemInstance newBz = bzcree.Item.DeepCopy();
+                            newBz.Id = Guid.NewGuid();
+                            newBz.Amount = cBuyPacket.Amount;
+                            newBz.Type = newBz.Item.Type;
 
-                                ItemInstance newInv = Session.Character.Inventory.AddToInventory(newBz);
-                                if (newInv != null)
-                                {
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
-                                    Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: { bzcree.Item.Item.Name} x {packet.Amount}", 10));
-                                }
-
+                            ItemInstance newInv = Session.Character.Inventory.AddToInventory(newBz);
+                            if (newInv != null)
+                            {
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: { bzcree.Item.Item.Name} x {cBuyPacket.Amount}", 10));
                             }
 
                         }
-                        else
-                        {
-                            Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("STATE_CHANGED"), 1));
-                        }
+
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
-                        Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 1));
+                        Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("STATE_CHANGED"), 1));
                     }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                    Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 1));
                 }
             }
             else
@@ -310,10 +339,14 @@ namespace OpenNos.Handler
 
         }
 
-        public void GetBazaar(CScalcPacket packet)
+        /// <summary>
+        /// c_scalc cScalcPacket
+        /// </summary>
+        /// <param name="cScalcPacket"></param>
+        public void GetBazaar(CScalcPacket cScalcPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
-            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
+            BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == cScalcPacket.BazaarId);
             if (bz != null)
             {
                 ItemInstance Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
@@ -326,7 +359,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.Gold += price;
                     Session.SendPacket(Session.Character.GenerateGold());
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REMOVE_FROM_BAZAAR"), price), 10));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REMOVE_FROM_BAZAAR"), price), 10));
                     if (Item.Amount != 0)
                     {
                         ItemInstance newBz = Item.DeepCopy();
@@ -361,20 +394,25 @@ namespace OpenNos.Handler
                 Session.SendPacket($"rc_scalc 1 0 0 0 0 0");
             }
         }
-        public void SellBazaar(CRegPacket packet)
+
+        /// <summary>
+        /// c_reg packet
+        /// </summary>
+        /// <param name="cRegPacket"></param>
+        public void SellBazaar(CRegPacket cRegPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
 
-            long price = packet.Price * packet.Amount;
+            long price = cRegPacket.Price * cRegPacket.Amount;
             long taxmax = price > 100000 ? price / 200 : 500;
             long taxmin = price >= 4000 ? (60 + (price - 4000) / 2000 * 30 > 10000 ? 10000 : 60 + (price - 4000) / 2000 * 30) : 50;
             long tax = medal == null ? taxmax : taxmin;
-            if (Session.Character.Gold < tax || packet.Amount <= 0 || Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
+            if (Session.Character.Gold < tax || cRegPacket.Amount <= 0 || Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
             {
                 return;
             }
-            ItemInstance it = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory == 4 ? 0 : (InventoryType)packet.Inventory);
+            ItemInstance it = Session.Character.Inventory.LoadBySlotAndType(cRegPacket.Slot, cRegPacket.Inventory == 4 ? 0 : (InventoryType)cRegPacket.Inventory);
             if (it == null || !it.Item.IsSoldable || it.IsBound)
             {
                 return;
@@ -389,13 +427,13 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PRICE_EXCEEDED"), 0));
                 return;
             }
-            ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory(packet.Inventory == 4 ? 0 : (InventoryType)packet.Inventory, packet.Slot, packet.Amount);
+            ItemInstance bazar = Session.Character.Inventory.AddIntoBazaarInventory(cRegPacket.Inventory == 4 ? 0 : (InventoryType)cRegPacket.Inventory, cRegPacket.Slot, cRegPacket.Amount);
             if (bazar == null)
             {
                 return;
             }
             short duration;
-            switch (packet.Durability)
+            switch (cRegPacket.Durability)
             {
                 case 1:
                     duration = 24;
@@ -413,16 +451,16 @@ namespace OpenNos.Handler
                     return;
             }
 
-            ItemInstanceDTO itemdto = DAOFactory.IteminstanceDAO.InsertOrUpdate(bazar);
+            DAOFactory.IteminstanceDAO.InsertOrUpdate(bazar);
 
-            BazaarItemDTO bz = new BazaarItemDTO()
+            BazaarItemDTO bz = new BazaarItemDTO
             {
                 Amount = bazar.Amount,
                 DateStart = DateTime.Now,
                 Duration = duration,
-                IsPackage = packet.IsPackage != 0,
+                IsPackage = cRegPacket.IsPackage != 0,
                 MedalUsed = medal != null,
-                Price = packet.Price,
+                Price = cRegPacket.Price,
                 SellerId = Session.Character.CharacterId,
                 ItemInstanceId = bazar.Id,
             };
@@ -562,13 +600,17 @@ namespace OpenNos.Handler
             }
         }
 
-        public void GetStats(NpinfoPacket packet)
+        /// <summary>
+        /// npinfo packet
+        /// </summary>
+        /// <param name="npinfoPacket"></param>
+        public void GetStats(NpinfoPacket npinfoPacket)
         {
             Session.SendPacket(Session.Character.GenerateStatChar());
         }
 
         /// <summary>
-        /// pjoin
+        /// pjoin packet
         /// </summary>
         /// <param name="pjoinPacket"></param>
         public void GroupJoin(PJoinPacket pjoinPacket)
@@ -731,7 +773,7 @@ namespace OpenNos.Handler
                     if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
                     {
                         Session.Character.SetReturnPoint(Session.Character.MapInstance.Map.MapId, targetSession.Character.PositionX, targetSession.Character.PositionY);
-                        targetSession.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
+                        targetSession.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
                     }
                 }
                 else if (pjoinPacket.RequestType == GroupRequestType.DeclinedShare)
@@ -887,24 +929,29 @@ namespace OpenNos.Handler
                     {
                         if (otherSession.Character.FriendRequestCharacters.Contains(Session.Character.CharacterId))
                         {
-                            if (packetsplit[2] == "-1")
+                            switch (packetsplit[2])
                             {
-                                Session.Character.AddRelation(characterId, CharacterRelationType.Friend);
-                                Session.SendPacket(Session.Character.GenerateFinit());
-                                otherSession.Character.AddRelation(Session.Character.CharacterId, CharacterRelationType.Friend);
-                                otherSession.SendPacket(otherSession.Character.GenerateFinit());
-                                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
-                                otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
-                            }
-                            else if (packetsplit[2] == "-99")
-                            {
-                                otherSession.Character.DeleteRelation(Session.Character.CharacterId);
-                                otherSession.SendPacket(Language.Instance.GetMessageFromKey("FRIEND_REJECTED"));
-                            }
-                            else if (Session.Character.IsFriendlistFull())
-                            {
-                                Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
-                                otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
+                                case "-1":
+                                    Session.Character.AddRelation(characterId, CharacterRelationType.Friend);
+                                    Session.SendPacket(Session.Character.GenerateFinit());
+                                    otherSession.Character.AddRelation(Session.Character.CharacterId, CharacterRelationType.Friend);
+                                    otherSession.SendPacket(otherSession.Character.GenerateFinit());
+                                    Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
+                                    otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
+                                    break;
+
+                                case "-99":
+                                    otherSession.Character.DeleteRelation(Session.Character.CharacterId);
+                                    otherSession.SendPacket(Language.Instance.GetMessageFromKey("FRIEND_REJECTED"));
+                                    break;
+
+                                default:
+                                    if (Session.Character.IsFriendlistFull())
+                                    {
+                                        Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
+                                        otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_FULL")}");
+                                    }
+                                    break;
                             }
                         }
                     }
@@ -1276,6 +1323,10 @@ namespace OpenNos.Handler
                             }
                         }
                     }
+                    break;
+
+                default:
+                    Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_GURI"), GetType()));
                     break;
             }
         }

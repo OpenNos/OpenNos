@@ -459,7 +459,7 @@
     <value>{0} Załadowanych MapNpc!</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
-    <value>Odebrano pakiet, packet: {0}</value>
+    <value>Odebrano pakiet, pakiet: {0}</value>
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Nie udało sie wysłać pakietu {0} do użytkownika {1}, {2}.</value>
@@ -914,7 +914,7 @@
     <value>Zdobyłeś {0} x {1}</value>
   </data>
   <data name="ITEM_BOUND_TO" xml:space="preserve">
-    <value>Gracz {1} zdobył {0} x {2}</value>
+    <value>{1} zdobył {0} x {2}</value>
   </data>
   <data name="ITEM_NOT_FOUND" xml:space="preserve">
     <value>Nie znaleziono takiego przedmiotu!</value>
@@ -1176,5 +1176,107 @@
   </data>
   <data name="FAMILY_KICKED" xml:space="preserve">
     <value>Gracz {0} został wyrzucony z rodziny!</value>
+  </data>
+  <data name="NO_HANDLER_GURI" xml:space="preserve">
+    <value>Brak Handler'a guri dla: {0}</value>
+  </data>
+  <data name="LANGUAGE_REQUIRED" xml:space="preserve">
+    <value>Tylko {0} jest dozwolonym językiem!</value>
+  </data>
+  <data name="ASK_REVIVE_PVP" xml:space="preserve">
+    <value>Czy chcesz zostać wskrzeszony/a? będzie Cię to kosztować 100 złota!</value>
+  </data>
+  <data name="LOSE_REP" xml:space="preserve">
+    <value>Straciłeś/aś {0} reputacji!</value>
+  </data>
+  <data name="ACT4_PVP_DIE" xml:space="preserve">
+    <value>Zostałeś/aś zabity/a przez wroga, z powodu klątwy Lodowej Korony nie możesz się odrodzić!</value>
+  </data>
+  <data name="EFFECT_ACTIVATED" xml:space="preserve">
+    <value>Efekt {0} został aktywowany!</value>
+  </data>
+  <data name="INFO_BAZAAR" xml:space="preserve">
+    <value>Nie możesz otworzyć bazaru ponieważ nie posiadasz wymaganego przedmiotu!</value>
+  </data>
+  <data name="NOTICE_BAZAAR" xml:space="preserve">
+    <value>Uwaga, możesz zostać zaatakowany/a przez potwory kiedy bazar jest otwarty!</value>
+  </data>
+  <data name="REMOVE_FROM_BAZAAR" xml:space="preserve">
+    <value>Sprzedaż zakończona, otrzymujesz {0} złota!</value>
+  </data>
+  <data name="STATE_CHANGED" xml:space="preserve">
+    <value>Sprzedaż zakończona, ponieważ przedmiot nie jest już dostępny!</value>
+  </data>
+  <data name="LOGIN_MEDAL" xml:space="preserve">
+    <value>Medal bazaru jest aktualnie aktywny!</value>
+  </data>
+  <data name="GROUP_SHARE_INFO" xml:space="preserve">
+    <value>Wysłałeś prośbę aby podzielić się punktem powrotu</value>
+  </data>
+  <data name="INVITED_YOU_SHARE" xml:space="preserve">
+    <value>Czy chcesz ustawić punkt powrotu od gracza {0}</value>
+  </data>
+  <data name="CHANGED_SHARE" xml:space="preserve">
+    <value>Zmieniłeś punkt powrotu, członków grupy!</value>
+  </data>
+  <data name="REFUSED_SHARE" xml:space="preserve">
+    <value>Odrzuciłeś zmianę punktu powrotu!</value>
+  </data>
+  <data name="LIMIT_EXCEEDED" xml:space="preserve">
+    <value>Nie możesz wystawić więcej przedmiotów do bazaru, ponieważ osiągnąłeś już limit!</value>
+  </data>
+  <data name="PRICE_EXCEEDED" xml:space="preserve">
+    <value>Limit ceny został przekroczony!</value>
+  </data>
+  <data name="ASSISTANT" xml:space="preserve">
+    <value>Asystent</value>
+  </data>
+  <data name="BAZAR_LOADED" xml:space="preserve">
+    <value>Bazar załadowany!</value>
+  </data>
+  <data name="CHANNEL" xml:space="preserve">
+    <value>kanał</value>
+  </data>
+  <data name="FAMILYCALL" xml:space="preserve">
+    <value>czat rodziny</value>
+  </data>
+  <data name="HEAD" xml:space="preserve">
+    <value>Założyciel</value>
+  </data>
+  <data name="MANAGER" xml:space="preserve">
+    <value>Manadżer</value>
+  </data>
+  <data name="MEMBER" xml:space="preserve">
+    <value>Członek</value>
+  </data>
+  <data name="ALREADY_TWO_ASSISTANT" xml:space="preserve">
+    <value>Już masz dwóch asystentów!</value>
+  </data>
+  <data name="ASSISTANT_UNDEMOTABLE" xml:space="preserve">
+    <value>Nie możesz usunąć drugiego asystenta</value>
+  </data>
+  <data name="HEAD_UNDEMOTABLE" xml:space="preserve">
+    <value>Nie możesz usunąć założyciela rodziny</value>
+  </data>
+  <data name="NOT_FAMILY_HEAD" xml:space="preserve">
+    <value>Nie jesteś założycielem rodziny</value>
+  </data>
+  <data name="ONLY_PROMOTE_ASSISTANT" xml:space="preserve">
+    <value>Możesz promować asystenta tylko jako założyciela rodziny!</value>
+  </data>
+  <data name="PLAYER_OFFLINE" xml:space="preserve">
+    <value>Gracz nie jest online!</value>
+  </data>
+  <data name="CHARACTER_FAMILY_LOGGED_IN" xml:space="preserve">
+    <value>{0}({1}) zalogował się!</value>
+  </data>
+  <data name="CANT_CHANGE_MESSAGE" xml:space="preserve">
+    <value>Już zmodyfikowałeś swoją wiadomość dzisiaj!</value>
+  </data>
+  <data name="ACCEPTED_SHARE" xml:space="preserve">
+    <value>Zaakceptowałeś zmianę punktu powrotu z {0}!</value>
+  </data>
+  <data name="OBJECT_IN_BAZAAR" xml:space="preserve">
+    <value>Przedmiot został dodany do bazaru!</value>
   </data>
 </root>

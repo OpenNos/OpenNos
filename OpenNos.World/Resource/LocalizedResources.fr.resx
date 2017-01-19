@@ -180,9 +180,6 @@
   <data name="BUY_ITEM" xml:space="preserve">
     <value>{0}: Acheté &lt;{1} {2}: pièces &gt;</value>
   </data>
-  <data name="BUY_ITEM_VALID" xml:space="preserve">
-    <value>Commerce effectué.</value>
-  </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>Tu pourras bientôt te déplacer.</value>
   </data>
@@ -273,9 +270,6 @@
   <data name="GROUP_CLOSED" xml:space="preserve">
     <value>Groupe dissous.</value>
   </data>
-  <data name="GROUP_DENIED" xml:space="preserve">
-    <value>{0} a refusé ton invitation.</value>
-  </data>
   <data name="GROUP_FULL" xml:space="preserve">
     <value>Le groupe est plein.</value>
   </data>
@@ -327,9 +321,6 @@
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Niveau de mise à niveau d'objet est verrouillé.</value>
   </data>
-  <data name="ITEM_LOADED" xml:space="preserve">
-    <value>{0} Objets chargés !</value>
-  </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
     <value>Tu ne peux pas abandonner cet objet.</value>
   </data>
@@ -366,9 +357,6 @@
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magicien</value>
   </data>
-  <data name="MAP_LOADED" xml:space="preserve">
-    <value>{0} Carte chargées !</value>
-  </data>
   <data name="MAX_GOLD" xml:space="preserve">
     <value>Maximum d'or atteint.</value>
   </data>
@@ -380,9 +368,6 @@
   </data>
   <data name="MINI_INV_UNLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu débloques les invitations Mini-Pays.</value>
-  </data>
-  <data name="MONSTERS_LOADED" xml:space="preserve">
-    <value>{0} Monstres chargés !</value>
   </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques le suivi de cible.</value>
@@ -441,9 +426,6 @@
   <data name="NPCMONSTERS_LOADED" xml:space="preserve">
     <value>{0} Pnj-Monstres chargés !</value>
   </data>
-  <data name="NPCS_LOADED" xml:space="preserve">
-    <value>{0} Pnj chargés !</value>
-  </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Paquet arrivé, paquet: {0}</value>
   </data>
@@ -500,9 +482,6 @@
   </data>
   <data name="RARIFY_SUCCESS" xml:space="preserve">
     <value>Pari réussi ! Niveau de rareté : {0}</value>
-  </data>
-  <data name="EXCHANGE_REFUSED" xml:space="preserve">
-    <value>Ta demande d'échange a été refusée.</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Réputation modifiée.</value>
@@ -648,9 +627,6 @@
   <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>Dignité réduite : --{0}</value>
   </data>
-  <data name="MUTED" xml:space="preserve">
-    <value>Vous avez été sanctionné.</value>
-  </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>La sanction est terminée.</value>
   </data>
@@ -792,9 +768,6 @@
   <data name="NO_AMMO_SWORDSMAN" xml:space="preserve">
     <value>Tu n'as pas assez de carreaux. Achètes-en dans le magasin d'équipement.</value>
   </data>
-  <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
-    <value>L'invitation de groupe a été refusée.</value>
-  </data>
   <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
     <value>C'est maintenant impossible de l'utiliser, car l'âme a été détruite.</value>
   </data>
@@ -931,12 +904,6 @@ Veux-tu le porter ?</value>
   <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
     <value>La compétence n'existe pas !</value>
   </data>
-  <data name="DROPPED_ITEM" xml:space="preserve">
-    <value>(Groupe) [{0}], priorité : Tous les membres du groupe.</value>
-  </data>
-  <data name="ITEM_BOUND_TO" xml:space="preserve">
-    <value>(Groupe) [{0}], priorité : {1}</value>
-  </data>
   <data name="NOT_YOUR_ITEM" xml:space="preserve">
     <value>Cet objet ne t'appartient pas.</value>
   </data>
@@ -985,9 +952,6 @@ Veux-tu le porter ?</value>
   <data name="SP_RESURRECTED" xml:space="preserve">
     <value>L'âme reprend vie.</value>
   </data>
-  <data name="ITEM_IS_NOT_FIXED" xml:space="preserve">
-    <value>Tu ne peux pas l'utiliser. Ton objet ne remplis pas les conditions</value>
-  </data>
   <data name="CORRUPT_PACKET" xml:space="preserve">
     <value>Packet with Header {0} is corrupt or PacketDefinition is invalid. Content: {1}</value>
   </data>
@@ -1032,9 +996,6 @@ Veux-tu le porter ?</value>
   </data>
   <data name="SPEAKER_CANT_BE_USED" xml:space="preserve">
     <value>Tu subis une sanction. par conséquant, tu ne peux pas utiliser cet objet.</value>
-  </data>
-  <data name="ACCEPTED_SHARE" xml:space="preserve">
-    <value>{0} a modifié le point de retour.</value>
   </data>
   <data name="ACT4_PVP_DIE" xml:space="preserve">
     <value>La malédiction de la Courrone de Glace t'a transformé en phoque pour 30 secondes !</value>
