@@ -1356,7 +1356,7 @@ namespace OpenNos.Handler
                     if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
                         Session.SendPacket(Session.Character.GenerateDelay(5000, 3, "#sl^1"));
-                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.MapX, Session.Character.MapY);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.PositionX, Session.Character.PositionY);
                     }
                     else
                     {
@@ -1595,8 +1595,8 @@ namespace OpenNos.Handler
                 Session.Character.MorphUpgrade2 = sp.Design;
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
                 Session.SendPacket(Session.Character.GenerateLev());
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), Session.Character.MapX, Session.Character.MapY);
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.PositionX, Session.Character.PositionY);
                 Session.SendPacket(Session.Character.GenerateSpPoint());
                 Session.Character.LoadSpeed();
                 Session.SendPacket(Session.Character.GenerateCond());
@@ -1703,7 +1703,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
                 Session.SendPacket($"sd {Session.Character.SpCooldown}");
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.PositionX, Session.Character.PositionY);
 
                 // ms_c
                 Session.SendPacket(Session.Character.GenerateSki());

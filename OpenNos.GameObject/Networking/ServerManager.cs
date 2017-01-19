@@ -18,6 +18,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.WebApi.Reference;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,6 @@ namespace OpenNos.GameObject
         #region Members
 
         public bool ShutdownStop;
-        public bool UpdateBazaar;
 
         private static readonly ThreadLocal<Random> random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
 
@@ -90,65 +90,57 @@ namespace OpenNos.GameObject
         public static byte MaxJobLevel { get; set; }
         public static byte MaxSPLevel { get; set; }
         public static byte MaxHeroLevel { get; set; }
-
+        public bool inFamilyRefreshMode { get; set; }
+        public bool inBazaarRefreshMode { get; set; }
         public int ChannelId { get; set; }
 
         public void FamilyRefresh(long FamilyId)
         {
+            inFamilyRefreshMode = true;
             int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family, FamilyId.ToString(), null).Result;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh");
+            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", FamilyId);
+            SpinWait.SpinUntil(() => !inFamilyRefreshMode);
+
         }
-        public void BazaarRefresh()
+        public void BazaarRefresh(long BazaarItemId)
         {
-            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh");
+            inBazaarRefreshMode = true;
+            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh", BazaarItemId);
+            SpinWait.SpinUntil(() => !inBazaarRefreshMode);
         }
         public void LoadFamilies()
         {
-            if (FamilyList == null)
+
+            FamilyList = new List<Family>();
+            foreach (FamilyDTO fam in DAOFactory.FamilyDAO.LoadAll())
             {
-                FamilyList = new List<Family>();
-            }
-            lock (FamilyList)
-            {
-                List<Family> tempList = new List<Family>();
-                foreach (FamilyDTO fam in DAOFactory.FamilyDAO.LoadAll())
+                Family fami = (Family)fam;
+                fami.FamilyCharacters = new List<FamilyCharacter>();
+                foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
                 {
-                    Family fami = (Family)fam;
-                    fami.FamilyCharacters = new List<FamilyCharacter>();
-                    foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
-                    {
-                        fami.FamilyCharacters.Add((FamilyCharacter)famchar);
-                    }
-                    fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
-                    tempList.Add(fami);
+                    fami.FamilyCharacters.Add((FamilyCharacter)famchar);
                 }
-                FamilyList = tempList;
+                fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
+                fami.GenerateLod();
+                FamilyList.Add(fami);
             }
         }
 
+
         public void LoadBazaar()
         {
-            UpdateBazaar = false;
-            if (BazaarList == null)
+           BazaarList = new List<BazaarItemLink>(); ;
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
             {
-                BazaarList = new List<BazaarItemLink>();
-            }
-            lock (BazaarList)
-            {
-                List<BazaarItemLink> tempList = new List<BazaarItemLink>(); ;
-                foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
+                BazaarItemLink item = new BazaarItemLink();
+                item.BazaarItem = bz;
+                CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
+                if (chara != null)
                 {
-                    BazaarItemLink item = new BazaarItemLink();
-                    item.BazaarItem = bz;
-                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
-                    if (chara != null)
-                    {
-                        item.Owner = chara.Name;
-                        item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
-                    }
-                    tempList.Add(item);
+                    item.Owner = chara.Name;
+                    item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
                 }
-                BazaarList = tempList;
+                BazaarList.Add(item);
             }
         }
 
@@ -175,7 +167,29 @@ namespace OpenNos.GameObject
         {
             return _items.FirstOrDefault(m => m.VNum.Equals(vnum));
         }
-
+        public static Guid GenerateMapInstance(short MapId, MapInstanceType type)
+        {
+            Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
+            if (map != null)
+            {
+                Guid guid = Guid.NewGuid();
+                MapInstance Instance = new MapInstance(map, guid, false, type);
+                Instance.LoadMonsters();
+                Instance.LoadPortals();
+                foreach (MapMonster mapMonster in Instance.Monsters)
+                {
+                    mapMonster.MapInstance = Instance;
+                    Instance.AddMonster(mapMonster);
+                }
+                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+                {
+                    Parallel.ForEach(Instance.Monsters, monster => { monster.StartLife(); });
+                });
+                _mapinstances.TryAdd(guid, Instance);
+                return guid;
+            }
+            return default(Guid);
+        }
         public static MapInstance GetMapInstance(Guid id)
         {
             return _mapinstances.FirstOrDefault(m => m.Key.Equals(id)).Value;
@@ -286,7 +300,7 @@ namespace OpenNos.GameObject
         }
         public Guid GetBaseMapInstanceIdByMapId(short MapId)
         {
-            return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == MapId && s.Value?.IsBaseInstance == true).Key;
+            return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == MapId && s.Value.MapInstanceType == MapInstanceType.BaseInstance).Key;
         }
 
         public void ChangeMap(long id, short? MapId = null, short? mapX = null, short? mapY = null)
@@ -319,7 +333,15 @@ namespace OpenNos.GameObject
                     session.ClearLowPriorityQueue();
 
                     session.Character.MapInstanceId = MapInstanceId;
-
+                    if (session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                    {
+                        session.Character.MapId = session.Character.MapInstance.Map.MapId;
+                        if (mapX != null && mapY != null)
+                        {
+                            session.Character.MapX = (short)mapX;
+                            session.Character.MapY = (short)mapY;
+                        }
+                    }
                     if (mapX != null && mapY != null)
                     {
                         session.Character.PositionX = (short)mapX;
@@ -662,7 +684,6 @@ namespace OpenNos.GameObject
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
 
             // initialize Families
-            LoadFamilies();
 
             // initialize Families
             LoadBazaar();
@@ -746,11 +767,7 @@ namespace OpenNos.GameObject
                     };
                     _maps.Add(mapinfo);
 
-                    MapInstance newMap = new MapInstance(mapinfo, guid)
-                    {
-                        ShopAllowed = map.ShopAllowed,
-                        IsBaseInstance = true
-                    };
+                    MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseInstance);
 
                     // register for broadcast
                     _mapinstances.TryAdd(guid, newMap);
@@ -759,6 +776,7 @@ namespace OpenNos.GameObject
                     i++;
 
                     newMap.LoadMonsters();
+                    newMap.LoadPortals();
                     foreach (MapMonster mapMonster in newMap.Monsters)
                     {
                         mapMonster.MapInstance = newMap;
@@ -781,6 +799,7 @@ namespace OpenNos.GameObject
                 Logger.Log.Error("General Error", ex);
             }
             LaunchEvents();
+            LoadFamilies();
 
             //Register the new created TCPIP server to the api
             Guid serverIdentification = Guid.NewGuid();
@@ -839,10 +858,17 @@ namespace OpenNos.GameObject
                 LeaveMap(session.Character.CharacterId);
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
-                RespawnMapTypeDTO resp = session.Character.Respawn;
-                short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
-                short y = (short)(resp.DefaultY + RandomNumber(-5, 5));
-                ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
+                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                {
+                    RespawnMapTypeDTO resp = session.Character.Respawn;
+                    short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
+                    short y = (short)(resp.DefaultY + RandomNumber(-5, 5));
+                    ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
+                }
+                else
+                {
+                    Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                }
                 session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateTp());
                 session.CurrentMapInstance?.Broadcast(session.Character.GenerateRevive());
                 session.SendPacket(session.Character.GenerateStat());
@@ -1152,21 +1178,86 @@ namespace OpenNos.GameObject
         }
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
-            LoadFamilies();
+            long FamilyId = (long)sender;
+            FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(FamilyId);
+            Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == FamilyId);
+
+            lock (FamilyList)
+            {
+                if (famdto != null)
+                {
+                    if (fam != null)
+                    {
+                        Guid lod = fam.LandOfDeathId;
+                        FamilyList.Remove(fam);
+                        fam = (Family)famdto;
+                        fam.FamilyCharacters = new List<FamilyCharacter>();
+                        foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fam.FamilyId).ToList())
+                        {
+                            fam.FamilyCharacters.Add((FamilyCharacter)famchar);
+                        }
+                        fam.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fam.FamilyId).ToList();
+                        fam.LandOfDeathId = lod;
+                        FamilyList.Add(fam);
+                    }
+                    else
+                    {
+                        Family fami = (Family)famdto;
+                        fami.FamilyCharacters = new List<FamilyCharacter>();
+                        foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
+                        {
+                            fami.FamilyCharacters.Add((FamilyCharacter)famchar);
+                        }
+                        fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
+                        fami.GenerateLod();
+                        FamilyList.Add(fami);
+                    }
+                }
+                else if (fam != null)
+                {
+                    FamilyList.Remove(fam);
+                }
+
+            }
+            inFamilyRefreshMode = false;
         }
+
         private void OnBazaarRefresh(object sender, EventArgs e)
         {
-            UpdateBazaar = true;
-
-            System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(RandomNumber(1000, 30000)))
-           .Subscribe(
-           o =>
-           {
-               if (UpdateBazaar)
-               {
-                   LoadBazaar();
-               }
-           });
+            long BazaarId = (long)sender;
+            BazaarItemDTO bzdto = DAOFactory.BazaarItemDAO.LoadById(BazaarId);
+            BazaarItemLink bzlink = BazaarList.FirstOrDefault(s => s.BazaarItem.BazaarItemId == BazaarId);
+            lock (BazaarList)
+            {
+                if (bzdto != null)
+                {
+                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bzdto.SellerId);
+                    if (bzlink != null)
+                    {
+                        BazaarList.Remove(bzlink);
+                        bzlink.BazaarItem = bzdto;
+                        bzlink.Owner = chara.Name;
+                        bzlink.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bzdto.ItemInstanceId);
+                        BazaarList.Add(bzlink);
+                    }
+                    else
+                    {
+                        BazaarItemLink item = new BazaarItemLink();
+                        item.BazaarItem = bzdto;
+                        if (chara != null)
+                        {
+                            item.Owner = chara.Name;
+                            item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bzdto.ItemInstanceId);
+                        }
+                        BazaarList.Add(item);
+                    }
+                }
+                else if (bzlink != null)
+                {
+                    BazaarList.Remove(bzlink);
+                }
+            }
+            inBazaarRefreshMode = false;
         }
         private void OnSessionKicked(object sender, EventArgs e)
         {
@@ -1210,6 +1301,17 @@ namespace OpenNos.GameObject
             {
                 Logger.Error(e);
             }
+        }
+
+        public void RemoveMapInstance(Guid MapId)
+        {
+            KeyValuePair<Guid, MapInstance> map = _mapinstances.FirstOrDefault(s => s.Key == MapId);
+            if (!map.Equals(default(KeyValuePair<Guid, MapInstance>)))
+            {
+                map.Value.Dispose();
+                ((IDictionary)_mapinstances).Remove(map);
+            }
+
         }
 
         #endregion

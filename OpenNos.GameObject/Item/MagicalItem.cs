@@ -50,6 +50,11 @@ namespace OpenNos.GameObject
 
                 //respawn objects
                 case 1:
+                    if (session.Character.MapInstance.MapInstanceType != MapInstanceType.BaseInstance)
+                    {
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
+                        return;
+                    }
                     int x1;
                     int x2;
                     int x3;
@@ -129,6 +134,18 @@ namespace OpenNos.GameObject
                                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                             break;
                                     }
+                                }
+                                break;
+                            case 2:
+                                if (!delay)
+                                {
+                                    session.SendPacket(session.Character.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^1"));
+                                }
+                                else
+                                {
+                                    ServerManager.Instance.LeaveMap(session.Character.CharacterId);
+                                    ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.MinilandId, 3, 8);
+                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                 }
                                 break;
                         }

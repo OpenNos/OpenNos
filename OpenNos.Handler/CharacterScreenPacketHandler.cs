@@ -359,6 +359,9 @@ namespace OpenNos.Handler
                             Session.Character.SpPoint = 10000;
                         }
                         Session.Character.LastLogin = DateTime.Now;
+
+                        Session.Character.GenerateMiniland();
+
                         Session.Character.Respawns = DAOFactory.RespawnDAO.LoadByCharacter(Session.Character.CharacterId).ToList();
                         Session.Character.StaticBonusList = DAOFactory.StaticBonusDAO.LoadByCharacterId(Session.Character.CharacterId).ToList();
                         Session.Character.CharacterRelations = DAOFactory.CharacterRelationDAO.LoadByCharacterId(Session.Character.CharacterId).ToList();

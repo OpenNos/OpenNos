@@ -13,7 +13,7 @@ namespace OpenNos.GameObject
 {
     public class MapInstance : BroadcastableBase
     {
-        public bool IsBaseInstance { get; set; }
+        public MapInstanceType MapInstanceType { get; set; }
         public Map Map { get; set; }
         public ThreadSafeSortedList<long, MapItem> DroppedList { get; }
 
@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
                 {
                     return true;
                 }
-              
+
                 return false;
             }
             set
@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
 
         public IEnumerable<MapNpc> Npcs => _npcs;
 
-        public List<PortalDTO> Portals => _portals;
+        public List<Portal> Portals => _portals;
 
         public bool ShopAllowed { get; set; }
 
@@ -66,15 +66,17 @@ namespace OpenNos.GameObject
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
         private readonly List<int> _mapMonsterIds;
         private readonly List<MapNpc> _npcs;
-        private readonly List<PortalDTO> _portals;
+        private readonly List<Portal> _portals;
         private bool _disposed;
         private bool _isSleeping;
         private bool _isSleepingRequest;
-     
+
         private readonly Random _random;
-        public MapInstance(Map map, Guid guid)
+        public MapInstance(Map map, Guid guid, bool shopAllowed, MapInstanceType type)
         {
 
+            ShopAllowed = shopAllowed;
+            MapInstanceType = type;
             _isSleeping = true;
             LastUserShopId = 0;
             _random = new Random();
@@ -83,14 +85,8 @@ namespace OpenNos.GameObject
             MapInstanceId = guid;
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
-            IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(Map.MapId).ToList();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
-            _portals = new List<PortalDTO>();
-            foreach (PortalDTO portal in portals)
-            {
-                _portals.Add(portal);
-            }
-
+            _portals = new List<Portal>();
             UserShops = new Dictionary<long, MapShop>();
             _npcs = new List<MapNpc>();
             _npcs.AddRange(ServerManager.Instance.GetMapNpcsByMapId(Map.MapId).AsEnumerable());
@@ -106,6 +102,10 @@ namespace OpenNos.GameObject
         {
             if (!_disposed)
             {
+                foreach (ClientSession Session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapInstanceId == MapInstanceId))
+                {
+                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
+                }
                 Dispose(true);
                 GC.SuppressFinalize(this);
                 _disposed = true;
@@ -177,6 +177,15 @@ namespace OpenNos.GameObject
             {
                 _monsters[monster.MapMonsterId] = monster as MapMonster;
                 _mapMonsterIds.Add(monster.MapMonsterId);
+            }
+        }
+        public void LoadPortals()
+        {
+            foreach (PortalDTO portal in DAOFactory.PortalDAO.LoadByMap(Map.MapId).ToList())
+            {
+                Portal portal2 = (Portal)portal;
+                portal2.SourceMapInstanceId = MapInstanceId;
+                _portals.Add(portal2);
             }
         }
         public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
@@ -292,6 +301,7 @@ namespace OpenNos.GameObject
                 _monsters.Dispose();
             }
         }
+
 
         #endregion
 

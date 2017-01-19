@@ -84,6 +84,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Map\MapInstancePortalHandler.cs" />
+    <Compile Include="Packets\ClientPackets\MJoin.cs" />
+    <Compile Include="Portal.cs" />
     <Compile Include="BazaarItemLink.cs" />
     <Compile Include="Account.cs" />
     <Compile Include="Buff\BCardEntry.cs" />

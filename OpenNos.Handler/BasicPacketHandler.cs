@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace OpenNos.Handler
 {
@@ -50,7 +51,15 @@ namespace OpenNos.Handler
         #endregion
 
         #region Methods
-
+        public void JoinMiniland(MJoinPacket mjoin)
+        {
+            ClientSession sess = ServerManager.Instance.GetSessionByCharacterId(mjoin.CharacterId);
+            if (sess != null && sess.Character != null)
+            {
+                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, sess.Character.MinilandId, 5, 8);
+            }
+        }
         public void CharacterOptionChange(CharacterOptionPacket characteroptionpacket)
         {
             switch (characteroptionpacket.Option)
@@ -198,15 +207,18 @@ namespace OpenNos.Handler
         }
         public void RefreshBazarList(CBListPacket packet)
         {
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             Session.SendPacket(Session.Character.GenerateRCBList(packet));
         }
         public void RefreshPersonalBazarList(CSListnPacket packet)
         {
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             Session.SendPacket(Session.Character.GenerateRCSList(packet));
         }
 
         public void OpenBazaar(CSkillPacket packet)
         {
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
             if (medal != null)
             {
@@ -223,10 +235,6 @@ namespace OpenNos.Handler
 
         public void BuyBazaar(CBuyPacket packet)
         {
-            if (ServerManager.Instance.UpdateBazaar)
-            {
-                ServerManager.Instance.LoadBazaar();
-            }
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null && packet.Amount > 0)
             {
@@ -266,7 +274,7 @@ namespace OpenNos.Handler
                                 Session.Character.Gold -= price;
                                 Session.SendPacket(Session.Character.GenerateGold());
                                 DAOFactory.IteminstanceDAO.InsertOrUpdate(bzitemdto);
-                                ServerManager.Instance.BazaarRefresh();
+                                ServerManager.Instance.BazaarRefresh(bzcree.BazaarItem.BazaarItemId);
                                 Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {packet.Amount} {packet.Price} 0 0 0");
                                 ItemInstance newBz = bzcree.Item.DeepCopy();
                                 newBz.Id = Guid.NewGuid();
@@ -304,10 +312,7 @@ namespace OpenNos.Handler
 
         public void GetBazaar(CScalcPacket packet)
         {
-            if (ServerManager.Instance.UpdateBazaar)
-            {
-                ServerManager.Instance.LoadBazaar();
-            }
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null)
             {
@@ -343,7 +348,7 @@ namespace OpenNos.Handler
 
                     DAOFactory.IteminstanceDAO.Delete(Item.Id);
 
-                    ServerManager.Instance.BazaarRefresh();
+                    ServerManager.Instance.BazaarRefresh(bz.BazaarItemId);
                 }
                 else
                 {
@@ -358,10 +363,7 @@ namespace OpenNos.Handler
         }
         public void SellBazaar(CRegPacket packet)
         {
-            if (ServerManager.Instance.UpdateBazaar)
-            {
-                ServerManager.Instance.LoadBazaar();
-            }
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inBazaarRefreshMode);
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
 
             long price = packet.Price * packet.Amount;
@@ -427,7 +429,7 @@ namespace OpenNos.Handler
 
 
             DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bz);
-            ServerManager.Instance.BazaarRefresh();
+            ServerManager.Instance.BazaarRefresh(bz.BazaarItemId);
 
             Session.Character.Gold -= tax;
             Session.SendPacket(Session.Character.GenerateGold());
@@ -719,27 +721,22 @@ namespace OpenNos.Handler
                     ServerManager.Instance.UpdateGroup(pjoinPacket.CharacterId);
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePidx());
                 }
-                else
+                else if (pjoinPacket.RequestType == GroupRequestType.Declined)
                 {
-                    switch (pjoinPacket.RequestType)
+                    targetSession.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10));
+                }
+                else if (pjoinPacket.RequestType == GroupRequestType.AcceptedShare)
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), 0));
+                    if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
                     {
-                        case GroupRequestType.Declined:
-                            targetSession.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10));
-                            break;
-
-                        case GroupRequestType.AcceptedShare:
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), 0));
-                            if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
-                            {
-                                Session.Character.SetReturnPoint(Session.Character.MapInstance.Map.MapId, targetSession.Character.MapX, targetSession.Character.MapY);
-                                targetSession.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
-                            }
-                            break;
-
-                        case GroupRequestType.DeclinedShare:
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REFUSED_SHARE"), 0));
-                            break;
+                        Session.Character.SetReturnPoint(Session.Character.MapInstance.Map.MapId, targetSession.Character.PositionX, targetSession.Character.PositionY);
+                        targetSession.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
                     }
+                }
+                else if (pjoinPacket.RequestType == GroupRequestType.DeclinedShare)
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REFUSED_SHARE"), 0));
                 }
             }
         }
@@ -957,7 +954,7 @@ namespace OpenNos.Handler
             }
             if (guriPacket[2] == "2")
             {
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.PositionX, Session.Character.PositionY);
             }
             else if (guriPacket[2] == "4")
             {
@@ -1150,13 +1147,25 @@ namespace OpenNos.Handler
                         ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
                         if (session != null)
                         {
-                            short mapy = session.Character.MapY;
-                            short mapx = session.Character.MapX;
-                            short mapId = session.Character.MapInstance.Map.MapId;
+                            if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                            {
+                                if (Session.Character.MapInstance.MapInstanceType != MapInstanceType.BaseInstance)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
+                                    return;
+                                }
+                                short mapy = session.Character.PositionY;
+                                short mapx = session.Character.PositionX;
+                                short mapId = session.Character.MapInstance.Map.MapId;
 
-                            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
-                            Session.Character.Inventory.RemoveItemAmount(vnumToUse);
+                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
+                                Session.Character.Inventory.RemoveItemAmount(vnumToUse);
+                            }
+                            else
+                            {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_ON_INSTANCEMAP"), 0));
+                            }
                         }
                         else
                         {
@@ -1303,10 +1312,10 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
             }
-            foreach (PortalDTO portal in Session.CurrentMapInstance.Portals)
+            foreach (Portal portal in Session.CurrentMapInstance.Portals.Concat(Session.Character.GetExtraPortal()))
             {
-                if (Session.Character.MapY >= portal.SourceY - 1 && Session.Character.MapY <= portal.SourceY + 1
-                    && Session.Character.MapX >= portal.SourceX - 1 && Session.Character.MapX <= portal.SourceX + 1)
+                if (Session.Character.PositionY >= portal.SourceY - 1 && Session.Character.PositionY <= portal.SourceY + 1
+                    && Session.Character.PositionX >= portal.SourceX - 1 && Session.Character.PositionX <= portal.SourceX + 1)
                 {
                     switch (portal.Type)
                     {
@@ -1326,7 +1335,16 @@ namespace OpenNos.Handler
                     }
                     ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                     Session.Character.LastPortal = currentRunningSeconds;
-                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, portal.DestinationMapId, portal.DestinationX, portal.DestinationY);
+
+                    if (ServerManager.GetMapInstance(portal.SourceMapInstanceId).MapInstanceType != MapInstanceType.BaseInstance && ServerManager.GetMapInstance(portal.DestinationMapInstanceId).MapInstanceType == MapInstanceType.BaseInstance)
+                    {
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
+                    }
+                    else
+                    {
+                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
+                    }
+
                     break;
                 }
             }
@@ -1474,6 +1492,10 @@ namespace OpenNos.Handler
             }
             else
             {
+                if (message == null)
+                {
+                    return;
+                }
                 string language = new CultureInfo(System.Configuration.ConfigurationManager.AppSettings["Language"]).EnglishName;
                 if (message.Split(' ').Length > 3 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(message))
                 {
@@ -1805,14 +1827,20 @@ namespace OpenNos.Handler
         {
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
+            int distance = Map.GetDistance(new MapCell() { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell() { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
 
             if (!Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) && !Session.Character.IsChangingMapInstance && !Session.Character.HasShopOpened)
             {
                 if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(1) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
                 {
-                    Session.Character.MapX = walkPacket.XCoordinate;
-                    Session.Character.MapY = walkPacket.YCoordinate;
+                    if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                    {
+                        Session.Character.MapX = walkPacket.XCoordinate;
+                        Session.Character.MapY = walkPacket.YCoordinate;
+                    }
+                    Session.Character.PositionX = walkPacket.XCoordinate;
+                    Session.Character.PositionY = walkPacket.YCoordinate;
+
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;
