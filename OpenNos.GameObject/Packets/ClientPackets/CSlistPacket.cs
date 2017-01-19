@@ -4,7 +4,7 @@ using OpenNos.Core;
 namespace OpenNos.GameObject
 {
     [PacketHeader("c_slist")]
-    public class CSListnPacket : PacketDefinition
+    public class CSListPacket : PacketDefinition
     {
         #region Properties
 
