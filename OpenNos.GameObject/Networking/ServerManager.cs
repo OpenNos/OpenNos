@@ -776,6 +776,7 @@ namespace OpenNos.GameObject
                     i++;
 
                     newMap.LoadMonsters();
+                    newMap.LoadPortals();
                     foreach (MapMonster mapMonster in newMap.Monsters)
                     {
                         mapMonster.MapInstance = newMap;
