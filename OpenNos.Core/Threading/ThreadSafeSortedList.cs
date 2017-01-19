@@ -89,27 +89,34 @@ namespace OpenNos.Core
         {
             get
             {
-                Lock.EnterReadLock();
-                try
+                if (!_disposed)
                 {
-                    return Items.ContainsKey(key) ? Items[key] : default(TV);
+                    Lock.EnterReadLock();
+                    try
+                    {
+                        return Items.ContainsKey(key) ? Items[key] : default(TV);
+                    }
+                    finally
+                    {
+                        Lock.ExitReadLock();
+                    }
                 }
-                finally
-                {
-                    Lock.ExitReadLock();
-                }
+                return default(TV);
             }
 
             set
             {
-                Lock.EnterWriteLock();
-                try
+                if (!_disposed)
                 {
-                    Items[key] = value;
-                }
-                finally
-                {
-                    Lock.ExitWriteLock();
+                    Lock.EnterWriteLock();
+                    try
+                    {
+                        Items[key] = value;
+                    }
+                    finally
+                    {
+                        Lock.ExitWriteLock();
+                    }
                 }
             }
         }
@@ -123,14 +130,17 @@ namespace OpenNos.Core
         /// </summary>
         public void ClearAll()
         {
-            Lock.EnterWriteLock();
-            try
+            if (!_disposed)
             {
-                Items.Clear();
-            }
-            finally
-            {
-                Lock.ExitWriteLock();
+                Lock.EnterWriteLock();
+                try
+                {
+                    Items.Clear();
+                }
+                finally
+                {
+                    Lock.ExitWriteLock();
+                }
             }
         }
 
@@ -141,15 +151,19 @@ namespace OpenNos.Core
         /// <returns>True; if collection contains given key</returns>
         public bool ContainsKey(TK key)
         {
-            Lock.EnterReadLock();
-            try
+            if (!_disposed)
             {
-                return Items.ContainsKey(key);
+                Lock.EnterReadLock();
+                try
+                {
+                    return Items.ContainsKey(key);
+                }
+                finally
+                {
+                    Lock.ExitReadLock();
+                }
             }
-            finally
-            {
-                Lock.ExitReadLock();
-            }
+                return false;
         }
 
         /// <summary>
@@ -159,15 +173,19 @@ namespace OpenNos.Core
         /// <returns>True; if collection contains given item</returns>
         public bool ContainsValue(TV item)
         {
-            Lock.EnterReadLock();
-            try
+            if (!_disposed)
             {
-                return Items.ContainsValue(item);
+                Lock.EnterReadLock();
+                try
+                {
+                    return Items.ContainsValue(item);
+                }
+                finally
+                {
+                    Lock.ExitReadLock();
+                }
             }
-            finally
-            {
-                Lock.ExitReadLock();
-            }
+            return false;
         }
 
         public void Dispose()
@@ -207,17 +225,21 @@ namespace OpenNos.Core
         /// <returns>Item list</returns>
         public List<TV> GetAndClearAllItems()
         {
-            Lock.EnterWriteLock();
-            try
+            if (!_disposed)
             {
-                var list = new List<TV>(Items.Values);
-                Items.Clear();
-                return list;
+                Lock.EnterWriteLock();
+                try
+                {
+                    var list = new List<TV>(Items.Values);
+                    Items.Clear();
+                    return list;
+                }
+                finally
+                {
+                    Lock.ExitWriteLock();
+                }
             }
-            finally
-            {
-                Lock.ExitWriteLock();
-            }
+            return new List<TV>();
         }
 
         /// <summary>
@@ -226,21 +248,25 @@ namespace OpenNos.Core
         /// <param name="key">Key of item to remove</param>
         public bool Remove(TK key)
         {
-            Lock.EnterWriteLock();
-            try
+            if (!_disposed)
             {
-                if (!Items.ContainsKey(key))
+                Lock.EnterWriteLock();
+                try
                 {
-                    return false;
-                }
+                    if (!Items.ContainsKey(key))
+                    {
+                        return false;
+                    }
 
-                Items.Remove(key);
-                return true;
+                    Items.Remove(key);
+                    return true;
+                }
+                finally
+                {
+                    Lock.ExitWriteLock();
+                }
             }
-            finally
-            {
-                Lock.ExitWriteLock();
-            }
+            return false;
         }
 
         protected virtual void Dispose(bool disposing)
