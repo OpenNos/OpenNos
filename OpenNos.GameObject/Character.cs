@@ -691,10 +691,17 @@ namespace OpenNos.GameObject
         {
             if (Family != null)
             {
-                FamilyCharacter familyCharacter = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
-                if (familyCharacter != null)
+                try
                 {
-                    return $"ginfo {Session.Character.Family.Name} {familyCharacter.Character.Name} {(byte)Family.FamilyHeadGender} {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.FamilyCharacters.Count()} {Session.Character.Family.MaxSize} {(byte)Session.Character.FamilyCharacter.Authority} {(Family.ManagerCanInvite ? 1 : 0)} {(Family.ManagerCanNotice ? 1 : 0)} {(Family.ManagerCanShout ? 1 : 0)} {(Family.ManagerCanGetHistory ? 1 : 0)} {(byte)Family.ManagerAuthorityType} {(Family.MemberCanGetHistory ? 1 : 0)} {(byte)Family.MemberAuthorityType} {Session.Character.Family.FamilyMessage.Replace(' ', '^')}";
+                    FamilyCharacter familyCharacter = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                    if (familyCharacter != null)
+                    {
+                        return $"ginfo {Session.Character.Family.Name} {familyCharacter.Character.Name} {(byte)Family.FamilyHeadGender} {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.FamilyCharacters.Count()} {Session.Character.Family.MaxSize} {(byte)Session.Character.FamilyCharacter.Authority} {(Family.ManagerCanInvite ? 1 : 0)} {(Family.ManagerCanNotice ? 1 : 0)} {(Family.ManagerCanShout ? 1 : 0)} {(Family.ManagerCanGetHistory ? 1 : 0)} {(byte)Family.ManagerAuthorityType} {(Family.MemberCanGetHistory ? 1 : 0)} {(byte)Family.MemberAuthorityType} {Session.Character.Family.FamilyMessage.Replace(' ', '^')}";
+                    }
+                }
+                catch
+                {
+                    return string.Empty;
                 }
             }
             return string.Empty;
