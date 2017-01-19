@@ -160,7 +160,7 @@
     <value>Konto nie zostalo zweryfikowane</value>
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
-    <value>Nie udalo sie wysłac packet {0} do użytkownika {1}, {2}.</value>
+    <value>Nie udalo sie wysłac pakiet {0} do użytkownika {1}, {2}.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server został uruchomiony!</value>

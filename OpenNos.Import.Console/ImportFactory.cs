@@ -107,11 +107,13 @@ namespace OpenNos.Import.Console
                 }
                 if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "2")
                 {
-                    MapNpcDTO npctest = new MapNpcDTO();
-                    npctest.MapX = short.Parse(currentPacket[4]);
-                    npctest.MapY = short.Parse(currentPacket[5]);
-                    npctest.MapId = map;
-                    npctest.NpcVNum = short.Parse(currentPacket[2]);
+                    MapNpcDTO npctest = new MapNpcDTO
+                    {
+                        MapX = short.Parse(currentPacket[4]),
+                        MapY = short.Parse(currentPacket[5]),
+                        MapId = map,
+                        NpcVNum = short.Parse(currentPacket[2])
+                    };
                     if (long.Parse(currentPacket[3]) > 20000)
                     {
                         continue;
@@ -1321,6 +1323,58 @@ namespace OpenNos.Import.Console
             List<PortalDTO> listPortals1 = new List<PortalDTO>();
             List<PortalDTO> listPortals2 = new List<PortalDTO>();
             short map = 0;
+
+            PortalDTO lodPortal = new PortalDTO
+            {
+                SourceMapId = 150,
+                SourceX = 172,
+                SourceY = 171,
+                DestinationMapId = 98,
+                Type = -1,
+                DestinationX = 6,
+                DestinationY = 36,
+                IsDisabled = false
+            };
+            DAOFactory.PortalDAO.Insert(lodPortal);
+
+            PortalDTO minilandPortal = new PortalDTO
+            {
+                SourceMapId = 20001,
+                SourceX = 3,
+                SourceY = 8,
+                DestinationMapId = 1,
+                Type = -1,
+                DestinationX = 48,
+                DestinationY = 132,
+                IsDisabled = false
+            };
+            DAOFactory.PortalDAO.Insert(minilandPortal);
+
+            PortalDTO weddingPortal = new PortalDTO
+            {
+                SourceMapId = 2586,
+                SourceX = 34,
+                SourceY = 54,
+                DestinationMapId = 145,
+                Type = -1,
+                DestinationX = 61,
+                DestinationY = 165,
+                IsDisabled = false
+            };
+            DAOFactory.PortalDAO.Insert(weddingPortal);
+
+            PortalDTO glacerusCavernPortal = new PortalDTO
+            {
+                SourceMapId = 2587,
+                SourceX = 42,
+                SourceY = 3,
+                DestinationMapId = 189,
+                Type = -1,
+                DestinationX = 48,
+                DestinationY = 156,
+                IsDisabled = false
+            };
+            DAOFactory.PortalDAO.Insert(glacerusCavernPortal);
 
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("gp")))
             {
