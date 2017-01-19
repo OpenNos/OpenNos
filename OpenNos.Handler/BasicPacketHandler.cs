@@ -231,10 +231,6 @@ namespace OpenNos.Handler
 
         public void BuyBazaar(CBuyPacket packet)
         {
-            if (ServerManager.Instance.UpdateBazaar)
-            {
-                ServerManager.Instance.LoadBazaar();
-            }
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null && packet.Amount > 0)
             {
@@ -274,7 +270,7 @@ namespace OpenNos.Handler
                                 Session.Character.Gold -= price;
                                 Session.SendPacket(Session.Character.GenerateGold());
                                 DAOFactory.IteminstanceDAO.InsertOrUpdate(bzitemdto);
-                                ServerManager.Instance.BazaarRefresh();
+                                ServerManager.Instance.BazaarRefresh(bzcree.BazaarItem.BazaarItemId);
                                 Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {packet.Amount} {packet.Price} 0 0 0");
                                 ItemInstance newBz = bzcree.Item.DeepCopy();
                                 newBz.Id = Guid.NewGuid();
@@ -312,10 +308,6 @@ namespace OpenNos.Handler
 
         public void GetBazaar(CScalcPacket packet)
         {
-            if (ServerManager.Instance.UpdateBazaar)
-            {
-                ServerManager.Instance.LoadBazaar();
-            }
             BazaarItemDTO bz = DAOFactory.BazaarItemDAO.LoadAll().FirstOrDefault(s => s.BazaarItemId == packet.BazaarId);
             if (bz != null)
             {
@@ -351,7 +343,7 @@ namespace OpenNos.Handler
 
                     DAOFactory.IteminstanceDAO.Delete(Item.Id);
 
-                    ServerManager.Instance.BazaarRefresh();
+                    ServerManager.Instance.BazaarRefresh(bz.BazaarItemId);
                 }
                 else
                 {
@@ -366,10 +358,6 @@ namespace OpenNos.Handler
         }
         public void SellBazaar(CRegPacket packet)
         {
-            if (ServerManager.Instance.UpdateBazaar)
-            {
-                ServerManager.Instance.LoadBazaar();
-            }
             StaticBonusDTO medal = Session.Character.StaticBonusList.FirstOrDefault(s => s.StaticBonusType == StaticBonusType.BazaarMedalGold || s.StaticBonusType == StaticBonusType.BazaarMedalSilver);
 
             long price = packet.Price * packet.Amount;
@@ -435,7 +423,7 @@ namespace OpenNos.Handler
 
 
             DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bz);
-            ServerManager.Instance.BazaarRefresh();
+            ServerManager.Instance.BazaarRefresh(bz.BazaarItemId);
 
             Session.Character.Gold -= tax;
             Session.SendPacket(Session.Character.GenerateGold());
