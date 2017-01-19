@@ -1196,7 +1196,7 @@
     <value>Your item has been added on the bazaar!</value>
   </data>
   <data name="REMOVE_FROM_BAZAAR" xml:space="preserve">
-    <value>The sale is completed, you receive gold : {0}.</value>
+    <value>The sale is completed, you receive gold: {0}.</value>
   </data>
   <data name="STATE_CHANGED" xml:space="preserve">
     <value>The sale was interrupted because the item is no longer available!</value>
@@ -1209,9 +1209,6 @@
   </data>
   <data name="INVITED_YOU_SHARE" xml:space="preserve">
     <value>Do you want to set as a return point from : {0} ?</value>
-  </data>
-  <data name="ai t" xml:space="preserve">
-    <value>{0} has modified the return point.</value>
   </data>
   <data name="CHANGED_SHARE" xml:space="preserve">
     <value>You have changed the common point of return of the members of the group.</value>
@@ -1268,6 +1265,12 @@
     <value>{0}({1}) logged in!</value>
   </data>
   <data name="CANT_CHANGE_MESSAGE" xml:space="preserve">
-    <value>You already modify your message today. Retry tomorrow!</value>
+    <value>You already modified your message today. Retry tomorrow!</value>
+  </data>
+  <data name="NO_HANDLER_GURI" xml:space="preserve">
+    <value>No guri handler for: {0}</value>
+  </data>
+  <data name="ACCEPTED_SHARE" xml:space="preserve">
+    <value>You accepted point share with {0}!</value>
   </data>
 </root>
