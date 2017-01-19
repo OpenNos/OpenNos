@@ -115,6 +115,7 @@ namespace OpenNos.GameObject
                     fami.FamilyCharacters.Add((FamilyCharacter)famchar);
                 }
                 fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
+                fami.GenerateLod();
                 FamilyList.Add(fami);
             }
         }
@@ -168,7 +169,16 @@ namespace OpenNos.GameObject
                 Guid guid = Guid.NewGuid();
                 MapInstance Instance = new MapInstance(map, guid, false, type);
                 MapInstancePortalHandler.GetMapInstanceExitPortals(MapId, guid).ForEach(s => Instance.Portals.Add(s));
-
+                Instance.LoadMonsters();
+                foreach (MapMonster mapMonster in Instance.Monsters)
+                {
+                    mapMonster.MapInstance = Instance;
+                    Instance.AddMonster(mapMonster);
+                }
+                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
+                {
+                    Parallel.ForEach(Instance.Monsters, monster => { monster.StartLife(); });
+                });
                 _mapinstances.TryAdd(guid, Instance);
                 return guid;
             }
@@ -668,7 +678,6 @@ namespace OpenNos.GameObject
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERSKILLS_LOADED"), _monsterSkills.GetAllItems().Sum(i => i.Count)));
 
             // initialize Families
-            LoadFamilies();
 
             // initialize Families
             LoadBazaar();
@@ -783,6 +792,7 @@ namespace OpenNos.GameObject
                 Logger.Log.Error("General Error", ex);
             }
             LaunchEvents();
+            LoadFamilies();
 
             //Register the new created TCPIP server to the api
             Guid serverIdentification = Guid.NewGuid();
@@ -841,10 +851,17 @@ namespace OpenNos.GameObject
                 LeaveMap(session.Character.CharacterId);
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
-                RespawnMapTypeDTO resp = session.Character.Respawn;
-                short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
-                short y = (short)(resp.DefaultY + RandomNumber(-5, 5));
-                ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
+                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                {
+                    RespawnMapTypeDTO resp = session.Character.Respawn;
+                    short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
+                    short y = (short)(resp.DefaultY + RandomNumber(-5, 5));
+                    ChangeMap(session.Character.CharacterId, resp.DefaultMapId, x, y);
+                }
+                else
+                {
+                    Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
+                }
                 session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateTp());
                 session.CurrentMapInstance?.Broadcast(session.Character.GenerateRevive());
                 session.SendPacket(session.Character.GenerateStat());
@@ -1164,6 +1181,7 @@ namespace OpenNos.GameObject
                 {
                     if (fam != null)
                     {
+                        Guid lod = fam.LandOfDeathId;
                         FamilyList.Remove(fam);
                         fam = (Family)famdto;
                         fam.FamilyCharacters = new List<FamilyCharacter>();
@@ -1172,6 +1190,7 @@ namespace OpenNos.GameObject
                             fam.FamilyCharacters.Add((FamilyCharacter)famchar);
                         }
                         fam.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fam.FamilyId).ToList();
+                        fam.LandOfDeathId = lod;
                         FamilyList.Add(fam);
                     }
                     else
@@ -1183,6 +1202,7 @@ namespace OpenNos.GameObject
                             fami.FamilyCharacters.Add((FamilyCharacter)famchar);
                         }
                         fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
+                        fami.GenerateLod();
                         FamilyList.Add(fami);
                     }
                 }
