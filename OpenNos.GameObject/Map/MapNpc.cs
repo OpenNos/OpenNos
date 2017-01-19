@@ -142,7 +142,7 @@ namespace OpenNos.GameObject
                           });
 
                     LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Npc.Speed));
-                    MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv2(), ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
+                    MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv2(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                 }
             }
             if (Target == -1)
@@ -239,7 +239,7 @@ namespace OpenNos.GameObject
                             short mapX = (short)Path.ElementAt(maxindex - 1).x;
                             short mapY = (short)Path.ElementAt(maxindex - 1).y;
                             double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY}, new MapCell { X = MapX, Y = MapY}) / (double)Npc.Speed;
-                            MapInstance.Broadcast(new BroadcastPacket(null, $"mv 2 {MapNpcId} {mapX} {mapY} {Npc.Speed}", ReceiverType.AllInRange, xCoordinate: mapX, yCoordinate: mapY));
+                            MapInstance.Broadcast(new BroadcastPacket(null, $"mv 2 {MapNpcId} {mapX} {mapY} {Npc.Speed}", ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                             LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
                             Observable.Timer(TimeSpan.FromMilliseconds((int)((waitingtime > 1 ? 1 : waitingtime) * 1000)))
