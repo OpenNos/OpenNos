@@ -174,8 +174,8 @@ namespace OpenNos.GameObject
             {
                 Guid guid = Guid.NewGuid();
                 MapInstance Instance = new MapInstance(map, guid, false, type);
-                MapInstancePortalHandler.GetMapInstanceExitPortals(MapId, guid).ForEach(s => Instance.Portals.Add(s));
                 Instance.LoadMonsters();
+                Instance.LoadPortals();
                 foreach (MapMonster mapMonster in Instance.Monsters)
                 {
                     mapMonster.MapInstance = Instance;

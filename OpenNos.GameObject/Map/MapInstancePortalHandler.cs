@@ -20,33 +20,6 @@ namespace OpenNos.GameObject
 {
     public class MapInstancePortalHandler
     {
-        public static List<Portal> GetMapInstanceExitPortals(short MapId, Guid SourceMap)
-        {
-            List<Portal> list = new List<Portal>();
-            switch (MapId)
-            {
-                case 20001:
-                    list.Add(new Portal
-                    {
-                        SourceX = 3,
-                        SourceY = 8,
-                        Type = (short)PortalType.MapPortal,
-                        SourceMapInstanceId = SourceMap,
-                    });
-                    break;
-                case 150:
-                    list.Add(new Portal
-                    {
-                        SourceX = 172,
-                        SourceY = 170,
-                        Type = (short)PortalType.MapPortal,
-                        SourceMapInstanceId = SourceMap,
-                    });
-                    break;
-            }
-            return list;
-        }
-
         public static List<Portal> GenerateMinilandEntryPortals(short EntryMap, Guid ExitMapinstanceId)
         {
             List<Portal> list = new List<Portal>();
