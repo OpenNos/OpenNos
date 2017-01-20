@@ -33,6 +33,7 @@ namespace OpenNos.DAL.Interface
         void SetCharIdNull(Nullable<long> CharacterId);
 
         void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
+        IEnumerable<GeneralLogDTO> LoadAll();
 
         #endregion
     }

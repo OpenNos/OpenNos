@@ -187,8 +187,15 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Family.LandOfDeath != null && !Session.Character.Family.LandOfDeath.Lock)
                             {
-                                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
+                                if (Session.Character.Level >= 55)
+                                {
+                                    ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                                    ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
+                                }
+                                else
+                                {
+                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOD_REQUIERE_LVL"), 0));
+                                }
                             }
                             else
                             {

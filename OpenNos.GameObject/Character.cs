@@ -66,6 +66,11 @@ namespace OpenNos.GameObject
             StaticBonusList = new List<StaticBonusDTO>();
         }
 
+        public string GenerateMlinfobr()
+        {
+            return $"mlinfobr 3800 {Name} {Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day).Count()} {Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland").Count()} 25 {MinilandMessage.Replace(' ', '^')}";
+        }
+
         #endregion
 
         #region Properties
@@ -143,6 +148,11 @@ namespace OpenNos.GameObject
         public int ElementRateSP { get; private set; }
 
         public ExchangeInfo ExchangeInfo { get; set; }
+
+        public List<GeneralLogDTO> GeneralLogs
+        {
+            get { return ServerManager.GeneralLogs.Where(s => s.CharacterId == CharacterId).ToList(); }
+        }
 
         public Family Family
         {
@@ -653,7 +663,7 @@ namespace OpenNos.GameObject
 
         public void GenerateMiniland()
         {
-            if (Miniland ==null)
+            if (Miniland == null)
             {
                 Miniland = ServerManager.GenerateMapInstance(20001, MapInstanceType.NormalInstance);
             }
@@ -883,7 +893,7 @@ namespace OpenNos.GameObject
 
         public MapInstance Miniland
         {
-            get;set;
+            get; set;
         }
         #endregion
 
@@ -2649,6 +2659,10 @@ namespace OpenNos.GameObject
             return totalDamage;
         }
 
+        public string GenerateMlinfo()
+        {
+            return $"mlinfo 3800 2000 100 {Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day).Count()} {Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland").Count()} 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}";
+        }
 
         public string GenerateDelay(int delay, int type, string argument)
         {
@@ -3164,7 +3178,7 @@ namespace OpenNos.GameObject
                 {
                     #region item drop
 
-                    int dropRate = ServerManager.DropRate*MapInstance.DropRate;
+                    int dropRate = ServerManager.DropRate * MapInstance.DropRate;
                     int x = 0;
                     foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
                     {
@@ -4884,7 +4898,7 @@ namespace OpenNos.GameObject
                 }
                 DAOFactory.StaticBonusDAO.RemoveOutDated();
 
-                foreach (GeneralLogDTO general in Session.Account.GeneralLogs)
+                foreach (GeneralLogDTO general in Session.Character.GeneralLogs.Concat(Session.Account.GeneralLogs.Where(s => s.CharacterId == null)))
                 {
                     if (!DAOFactory.GeneralLogDAO.IdAlreadySet(general.LogId))
                     {

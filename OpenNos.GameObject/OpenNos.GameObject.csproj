@@ -87,6 +87,7 @@
     <Compile Include="Event\EventHelper.cs" />
     <Compile Include="Event\EventSchedule.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
+    <Compile Include="Packets\ClientPackets\MLedit.cs" />
     <Compile Include="Packets\ClientPackets\MJoin.cs" />
     <Compile Include="Portal.cs" />
     <Compile Include="BazaarItemLink.cs" />

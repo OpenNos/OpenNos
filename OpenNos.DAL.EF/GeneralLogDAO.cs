@@ -61,6 +61,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<GeneralLogDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (GeneralLog generalLog in context.GeneralLog)
+                {
+                    yield return _mapper.Map<GeneralLogDTO>(generalLog);
+                }
+            }
+        }
+
         public IEnumerable<GeneralLogDTO> LoadByAccount(long accountId)
         {
             using (var context = DataAccessHelper.CreateContext())

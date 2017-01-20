@@ -46,6 +46,9 @@ namespace OpenNos.GameObject
         private static readonly List<NpcMonster> _npcs = new List<NpcMonster>();
         private static readonly List<Skill> _skills = new List<Skill>();
         private static int seed = Environment.TickCount;
+
+
+
         private bool _disposed;
 
         private List<DropDTO> _generalDrops;
@@ -83,6 +86,7 @@ namespace OpenNos.GameObject
         public static List<Schedule> Schedules { get; set; }
         public static int GoldDropRate { get; set; }
 
+        public static List<GeneralLogDTO> GeneralLogs { get; set; }
         public static int GoldRate { get; set; }
 
         public static List<MailDTO> Mails { get; private set; }
@@ -216,7 +220,20 @@ namespace OpenNos.GameObject
         {
             _groups[group.GroupId] = group;
         }
+        public void JoinMiniland(ClientSession Session, ClientSession MinilandOwner)
+        {
 
+            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, MinilandOwner.Character.Miniland.MapInstanceId, 5, 8);
+            if (Session.Character.Miniland.MapInstanceId != MinilandOwner.Character.Miniland.MapInstanceId)
+            {
+                Session.SendPacket(Session.Character.GenerateMsg(Session.Character.MinilandMessage.Replace(' ', '^'), 0));
+                Session.SendPacket(Session.Character.GenerateMlinfobr());
+            }
+            ServerManager.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "Miniland", LogType = "World", Timestamp = DateTime.Now });
+            Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MINILAND_VISITOR"), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day).Count(), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland").Count()), 10));
+
+        }
         public void AskPVPRevive(long characterId)
         {
             ClientSession Session = GetSessionByCharacterId(characterId);
@@ -836,7 +853,7 @@ namespace OpenNos.GameObject
                 Logger.Log.Error("General Error", ex);
             }
             LoadFamilies();
-
+            GeneralLogs = DAOFactory.GeneralLogDAO.LoadAll().ToList();
             LaunchEvents();
 
             //Register the new created TCPIP server to the api
@@ -1097,7 +1114,7 @@ namespace OpenNos.GameObject
             });
 
             EnableMapEffect(98, false);
-            foreach (Schedule schedul in Schedules.Where(s=>s.Event=="LOD"))
+            foreach (Schedule schedul in Schedules.Where(s => s.Event == "LOD"))
             {
                 Observable.Timer(TimeSpan.FromSeconds(EventHelper.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
                 .Subscribe(

@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -29,7 +30,10 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public List<GeneralLogDTO> GeneralLogs { get; set; }
+        public List<GeneralLogDTO> GeneralLogs
+        {
+            get { return ServerManager.GeneralLogs.Where(s => s.AccountId == AccountId && s.CharacterId == null).ToList(); }
+        }
 
         public List<PenaltyLogDTO> PenaltyLogs { get; set; }
 
@@ -40,7 +44,6 @@ namespace OpenNos.GameObject
         public override void Initialize()
         {
             PenaltyLogs = new List<PenaltyLogDTO>();
-            GeneralLogs = new List<GeneralLogDTO>();
         }
 
         #endregion

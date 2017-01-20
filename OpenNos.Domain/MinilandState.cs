@@ -17,7 +17,7 @@ namespace OpenNos.Domain
     public enum MinilandState : byte
     {
         OPEN = 0,
-        INVITE = 1,
+        LOCK = 1,
         CLOSED = 2
     }
 }
