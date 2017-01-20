@@ -1249,4 +1249,22 @@ Veux-tu le porter ?</value>
   <data name="CANT_CHANGE_MESSAGE" xml:space="preserve">
     <value>Tu ne peux pas modifier ton message aujourd'hui car il a déjà été modifié.</value>
   </data>
+  <data name="HORN_APPEAR" xml:space="preserve">
+    <value>La chasse au diable de feu volant a commencé.</value>
+  </data>
+  <data name="HORN_DISAPEAR" xml:space="preserve">
+    <value>Le diable de feu volant a disparu.</value>
+  </data>
+  <data name="LOD_CLOSED" xml:space="preserve">
+    <value>La Terre Des Morts est fermé.</value>
+  </data>
+  <data name="LOD_REQUIERE_LVL" xml:space="preserve">
+    <value>Seul les membres de niveau 55 ou plus peuvent entrer dans la Terre Des Morts</value>
+  </data>
+  <data name="NEED_FAMILY" xml:space="preserve">
+    <value>Tu ne peux pas rejoindre la Terre Des Morts sans famille.</value>
+  </data>
+  <data name="NOT_ENOUGH_SAVER" xml:space="preserve">
+    <value>Tu n'as pas assez de fontaine magique pour pouvoir résscuciter.</value>
+  </data>
 </root>
