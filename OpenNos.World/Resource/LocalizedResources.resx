@@ -1273,4 +1273,19 @@
   <data name="ACCEPTED_SHARE" xml:space="preserve">
     <value>You accepted point share with {0}!</value>
   </data>
+  <data name="HORN_APPEAR" xml:space="preserve">
+    <value>The hunt of the dark horn began.</value>
+  </data>
+  <data name="HORN_DISAPEAR" xml:space="preserve">
+    <value>The dark horn is gone.</value>
+  </data>
+  <data name="LOD_CLOSED" xml:space="preserve">
+    <value>The Land Of The Dead is closed.</value>
+  </data>
+  <data name="LOD_REQUIERE_LVL" xml:space="preserve">
+    <value>You need to be level 55 minimum to join the Land Of The Dead.</value>
+  </data>
+  <data name="NEED_FAMILY" xml:space="preserve">
+    <value>You cannot join the Land Of The Dead whitout family.</value>
+  </data>
 </root>
