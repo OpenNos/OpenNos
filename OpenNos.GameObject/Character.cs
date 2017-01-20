@@ -153,8 +153,9 @@ namespace OpenNos.GameObject
         {
             get
             {
-                List<GeneralLogDTO> logs = new List<GeneralLogDTO>(ServerManager.GeneralLogs);
-                return logs.Where(s => s.CharacterId == CharacterId).ToList();
+                GeneralLogDTO[] logs = new GeneralLogDTO[ServerManager.GeneralLogs.Count+50];
+                ServerManager.GeneralLogs.CopyTo(logs);
+                return logs.Where(s => s != null && s.CharacterId == CharacterId).ToList();
             }
         }
 

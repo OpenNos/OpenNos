@@ -92,8 +92,8 @@ namespace OpenNos.GameObject.Event
             TimeSpan day = time;    // 24 hours in a day.
             TimeSpan now = TimeSpan.Parse(DateTime.Now.ToString("HH:mm"));     // The current time in 24 hour format
             TimeSpan timeLeftUntilFirstRun = ((day - now));
-            if (timeLeftUntilFirstRun.TotalHours > 24)
-                timeLeftUntilFirstRun -= new TimeSpan(24, 0, 0);
+            if (timeLeftUntilFirstRun.TotalHours < 0)
+                timeLeftUntilFirstRun += new TimeSpan(24, 0, 0);
             return timeLeftUntilFirstRun;
         }
 
