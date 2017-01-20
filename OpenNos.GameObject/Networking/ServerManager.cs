@@ -1129,6 +1129,15 @@ namespace OpenNos.GameObject
 
                 });
             }
+            foreach (Schedule schedul in Schedules.Where(s => s.Event == "REPUTEVENT"))
+            {
+                Observable.Timer(TimeSpan.FromSeconds(EventHelper.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
+               .Subscribe(
+               x =>
+               {
+                   EventHelper.GenerateReput();
+               });
+            }
             Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
             {
                 MailProcess();
