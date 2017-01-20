@@ -3284,7 +3284,7 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                if (group != null)
+                                if (group != null && MapInstance.MapInstanceType != MapInstanceType.LodInstance)
                                 {
                                     if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                                     {
