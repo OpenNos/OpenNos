@@ -1288,4 +1288,7 @@
   <data name="NEED_FAMILY" xml:space="preserve">
     <value>You cannot join the Land Of The Dead whitout family.</value>
   </data>
+  <data name="NOT_ENOUGH_SAVER" xml:space="preserve">
+    <value>You don't have enough saver to resurrect.</value>
+  </data>
 </root>
