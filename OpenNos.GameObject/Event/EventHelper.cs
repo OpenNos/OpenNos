@@ -22,8 +22,7 @@ namespace OpenNos.GameObject.Event
                 ClientSession Session = ServerManager.Instance.GetSessionByCharacterId((long)genlog.Key);
                 if (Session==null)
                 {
-                    Session.Character.Reput += 2 * genlog.Count();
-                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), 2 * genlog.Count()), 11));
+                    Session.Character.GetReput(2 * genlog.Count());
                 }
                 else if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", (long)genlog.Key).Result)
                 {

@@ -3320,18 +3320,11 @@ namespace OpenNos.GameObject
                             foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceId == MapInstanceId))
                             {
                                 //TODO remove this part on release
-                                if (targetSession.Character.Level >= monsterToAttack.Monster.Level - 5 && targetSession.Character.Level <= monsterToAttack.Monster.Level + 5)
+                                if ((targetSession.Character.Level >= monsterToAttack.Monster.Level - 5 && targetSession.Character.Level <= monsterToAttack.Monster.Level + 5) || (targetSession.Character.Level >= 90 && monsterToAttack.Monster.Level >= 88))
                                 {
                                     if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
                                     {
-                                        targetSession.Character.Reput += monsterToAttack.Monster.Level;
-                                    }
-                                }
-                                else if (targetSession.Character.Level >= 90 && monsterToAttack.Monster.Level >= 88)
-                                {
-                                    if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
-                                    {
-                                        targetSession.Character.Reput += monsterToAttack.Monster.Level;
+                                        GetReput(monsterToAttack.Monster.Level);
                                     }
                                 }
                                 //END PART
@@ -5206,6 +5199,13 @@ namespace OpenNos.GameObject
             }
             int gold = lowBaseGold * ServerManager.GoldRate * actMultiplier;
             return gold;
+        }
+
+        public void GetReput(int val)
+        {
+            Reput += val;
+            Session.SendPacket(Session.Character.GenerateFd());
+            Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), val), 11));
         }
 
         #endregion
