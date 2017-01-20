@@ -39,6 +39,10 @@ namespace OpenNos.Data
 
         public long CharacterId { get; set; }
 
+        public MinilandState MinilandState { get; set; }
+
+        public string MinilandMessage { get; set; }
+
         public ClassType Class { get; set; }
 
         public short Compliment { get; set; }
