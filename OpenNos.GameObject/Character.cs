@@ -463,7 +463,7 @@ namespace OpenNos.GameObject
 
             List<string> itemssearch = packet.ItemVNumFilter == "0" ? new List<string>() : packet.ItemVNumFilter.Split(' ').ToList();
             List<BazaarItemLink> bzlist = new List<BazaarItemLink>();
-            List<BazaarItemLink> billist = ServerManager.Instance.BazaarList;
+            List<BazaarItemLink> billist = new List<BazaarItemLink>(ServerManager.Instance.BazaarList);
             foreach (BazaarItemLink bz in billist)
             {
                 if (bz.Item == null)
