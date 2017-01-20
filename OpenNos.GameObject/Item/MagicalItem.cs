@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
 
                 //respawn objects
                 case 1:
-                    if (session.Character.MapInstance.MapInstanceType != MapInstanceType.BaseInstance)
+                    if (session.Character.MapInstance.MapInstanceType != MapInstanceType.BaseMapInstance)
                     {
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
                         return;
@@ -144,7 +144,7 @@ namespace OpenNos.GameObject
                                 else
                                 {
                                     ServerManager.Instance.LeaveMap(session.Character.CharacterId);
-                                    ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.MinilandId, 3, 8);
+                                    ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Miniland.MapInstanceId, 3, 8);
                                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                 }
                                 break;

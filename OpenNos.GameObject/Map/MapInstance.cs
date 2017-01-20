@@ -17,6 +17,9 @@ namespace OpenNos.GameObject
         public Map Map { get; set; }
         public ThreadSafeSortedList<long, MapItem> DroppedList { get; }
 
+        public bool Lock { get; set; }
+        public int XpRate { get; set; }
+        public int DropRate { get; set; }
         public bool IsDancing { get; set; }
 
         public bool IsPVP { get; set; }
@@ -51,6 +54,55 @@ namespace OpenNos.GameObject
                 }
             }
         }
+
+        internal List<int> SummonMonster(List<Tuple<short, short, short, long>> summonParameters)
+        {
+            List<int> ids = new List<int>();
+            foreach (Tuple<short, short, short, long> mon in summonParameters)
+            {
+                NpcMonster npcmonster = ServerManager.GetNpc(mon.Item1);
+                if (npcmonster != null)
+                {
+                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.Item3, MapX = mon.Item2, MapId = Map.MapId, IsMoving = true, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Item4 };
+                    monster.Initialize(this);
+                    monster.StartLife();
+                    AddMonster(monster);
+                    Broadcast(monster.GenerateIn3());
+                    ids.Add(monster.MapMonsterId);
+                }
+            }
+
+            return ids;
+        }
+
+        public Character GetLastInCharacter()
+        {
+            return Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
+        }
+
+        public void UnspawnMonsters(List<int> monsterIds)
+        {
+            foreach (int monid in monsterIds)
+            {
+                MapMonster monster = GetMonster(monid);
+                if (monster != null)
+                {
+                    monster.IsAlive = false;
+                    monster.LastMove = DateTime.Now;
+                    monster.CurrentHp = 0;
+                    monster.CurrentMp = 0;
+                    monster.Death = DateTime.Now;
+                    Broadcast(monster.GenerateOut3());
+                }             
+            }
+        }
+
+        internal void StartClock(int timeout)
+        {
+            EndDate = DateTime.Now.AddSeconds(timeout / 10);
+        }
+
+        public DateTime EndDate { get; set; }
         public Guid MapInstanceId { get; set; }
 
         public long LastUserShopId { get; set; }
@@ -63,6 +115,8 @@ namespace OpenNos.GameObject
         public bool ShopAllowed { get; set; }
 
         public Dictionary<long, MapShop> UserShops { get; }
+        public bool NpcEffectActivated { get; set; }
+
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
         private readonly List<int> _mapMonsterIds;
         private readonly List<MapNpc> _npcs;
@@ -74,7 +128,9 @@ namespace OpenNos.GameObject
         private readonly Random _random;
         public MapInstance(Map map, Guid guid, bool shopAllowed, MapInstanceType type)
         {
-
+            XpRate = 1;
+            DropRate = 1;
+            NpcEffectActivated = true;
             ShopAllowed = shopAllowed;
             MapInstanceType = type;
             _isSleeping = true;

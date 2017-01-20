@@ -16,10 +16,10 @@ namespace OpenNos.Domain
 {
     public enum MapInstanceType
     {
-        BaseInstance,
-        FamilyInstance,
-        PersonalInstance,
+        BaseMapInstance,
+        NormalInstance,
+        LodInstance,
         GroupInstance,
-        FactionInstance
+        Act4Instance,
     }
 }
