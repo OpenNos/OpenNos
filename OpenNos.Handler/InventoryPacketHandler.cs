@@ -569,7 +569,7 @@ namespace OpenNos.Handler
                     if (item != null)
                     {
                         MonsterMapItem monsterMapItem = item;
-                        if (monsterMapItem.OwnerId.HasValue)
+                        if (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.LodInstance && monsterMapItem.OwnerId.HasValue)
                         {
                             Group group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(monsterMapItem.OwnerId.Value) && g.IsMemberOfGroup(Session.Character.CharacterId));
                             if (item.CreatedDate.AddSeconds(30) > DateTime.Now && !(monsterMapItem.OwnerId == Session.Character.CharacterId || group != null && group.SharingMode == (byte)GroupSharingType.Everyone))
@@ -612,6 +612,10 @@ namespace OpenNos.Handler
                                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
                                     Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
                                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.Item.Name} x {mapItem.Amount}", 12));
+                                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
+                                    {
+                                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{String.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {newInv.Item.Name} x {mapItem.Amount}", 10));
+                                    }
                                 }
                                 else
                                 {

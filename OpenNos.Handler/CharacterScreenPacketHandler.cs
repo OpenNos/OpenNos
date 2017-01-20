@@ -277,19 +277,7 @@ namespace OpenNos.Handler
                                     PenaltyLogId = penalty.PenaltyLogId
                                 });
                             }
-                            foreach (GeneralLogDTO general in DAOFactory.GeneralLogDAO.LoadByAccount(accountDTO.AccountId))
-                            {
-                                account.GeneralLogs.Add(new GeneralLogDTO
-                                {
-                                    AccountId = general.AccountId,
-                                    LogData = general.LogData,
-                                    IpAddress = general.IpAddress,
-                                    LogType = general.LogType,
-                                    LogId = general.LogId,
-                                    Timestamp = general.Timestamp,
-                                    CharacterId = general.CharacterId
-                                });
-                            }
+
                             Session.InitializeAccount(account);
                         }
                         else
@@ -371,7 +359,8 @@ namespace OpenNos.Handler
                         {
                             Session.Character.CharacterLife();
                         });
-                        DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.IpAddress, Session.Character.CharacterId, "Connection", "World");
+                        ServerManager.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Connection", Timestamp = DateTime.Now });
+
                         Session.SendPacket("OK");
 
                         // Inform everyone about connected character

@@ -52,19 +52,6 @@ namespace OpenNos.Handler
 
         #region Methods
 
-        /// <summary>
-        /// mJoinPacket packet
-        /// </summary>
-        /// <param name="mJoinPacket"></param>
-        public void JoinMiniland(MJoinPacket mJoinPacket)
-        {
-            ClientSession sess = ServerManager.Instance.GetSessionByCharacterId(mJoinPacket.CharacterId);
-            if (sess?.Character != null)
-            {
-                ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, sess.Character.Miniland.MapInstanceId, 5, 8);
-            }
-        }
 
         /// <summary>
         /// gop packet
@@ -1391,6 +1378,10 @@ namespace OpenNos.Handler
                     {
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
                     }
+                    else if (portal.DestinationMapInstanceId == Session.Character.Miniland.MapInstanceId)
+                    {
+                        ServerManager.Instance.JoinMiniland(Session, Session);
+                    }
                     else
                     {
                         ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
@@ -1777,7 +1768,7 @@ namespace OpenNos.Handler
                 return;
             }
             Session.CurrentMapInstance = Session.Character.MapInstance;
-            if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & DAOFactory.GeneralLogDAO.LoadByLogType("Connection", Session.Character.CharacterId).Count() == 1)
+            if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & !Session.Character.GeneralLogs.Where(s => s.LogType == "Connection").Any())
             {
                 Session.SendPacket("scene 40");
             }
@@ -1827,7 +1818,7 @@ namespace OpenNos.Handler
                 Session.SendPacket($"bn {i} {Language.Instance.GetMessageFromKey($"BN{i}")}");
             }
             Session.SendPacket(Session.Character.GenerateExts());
-            Session.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}"); // 0 before 10 = visitors
+            Session.SendPacket(Session.Character.GenerateMlinfo()); // 0 before 10 = visitors
             Session.SendPacket("p_clear");
 
             // sc_p pet sc_n nospartner Session.SendPacket("sc_p_stc 0"); // end pet and partner

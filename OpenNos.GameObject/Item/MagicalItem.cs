@@ -144,7 +144,7 @@ namespace OpenNos.GameObject
                                 else
                                 {
                                     ServerManager.Instance.LeaveMap(session.Character.CharacterId);
-                                    ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, session.Character.Miniland.MapInstanceId, 3, 8);
+                                    ServerManager.Instance.JoinMiniland(session, session);
                                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                 }
                                 break;
