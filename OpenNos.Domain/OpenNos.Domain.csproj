@@ -66,6 +66,7 @@
     <Compile Include="GroupSharingType.cs" />
     <Compile Include="JewelOptionType.cs" />
     <Compile Include="MessageType.cs" />
+    <Compile Include="MinilandState.cs" />
     <Compile Include="MonsterType.cs" />
     <Compile Include="PenaltyType.cs" />
     <Compile Include="PortalType.cs" />
