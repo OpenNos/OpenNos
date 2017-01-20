@@ -16,11 +16,13 @@ using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Event;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
@@ -78,6 +80,7 @@ namespace OpenNos.GameObject
 
         public static int FairyXpRate { get; set; }
 
+        public static List<Schedule> Schedules { get; set; }
         public static int GoldDropRate { get; set; }
 
         public static int GoldRate { get; set; }
@@ -121,7 +124,6 @@ namespace OpenNos.GameObject
                     fami.FamilyCharacters.Add((FamilyCharacter)famchar);
                 }
                 fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
-                fami.GenerateLod();
                 FamilyList.Add(fami);
             }
         }
@@ -129,7 +131,7 @@ namespace OpenNos.GameObject
 
         public void LoadBazaar()
         {
-           BazaarList = new List<BazaarItemLink>(); ;
+            BazaarList = new List<BazaarItemLink>(); ;
             foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
             {
                 BazaarItemLink item = new BazaarItemLink();
@@ -167,7 +169,7 @@ namespace OpenNos.GameObject
         {
             return _items.FirstOrDefault(m => m.VNum.Equals(vnum));
         }
-        public static Guid GenerateMapInstance(short MapId, MapInstanceType type)
+        public static MapInstance GenerateMapInstance(short MapId, MapInstanceType type)
         {
             Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
             if (map != null)
@@ -186,9 +188,9 @@ namespace OpenNos.GameObject
                     Parallel.ForEach(Instance.Monsters, monster => { monster.StartLife(); });
                 });
                 _mapinstances.TryAdd(guid, Instance);
-                return guid;
+                return Instance;
             }
-            return default(Guid);
+            return null;
         }
         public static MapInstance GetMapInstance(Guid id)
         {
@@ -265,42 +267,70 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.SendPackets(Character.GenerateVb());
-                if (Session.Character.Level > 20)
+                switch (Session.CurrentMapInstance.MapInstanceType)
                 {
-                    Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
-                    if (Session.Character.Dignity < -1000)
-                    {
-                        Session.Character.Dignity = -1000;
-                    }
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
-                    Session.SendPacket(Session.Character.GenerateFd());
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                }
-                Session.SendPacket("eff_ob -1 -1 0 4269");
-                Session.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
-                Task.Factory.StartNew(async () =>
-                {
-                    bool revive = true;
-                    for (int i = 1; i <= 30; i++)
-                    {
-                        await Task.Delay(1000);
-                        if (Session.Character.Hp > 0)
+                    case MapInstanceType.BaseMapInstance:
+                        if (Session.Character.Level > 20)
                         {
-                            revive = false;
-                            break;
+                            Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
+                            if (Session.Character.Dignity < -1000)
+                            {
+                                Session.Character.Dignity = -1000;
+                            }
+                            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
+                            Session.SendPacket(Session.Character.GenerateFd());
+                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         }
-                    }
-                    if (revive)
-                    {
-                        Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                    }
-                });
+                        Session.SendPacket("eff_ob -1 -1 0 4269");
+
+
+                        Session.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+                        Task.Factory.StartNew(async () =>
+                        {
+                            bool revive = true;
+                            for (int i = 1; i <= 30; i++)
+                            {
+                                await Task.Delay(1000);
+                                if (Session.Character.Hp > 0)
+                                {
+                                    revive = false;
+                                    break;
+                                }
+                            }
+                            if (revive)
+                            {
+                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            }
+                        });
+                        break;
+                    case MapInstanceType.LodInstance:
+                        Session.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE_LOD") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+                        Task.Factory.StartNew(async () =>
+                        {
+                            bool revive = true;
+                            for (int i = 1; i <= 30; i++)
+                            {
+                                await Task.Delay(1000);
+                                if (Session.Character.Hp > 0)
+                                {
+                                    revive = false;
+                                    break;
+                                }
+                            }
+                            if (revive)
+                            {
+                                Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            }
+                        });
+                        break;
+
+                }
             }
         }
         public Guid GetBaseMapInstanceIdByMapId(short MapId)
         {
-            return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == MapId && s.Value.MapInstanceType == MapInstanceType.BaseInstance).Key;
+            return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == MapId && s.Value.MapInstanceType == MapInstanceType.BaseMapInstance).Key;
         }
 
         public void ChangeMap(long id, short? MapId = null, short? mapX = null, short? mapY = null)
@@ -333,7 +363,7 @@ namespace OpenNos.GameObject
                     session.ClearLowPriorityQueue();
 
                     session.Character.MapInstanceId = MapInstanceId;
-                    if (session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                    if (session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                     {
                         session.Character.MapId = session.Character.MapInstance.Map.MapId;
                         if (mapX != null && mapY != null)
@@ -351,6 +381,8 @@ namespace OpenNos.GameObject
 
                     session.CurrentMapInstance = GetMapInstance(session.Character.MapInstanceId);
                     session.CurrentMapInstance.RegisterSession(session);
+
+
                     session.SendPacket(session.Character.GenerateCInfo());
                     session.SendPacket(session.Character.GenerateCMode());
                     session.SendPacket(session.Character.GenerateEq());
@@ -380,6 +412,11 @@ namespace OpenNos.GameObject
                     session.SendPackets(session.Character.GenerateDroppedItem());
                     session.SendPackets(session.Character.GenerateShopOnMap());
                     session.SendPackets(session.Character.GeneratePlayerShopOnMap());
+                    if (session.CurrentMapInstance.EndDate != default(DateTime))
+                    {
+                        session.SendPacket(session.Character.GetClock());
+                    }
+
                     if (session.CurrentMapInstance.Map.MapId == 138)
                     {
                         session.SendPacket("bc 0 0 0");
@@ -550,7 +587,7 @@ namespace OpenNos.GameObject
             MaxJobLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxJobLevel"]);
             MaxSPLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxSPLevel"]);
             MaxHeroLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxHeroLevel"]);
-
+            Schedules = System.Configuration.ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
 
             // load explicite type of ItemDTO
@@ -767,7 +804,7 @@ namespace OpenNos.GameObject
                     };
                     _maps.Add(mapinfo);
 
-                    MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseInstance);
+                    MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance);
 
                     // register for broadcast
                     _mapinstances.TryAdd(guid, newMap);
@@ -798,8 +835,9 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.Error("General Error", ex);
             }
-            LaunchEvents();
             LoadFamilies();
+
+            LaunchEvents();
 
             //Register the new created TCPIP server to the api
             Guid serverIdentification = Guid.NewGuid();
@@ -858,7 +896,7 @@ namespace OpenNos.GameObject
                 LeaveMap(session.Character.CharacterId);
                 session.Character.Hp = 1;
                 session.Character.Mp = 1;
-                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                 {
                     RespawnMapTypeDTO resp = session.Character.Respawn;
                     short x = (short)(resp.DefaultX + RandomNumber(-5, 5));
@@ -1053,7 +1091,23 @@ namespace OpenNos.GameObject
             {
                 BotProcess();
             });
+            Observable.Interval(TimeSpan.FromHours(3)).Subscribe(x =>
+            {
+                BotProcess();
+            });
 
+            EnableMapEffect(98, false);
+            foreach (Schedule schedul in Schedules.Where(s=>s.Event=="LOD"))
+            {
+                Observable.Timer(TimeSpan.FromSeconds(EventHelper.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
+                .Subscribe(
+                x =>
+                {
+                    EnableMapEffect(98, true);
+                    FamilyList.ForEach(s => s.LandOfDeath = EventHelper.GenerateLod());
+
+                });
+            }
             Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
             {
                 MailProcess();
@@ -1098,6 +1152,15 @@ namespace OpenNos.GameObject
             ServerCommunicationClient.Instance.BazaarRefresh += OnBazaarRefresh;
 
             lastGroupId = 1;
+        }
+
+        public void EnableMapEffect(int mapid, bool iseffectactivated)
+        {
+            Guid guid = GetBaseMapInstanceIdByMapId(98);
+            if (guid != default(Guid))
+            {
+                GetMapInstance(guid).NpcEffectActivated = iseffectactivated;
+            }
         }
 
         private void MailProcess()
@@ -1188,7 +1251,7 @@ namespace OpenNos.GameObject
                 {
                     if (fam != null)
                     {
-                        Guid lod = fam.LandOfDeathId;
+                        MapInstance lod = fam.LandOfDeath;
                         FamilyList.Remove(fam);
                         fam = (Family)famdto;
                         fam.FamilyCharacters = new List<FamilyCharacter>();
@@ -1197,7 +1260,7 @@ namespace OpenNos.GameObject
                             fam.FamilyCharacters.Add((FamilyCharacter)famchar);
                         }
                         fam.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fam.FamilyId).ToList();
-                        fam.LandOfDeathId = lod;
+                        fam.LandOfDeath = lod;
                         FamilyList.Add(fam);
                     }
                     else
@@ -1209,7 +1272,6 @@ namespace OpenNos.GameObject
                             fami.FamilyCharacters.Add((FamilyCharacter)famchar);
                         }
                         fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
-                        fami.GenerateLod();
                         FamilyList.Add(fami);
                     }
                 }

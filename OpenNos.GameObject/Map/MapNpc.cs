@@ -112,7 +112,7 @@ namespace OpenNos.GameObject
         private void NpcLife()
         {
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
-            if (Effect > 0 && time > EffectDelay)
+            if (Effect > 0 && time > EffectDelay && MapInstance.NpcEffectActivated)
             {
                 MapInstance.Broadcast(GenerateEff(), MapX, MapY);
                 LastEffect = DateTime.Now;

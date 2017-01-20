@@ -62,7 +62,7 @@ namespace OpenNos.Handler
             if (sess?.Character != null)
             {
                 ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, sess.Character.MinilandId, 5, 8);
+                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, sess.Character.Miniland.MapInstanceId, 5, 8);
             }
         }
 
@@ -1194,9 +1194,9 @@ namespace OpenNos.Handler
                         ClientSession session = ServerManager.Instance.GetSessionByCharacterId(charId);
                         if (session != null)
                         {
-                            if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                            if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                             {
-                                if (Session.Character.MapInstance.MapInstanceType != MapInstanceType.BaseInstance)
+                                if (Session.Character.MapInstance.MapInstanceType != MapInstanceType.BaseMapInstance)
                                 {
                                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
                                     return;
@@ -1387,7 +1387,7 @@ namespace OpenNos.Handler
                     ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                     Session.Character.LastPortal = currentRunningSeconds;
 
-                    if (ServerManager.GetMapInstance(portal.SourceMapInstanceId).MapInstanceType != MapInstanceType.BaseInstance && ServerManager.GetMapInstance(portal.DestinationMapInstanceId).MapInstanceType == MapInstanceType.BaseInstance)
+                    if (ServerManager.GetMapInstance(portal.SourceMapInstanceId).MapInstanceType != MapInstanceType.BaseMapInstance && ServerManager.GetMapInstance(portal.DestinationMapInstanceId).MapInstanceType == MapInstanceType.BaseMapInstance)
                     {
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
                     }
@@ -1466,30 +1466,51 @@ namespace OpenNos.Handler
                 switch (type)
                 {
                     case 0:
-                        const int seed = 1012;
-                        if (Session.Character.Inventory.CountItem(seed) < 10 && Session.Character.Level > 20)
+                        switch (Session.CurrentMapInstance.MapInstanceType)
                         {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POWER_SEED"), 0));
-                            ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_SEED_SAY"), 0));
-                        }
-                        else
-                        {
-                            if (Session.Character.Level > 20)
-                            {
-                                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
-                                Session.Character.Inventory.RemoveItemAmount(seed, 10);
-                                Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
-                                Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
-                            }
-                            else
-                            {
-                                Session.Character.Hp = (int)Session.Character.HPLoad();
-                                Session.Character.Mp = (int)Session.Character.MPLoad();
-                            }
-                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateTp());
-                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateRevive());
-                            Session.SendPacket(Session.Character.GenerateStat());
+                            case MapInstanceType.LodInstance:
+                                const int saver = 1211;
+                                if (Session.Character.Inventory.CountItem(saver) < 1)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_SAVER"), 0));
+                                    ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                                }
+                                else
+                                {
+                                    Session.Character.Inventory.RemoveItemAmount(saver, 1);
+                                    Session.Character.Hp = (int)Session.Character.HPLoad();
+                                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateRevive());
+                                    Session.SendPacket(Session.Character.GenerateStat());
+                                }
+                                break;
+                            default:
+                                const int seed = 1012;
+                                if (Session.Character.Inventory.CountItem(seed) < 10 && Session.Character.Level > 20)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POWER_SEED"), 0));
+                                    ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_SEED_SAY"), 0));
+                                }
+                                else
+                                {
+                                    if (Session.Character.Level > 20)
+                                    {
+                                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
+                                        Session.Character.Inventory.RemoveItemAmount(seed, 10);
+                                        Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
+                                        Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
+                                    }
+                                    else
+                                    {
+                                        Session.Character.Hp = (int)Session.Character.HPLoad();
+                                        Session.Character.Mp = (int)Session.Character.MPLoad();
+                                    }
+                                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateTp());
+                                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateRevive());
+                                    Session.SendPacket(Session.Character.GenerateStat());
+                                }
+                                break;
                         }
                         break;
 
@@ -1884,7 +1905,7 @@ namespace OpenNos.Handler
             {
                 if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(1) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
                 {
-                    if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseInstance)
+                    if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
                     {
                         Session.Character.MapX = walkPacket.XCoordinate;
                         Session.Character.MapY = walkPacket.YCoordinate;

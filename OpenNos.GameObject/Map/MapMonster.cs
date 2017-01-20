@@ -102,6 +102,11 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
+        public string GenerateOut3()
+        {
+            return $"out 3 {MapMonsterId}";
+        }
+
         private string GenerateMv3()
         {
             return $"mv 3 {MapMonsterId} {MapX} {MapY} {Monster.Speed}";

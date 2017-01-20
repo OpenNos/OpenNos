@@ -204,6 +204,7 @@ namespace OpenNos.GameObject
         public int LastKeepAliveIdentity { get; set; }
 
         public int SessionId { get; set; }
+        public DateTime RegisterTime { get; internal set; }
 
         #endregion
 
