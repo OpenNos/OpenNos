@@ -151,7 +151,11 @@ namespace OpenNos.GameObject
 
         public List<GeneralLogDTO> GeneralLogs
         {
-            get { return ServerManager.GeneralLogs.Where(s => s.CharacterId == CharacterId).ToList(); }
+            get
+            {
+                List<GeneralLogDTO> logs = new List<GeneralLogDTO>(ServerManager.GeneralLogs);
+                return logs.Where(s => s.CharacterId == CharacterId).ToList();
+            }
         }
 
         public Family Family
