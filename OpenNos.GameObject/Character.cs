@@ -59,6 +59,7 @@ namespace OpenNos.GameObject
 
         public Character()
         {
+            CharacterRelations = new List<CharacterRelationDTO>();
             GroupSentRequestCharacterIds = new List<long>();
             FamilyInviteCharacters = new List<long>();
             FriendRequestCharacters = new List<long>();
@@ -645,16 +646,21 @@ namespace OpenNos.GameObject
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
+        public string GetClock()
+        {
+            return $"evnt 1 0 {(int)((MapInstance.EndDate - DateTime.Now).TotalSeconds * 10)} 1";
+        }
+
         public void GenerateMiniland()
         {
-            if (MinilandId == default(Guid))
+            if (Miniland ==null)
             {
-                MinilandId = ServerManager.GenerateMapInstance(20001, MapInstanceType.PersonalInstance);
+                Miniland = ServerManager.GenerateMapInstance(20001, MapInstanceType.NormalInstance);
             }
         }
-       public List<Portal> GetExtraPortal()
+        public List<Portal> GetExtraPortal()
         {
-            return MapInstancePortalHandler.GenerateMinilandEntryPortals(MapInstance.Map.MapId, MinilandId);
+            return MapInstancePortalHandler.GenerateMinilandEntryPortals(MapInstance.Map.MapId, Miniland.MapInstanceId);
         }
         public List<string> GetFamilyHistory()
         {
@@ -690,10 +696,17 @@ namespace OpenNos.GameObject
         {
             if (Family != null)
             {
-                FamilyCharacter familyCharacter = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
-                if (familyCharacter != null)
+                try
                 {
-                    return $"ginfo {Session.Character.Family.Name} {familyCharacter.Character.Name} {(byte)Family.FamilyHeadGender} {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.FamilyCharacters.Count()} {Session.Character.Family.MaxSize} {(byte)Session.Character.FamilyCharacter.Authority} {(Family.ManagerCanInvite ? 1 : 0)} {(Family.ManagerCanNotice ? 1 : 0)} {(Family.ManagerCanShout ? 1 : 0)} {(Family.ManagerCanGetHistory ? 1 : 0)} {(byte)Family.ManagerAuthorityType} {(Family.MemberCanGetHistory ? 1 : 0)} {(byte)Family.MemberAuthorityType} {Session.Character.Family.FamilyMessage.Replace(' ', '^')}";
+                    FamilyCharacter familyCharacter = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                    if (familyCharacter != null)
+                    {
+                        return $"ginfo {Session.Character.Family.Name} {familyCharacter.Character.Name} {(byte)Family.FamilyHeadGender} {Session.Character.Family.FamilyLevel} {Session.Character.Family.FamilyExperience} {CharacterHelper.LoadFamilyXPData(Session.Character.Family.FamilyLevel)} {Session.Character.Family.FamilyCharacters.Count()} {Session.Character.Family.MaxSize} {(byte)Session.Character.FamilyCharacter.Authority} {(Family.ManagerCanInvite ? 1 : 0)} {(Family.ManagerCanNotice ? 1 : 0)} {(Family.ManagerCanShout ? 1 : 0)} {(Family.ManagerCanGetHistory ? 1 : 0)} {(byte)Family.ManagerAuthorityType} {(Family.MemberCanGetHistory ? 1 : 0)} {(byte)Family.MemberAuthorityType} {Session.Character.Family.FamilyMessage.Replace(' ', '^')}";
+                    }
+                }
+                catch
+                {
+                    return string.Empty;
                 }
             }
             return string.Empty;
@@ -868,11 +881,9 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; set; }
 
-        public Guid MinilandId { get; set; }
-
         public MapInstance Miniland
         {
-            get { return ServerManager.GetMapInstance(MinilandId); }
+            get;set;
         }
         #endregion
 
@@ -1308,7 +1319,7 @@ namespace OpenNos.GameObject
         /// </summary>
         public void Dispose()
         {
-            ServerManager.Instance.RemoveMapInstance(MinilandId);
+            ServerManager.Instance.RemoveMapInstance(Miniland.MapInstanceId);
             CloseShop();
             CloseExchangeOrTrade();
             GroupSentRequestCharacterIds.Clear();
@@ -3153,7 +3164,7 @@ namespace OpenNos.GameObject
                 {
                     #region item drop
 
-                    int dropRate = ServerManager.DropRate;
+                    int dropRate = ServerManager.DropRate*MapInstance.DropRate;
                     int x = 0;
                     foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
                     {
@@ -4263,7 +4274,7 @@ namespace OpenNos.GameObject
                 partyPenalty = 12 / partySize / (float)levelSum;
             }
 
-            int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(JobLevel, monster.Level) * ServerManager.XPRate);
+            int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(JobLevel, monster.Level) * ServerManager.XPRate * MapInstance.XpRate);
 
             // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
             if (partySize > 1 && group != null)
@@ -4340,7 +4351,7 @@ namespace OpenNos.GameObject
 
             long xpcalculation = levelDifference < 5 ? monster.XP : monster.XP / 3 * 2;
 
-            long xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.XPRate);
+            long xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.XPRate * MapInstance.XpRate);
 
             // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal
             // to 4

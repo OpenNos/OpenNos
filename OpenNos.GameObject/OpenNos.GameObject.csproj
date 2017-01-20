@@ -84,6 +84,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Event\EventHelper.cs" />
+    <Compile Include="Event\EventSchedule.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="Packets\ClientPackets\MJoin.cs" />
     <Compile Include="Portal.cs" />

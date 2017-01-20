@@ -19,6 +19,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.WebApi.Reference;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -490,7 +491,8 @@ namespace OpenNos.Handler
                 }
 
                 int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ccmsg, ServerManager.Instance.ChannelId, MessageType.FamilyChat, Session.Character.Family.FamilyId.ToString(), null).Result;
-                foreach (ClientSession s in ServerManager.Instance.Sessions)
+                List<ClientSession> tmp = ServerManager.Instance.Sessions.ToList();
+                foreach (ClientSession s in tmp)
                 {
                     if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
                     {

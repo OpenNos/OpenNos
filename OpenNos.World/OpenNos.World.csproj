@@ -165,11 +165,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalizedResources.pl.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resource\LocalizedResources1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LocalizedResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="WorldEncryption.cs" />
   </ItemGroup>
   <ItemGroup>

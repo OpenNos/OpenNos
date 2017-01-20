@@ -127,7 +127,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-
+            session.RegisterTime = DateTime.Now;
             // Create a ChatClient and store it in a collection
             _sessions[session.Character.CharacterId] = session;
             if (session.HasCurrentMapInstance)
