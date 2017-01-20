@@ -85,6 +85,7 @@ namespace OpenNos.Handler
                                 Name = characterName,
                                 Slot = slot,
                                 AccountId = accountId,
+                                MinilandMessage = "Welcome",
                                 State = CharacterState.Active,
                             };
 
