@@ -1264,4 +1264,7 @@ Veux-tu le porter ?</value>
   <data name="NEED_FAMILY" xml:space="preserve">
     <value>Tu ne peux pas rejoindre la Terre Des Morts sans famille.</value>
   </data>
+  <data name="NOT_ENOUGH_SAVER" xml:space="preserve">
+    <value>Tu n'as pas assez de fontaine magique pour pouvoir résscuciter.</value>
+  </data>
 </root>
