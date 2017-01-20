@@ -27,6 +27,8 @@ namespace OpenNos.DAL.EF
         {
             CharacterRelation = new HashSet<CharacterRelation>();
             CharacterSkill = new HashSet<CharacterSkill>();
+            StaticBonus = new HashSet<StaticBonus>();
+            StaticBuff = new HashSet<StaticBuff>();
             BazaarItem = new HashSet<BazaarItem>();
             Inventory = new HashSet<ItemInstance>();
             QuicklistEntry = new HashSet<QuicklistEntry>();
@@ -66,6 +68,9 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<StaticBonus> StaticBonus { get; set; }
 
+        public virtual ICollection<StaticBuff> StaticBuff { get; set; }
+
+
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
 
         public virtual ICollection<BazaarItem> BazaarItem { get; set; }
@@ -81,6 +86,11 @@ namespace OpenNos.DAL.EF
         public bool ExchangeBlocked { get; set; }
 
         public int Faction { get; set; }
+
+        public MinilandState MinilandState { get; set; }
+
+        [MaxLength(255)]
+        public string MinilandMessage { get; set; }
 
         public virtual ICollection<FamilyCharacter> FamilyCharacter { get; set; }
 
