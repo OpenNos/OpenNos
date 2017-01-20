@@ -1117,27 +1117,12 @@ namespace OpenNos.GameObject
                 BotProcess();
             });
 
-            EnableMapEffect(98, false);
-            foreach (Schedule schedul in Schedules.Where(s => s.Event == "LOD"))
-            {
-                Observable.Timer(TimeSpan.FromSeconds(EventHelper.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
-                .Subscribe(
-                x =>
-                {
-                    EnableMapEffect(98, true);
-                    FamilyList.ForEach(s => s.LandOfDeath = EventHelper.GenerateLod());
+            EventHelper.GenerateLod();
 
-                });
-            }
-            foreach (Schedule schedul in Schedules.Where(s => s.Event == "REPUTEVENT"))
-            {
-                Observable.Timer(TimeSpan.FromSeconds(EventHelper.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
-               .Subscribe(
-               x =>
-               {
-                   EventHelper.GenerateReput();
-               });
-            }
+            EventHelper.GenerateReput();
+
+            EventHelper.GenerateInstantBattle();
+
             Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
             {
                 MailProcess();
