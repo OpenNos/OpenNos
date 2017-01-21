@@ -107,7 +107,7 @@ namespace OpenNos.GameObject.Event
                 mapinstance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
 
 
-                Observable.Timer(TimeSpan.FromSeconds(0)).Subscribe(X => { for (int wave = 0; wave < 4; wave++) { mapinstance.SummonMonsters(InstantBattleHelper.GetInstantBattleMonster(mapinstance.Map, 70, wave)); Thread.Sleep(160 * 1000); } });
+                Observable.Timer(TimeSpan.FromSeconds(0)).Subscribe(X => { for (int wave = 0; wave < 5; wave++) { mapinstance.SummonMonsters(InstantBattleHelper.GetInstantBattleMonster(mapinstance.Map, 70, wave)); Thread.Sleep(160 * 1000); } });
                 Observable.Timer(TimeSpan.FromSeconds(120)).Subscribe(X => { for (int wave = 0; wave < 4; wave++) { mapinstance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WAVE"), 0)); Thread.Sleep(160 * 1000); } });
                 Observable.Timer(TimeSpan.FromSeconds(130)).Subscribe(X => { for (int wave = 0; wave < 4; wave++) { mapinstance.DropItems(InstantBattleHelper.GetInstantBattleDrop(mapinstance.Map, 70, wave)); Thread.Sleep(160 * 1000); } });
                 Observable.Timer(TimeSpan.FromSeconds(150)).Subscribe(X => { for (int wave = 0; wave < 4; wave++) { mapinstance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WALKS"), 0)); Thread.Sleep(160 * 1000); } });
