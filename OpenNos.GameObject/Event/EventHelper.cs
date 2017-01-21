@@ -100,7 +100,7 @@ namespace OpenNos.GameObject.Event
         {
             foreach (Schedule schedul in ServerManager.Schedules.Where(s => s.Event == "INSTANTBATTLE"))
             {
-                Observable.Timer(TimeSpan.FromSeconds(EventHelper.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds - (5 * 60)), TimeSpan.FromDays(1))
+                Observable.Timer(TimeSpan.FromSeconds(GetMilisecondsBeforeTime(schedul.Time - new TimeSpan(0, 5, 0)).TotalSeconds), TimeSpan.FromDays(1))
                 .Subscribe(
                 e =>
                 {
