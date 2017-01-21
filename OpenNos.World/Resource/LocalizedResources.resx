@@ -1291,4 +1291,52 @@
   <data name="NOT_ENOUGH_SAVER" xml:space="preserve">
     <value>You don't have enough saver to resurrect.</value>
   </data>
+  <data name="INSTANTBATTLE_MINUTES_REMAINING" xml:space="preserve">
+    <value>The instant battle will be closed in {0} minuts.</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_APPEAR" xml:space="preserve">
+    <value>The monsters are there!</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_HERE" xml:space="preserve">
+    <value>Reinforcements are there.</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_WALKS" xml:space="preserve">
+    <value>Monsters walking.</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_WAVE" xml:space="preserve">
+    <value>The wave of monsters is preparing to arrive</value>
+  </data>
+  <data name="INSTANTBATTLE_SECONDS_REMAINING" xml:space="preserve">
+    <value>The instant battle will be closed in {0} seconds.</value>
+  </data>
+  <data name="INSTANTBATTLE_SUCCEEDED" xml:space="preserve">
+    <value>You won the instant battle!</value>
+  </data>
+  <data name="ISTANTBATTLE_MINUTES" xml:space="preserve">
+    <value>The instant battle will begin in {0} minuts.</value>
+  </data>
+  <data name="ISTANTBATTLE_QUESTION" xml:space="preserve">
+    <value>Do you want to join the instant battle ?</value>
+  </data>
+  <data name="ISTANTBATTLE_SECONDS" xml:space="preserve">
+    <value>The instant battle will begin in {0} seconds.</value>
+  </data>
+  <data name="ISTANTBATTLE_STARTED" xml:space="preserve">
+    <value>The instant battle has begin!</value>
+  </data>
+  <data name="MINILAND_VISITOR" xml:space="preserve">
+    <value>Total visitor : {0} Daily visitor : {1}</value>
+  </data>
+  <data name="REPUT_INCREASE" xml:space="preserve">
+    <value>Reputation has been increased.</value>
+  </data>
+  <data name="WIN_MONEY" xml:space="preserve">
+    <value>Money : + {0}</value>
+  </data>
+  <data name="WIN_REPUT" xml:space="preserve">
+    <value>Reputation : + {0}</value>
+  </data>
+  <data name="WIN_SP_POINT" xml:space="preserve">
+    <value>Sp points : + {0}</value>
+  </data>
 </root>
