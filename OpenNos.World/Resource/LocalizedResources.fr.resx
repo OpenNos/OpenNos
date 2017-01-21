@@ -1256,7 +1256,7 @@ Veux-tu le porter ?</value>
     <value>Le diable de feu volant a disparu.</value>
   </data>
   <data name="LOD_CLOSED" xml:space="preserve">
-    <value>La Terre Des Morts est fermé.</value>
+    <value>La Terre Des Morts est fermée.</value>
   </data>
   <data name="LOD_REQUIERE_LVL" xml:space="preserve">
     <value>Seul les membres de niveau 55 ou plus peuvent entrer dans la Terre Des Morts</value>
@@ -1266,5 +1266,53 @@ Veux-tu le porter ?</value>
   </data>
   <data name="NOT_ENOUGH_SAVER" xml:space="preserve">
     <value>Tu n'as pas assez de fontaine magique pour pouvoir résscuciter.</value>
+  </data>
+  <data name="INSTANTBATTLE_MINUTES_REMAINING" xml:space="preserve">
+    <value>La bataille se termine dans {0} minutes.</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_APPEAR" xml:space="preserve">
+    <value>Ouaaah ! Les monstres sont apparus !</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_HERE" xml:space="preserve">
+    <value>Les monstres sont apparus !</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_WALKS" xml:space="preserve">
+    <value>Les monstres s'approchent lentement en masse...</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_WAVE" xml:space="preserve">
+    <value>Les monstres vont apparaître dans 40 secondes.</value>
+  </data>
+  <data name="INSTANTBATTLE_SECONDS_REMAINING" xml:space="preserve">
+    <value>La bataille se termine dans {0} secondes.</value>
+  </data>
+  <data name="INSTANTBATTLE_SUCCEEDED" xml:space="preserve">
+    <value>Tu as gagné le combat instantané ! Félicitations !</value>
+  </data>
+  <data name="ISTANTBATTLE_MINUTES" xml:space="preserve">
+    <value>Dans {0} minutes un combat instantané va commencer.</value>
+  </data>
+  <data name="ISTANTBATTLE_QUESTION" xml:space="preserve">
+    <value>Veux-tu participer au combat instantané ?</value>
+  </data>
+  <data name="ISTANTBATTLE_SECONDS" xml:space="preserve">
+    <value>Dans {0} secondes un combat instantané va commencer.</value>
+  </data>
+  <data name="ISTANTBATTLE_STARTED" xml:space="preserve">
+    <value>Un combat instantané a commencé.</value>
+  </data>
+  <data name="MINILAND_VISITOR" xml:space="preserve">
+    <value>Total des visiteurs : {0} Visiteurs aujourd'hui : {1}</value>
+  </data>
+  <data name="REPUT_INCREASE" xml:space="preserve">
+    <value>Les points de réputation ont été augmenté.</value>
+  </data>
+  <data name="WIN_MONEY" xml:space="preserve">
+    <value>Tu reçois {0} pièces d'or en récompense de ta victoire.</value>
+  </data>
+  <data name="WIN_REPUT" xml:space="preserve">
+    <value>Tu reçois {0} points de réputation en récompense de ta victoire.</value>
+  </data>
+  <data name="WIN_SP_POINT" xml:space="preserve">
+    <value>Tu reçois {0} points de spécialiste supplémentaires en récompense de ta victoire.</value>
   </data>
 </root>
