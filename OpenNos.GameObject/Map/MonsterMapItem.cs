@@ -51,7 +51,7 @@ namespace OpenNos.GameObject
         {
             if (_itemInstance == null && OwnerId != -1)
             {
-                _itemInstance = Inventory.InstantiateItemInstance(ItemVNum, OwnerId.Value, Amount);
+                _itemInstance = Inventory.InstantiateItemInstance(ItemVNum, OwnerId, Amount);
             }
             return _itemInstance;
         }
