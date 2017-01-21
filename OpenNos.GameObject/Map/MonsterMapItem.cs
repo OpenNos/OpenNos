@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
 
         public sealed override short ItemVNum { get; set; }
 
-        public long OwnerId { get; }
+        public long? OwnerId { get; }
 
         #endregion
 
@@ -49,9 +49,9 @@ namespace OpenNos.GameObject
 
         public override ItemInstance GetItemInstance()
         {
-            if (_itemInstance == null && OwnerId != -1)
+            if (_itemInstance == null && OwnerId != null)
             {
-                _itemInstance = Inventory.InstantiateItemInstance(ItemVNum, OwnerId, Amount);
+                _itemInstance = Inventory.InstantiateItemInstance(ItemVNum, OwnerId.Value, Amount);
             }
             return _itemInstance;
         }
