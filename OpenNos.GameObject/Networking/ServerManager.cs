@@ -1143,6 +1143,7 @@ namespace OpenNos.GameObject
                 BotProcess();
             });
 
+            ServerManager.Instance.EnableMapEffect(98, false);
 
             foreach (Schedule schedul in Schedules)
             {
