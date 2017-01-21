@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -80,6 +81,8 @@ namespace OpenNos.GameObject
         #region Properties
 
         public static int DropRate { get; set; }
+
+        public bool EventInWaiting { get; set; }
 
         public static int FairyXpRate { get; set; }
 
@@ -220,6 +223,17 @@ namespace OpenNos.GameObject
         {
             _groups[group.GroupId] = group;
         }
+
+        internal void TeleportOnRandomPlaceInMap(ClientSession Session, Guid guid)
+        {
+            MapInstance map = GetMapInstance(guid);
+            if (guid != default(Guid))
+            {
+                MapCell pos = map.Map.GetRandomPosition();
+                ChangeMapInstance(Session.Character.CharacterId, guid, pos.X, pos.Y);
+            }
+        }
+
         public void JoinMiniland(ClientSession Session, ClientSession MinilandOwner)
         {
 
@@ -346,9 +360,18 @@ namespace OpenNos.GameObject
                         });
                         break;
 
+                    default:
+                        Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                        break;
                 }
             }
         }
+
+        public static string GenerateMsg(string message, int type)
+        {
+            return $"msg {type} {message}";
+        }
+
         public Guid GetBaseMapInstanceIdByMapId(short MapId)
         {
             return _mapinstances.FirstOrDefault(s => s.Value?.Map.MapId == MapId && s.Value.MapInstanceType == MapInstanceType.BaseMapInstance).Key;
@@ -368,7 +391,7 @@ namespace OpenNos.GameObject
         }
 
         // Both partly
-        public void ChangeMapInstance(long id, Guid MapInstanceId, short? mapX = null, short? mapY = null)
+        public void ChangeMapInstance(long id, Guid MapInstanceId, int? mapX = null, int? mapY = null)
         {
             ClientSession session = GetSessionByCharacterId(id);
             if (session?.Character != null && !session.Character.IsChangingMapInstance)

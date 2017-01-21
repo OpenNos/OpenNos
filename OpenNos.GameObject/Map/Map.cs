@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
         public Map(short mapId, byte[] data)
         {
             _random = new Random();
-            MapId = mapId;  
+            MapId = mapId;
             Data = data;
             LoadZone();
             MapTypes = new List<MapTypeDTO>();
@@ -64,7 +64,7 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-          
+
         }
 
         #endregion
@@ -273,6 +273,22 @@ namespace OpenNos.GameObject
                 Path.RemoveAt(0);
             }
             return Path;
+        }
+
+        public MapCell GetRandomPosition()
+        {
+            List<MapCell> cells = new List<MapCell>();
+            for (short y = 0; y <= XLength; y++)
+            {
+                for (short x = 0; x <= YLength; x++)
+                {
+                    if(!IsBlockedZone(x,y))
+                    {
+                        cells.Add(new MapCell { X = x, Y = y });
+                    }  
+                }
+            }
+            return cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
         }
 
 

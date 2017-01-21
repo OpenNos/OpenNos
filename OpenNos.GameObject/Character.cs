@@ -113,6 +113,7 @@ namespace OpenNos.GameObject
 
         public int Defence { get; set; }
 
+        public bool IsWaitingForEvent { get; set; }
         public int DefenceRate { get; set; }
 
         public int Direction

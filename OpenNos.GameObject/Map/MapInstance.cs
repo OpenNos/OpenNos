@@ -55,15 +55,15 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal List<int> SummonMonster(List<Tuple<short, short, short, long>> summonParameters)
+        internal List<int> SummonMonsters(List<Tuple<short, short, short, long, bool>> summonParameters)
         {
             List<int> ids = new List<int>();
-            foreach (Tuple<short, short, short, long> mon in summonParameters)
+            foreach (Tuple<short, short, short, long, bool> mon in summonParameters)
             {
                 NpcMonster npcmonster = ServerManager.GetNpc(mon.Item1);
                 if (npcmonster != null)
                 {
-                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.Item3, MapX = mon.Item2, MapId = Map.MapId, IsMoving = true, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Item4 };
+                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.Item3, MapX = mon.Item2, MapId = Map.MapId, IsMoving = mon.Item5, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Item4 };
                     monster.Initialize(this);
                     monster.StartLife();
                     AddMonster(monster);
@@ -93,7 +93,7 @@ namespace OpenNos.GameObject
                     monster.CurrentMp = 0;
                     monster.Death = DateTime.Now;
                     Broadcast(monster.GenerateOut3());
-                }             
+                }
             }
         }
 
@@ -235,6 +235,9 @@ namespace OpenNos.GameObject
                 _mapMonsterIds.Add(monster.MapMonsterId);
             }
         }
+
+
+
         public void LoadPortals()
         {
             foreach (PortalDTO portal in DAOFactory.PortalDAO.LoadByMap(Map.MapId).ToList())
@@ -287,6 +290,25 @@ namespace OpenNos.GameObject
                 }
             }
             return droppedItem;
+        }
+
+        internal void CreatePortal(Portal portal)
+        {
+            portal.SourceMapInstanceId = MapInstanceId;
+            _portals.Add(portal);
+            Sessions.Where(s=>s.Character!=null).ToList().ForEach(s => s.SendPacket(s.Character.GenerateGp(portal)));
+        }
+
+        public void DropItems(List<Tuple<short, int, short, short>> list)
+        {
+            foreach (Tuple<short, int, short, short> drop in list)
+            {
+                MonsterMapItem droppedItem = new MonsterMapItem(drop.Item3, drop.Item4, drop.Item1, drop.Item2);
+
+                DroppedList[droppedItem.TransportId] = droppedItem;
+
+                Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
+            }
         }
 
         public void RemoveMapItem()
