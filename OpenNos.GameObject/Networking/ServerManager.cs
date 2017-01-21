@@ -85,7 +85,7 @@ namespace OpenNos.GameObject
         public bool EventInWaiting { get; set; }
 
         public static int FairyXpRate { get; set; }
-
+        public List<EventType> StartedEvents { get; set; }
         public static List<Schedule> Schedules { get; set; }
         public static int GoldDropRate { get; set; }
 
@@ -874,14 +874,17 @@ namespace OpenNos.GameObject
                     Logger.Log.Error(Language.Instance.GetMessageFromKey("NO_MAP"));
                 }
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPMONSTERS_LOADED"), monstercount));
+
+                StartedEvents = new List<EventType>();
+                LoadFamilies();
+                GeneralLogs = DAOFactory.GeneralLogDAO.LoadAll().ToList();
+                LaunchEvents();
             }
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
             }
-            LoadFamilies();
-            GeneralLogs = DAOFactory.GeneralLogDAO.LoadAll().ToList();
-            LaunchEvents();
+
 
             //Register the new created TCPIP server to the api
             Guid serverIdentification = Guid.NewGuid();
@@ -1140,11 +1143,18 @@ namespace OpenNos.GameObject
                 BotProcess();
             });
 
-            EventHelper.GenerateLod();
 
-            EventHelper.GenerateReput();
+            foreach (Schedule schedul in Schedules)
+            {
 
-            EventHelper.GenerateInstantBattle();
+                Observable.Timer(TimeSpan.FromSeconds(EventHelper.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
+                .Subscribe(
+                e =>
+                {
+                    EventHelper.GenerateEvent(schedul.Event);
+                });
+            }
+             
 
             Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
             {

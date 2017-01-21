@@ -17,6 +17,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.GameObject.Event;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
@@ -581,9 +582,9 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX, Session.Character.PositionY);
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), Session.Character.PositionX, Session.Character.PositionY);
                     ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
-                    if(Session.Character.Family != null)
-                    { 
-                      ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                    if (Session.Character.Family != null)
+                    {
+                        ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                     }
                 }
                 else
@@ -697,6 +698,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Demote CHARACTERNAME", 12));
             Session.SendPacket(Session.Character.GenerateSay("$DropRate VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Event EVENT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$FairyXpRate VALUE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME(*) VNUM AMOUNT RARE UPGRADE", 12));
@@ -864,7 +866,7 @@ namespace OpenNos.Handler
             Logger.Debug("PortalTo Command", Session.SessionId);
             if (portalToPacket != null)
             {
-                if ( !Session.HasCurrentMapInstance)
+                if (!Session.HasCurrentMapInstance)
                 {
                     return;
                 }
@@ -890,7 +892,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 10));
             }
         }
-        
+
         /// <summary>
         /// $Demote Command
         /// </summary>
@@ -1212,7 +1214,20 @@ namespace OpenNos.Handler
                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
             }
         }
+        [Packet("$Event")]
+        public void StartEvent(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
 
+            if (packetsplit.Length > 2)
+            {
+                EventType type;
+                if (Enum.TryParse(packetsplit[2], out type))
+                {
+                    EventHelper.GenerateEvent(type);
+                }
+            }
+        }
         /// <summary>
         /// $Kick Command
         /// </summary>
@@ -1564,7 +1579,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             if (Session.HasCurrentMapInstance)
             {
-                Portal pt = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapInstanceId == Session.Character.MapInstanceId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell {  X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
+                Portal pt = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapInstanceId == Session.Character.MapInstanceId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
                 if (pt != null)
                 {
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));

@@ -708,9 +708,9 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CANNOT_LEAVE_FAMILY")));
                     return;
                 }
-
+                Family fam = Session.Character.Family;
                 DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
-                Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManage, Session.Character.Name, "", "", "", 0, 0, 0, 0, 0);
+                fam.InsertFamilyLog(FamilyLogType.FamilyManage, Session.Character.Name, "", "", "", 0, 0, 0, 0, 0);
 
                 System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
                        .Subscribe(

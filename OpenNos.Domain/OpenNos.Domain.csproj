@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventType.cs" />
     <Compile Include="MapInstanceType.cs" />
     <Compile Include="FamilyLogType.cs" />
     <Compile Include="FamilyAuthorityType.cs" />

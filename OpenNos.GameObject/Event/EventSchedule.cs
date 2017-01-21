@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
         {
             Schedule result = new Schedule();
 
-            result.Event = str.Attributes["event"].Value;
+            result.Event = (EventType)Enum.Parse(typeof(EventType),str.Attributes["event"].Value);
             result.Time = TimeSpan.Parse(str.Attributes["time"].Value);
             return result;
         }
