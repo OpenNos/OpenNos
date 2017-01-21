@@ -90,6 +90,7 @@ namespace OpenNos.GameObject.Event
                     {
                         mapinstance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), g), 0));
                     }
+                    Thread.Sleep(1000);
                 });
                 Observable.Timer(TimeSpan.FromSeconds(60 * 14 + 30)).Subscribe(x => { mapinstance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0)); });
                 Thread.Sleep(10 * 1000);
