@@ -689,7 +689,7 @@ namespace OpenNos.GameObject
                 int amount = 0;
                 foreach (FamilyLogDTO log in Family.FamilyLogs.OrderByDescending(s => s.Timestamp).Take(100))
                 {
-                    packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|({(int)((DateTime.Now - log.Timestamp).TotalHours)}";
+                    packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(int)((DateTime.Now - log.Timestamp).TotalHours)}";
                     i++;
                     if (i == 25)
                     {
