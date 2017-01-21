@@ -48,57 +48,71 @@ namespace OpenNos.GameObject.Event
                 ServerManager.Instance.TeleportOnRandomPlaceInMap(s, map.MapInstanceId);
                 i++;
             }
-            int c = 5;
-            Observable.Timer(TimeSpan.FromMinutes(12), TimeSpan.FromSeconds(1)).Subscribe(X =>
-            {
-                foreach (MapInstance mapinstance in maps)
-                {
-                    if (!mapinstance.Monsters.Any(s => s.CurrentHp > 0))
-                    {
-                        mapinstance.CreatePortal(new Portal() { SourceX = 47, SourceY = 33, DestinationMapId = 1 });
-                        mapinstance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
-                        foreach (ClientSession cli in mapinstance.Sessions.Where(s => s.Character != null).ToList())
-                        {
-                            cli.Character.GetReput(cli.Character.Level * 50);
-                            cli.Character.Gold += cli.Character.Level * 1000;
-                            cli.Character.Gold = (cli.Character.Gold > 1000000000) ? 1000000000 : cli.Character.Gold;
-                            cli.Character.SpAdditionPoint += cli.Character.Level * 100;
-                            cli.Character.SpAdditionPoint = (cli.Character.SpAdditionPoint > 1000000) ? 1000000 : cli.Character.SpAdditionPoint;
-                            cli.SendPacket(cli.Character.GenerateSpPoint());
-                            cli.SendPacket(cli.Character.GenerateGold());
-                            cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), cli.Character.Level * 1000), 10));
-                            cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), cli.Character.Level * 50), 10));
-                            cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_SP_POINT"), cli.Character.Level * 100), 10));
-                        }
-                    }
-                }
-
-            });
-            Observable.Timer(TimeSpan.FromMinutes(15)).Subscribe(X => { maps.ForEach(s => s.Dispose()); ServerManager.Instance.StartedEvents.Remove(EventType.INSTANTBATTLE); });
-            Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(x => { maps.ForEach(s => s.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 12), 0))); });
-            Observable.Timer(TimeSpan.FromMinutes(5)).Subscribe(x => { maps.ForEach(s => s.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 10), 0))); });
-            Observable.Timer(TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(1)).Subscribe(x => { c--; maps.ForEach(s => s.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), c), 0))); });
-            Observable.Timer(TimeSpan.FromSeconds(60 * 14 + 30)).Subscribe(x => { c--; maps.ForEach(s => s.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0))); });
-            Thread.Sleep(10 * 1000);
             foreach (MapInstance mapinstance in maps)
             {
-                if (map.Sessions.Count() < 3)
+                Observable.Timer(TimeSpan.FromMinutes(12)).Subscribe(X =>
                 {
-                    map.Sessions.Where(s => s.Character != null).ToList().ForEach(s => ServerManager.Instance.ChangeMap(s.Character.CharacterId, s.Character.MapId, s.Character.PositionX, s.Character.PositionY));
-                }
-            }
-            maps.ForEach(s => s.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WALKS"), 0)));
-            Thread.Sleep(7 * 1000);
-            maps.ForEach(s => s.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_APPEAR"), 0)));
-            Thread.Sleep(3 * 1000);
-            maps.ForEach(s => s.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0)));
-            int wave = -1;
-            Observable.Timer(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(160)).Subscribe(X => { wave++; maps.ForEach(s => s.SummonMonsters(InstantBattleHelper.GetLodMonster(s.Map, 70, wave))); });
-            Observable.Timer(TimeSpan.FromSeconds(120), TimeSpan.FromSeconds(160)).Subscribe(X => { if (wave < 4) { maps.ForEach(s => s.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WAVE"), 0))); } });
-            Observable.Timer(TimeSpan.FromSeconds(130), TimeSpan.FromSeconds(160)).Subscribe(X => { if (wave < 4) { maps.ForEach(s => s.DropItems(InstantBattleHelper.GetLodDrop(s.Map, 70, wave))); } });
-            Observable.Timer(TimeSpan.FromSeconds(150), TimeSpan.FromSeconds(160)).Subscribe(X => { if (wave < 4) { maps.ForEach(s => s.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WALKS"), 0))); } });
-            Observable.Timer(TimeSpan.FromSeconds(160), TimeSpan.FromSeconds(160)).Subscribe(X => { if (wave < 4) { maps.ForEach(s => s.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0))); } });
+                    for (int d = 0; d < 180; d++)
+                    {
+                        if (!mapinstance.Monsters.Any(s => s.CurrentHp > 0))
+                        {
+                            mapinstance.CreatePortal(new Portal() { SourceX = 47, SourceY = 33, DestinationMapId = 1 });
+                            mapinstance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
+                            foreach (ClientSession cli in mapinstance.Sessions.Where(s => s.Character != null).ToList())
+                            {
+                                cli.Character.GetReput(cli.Character.Level * 50);
+                                cli.Character.Gold += cli.Character.Level * 1000;
+                                cli.Character.Gold = (cli.Character.Gold > 1000000000) ? 1000000000 : cli.Character.Gold;
+                                cli.Character.SpAdditionPoint += cli.Character.Level * 100;
+                                cli.Character.SpAdditionPoint = (cli.Character.SpAdditionPoint > 1000000) ? 1000000 : cli.Character.SpAdditionPoint;
+                                cli.SendPacket(cli.Character.GenerateSpPoint());
+                                cli.SendPacket(cli.Character.GenerateGold());
+                                cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), cli.Character.Level * 1000), 10));
+                                cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), cli.Character.Level * 50), 10));
+                                cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_SP_POINT"), cli.Character.Level * 100), 10));
 
+                            }
+                            break;
+
+                        }
+                        Thread.Sleep(1000);
+                    }
+                });
+
+
+
+                Observable.Timer(TimeSpan.FromMinutes(15)).Subscribe(X => { mapinstance.Dispose(); ServerManager.Instance.StartedEvents.Remove(EventType.INSTANTBATTLE); });
+                Observable.Timer(TimeSpan.FromMinutes(3)).Subscribe(x => { mapinstance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 12), 0)); });
+                Observable.Timer(TimeSpan.FromMinutes(5)).Subscribe(x => { mapinstance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 10), 0)); });
+                Observable.Timer(TimeSpan.FromMinutes(10)).Subscribe(x =>
+                {
+                    for (int g = 5; g > 0; g--)
+                    {
+                        mapinstance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), g), 0));
+                    }
+                });
+                Observable.Timer(TimeSpan.FromSeconds(60 * 14 + 30)).Subscribe(x => { mapinstance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0)); });
+                Thread.Sleep(10 * 1000);
+
+                if (mapinstance.Sessions.Count() < 3)
+                {
+                    mapinstance.Sessions.Where(s => s.Character != null).ToList().ForEach(s => ServerManager.Instance.ChangeMap(s.Character.CharacterId, s.Character.MapId, s.Character.PositionX, s.Character.PositionY));
+                }
+
+                mapinstance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WALKS"), 0));
+                Thread.Sleep(7 * 1000);
+                mapinstance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_APPEAR"), 0));
+                Thread.Sleep(3 * 1000);
+                mapinstance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
+
+
+                Observable.Timer(TimeSpan.FromSeconds(0)).Subscribe(X => { for (int wave = 0; wave < 4; wave++) { mapinstance.SummonMonsters(InstantBattleHelper.GetLodMonster(mapinstance.Map, 70, wave)); Thread.Sleep(160 * 1000); } });
+                Observable.Timer(TimeSpan.FromSeconds(120)).Subscribe(X => { for (int wave = 0; wave < 4; wave++) { mapinstance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WAVE"), 0)); Thread.Sleep(160 * 1000); } });
+                Observable.Timer(TimeSpan.FromSeconds(130)).Subscribe(X => { for (int wave = 0; wave < 4; wave++) { mapinstance.DropItems(InstantBattleHelper.GetLodDrop(mapinstance.Map, 70, wave)); Thread.Sleep(160 * 1000); } });
+                Observable.Timer(TimeSpan.FromSeconds(150)).Subscribe(X => { for (int wave = 0; wave < 4; wave++) { mapinstance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WALKS"), 0)); Thread.Sleep(160 * 1000); } });
+                Observable.Timer(TimeSpan.FromSeconds(160)).Subscribe(X => { for (int wave = 0; wave < 4; wave++) { mapinstance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0)); Thread.Sleep(160 * 1000); } });
+
+            }
 
 
         }
@@ -123,40 +137,43 @@ namespace OpenNos.GameObject.Event
                 }
                 ServerManager.Instance.StartedEvents.Remove(EventType.REPUTEVENT);
             }
-
         }
+
         static void GenerateLod()
         {
-            ServerManager.Instance.EnableMapEffect(98, false);
-
+            int lodtime = 120;
+            int HornTime = 30;
+            int HornRepawn = 4;
+            int HornStay = 1;
             ServerManager.Instance.EnableMapEffect(98, true);
+            Dictionary<long, IDisposable> dict = new Dictionary<long, IDisposable>();
             foreach (Family fam in ServerManager.Instance.FamilyList)
             {
 
-                int lodtime = 120;
-                int HornTime = 30;
-                int HornRepawn = 4;
-                int HornStay = 1;
                 MapInstance LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance);
                 LandOfDeath.StartClock((int)(TimeSpan.FromMinutes(lodtime).TotalSeconds * 10));
                 Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime)).Subscribe(x => { LandOfDeath.XpRate = 3; LandOfDeath.DropRate = 3; });
-                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime), TimeSpan.FromMinutes(HornRepawn)).Subscribe(
-                    x =>
-                    {
-                        Character lastincharacter = LandOfDeath.GetLastInCharacter();
-                        List<Tuple<short, short, short, long, bool>> SummonParameters = new List<Tuple<short, short, short, long, bool>>();
-                        SummonParameters.Add(new Tuple<short, short, short, long, bool>(443, (lastincharacter != null ? lastincharacter.PositionX : (short)154), (lastincharacter != null ? lastincharacter.PositionY : (short)140), lastincharacter != null ? lastincharacter.CharacterId : -1, true));
-                        LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket("df 2"));
-                        LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket(s.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
-                        List<int> monsterIds = LandOfDeath.SummonMonsters(SummonParameters);
-                        Observable.Timer(TimeSpan.FromMinutes(HornStay)).Subscribe(c =>
-                        {
-                            LandOfDeath.Lock = true;
-                            LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket(s.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0)));
-                            LandOfDeath.UnspawnMonsters(monsterIds);
-                        });
-                    });
-                Observable.Timer(TimeSpan.FromMinutes(lodtime)).Subscribe(x => { LandOfDeath.Dispose(); ServerManager.Instance.StartedEvents.Remove(EventType.LOD); ServerManager.Instance.EnableMapEffect(98, false); });
+                IDisposable disp = Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime)).Subscribe(
+                      x =>
+                      {
+                          for (int i = 0; i < 10; i++)
+                          {
+                              Character lastincharacter = LandOfDeath.GetLastInCharacter();
+                              List<Tuple<short, short, short, long, bool>> SummonParameters = new List<Tuple<short, short, short, long, bool>>();
+                              SummonParameters.Add(new Tuple<short, short, short, long, bool>(443, (lastincharacter != null ? lastincharacter.PositionX : (short)154), (lastincharacter != null ? lastincharacter.PositionY : (short)140), lastincharacter != null ? lastincharacter.CharacterId : -1, true));
+                              LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket("df 2"));
+                              LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket(s.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
+                              List<int> monsterIds = LandOfDeath.SummonMonsters(SummonParameters);
+                              Observable.Timer(TimeSpan.FromMinutes(HornStay)).Subscribe(c =>
+                              {
+                                  LandOfDeath.Lock = true;
+                                  LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket(s.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0)));
+                                  LandOfDeath.UnspawnMonsters(monsterIds);
+                              });
+                              Thread.Sleep(HornRepawn * 1000);
+                          }
+                      });
+                Observable.Timer(TimeSpan.FromMinutes(lodtime)).Subscribe(x => { disp.Dispose(); LandOfDeath.Dispose(); ServerManager.Instance.StartedEvents.Remove(EventType.LOD); ServerManager.Instance.EnableMapEffect(98, false); });
                 fam.LandOfDeath = LandOfDeath;
             }
 
@@ -176,19 +193,22 @@ namespace OpenNos.GameObject.Event
         {
             if (!ServerManager.Instance.StartedEvents.Contains(type))
             {
-                ServerManager.Instance.StartedEvents.Add(type);
-                switch (type)
+                Task.Factory.StartNew(() =>
                 {
-                    case EventType.LOD:
-                        GenerateLod();
-                        break;
-                    case EventType.REPUTEVENT:
-                        GenerateReput();
-                        break;
-                    case EventType.INSTANTBATTLE:
-                        GenerateInstantBattle();
-                        break;
-                }
+                    ServerManager.Instance.StartedEvents.Add(type);
+                    switch (type)
+                    {
+                        case EventType.LOD:
+                            GenerateLod();
+                            break;
+                        case EventType.REPUTEVENT:
+                            GenerateReput();
+                            break;
+                        case EventType.INSTANTBATTLE:
+                            GenerateInstantBattle();
+                            break;
+                    }
+                });
             }
         }
     }
