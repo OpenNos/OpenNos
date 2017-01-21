@@ -32,7 +32,7 @@ namespace OpenNos.GameObject.Event
             }
             return dropParameters;
         }
-        public static List<Tuple<short, short, short, long, bool>> GetLodMonster(Map map, short instantbattletype, int wave)
+        public static List<Tuple<short, short, short, long, bool>> GetInstantBattleMonster(Map map, short instantbattletype, int wave)
         {
             List<Tuple<short, short, short, long, bool>> SummonParameters = new List<Tuple<short, short, short, long, bool>>();
 
@@ -86,7 +86,7 @@ namespace OpenNos.GameObject.Event
             return SummonParameters;
         }
 
-        public static List<Tuple<short, int, short, short>> GetLodDrop(Map map, short instantbattletype, int wave)
+        public static List<Tuple<short, int, short, short>> GetInstantBattleDrop(Map map, short instantbattletype, int wave)
         {
             List<Tuple<short, int, short, short>> dropParameters = new List<Tuple<short, int, short, short>>();
             switch (instantbattletype)

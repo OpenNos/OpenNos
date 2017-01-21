@@ -569,9 +569,9 @@ namespace OpenNos.Handler
                     if (item != null)
                     {
                         MonsterMapItem monsterMapItem = item;
-                        if (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.LodInstance && monsterMapItem.OwnerId.HasValue)
+                        if (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.LodInstance && monsterMapItem.OwnerId != -1)
                         {
-                            Group group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(monsterMapItem.OwnerId.Value) && g.IsMemberOfGroup(Session.Character.CharacterId));
+                            Group group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(monsterMapItem.OwnerId) && g.IsMemberOfGroup(Session.Character.CharacterId));
                             if (item.CreatedDate.AddSeconds(30) > DateTime.Now && !(monsterMapItem.OwnerId == Session.Character.CharacterId || group != null && group.SharingMode == (byte)GroupSharingType.Everyone))
                             {
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"), 10));
