@@ -1161,6 +1161,12 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ', '^');
             switch (packetsplit[2])
             {
+                case "506":
+                    if(ServerManager.Instance.EventInWaiting)
+                    {
+                        Session.Character.IsWaitingForEvent = true;
+                    }
+                    break;
                 case "199":
                     short[] listWingOfFriendship = { 2160, 2312, 10048 };
                     short vnumToUse = -1;
