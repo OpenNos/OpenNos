@@ -8,7 +8,7 @@ namespace OpenNos.Domain
 {
     public class Schedule
     {
-        public string Event { get; set; }
+        public EventType Event { get; set; }
         public TimeSpan Time { get; set; }
 
     }

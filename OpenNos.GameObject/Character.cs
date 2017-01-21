@@ -691,7 +691,7 @@ namespace OpenNos.GameObject
                 {
                     packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(int)((DateTime.Now - log.Timestamp).TotalHours)}";
                     i++;
-                    if (i == 25)
+                    if (i == 50)
                     {
                         i = 0;
                         packetList.Add($"{packetheader}{(amount == 0 ? " 0 " : "")}{packet}");
