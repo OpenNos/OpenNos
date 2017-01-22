@@ -221,8 +221,41 @@ namespace OpenNos.GameObject
                     break;
 
                 case 23:
-                    Session.SendPacket(Session.Character.GenerateInbox(type, 14));
-                    //Session.SendPacket(Session.Character.GenerateFamilyMember());
+                    if (type == 0)
+                    {
+                        if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
+                        {
+                            foreach (ClientSession s in Session.Character.Group.Characters)
+                            {
+                                if (s.Character.Family != null)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_MEMBER_ALREADY_IN_FAMILY")));
+                                    return;
+                                }
+                            }
+                        }
+                        if (Session.Character.Group == null || Session.Character.Group.CharacterCount == 3)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_GROUP_NOT_FULL")));
+                            return;
+                        }
+                        Session.SendPacket(Session.Character.GenerateInbox($"#glmk^ {14} 1 {Language.Instance.GetMessageFromKey("CREATE_FAMILY").Replace(' ', '^')}"));
+                    }
+                    else
+                    {
+                        if (Session.Character.Family == null)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NOT_IN_FAMILY")));
+                            return;
+                        }
+                        if (Session.Character.Family != null && Session.Character.FamilyCharacter != null && Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
+                        {
+                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NOT_FAMILY_HEAD")));
+                            return;
+                        }
+                        Session.SendPacket(Session.Character.GenerateDialog($"qna #glrm^1 {Language.Instance.GetMessageFromKey("DISMISS_FAMILY")}"));
+                    }
+
                     break;
 
                 case 60:

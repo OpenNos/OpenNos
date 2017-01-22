@@ -21,6 +21,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IFamilyLogDAO : IMappingBaseDAO
     {
+        DeleteResult Delete(long familyId);
         IEnumerable<FamilyLogDTO> LoadByFamilyId(long familyId);
         SaveResult InsertOrUpdate(ref FamilyLogDTO famlog);
 

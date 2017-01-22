@@ -875,7 +875,7 @@ namespace OpenNos.Handler
                                     ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
                                     if (otherSession != null)
                                     {
-                                        otherSession.SendPacket($"dlg #fins^-1^{Session.Character.CharacterId} #fins^-99^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("FRIEND_ADD"), Session.Character.Name)}");
+                                        otherSession.SendPacket(otherSession.Character.GenerateDialog($"#fins^-1^{Session.Character.CharacterId} #fins^-99^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("FRIEND_ADD"), Session.Character.Name)}"));
                                         Session.Character.FriendRequestCharacters.Add(characterId);
                                     }
                                 }
