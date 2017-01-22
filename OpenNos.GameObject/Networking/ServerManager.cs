@@ -104,6 +104,10 @@ namespace OpenNos.GameObject
         public bool inBazaarRefreshMode { get; set; }
         public int ChannelId { get; set; }
 
+        public List<CharacterDTO> TopComplimented { get; set; }
+        public List<CharacterDTO> TopPoints { get; set; }
+        public List<CharacterDTO> TopReputation { get; set; }
+
         public void FamilyRefresh(long FamilyId)
         {
             inFamilyRefreshMode = true;
@@ -879,6 +883,8 @@ namespace OpenNos.GameObject
                 LoadFamilies();
                 GeneralLogs = DAOFactory.GeneralLogDAO.LoadAll().ToList();
                 LaunchEvents();
+                RefreshRanking();
+
             }
             catch (Exception ex)
             {
@@ -890,7 +896,13 @@ namespace OpenNos.GameObject
             Guid serverIdentification = Guid.NewGuid();
             WorldId = serverIdentification;
         }
-
+        public void RefreshRanking()
+        {
+            IEnumerable<CharacterDTO> list = DAOFactory.CharacterDAO.LoadAll();
+            TopComplimented = list.OrderByDescending(c => c.Compliment).Take(30).ToList();
+            TopPoints = list.OrderByDescending(c => c.Act4Points).Take(30).ToList();
+            TopReputation = list.OrderByDescending(c => c.Reput).Take(43).ToList();
+        }
         public bool IsCharacterMemberOfGroup(long characterId)
         {
             return Groups != null && Groups.Any(g => g.IsMemberOfGroup(characterId));
@@ -1155,7 +1167,7 @@ namespace OpenNos.GameObject
                     EventHelper.GenerateEvent(schedul.Event);
                 });
             }
-             
+
 
             Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(x =>
             {
@@ -1199,7 +1211,7 @@ namespace OpenNos.GameObject
             ServerCommunicationClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
             ServerCommunicationClient.Instance.FamilyRefresh += OnFamilyRefresh;
             ServerCommunicationClient.Instance.BazaarRefresh += OnBazaarRefresh;
-
+            ServerCommunicationClient.Instance.RankingRefresh += OnRankingRefresh;
             lastGroupId = 1;
         }
 
@@ -1332,7 +1344,10 @@ namespace OpenNos.GameObject
             }
             inFamilyRefreshMode = false;
         }
-
+        private void OnRankingRefresh(object sender, EventArgs e)
+        {
+            RefreshRanking();
+        }
         private void OnBazaarRefresh(object sender, EventArgs e)
         {
             long BazaarId = (long)sender;

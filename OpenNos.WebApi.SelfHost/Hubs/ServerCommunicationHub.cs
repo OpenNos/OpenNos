@@ -48,7 +48,13 @@ namespace OpenNos.WebApi.SelfHost
         {
             Clients.All.refreshBazaar(BazaarItemId);
         }
-
+        /// <summary>
+        /// Refresh Ranking
+        /// </summary>
+        public void RankingRefresh()
+        {
+            Clients.All.refreshRanking();
+        }
         /// <summary>
         /// Cleanup hold Data, this is for restarting the server
         /// </summary>
