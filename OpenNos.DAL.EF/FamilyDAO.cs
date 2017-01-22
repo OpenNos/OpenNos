@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Family Fam = context.Family.FirstOrDefault(c => c.FamilyId.Equals(familyId));
+                    Family Fam = context.Family.FirstOrDefault(c => c.FamilyId == familyId);
 
                     if (Fam != null)
                     {

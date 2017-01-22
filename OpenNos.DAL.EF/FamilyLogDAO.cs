@@ -82,17 +82,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public DeleteResult Delete(long familyId)
+        public DeleteResult Delete(long familylogId)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Family Family = context.Family.FirstOrDefault(c => c.FamilyId.Equals(familyId));
+                    FamilyLog famlog = context.FamilyLog.FirstOrDefault(c => c.FamilyLogId.Equals(familylogId));
 
-                    if (Family != null)
+                    if (famlog != null)
                     {
-                        context.Family.Remove(Family);
+                        context.FamilyLog.Remove(famlog);
                         context.SaveChanges();
                     }
 
@@ -101,7 +101,7 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_ERROR"), familyId, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_ERROR"), familylogId, e.Message), e);
                 return DeleteResult.Error;
             }
         }
