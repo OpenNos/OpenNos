@@ -141,9 +141,8 @@ namespace OpenNos.GameObject.Event
             }
         }
 
-        static void GenerateLod()
+        static void GenerateLod(int lodtime = 120)
         {
-            int lodtime = 120;
             int HornTime = 30;
             int HornRepawn = 4;
             int HornStay = 1;
@@ -155,31 +154,65 @@ namespace OpenNos.GameObject.Event
                 MapInstance LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance);
                 LandOfDeath.StartClock((int)(TimeSpan.FromMinutes(lodtime).TotalSeconds * 10));
                 Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime)).Subscribe(x => { LandOfDeath.XpRate = 3; LandOfDeath.DropRate = 3; });
-                IDisposable disp = Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime)).Subscribe(
+                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime)).Subscribe(
                       x =>
                       {
-                          for (int i = 0; i < 10; i++)
-                          {
-                              Character lastincharacter = LandOfDeath.GetLastInCharacter();
-                              List<Tuple<short, short, short, long, bool>> SummonParameters = new List<Tuple<short, short, short, long, bool>>();
-                              SummonParameters.Add(new Tuple<short, short, short, long, bool>(443, (lastincharacter != null ? lastincharacter.PositionX : (short)154), (lastincharacter != null ? lastincharacter.PositionY : (short)140), lastincharacter != null ? lastincharacter.CharacterId : -1, true));
-                              LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket("df 2"));
-                              LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket(s.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
-                              List<int> monsterIds = LandOfDeath.SummonMonsters(SummonParameters);
-                              Observable.Timer(TimeSpan.FromMinutes(HornStay)).Subscribe(c =>
-                              {
-                                  LandOfDeath.Lock = true;
-                                  LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket(s.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0)));
-                                  LandOfDeath.UnspawnMonsters(monsterIds);
-                              });
-                              Thread.Sleep(HornRepawn * 1000);
-                          }
+                          SpawnDH(LandOfDeath, HornStay);
                       });
-                Observable.Timer(TimeSpan.FromMinutes(lodtime)).Subscribe(x => { disp.Dispose(); LandOfDeath.Dispose(); ServerManager.Instance.StartedEvents.Remove(EventType.LOD); ServerManager.Instance.EnableMapEffect(98, false); });
+                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn))).Subscribe(
+      x =>
+      {
+          SpawnDH(LandOfDeath, HornStay);
+      });
+                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 2))).Subscribe(
+x =>
+{
+    SpawnDH(LandOfDeath, HornStay);
+});
+                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 3))).Subscribe(
+x =>
+{
+    SpawnDH(LandOfDeath, HornStay);
+});
+                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 4))).Subscribe(
+x =>
+{
+    SpawnDH(LandOfDeath, HornStay);
+});
+                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 5))).Subscribe(
+x =>
+{
+    SpawnDH(LandOfDeath, HornStay);
+});
+                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 6))).Subscribe(
+x =>
+{
+    SpawnDH(LandOfDeath, HornStay);
+});
+                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 7))).Subscribe(
+x =>
+{
+    SpawnDH(LandOfDeath, HornStay);
+});
+                Observable.Timer(TimeSpan.FromMinutes(lodtime)).Subscribe(x => { LandOfDeath.Dispose(); ServerManager.Instance.StartedEvents.Remove(EventType.LOD); ServerManager.Instance.EnableMapEffect(98, false); });
                 fam.LandOfDeath = LandOfDeath;
             }
+        }
 
-
+        private static void SpawnDH(MapInstance LandOfDeath, int HornStay)
+        {
+            Character lastincharacter = LandOfDeath.GetLastInCharacter();
+            List<Tuple<short, short, short, long, bool>> SummonParameters = new List<Tuple<short, short, short, long, bool>>();
+            SummonParameters.Add(new Tuple<short, short, short, long, bool>(443, (lastincharacter != null ? lastincharacter.PositionX : (short)154), (lastincharacter != null ? lastincharacter.PositionY : (short)140), lastincharacter != null ? lastincharacter.CharacterId : -1, true));
+            LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket("df 2"));
+            LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket(s.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
+            List<int> monsterIds = LandOfDeath.SummonMonsters(SummonParameters);
+            Observable.Timer(TimeSpan.FromMinutes(HornStay)).Subscribe(c =>
+            {
+                LandOfDeath.Lock = true;
+                LandOfDeath.Sessions.ToList().ForEach(s => s.SendPacket(s.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0)));
+                LandOfDeath.UnspawnMonsters(monsterIds);
+            });
         }
 
         public static TimeSpan GetMilisecondsBeforeTime(TimeSpan time)
@@ -208,6 +241,9 @@ namespace OpenNos.GameObject.Event
                             break;
                         case EventType.INSTANTBATTLE:
                             GenerateInstantBattle();
+                            break;
+                        case EventType.LODDH:
+                            GenerateLod(35);
                             break;
                     }
                 });
