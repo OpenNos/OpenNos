@@ -116,21 +116,6 @@ namespace OpenNos.DAL.EF
             return null;
         }
 
-        public void LogIn(string name)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
         public void UpdateLastSessionAndIp(string name, int session, string ip)
         {
             try

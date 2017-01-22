@@ -174,7 +174,7 @@ namespace OpenNos.Handler
                             ServerManager.Instance.SetProperty(complimentedCharacterId, nameof(Character.Compliment), compliment);
                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentedCharacterId, nameof(Character.Name))), 12));
                             Session.Account.LastCompliment = DateTime.Now;
-
+                            Session.Character.RefreshComplimentRankingIfNeeded();
                             Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
                         }
                         else
@@ -1327,7 +1327,7 @@ namespace OpenNos.Handler
         [Packet("hero")]
         public void Hero(string packet)
         {
-            if (DAOFactory.CharacterDAO.IsReputHero(Session.Character.CharacterId) >= 3)
+            if (Session.Character.IsReputHero() >= 3)
             {
                 string[] packetsplit = packet.Split(' ');
                 string message = string.Empty;
@@ -1849,15 +1849,15 @@ namespace OpenNos.Handler
             string clinit = "clinit";
             string flinit = "flinit";
             string kdlinit = "kdlinit";
-            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopComplimented())
+            foreach (CharacterDTO character in ServerManager.Instance.TopComplimented)
             {
                 clinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Compliment}|{character.Name}";
             }
-            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopReputation())
+            foreach (CharacterDTO character in ServerManager.Instance.TopReputation)
             {
                 flinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Reput}|{character.Name}";
             }
-            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
+            foreach (CharacterDTO character in ServerManager.Instance.TopPoints)
             {
                 kdlinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Act4Points}|{character.Name}";
             }

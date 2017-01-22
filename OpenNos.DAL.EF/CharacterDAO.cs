@@ -141,6 +141,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<CharacterDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Character chara in context.Character)
+                {
+                    yield return _mapper.Map<CharacterDTO>(chara);
+                }
+            }
+        }
+
         public IList<CharacterDTO> LoadByAccount(long accountId)
         {
             using (var context = DataAccessHelper.CreateContext())

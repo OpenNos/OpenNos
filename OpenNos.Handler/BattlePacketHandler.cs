@@ -1012,10 +1012,10 @@ namespace OpenNos.Handler
                     {
                         hitRequest.Session.Character.Act4Kill += 1;
                         target.Character.Act4Dead += 1;
-                        target.Character.Act4Points -= 1;
+                        target.Character.GetAct4Points(-1);
                         if (target.Character.Level+10 >= hitRequest.Session.Character.Level && hitRequest.Session.Character.Level <= target.Character.Level - 10)
                         {
-                            hitRequest.Session.Character.Act4Points += 2;
+                            hitRequest.Session.Character.GetAct4Points(2);
                         }
                         if (target.Character.Reput < 50000)
                         {

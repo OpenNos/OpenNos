@@ -29,8 +29,6 @@ namespace OpenNos.DAL.Interface
 
         AccountDTO LoadByName(string Name);
 
-        void LogIn(string name);
-
         void UpdateLastSessionAndIp(string name, int session, string ip);
 
         void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData);
