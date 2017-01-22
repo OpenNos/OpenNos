@@ -164,7 +164,9 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return ServerManager.Instance.FamilyList.FirstOrDefault(s => s.FamilyCharacters.Any(c => c.CharacterId == CharacterId));
+                Family[] logs = new Family[ServerManager.Instance.FamilyList.Count + 50];
+                ServerManager.Instance.FamilyList.CopyTo(logs);
+                return logs.FirstOrDefault(s => s.FamilyCharacters.Any(c => c.CharacterId == CharacterId));
             }
         }
 
