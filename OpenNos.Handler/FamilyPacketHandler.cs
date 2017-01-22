@@ -110,7 +110,7 @@ namespace OpenNos.Handler
             }
 
         }
-        [Packet("#gldm")]
+        [Packet("#glrm")]
         public void FamilyDismiss(string packet)
         {
             if (Session.Character.Family == null || Session.Character.FamilyCharacter == null || Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
@@ -118,7 +118,6 @@ namespace OpenNos.Handler
                 return;
             }
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
-            string type = packet.Split('^')[1];
             if (type == "0")
             {
                 Family fam = Session.Character.Family;
