@@ -118,23 +118,22 @@ namespace OpenNos.Handler
                 return;
             }
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
-            if (type == "0")
-            {
-                Family fam = Session.Character.Family;
-                List<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Family != null && s.Character.Family.FamilyId == fam.FamilyId).ToList();
 
-                fam.FamilyCharacters.ForEach(s => { DAOFactory.FamilyCharacterDAO.Delete(s.Character.Name); });
-                fam.FamilyLogs.ForEach(s => { DAOFactory.FamilyLogDAO.Delete(s.FamilyLogId); });
-                DAOFactory.FamilyDAO.Delete(fam.FamilyId);
-                ServerManager.Instance.FamilyRefresh(fam.FamilyId);
+            Family fam = Session.Character.Family;
+            List<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Family != null && s.Character.Family.FamilyId == fam.FamilyId).ToList();
 
-                System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200))
-                  .Subscribe(
-                  o =>
-                  {
-                      sessions.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
-                  });
-            }
+            fam.FamilyCharacters.ForEach(s => { DAOFactory.FamilyCharacterDAO.Delete(s.Character.Name); });
+            fam.FamilyLogs.ForEach(s => { DAOFactory.FamilyLogDAO.Delete(s.FamilyLogId); });
+            DAOFactory.FamilyDAO.Delete(fam.FamilyId);
+            ServerManager.Instance.FamilyRefresh(fam.FamilyId);
+
+            System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200))
+              .Subscribe(
+              o =>
+              {
+                  sessions.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
+              });
+
         }
 
 
