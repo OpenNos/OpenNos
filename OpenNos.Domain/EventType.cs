@@ -4,6 +4,7 @@
     {
         INSTANTBATTLE,
         LOD,
-        REPUTEVENT
+        REPUTEVENT,
+        LODDH
     }
 }
