@@ -253,7 +253,7 @@ namespace OpenNos.GameObject
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NOT_FAMILY_HEAD")));
                             return;
                         }
-                        Session.SendPacket(Session.Character.GenerateDialog($"#gldm^0 #gldm^1 {Language.Instance.GetMessageFromKey("DISMISS_FAMILY").Replace(' ', '^')}"));
+                        Session.SendPacket(Session.Character.GenerateDialog($"qna #glrm^1 {Language.Instance.GetMessageFromKey("DISMISS_FAMILY")}"));
                     }
 
                     break;
