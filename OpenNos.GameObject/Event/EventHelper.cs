@@ -194,9 +194,10 @@ x =>
 {
     SpawnDH(LandOfDeath, HornStay);
 });
-                Observable.Timer(TimeSpan.FromMinutes(lodtime)).Subscribe(x => { LandOfDeath.Dispose(); ServerManager.Instance.StartedEvents.Remove(EventType.LOD); ServerManager.Instance.EnableMapEffect(98, false); });
+                Observable.Timer(TimeSpan.FromMinutes(lodtime)).Subscribe(x => { LandOfDeath.Dispose(); });
                 fam.LandOfDeath = LandOfDeath;
             }
+            Observable.Timer(TimeSpan.FromMinutes(lodtime)).Subscribe(x => { ServerManager.Instance.StartedEvents.Remove(EventType.LOD); ServerManager.Instance.EnableMapEffect(98, false); });
         }
 
         private static void SpawnDH(MapInstance LandOfDeath, int HornStay)
