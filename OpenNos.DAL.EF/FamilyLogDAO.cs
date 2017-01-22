@@ -81,5 +81,29 @@ namespace OpenNos.DAL.EF
                 }
             }
         }
+
+        public DeleteResult Delete(long familyId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Family Family = context.Family.FirstOrDefault(c => c.FamilyId.Equals(familyId));
+
+                    if (Family != null)
+                    {
+                        context.Family.Remove(Family);
+                        context.SaveChanges();
+                    }
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_ERROR"), familyId, e.Message), e);
+                return DeleteResult.Error;
+            }
+        }
     }
 }
