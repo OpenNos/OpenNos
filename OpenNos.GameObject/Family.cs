@@ -99,6 +99,12 @@ namespace OpenNos.GameObject
             ServerManager.Instance.FamilyRefresh(FamilyId);
         }
 
+        internal Family DeepCopy()
+        {
+            Family clonedCharacter = (Family)MemberwiseClone();
+            return clonedCharacter;
+        }
+
         #endregion
     }
 }
