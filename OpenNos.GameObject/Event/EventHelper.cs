@@ -34,7 +34,7 @@ namespace OpenNos.GameObject.Event
             ServerManager.Instance.EventInWaiting = true;
             Thread.Sleep(30 * 1000);
             ServerManager.Instance.EventInWaiting = false;
-            IEnumerable<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.IsWaitingForEvent);
+            IEnumerable<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.IsWaitingForEvent && s.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance);
             List<MapInstance> maps = new List<MapInstance>();
             MapInstance map = null;
             int i = 0;
@@ -48,6 +48,7 @@ namespace OpenNos.GameObject.Event
                 ServerManager.Instance.TeleportOnRandomPlaceInMap(s, map.MapInstanceId);
                 i++;
             }
+            ServerManager.Instance.Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.Character.IsWaitingForEvent = false);
             foreach (MapInstance mapinstance in maps)
             {
                 Observable.Timer(TimeSpan.FromMinutes(12)).Subscribe(X =>

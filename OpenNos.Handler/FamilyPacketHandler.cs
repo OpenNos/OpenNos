@@ -53,13 +53,13 @@ namespace OpenNos.Handler
         public void CreateFamily(string packet)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+
             if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
             {
                 foreach (ClientSession s in Session.Character.Group.Characters)
                 {
                     if (s.Character.Family != null || s.Character.FamilyCharacter != null)
                     {
-                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_MEMBER_ALREADY_IN_FAMILY")));
                         return;
                     }
                 }
@@ -101,18 +101,43 @@ namespace OpenNos.Handler
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
                 }
                 ServerManager.Instance.FamilyRefresh(family.FamilyId);
-                System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(3000))
-  .Subscribe(
-  o =>
-  {
-      Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
-  });
+                System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200))
+              .Subscribe(
+              o =>
+              {
+                  Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
+              });
             }
-            else
+
+        }
+        [Packet("#gldm")]
+        public void FamilyDismiss(string packet)
+        {
+            if (Session.Character.Family == null || Session.Character.FamilyCharacter == null || Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
             {
-                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_GROUP_NOT_FULL")));
+                return;
+            }
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+            string type = packet.Split('^')[1];
+            if (type == "0")
+            {
+                Family fam = Session.Character.Family;
+                List<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Family != null && s.Character.Family.FamilyId == fam.FamilyId).ToList();
+
+                fam.FamilyCharacters.ForEach(s => { DAOFactory.FamilyCharacterDAO.Delete(s.Character.Name); });
+                fam.FamilyLogs.ForEach(s => { DAOFactory.FamilyLogDAO.Delete(s.FamilyLogId); });
+                DAOFactory.FamilyDAO.Delete(fam.FamilyId);
+                ServerManager.Instance.FamilyRefresh(fam.FamilyId);
+
+                System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200))
+                  .Subscribe(
+                  o =>
+                  {
+                      sessions.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
+                  });
             }
         }
+
 
         [Packet("fmg")]
         public void FamilyManagement(string packet)
@@ -164,7 +189,7 @@ namespace OpenNos.Handler
 
                         chara = Session.Character.FamilyCharacter;
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
-                        
+
                         break;
                     case 1:
                         if (targetSession == null)
@@ -192,7 +217,7 @@ namespace OpenNos.Handler
 
                         chara = targetSession.Character.FamilyCharacter;
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
-                        
+
 
                         break;
                     case 2:
@@ -241,7 +266,7 @@ namespace OpenNos.Handler
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
                         break;
                 }
-                Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChange, Session.Character.Name, targetSession.Character.Name, "", "", 0, 0,0,0, 0, auth, 0);
+                Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChange, Session.Character.Name, targetSession.Character.Name, "", "", 0, 0, 0, 0, 0, auth, 0);
                 System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
                   .Subscribe(
                   o =>
@@ -249,7 +274,7 @@ namespace OpenNos.Handler
                       targetSession.CurrentMapInstance?.Broadcast(targetSession.Character.GenerateGidx());
                   });
 
-            
+
             }
         }
 
@@ -260,7 +285,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChange, Session.Character.Name, "", "", "", 0, 0, 0, 0, 0, (byte)packet.MemberType, (int)packet.AuthorityId+1, packet.Value);
+            Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChange, Session.Character.Name, "", "", "", 0, 0, 0, 0, 0, (byte)packet.MemberType, (int)packet.AuthorityId + 1, packet.Value);
             switch (packet.MemberType)
             {
                 case FamilyAuthority.Manager:
@@ -560,7 +585,7 @@ namespace OpenNos.Handler
             }
 
             Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("FAMILY_INVITED"), otherSession.Character.Name)));
-            otherSession.SendPacket($"dlg #gjoin^1^{Session.Character.CharacterId} #gjoin^2^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("ASK_FAMILY_INVITED"), Session.Character.Family.Name)}");
+            otherSession.SendPacket(otherSession.Character.GenerateDialog($"#gjoin^1^{Session.Character.CharacterId} #gjoin^2^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("ASK_FAMILY_INVITED"), Session.Character.Family.Name)}"));
             Session.Character.FamilyInviteCharacters.Add(otherSession.Character.CharacterId);
         }
 
