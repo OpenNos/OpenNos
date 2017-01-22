@@ -22,6 +22,11 @@ namespace OpenNos.DAL.Mock
 {
     public class FamilyLogDAO : BaseDAO<FamilyLogDTO>, IFamilyLogDAO
     {
+        public DeleteResult Delete(long familyId)
+        {
+            throw new NotImplementedException();
+        }
+
         public SaveResult InsertOrUpdate(ref FamilyLogDTO famlog)
         {
             throw new NotImplementedException();

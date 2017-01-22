@@ -34,11 +34,11 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Account Account = context.Account.FirstOrDefault(c => c.AccountId.Equals(familyId));
+                    Family Fam = context.Family.FirstOrDefault(c => c.FamilyId.Equals(familyId));
 
-                    if (Account != null)
+                    if (Fam != null)
                     {
-                        context.Account.Remove(Account);
+                        context.Family.Remove(Fam);
                         context.SaveChanges();
                     }
 
@@ -47,7 +47,7 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_ACCOUNT_ERROR"), familyId, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_ERROR"), familyId, e.Message), e);
                 return DeleteResult.Error;
             }
         }

@@ -348,7 +348,14 @@ namespace OpenNos.Handler
                             Session.Character.SpPoint = 10000;
                         }
                         Session.Character.LastLogin = DateTime.Now;
-
+                        if (Session.Character.Hp > Session.Character.HPLoad())
+                        {
+                            Session.Character.Hp = (int)Session.Character.HPLoad();
+                        }
+                        if (Session.Character.Mp > Session.Character.MPLoad())
+                        {
+                            Session.Character.Mp = (int)Session.Character.MPLoad();
+                        }
                         Session.Character.GenerateMiniland();
 
                         Session.Character.Respawns = DAOFactory.RespawnDAO.LoadByCharacter(Session.Character.CharacterId).ToList();

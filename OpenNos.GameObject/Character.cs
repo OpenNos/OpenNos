@@ -164,9 +164,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                Family[] logs = new Family[ServerManager.Instance.FamilyList.Count + 50];
-                ServerManager.Instance.FamilyList.CopyTo(logs);
-                return logs.FirstOrDefault(s => s.FamilyCharacters.Any(c => c.CharacterId == CharacterId));
+                return ServerManager.Instance.FamilyList.FirstOrDefault(s =>s.FamilyCharacters.Any(c => c.CharacterId == CharacterId));
             }
         }
 
@@ -3120,9 +3118,9 @@ namespace OpenNos.GameObject
             return Session.Character.MapInstance.Monsters.Select(monster => monster.GenerateIn3()).Where(s => !string.IsNullOrEmpty(s)).ToList();
         }
 
-        public string GenerateInbox(byte type, byte value)
+        public string GenerateInbox(string value)
         {
-            return $"inbox #glmk^ {value} {(type == 1 ? 0 : 1)} {(type == 0 ? Language.Instance.GetMessageFromKey("CREATE_FAMILY") : Language.Instance.GetMessageFromKey("DISMISS_FAMILY"))}";
+            return $"inbox {value}";
         }
 
         public string GenerateInfo(string message)
