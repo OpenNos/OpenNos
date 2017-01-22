@@ -1008,7 +1008,7 @@ namespace OpenNos.Handler
                 bool IsAlive = target.Character.Hp > 0;
                 if (!IsAlive)
                 {
-                    if (target.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                    if (target?.CurrentMapInstance?.Map?.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) == true)
                     {
                         hitRequest.Session.Character.Act4Kill += 1;
                         target.Character.Act4Dead += 1;
