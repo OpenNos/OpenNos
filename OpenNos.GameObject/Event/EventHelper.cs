@@ -179,50 +179,17 @@ namespace OpenNos.GameObject.Event
             Dictionary<long, IDisposable> dict = new Dictionary<long, IDisposable>();
             foreach (Family fam in ServerManager.Instance.FamilyList)
             {
-
                 MapInstance LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance);
                 LandOfDeath.StartClock((int)(TimeSpan.FromMinutes(lodtime).TotalSeconds * 10));
                 Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime)).Subscribe(x => { LandOfDeath.XpRate = 3; LandOfDeath.DropRate = 3; });
-                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime)).Subscribe(
-                      x =>
-                      {
-                          SpawnDH(LandOfDeath, HornStay);
-                      });
-                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn))).Subscribe(
-      x =>
-      {
-          SpawnDH(LandOfDeath, HornStay);
-      });
-                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 2))).Subscribe(
-x =>
-{
-    SpawnDH(LandOfDeath, HornStay);
-});
-                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 3))).Subscribe(
-x =>
-{
-    SpawnDH(LandOfDeath, HornStay);
-});
-                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 4))).Subscribe(
-x =>
-{
-    SpawnDH(LandOfDeath, HornStay);
-});
-                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 5))).Subscribe(
-x =>
-{
-    SpawnDH(LandOfDeath, HornStay);
-});
-                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 6))).Subscribe(
-x =>
-{
-    SpawnDH(LandOfDeath, HornStay);
-});
-                Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * 7))).Subscribe(
-x =>
-{
-    SpawnDH(LandOfDeath, HornStay);
-});
+                for(int i=0;i< 8;i++)
+                {
+                    Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * i))).Subscribe(
+                    x =>
+                    {
+                        SpawnDH(LandOfDeath, HornStay);
+                    });
+                }         
                 Observable.Timer(TimeSpan.FromMinutes(lodtime)).Subscribe(x => { LandOfDeath.Dispose(); });
                 fam.LandOfDeath = LandOfDeath;
             }

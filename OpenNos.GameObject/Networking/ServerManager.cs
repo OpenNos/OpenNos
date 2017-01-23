@@ -241,8 +241,8 @@ namespace OpenNos.GameObject
         public void JoinMiniland(ClientSession Session, ClientSession MinilandOwner)
         {
 
-            ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, MinilandOwner.Character.Miniland.MapInstanceId, 5, 8);
+            LeaveMap(Session.Character.CharacterId);
+            ChangeMapInstance(Session.Character.CharacterId, MinilandOwner.Character.Miniland.MapInstanceId, 5, 8);
             if (Session.Character.Miniland.MapInstanceId != MinilandOwner.Character.Miniland.MapInstanceId)
             {
                 Session.SendPacket(Session.Character.GenerateMsg(Session.Character.MinilandMessage.Replace(' ', '^'), 0));
@@ -252,7 +252,7 @@ namespace OpenNos.GameObject
             {
                 Session.SendPacket(Session.Character.GenerateMlinfo());
             }
-            ServerManager.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "Miniland", LogType = "World", Timestamp = DateTime.Now });
+            GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "Miniland", LogType = "World", Timestamp = DateTime.Now });
             Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MINILAND_VISITOR"), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day).Count(), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland").Count()), 10));
 
         }
@@ -427,7 +427,7 @@ namespace OpenNos.GameObject
                     }
                     // avoid cleaning new portals
 
-                    session.CurrentMapInstance = GetMapInstance(session.Character.MapInstanceId);
+                    session.CurrentMapInstance = session.Character.MapInstance;
                     session.CurrentMapInstance.RegisterSession(session);
 
 
