@@ -32,6 +32,7 @@ namespace OpenNos.GameObject.Event
             }
             return dropParameters;
         }
+
         public static List<Tuple<short, short, short, long, bool>> GetInstantBattleMonster(Map map, short instantbattletype, int wave)
         {
             List<Tuple<short, short, short, long, bool>> SummonParameters = new List<Tuple<short, short, short, long, bool>>();

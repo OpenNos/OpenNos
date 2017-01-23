@@ -35,7 +35,14 @@ namespace OpenNos.GameObject
             get { return ServerManager.GeneralLogs.Where(s => s.AccountId == AccountId && s.CharacterId == null).ToList(); }
         }
 
-        public List<PenaltyLogDTO> PenaltyLogs { get; set; }
+        public List<PenaltyLogDTO> PenaltyLogs
+        {
+            get
+            {
+                return ServerManager.Instance.PenaltyLogs.Where(s=>s.AccountId == AccountId).ToList();
+            }
+        }
+
 
         #endregion
 
@@ -43,7 +50,7 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
-            PenaltyLogs = new List<PenaltyLogDTO>();
+
         }
 
         #endregion

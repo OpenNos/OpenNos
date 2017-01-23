@@ -2684,6 +2684,12 @@ namespace OpenNos.GameObject
             return totalDamage;
         }
 
+        public void InsertOrUpdatePenalty(PenaltyLogDTO log)
+        {
+            DAOFactory.PenaltyLogDAO.InsertOrUpdate(ref log);
+            //refresh
+        }
+
         public string GenerateMlinfo()
         {
             return $"mlinfo 3800 2000 100 {Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day).Count()} {Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland").Count()} 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}";
@@ -3348,7 +3354,7 @@ namespace OpenNos.GameObject
                                 //TODO remove this part on release
                                 if ((targetSession.Character.Level >= monsterToAttack.Monster.Level - 5 && targetSession.Character.Level <= monsterToAttack.Monster.Level + 5) || (targetSession.Character.Level >= 90 && monsterToAttack.Monster.Level >= 88))
                                 {
-                                    if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
+                                    if (!targetSession.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
                                     {
                                         GetReput(monsterToAttack.Monster.Level);
                                     }
@@ -3371,14 +3377,14 @@ namespace OpenNos.GameObject
                             //TODO Remove this part on Release
                             if (Level >= monsterToAttack.Monster.Level - 5 && Level <= monsterToAttack.Monster.Level + 5)
                             {
-                                if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
+                                if (!Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
                                 {
                                     Reput += monsterToAttack.Monster.Level;
                                 }
                             }
                             else if (Level >= 90 && monsterToAttack.Monster.Level >= 88)
                             {
-                                if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
+                                if (!Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
                                 {
                                     Reput += monsterToAttack.Monster.Level;
                                 }
@@ -4052,7 +4058,7 @@ namespace OpenNos.GameObject
         public void GenerateFamilyXp(int FXP)
         {
 
-            if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockFExp && s.DateEnd > DateTime.Now))
+            if (!Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockFExp && s.DateEnd > DateTime.Now))
             {
                 if (Family != null && FamilyCharacter != null)
                 {
@@ -4077,7 +4083,7 @@ namespace OpenNos.GameObject
         private void GenerateXp(MapMonster monster, bool isMonsterOwner)
         {
             NpcMonster monsterinfo = monster.Monster;
-            if (!DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.BlockExp && s.DateEnd > DateTime.Now))
+            if (!Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockExp && s.DateEnd > DateTime.Now))
             {
                 Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
                 SpecialistInstance specialist = null;
@@ -4588,7 +4594,7 @@ namespace OpenNos.GameObject
 
         public bool IsMuted()
         {
-            return DAOFactory.PenaltyLogDAO.LoadByAccount(AccountId).Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now);
+            return Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now);
         }
 
         private double JobXPLoad()
