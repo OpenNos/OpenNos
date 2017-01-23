@@ -21,7 +21,6 @@ namespace OpenNos.DAL.EF
 {
     public class FamilyCharacter
     {
-
         #region Properties
 
         public FamilyAuthority Authority { get; set; }

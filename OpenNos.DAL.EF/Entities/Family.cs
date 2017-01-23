@@ -68,7 +68,6 @@ namespace OpenNos.DAL.EF
 
         public FamilyAuthorityType MemberAuthorityType { get; set; }
 
-
         #endregion
     }
 }

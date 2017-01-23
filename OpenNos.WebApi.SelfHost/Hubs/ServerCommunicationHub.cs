@@ -33,7 +33,13 @@ namespace OpenNos.WebApi.SelfHost
                 return false;
             }
         }
-
+        /// <summary>
+        /// Refresh Relation
+        /// </summary>
+        public void RelationRefresh(long id)
+        {
+            Clients.All.refreshRelation(id);
+        }
         /// <summary>
         /// Refresh Family
         /// </summary>

@@ -88,6 +88,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BazaarPacketHandler.cs" />
     <Compile Include="CharacterScreenPacketHandler.cs" />
     <Compile Include="FamilyPacketHandler.cs" />
     <Compile Include="MinilandPacketHandler.cs" />
