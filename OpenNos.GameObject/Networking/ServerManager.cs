@@ -1181,21 +1181,6 @@ namespace OpenNos.GameObject
 
             foreach (var map in _mapinstances)
             {
-                Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
-                {
-                    try
-                    {
-                        if (!map.Value.IsSleeping)
-                        {
-                            map.Value.RemoveMapItem();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                });
-
                 foreach (MapNpc npc in map.Value.Npcs)
                 {
                     npc.StartLife();
