@@ -12,7 +12,7 @@ namespace OpenNos.GameObject.Event
         {
             List<Tuple<short, short, short, long, bool>> SummonParameters = new List<Tuple<short, short, short, long, bool>>();
             MapCell cell;
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < amount; i++)
             {
                 cell = map.GetRandomPosition();
                 SummonParameters.Add(new Tuple<short, short, short, long, bool>(vnum, cell.X, cell.Y, -1, true));

@@ -682,12 +682,8 @@ namespace OpenNos.Handler
                 if (long.TryParse(packetsplit[2], out characterId))
                 {
                     Session.Character.DeleteBlackList(characterId);
-                    System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200)).Subscribe(
-                                  o =>
-                                  {
-                                      Session.SendPacket(Session.Character.GenerateBlinit());
-                                      Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_DELETED")));
-                                  });
+                    Session.SendPacket(Session.Character.GenerateBlinit());
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_DELETED")));
                 }
             }
         }
