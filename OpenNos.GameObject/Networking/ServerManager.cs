@@ -901,9 +901,9 @@ namespace OpenNos.GameObject
         public void RefreshRanking()
         {
             IEnumerable<CharacterDTO> list = DAOFactory.CharacterDAO.LoadAll();
-            TopComplimented = list.OrderByDescending(c => c.Compliment).Take(30).ToList();
-            TopPoints = list.OrderByDescending(c => c.Act4Points).Take(30).ToList();
-            TopReputation = list.OrderByDescending(c => c.Reput).Take(43).ToList();
+            TopComplimented = list.Where(s => DAOFactory.AccountDAO.LoadById(s.AccountId)?.Authority == AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList();
+            TopPoints = list.Where(s=>DAOFactory.AccountDAO.LoadById(s.AccountId)?.Authority == AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList();
+            TopReputation = list.Where(s => DAOFactory.AccountDAO.LoadById(s.AccountId)?.Authority == AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList();
         }
         public bool IsCharacterMemberOfGroup(long characterId)
         {
