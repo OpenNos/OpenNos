@@ -43,7 +43,7 @@ namespace OpenNos.WebApi.SelfHost
         /// <summary>
         /// Refresh Relation
         /// </summary>
-        public void PenaltyLogRefresh(long id)
+        public void PenaltyLogRefresh(int id)
         {
             Clients.All.refreshPenaltyLog(id);
         }

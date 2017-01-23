@@ -1202,6 +1202,7 @@ namespace OpenNos.GameObject
             ServerCommunicationClient.Instance.FamilyRefresh += OnFamilyRefresh;
             ServerCommunicationClient.Instance.RelationRefresh += OnRelationRefresh;
             ServerCommunicationClient.Instance.BazaarRefresh += OnBazaarRefresh;
+            ServerCommunicationClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
             ServerCommunicationClient.Instance.RankingRefresh += OnRankingRefresh;
             lastGroupId = 1;
         }
@@ -1334,7 +1335,7 @@ namespace OpenNos.GameObject
         }
         private void OnPenaltyLogRefresh(object sender, EventArgs e)
         {
-            long relId = (long)sender;
+            int relId = (int)sender;
             PenaltyLogDTO reldto = DAOFactory.PenaltyLogDAO.LoadById(relId);
             PenaltyLogDTO rel = PenaltyLogs.FirstOrDefault(s => s.PenaltyLogId == relId);
             if (reldto != null)

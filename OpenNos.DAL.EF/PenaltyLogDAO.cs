@@ -58,7 +58,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long id = log.PenaltyLogId;
+                    int id = log.PenaltyLogId;
                     PenaltyLog entity = context.PenaltyLog.FirstOrDefault(c => c.PenaltyLogId.Equals(id));
 
                     if (entity == null)
@@ -118,7 +118,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public PenaltyLogDTO LoadById(long relId)
+        public PenaltyLogDTO LoadById(int relId)
         {
             try
             {
