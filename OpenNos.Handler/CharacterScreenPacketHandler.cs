@@ -266,18 +266,6 @@ namespace OpenNos.Handler
                                 LastCompliment = accountDTO.LastCompliment,
                             };
                             account.Initialize();
-                            foreach (PenaltyLogDTO penalty in DAOFactory.PenaltyLogDAO.LoadByAccount(accountDTO.AccountId))
-                            {
-                                account.PenaltyLogs.Add(new PenaltyLogDTO
-                                {
-                                    AccountId = penalty.AccountId,
-                                    DateEnd = penalty.DateEnd,
-                                    DateStart = penalty.DateStart,
-                                    Reason = penalty.Reason,
-                                    Penalty = penalty.Penalty,
-                                    PenaltyLogId = penalty.PenaltyLogId
-                                });
-                            }
 
                             Session.InitializeAccount(account);
                         }

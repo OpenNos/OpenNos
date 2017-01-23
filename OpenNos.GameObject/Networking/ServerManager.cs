@@ -89,6 +89,8 @@ namespace OpenNos.GameObject
         public static List<Schedule> Schedules { get; set; }
         public static int GoldDropRate { get; set; }
 
+        public List<PenaltyLogDTO> PenaltyLogs { get; set; }
+
         public static List<GeneralLogDTO> GeneralLogs { get; set; }
         public static int GoldRate { get; set; }
 
@@ -886,6 +888,7 @@ namespace OpenNos.GameObject
                 LaunchEvents();
                 RefreshRanking();
                 CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
+                PenaltyLogs = DAOFactory.PenaltyLogDAO.LoadAll().ToList();
 
             }
             catch (Exception ex)
