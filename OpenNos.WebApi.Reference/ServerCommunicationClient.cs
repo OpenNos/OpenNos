@@ -114,7 +114,7 @@ namespace OpenNos.WebApi.Reference
 
             _hubProxy.On<long>("refreshRelation", OnRelationRefresh);
 
-            _hubProxy.On<long>("refreshPenaltyLog", OnPenaltyLogRefresh);
+            _hubProxy.On<int>("refreshPenaltyLog", OnPenaltyLogRefresh);
 
             _hubProxy.On<long>("refreshBazaar", OnBazaarRefresh);
 
@@ -133,7 +133,7 @@ namespace OpenNos.WebApi.Reference
         {
            RelationRefresh?.Invoke(id, new EventArgs());
         }
-        private void OnPenaltyLogRefresh(long id)
+        private void OnPenaltyLogRefresh(int id)
         {
             PenaltyLogRefresh?.Invoke(id, new EventArgs());
         }

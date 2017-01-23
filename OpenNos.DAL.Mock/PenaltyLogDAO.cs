@@ -41,7 +41,7 @@ namespace OpenNos.DAL.Mock
             return Container.Where(pl => pl.AccountId == accountId);
         }
 
-        public PenaltyLogDTO LoadById(long relId)
+        public PenaltyLogDTO LoadById(int relId)
         {
             throw new NotImplementedException();
         }
