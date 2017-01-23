@@ -1295,8 +1295,12 @@ namespace OpenNos.GameObject
             {
                 CharacterRelationDTO reldto = DAOFactory.CharacterRelationDAO.LoadById(relId);
                 CharacterRelationDTO rel = CharacterRelations.FirstOrDefault(s => s.CharacterRelationId == relId);
+                ClientSession sess1 = null;
+                ClientSession sess2 = null;
                 if (reldto != null)
                 {
+                    sess1 = Sessions.FirstOrDefault(s => s.Character?.CharacterId == reldto.CharacterId);
+                    sess2 = Sessions.FirstOrDefault(s => s.Character?.CharacterId == reldto.RelatedCharacterId);
                     if (rel != null)
                     {
                         rel = reldto;
@@ -1308,8 +1312,21 @@ namespace OpenNos.GameObject
                 }
                 else if(rel !=null)
                 {
+                    sess1 = Sessions.FirstOrDefault(s => s.Character?.CharacterId == rel.CharacterId);
+                    sess2 = Sessions.FirstOrDefault(s => s.Character?.CharacterId == rel.RelatedCharacterId);
                     CharacterRelations.Remove(rel);
                 }
+                if (sess1 !=null)
+                {
+                    sess1.SendPacket(sess1.Character.GenerateFinit());
+                    sess1.SendPacket(sess1.Character.GenerateBlinit());
+                }
+                if (sess2 != null)
+                {
+                    sess2.SendPacket(sess2.Character.GenerateFinit());
+                    sess2.SendPacket(sess2.Character.GenerateBlinit());
+                }
+               
             }
         }
 
