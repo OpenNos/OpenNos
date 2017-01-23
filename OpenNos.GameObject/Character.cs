@@ -2687,7 +2687,7 @@ namespace OpenNos.GameObject
         public void InsertOrUpdatePenalty(PenaltyLogDTO log)
         {
             DAOFactory.PenaltyLogDAO.InsertOrUpdate(ref log);
-            //refresh
+            ServerCommunicationClient.Instance.HubProxy.Invoke("PenaltyLogRefresh", log.PenaltyLogId);
         }
 
         public string GenerateMlinfo()

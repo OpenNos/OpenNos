@@ -1332,7 +1332,28 @@ namespace OpenNos.GameObject
                
             }
         }
+        private void OnPenaltyLogRefresh(object sender, EventArgs e)
+        {
+            long relId = (long)sender;
+            PenaltyLogDTO reldto = DAOFactory.PenaltyLogDAO.LoadById(relId);
+            PenaltyLogDTO rel = PenaltyLogs.FirstOrDefault(s => s.PenaltyLogId == relId);
+            if (reldto != null)
+            {
+                if (rel != null)
+                {
+                    rel = reldto;
+                }
+                else
+                {
+                    PenaltyLogs.Add(reldto);
+                }
+            }
+            else if (rel != null)
+            {
+                PenaltyLogs.Remove(rel);
+            }
 
+        }
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
             long FamilyId = (long)sender;
