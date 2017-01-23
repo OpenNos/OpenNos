@@ -580,13 +580,7 @@ namespace OpenNos.Handler
                 {
 
                     Session.Character.DeleteRelation(characterId);
-                    System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200)).Subscribe(
-                                      o =>
-                                      {
-                                          Session.SendPacket(Session.Character.GenerateFinit());
-                                          //todo sendchannel
-                                          Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_DELETED")));
-                                      });
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_DELETED")));
                 }
             }
         }
@@ -656,12 +650,6 @@ namespace OpenNos.Handler
                             {
                                 case "-1":
                                     Session.Character.AddRelation(characterId, CharacterRelationType.Friend);
-                                    System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200)).Subscribe(
-                                       o =>
-                                       {
-                                           Session.SendPacket(Session.Character.GenerateFinit());
-                                           otherSession.SendPacket(otherSession.Character.GenerateFinit());//todo channelsend
-                                       });
                                     Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
                                     otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
                                     break;
@@ -714,12 +702,7 @@ namespace OpenNos.Handler
                 if (long.TryParse(packetsplit[2], out characterId))
                 {
                     Session.Character.AddRelation(characterId, CharacterRelationType.Blocked);
-                    System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200)).Subscribe(
-                                     o =>
-                                     {
-                                         Session.SendPacket(Session.Character.GenerateBlinit());
-                                         Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_ADDED")));
-                                     });
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_ADDED")));
                 }
             }
         }
