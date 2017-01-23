@@ -41,6 +41,15 @@ namespace OpenNos.WebApi.SelfHost
             Clients.All.refreshRelation(id);
         }
         /// <summary>
+        /// Refresh Relation
+        /// </summary>
+        public void PenaltyLogRefresh(long id)
+        {
+            Clients.All.refreshPenaltyLog(id);
+        }
+
+        
+        /// <summary>
         /// Refresh Family
         /// </summary>
         public void FamilyRefresh(long FamilyId)

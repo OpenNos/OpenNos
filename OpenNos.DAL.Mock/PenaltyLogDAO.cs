@@ -40,7 +40,12 @@ namespace OpenNos.DAL.Mock
         {
             return Container.Where(pl => pl.AccountId == accountId);
         }
-        
+
+        public PenaltyLogDTO LoadById(long relId)
+        {
+            throw new NotImplementedException();
+        }
+
 
         #endregion
     }

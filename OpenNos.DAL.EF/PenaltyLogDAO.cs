@@ -51,7 +51,7 @@ namespace OpenNos.DAL.EF
                 return DeleteResult.Error;
             }
         }
-        
+
         public SaveResult InsertOrUpdate(ref PenaltyLogDTO log)
         {
             try
@@ -117,7 +117,23 @@ namespace OpenNos.DAL.EF
                 }
             }
         }
-       
+
+        public PenaltyLogDTO LoadById(long relId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<PenaltyLogDTO>(context.PenaltyLog.FirstOrDefault(s => s.PenaltyLogId.Equals(relId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+        }
+
         #endregion
     }
 }

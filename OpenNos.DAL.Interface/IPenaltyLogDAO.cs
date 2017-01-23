@@ -26,6 +26,7 @@ namespace OpenNos.DAL.Interface
         IEnumerable<PenaltyLogDTO> LoadByAccount(long accountId);              
         SaveResult InsertOrUpdate(ref PenaltyLogDTO log);
         IEnumerable<PenaltyLogDTO> LoadAll();
+        PenaltyLogDTO LoadById(long relId);
 
         #endregion
     }

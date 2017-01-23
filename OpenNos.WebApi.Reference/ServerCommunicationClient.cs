@@ -49,6 +49,8 @@ namespace OpenNos.WebApi.Reference
 
         public event EventHandler RelationRefresh;
 
+        public event EventHandler PenaltyLogRefresh;
+
         public event EventHandler BazaarRefresh;
 
         public event EventHandler RankingRefresh;
@@ -112,6 +114,8 @@ namespace OpenNos.WebApi.Reference
 
             _hubProxy.On<long>("refreshRelation", OnRelationRefresh);
 
+            _hubProxy.On<long>("refreshPenaltyLog", OnPenaltyLogRefresh);
+
             _hubProxy.On<long>("refreshBazaar", OnBazaarRefresh);
 
             _hubProxy.On("refreshRanking", OnRankingRefresh);
@@ -129,6 +133,11 @@ namespace OpenNos.WebApi.Reference
         {
            RelationRefresh?.Invoke(id, new EventArgs());
         }
+        private void OnPenaltyLogRefresh(long id)
+        {
+            PenaltyLogRefresh?.Invoke(id, new EventArgs());
+        }
+        
         private void OnBazaarRefresh(long BazaarItemId)
         {
             BazaarRefresh?.Invoke(BazaarItemId, new EventArgs());
