@@ -662,10 +662,10 @@ namespace OpenNos.GameObject
 
         public void DeleteRelation( long characterId)
         {
-            CharacterRelationDTO chara = Session.Character.CharacterRelations.FirstOrDefault(s => s.RelatedCharacterId == characterId || s.CharacterId == characterId);
+            CharacterRelationDTO chara =  CharacterRelations.FirstOrDefault(s => s.RelatedCharacterId == characterId || s.CharacterId == characterId);
             if (chara != null)
             {
-                long id = chara.RelatedCharacterId;
+                long id = chara.CharacterRelationId;
                 DAOFactory.CharacterRelationDAO.Delete(id);
                 ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", id);
             }
@@ -742,7 +742,7 @@ namespace OpenNos.GameObject
             CharacterRelationDTO chara = Session.Character.CharacterRelations.FirstOrDefault(s => s.RelatedCharacterId == characterId);
             if (chara != null)
             {
-                long id = chara.RelatedCharacterId;
+                long id = chara.CharacterRelationId;
                 DAOFactory.CharacterRelationDAO.Delete(id);
                 ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", id);
             }
@@ -1365,7 +1365,7 @@ namespace OpenNos.GameObject
         public string GenerateBlinit()
         {
             string result = "blinit";
-            foreach (CharacterRelationDTO relation in CharacterRelations.Where(s => s.RelationType == CharacterRelationType.Blocked))
+            foreach (CharacterRelationDTO relation in CharacterRelations.Where(s => s.CharacterId == CharacterId && s.RelationType == CharacterRelationType.Blocked))
             {
                 result += $" {relation.RelatedCharacterId}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
             }
@@ -3048,8 +3048,9 @@ namespace OpenNos.GameObject
             string result = "finit";
             foreach (CharacterRelationDTO relation in CharacterRelations.Where(c => c.RelationType == CharacterRelationType.Friend))
             {
-                bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", relation.RelatedCharacterId).Result;
-                result += $" {relation.RelatedCharacterId}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(relation.RelatedCharacterId).Name}";
+                long id = relation.RelatedCharacterId == CharacterId ? relation.CharacterId : relation.RelatedCharacterId;
+                bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", id).Result;
+                result += $" {id}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(id).Name}";
             }
             return result;
         }

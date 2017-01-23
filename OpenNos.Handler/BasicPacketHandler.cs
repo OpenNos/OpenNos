@@ -578,9 +578,15 @@ namespace OpenNos.Handler
                 long characterId;
                 if (long.TryParse(packetsplit[2], out characterId))
                 {
-                    Session.SendPacket(Session.Character.GenerateFinit());
-                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_DELETED")));
+
                     Session.Character.DeleteRelation(characterId);
+                    System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200)).Subscribe(
+                                      o =>
+                                      {
+                                          Session.SendPacket(Session.Character.GenerateFinit());
+                                          //todo sendchannel
+                                          Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_DELETED")));
+                                      });
                 }
             }
         }
@@ -650,9 +656,12 @@ namespace OpenNos.Handler
                             {
                                 case "-1":
                                     Session.Character.AddRelation(characterId, CharacterRelationType.Friend);
-                                    Session.SendPacket(Session.Character.GenerateFinit());
-                                    otherSession.Character.AddRelation(Session.Character.CharacterId, CharacterRelationType.Friend);
-                                    otherSession.SendPacket(otherSession.Character.GenerateFinit());
+                                    System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200)).Subscribe(
+                                       o =>
+                                       {
+                                           Session.SendPacket(Session.Character.GenerateFinit());
+                                           otherSession.SendPacket(otherSession.Character.GenerateFinit());//todo channelsend
+                                       });
                                     Session.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
                                     otherSession.SendPacket($"info {Language.Instance.GetMessageFromKey("FRIEND_ADDED")}");
                                     break;
@@ -685,8 +694,12 @@ namespace OpenNos.Handler
                 if (long.TryParse(packetsplit[2], out characterId))
                 {
                     Session.Character.DeleteBlackList(characterId);
-                    Session.SendPacket(Session.Character.GenerateBlinit());
-                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_DELETED")));
+                    System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200)).Subscribe(
+                                  o =>
+                                  {
+                                      Session.SendPacket(Session.Character.GenerateBlinit());
+                                      Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_DELETED")));
+                                  });
                 }
             }
         }
@@ -701,8 +714,12 @@ namespace OpenNos.Handler
                 if (long.TryParse(packetsplit[2], out characterId))
                 {
                     Session.Character.AddRelation(characterId, CharacterRelationType.Blocked);
-                    Session.SendPacket(Session.Character.GenerateBlinit());
-                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_ADDED")));
+                    System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200)).Subscribe(
+                                     o =>
+                                     {
+                                         Session.SendPacket(Session.Character.GenerateBlinit());
+                                         Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_ADDED")));
+                                     });
                 }
             }
         }
