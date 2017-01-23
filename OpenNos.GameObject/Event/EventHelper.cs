@@ -127,7 +127,7 @@ namespace OpenNos.GameObject.Event
 
                 if (mapinstance.Item1.Sessions.Count() < 3)
                 {
-                    mapinstance.Item1.Sessions.Where(s => s.Character != null).ToList().ForEach(s => ServerManager.Instance.ChangeMap(s.Character.CharacterId, s.Character.MapId, s.Character.PositionX, s.Character.PositionY));
+                    mapinstance.Item1.Sessions.Where(s => s.Character != null).ToList().ForEach(s => ServerManager.Instance.ChangeMap(s.Character.CharacterId, s.Character.MapId, s.Character.MapX, s.Character.MapY));
                 }
 
                 mapinstance.Item1.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WALKS"), 0));
