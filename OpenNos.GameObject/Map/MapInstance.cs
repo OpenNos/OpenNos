@@ -6,6 +6,7 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -146,6 +147,7 @@ namespace OpenNos.GameObject
             UserShops = new Dictionary<long, MapShop>();
             _npcs = new List<MapNpc>();
             _npcs.AddRange(ServerManager.Instance.GetMapNpcsByMapId(Map.MapId).AsEnumerable());
+            StartLife();
         }
 
         #region Methods
@@ -378,6 +380,24 @@ namespace OpenNos.GameObject
             {
                 _monsters.Dispose();
             }
+        }
+
+        internal void StartLife()
+        {
+            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(x =>
+            {
+                try
+                {
+                    if (!IsSleeping)
+                    {
+                       RemoveMapItem();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            });
         }
 
 
