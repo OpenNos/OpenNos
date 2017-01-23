@@ -166,6 +166,7 @@ namespace OpenNos.GameObject
         public Guid WorldId { get; private set; }
         public List<Family> FamilyList { get; set; }
         public List<BazaarItemLink> BazaarList { get; set; }
+        public List<CharacterRelationDTO> CharacterRelations { get; set; }
 
         #endregion
 
@@ -884,6 +885,7 @@ namespace OpenNos.GameObject
                 GeneralLogs = DAOFactory.GeneralLogDAO.LoadAll().ToList();
                 LaunchEvents();
                 RefreshRanking();
+                CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
 
             }
             catch (Exception ex)
@@ -1195,6 +1197,7 @@ namespace OpenNos.GameObject
             ServerCommunicationClient.Instance.SessionKickedEvent += OnSessionKicked;
             ServerCommunicationClient.Instance.MessageSentToCharacter += OnMessageSentToCharacter;
             ServerCommunicationClient.Instance.FamilyRefresh += OnFamilyRefresh;
+            ServerCommunicationClient.Instance.RelationRefresh += OnRelationRefresh;
             ServerCommunicationClient.Instance.BazaarRefresh += OnBazaarRefresh;
             ServerCommunicationClient.Instance.RankingRefresh += OnRankingRefresh;
             lastGroupId = 1;
@@ -1285,6 +1288,31 @@ namespace OpenNos.GameObject
                 }
             }
         }
+        private void OnRelationRefresh(object sender, EventArgs e)
+        {
+            long relId = (long)sender;
+            lock (CharacterRelations)
+            {
+                CharacterRelationDTO reldto = DAOFactory.CharacterRelationDAO.LoadById(relId);
+                CharacterRelationDTO rel = CharacterRelations.FirstOrDefault(s => s.CharacterRelationId == relId);
+                if (reldto != null)
+                {
+                    if (rel != null)
+                    {
+                        rel = reldto;
+                    }
+                    else
+                    {
+                        CharacterRelations.Add(reldto);
+                    }
+                }
+                else if(rel !=null)
+                {
+                    CharacterRelations.Remove(rel);
+                }
+            }
+        }
+
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
             long FamilyId = (long)sender;

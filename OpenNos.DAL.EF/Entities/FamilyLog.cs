@@ -35,7 +35,6 @@ namespace OpenNos.DAL.EF
 
         public DateTime Timestamp { get; set; }
 
-
         #endregion
     }
 }

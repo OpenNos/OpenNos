@@ -25,7 +25,7 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
-        public DeleteResult Delete(long characterId, long relatedCharacterId)
+        public DeleteResult Delete(long id)
         {
             //CharacterDTO dto = LoadBySlot(accountId, characterSlot);
             //Container.Remove(dto);
@@ -53,7 +53,7 @@ namespace OpenNos.DAL.Mock
             }
         }
 
-        public IEnumerable<CharacterRelationDTO> LoadByCharacterId(long characterId)
+        public IEnumerable<CharacterRelationDTO> LoadAll(long characterId)
         {
             throw new NotImplementedException();
         }

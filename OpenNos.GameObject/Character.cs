@@ -59,7 +59,6 @@ namespace OpenNos.GameObject
 
         public Character()
         {
-            CharacterRelations = new List<CharacterRelationDTO>();
             GroupSentRequestCharacterIds = new List<long>();
             FamilyInviteCharacters = new List<long>();
             FriendRequestCharacters = new List<long>();
@@ -133,7 +132,6 @@ namespace OpenNos.GameObject
 
         public List<StaticBonusDTO> StaticBonusList { get; set; }
 
-        public List<CharacterRelationDTO> CharacterRelations { get; set; }
         public int DistanceCriticalRate { get; set; }
 
         public int DistanceDefence { get; set; }
@@ -662,6 +660,17 @@ namespace OpenNos.GameObject
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
+        public void DeleteRelation( long characterId)
+        {
+            CharacterRelationDTO chara = Session.Character.CharacterRelations.FirstOrDefault(s => s.RelatedCharacterId == characterId || s.CharacterId == characterId);
+            if (chara != null)
+            {
+                long id = chara.RelatedCharacterId;
+                DAOFactory.CharacterRelationDAO.Delete(id);
+                ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", id);
+            }
+        }
+
         public string GetClock()
         {
             return $"evnt 1 0 {(int)((MapInstance.EndDate - DateTime.Now).TotalSeconds * 10)} 1";
@@ -726,6 +735,17 @@ namespace OpenNos.GameObject
                 }
             }
             return string.Empty;
+        }
+
+        public void DeleteBlackList(long characterId)
+        {
+            CharacterRelationDTO chara = Session.Character.CharacterRelations.FirstOrDefault(s => s.RelatedCharacterId == characterId);
+            if (chara != null)
+            {
+                long id = chara.RelatedCharacterId;
+                DAOFactory.CharacterRelationDAO.Delete(id);
+                ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", id);
+            }
         }
 
         public string GenerateFrank(byte type)
@@ -901,6 +921,13 @@ namespace OpenNos.GameObject
         {
             get; set;
         }
+        public List<CharacterRelationDTO> CharacterRelations
+        {
+            get
+            {
+                return ServerManager.Instance.CharacterRelations.Where(s => s.CharacterId == CharacterId || s.RelatedCharacterId == CharacterId).ToList();
+            }
+        }
         #endregion
 
         #region Methods
@@ -914,15 +941,9 @@ namespace OpenNos.GameObject
                 RelatedCharacterId = characterId,
                 RelationType = Relation
             };
-            if (!CharacterRelations.Contains(addRelation))
-            {
-                CharacterRelations.Add(addRelation);
-            }
-            else
-            {
-                CharacterRelationDTO chara = CharacterRelations.FirstOrDefault(s => s.CharacterId == CharacterId && s.CharacterRelationId == characterId);
-                chara = addRelation;
-            }
+
+            DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
+            ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", addRelation.CharacterRelationId);
         }
 
 
@@ -1277,14 +1298,6 @@ namespace OpenNos.GameObject
             return clonedCharacter;
         }
 
-        public void DeleteRelation(long characterId)
-        {
-            CharacterRelationDTO chrel = CharacterRelations.FirstOrDefault(s => s.CharacterId == CharacterId && s.CharacterRelationId == characterId);
-            if (chrel != null)
-            {
-                CharacterRelations.Remove(chrel);
-            }
-        }
         public void DeleteItem(InventoryType type, short slot)
         {
             if (Inventory != null)
@@ -4531,12 +4544,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedByCharacter(long characterId)
         {
-            ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
-            if (otherSession != null)
-            {
-                return otherSession.Character.IsBlockingCharacter(CharacterId);
-            }
-            return DAOFactory.CharacterRelationDAO.LoadByCharacterId(characterId).FirstOrDefault(b => b.RelatedCharacterId.Equals(CharacterId)) != null;
+            return CharacterRelations.Any(b => b.RelationType == CharacterRelationType.Blocked && b.CharacterId.Equals(CharacterId));
         }
 
         public bool IsBlockingCharacter(long characterId)
@@ -4551,7 +4559,7 @@ namespace OpenNos.GameObject
 
         public bool IsFriendOfCharacter(long characterId)
         {
-            return CharacterRelations.Any(c => c.RelationType == CharacterRelationType.Friend && c.RelatedCharacterId.Equals(characterId));
+            return CharacterRelations.Any(c => c.RelationType == CharacterRelationType.Friend && (c.RelatedCharacterId.Equals(characterId) || c.CharacterId.Equals(characterId)));
         }
 
         /// <summary>
@@ -4917,16 +4925,6 @@ namespace OpenNos.GameObject
                 foreach (QuicklistEntryDTO quicklistEntry in quickListEntriesToInsertOrUpdate)
                 {
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
-                }
-
-                foreach (CharacterRelationDTO EntryToDelete in DAOFactory.CharacterRelationDAO.LoadByCharacterId(CharacterId).Except(CharacterRelations))
-                {
-                    DAOFactory.CharacterRelationDAO.Delete(EntryToDelete.CharacterId, EntryToDelete.CharacterRelationId);
-                }
-                foreach (CharacterRelationDTO relat in CharacterRelations)
-                {
-                    CharacterRelationDTO relat2 = relat;
-                    DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref relat2);
                 }
 
                 foreach (StaticBonusDTO bonus in Session.Character.StaticBonusList)

@@ -32,8 +32,8 @@ namespace OpenNos.DAL.EF.Helpers
             var migration = migrator.GetLocalMigrations().LastOrDefault();
             var sql = scriptor.ScriptUpdate("0", migration);
             string info = $"-- ========================================== --\r\n-- Current Migration: {migration}\r\n-- ========================================== --\r\n\r\n";
-            const string fileName = "OpenNos.sql";
-            File.WriteAllText(Path.Combine(@"../../../OpenNos.DAL.EF/DB/", fileName), info + sql);
+            const string FileName = "OpenNos.sql";
+            File.WriteAllText(Path.Combine(@"../../../OpenNos.DAL.EF/DB/", FileName), info + sql);
 #endif
         }
 

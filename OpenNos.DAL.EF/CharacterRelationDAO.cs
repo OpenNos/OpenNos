@@ -29,24 +29,16 @@ namespace OpenNos.DAL.EF
     {
         #region Methods
 
-        public DeleteResult Delete(long characterId, long relatedCharacterId)
+        public DeleteResult Delete(long id)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    CharacterRelation relation = context.CharacterRelation.SingleOrDefault(c => c.CharacterId.Equals(characterId) && c.RelatedCharacterId.Equals(relatedCharacterId));
+                    CharacterRelation relation = context.CharacterRelation.SingleOrDefault(c => c.CharacterRelationId.Equals(id));
 
                     if (relation != null)
                     {
-                        if (relation.RelationType != CharacterRelationType.Blocked)
-                        {
-                            CharacterRelation otherRelation = context.CharacterRelation.SingleOrDefault(c => c.CharacterId.Equals(relatedCharacterId) && c.RelatedCharacterId.Equals(characterId));
-                            if (otherRelation != null)
-                            {
-                                context.CharacterRelation.Remove(otherRelation);
-                            }
-                        }
                         context.CharacterRelation.Remove(relation);
                         context.SaveChanges();
                     }
@@ -56,22 +48,22 @@ namespace OpenNos.DAL.EF
             }
             catch (Exception e)
             {
-                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_CHARACTER_ERROR"), characterId, e.Message), e);
+                Logger.Log.Error(string.Format(Language.Instance.GetMessageFromKey("DELETE_CHARACTER_ERROR"), id, e.Message), e);
                 return DeleteResult.Error;
             }
         }
 
-        public IEnumerable<CharacterRelationDTO> LoadByCharacterId(long characterId)
+        public IEnumerable<CharacterRelationDTO> LoadAll()
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (CharacterRelation entity in context.CharacterRelation.Where(i => i.CharacterId == characterId))
+                foreach (CharacterRelation entity in context.CharacterRelation)
                 {
                     yield return _mapper.Map<CharacterRelationDTO>(entity);
                 }
             }
         }
-        
+
         public SaveResult InsertOrUpdate(ref CharacterRelationDTO relation)
         {
             try
@@ -115,6 +107,23 @@ namespace OpenNos.DAL.EF
             }
 
             return _mapper.Map<CharacterRelationDTO>(entity);
+        }
+
+        public CharacterRelationDTO LoadById(long relId)
+        {
+             try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<CharacterRelationDTO>(context.CharacterRelation.FirstOrDefault(s => s.CharacterRelationId.Equals(relId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+            
         }
 
         #endregion

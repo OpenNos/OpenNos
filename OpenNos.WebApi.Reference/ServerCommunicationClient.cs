@@ -47,6 +47,8 @@ namespace OpenNos.WebApi.Reference
 
         public event EventHandler FamilyRefresh;
 
+        public event EventHandler RelationRefresh;
+
         public event EventHandler BazaarRefresh;
 
         public event EventHandler RankingRefresh;
@@ -108,6 +110,8 @@ namespace OpenNos.WebApi.Reference
 
             _hubProxy.On<long>("refreshFamily", OnFamilyRefresh);
 
+            _hubProxy.On<long>("refreshRelation", OnRelationRefresh);
+
             _hubProxy.On<long>("refreshBazaar", OnBazaarRefresh);
 
             _hubProxy.On("refreshRanking", OnRankingRefresh);
@@ -120,6 +124,10 @@ namespace OpenNos.WebApi.Reference
         private void OnFamilyRefresh(long FamilyId)
         {
             FamilyRefresh?.Invoke(FamilyId, new EventArgs());
+        }
+        private void OnRelationRefresh(long id)
+        {
+           RelationRefresh?.Invoke(id, new EventArgs());
         }
         private void OnBazaarRefresh(long BazaarItemId)
         {

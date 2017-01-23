@@ -70,7 +70,6 @@ namespace OpenNos.DAL.EF
             }
         }
         
-
         private StaticBonusDTO Insert(StaticBonusDTO sb, OpenNosContext context)
         {
             try
@@ -127,6 +126,5 @@ namespace OpenNos.DAL.EF
         }
 
         #endregion
-
     }
 }

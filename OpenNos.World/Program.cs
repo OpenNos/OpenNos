@@ -33,7 +33,6 @@ namespace OpenNos.World
     {
         #region Members
 
-
         private static EventHandler exitHandler;
         private static ManualResetEvent run = new ManualResetEvent(true);
 
@@ -200,8 +199,6 @@ namespace OpenNos.World
             DAOFactory.StaticBonusDAO.RegisterMapping(typeof(StaticBonusDTO)).InitializeMapper();
             DAOFactory.FamilyDAO.RegisterMapping(typeof(Family)).InitializeMapper();
             DAOFactory.FamilyCharacterDAO.RegisterMapping(typeof(FamilyCharacter)).InitializeMapper();
-
-
         }
 
         [DllImport("Kernel32")]
