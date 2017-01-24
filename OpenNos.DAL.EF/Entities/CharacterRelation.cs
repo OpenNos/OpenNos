@@ -20,7 +20,9 @@ namespace OpenNos.DAL.EF
     {
         #region Properties
 
-        public virtual Character Character { get; set; }
+        public virtual Character Character1 { get; set; }
+
+        public virtual Character Character2 { get; set; }
 
         public long CharacterId { get; set; }
 

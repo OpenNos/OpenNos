@@ -25,9 +25,9 @@ namespace OpenNos.DAL.EF
 
         public Character()
         {
-            CharacterRelation = new HashSet<CharacterRelation>();
             CharacterSkill = new HashSet<CharacterSkill>();
-            CharacterRelation = new HashSet<CharacterRelation>();
+            CharacterRelation1 = new HashSet<CharacterRelation>();
+            CharacterRelation2 = new HashSet<CharacterRelation>();
             StaticBonus = new HashSet<StaticBonus>();
             StaticBuff = new HashSet<StaticBuff>();
             BazaarItem = new HashSet<BazaarItem>();
@@ -64,7 +64,9 @@ namespace OpenNos.DAL.EF
 
         public long CharacterId { get; set; }
 
-        public virtual ICollection<CharacterRelation> CharacterRelation { get; set; }
+        public virtual ICollection<CharacterRelation> CharacterRelation1 { get; set; }
+
+        public virtual ICollection<CharacterRelation> CharacterRelation2 { get; set; }
 
         public virtual ICollection<StaticBonus> StaticBonus { get; set; }
 

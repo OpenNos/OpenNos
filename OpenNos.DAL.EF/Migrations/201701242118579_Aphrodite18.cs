@@ -8,18 +8,16 @@ namespace OpenNos.DAL.EF.Migrations
         public override void Up()
         {
             DropForeignKey("dbo.CharacterRelation", "CharacterId", "dbo.Character");
-            DropColumn("dbo.CharacterRelation", "RelatedCharacterId");
-            RenameColumn(table: "dbo.CharacterRelation", name: "CharacterId", newName: "RelatedCharacterId");
-            RenameIndex(table: "dbo.CharacterRelation", name: "IX_CharacterId", newName: "IX_RelatedCharacterId");
+            CreateIndex("dbo.CharacterRelation", "RelatedCharacterId");
             AddForeignKey("dbo.CharacterRelation", "RelatedCharacterId", "dbo.Character", "CharacterId");
+            AddForeignKey("dbo.CharacterRelation", "CharacterId", "dbo.Character", "CharacterId");
         }
         
         public override void Down()
         {
+            DropForeignKey("dbo.CharacterRelation", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.CharacterRelation", "RelatedCharacterId", "dbo.Character");
-            RenameIndex(table: "dbo.CharacterRelation", name: "IX_RelatedCharacterId", newName: "IX_CharacterId");
-            RenameColumn(table: "dbo.CharacterRelation", name: "RelatedCharacterId", newName: "CharacterId");
-            AddColumn("dbo.CharacterRelation", "RelatedCharacterId", c => c.Long(nullable: false));
+            DropIndex("dbo.CharacterRelation", new[] { "RelatedCharacterId" });
             AddForeignKey("dbo.CharacterRelation", "CharacterId", "dbo.Character", "CharacterId", cascadeDelete: true);
         }
     }

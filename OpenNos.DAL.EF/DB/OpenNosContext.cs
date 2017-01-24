@@ -163,8 +163,14 @@ namespace OpenNos.DAL.EF.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
-                .HasMany(e => e.CharacterRelation)
-                .WithRequired(e => e.Character)
+                .HasMany(e => e.CharacterRelation1)
+                .WithRequired(e => e.Character1)
+                .HasForeignKey(e => e.CharacterId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Character>()
+                .HasMany(e => e.CharacterRelation2)
+                .WithRequired(e => e.Character2)
                 .HasForeignKey(e => e.RelatedCharacterId)
                 .WillCascadeOnDelete(false);
 
