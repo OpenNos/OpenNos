@@ -27,6 +27,7 @@ namespace OpenNos.DAL.EF
         {
             CharacterRelation = new HashSet<CharacterRelation>();
             CharacterSkill = new HashSet<CharacterSkill>();
+            CharacterRelation = new HashSet<CharacterRelation>();
             StaticBonus = new HashSet<StaticBonus>();
             StaticBuff = new HashSet<StaticBuff>();
             BazaarItem = new HashSet<BazaarItem>();
