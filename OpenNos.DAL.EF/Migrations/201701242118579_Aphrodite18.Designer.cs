@@ -13,7 +13,7 @@ namespace OpenNos.DAL.EF.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201701241353348_Aphrodite18"; }
+            get { return "201701242118579_Aphrodite18"; }
         }
         
         string IMigrationMetadata.Source
