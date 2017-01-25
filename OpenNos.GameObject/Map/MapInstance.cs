@@ -137,7 +137,6 @@ namespace OpenNos.GameObject
             _isSleeping = true;
             LastUserShopId = 0;
             _random = new Random();
-            ShopAllowed = true;
             Map = map;
             MapInstanceId = guid;
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
