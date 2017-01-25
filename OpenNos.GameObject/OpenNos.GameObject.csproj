@@ -86,8 +86,11 @@
   <ItemGroup>
     <Compile Include="Event\EventHelper.cs" />
     <Compile Include="Event\EventSchedule.cs" />
-    <Compile Include="Event\InstantBattleHelper.cs" />
+    <Compile Include="Event\INSTANTBATTLE\InstantBattle.cs" />
+    <Compile Include="Event\LOD\LOD.cs" />
+    <Compile Include="Event\REPUT\Reput.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
+    <Compile Include="Map\MonsterToSummon.cs" />
     <Compile Include="Packets\ClientPackets\MLedit.cs" />
     <Compile Include="Packets\ClientPackets\MJoin.cs" />
     <Compile Include="Portal.cs" />

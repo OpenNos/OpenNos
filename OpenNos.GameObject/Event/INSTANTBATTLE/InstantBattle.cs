@@ -1,25 +1,158 @@
-﻿using System;
+﻿using OpenNos.Core;
+using OpenNos.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject.Event
 {
-    public class InstantBattleHelper
+    public class InstantBattle
     {
-        public static List<Tuple<short, short, short, long, bool>> GenerateMonsters(Map map, short vnum, short amount, bool move)
+      public static void GenerateInstantBattle()
         {
-            List<Tuple<short, short, short, long, bool>> SummonParameters = new List<Tuple<short, short, short, long, bool>>();
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_MINUTES"), 5), 0));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_MINUTES"), 5), 1));
+            Thread.Sleep(4 * 60 * 1000);
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_MINUTES"), 1), 0));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_MINUTES"), 1), 1));
+            Thread.Sleep(30 * 1000);
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_SECONDS"), 30), 0));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_SECONDS"), 30), 1));
+            Thread.Sleep(20 * 1000);
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_SECONDS"), 10), 0));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_SECONDS"), 10), 1));
+            Thread.Sleep(10 * 1000);
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("ISTANTBATTLE_STARTED"), 1));
+            ServerManager.Instance.Broadcast($"qnaml 1 #guri^506 {Language.Instance.GetMessageFromKey("ISTANTBATTLE_QUESTION")}");
+            ServerManager.Instance.EventInWaiting = true;
+            Thread.Sleep(30 * 1000);
+            ServerManager.Instance.EventInWaiting = false;
+            IEnumerable<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.IsWaitingForEvent && s.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance);
+            List<Tuple<MapInstance, byte>> maps = new List<Tuple<MapInstance, byte>>();
+            MapInstance map = null;
+            int i = -1;
+            int level = 0;
+            byte instancelevel = 1;
+            foreach (ClientSession s in sessions.OrderBy(s => s.Character?.Level))
+            {
+                i++;
+                if (s.Character.Level > 79 && level <= 79)
+                {
+                    i = 0;
+                    instancelevel = 80;
+                }
+                else if (s.Character.Level > 69 && level <= 69)
+                {
+                    i = 0;
+                    instancelevel = 70;
+                }
+                else if (s.Character.Level > 59 && level <= 59)
+                {
+                    i = 0;
+                    instancelevel = 60;
+                }
+                else if (s.Character.Level > 49 && level <= 49)
+                {
+                    i = 0;
+                    instancelevel = 50;
+                }
+                else if (s.Character.Level > 39 && level <= 39)
+                {
+                    i = 0;
+                    instancelevel = 30;
+                }
+                if (i % 50 == 0)
+                {
+                    map = ServerManager.GenerateMapInstance(2004, MapInstanceType.NormalInstance);
+                    maps.Add(new Tuple<MapInstance, byte>(map, instancelevel));
+                }
+                ServerManager.Instance.TeleportOnRandomPlaceInMap(s, map.MapInstanceId);
+
+                level = s.Character.Level;
+            }
+            ServerManager.Instance.Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.Character.IsWaitingForEvent = false);
+            foreach (Tuple<MapInstance, byte> mapinstance in maps)
+            {
+                ServerManager.Instance.StartedEvents.Remove(EventType.INSTANTBATTLE);
+                Thread.Sleep(10 * 1000);
+                if (mapinstance.Item1.Sessions.Count() < 3)
+                {
+                    mapinstance.Item1.Sessions.Where(s => s.Character != null).ToList().ForEach(s => ServerManager.Instance.ChangeMap(s.Character.CharacterId, s.Character.MapId, s.Character.MapX, s.Character.MapY));
+                }
+                Observable.Timer(TimeSpan.FromMinutes(12)).Subscribe(X =>
+                {
+                    for (int d = 0; d < 180; d++)
+                    {
+                        if (!mapinstance.Item1.Monsters.Any(s => s.CurrentHp > 0))
+                        {
+                            mapinstance.Item1.CreatePortal(new Portal() { SourceX = 47, SourceY = 33, DestinationMapId = 1 });
+                            mapinstance.Item1.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
+                            foreach (ClientSession cli in mapinstance.Item1.Sessions.Where(s => s.Character != null).ToList())
+                            {
+                                cli.Character.GetReput(cli.Character.Level * 50);
+                                cli.Character.Gold += cli.Character.Level * 1000;
+                                cli.Character.Gold = (cli.Character.Gold > 1000000000) ? 1000000000 : cli.Character.Gold;
+                                cli.Character.SpAdditionPoint += cli.Character.Level * 100;
+                                cli.Character.SpAdditionPoint = (cli.Character.SpAdditionPoint > 1000000) ? 1000000 : cli.Character.SpAdditionPoint;
+                                cli.SendPacket(cli.Character.GenerateSpPoint());
+                                cli.SendPacket(cli.Character.GenerateGold());
+                                cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), cli.Character.Level * 1000), 10));
+                                cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_REPUT"), cli.Character.Level * 50), 10));
+                                cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_SP_POINT"), cli.Character.Level * 100), 10));
+
+                            }
+                            break;
+
+                        }
+                        Thread.Sleep(1000);
+                    }
+                });
+
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(15), EventActionType.DISPOSE, null);
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(3), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 12), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(5), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 10), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(10), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 5), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(11), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 4), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(12), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 3), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(13), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 2), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 1), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WALKS"), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(7), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_APPEAR"), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(3), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
+
+                for (int wave = 0; wave < 4; wave++)
+                {
+                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(130 + wave * 160), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WAVE"), 0));
+                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(160 + wave * 160), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WALKS"), 0));
+                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(170 + wave * 160), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
+                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(10 + wave * 160), EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, wave));
+                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(140 + wave * 160), EventActionType.DROPITEMS, GetInstantBattleDrop(mapinstance.Item1.Map, mapinstance.Item2, wave));
+                }
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(13.5), EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, 5));
+            }
+
+        }
+
+
+
+
+        public static List<MonsterToSummon> GenerateMonsters(Map map, short vnum, short amount, bool move)
+        {
+            List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
             MapCell cell;
             for (int i = 0; i < amount; i++)
             {
                 cell = map.GetRandomPosition();
-                SummonParameters.Add(new Tuple<short, short, short, long, bool>(vnum, cell.X, cell.Y, -1, true));
+                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, true));
             }
             return SummonParameters;
         }
-
 
         public static List<Tuple<short, int, short, short>> GenerateDrop(Map map, short vnum, int amountofdrop, int amount)
         {
@@ -33,9 +166,9 @@ namespace OpenNos.GameObject.Event
             return dropParameters;
         }
 
-        public static List<Tuple<short, short, short, long, bool>> GetInstantBattleMonster(Map map, short instantbattletype, int wave)
+        public static List<MonsterToSummon> GetInstantBattleMonster(Map map, short instantbattletype, int wave)
         {
-            List<Tuple<short, short, short, long, bool>> SummonParameters = new List<Tuple<short, short, short, long, bool>>();
+            List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
 
             switch (instantbattletype)
             {
