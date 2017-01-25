@@ -56,15 +56,15 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal List<int> SummonMonsters(List<Tuple<short, short, short, long, bool>> summonParameters)
+        internal List<int> SummonMonsters(List<MonsterToSummon> summonParameters)
         {
             List<int> ids = new List<int>();
-            foreach (Tuple<short, short, short, long, bool> mon in summonParameters)
+            foreach (MonsterToSummon mon in summonParameters)
             {
-                NpcMonster npcmonster = ServerManager.GetNpc(mon.Item1);
+                NpcMonster npcmonster = ServerManager.GetNpc(mon.VNum);
                 if (npcmonster != null)
                 {
-                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.Item3, MapX = mon.Item2, MapId = Map.MapId, IsMoving = mon.Item5, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Item4 };
+                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.X, MapX = mon.SpawnCell.Y, MapId = Map.MapId, IsMoving = mon.isMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target };
                     monster.Initialize(this);
                     monster.StartLife();
                     AddMonster(monster);
@@ -76,31 +76,18 @@ namespace OpenNos.GameObject
             return ids;
         }
 
-        public Character GetLastInCharacter()
+        public void UnspawnMonsters(int monsterVnum)
         {
-            return Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
-        }
+            _monsters.GetAllItems().Where(s => s.MonsterVNum == monsterVnum).ToList().ForEach(s =>
+             {
+                 s.IsAlive = false;
+                 s.LastMove = DateTime.Now;
+                 s.CurrentHp = 0;
+                 s.CurrentMp = 0;
+                 s.Death = DateTime.Now;
+                 Broadcast(s.GenerateOut3());
+             });
 
-        public void UnspawnMonsters(List<int> monsterIds)
-        {
-            foreach (int monid in monsterIds)
-            {
-                MapMonster monster = GetMonster(monid);
-                if (monster != null)
-                {
-                    monster.IsAlive = false;
-                    monster.LastMove = DateTime.Now;
-                    monster.CurrentHp = 0;
-                    monster.CurrentMp = 0;
-                    monster.Death = DateTime.Now;
-                    Broadcast(monster.GenerateOut3());
-                }
-            }
-        }
-
-        internal void StartClock(int timeout)
-        {
-            EndDate = DateTime.Now.AddSeconds(timeout / 10);
         }
 
         public DateTime EndDate { get; set; }
@@ -297,7 +284,7 @@ namespace OpenNos.GameObject
         {
             portal.SourceMapInstanceId = MapInstanceId;
             _portals.Add(portal);
-            Sessions.Where(s=>s.Character!=null).ToList().ForEach(s => s.SendPacket(s.Character.GenerateGp(portal)));
+            Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.SendPacket(s.Character.GenerateGp(portal)));
         }
 
         public void DropItems(List<Tuple<short, int, short, short>> list)
@@ -329,6 +316,61 @@ namespace OpenNos.GameObject
             {
                 Logger.Error(e);
             }
+        }
+
+        internal void StartMapEvent(TimeSpan timeSpan, EventActionType eventaction, object param)
+        {
+            Observable.Timer(timeSpan).Subscribe(x =>
+            {
+                switch (eventaction)
+                {
+                    case EventActionType.CLOCK:
+                        EndDate = DateTime.Now.AddSeconds((double)param / 10);
+                        break;
+                    case EventActionType.DROPRATE:
+                        DropRate = (int)param;
+                        break;
+                    case EventActionType.XPRATE:
+                        XpRate = (int)param;
+                        break;
+                    case EventActionType.DISPOSE:
+                        Dispose();
+                        break;
+                    case EventActionType.LOCK:
+                        Lock = (bool)param;
+                        break;
+                    case EventActionType.MESSAGE:
+                        Broadcast((string)param);
+                        break;
+                    case EventActionType.UNSPAWN:
+                        UnspawnMonsters((int)param);
+                        break;
+                    case EventActionType.SPAWN:
+                        SummonMonsters((List<MonsterToSummon>)param);
+                        break;
+                    case EventActionType.DROPITEMS:
+                        DropItems((List<Tuple<short, int, short, short>>)param);
+                        break;
+                    case EventActionType.SPAWNONLASTENTRY://TODO REVIEW THIS CASE
+                        Character lastincharacter = Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
+                        List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
+                        MapCell HornSpawn = new MapCell()
+                        {
+                            X = lastincharacter != null ? lastincharacter.PositionX : (short)154,
+                            Y = lastincharacter != null ? lastincharacter.PositionY : (short)140
+                        };
+                        long HornTarget = lastincharacter != null ? lastincharacter.CharacterId : -1;
+                        SummonParameters.Add(new MonsterToSummon((short)param, HornSpawn, HornTarget, true));
+                        break;
+
+
+                }
+            });
+        }
+
+        internal void ScheduleEvent(TimeSpan timeSpan, Func<object> p)
+        {
+            throw new NotImplementedException();
         }
 
         public void RemoveMonster(MapMonster monsterToRemove)
@@ -389,7 +431,7 @@ namespace OpenNos.GameObject
                 {
                     if (!IsSleeping)
                     {
-                       RemoveMapItem();
+                        RemoveMapItem();
                     }
                 }
                 catch (Exception e)
