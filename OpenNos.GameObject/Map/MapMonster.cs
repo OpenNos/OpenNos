@@ -769,7 +769,7 @@ namespace OpenNos.GameObject
                              Map.GetDistance(new MapCell { X = MapX, Y = MapY },
                                  new MapCell { X = targetSession.Character.PositionX, Y = targetSession.Character.PositionY }) < npcMonsterSkill.Skill.Range)
                         {
-                        TargetHit(targetSession, npcMonsterSkill);
+                            TargetHit(targetSession, npcMonsterSkill);
 
                         }
                         else if (Map.GetDistance(new MapCell { X = MapX, Y = MapY },
@@ -795,28 +795,52 @@ namespace OpenNos.GameObject
         /// </summary>
         internal void RemoveTarget()
         {
-            Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
-            if (!Path.Any())
+            Path.Clear();
+            Observable.Timer(TimeSpan.FromSeconds(2)).Subscribe(o =>
             {
-                Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
-            }
-            Target = -1;
-            int nearestDistance = 100;
-            foreach (KeyValuePair<long, long> kvp in DamageList)
-            {
-                ClientSession session = MapInstance.GetSessionByCharacterId(kvp.Key);
-                if (session != null)
+                if (!Path.Any())
                 {
-                    int distance = Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = session.Character.PositionX, Y = session.Character.PositionY });
-                    if (distance < nearestDistance)
+                    Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                    if (!Path.Any())
                     {
-                        nearestDistance = distance;
-                        Target = session.Character.CharacterId;
+                        Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
                     }
+                    Target = -1;
+                }      
+            });
+        }
+
+        internal void GetNearestOponent()
+        {
+            if (Target == -1)
+            {
+                int maxDistance = 100;
+                int distance = 100;
+                List<ClientSession> sess = new List<ClientSession>();
+                DamageList.Keys.ToList().ForEach(s => sess.Add(MapInstance.GetSessionByCharacterId(s)));
+                ClientSession session = sess.OrderBy(s => distance = Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY })).FirstOrDefault();
+                if (distance < maxDistance)
+                {
+                    Target = session.Character.CharacterId;
                 }
             }
         }
+        internal void HostilityTarget()
+        {
+            if (Monster.IsHostile && Target == -1)
+            {
+                Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s?.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapInstance == MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY }) < Monster.NoticeRange)?.Character;
+                if (character != null)
+                {
+                    Target = character.CharacterId;
+                    if (!Monster.NoAggresiveIcon)
+                    {
+                        character.Session.SendPacket(GenerateEff(5000));
+                    }
+                }
 
+            }
+        }
         /// <summary>
         /// Follow the Monsters target to it's position.
         /// </summary>
@@ -851,6 +875,10 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
+
+                GetNearestOponent();
+                HostilityTarget();
+
                 if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
                 {
                     int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
@@ -933,19 +961,7 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-
-            if (Monster.IsHostile)
-            {
-                Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s?.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapInstance == MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY }) < Monster.NoticeRange)?.Character;
-                if (character != null)
-                {
-                    Target = character.CharacterId;
-                    if (!Monster.NoAggresiveIcon)
-                    {
-                        character.Session.SendPacket(GenerateEff(5000));
-                    }
-                }
-            }
+            HostilityTarget();
         }
 
         private void Respawn()
