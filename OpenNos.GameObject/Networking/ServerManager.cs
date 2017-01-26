@@ -115,15 +115,15 @@ namespace OpenNos.GameObject
         public void FamilyRefresh(long FamilyId)
         {
             inFamilyRefreshMode = true;
-            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family, FamilyId.ToString(), null).Result;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", FamilyId);
+            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family, FamilyId.ToString(), null).Result;
+            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", ServerManager.ServerGroup, FamilyId);
             SpinWait.SpinUntil(() => !inFamilyRefreshMode);
 
         }
         public void BazaarRefresh(long BazaarItemId)
         {
             inBazaarRefreshMode = true;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh", BazaarItemId);
+            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh", ServerManager.ServerGroup, BazaarItemId);
             SpinWait.SpinUntil(() => !inBazaarRefreshMode);
         }
         public void LoadFamilies()

@@ -359,7 +359,7 @@ namespace OpenNos.Handler
                         Session.SendPacket("OK");
 
                         // Inform everyone about connected character
-                        ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectCharacter", ServerManager.Instance.WorldId, Session.Character.Name, Session.Character.CharacterId);
+                        ServerCommunicationClient.Instance.HubProxy.Invoke("ConnectCharacter", ServerManager.ServerGroup, ServerManager.Instance.WorldId, Session.Character.Name, Session.Character.CharacterId);
                     }
                 }
             }

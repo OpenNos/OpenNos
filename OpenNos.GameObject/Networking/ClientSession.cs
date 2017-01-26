@@ -228,7 +228,7 @@ namespace OpenNos.GameObject
 
                 // TODO Check why ExchangeInfo.TargetCharacterId is null Character.CloseTrade();
                 // disconnect client
-                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectCharacter", Character.Name, Character.CharacterId).Wait();
+                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectCharacter", ServerManager.ServerGroup, Character.Name, Character.CharacterId).Wait();
 
                 // unregister from map if registered
                 if (CurrentMapInstance != null)
