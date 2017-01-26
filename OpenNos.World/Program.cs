@@ -126,9 +126,9 @@ namespace OpenNos.World
                 }
             }
 
-            string serverGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
+            ServerManager.ServerGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
             int sessionLimit = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["SessionLimit"]);
-            int? newChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("RegisterWorldserver", serverGroup, new WorldserverDTO(ServerManager.Instance.WorldId, new ScsTcpEndPoint(System.Configuration.ConfigurationManager.AppSettings["IPADDRESS"], port), sessionLimit)).Result;
+            int? newChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("RegisterWorldserver", ServerManager.ServerGroup, new WorldserverDTO(ServerManager.Instance.WorldId, new ScsTcpEndPoint(System.Configuration.ConfigurationManager.AppSettings["IPADDRESS"], port), sessionLimit)).Result;
 
             if (newChannelId.HasValue)
             {

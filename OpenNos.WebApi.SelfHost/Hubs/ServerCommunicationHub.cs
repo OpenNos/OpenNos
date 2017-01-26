@@ -36,9 +36,9 @@ namespace OpenNos.WebApi.SelfHost
         /// <summary>
         /// Refresh Relation
         /// </summary>
-        public void RelationRefresh(long id)
+        public void RelationRefresh(string worldgroup, long id)
         {
-            Clients.All.refreshRelation(id);
+            Clients.All.refreshRelation(worldgroup, id);
         }
         /// <summary>
         /// Refresh Relation
@@ -52,23 +52,24 @@ namespace OpenNos.WebApi.SelfHost
         /// <summary>
         /// Refresh Family
         /// </summary>
-        public void FamilyRefresh(long FamilyId)
+        public void FamilyRefresh(string worldgroup, long FamilyId)
         {
-            Clients.All.refreshFamily(FamilyId);
+
+            Clients.All.refreshFamily(worldgroup, FamilyId);
         }
         /// <summary>
         /// Refresh Bazaar
         /// </summary>
-        public void BazaarRefresh(long BazaarItemId)
+        public void BazaarRefresh(string worldgroup, long BazaarItemId)
         {
-            Clients.All.refreshBazaar(BazaarItemId);
+            Clients.All.refreshBazaar(worldgroup, BazaarItemId);
         }
         /// <summary>
         /// Refresh Ranking
         /// </summary>
-        public void RankingRefresh()
+        public void RankingRefresh(string worldgroup)
         {
-            Clients.All.refreshRanking();
+            Clients.All.refreshRanking(worldgroup);
         }
         /// <summary>
         /// Cleanup hold Data, this is for restarting the server
@@ -115,7 +116,7 @@ namespace OpenNos.WebApi.SelfHost
         /// </summary>
         /// <param name="characterName">Name of the Character.</param>
         /// <param name="characterId">If of the Character.</param>
-        public bool ConnectCharacter(Guid worldId, string characterName, long characterId)
+        public bool ConnectCharacter(string worldgroup, Guid worldId, string characterName, long characterId)
         {
             try
             {
@@ -132,7 +133,7 @@ namespace OpenNos.WebApi.SelfHost
                 ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(w => w.Id == worldId).ConnectedCharacters[characterName] = characterId;
 
                 // inform clients
-                Clients.All.characterConnected(characterName, characterId);
+                Clients.All.characterConnected(worldgroup, characterName, characterId);
                 return true;
             }
             catch (Exception ex)
@@ -173,7 +174,7 @@ namespace OpenNos.WebApi.SelfHost
         /// </summary>
         /// <param name="characterName">Character who wants to disconnect.</param>
         /// <param name="characterId">same as for characterName</param>
-        public void DisconnectCharacter(string characterName, long characterId)
+        public void DisconnectCharacter(string worldgroup, string characterName, long characterId)
         {
             try
             {
@@ -184,7 +185,7 @@ namespace OpenNos.WebApi.SelfHost
                     worldserver.ConnectedCharacters.Remove(characterName);
 
                     // inform clients
-                    Clients.All.characterDisconnected(characterName, characterId);
+                    Clients.All.characterDisconnected(worldgroup, characterName, characterId);
 
                     Logger.Log.InfoFormat($"Character {characterName} has been disconnected.");
                 }
@@ -222,9 +223,9 @@ namespace OpenNos.WebApi.SelfHost
             return false;
         }
 
-        public bool CharacterIsConnected(long CharacterId)
+        public bool CharacterIsConnected(string worldgroup, long CharacterId)
         {
-            return ServerCommunicationHelper.Instance.Worldservers.Any(c => c.ConnectedCharacters.ContainsValue(CharacterId));
+            return ServerCommunicationHelper.Instance.WorldserverGroups.FirstOrDefault(s => s.GroupName == worldgroup).Servers.Any(c => c.ConnectedCharacters.ContainsValue(CharacterId));
         }
         public IEnumerable<string> RetrieveServerStatistics()
         {
@@ -399,7 +400,7 @@ namespace OpenNos.WebApi.SelfHost
         /// Send a message to a Character
         /// </summary>
         /// <returns></returns>
-        public int? SendMessageToCharacter(string messagePacket, int fromChannel, MessageType messageType, string characterName, int? characterId = null)
+        public int? SendMessageToCharacter(string worldgroup, string messagePacket, int fromChannel, MessageType messageType, string characterName, int? characterId = null)
         {
             try
             {
@@ -414,23 +415,23 @@ namespace OpenNos.WebApi.SelfHost
                     }
 
                     //character is connected to different world
-                    Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
+                    Clients.All.sendMessageToCharacter(worldgroup, characterName, messagePacket, fromChannel, messageType);
                     return worldserver.ChannelId;
                 }
                 else if (messageType == MessageType.Shout)
                 {
                     //send to all registered worlds
-                    Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
+                    Clients.All.sendMessageToCharacter("*", characterName, messagePacket, fromChannel, messageType);
                     return null;
                 }
                 else if (messageType == MessageType.Family)
                 {
-                    Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
+                    Clients.All.sendMessageToCharacter(worldgroup, characterName, messagePacket, fromChannel, messageType);
                     return null;
                 }
                 else if (messageType == MessageType.FamilyChat)
                 {
-                    Clients.All.sendMessageToCharacter(characterName, messagePacket, fromChannel, messageType);
+                    Clients.All.sendMessageToCharacter(worldgroup, characterName, messagePacket, fromChannel, messageType);
                     return null;
                 }
             }

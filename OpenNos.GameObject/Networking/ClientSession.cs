@@ -341,20 +341,23 @@ namespace OpenNos.GameObject
 
         private void OnOtherCharacterConnected(object sender, EventArgs e)
         {
-            Tuple<string, long> loggedInCharacter = (Tuple<string, long>)sender;
-
-            if (Character.IsFriendOfCharacter(loggedInCharacter.Item2))
+            Tuple<string, string, long> loggedInCharacter = (Tuple<string, string, long>)sender;
+            if(ServerManager.ServerGroup != loggedInCharacter.Item1)
+            {
+                return;
+            }
+            if (Character.IsFriendOfCharacter(loggedInCharacter.Item3))
             {
                 if (Character != null && Character.Name != loggedInCharacter.Item1)
                 {
                     _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), loggedInCharacter.Item1), 10));
-                    _client.SendPacket(Character.GenerateFinfo(loggedInCharacter.Item2, true));
+                    _client.SendPacket(Character.GenerateFinfo(loggedInCharacter.Item3, true));
                 }
             }
             if (Character.Family != null)
             {
-                FamilyCharacter chara = Character.Family.FamilyCharacters.FirstOrDefault(s => s.CharacterId == loggedInCharacter.Item2);
-                if (chara != null && loggedInCharacter.Item2 != Character?.CharacterId)
+                FamilyCharacter chara = Character.Family.FamilyCharacters.FirstOrDefault(s => s.CharacterId == loggedInCharacter.Item3);
+                if (chara != null && loggedInCharacter.Item3 != Character?.CharacterId)
                 {
                     _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_FAMILY_LOGGED_IN"), loggedInCharacter.Item1, Language.Instance.GetMessageFromKey(chara.Authority.ToString().ToUpper())), 10));
                 }
@@ -362,13 +365,17 @@ namespace OpenNos.GameObject
         }
         private void OnOtherCharacterDisconnected(object sender, EventArgs e)
         {
-            KeyValuePair<string, long> kvPair = (KeyValuePair<string, long>)sender;
-            if (Character.IsFriendOfCharacter(kvPair.Value))
+            Tuple<string, string, long> loggedOutCharacter = (Tuple<string, string, long>)sender;
+            if (ServerManager.ServerGroup != loggedOutCharacter.Item1)
+            {
+                return;
+            }
+            if (Character.IsFriendOfCharacter(loggedOutCharacter.Item3))
 
-                if (Character != null && Character.Name != kvPair.Key)
+                if (Character != null && Character.Name != loggedOutCharacter.Item2)
                 {
-                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), kvPair.Key), 10));
-                    _client.SendPacket(Character.GenerateFinfo(kvPair.Value, false));
+                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item3), 10));
+                    _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item3, false));
                 }
         }
 

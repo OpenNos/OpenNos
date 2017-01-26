@@ -80,6 +80,8 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public static string ServerGroup { get; set; }
+
         public static int DropRate { get; set; }
 
         public bool EventInWaiting { get; set; }
@@ -1232,8 +1234,11 @@ namespace OpenNos.GameObject
         {
             if (sender != null)
             {
-                Tuple<string, string, int, MessageType> message = (Tuple<string, string, int, MessageType>)sender;
-
+                Tuple<string, string, int, MessageType, string> message = (Tuple<string, string, int, MessageType, string>)sender;
+                if (ServerGroup != message.Item5 && message.Item5 != "*")
+                {
+                    return;
+                }
                 ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.Name == message.Item1);
 
                 if (targetSession != null || message.Item4 == MessageType.Shout || message.Item4 == MessageType.FamilyChat || message.Item4 == MessageType.Family) //shout doesnt need targetSession
@@ -1294,7 +1299,12 @@ namespace OpenNos.GameObject
         }
         private void OnRelationRefresh(object sender, EventArgs e)
         {
-            long relId = (long)sender;
+            Tuple<string, long> tuple = (Tuple<string, long>)sender;
+            if (ServerGroup != tuple.Item1)
+            {
+                return;
+            }
+            long relId = tuple.Item2;
             lock (CharacterRelations)
             {
                 CharacterRelationDTO reldto = DAOFactory.CharacterRelationDAO.LoadById(relId);
@@ -1357,7 +1367,12 @@ namespace OpenNos.GameObject
         }
         private void OnFamilyRefresh(object sender, EventArgs e)
         {
-            long FamilyId = (long)sender;
+            Tuple<string, long> tuple = (Tuple<string, long>)sender;
+            if (ServerGroup != tuple.Item1)
+            {
+                return;
+            }
+            long FamilyId = tuple.Item2;
             FamilyDTO famdto = DAOFactory.FamilyDAO.LoadById(FamilyId);
             Family fam = FamilyList.FirstOrDefault(s => s.FamilyId == FamilyId);
 
@@ -1401,11 +1416,19 @@ namespace OpenNos.GameObject
         }
         private void OnRankingRefresh(object sender, EventArgs e)
         {
-            RefreshRanking();
+            if ((string)sender == ServerGroup)
+            {
+                RefreshRanking();
+            }
         }
         private void OnBazaarRefresh(object sender, EventArgs e)
         {
-            long BazaarId = (long)sender;
+            Tuple<string, long> tuple = (Tuple<string, long>)sender;
+            if (ServerGroup != tuple.Item1)
+            {
+                return;
+            }
+            long BazaarId = tuple.Item2;
             BazaarItemDTO bzdto = DAOFactory.BazaarItemDAO.LoadById(BazaarId);
             BazaarItemLink bzlink = BazaarList.FirstOrDefault(s => s.BazaarItem.BazaarItemId == BazaarId);
             lock (BazaarList)

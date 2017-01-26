@@ -116,51 +116,51 @@ namespace OpenNos.WebApi.Reference
 
             _hubProxy.On<string>("accountDisconnected", OnAccountDisconnected);
 
-            _hubProxy.On<string, long>("characterConnected", OnCharacterConnected);
+            _hubProxy.On<string, string, long>("characterConnected", OnCharacterConnected);
 
-            _hubProxy.On<string, long>("characterDisconnected", OnCharacterDisconnected);
+            _hubProxy.On<string, string, long>("characterDisconnected", OnCharacterDisconnected);
 
             _hubProxy.On<long?, string>("kickSession", OnSessionKicked);
 
-            _hubProxy.On<long>("refreshFamily", OnFamilyRefresh);
+            _hubProxy.On<string, long>("refreshFamily", OnFamilyRefresh);
 
-            _hubProxy.On<long>("refreshRelation", OnRelationRefresh);
+            _hubProxy.On<string, long>("refreshRelation", OnRelationRefresh);
 
             _hubProxy.On<int>("refreshPenaltyLog", OnPenaltyLogRefresh);
 
-            _hubProxy.On<long>("refreshBazaar", OnBazaarRefresh);
+            _hubProxy.On<string, long>("refreshBazaar", OnBazaarRefresh);
 
-            _hubProxy.On("refreshRanking", OnRankingRefresh);
+            _hubProxy.On<string>("refreshRanking", OnRankingRefresh);
 
-            _hubProxy.On<string, string, int, MessageType>("sendMessageToCharacter", OnMessageSentToCharacter);
+            _hubProxy.On<string, string, string, int, MessageType>("sendMessageToCharacter", OnMessageSentToCharacter);
 
             _hubconnection.Start().Wait();
         }
 
-        private void OnFamilyRefresh(long FamilyId)
+        private void OnFamilyRefresh(string worldgroup, long FamilyId)
         {
-            FamilyRefresh?.Invoke(FamilyId, new EventArgs());
+            FamilyRefresh?.Invoke(new Tuple<string, long>(worldgroup, FamilyId), new EventArgs());
         }
-        private void OnRelationRefresh(long id)
+        private void OnRelationRefresh(string worldgroup, long id)
         {
-           RelationRefresh?.Invoke(id, new EventArgs());
+           RelationRefresh?.Invoke(new Tuple<string, long>(worldgroup, id), new EventArgs());
         }
         private void OnPenaltyLogRefresh(int id)
         {
             PenaltyLogRefresh?.Invoke(id, new EventArgs());
         }
         
-        private void OnBazaarRefresh(long BazaarItemId)
+        private void OnBazaarRefresh(string worldgroup, long BazaarItemId)
         {
-            BazaarRefresh?.Invoke(BazaarItemId, new EventArgs());
+            BazaarRefresh?.Invoke(new Tuple<string, long>(worldgroup, BazaarItemId), new EventArgs());
         }
-        private void OnRankingRefresh()
+        private void OnRankingRefresh(string worldgroup)
         {
-            RankingRefresh?.Invoke(null, new EventArgs());
+            RankingRefresh?.Invoke(worldgroup, new EventArgs());
         }
-        private void OnMessageSentToCharacter(string characterName, string message, int fromChannel, MessageType messageType)
+        private void OnMessageSentToCharacter(string worldgroup, string characterName, string message, int fromChannel, MessageType messageType)
         {
-            MessageSentToCharacter?.Invoke(new Tuple<string, string, int, MessageType>(characterName, message, fromChannel, messageType), new EventArgs());
+            MessageSentToCharacter?.Invoke(new Tuple<string, string, int, MessageType, string>(characterName, message, fromChannel, messageType, worldgroup), new EventArgs());
         }
         private void OnAccountDisconnected(string accountName)
         {
@@ -170,11 +170,11 @@ namespace OpenNos.WebApi.Reference
             }
         }
 
-        private void OnCharacterDisconnected(string characterName, long characterId)
+        private void OnCharacterDisconnected(string worldgroup, string characterName, long characterId)
         {
             if (CharacterDisconnectedEvent != null && !string.IsNullOrEmpty(characterName))
             {
-                CharacterDisconnectedEvent(new System.Collections.Generic.KeyValuePair<string, long>(characterName, characterId), new EventArgs());
+                CharacterDisconnectedEvent(new Tuple<string, string, long>(worldgroup, characterName, characterId), new EventArgs());
             }
         }
 
@@ -202,11 +202,11 @@ namespace OpenNos.WebApi.Reference
             }
         }
 
-        private void OnCharacterConnected(string characterName, long characterId)
+        private void OnCharacterConnected(string worldgroup, string characterName, long characterId)
         {
             if (CharacterConnectedEvent != null && !string.IsNullOrEmpty(characterName))
             {
-                CharacterConnectedEvent(new Tuple<string, long>(characterName, characterId), new EventArgs());
+                CharacterConnectedEvent(new Tuple<string, string, long>(worldgroup, characterName, characterId), new EventArgs());
             }
         }
 
