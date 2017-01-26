@@ -404,7 +404,7 @@ namespace OpenNos.WebApi.SelfHost
         {
             try
             {
-                WorldserverDTO worldserver = ServerCommunicationHelper.Instance.Worldservers.SingleOrDefault(c => c.ConnectedCharacters.Any(cc => cc.Key == characterName)
+                WorldserverDTO worldserver = ServerCommunicationHelper.Instance.WorldserverGroups.FirstOrDefault(s => s.GroupName == worldgroup).Servers.SingleOrDefault(c => c.ConnectedCharacters.Any(cc => cc.Key == characterName)
                                                                                                              || characterId.HasValue && c.ConnectedCharacters.ContainsValue(characterId.Value));
 
                 if (worldserver != null)
