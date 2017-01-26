@@ -32,14 +32,21 @@ namespace OpenNos.GameObject
 
         public List<GeneralLogDTO> GeneralLogs
         {
-            get { return ServerManager.GeneralLogs.Where(s => s.AccountId == AccountId && s.CharacterId == null).ToList(); }
+            get
+            {
+                GeneralLogDTO[] logs = new GeneralLogDTO[ServerManager.GeneralLogs.Count + 10];
+                ServerManager.GeneralLogs.CopyTo(logs);
+                return logs.Where(s => s != null && s.AccountId == AccountId && s.CharacterId == null).ToList();
+            }
         }
 
         public List<PenaltyLogDTO> PenaltyLogs
         {
             get
             {
-                return ServerManager.Instance.PenaltyLogs.Where(s=>s.AccountId == AccountId).ToList();
+                PenaltyLogDTO[] logs = new PenaltyLogDTO[ServerManager.Instance.PenaltyLogs.Count + 10];
+                ServerManager.Instance.PenaltyLogs.CopyTo(logs);
+                return logs.Where(s => s != null && s.AccountId == AccountId).ToList();
             }
         }
 
