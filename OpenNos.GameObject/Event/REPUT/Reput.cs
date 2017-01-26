@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Character.GetReput(2 * genlog.Count());
                 }
-                else if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", (long)genlog.Key, ServerManager.ServerGroup).Result)
+                else if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.ServerGroup, (long)genlog.Key).Result)
                 {
                     CharacterDTO chara = DAOFactory.CharacterDAO.LoadById((long)genlog.Key);
                     if (chara != null)

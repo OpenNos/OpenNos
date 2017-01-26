@@ -668,7 +668,7 @@ namespace OpenNos.GameObject
             {
                 long id = chara.CharacterRelationId;
                 DAOFactory.CharacterRelationDAO.Delete(id);
-                ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", id);
+                ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerManager.ServerGroup, id);
             }
         }
 
@@ -745,7 +745,7 @@ namespace OpenNos.GameObject
             {
                 long id = chara.CharacterRelationId;
                 DAOFactory.CharacterRelationDAO.Delete(id);
-                ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", id);
+                ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerManager.ServerGroup, id);
             }
         }
 
@@ -944,7 +944,7 @@ namespace OpenNos.GameObject
             };
 
             DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
-            ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", addRelation.CharacterRelationId);
+            ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerManager.ServerGroup, addRelation.CharacterRelationId);
         }
 
 
@@ -2978,7 +2978,7 @@ namespace OpenNos.GameObject
                 {
                     foreach (FamilyCharacter TargetCharacter in Session.Character.Family?.FamilyCharacters)
                     {
-                        bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", TargetCharacter.Character.CharacterId, ServerManager.ServerGroup).Result;
+                        bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.ServerGroup, TargetCharacter.Character.CharacterId).Result;
                         str += $" {TargetCharacter.Character.CharacterId}|{Family.FamilyId}|{TargetCharacter.Character.Name}|{TargetCharacter.Character.Level}|{(byte)TargetCharacter.Character.Class}|{(byte)TargetCharacter.Authority}|{(byte)TargetCharacter.Rank}|{(isOnline ? 1 : 0)}|{TargetCharacter.Character.HeroLevel}";
                     }
                 }
@@ -3057,7 +3057,7 @@ namespace OpenNos.GameObject
             foreach (CharacterRelationDTO relation in CharacterRelations.Where(c => c.RelationType == CharacterRelationType.Friend))
             {
                 long id = relation.RelatedCharacterId == CharacterId ? relation.CharacterId : relation.RelatedCharacterId;
-                bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", id, ServerManager.ServerGroup).Result;
+                bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.ServerGroup, id).Result;
                 result += $" {id}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(id).Name}";
             }
             return result;
@@ -4073,7 +4073,7 @@ namespace OpenNos.GameObject
                         fam.FamilyExperience -= CharacterHelper.LoadFamilyXPData(Family.FamilyLevel);
                         fam.FamilyLevel++;
                         Family.InsertFamilyLog(FamilyLogType.FamilyLevel, "", "", "", "", fam.FamilyLevel, 0, 0, 0, 0);
-                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_UP")), 0), ServerManager.Instance.ChannelId, MessageType.Family, Family.FamilyId.ToString(), null).Result;
+                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_UP")), 0), ServerManager.Instance.ChannelId, MessageType.Family, Family.FamilyId.ToString(), null).Result;
                     }
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref famchar);
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
@@ -5275,7 +5275,7 @@ namespace OpenNos.GameObject
                 {
                     CharacterDTO character = DeepCopy();
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh");
+                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
                 }
             }
             else
@@ -5285,7 +5285,7 @@ namespace OpenNos.GameObject
                 {
                     CharacterDTO character = DeepCopy();
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh");
+                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
                 }
             }
         }
@@ -5303,7 +5303,7 @@ namespace OpenNos.GameObject
                 {
                     CharacterDTO character = DeepCopy();
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh");
+                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
                 }
             }
             else
@@ -5313,7 +5313,7 @@ namespace OpenNos.GameObject
                 {
                     CharacterDTO character = DeepCopy();
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh");
+                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
                 }
             }
         }
@@ -5332,7 +5332,7 @@ namespace OpenNos.GameObject
                 {
                     CharacterDTO character = DeepCopy();
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh");
+                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
                 }
             }
             else
@@ -5342,7 +5342,7 @@ namespace OpenNos.GameObject
                 {
                     CharacterDTO character = DeepCopy();
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh");
+                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
                 }
             }
         }
