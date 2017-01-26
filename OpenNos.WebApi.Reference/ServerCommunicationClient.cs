@@ -79,6 +79,8 @@ namespace OpenNos.WebApi.Reference
             }
         }
 
+        public bool IsConnected;
+
         #endregion
 
         #region Methods
@@ -96,6 +98,16 @@ namespace OpenNos.WebApi.Reference
         public void InitializeAndRegisterCallbacks()
         {
             _hubconnection = new HubConnection(remoteUrl);
+            _hubconnection.Closed += () => {
+                IsConnected = false;
+                while (!IsConnected)
+                {
+                    _hubconnection = new HubConnection(remoteUrl);
+                    _hubProxy = _hubconnection.CreateHubProxy("servercommunicationhub");
+                    _hubconnection.Start().Wait();
+                    IsConnected = true;
+                }
+            };
 
             _hubProxy = _hubconnection.CreateHubProxy("servercommunicationhub");
 
