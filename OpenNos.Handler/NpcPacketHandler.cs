@@ -91,23 +91,15 @@ namespace OpenNos.Handler
                         // check if the item has been removed successfully from previous owner and remove it
                         if (BuyValidate(Session, shop, buyPacket.Slot, amount))
                         {
-                            ItemInstance inv = item.ItemInstance.Type == InventoryType.Equipment
-                                               ? Session.Character.Inventory.AddToInventory(item.ItemInstance)
-                                               : Session.Character.Inventory.AddNewToInventory(item.ItemInstance.ItemVNum, amount, item.ItemInstance.Type);
+                            Session.Character.Gold -= item.Price * amount;
+                            Session.SendPacket(Session.Character.GenerateGold());
 
-                            if (inv != null)
-                            {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
-                                Session.Character.Gold -= item.Price * amount;
-                                Session.SendPacket(Session.Character.GenerateGold());
-
-                                KeyValuePair<long, MapShop> shop2 = Session.CurrentMapInstance.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(buyPacket.OwnerId));
-                                LoadShopItem(buyPacket.OwnerId, shop2);
-                            }
-                            else
-                            {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
-                            }
+                            KeyValuePair<long, MapShop> shop2 = Session.CurrentMapInstance.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(buyPacket.OwnerId));
+                            LoadShopItem(buyPacket.OwnerId, shop2);
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                         }
 
                         break;
@@ -122,7 +114,7 @@ namespace OpenNos.Handler
                         MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)buyPacket.OwnerId));
                         if (npc != null)
                         {
-                            int dist = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell {X = npc.MapX, Y = npc.MapY });
+                            int dist = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = npc.MapX, Y = npc.MapY });
                             if (npc.Shop == null || dist > 5)
                             {
                                 return;
@@ -401,26 +393,29 @@ namespace OpenNos.Handler
                             if (qty[i] > 0)
                             {
                                 ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot[i], type[i]);
-                                if (inv.Amount < qty[i])
+                                if (inv != null)
                                 {
-                                    return;
-                                }
-                                if (!inv.Item.IsTradable || inv.IsBound)
-                                {
-                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
-                                    Session.SendPacket("shop_end 0");
-                                    return;
-                                }
+                                    if (inv.Amount < qty[i])
+                                    {
+                                        return;
+                                    }
+                                    if (!inv.Item.IsTradable || inv.IsBound)
+                                    {
+                                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
+                                        Session.SendPacket("shop_end 0");
+                                        return;
+                                    }
 
-                                PersonalShopItem personalshopitem = new PersonalShopItem()
-                                {
-                                    ShopSlot = shopSlot,
-                                    Price = gold[i],
-                                    ItemInstance = inv,
-                                    SellAmount = qty[i]
-                                };
-                                myShop.Items.Add(personalshopitem);
-                                shopSlot++;
+                                    PersonalShopItem personalshopitem = new PersonalShopItem()
+                                    {
+                                        ShopSlot = shopSlot,
+                                        Price = gold[i],
+                                        ItemInstance = inv,
+                                        SellAmount = qty[i]
+                                    };
+                                    myShop.Items.Add(personalshopitem);
+                                    shopSlot++;
+                                }
                             }
                         }
                     }
@@ -859,7 +854,15 @@ namespace OpenNos.Handler
             {
                 amount = shopitem.SellAmount;
             }
+            ItemInstance inv = shopitem.ItemInstance.Type == InventoryType.Equipment
+                   ? clientSession.Character.Inventory.AddToInventory(shopitem.ItemInstance)
+                   : clientSession.Character.Inventory.AddNewToInventory(shopitem.ItemInstance.ItemVNum, amount, shopitem.ItemInstance.Type);
 
+            if (inv == null)
+            {
+                return false;
+            }
+            Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
             shopOwnerSession.Character.Gold += shopitem.Price * amount;
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateGold());
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), Session.Character.Name, shopitem.ItemInstance.Item.Name, amount)));
