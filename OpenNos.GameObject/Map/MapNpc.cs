@@ -133,7 +133,8 @@ namespace OpenNos.GameObject
 
                 if (MapInstance.Map.GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                 {
-                    Observable.Timer(TimeSpan.FromMilliseconds(1000 * (xpoint + ypoint) / (2 * Npc.Speed)))
+                    double value = (xpoint + ypoint) / (double)(2 * Npc.Speed);
+                    Observable.Timer(TimeSpan.FromMilliseconds(1000 * value))
                       .Subscribe(
                           x =>
                           {
@@ -141,7 +142,7 @@ namespace OpenNos.GameObject
                               MapY = mapY;
                           });
 
-                    LastMove = DateTime.Now.AddSeconds((xpoint + ypoint) / (2 * Npc.Speed));
+                    LastMove = DateTime.Now.AddSeconds(value);
                     MapInstance.Broadcast(new BroadcastPacket(null, GenerateMv2(), ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                 }
             }
@@ -280,7 +281,7 @@ namespace OpenNos.GameObject
         {
             if (LifeEvent == default(IDisposable))
             {
-                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000 / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
+                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000d / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
                 {
                     try
                     {
