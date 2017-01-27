@@ -325,10 +325,10 @@ namespace OpenNos.GameObject
                 switch (eventaction)
                 {
                     case EventActionType.CLOCK:
-                        EndDate = DateTime.Now.AddSeconds((int)param);
+                        EndDate = DateTime.Now.AddSeconds(Convert.ToDouble(param));
                         break;
                     case EventActionType.DROPRATE:
-                        DropRate = (int)param;
+                        DropRate = Convert.ToInt32(param);
                         break;
                     case EventActionType.XPRATE:
                         XpRate = (int)param;
@@ -337,13 +337,13 @@ namespace OpenNos.GameObject
                         Dispose();
                         break;
                     case EventActionType.LOCK:
-                        Lock = (bool)param;
+                        Lock = Convert.ToBoolean(param);
                         break;
                     case EventActionType.MESSAGE:
-                        Broadcast((string)param);
+                        Broadcast(Convert.ToString(param));
                         break;
                     case EventActionType.UNSPAWN:
-                        UnspawnMonsters((int)param);
+                        UnspawnMonsters(Convert.ToInt32(param));
                         break;
                     case EventActionType.SPAWN:
                         SummonMonsters((List<MonsterToSummon>)param);
@@ -360,7 +360,7 @@ namespace OpenNos.GameObject
                             Y = lastincharacter != null ? lastincharacter.PositionY : (short)140
                         };
                         long HornTarget = lastincharacter != null ? lastincharacter.CharacterId : -1;
-                        SummonParameters.Add(new MonsterToSummon((short)param, HornSpawn, HornTarget, true));
+                        SummonParameters.Add(new MonsterToSummon(Convert.ToInt16(param), HornSpawn, HornTarget, true));
                         break;
 
 

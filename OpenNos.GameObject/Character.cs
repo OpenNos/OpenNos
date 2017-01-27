@@ -5278,7 +5278,7 @@ namespace OpenNos.GameObject
             {
                 index = ServerManager.Instance.TopReputation.IndexOf(chara);
                 chara2 = ServerManager.Instance.TopReputation.ElementAtOrDefault(index - 1);
-                if (Reput > chara2.Reput)
+                if (chara2 == null || Reput > chara2.Reput)
                 {
                     CharacterDTO character = DeepCopy();
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
@@ -5306,7 +5306,7 @@ namespace OpenNos.GameObject
             {
                 index = ServerManager.Instance.TopPoints.IndexOf(chara);
                 chara2 = ServerManager.Instance.TopPoints.ElementAtOrDefault(index - 1);
-                if (Act4Points > chara2.Act4Points)
+                if (chara2 == null || Act4Points > chara2.Act4Points)
                 {
                     CharacterDTO character = DeepCopy();
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
