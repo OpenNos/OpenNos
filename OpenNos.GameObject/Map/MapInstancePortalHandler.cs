@@ -20,11 +20,13 @@ namespace OpenNos.GameObject
 {
     public class MapInstancePortalHandler
     {
-        public static List<Portal> GenerateMinilandEntryPortals(short EntryMap, Guid ExitMapinstanceId)
+        #region Methods
+
+        public static List<Portal> GenerateMinilandEntryPortals(short entryMap, Guid exitMapinstanceId)
         {
             List<Portal> list = new List<Portal>();
 
-            switch (EntryMap)
+            switch (entryMap)
             {
                 case 1:
                     list.Add(new Portal
@@ -35,9 +37,10 @@ namespace OpenNos.GameObject
                         DestinationY = 8,
                         Type = (short)PortalType.Miniland,
                         SourceMapId = 1,
-                        DestinationMapInstanceId = ExitMapinstanceId,
+                        DestinationMapInstanceId = exitMapinstanceId,
                     });
                     break;
+
                 case 145:
                     list.Add(new Portal
                     {
@@ -47,14 +50,14 @@ namespace OpenNos.GameObject
                         DestinationY = 8,
                         Type = (short)PortalType.Miniland,
                         SourceMapId = 145,
-                        DestinationMapInstanceId = ExitMapinstanceId,
+                        DestinationMapInstanceId = exitMapinstanceId,
                     });
                     break;
             }
 
-
-
             return list;
         }
+
+        #endregion
     }
 }

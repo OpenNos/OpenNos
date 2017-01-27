@@ -1,4 +1,18 @@
-﻿using EpPathFinding;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -7,113 +21,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public class MapInstance : BroadcastableBase
     {
-        public MapInstanceType MapInstanceType { get; set; }
-        public Map Map { get; set; }
-        public ThreadSafeSortedList<long, MapItem> DroppedList { get; }
+        #region Members
 
-        public bool Lock { get; set; }
-        public int XpRate { get; set; }
-        public int DropRate { get; set; }
-        public bool IsDancing { get; set; }
-
-        public bool IsPVP { get; set; }
-
-        public bool IsSleeping
-        {
-            get
-            {
-                if (_isSleepingRequest && !_isSleeping && LastUnregister.AddSeconds(30) < DateTime.Now)
-                {
-                    _isSleeping = true;
-                    _isSleepingRequest = false;
-                    return true;
-                }
-                if (_isSleeping)
-                {
-                    return true;
-                }
-
-                return false;
-            }
-            set
-            {
-                if (value)
-                {
-                    _isSleepingRequest = true;
-                }
-                else
-                {
-                    _isSleeping = false;
-                    _isSleepingRequest = false;
-                }
-            }
-        }
-
-        internal List<int> SummonMonsters(List<MonsterToSummon> summonParameters)
-        {
-            List<int> ids = new List<int>();
-            foreach (MonsterToSummon mon in summonParameters)
-            {
-                NpcMonster npcmonster = ServerManager.GetNpc(mon.VNum);
-                if (npcmonster != null)
-                {
-                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.X, MapX = mon.SpawnCell.Y, MapId = Map.MapId, IsMoving = mon.isMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target };
-                    monster.Initialize(this);
-                    monster.StartLife();
-                    AddMonster(monster);
-                    Broadcast(monster.GenerateIn3());
-                    ids.Add(monster.MapMonsterId);
-                }
-            }
-
-            return ids;
-        }
-
-        public void UnspawnMonsters(int monsterVnum)
-        {
-            _monsters.GetAllItems().Where(s => s.MonsterVNum == monsterVnum).ToList().ForEach(s =>
-             {
-                 s.IsAlive = false;
-                 s.LastMove = DateTime.Now;
-                 s.CurrentHp = 0;
-                 s.CurrentMp = 0;
-                 s.Death = DateTime.Now;
-                 Broadcast(s.GenerateOut3());
-             });
-
-        }
-
-        public DateTime EndDate { get; set; }
-        public Guid MapInstanceId { get; set; }
-
-        public long LastUserShopId { get; set; }
-        public List<MapMonster> Monsters => _monsters.GetAllItems();
-
-        public IEnumerable<MapNpc> Npcs => _npcs;
-
-        public List<Portal> Portals => _portals;
-
-        public bool ShopAllowed { get; set; }
-
-        public Dictionary<long, MapShop> UserShops { get; }
-        public bool NpcEffectActivated { get; set; }
+        private readonly List<int> _mapMonsterIds;
 
         private readonly ThreadSafeSortedList<long, MapMonster> _monsters;
-        private readonly List<int> _mapMonsterIds;
+
         private readonly List<MapNpc> _npcs;
+
         private readonly List<Portal> _portals;
-        private bool _disposed;
-        private bool _isSleeping;
-        private bool _isSleepingRequest;
 
         private readonly Random _random;
+
+        private bool _disposed;
+
+        private bool _isSleeping;
+
+        private bool _isSleepingRequest;
+
+        #endregion
+
+        #region Instantiation
+
         public MapInstance(Map map, Guid guid, bool shopAllowed, MapInstanceType type)
         {
             XpRate = 1;
@@ -136,7 +70,74 @@ namespace OpenNos.GameObject
             StartLife();
         }
 
+        #endregion
+
+        #region Properties
+
+        public ThreadSafeSortedList<long, MapItem> DroppedList { get; }
+
+        public int DropRate { get; set; }
+
+        public DateTime EndDate { get; set; }
+
+        public bool IsDancing { get; set; }
+
+        public bool IsPVP { get; set; }
+
+        public bool IsSleeping
+        {
+            get
+            {
+                if (_isSleepingRequest && !_isSleeping && LastUnregister.AddSeconds(30) < DateTime.Now)
+                {
+                    _isSleeping = true;
+                    _isSleepingRequest = false;
+                    return true;
+                }
+                return _isSleeping;
+            }
+            set
+            {
+                if (value)
+                {
+                    _isSleepingRequest = true;
+                }
+                else
+                {
+                    _isSleeping = false;
+                    _isSleepingRequest = false;
+                }
+            }
+        }
+
+        public long LastUserShopId { get; set; }
+
+        public bool Lock { get; set; }
+
+        public Map Map { get; set; }
+
+        public Guid MapInstanceId { get; set; }
+
+        public MapInstanceType MapInstanceType { get; set; }
+
+        public List<MapMonster> Monsters => _monsters.GetAllItems();
+
+        public bool NpcEffectActivated { get; set; }
+
+        public IEnumerable<MapNpc> Npcs => _npcs;
+
+        public List<Portal> Portals => _portals;
+
+        public bool ShopAllowed { get; set; }
+
+        public Dictionary<long, MapShop> UserShops { get; }
+
+        public int XpRate { get; set; }
+
+        #endregion
+
         #region Methods
+
         public void AddMonster(MapMonster monster)
         {
             _monsters[monster.MapMonsterId] = monster;
@@ -146,9 +147,9 @@ namespace OpenNos.GameObject
         {
             if (!_disposed)
             {
-                foreach (ClientSession Session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapInstanceId == MapInstanceId))
+                foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapInstanceId == MapInstanceId))
                 {
-                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
+                    ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
                 }
                 Dispose(true);
                 GC.SuppressFinalize(this);
@@ -156,23 +157,23 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY)
+        public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY)
         {
             try
             {
                 short localMapX = mapX;
                 short localMapY = mapY;
-                List<MapCell> Possibilities = new List<MapCell>();
+                List<MapCell> possibilities = new List<MapCell>();
 
                 for (short x = -1; x < 2; x++)
                 {
                     for (short y = -1; y < 2; y++)
                     {
-                        Possibilities.Add(new MapCell { X = x, Y = y });
+                        possibilities.Add(new MapCell { X = x, Y = y });
                     }
                 }
 
-                foreach (MapCell possibilitie in Possibilities.OrderBy(s => ServerManager.RandomNumber()))
+                foreach (MapCell possibilitie in possibilities.OrderBy(s => ServerManager.RandomNumber()))
                 {
                     localMapX = (short)(mapX + possibilitie.X);
                     localMapY = (short)(mapY + possibilitie.Y);
@@ -182,7 +183,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                MonsterMapItem droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, Owner ?? -1);
+                MonsterMapItem droppedItem = new MonsterMapItem(localMapX, localMapY, drop.ItemVNum, drop.Amount, owner ?? -1);
 
                 DroppedList[droppedItem.TransportId] = droppedItem;
 
@@ -191,6 +192,18 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Error(e);
+            }
+        }
+
+        public void DropItems(List<Tuple<short, int, short, short>> list)
+        {
+            foreach (Tuple<short, int, short, short> drop in list)
+            {
+                MonsterMapItem droppedItem = new MonsterMapItem(drop.Item3, drop.Item4, drop.Item1, drop.Item2);
+
+                DroppedList[droppedItem.TransportId] = droppedItem;
+
+                Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
             }
         }
 
@@ -215,6 +228,7 @@ namespace OpenNos.GameObject
             _mapMonsterIds.Add(nextId);
             return nextId;
         }
+
         public void LoadMonsters()
         {
             foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(Map.MapId).ToList())
@@ -223,8 +237,6 @@ namespace OpenNos.GameObject
                 _mapMonsterIds.Add(monster.MapMonsterId);
             }
         }
-
-
 
         public void LoadPortals()
         {
@@ -235,25 +247,26 @@ namespace OpenNos.GameObject
                 _portals.Add(portal2);
             }
         }
+
         public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
         {
             Logger.Debug($"type: {type} slot: {slot} amount: {amount}", session.SessionId);
             Guid random2 = Guid.NewGuid();
             MapItem droppedItem = null;
-            List<GridPos> Possibilities = new List<GridPos>();
+            List<GridPos> possibilities = new List<GridPos>();
 
             for (short x = -2; x < 3; x++)
             {
                 for (short y = -2; y < 3; y++)
                 {
-                    Possibilities.Add(new GridPos { x = x, y = y });
+                    possibilities.Add(new GridPos { x = x, y = y });
                 }
             }
 
             short mapX = 0;
             short mapY = 0;
             bool niceSpot = false;
-            foreach (GridPos possibilitie in Possibilities.OrderBy(s => _random.Next()))
+            foreach (GridPos possibilitie in possibilities.OrderBy(s => _random.Next()))
             {
                 mapX = (short)(session.Character.PositionX + possibilitie.x);
                 mapY = (short)(session.Character.PositionY + possibilitie.y);
@@ -280,25 +293,6 @@ namespace OpenNos.GameObject
             return droppedItem;
         }
 
-        internal void CreatePortal(Portal portal)
-        {
-            portal.SourceMapInstanceId = MapInstanceId;
-            _portals.Add(portal);
-            Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.SendPacket(s.Character.GenerateGp(portal)));
-        }
-
-        public void DropItems(List<Tuple<short, int, short, short>> list)
-        {
-            foreach (Tuple<short, int, short, short> drop in list)
-            {
-                MonsterMapItem droppedItem = new MonsterMapItem(drop.Item3, drop.Item4, drop.Item1, drop.Item2);
-
-                DroppedList[droppedItem.TransportId] = droppedItem;
-
-                Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
-            }
-        }
-
         public void RemoveMapItem()
         {
             // take the data from list to remove it without having enumeration problems (ToList)
@@ -317,57 +311,6 @@ namespace OpenNos.GameObject
                 Logger.Error(e);
             }
         }
-
-        internal void StartMapEvent(TimeSpan timeSpan, EventActionType eventaction, object param)
-        {
-            Observable.Timer(timeSpan).Subscribe(x =>
-            {
-                switch (eventaction)
-                {
-                    case EventActionType.CLOCK:
-                        EndDate = DateTime.Now.AddSeconds(Convert.ToDouble(param));
-                        break;
-                    case EventActionType.DROPRATE:
-                        DropRate = Convert.ToInt32(param);
-                        break;
-                    case EventActionType.XPRATE:
-                        XpRate = (int)param;
-                        break;
-                    case EventActionType.DISPOSE:
-                        Dispose();
-                        break;
-                    case EventActionType.LOCK:
-                        Lock = Convert.ToBoolean(param);
-                        break;
-                    case EventActionType.MESSAGE:
-                        Broadcast(Convert.ToString(param));
-                        break;
-                    case EventActionType.UNSPAWN:
-                        UnspawnMonsters(Convert.ToInt32(param));
-                        break;
-                    case EventActionType.SPAWN:
-                        SummonMonsters((List<MonsterToSummon>)param);
-                        break;
-                    case EventActionType.DROPITEMS:
-                        DropItems((List<Tuple<short, int, short, short>>)param);
-                        break;
-                    case EventActionType.SPAWNONLASTENTRY://TODO REVIEW THIS CASE
-                        Character lastincharacter = Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
-                        List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
-                        MapCell HornSpawn = new MapCell()
-                        {
-                            X = lastincharacter != null ? lastincharacter.PositionX : (short)154,
-                            Y = lastincharacter != null ? lastincharacter.PositionY : (short)140
-                        };
-                        long HornTarget = lastincharacter != null ? lastincharacter.CharacterId : -1;
-                        SummonParameters.Add(new MonsterToSummon(Convert.ToInt16(param), HornSpawn, HornTarget, true));
-                        break;
-
-
-                }
-            });
-        }
-
 
         public void RemoveMonster(MapMonster monsterToRemove)
         {
@@ -390,6 +333,27 @@ namespace OpenNos.GameObject
                 npc.JumpPointParameters = new JumpPointParam(Map.Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
             }
         }
+
+        public void UnspawnMonsters(int monsterVnum)
+        {
+            _monsters.GetAllItems().Where(s => s.MonsterVNum == monsterVnum).ToList().ForEach(s =>
+             {
+                 s.IsAlive = false;
+                 s.LastMove = DateTime.Now;
+                 s.CurrentHp = 0;
+                 s.CurrentMp = 0;
+                 s.Death = DateTime.Now;
+                 Broadcast(s.GenerateOut3());
+             });
+        }
+
+        internal void CreatePortal(Portal portal)
+        {
+            portal.SourceMapInstanceId = MapInstanceId;
+            _portals.Add(portal);
+            Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.SendPacket(s.Character.GenerateGp(portal)));
+        }
+
         internal IEnumerable<Character> GetCharactersInRange(short mapX, short mapY, byte distance)
         {
             List<Character> characters = new List<Character>();
@@ -404,18 +368,12 @@ namespace OpenNos.GameObject
             }
             return characters;
         }
+
         internal void RemoveMonstersTarget(long characterId)
         {
             foreach (MapMonster monster in Monsters.Where(m => m.Target == characterId))
             {
                 monster.RemoveTarget();
-            }
-        }
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _monsters.Dispose();
             }
         }
 
@@ -437,8 +395,93 @@ namespace OpenNos.GameObject
             });
         }
 
+        internal void StartMapEvent(TimeSpan timeSpan, EventActionType eventaction, object param)
+        {
+            Observable.Timer(timeSpan).Subscribe(x =>
+            {
+                switch (eventaction)
+                {
+                    case EventActionType.CLOCK:
+                        EndDate = DateTime.Now.AddSeconds(Convert.ToDouble(param));
+                        break;
+
+                    case EventActionType.DROPRATE:
+                        DropRate = Convert.ToInt32(param);
+                        break;
+
+                    case EventActionType.XPRATE:
+                        XpRate = (int)param;
+                        break;
+
+                    case EventActionType.DISPOSE:
+                        Dispose();
+                        break;
+
+                    case EventActionType.LOCK:
+                        Lock = Convert.ToBoolean(param);
+                        break;
+
+                    case EventActionType.MESSAGE:
+                        Broadcast(Convert.ToString(param));
+                        break;
+
+                    case EventActionType.UNSPAWN:
+                        UnspawnMonsters(Convert.ToInt32(param));
+                        break;
+
+                    case EventActionType.SPAWN:
+                        SummonMonsters((List<MonsterToSummon>)param);
+                        break;
+
+                    case EventActionType.DROPITEMS:
+                        DropItems((List<Tuple<short, int, short, short>>)param);
+                        break;
+
+                    case EventActionType.SPAWNONLASTENTRY:
+                        
+                        //TODO REVIEW THIS CASE
+                        Character lastincharacter = Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
+                        List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
+                        MapCell hornSpawn = new MapCell
+                        {
+                            X = lastincharacter?.PositionX ?? 154,
+                            Y = lastincharacter?.PositionY ?? 140
+                        };
+                        long HornTarget = lastincharacter != null ? lastincharacter.CharacterId : -1;
+                        SummonParameters.Add(new MonsterToSummon(Convert.ToInt16(param), HornSpawn, HornTarget, true));
+                        break;
+                }
+            });
+        }
+
+        internal List<int> SummonMonsters(List<MonsterToSummon> summonParameters)
+        {
+            List<int> ids = new List<int>();
+            foreach (MonsterToSummon mon in summonParameters)
+            {
+                NpcMonster npcmonster = ServerManager.GetNpc(mon.VNum);
+                if (npcmonster != null)
+                {
+                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.X, MapX = mon.SpawnCell.Y, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target };
+                    monster.Initialize(this);
+                    monster.StartLife();
+                    AddMonster(monster);
+                    Broadcast(monster.GenerateIn3());
+                    ids.Add(monster.MapMonsterId);
+                }
+            }
+
+            return ids;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _monsters.Dispose();
+            }
+        }
 
         #endregion
-
     }
 }
