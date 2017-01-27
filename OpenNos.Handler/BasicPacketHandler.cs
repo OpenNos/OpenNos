@@ -1682,7 +1682,7 @@ namespace OpenNos.Handler
                 if (targetSession == null)
                 {
                     //session is not on current server, check api if the target character is on another server
-                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5)
+                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5)
                                                                                                   , ServerManager.Instance.ChannelId, MessageType.Whisper, characterName, null).Result;
                     if (!sentChannelId.HasValue) //character is even offline on different world
                     {
@@ -1698,7 +1698,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                if (packetsplit[0] == "GM" && targetSession.Account.Authority != AuthorityType.Admin)
+                if (packetsplit[0] == "GM" && targetSession.Account.Authority != AuthorityType.GameMaster)
                 {
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("USER_IS_NOT_AN_ADMIN"), targetSession.Character.Name), 10));
                     return;
@@ -1714,7 +1714,7 @@ namespace OpenNos.Handler
 
                 if (!targetSession.Character.WhisperBlocked)
                 {
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.Admin ? 15 : 5), ReceiverType.OnlySomeone, characterName);
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5), ReceiverType.OnlySomeone, characterName);
                 }
                 else
                 {

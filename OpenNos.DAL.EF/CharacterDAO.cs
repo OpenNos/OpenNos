@@ -107,7 +107,7 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                List<Character> heroes = context.Character.Where(c => c.Account.Authority != AuthorityType.Admin).OrderByDescending(c => c.Reput).Take(43).ToList();
+                List<Character> heroes = context.Character.Where(c => (byte)c.Account.Authority > (byte)AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList();
 
                 int i = 0;
                 foreach (Character c in heroes)

@@ -4,7 +4,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$HairColor", PassNonParseablePacket = true)]
+    [PacketHeader("$HairColor", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class HairColorPacket : PacketDefinition
     {
         #region Properties

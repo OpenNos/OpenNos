@@ -375,7 +375,7 @@ namespace OpenNos.Core
             }
 
             // order by index
-            packetsForPacketDefinition.OrderBy(p => p.Key.Index);
+            var keyValuePairs = packetsForPacketDefinition.OrderBy(p => p.Key.Index);
 
             KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformatin = new KeyValuePair<Tuple<Type, string>, Dictionary<PacketIndexAttribute, PropertyInfo>>(new Tuple<Type, string>(serializationType, header), packetsForPacketDefinition);
             _packetSerializationInformations.Add(serializationInformatin.Key, serializationInformatin.Value);
