@@ -1286,7 +1286,7 @@ namespace OpenNos.Handler
                 {
                     kickPacket.AccountName = string.Empty;
                 }
-
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 ServerCommunicationClient.Instance.HubProxy.Invoke("KickSession", kickPacket.SessionId, kickPacket.AccountName);
             }
             else
@@ -1325,6 +1325,7 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 60000 3 0");
                     Session.CurrentMapInstance?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, string.Empty, (long)id);
                     ServerManager.Instance.AskRevive((long)id);
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
                 else
                 {
@@ -1354,6 +1355,7 @@ namespace OpenNos.Handler
                     Session.Character.Dance();
                     Session.CurrentMapInstance?.Broadcast("dance");
                 }
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
         }
 
@@ -1427,6 +1429,7 @@ namespace OpenNos.Handler
                 {
                     Session.CurrentMapInstance?.Broadcast($"bgm {musicPacket.Music}");
                 }
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
             else
             {
