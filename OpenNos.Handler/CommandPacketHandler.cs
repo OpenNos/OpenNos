@@ -941,7 +941,6 @@ namespace OpenNos.Handler
                 AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
                 if (account != null)
                 {
-                    // TODO: Write GeneralLog entry on Demotion or Promotion
                     account.Authority = AuthorityType.User;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
@@ -950,6 +949,11 @@ namespace OpenNos.Handler
                         session.Account.Authority = AuthorityType.User;
                         session.Character.Authority = AuthorityType.User;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
+                        DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, "Demotion", $"by: {Session.Character.Name}");
+                    }
+                    else
+                    {
+                        DAOFactory.AccountDAO.WriteGeneralLog(account.AccountId, "127.0.0.1", null, "Demotion", $"by: {Session.Character.Name}");
                     }
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
@@ -1531,7 +1535,6 @@ namespace OpenNos.Handler
                 AccountDTO account = DAOFactory.AccountDAO.LoadById(DAOFactory.CharacterDAO.LoadByName(name).AccountId);
                 if (account != null)
                 {
-                    // TODO: Write GeneralLog entry on Promotion and Demotion
                     account.Authority = AuthorityType.GameMaster;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
@@ -1540,6 +1543,11 @@ namespace OpenNos.Handler
                         session.Account.Authority = AuthorityType.GameMaster;
                         session.Character.Authority = AuthorityType.GameMaster;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
+                        DAOFactory.AccountDAO.WriteGeneralLog(session.Account.AccountId, session.IpAddress, session.Character.CharacterId, "Promotion", $"by: {Session.Character.Name}");
+                    }
+                    else
+                    {
+                        DAOFactory.AccountDAO.WriteGeneralLog(account.AccountId, "127.0.0.1", null, "Promotion", $"by: {Session.Character.Name}");
                     }
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }

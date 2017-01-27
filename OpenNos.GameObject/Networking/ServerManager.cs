@@ -470,6 +470,7 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GetClock());
                     }
 
+                    // TODO: fix this
                     if (session.CurrentMapInstance.Map.MapId == 138)
                     {
                         session.SendPacket("bc 0 0 0");

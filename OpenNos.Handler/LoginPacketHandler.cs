@@ -92,7 +92,6 @@ namespace OpenNos.Handler
                             default:
                                 {
                                     int newSessionId = SessionFactory.Instance.GenerateSessionId();
-                                    DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, newSessionId, _session.IpAddress);
                                     Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
                                     // inform communication service about new player from login server

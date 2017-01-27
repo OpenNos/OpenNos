@@ -668,10 +668,7 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                         session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
                         wearable.Upgrade++;
-                        if (session.Character.Family != null)
-                        {
-                            session.Character.Family.InsertFamilyLog(FamilyLogType.Upgrade, session.Character.Name, "", "", "", 0, 0, wearable.ItemVNum, wearable.Upgrade, 0);
-                        }
+                        session.Character.Family?.InsertFamilyLog(FamilyLogType.Upgrade, session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
                         session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, wearable.Upgrade, 0));
                     }
                     else if (rnd <= upfix[Upgrade])
@@ -712,10 +709,7 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                         session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
                         wearable.Upgrade++;
-                        if (session.Character.Family != null)
-                        {
-                            session.Character.Family.InsertFamilyLog(FamilyLogType.Upgrade, session.Character.Name, "", "", "", 0, 0, wearable.ItemVNum, wearable.Upgrade, 0);
-                        }
+                        session.Character.Family?.InsertFamilyLog(FamilyLogType.Upgrade, session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
                         session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, wearable.Upgrade, 0));
                     }
                     else

@@ -33,11 +33,11 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Account Account = context.Account.FirstOrDefault(c => c.AccountId.Equals(accountId));
+                    Account account = context.Account.FirstOrDefault(c => c.AccountId.Equals(accountId));
 
-                    if (Account != null)
+                    if (account != null)
                     {
-                        context.Account.Remove(Account);
+                        context.Account.Remove(account);
                         context.SaveChanges();
                     }
 
@@ -102,10 +102,10 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
-                    if (Account != null)
+                    Account account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
+                    if (account != null)
                     {
-                        return _mapper.Map<AccountDTO>(Account);
+                        return _mapper.Map<AccountDTO>(account);
                     }
                 }
             }
@@ -116,27 +116,7 @@ namespace OpenNos.DAL.EF
             return null;
         }
 
-        public void UpdateLastSessionAndIp(string name, int session, string ip)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
-                    if (Account != null)
-                    {
-                        Account.LastSession = session;
-                        context.SaveChanges();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
-        public void WriteGeneralLog(long accountId, string ipAddress, long? CharacterId, string logType, string logData)
+        public void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData)
         {
             try
             {
@@ -149,7 +129,7 @@ namespace OpenNos.DAL.EF
                         Timestamp = DateTime.Now,
                         LogType = logType,
                         LogData = logData,
-                        CharacterId = CharacterId
+                        CharacterId = characterId
                     };
 
                     context.GeneralLog.Add(log);
@@ -184,7 +164,6 @@ namespace OpenNos.DAL.EF
                 // entity = _mapper.Map<Account>(account);
                 entity.Authority = account.Authority;
                 entity.LastCompliment = account.LastCompliment;
-                entity.LastSession = account.LastSession;
                 entity.Name = account.Name;
                 entity.Password = account.Password;
                 context.Entry(entity).State = System.Data.Entity.EntityState.Modified;

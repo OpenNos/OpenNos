@@ -528,34 +528,34 @@ namespace OpenNos.GameObject
                                         }
 
                                     }
-                                    else if ((packet.SubTypeFilter == 2 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 10)
-                                        || (packet.SubTypeFilter == 3 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 11)
-                                        || (packet.SubTypeFilter == 4 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 2)
-                                        || (packet.SubTypeFilter == 5 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 3)
-                                        || (packet.SubTypeFilter == 6 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 13)
-                                        || (packet.SubTypeFilter == 7 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 5)
-                                        || (packet.SubTypeFilter == 8 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 12)
-                                        || (packet.SubTypeFilter == 9 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 4)
-                                        || (packet.SubTypeFilter == 10 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 7)
-                                        || (packet.SubTypeFilter == 11 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 15)
-                                        || (packet.SubTypeFilter == 12 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 6)
-                                        || (packet.SubTypeFilter == 13 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 14)
-                                        || (packet.SubTypeFilter == 14 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 9)
-                                        || (packet.SubTypeFilter == 15 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 8)
-                                        || (packet.SubTypeFilter == 16 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 1)
-                                        || (packet.SubTypeFilter == 17 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 16)
-                                        || (packet.SubTypeFilter == 18 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 17)
-                                        || (packet.SubTypeFilter == 19 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 18)
-                                        || (packet.SubTypeFilter == 20 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 19)
-                                        || (packet.SubTypeFilter == 21 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 20)
-                                        || (packet.SubTypeFilter == 22 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 21)
-                                        || (packet.SubTypeFilter == 23 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 22)
-                                        || (packet.SubTypeFilter == 24 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 23)
-                                        || (packet.SubTypeFilter == 25 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 24)
-                                        || (packet.SubTypeFilter == 26 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 25)
-                                        || (packet.SubTypeFilter == 27 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 26)
-                                        || (packet.SubTypeFilter == 28 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 27)
-                                        || (packet.SubTypeFilter == 29 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 28))
+                                    else if (packet.SubTypeFilter == 2 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 10
+                                        || packet.SubTypeFilter == 3 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 11
+                                        || packet.SubTypeFilter == 4 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 2
+                                        || packet.SubTypeFilter == 5 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 3
+                                        || packet.SubTypeFilter == 6 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 13
+                                        || packet.SubTypeFilter == 7 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 5
+                                        || packet.SubTypeFilter == 8 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 12
+                                        || packet.SubTypeFilter == 9 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 4
+                                        || packet.SubTypeFilter == 10 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 7
+                                        || packet.SubTypeFilter == 11 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 15
+                                        || packet.SubTypeFilter == 12 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 6
+                                        || packet.SubTypeFilter == 13 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 14
+                                        || packet.SubTypeFilter == 14 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 9
+                                        || packet.SubTypeFilter == 15 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 8
+                                        || packet.SubTypeFilter == 16 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 1
+                                        || packet.SubTypeFilter == 17 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 16
+                                        || packet.SubTypeFilter == 18 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 17
+                                        || packet.SubTypeFilter == 19 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 18
+                                        || packet.SubTypeFilter == 20 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 19
+                                        || packet.SubTypeFilter == 21 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 20
+                                        || packet.SubTypeFilter == 22 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 21
+                                        || packet.SubTypeFilter == 23 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 22
+                                        || packet.SubTypeFilter == 24 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 23
+                                        || packet.SubTypeFilter == 25 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 24
+                                        || packet.SubTypeFilter == 26 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 25
+                                        || packet.SubTypeFilter == 27 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 26
+                                        || packet.SubTypeFilter == 28 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 27
+                                        || packet.SubTypeFilter == 29 && ServerManager.GetItem(boxInstance.HoldingVNum).Morph == 28)
                                     {
                                         if (packet.LevelFilter == 0 || (bz.Item as BoxInstance).SpLevel < packet.LevelFilter * 10 + 1 && (bz.Item as BoxInstance).SpLevel >= packet.LevelFilter * 10 - 9)//Level filter
                                             if (packet.UpgradeFilter == 0 || packet.UpgradeFilter == bz.Item.Upgrade + 1) //upgrade filter
@@ -661,9 +661,9 @@ namespace OpenNos.GameObject
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
-        public void DeleteRelation( long characterId)
+        public void DeleteRelation(long characterId)
         {
-            CharacterRelationDTO chara =  CharacterRelations.FirstOrDefault(s => s.RelatedCharacterId == characterId || s.CharacterId == characterId);
+            CharacterRelationDTO chara = CharacterRelations.FirstOrDefault(s => s.RelatedCharacterId == characterId || s.CharacterId == characterId);
             if (chara != null)
             {
                 long id = chara.CharacterRelationId;
@@ -699,7 +699,7 @@ namespace OpenNos.GameObject
                 int amount = 0;
                 foreach (FamilyLogDTO log in Family.FamilyLogs.OrderByDescending(s => s.Timestamp).Take(100))
                 {
-                    packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(int)((DateTime.Now - log.Timestamp).TotalHours)}";
+                    packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(int)(DateTime.Now - log.Timestamp).TotalHours}";
                     i++;
                     if (i == 50)
                     {
@@ -1376,7 +1376,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCInfo()
         {
-            return $"c_info {Name} - -1 {((Family != null) ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {(Family != null ? Family.FamilyLevel : 0)} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
+            return $"c_info {Name} - -1 {(Family != null ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {(Family != null ? Family.FamilyLevel : 0)} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
 
         public string GenerateCMap()
@@ -1484,8 +1484,8 @@ namespace OpenNos.GameObject
                         + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMeleePercentage, false)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
-                    mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                    mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                    mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                    mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     break;
 
                 case 1:
@@ -1506,8 +1506,8 @@ namespace OpenNos.GameObject
                         + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseDistancePercentage, false)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
-                    mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                    mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                    mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                    mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     break;
 
                 case 2:
@@ -1518,8 +1518,8 @@ namespace OpenNos.GameObject
                         + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMagicPercentage, false)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
-                    mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                    mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                    mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                    mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     break;
 
                 case 3:
@@ -1533,8 +1533,8 @@ namespace OpenNos.GameObject
                                 + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMeleePercentage, false)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
-                            mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                            mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                             break;
 
                         case ClassType.Archer:
@@ -1545,8 +1545,8 @@ namespace OpenNos.GameObject
                                 + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseDistancePercentage, false)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
-                            mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                            mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                             break;
 
                         case ClassType.Magician:
@@ -1557,8 +1557,8 @@ namespace OpenNos.GameObject
                                 + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMagicPercentage, false)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
-                            mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                            mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                             break;
 
                         case ClassType.Adventurer:
@@ -1569,8 +1569,8 @@ namespace OpenNos.GameObject
                                 + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMeleePercentage, false)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
-                            mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                            mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                             break;
                     }
                     break;
@@ -1595,8 +1595,8 @@ namespace OpenNos.GameObject
                             + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMagicPercentage, false)[0];
                         mainMinDmg += boost;
                         mainMaxDmg += boost;
-                        mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                        mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                        mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                        mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     }
                     else
                     {
@@ -1606,8 +1606,8 @@ namespace OpenNos.GameObject
                             + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMeleePercentage, false)[0];
                         mainMinDmg += boost;
                         mainMaxDmg += boost;
-                        mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                        mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                        mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                        mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     }
                     break;
             }
@@ -2111,13 +2111,13 @@ namespace OpenNos.GameObject
                     boost -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMelee, true)[0];
                     boostpercentage -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMeleePercentage, true)[0];
                     monsterDefence += target.Defence + boost;
-                    monsterDefence = (int)(monsterDefence * (1 + (boostpercentage / 100D)));
+                    monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
                     boost = target.Buff.Get(GameObject.Buff.BCard.Type.Dodge, SubType.IncreaseMelee, true)[0];
                     boost -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMelee, true)[0];
                     boostpercentage = target.Buff.Get(GameObject.Buff.BCard.Type.Dodge, SubType.IncreaseMeleePercentage, true)[0];
                     boostpercentage += target.Buff.Get(GameObject.Buff.BCard.Type.Dodge, SubType.IncreasePercentage, true)[0];
                     monsterDodge += target.DefenceRate + boost;
-                    monsterDodge = (int)(monsterDodge * (1 + (boostpercentage / 100D)));
+                    monsterDodge = (int)(monsterDodge * (1 + boostpercentage / 100D));
 
                     if (Class == ClassType.Archer)
                     {
@@ -2135,8 +2135,8 @@ namespace OpenNos.GameObject
                         - target.Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.DecreaseMeleePercentage, true, true)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
-                    mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                    mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                    mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                    mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     break;
 
                 case 1:
@@ -2145,12 +2145,12 @@ namespace OpenNos.GameObject
                     boost -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseDistance, true)[0];
                     boostpercentage -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseDistancePercentage, true)[0];
                     monsterDefence += target.DistanceDefence + boost;
-                    monsterDefence = (int)(monsterDefence * (1 + (boostpercentage / 100D)));
+                    monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
                     boost = target.Buff.Get(GameObject.Buff.BCard.Type.Dodge, SubType.IncreaseDistance, true)[0];
                     boostpercentage = target.Buff.Get(GameObject.Buff.BCard.Type.Dodge, SubType.IncreaseDistancePercentage, true)[0];
                     boostpercentage += target.Buff.Get(GameObject.Buff.BCard.Type.Dodge, SubType.IncreasePercentage, true)[0];
                     monsterDodge += target.DistanceDefenceRate + boost;
-                    monsterDodge = (int)(monsterDodge * (1 + (boostpercentage / 100D)));
+                    monsterDodge = (int)(monsterDodge * (1 + boostpercentage / 100D));
                     if (Class == ClassType.Swordman || Class == ClassType.Adventurer || Class == ClassType.Magician)
                     {
                         mainCritHit = secCritHit;
@@ -2167,8 +2167,8 @@ namespace OpenNos.GameObject
                         - target.Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.DecreaseDistancePercentage, true, true)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
-                    mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                    mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                    mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                    mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     break;
 
                 case 2:
@@ -2177,7 +2177,7 @@ namespace OpenNos.GameObject
                     boost -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMagic, true)[0];
                     boostpercentage -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMagicPercentage, true)[0];
                     monsterDefence += target.MagicalDefence + boost;
-                    monsterDefence = (int)(monsterDefence * (1 + (boostpercentage / 100D)));
+                    monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
 
                     boost = Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.Increase, true)[0]
     + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMagic, true)[0];
@@ -2186,8 +2186,8 @@ namespace OpenNos.GameObject
                         - target.Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.DecreaseMagicPercentage, true, true)[0];
                     mainMinDmg += boost;
                     mainMaxDmg += boost;
-                    mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                    mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                    mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                    mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     break;
 
                 case 3:
@@ -2199,7 +2199,7 @@ namespace OpenNos.GameObject
                             boost -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMelee, true)[0];
                             boostpercentage -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMeleePercentage, true)[0];
                             monsterDefence += target.Defence + boost;
-                            monsterDefence = (int)(monsterDefence * (1 + (boostpercentage / 100D)));
+                            monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
                             boost = Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.Increase, true)[0]
     + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMelee, true)[0];
                             boostpercentage = Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreasePercentage, true)[0]
@@ -2207,15 +2207,15 @@ namespace OpenNos.GameObject
                                 - target.Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.DecreaseMeleePercentage, true, true)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
-                            mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                            mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                             break;
 
                         case ClassType.Archer:
                             boost = target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.IncreaseDistance, true)[0];
                             boostpercentage = target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.IncreaseDistancePercentage, true)[0];
                             monsterDefence += target.DistanceDefence + boost;
-                            monsterDefence = (int)(monsterDefence * (1 + (boostpercentage / 100D)));
+                            monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
                             boost = Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.Increase, true)[0]
     + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseDistance, true)[0];
                             boostpercentage = Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreasePercentage, true)[0]
@@ -2223,8 +2223,8 @@ namespace OpenNos.GameObject
                                 - target.Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.DecreaseDistancePercentage, true, true)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
-                            mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                            mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                             break;
 
                         case ClassType.Magician:
@@ -2233,7 +2233,7 @@ namespace OpenNos.GameObject
                             boost -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMagic, true)[0];
                             boostpercentage -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMagicPercentage, true)[0];
                             monsterDefence += target.MagicalDefence + boost;
-                            monsterDefence = (int)(monsterDefence * (1 + (boostpercentage / 100D)));
+                            monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
                             boost = Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.Increase, true)[0]
     + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMagic, true)[0];
                             boostpercentage = Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreasePercentage, true)[0]
@@ -2241,8 +2241,8 @@ namespace OpenNos.GameObject
                                 - target.Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.DecreaseMagicPercentage, true, true)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
-                            mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                            mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                             break;
 
                         case ClassType.Adventurer:
@@ -2251,7 +2251,7 @@ namespace OpenNos.GameObject
                             boost -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMelee, true)[0];
                             boostpercentage -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMeleePercentage, true)[0];
                             monsterDefence += target.Defence + boost;
-                            monsterDefence = (int)(monsterDefence * (1 + (boostpercentage / 100D)));
+                            monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
                             boost = Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.Increase, true)[0]
     + Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreaseMelee, true)[0];
                             boostpercentage = Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.IncreasePercentage, true)[0]
@@ -2259,8 +2259,8 @@ namespace OpenNos.GameObject
                                 - target.Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.DecreaseMeleePercentage, true, true)[0];
                             mainMinDmg += boost;
                             mainMaxDmg += boost;
-                            mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                            mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                            mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                            mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                             break;
                     }
                     break;
@@ -2271,7 +2271,7 @@ namespace OpenNos.GameObject
                     boost -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMelee, true)[0];
                     boostpercentage -= target.Buff.Get(GameObject.Buff.BCard.Type.Defense, SubType.DecreaseMeleePercentage, true)[0];
                     monsterDefence += target.Defence + boost;
-                    monsterDefence = (int)(monsterDefence * (1 + (boostpercentage / 100D)));
+                    monsterDefence = (int)(monsterDefence * (1 + boostpercentage / 100D));
                     if (Class == ClassType.Archer)
                     {
                         mainCritHit = secCritHit;
@@ -2290,8 +2290,8 @@ namespace OpenNos.GameObject
                             - target.Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.DecreaseMagicPercentage, true, true)[0];
                         mainMinDmg += boost;
                         mainMaxDmg += boost;
-                        mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                        mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                        mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                        mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     }
                     else
                     {
@@ -2302,8 +2302,8 @@ namespace OpenNos.GameObject
                             - target.Buff.Get(GameObject.Buff.BCard.Type.Damage, SubType.DecreaseMeleePercentage, true, true)[0];
                         mainMinDmg += boost;
                         mainMaxDmg += boost;
-                        mainMinDmg = (int)(mainMinDmg * (1 + (boostpercentage / 100D)));
-                        mainMaxDmg = (int)(mainMaxDmg * (1 + (boostpercentage / 100D)));
+                        mainMinDmg = (int)(mainMinDmg * (1 + boostpercentage / 100D));
+                        mainMaxDmg = (int)(mainMaxDmg * (1 + boostpercentage / 100D));
                     }
                     break;
             }
@@ -3336,7 +3336,9 @@ namespace OpenNos.GameObject
                                       o =>
                                       {
                                           if (Session.HasCurrentMapInstance)
+                                          {
                                               Session.CurrentMapInstance.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
+                                          }
                                       });
                             }
                         }
@@ -3353,7 +3355,7 @@ namespace OpenNos.GameObject
                         {
                             foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceId == MapInstanceId))
                             {
-                                //TODO remove this part on release
+                                // TODO: remove this part on release
                                 if (targetSession.Character.Level >= monsterToAttack.Monster.Level - 5 && targetSession.Character.Level <= monsterToAttack.Monster.Level + 5)
                                 {
                                     if (!targetSession.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
@@ -3368,7 +3370,7 @@ namespace OpenNos.GameObject
                                         targetSession.Character.GetReput(monsterToAttack.Monster.Level);
                                     }
                                 }
-                                //END PART
+                                // END PART
 
                                 if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
                                 {
@@ -3383,7 +3385,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            //TODO Remove this part on Release
+                            // TODO: Remove this part on Release
                             if (Level >= monsterToAttack.Monster.Level - 5 && Level <= monsterToAttack.Monster.Level + 5)
                             {
                                 if (!Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
@@ -3398,7 +3400,7 @@ namespace OpenNos.GameObject
                                     GetReput(monsterToAttack.Monster.Level);
                                 }
                             }
-                            //END PART
+                            // END PART
 
                             if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId)
                             {
@@ -3619,7 +3621,7 @@ namespace OpenNos.GameObject
             // tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph
             // talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary
             // ispvparmor herolvl desc
-            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} {((Family != null) ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPVPPrimary ? 1 : 0)} {(isPVPSecondary ? 1 : 0)} {(isPVPArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
+            return $"tc_info {Level} {Name} {fairy?.Item.Element ?? 0} {ElementRate} {(byte)Class} {(byte)Gender} {(Family != null ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} {Act4Kill} {Act4Dead} {Act4Points} {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 {(isPVPPrimary ? 1 : 0)} {(isPVPSecondary ? 1 : 0)} {(isPVPArmor ? 1 : 0)} {HeroLevel} {(string.IsNullOrEmpty(Biography) ? Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE") : Biography)}";
         }
 
         public string GenerateRest()
@@ -4079,7 +4081,7 @@ namespace OpenNos.GameObject
                     {
                         fam.FamilyExperience -= CharacterHelper.LoadFamilyXPData(Family.FamilyLevel);
                         fam.FamilyLevel++;
-                        Family.InsertFamilyLog(FamilyLogType.FamilyLevel, "", "", "", "", fam.FamilyLevel, 0, 0, 0, 0);
+                        Family.InsertFamilyLog(FamilyLogType.FamilyLevel, level: fam.FamilyLevel);
                         int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_UP")), 0), ServerManager.Instance.ChannelId, MessageType.Family, Family.FamilyId.ToString(), null).Result;
                     }
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref famchar);
@@ -4118,28 +4120,28 @@ namespace OpenNos.GameObject
                 {
                     if (isMonsterOwner)
                     {
-                        LevelXp += (int)(GetXP(monsterinfo, grp) * (1 + (Buff.Get(GameObject.Buff.BCard.Type.Experience, SubType.IncreasePercentage, false)[0] / 100D)));
+                        LevelXp += (int)(GetXP(monsterinfo, grp) * (1 + Buff.Get(GameObject.Buff.BCard.Type.Experience, SubType.IncreasePercentage, false)[0] / 100D));
                     }
                     else
                     {
-                        LevelXp += (int)((GetXP(monsterinfo, grp) / 3) * (1 + (Buff.Get(GameObject.Buff.BCard.Type.Experience, SubType.IncreasePercentage, false)[0] / 100D)));
+                        LevelXp += (int)(GetXP(monsterinfo, grp) / 3D * (1 + Buff.Get(GameObject.Buff.BCard.Type.Experience, SubType.IncreasePercentage, false)[0] / 100D));
                     }
                 }
                 if (Class == 0 && JobLevel < 20 || Class != 0 && JobLevel < ServerManager.MaxJobLevel)
                 {
                     if (specialist != null && UseSp && specialist.SpLevel < ServerManager.MaxSPLevel && specialist.SpLevel > 19)
                     {
-                        JobLevelXp += (int)((GetJXP(monsterinfo, grp) / 2) * (1 + (Buff.Get(GameObject.Buff.BCard.Type.JobExperience, SubType.IncreasePercentage, false)[0] / 100D)));
+                        JobLevelXp += (int)(GetJXP(monsterinfo, grp) / 2D * (1 + Buff.Get(GameObject.Buff.BCard.Type.JobExperience, SubType.IncreasePercentage, false)[0] / 100D));
                     }
                     else
                     {
-                        JobLevelXp += (int)(GetJXP(monsterinfo, grp) * (1 + (Buff.Get(GameObject.Buff.BCard.Type.JobExperience, SubType.IncreasePercentage, false)[0] / 100D)));
+                        JobLevelXp += (int)(GetJXP(monsterinfo, grp) * (1 + Buff.Get(GameObject.Buff.BCard.Type.JobExperience, SubType.IncreasePercentage, false)[0] / 100D));
                     }
                 }
                 if (specialist != null && UseSp && specialist.SpLevel < ServerManager.MaxSPLevel)
                 {
                     int multiplier = specialist.SpLevel < 10 ? 10 : specialist.SpLevel < 19 ? 5 : 1;
-                    specialist.XP += (int)(GetJXP(monsterinfo, grp) * (multiplier + (Buff.Get(GameObject.Buff.BCard.Type.SPExperience, SubType.IncreasePercentage, false)[0] / 100D)));
+                    specialist.XP += (int)(GetJXP(monsterinfo, grp) * (multiplier + Buff.Get(GameObject.Buff.BCard.Type.SPExperience, SubType.IncreasePercentage, false)[0] / 100D));
                 }
                 double t = XPLoad();
                 while (LevelXp >= t)
@@ -4160,13 +4162,13 @@ namespace OpenNos.GameObject
 
                         if (Level > 20 && Level % 10 == 0)
                         {
-                            Family.InsertFamilyLog(FamilyLogType.Level, Name, "", "", "", Level, 0, 0, 0, 0);
-                            Family.InsertFamilyLog(FamilyLogType.FamilyXP, Name, "", "", "", 0, 20 * Level, 0, 0, 0);
+                            Family.InsertFamilyLog(FamilyLogType.Level, Name, level: Level);
+                            Family.InsertFamilyLog(FamilyLogType.FamilyXP, Name, experience: 20 * Level);
                             GenerateFamilyXp(20 * Level);
                         }
                         else if (Level > 80)
                         {
-                            Family.InsertFamilyLog(FamilyLogType.Level, Name, "", "", "", Level, 0, 0, 0, 0);
+                            Family.InsertFamilyLog(FamilyLogType.Level, Name, level: Level);
                         }
                         else
                         {
@@ -4310,7 +4312,7 @@ namespace OpenNos.GameObject
             return icoDignity;
         }
 
-        private int GetJXP(NpcMonster monster, Group group)
+        private int GetJXP(NpcMonsterDTO monster, Group group)
         {
             int partySize = 1;
             float partyPenalty = 1f;
@@ -4319,7 +4321,7 @@ namespace OpenNos.GameObject
             {
                 int levelSum = group.Characters.Sum(g => g.Character.JobLevel);
                 partySize = group.CharacterCount;
-                partyPenalty = 12 / partySize / (float)levelSum;
+                partyPenalty = 12f / partySize / levelSum;
             }
 
             int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(JobLevel, monster.Level) * ServerManager.XPRate * MapInstance.XpRate);
@@ -4387,10 +4389,11 @@ namespace OpenNos.GameObject
         public int IsReputHero()
         {
             int i = 0;
-            foreach (Character c in ServerManager.Instance.TopReputation)
+            foreach (CharacterDTO characterDto in ServerManager.Instance.TopReputation)
             {
+                Character character = (Character)characterDto;
                 i++;
-                if (c.CharacterId == CharacterId)
+                if (character.CharacterId == CharacterId)
                 {
                     if (i == 1)
                     {
@@ -4417,7 +4420,7 @@ namespace OpenNos.GameObject
             return 0;
         }
 
-        private long GetXP(NpcMonster monster, Group group)
+        private long GetXP(NpcMonsterDTO monster, Group group)
         {
             int partySize = 1;
             double partyPenalty = 1d;
@@ -4427,7 +4430,7 @@ namespace OpenNos.GameObject
             {
                 int levelSum = group.Characters.Sum(g => g.Character.Level);
                 partySize = group.CharacterCount;
-                partyPenalty = 12 / partySize / (double)levelSum;
+                partyPenalty = 12f / partySize / levelSum;
             }
 
             long xpcalculation = levelDifference < 5 ? monster.XP : monster.XP / 3 * 2;
@@ -4538,7 +4541,7 @@ namespace OpenNos.GameObject
                     hp = specialist.HP + specialist.SpHP * 100;
                 }
             }
-            return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp) * (multiplicator + (Buff.Get(GameObject.Buff.BCard.Type.HP, SubType.IncreasePercentage, false)[0] / 100D)));
+            return (int)((CharacterHelper.HPData[(byte)Class, Level] + hp) * (multiplicator + Buff.Get(GameObject.Buff.BCard.Type.HP, SubType.IncreasePercentage, false)[0] / 100D));
         }
 
         public override void Initialize()
@@ -4774,7 +4777,7 @@ namespace OpenNos.GameObject
                     mp = specialist.MP + specialist.SpHP * 100;
                 }
             }
-            return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp) * (multiplicator + (Buff.Get(GameObject.Buff.BCard.Type.MP, SubType.IncreasePercentage, false)[0] / 100D)));
+            return (int)((CharacterHelper.MPData[(byte)Class, Level] + mp) * (multiplicator + Buff.Get(GameObject.Buff.BCard.Type.MP, SubType.IncreasePercentage, false)[0] / 100D));
         }
 
         public void NotifyRarifyResult(sbyte rare)
@@ -5270,13 +5273,12 @@ namespace OpenNos.GameObject
 
         public void RefreshReputationRankingIfNeeded()
         {
-            int index = -1;
             CharacterDTO chara2;
 
             CharacterDTO chara = ServerManager.Instance.TopReputation.FirstOrDefault(s => s.CharacterId == CharacterId);
             if (chara != null)
             {
-                index = ServerManager.Instance.TopReputation.IndexOf(chara);
+                int index = ServerManager.Instance.TopReputation.IndexOf(chara);
                 chara2 = ServerManager.Instance.TopReputation.ElementAtOrDefault(index - 1);
                 if (chara2 == null || Reput > chara2.Reput)
                 {
@@ -5298,13 +5300,12 @@ namespace OpenNos.GameObject
         }
         public void RefreshPointsRankingIfNeeded()
         {
-            int index = -1;
             CharacterDTO chara2;
 
             CharacterDTO chara = ServerManager.Instance.TopPoints.FirstOrDefault(s => s.CharacterId == CharacterId);
             if (chara != null)
             {
-                index = ServerManager.Instance.TopPoints.IndexOf(chara);
+                int index = ServerManager.Instance.TopPoints.IndexOf(chara);
                 chara2 = ServerManager.Instance.TopPoints.ElementAtOrDefault(index - 1);
                 if (chara2 == null || Act4Points > chara2.Act4Points)
                 {
@@ -5327,13 +5328,11 @@ namespace OpenNos.GameObject
 
         public void RefreshComplimentRankingIfNeeded()
         {
-            int index = -1;
             CharacterDTO chara2;
-
             CharacterDTO chara = ServerManager.Instance.TopComplimented.FirstOrDefault(s => s.CharacterId == CharacterId);
             if (chara != null)
             {
-                index = ServerManager.Instance.TopComplimented.IndexOf(chara);
+                int index = ServerManager.Instance.TopComplimented.IndexOf(chara);
                 chara2 = ServerManager.Instance.TopComplimented.ElementAtOrDefault(index - 1);
                 if (chara2 == null || Compliment > chara2.Compliment)
                 {

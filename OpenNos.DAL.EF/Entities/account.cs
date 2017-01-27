@@ -47,8 +47,6 @@ namespace OpenNos.DAL.EF
 
         public DateTime LastCompliment { get; set; }
 
-        public int LastSession { get; set; }
-
         [MaxLength(255)]
         public string Name { get; set; }
 
