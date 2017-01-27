@@ -251,23 +251,23 @@ namespace OpenNos.Handler
                 }
                 if (loginPacketParts.Length > 4 && hasRegisteredAccountLogin)
                 {
-                    AccountDTO accountDTO = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+                    AccountDTO account = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
 
-                    if (accountDTO != null)
+                    if (account != null)
                     {
-                        if (accountDTO.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])))
+                        if (account.Password.ToLower().Equals(EncryptionBase.Sha512(loginPacketParts[6])))
                         {
-                            var account = new Account
+                            Account accountobject = new Account
                             {
-                                AccountId = accountDTO.AccountId,
-                                Name = accountDTO.Name,
-                                Password = accountDTO.Password.ToLower(),
-                                Authority = accountDTO.Authority,
-                                LastCompliment = accountDTO.LastCompliment,
+                                AccountId = account.AccountId,
+                                Name = account.Name,
+                                Password = account.Password.ToLower(),
+                                Authority = account.Authority,
+                                LastCompliment = account.LastCompliment
                             };
-                            account.Initialize();
+                            accountobject.Initialize();
 
-                            Session.InitializeAccount(account);
+                            Session.InitializeAccount(accountobject);
                         }
                         else
                         {

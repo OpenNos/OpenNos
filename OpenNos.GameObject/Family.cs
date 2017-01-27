@@ -17,8 +17,6 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -37,9 +35,9 @@ namespace OpenNos.GameObject
 
         public List<FamilyCharacter> FamilyCharacters { get; set; }
 
-        public MapInstance LandOfDeath { get; set; }
-
         public List<FamilyLogDTO> FamilyLogs { get; set; }
+
+        public MapInstance LandOfDeath { get; set; }
 
         #endregion
 
@@ -47,45 +45,55 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
-
         }
-        public void InsertFamilyLog(FamilyLogType logtype, string CharacterName = "", string CharacterName2 = "", string RainBowFamily = "", string Message = "", byte Level = 0, int Experience = 0, int ItemVNum = 0, byte Upgrade = 0, int RaidType = 0, int right = 0, int righttype = 0, int rightvalue = 0)
+
+        public void InsertFamilyLog(FamilyLogType logtype, string characterName = "", string characterName2 = "", string rainBowFamily = "", string message = "", byte level = 0, int experience = 0, int itemVNum = 0, byte upgrade = 0, int raidType = 0, int right = 0, int righttype = 0, int rightvalue = 0)
         {
             string value = string.Empty;
             switch (logtype)
             {
                 case FamilyLogType.DailyMessage:
-                    value = $"{CharacterName}|{Message}";
+                    value = $"{characterName}|{message}";
                     break;
+
                 case FamilyLogType.FamilyXP:
-                    value = $"{CharacterName}|{Experience}";
+                    value = $"{characterName}|{experience}";
                     break;
+
                 case FamilyLogType.Level:
-                    value = $"{CharacterName}|{Level}";
+                    value = $"{characterName}|{level}";
                     break;
+
                 case FamilyLogType.Raid:
-                    value = RaidType.ToString();
+                    value = raidType.ToString();
                     break;
+
                 case FamilyLogType.Upgrade:
-                    value = $"{CharacterName}|{ItemVNum}|{Upgrade}";
+                    value = $"{characterName}|{itemVNum}|{upgrade}";
                     break;
+
                 case FamilyLogType.UserManage:
-                    value = $"{CharacterName}|{CharacterName2}";
+                    value = $"{characterName}|{characterName2}";
                     break;
+
                 case FamilyLogType.FamilyLevel:
-                    value = Level.ToString();
+                    value = level.ToString();
                     break;
+
                 case FamilyLogType.AuthorityChange:
-                    value = $"{CharacterName}|{right}|{CharacterName2}";
+                    value = $"{characterName}|{right}|{characterName2}";
                     break;
+
                 case FamilyLogType.FamilyManage:
-                    value = CharacterName;
+                    value = characterName;
                     break;
+
                 case FamilyLogType.RainbowBattle:
-                    value = RainBowFamily;
+                    value = rainBowFamily;
                     break;
+
                 case FamilyLogType.RightChange:
-                    value = $"{CharacterName}|{right}|{righttype}|{rightvalue}";
+                    value = $"{characterName}|{right}|{righttype}|{rightvalue}";
                     break;
             }
             FamilyLogDTO log = new FamilyLogDTO

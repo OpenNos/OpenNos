@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,14 +51,12 @@ namespace OpenNos.GameObject
             }
         }
 
-
         #endregion
 
         #region Methods
 
         public override void Initialize()
         {
-
         }
 
         #endregion
