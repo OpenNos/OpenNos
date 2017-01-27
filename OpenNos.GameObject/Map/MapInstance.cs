@@ -325,7 +325,7 @@ namespace OpenNos.GameObject
                 switch (eventaction)
                 {
                     case EventActionType.CLOCK:
-                        EndDate = DateTime.Now.AddSeconds((double)param / 10);
+                        EndDate = DateTime.Now.AddSeconds((int)param);
                         break;
                     case EventActionType.DROPRATE:
                         DropRate = (int)param;
@@ -368,10 +368,6 @@ namespace OpenNos.GameObject
             });
         }
 
-        internal void ScheduleEvent(TimeSpan timeSpan, Func<object> p)
-        {
-            throw new NotImplementedException();
-        }
 
         public void RemoveMonster(MapMonster monsterToRemove)
         {

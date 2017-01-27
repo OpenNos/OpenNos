@@ -20,7 +20,7 @@ namespace OpenNos.GameObject
             foreach (Family fam in ServerManager.Instance.FamilyList)
             {
                 fam.LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance);
-                fam.LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.CLOCK, (int)(TimeSpan.FromMinutes(lodtime).TotalSeconds * 10));
+                fam.LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.CLOCK, TimeSpan.FromMinutes(lodtime).TotalSeconds);
                 fam.LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(lodtime - HornTime), EventActionType.XPRATE, 3);
                 fam.LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(lodtime - HornTime), EventActionType.DROPRATE, 3);
                 fam.LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(lodtime), EventActionType.DISPOSE, null);

@@ -747,6 +747,9 @@ namespace OpenNos.GameObject
             {
                 if (MapInstance != null)
                 {
+                    GetNearestOponent();
+                    HostilityTarget();
+
                     ClientSession targetSession = MapInstance.GetSessionByCharacterId(Target);
 
                     // remove target in some situations
@@ -795,19 +798,23 @@ namespace OpenNos.GameObject
         /// </summary>
         internal void RemoveTarget()
         {
-            Path.Clear();
-            Observable.Timer(TimeSpan.FromSeconds(2)).Subscribe(o =>
+            if (Target != -1)
             {
-                if (!Path.Any())
+                Path.Clear();
+                Target = -1;
+                Observable.Timer(TimeSpan.FromSeconds(3)).Subscribe(o =>
                 {
-                    Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
                     if (!Path.Any())
                     {
-                        Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                        Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                        if (!Path.Any())
+                        {
+                            Path = Map.JPSPlus(JumpPointParameters, new GridPos { x = MapX, y = MapY }, new GridPos { x = FirstX, y = FirstY });
+                        }
+
                     }
-                    Target = -1;
-                }      
-            });
+                });
+            }
         }
 
         internal void GetNearestOponent()
@@ -822,6 +829,7 @@ namespace OpenNos.GameObject
                 if (distance < maxDistance)
                 {
                     Target = session.Character.CharacterId;
+                    Path.Clear();
                 }
             }
         }
@@ -837,6 +845,7 @@ namespace OpenNos.GameObject
                     {
                         character.Session.SendPacket(GenerateEff(5000));
                     }
+                    Path.Clear();
                 }
 
             }
@@ -856,7 +865,7 @@ namespace OpenNos.GameObject
             if (IsMoving)
             {
                 short maxDistance = 22;
-                if (!Path.Any() && targetSession != null && distance > 1 && distance < maxDistance)
+                if (!Path.Any() && targetSession != null)
                 {
                     short xoffset = (short)ServerManager.RandomNumber(-1, 1);
                     short yoffset = (short)ServerManager.RandomNumber(-1, 1);
@@ -875,10 +884,6 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-
-                GetNearestOponent();
-                HostilityTarget();
-
                 if (Monster != null && DateTime.Now > LastMove && Monster.Speed > 0 && Path.Any())
                 {
                     int maxindex = Path.Count > Monster.Speed / 2 ? Monster.Speed / 2 : Path.Count;
@@ -902,7 +907,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                if (!Path.Any() && (DateTime.Now - LastEffect).Seconds > 20 && (targetSession == null || MapId != targetSession.Character.MapInstance.Map.MapId || distance > maxDistance))
+                if (targetSession == null || MapId != targetSession.Character.MapInstance.Map.MapId || distance > maxDistance)
                 {
                     RemoveTarget();
                 }
@@ -1046,13 +1051,8 @@ namespace OpenNos.GameObject
                 LastEffect = DateTime.Now;
                 if (targetSession.Character.Hp <= 0)
                 {
-                    Observable.Timer(TimeSpan.FromMilliseconds(1000))
-                           .Subscribe(
-                           o =>
-                           {
-                               ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
-                               RemoveTarget();
-                           });
+                    RemoveTarget();
+                    Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(targetSession.Character.CharacterId); });
                 }
             }
             if (npcMonsterSkill != null && (npcMonsterSkill.Skill.Range > 0 || npcMonsterSkill.Skill.TargetRange > 0))
@@ -1076,14 +1076,8 @@ namespace OpenNos.GameObject
                         MapInstance.Broadcast($"su 3 {MapMonsterId} 1 {characterInRange.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(characterInRange.Hp > 0 ? 1 : 0)} { (int)(characterInRange.Hp / characterInRange.HPLoad() * 100) } {damage} {hitmode} 0");
                         if (characterInRange.Hp <= 0)
                         {
-                            Observable.Timer(TimeSpan.FromMilliseconds(1000))
-                                                   .Subscribe(
-                                                   o =>
-                                                   {
-                                                       ServerManager.Instance.AskRevive(characterInRange.CharacterId);
-                                                       RemoveTarget();
-                                                   });
-
+                            RemoveTarget();
+                            Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(o => { ServerManager.Instance.AskRevive(characterInRange.CharacterId); });
                         }
                     }
                 }
