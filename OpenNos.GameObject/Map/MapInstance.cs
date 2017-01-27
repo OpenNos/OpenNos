@@ -448,7 +448,7 @@ namespace OpenNos.GameObject
                             Y = lastincharacter?.PositionY ?? 140
                         };
                         long HornTarget = lastincharacter != null ? lastincharacter.CharacterId : -1;
-                        SummonParameters.Add(new MonsterToSummon(Convert.ToInt16(param), HornSpawn, HornTarget, true));
+                        summonParameters.Add(new MonsterToSummon(Convert.ToInt16(param), hornSpawn, HornTarget, true));
                         break;
                 }
             });
