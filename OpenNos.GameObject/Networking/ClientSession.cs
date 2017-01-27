@@ -203,8 +203,9 @@ namespace OpenNos.GameObject
 
         public int LastKeepAliveIdentity { get; set; }
 
-        public int SessionId { get; set; }
         public DateTime RegisterTime { get; internal set; }
+
+        public int SessionId { get; set; }
 
         #endregion
 
@@ -339,46 +340,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void OnOtherCharacterConnected(object sender, EventArgs e)
-        {
-            Tuple<string, string, long> loggedInCharacter = (Tuple<string, string, long>)sender;
-            if(ServerManager.ServerGroup != loggedInCharacter.Item1)
-            {
-                return;
-            }
-            if (Character.IsFriendOfCharacter(loggedInCharacter.Item3))
-            {
-                if (Character != null && Character.Name != loggedInCharacter.Item1)
-                {
-                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), loggedInCharacter.Item1), 10));
-                    _client.SendPacket(Character.GenerateFinfo(loggedInCharacter.Item3, true));
-                }
-            }
-            if (Character.Family != null)
-            {
-                FamilyCharacter chara = Character.Family.FamilyCharacters.FirstOrDefault(s => s.CharacterId == loggedInCharacter.Item3);
-                if (chara != null && loggedInCharacter.Item3 != Character?.CharacterId)
-                {
-                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_FAMILY_LOGGED_IN"), loggedInCharacter.Item1, Language.Instance.GetMessageFromKey(chara.Authority.ToString().ToUpper())), 10));
-                }
-            }
-        }
-        private void OnOtherCharacterDisconnected(object sender, EventArgs e)
-        {
-            Tuple<string, string, long> loggedOutCharacter = (Tuple<string, string, long>)sender;
-            if (ServerManager.ServerGroup != loggedOutCharacter.Item1)
-            {
-                return;
-            }
-            if (Character.IsFriendOfCharacter(loggedOutCharacter.Item3))
-
-                if (Character != null && Character.Name != loggedOutCharacter.Item2)
-                {
-                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item3), 10));
-                    _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item3, false));
-                }
-        }
-
         private void GenerateHandlerReferences(Type type, bool isWorldServer)
         {
             IEnumerable<Type> handlerTypes = !isWorldServer ? type.Assembly.GetTypes().Where(t => t.Name.Equals("LoginPacketHandler")) // shitty but it works
@@ -510,37 +471,24 @@ namespace OpenNos.GameObject
                             string[] packetHeader = packet.Split(new[] { ' ', '^' }, StringSplitOptions.RemoveEmptyEntries);
 
                             // 1 is a keep alive packet with no content to handle
-                            int permit = 1;
                             if (packetHeader.Length > 1)
                             {
-                                if (packetHeader[1][0] == '$')
-                                {
-                                    if (Account != null && Account.Authority != AuthorityType.Admin)
-                                    {
-                                        permit = 0;
-                                    }
-                                }
-
                                 if (packetHeader[1][0] == '/' || packetHeader[1][0] == ':' || packetHeader[1][0] == ';')
                                 {
                                     packetHeader[1] = packetHeader[1][0].ToString();
                                     packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
                                 }
-
-                                if (permit == 1)
+                                if (packetHeader[1] != "0")
                                 {
-                                    if (packetHeader[1] != "0")
-                                    {
-                                        TriggerHandler(packetHeader[1], packetstring, false);
-                                    }
+                                    TriggerHandler(packetHeader[1], packetstring, false);
                                 }
-
                             }
                         }
                     }
                     else
                     {
                         string packetHeader = packetstring.Split(' ')[0];
+
                         // simple messaging
                         if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
                         {
@@ -549,7 +497,6 @@ namespace OpenNos.GameObject
                         }
 
                         TriggerHandler(packetHeader, packetstring, false);
-
                     }
                 }
             }
@@ -576,12 +523,49 @@ namespace OpenNos.GameObject
             lastPacketReceive = e.ReceivedTimestamp.Ticks;
         }
 
+        private void OnOtherCharacterConnected(object sender, EventArgs e)
+        {
+            Tuple<string, string, long> loggedInCharacter = (Tuple<string, string, long>)sender;
+            if (ServerManager.ServerGroup != loggedInCharacter.Item1)
+            {
+                return;
+            }
+            if (Character.IsFriendOfCharacter(loggedInCharacter.Item3))
+            {
+                if (Character != null && Character.Name != loggedInCharacter.Item1)
+                {
+                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), loggedInCharacter.Item1), 10));
+                    _client.SendPacket(Character.GenerateFinfo(loggedInCharacter.Item3, true));
+                }
+            }
+            FamilyCharacter chara = Character.Family?.FamilyCharacters.FirstOrDefault(s => s.CharacterId == loggedInCharacter.Item3);
+            if (chara != null && loggedInCharacter.Item3 != Character?.CharacterId)
+            {
+                _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_FAMILY_LOGGED_IN"), loggedInCharacter.Item1, Language.Instance.GetMessageFromKey(chara.Authority.ToString().ToUpper())), 10));
+            }
+        }
+
+        private void OnOtherCharacterDisconnected(object sender, EventArgs e)
+        {
+            Tuple<string, string, long> loggedOutCharacter = (Tuple<string, string, long>)sender;
+            if (ServerManager.ServerGroup != loggedOutCharacter.Item1)
+            {
+                return;
+            }
+            if (Character.IsFriendOfCharacter(loggedOutCharacter.Item3))
+
+                if (Character != null && Character.Name != loggedOutCharacter.Item2)
+                {
+                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item3), 10));
+                    _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item3, false));
+                }
+        }
+
         private void TriggerHandler(string packetHeader, string packet, bool force)
         {
             if (!IsDisposing)
             {
                 HandlerMethodReference methodReference = HandlerMethods.ContainsKey(packetHeader) ? HandlerMethods[packetHeader] : null;
-
                 if (methodReference != null)
                 {
                     if (methodReference.HandlerMethodAttribute != null && !force && methodReference.HandlerMethodAttribute.Amount > 1 && !_waitForPacketsAmount.HasValue)
@@ -600,7 +584,7 @@ namespace OpenNos.GameObject
                             {
                                 object serializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, true);
 
-                                if (serializedPacket != null || methodReference.PassNonParseablePacket)
+                                if ((serializedPacket != null || methodReference.PassNonParseablePacket) && (byte)methodReference.Authority <= (byte)Account.Authority)
                                 {
                                     methodReference.HandlerMethod(methodReference.ParentHandler, serializedPacket);
                                 }

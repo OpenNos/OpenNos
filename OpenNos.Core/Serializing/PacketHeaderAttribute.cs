@@ -25,6 +25,11 @@ namespace OpenNos.Core
         /// </summary>
         public bool PassNonParseablePacket { get; set; }
 
+        /// <summary>
+        /// Permission to handle the packet
+        /// </summary>
+        public Domain.AuthorityType Authority { get; set; }
+
         #endregion
     }
 }
