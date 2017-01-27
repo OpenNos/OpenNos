@@ -402,11 +402,11 @@ namespace OpenNos.GameObject
                 switch (eventaction)
                 {
                     case EventActionType.CLOCK:
-                        EndDate = DateTime.Now.AddSeconds((int)param);
+                        EndDate = DateTime.Now.AddSeconds(Convert.ToDouble(param));
                         break;
 
                     case EventActionType.DROPRATE:
-                        DropRate = (int)param;
+                        DropRate = Convert.ToInt32(param);
                         break;
 
                     case EventActionType.XPRATE:
@@ -418,15 +418,15 @@ namespace OpenNos.GameObject
                         break;
 
                     case EventActionType.LOCK:
-                        Lock = (bool)param;
+                        Lock = Convert.ToBoolean(param);
                         break;
 
                     case EventActionType.MESSAGE:
-                        Broadcast((string)param);
+                        Broadcast(Convert.ToString(param));
                         break;
 
                     case EventActionType.UNSPAWN:
-                        UnspawnMonsters((int)param);
+                        UnspawnMonsters(Convert.ToInt32(param));
                         break;
 
                     case EventActionType.SPAWN:
@@ -447,8 +447,8 @@ namespace OpenNos.GameObject
                             X = lastincharacter?.PositionX ?? 154,
                             Y = lastincharacter?.PositionY ?? 140
                         };
-                        long hornTarget = lastincharacter?.CharacterId ?? -1;
-                        summonParameters.Add(new MonsterToSummon((short)param, hornSpawn, hornTarget, true));
+                        long HornTarget = lastincharacter != null ? lastincharacter.CharacterId : -1;
+                        summonParameters.Add(new MonsterToSummon(Convert.ToInt16(param), hornSpawn, HornTarget, true));
                         break;
                 }
             });
