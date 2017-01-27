@@ -234,7 +234,7 @@ namespace OpenNos.GameObject
                                 }
                             }
                         }
-                        if (Session.Character.Group == null || Session.Character.Group.CharacterCount == 3)
+                        if (Session.Character.Group == null || Session.Character.Group.CharacterCount != 3)
                         {
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_GROUP_NOT_FULL")));
                             return;
