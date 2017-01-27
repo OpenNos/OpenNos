@@ -3354,11 +3354,18 @@ namespace OpenNos.GameObject
                             foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceId == MapInstanceId))
                             {
                                 //TODO remove this part on release
-                                if ((targetSession.Character.Level >= monsterToAttack.Monster.Level - 5 && targetSession.Character.Level <= monsterToAttack.Monster.Level + 5) || (targetSession.Character.Level >= 90 && monsterToAttack.Monster.Level >= 88))
+                                if (targetSession.Character.Level >= monsterToAttack.Monster.Level - 5 && targetSession.Character.Level <= monsterToAttack.Monster.Level + 5)
                                 {
                                     if (!targetSession.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
                                     {
-                                        GetReput(monsterToAttack.Monster.Level);
+                                        targetSession.Character.GetReput(monsterToAttack.Monster.Level);
+                                    }
+                                }
+                                else if (Level >= 90 && monsterToAttack.Monster.Level >= 88)
+                                {
+                                    if (!Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
+                                    {
+                                        targetSession.Character.GetReput(monsterToAttack.Monster.Level);
                                     }
                                 }
                                 //END PART
@@ -3381,14 +3388,14 @@ namespace OpenNos.GameObject
                             {
                                 if (!Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
                                 {
-                                    Reput += monsterToAttack.Monster.Level;
+                                    GetReput(monsterToAttack.Monster.Level);
                                 }
                             }
                             else if (Level >= 90 && monsterToAttack.Monster.Level >= 88)
                             {
                                 if (!Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
                                 {
-                                    Reput += monsterToAttack.Monster.Level;
+                                    GetReput(monsterToAttack.Monster.Level);
                                 }
                             }
                             //END PART
@@ -5328,7 +5335,7 @@ namespace OpenNos.GameObject
             {
                 index = ServerManager.Instance.TopComplimented.IndexOf(chara);
                 chara2 = ServerManager.Instance.TopComplimented.ElementAtOrDefault(index - 1);
-                if (Compliment > chara2.Compliment)
+                if (chara2 == null || Compliment > chara2.Compliment)
                 {
                     CharacterDTO character = DeepCopy();
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
