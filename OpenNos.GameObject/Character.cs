@@ -2026,7 +2026,7 @@ namespace OpenNos.GameObject
 
         public void GetAct4Points(int point)
         {
-            Session.Character.RefreshComplimentRankingIfNeeded();
+            //Session.Character.RefreshComplimentRankingIfNeeded();
             Act4Points += point;
         }
 
@@ -5265,7 +5265,7 @@ namespace OpenNos.GameObject
             Reput += val;
             Session.SendPacket(Session.Character.GenerateFd());
             Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), val), 11));
-            RefreshReputationRankingIfNeeded();
+            //RefreshReputationRankingIfNeeded(); //Fix Hardcore lags
         }
 
         public void RefreshReputationRankingIfNeeded()

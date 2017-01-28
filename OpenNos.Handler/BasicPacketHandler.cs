@@ -174,7 +174,7 @@ namespace OpenNos.Handler
                             ServerManager.Instance.SetProperty(complimentedCharacterId, nameof(Character.Compliment), compliment);
                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentedCharacterId, nameof(Character.Name))), 12));
                             Session.Account.LastCompliment = DateTime.Now;
-                            Session.Character.RefreshComplimentRankingIfNeeded();
+                            //Session.Character.RefreshComplimentRankingIfNeeded();
                             Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
                         }
                         else
