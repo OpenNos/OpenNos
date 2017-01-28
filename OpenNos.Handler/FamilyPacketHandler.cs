@@ -508,7 +508,7 @@ namespace OpenNos.Handler
                 }
                 msg = msg.Substring(1);
                 string ccmsg = $"[{Session.Character.Name}]:{msg}";
-                if (Session.Account.Authority == AuthorityType.Admin)
+                if (Session.Account.Authority == AuthorityType.GameMaster)
                 {
                     ccmsg = $"[GM {Session.Character.Name}]:{msg}";
                 }
@@ -528,7 +528,7 @@ namespace OpenNos.Handler
                             else
                             {
                                 string prefix = $"[{Session.Character.Name}]:";
-                                if (Session.Account.Authority == AuthorityType.Admin)
+                                if (Session.Account.Authority == AuthorityType.GameMaster)
                                 {
                                     prefix = $"[GM {Session.Character.Name}]:";
                                 }

@@ -20,6 +20,7 @@ namespace OpenNos.Domain
         Banned = -2,
         Unconfirmed = -1,
         User = 0,
-        Admin = 2
+        Moderator = 1,
+        GameMaster = 2
     }
 }

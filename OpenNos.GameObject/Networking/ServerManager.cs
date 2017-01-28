@@ -258,7 +258,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateMlinfo());
             }
             GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "Miniland", LogType = "World", Timestamp = DateTime.Now });
-            Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MINILAND_VISITOR"), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day).Count(), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland").Count()), 10));
+            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MINILAND_VISITOR"), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day).Count(), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland").Count()), 10));
 
         }
         public void AskPVPRevive(long characterId)

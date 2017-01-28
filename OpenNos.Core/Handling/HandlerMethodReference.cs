@@ -14,6 +14,7 @@
 
 using System;
 using System.Linq;
+using OpenNos.Domain;
 
 namespace OpenNos.Core
 {
@@ -28,6 +29,7 @@ namespace OpenNos.Core
             HandlerMethodAttribute = handlerMethodAttribute;
             Identification = HandlerMethodAttribute.Header;
             PassNonParseablePacket = false;
+            Authority = AuthorityType.User;
         }
 
         public HandlerMethodReference(Action<object, object> handlerMethod, IPacketHandler parentHandler, Type packetBaseParameterType)
@@ -38,6 +40,7 @@ namespace OpenNos.Core
             PacketHeaderAttribute headerAttribute = (PacketHeaderAttribute)PacketDefinitionParameterType.GetCustomAttributes(true).FirstOrDefault(ca => ca.GetType().Equals(typeof(PacketHeaderAttribute)));
             Identification = headerAttribute?.Identification;
             PassNonParseablePacket = headerAttribute?.PassNonParseablePacket ?? false;
+            Authority = headerAttribute?.Authority ?? AuthorityType.User;
         }
 
         #endregion
@@ -58,6 +61,8 @@ namespace OpenNos.Core
         public IPacketHandler ParentHandler { get; set; }
 
         public bool PassNonParseablePacket { get; set; }
+
+        public AuthorityType Authority { get; set; }
 
         #endregion
     }
