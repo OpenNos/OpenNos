@@ -431,9 +431,11 @@ namespace OpenNos.GameObject
                         // keep alive
                         string nextKeepAliveRaw = packetsplit[0];
                         int nextKeepaliveIdentity;
-                        if (!int.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) && nextKeepaliveIdentity != LastKeepAliveIdentity + 1)
+                        if (!int.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) &&
+                            nextKeepaliveIdentity != LastKeepAliveIdentity + 1)
                         {
-                            Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"), _client.ClientId);
+                            Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"),
+                                _client.ClientId);
                             _client.Disconnect();
                             return;
                         }
@@ -468,19 +470,28 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            string[] packetHeader = packet.Split(new[] { ' ', '^' }, StringSplitOptions.RemoveEmptyEntries);
-
-                            // 1 is a keep alive packet with no content to handle
+                            string[] packetHeader = packet.Split(new[] {' ', '^'}, StringSplitOptions.RemoveEmptyEntries);
+                            int permit = 1;
                             if (packetHeader.Length > 1)
                             {
+                                if (packetHeader[1][0] == '$')
+                                {
+                                    if (Account != null && Account.Authority != AuthorityType.GameMaster)
+                                    {
+                                        permit = 0;
+                                    }
+                                }
                                 if (packetHeader[1][0] == '/' || packetHeader[1][0] == ':' || packetHeader[1][0] == ';')
                                 {
                                     packetHeader[1] = packetHeader[1][0].ToString();
                                     packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
                                 }
-                                if (packetHeader[1] != "0")
+                                if (permit == 1)
                                 {
-                                    TriggerHandler(packetHeader[1], packetstring, false);
+                                    if (packetHeader[1] != "0")
+                                    {
+                                        TriggerHandler(packetHeader[1], packetstring, false);
+                                    }
                                 }
                             }
                         }
