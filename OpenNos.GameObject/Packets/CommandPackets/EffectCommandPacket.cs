@@ -1,8 +1,9 @@
 ﻿using OpenNos.Core;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Effect", PassNonParseablePacket = true)]
+    [PacketHeader("$Effect", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class EffectCommandPacket : PacketDefinition
     {
         #region Properties

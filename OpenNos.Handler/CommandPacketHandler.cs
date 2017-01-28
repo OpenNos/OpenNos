@@ -31,22 +31,20 @@ namespace OpenNos.Handler
     {
         #region Members
 
-        private readonly ClientSession _session;
-
         #endregion
 
         #region Instantiation
 
         public CommandPacketHandler(ClientSession session)
         {
-            _session = session;
+            Session = session;
         }
 
         #endregion
 
         #region Properties
 
-        private ClientSession Session => _session;
+        private ClientSession Session { get; }
 
         #endregion
 
@@ -227,15 +225,6 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$MapPVP")]
-        public void MapPVP()
-        {
-            Session.CurrentMapInstance.IsPVP = !Session.CurrentMapInstance.IsPVP;
-            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        }
-
-        // TODO: Unify This!
-
         [Packet("$BlockExp")]
         public void BlockExp(string packet)
         {
@@ -288,6 +277,7 @@ namespace OpenNos.Handler
             }
         }
 
+        // TODO: Unify This!
         [Packet("$BlockFExp")]
         public void BlockFExp(string packet)
         {
@@ -338,6 +328,21 @@ namespace OpenNos.Handler
             {
                 Session.SendPacket(Session.Character.GenerateSay("$BlockFExp CHARACTERNAME TIME REASON ", 10));
                 Session.SendPacket(Session.Character.GenerateSay("$BlockFExp CHARACTERNAME REASON", 10));
+            }
+        }
+
+        [Packet("$BlockPM")]
+        public void BlockPM()
+        {
+            if (!Session.Character.GmPvtBlock)
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_ENABLE"), 10));
+                Session.Character.GmPvtBlock = true;
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_DISABLE"), 10));
+                Session.Character.GmPvtBlock = false;
             }
         }
 
@@ -394,22 +399,6 @@ namespace OpenNos.Handler
         }
 
         /////////////////////////////////////////////////////////////////////////////////
-
-        [Packet("$BlockPM")]
-        public void BlockPM()
-        {
-            if (!Session.Character.GmPvtBlock)
-            {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_ENABLE"), 10));
-                Session.Character.GmPvtBlock = true;
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_DISABLE"), 10));
-                Session.Character.GmPvtBlock = false;
-            }
-        }
-
         /// <summary>
         /// $ChangeClass Command
         /// </summary>
@@ -673,6 +662,46 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// $CharStat Command
+        /// </summary>
+        /// <param name="characterStatsPacket"></param>
+        public void CharStat(CharacterStatsPacket characterStatsPacket)
+        {
+            Logger.Debug("CharStat Command", Session.SessionId);
+
+            // TODO: Optimize this!
+            if (characterStatsPacket != null)
+            {
+                string name = characterStatsPacket.CharacterName;
+                if (!string.IsNullOrEmpty(name))
+                {
+                    if (ServerManager.Instance.GetSessionByCharacterName(name) != null)
+                    {
+                        Character character = ServerManager.Instance.GetSessionByCharacterName(name).Character;
+                        SendStats(character);
+                    }
+                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    {
+                        CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadByName(name);
+                        SendStats(characterDTO);
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                    }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 10));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 10));
+            }
+        }
+
         [Packet("$Help")]
         public void Command(string packet)
         {
@@ -844,11 +873,11 @@ namespace OpenNos.Handler
                             wearable.SetRarityPoint();
                         }
 
-                        short Slot = inv.Slot;
-                        if (Slot != -1)
+                        short slot = inv.Slot;
+                        if (slot != -1)
                         {
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.Amount, iteminfo.Type, Slot, rare, design, upgrade, 0));
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.Amount, iteminfo.Type, slot, rare, design, upgrade, 0));
                         }
                     }
                     else
@@ -1220,20 +1249,7 @@ namespace OpenNos.Handler
                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
             }
         }
-        [Packet("$Event")]
-        public void StartEvent(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
 
-            if (packetsplit.Length > 2)
-            {
-                EventType type;
-                if (Enum.TryParse(packetsplit[2], out type))
-                {
-                    EventHelper.GenerateEvent(type);
-                }
-            }
-        }
         /// <summary>
         /// $Kick Command
         /// </summary>
@@ -1270,7 +1286,7 @@ namespace OpenNos.Handler
                 {
                     kickPacket.AccountName = string.Empty;
                 }
-
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 ServerCommunicationClient.Instance.HubProxy.Invoke("KickSession", kickPacket.SessionId, kickPacket.AccountName);
             }
             else
@@ -1309,6 +1325,7 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 60000 3 0");
                     Session.CurrentMapInstance?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, string.Empty, (long)id);
                     ServerManager.Instance.AskRevive((long)id);
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
                 else
                 {
@@ -1338,7 +1355,15 @@ namespace OpenNos.Handler
                     Session.Character.Dance();
                     Session.CurrentMapInstance?.Broadcast("dance");
                 }
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
+        }
+
+        [Packet("$MapPVP")]
+        public void MapPVP()
+        {
+            Session.CurrentMapInstance.IsPVP = !Session.CurrentMapInstance.IsPVP;
+            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
         [Packet("$Morph")]
@@ -1404,6 +1429,7 @@ namespace OpenNos.Handler
                 {
                     Session.CurrentMapInstance?.Broadcast($"bgm {musicPacket.Music}");
                 }
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
             else
             {
@@ -1506,13 +1532,13 @@ namespace OpenNos.Handler
                 if (account != null)
                 {
                     // TODO: Write GeneralLog entry on Promotion and Demotion
-                    account.Authority = AuthorityType.Admin;
+                    account.Authority = AuthorityType.GameMaster;
                     DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                     ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                     if (session != null)
                     {
-                        session.Account.Authority = AuthorityType.Admin;
-                        session.Character.Authority = AuthorityType.Admin;
+                        session.Account.Authority = AuthorityType.GameMaster;
+                        session.Character.Authority = AuthorityType.GameMaster;
                         ServerManager.Instance.ChangeMap(session.Character.CharacterId);
                     }
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
@@ -1663,9 +1689,9 @@ namespace OpenNos.Handler
                 IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(packetsplit[2]).OrderBy(s => s.NpcMonsterVNum).ToList();
                 if (monsterlist.Any())
                 {
-                    foreach (NpcMonsterDTO NpcMonster in monsterlist)
+                    foreach (NpcMonsterDTO npcMonster in monsterlist)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay($"Monster: {NpcMonster.Name} VNum: {NpcMonster.NpcMonsterVNum}", 12));
+                        Session.SendPacket(Session.Character.GenerateSay($"Monster: {npcMonster.Name} VNum: {npcMonster.NpcMonsterVNum}", 12));
                     }
                 }
                 else
@@ -1772,6 +1798,21 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSpPoint());
         }
 
+        [Packet("$Event")]
+        public void StartEvent(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+
+            if (packetsplit.Length > 2)
+            {
+                EventType type;
+                if (Enum.TryParse(packetsplit[2], out type))
+                {
+                    EventHelper.GenerateEvent(type);
+                }
+            }
+        }
+
         [Packet("$Stat")]
         public void Stat(string packet)
         {
@@ -1787,99 +1828,6 @@ namespace OpenNos.Handler
             foreach (string message in ServerCommunicationClient.Instance.HubProxy.Invoke<IEnumerable<string>>("RetrieveServerStatistics").Result)
             {
                 Session.SendPacket(Session.Character.GenerateSay(message, 13));
-            }
-        }
-
-        /// <summary>
-        /// $CharStat Command
-        /// </summary>
-        /// <param name="characterStatsPacket"></param>
-        public void CharStat(CharacterStatsPacket characterStatsPacket)
-        {
-            Logger.Debug("CharStat Command", Session.SessionId);
-            // TODO: Optimize this!
-            if (characterStatsPacket != null)
-            {
-                string name = characterStatsPacket.CharacterName;
-                if (!string.IsNullOrEmpty(name))
-                {
-                    if (ServerManager.Instance.GetSessionByCharacterName(name) != null)
-                    {
-                        Character character = ServerManager.Instance.GetSessionByCharacterName(name).Character;
-                        SendStats(character);
-                    }
-                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
-                    {
-                        CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadByName(name);
-                        SendStats(characterDTO);
-                    }
-                    else
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-                    }
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 10));
-                }
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 10));
-            }
-        }
-
-        /// <summary>
-        /// Helper method used for sending stats of desired character
-        /// </summary>
-        /// <param name="character"></param>
-        private void SendStats(CharacterDTO character)
-        {
-            // TODO: Optimize THIS!
-            Session.SendPacket(Session.Character.GenerateSay("---- CHARACTER ----", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Name: {character.Name}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Id: {character.CharacterId}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Gender: {character.Gender}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Class: {character.Class}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Level: {character.Level}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"JobLevel: {character.JobLevel}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"HeroLevel: {character.HeroLevel}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Gold: {character.Gold}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Bio: {character.Biography}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"MapId: {Session.CurrentMapInstance.Map.MapId}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"MapX: {Session.Character.PositionX}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"MapY: {Session.Character.PositionY}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Reputation: {character.Reput}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Dignity: {character.Dignity}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"Fraction: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
-            Session.SendPacket(Session.Character.GenerateSay("---- --------- ----", 13));
-            AccountDTO acc = DAOFactory.AccountDAO.LoadById(character.AccountId);
-            if (acc != null)
-            {
-                Session.SendPacket(Session.Character.GenerateSay("----- ACCOUNT -----", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Id: {acc.AccountId}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Name: {acc.Name}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Authority: {acc.Authority}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"RegistrationIP: {acc.RegistrationIP}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Email: {acc.Email}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"LastSession: {acc.LastSession}", 13));
-                Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
-
-            }
-            IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => s.AccountId == acc.AccountId);
-            PenaltyLogDTO penalty = penaltyLogs.LastOrDefault(s => s.DateEnd > DateTime.Now);
-            if (penalty != null)
-            {
-                Session.SendPacket(Session.Character.GenerateSay("----- PENALTY -----", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Type: {penalty.Penalty}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"AdminName: {penalty.AdminName}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Reason: {penalty.Reason}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"DateStart: {penalty.DateStart}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"DateEnd: {penalty.DateEnd}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Bans: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Banned)}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Mutes: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Muted)}", 13));
-                Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
             }
         }
 
@@ -1907,15 +1855,15 @@ namespace OpenNos.Handler
                     }
                     for (int i = 0; i < amount; i++)
                     {
-                        List<MapCell> Possibilities = new List<MapCell>();
+                        List<MapCell> possibilities = new List<MapCell>();
                         for (short x = -4; x < 5; x++)
                         {
                             for (short y = -4; y < 5; y++)
                             {
-                                Possibilities.Add(new MapCell { X = x, Y = y });
+                                possibilities.Add(new MapCell { X = x, Y = y });
                             }
                         }
-                        foreach (MapCell possibilitie in Possibilities.OrderBy(s => random.Next()))
+                        foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
                         {
                             short mapx = (short)(Session.Character.PositionX + possibilitie.X);
                             short mapy = (short)(Session.Character.PositionY + possibilitie.Y);
@@ -1927,7 +1875,8 @@ namespace OpenNos.Handler
 
                         if (Session.HasCurrentMapInstance)
                         {
-                            // ReSharper disable once PossibleNullReferenceException HasCurrentMapInstance NullCheck
+                            // ReSharper disable once PossibleNullReferenceException
+                            // HasCurrentMapInstance NullCheck
                             MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstance.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId(), ShouldRespawn = false };
                             monster.Initialize(Session.CurrentMapInstance);
                             monster.StartLife();
@@ -2129,8 +2078,6 @@ namespace OpenNos.Handler
             if (unmutePacket != null)
             {
                 string name = unmutePacket.CharacterName;
-                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
-
                 CharacterDTO chara = DAOFactory.CharacterDAO.LoadByName(name);
                 if (chara != null)
                 {
@@ -2153,7 +2100,6 @@ namespace OpenNos.Handler
                 {
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                 }
-
             }
             else
             {
@@ -2247,6 +2193,59 @@ namespace OpenNos.Handler
             Session.SendPacket(zoomPacket != null
                 ? Session.Character.GenerateGuri(15, zoomPacket.Value)
                 : Session.Character.GenerateSay("$Zoom VALUE", 10));
+        }
+
+        /// <summary>
+        /// Helper method used for sending stats of desired character
+        /// </summary>
+        /// <param name="character"></param>
+        private void SendStats(CharacterDTO character)
+        {
+            // TODO: Optimize THIS!
+            Session.SendPacket(Session.Character.GenerateSay("---- CHARACTER ----", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Name: {character.Name}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Id: {character.CharacterId}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Gender: {character.Gender}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Class: {character.Class}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Level: {character.Level}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"JobLevel: {character.JobLevel}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"HeroLevel: {character.HeroLevel}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Gold: {character.Gold}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Bio: {character.Biography}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"MapId: {Session.CurrentMapInstance.Map.MapId}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"MapX: {Session.Character.PositionX}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"MapY: {Session.Character.PositionY}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Reputation: {character.Reput}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Dignity: {character.Dignity}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Fraction: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
+            Session.SendPacket(Session.Character.GenerateSay("---- --------- ----", 13));
+            AccountDTO acc = DAOFactory.AccountDAO.LoadById(character.AccountId);
+            if (acc != null)
+            {
+                Session.SendPacket(Session.Character.GenerateSay("----- ACCOUNT -----", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Id: {acc.AccountId}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Name: {acc.Name}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Authority: {acc.Authority}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"RegistrationIP: {acc.RegistrationIP}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Email: {acc.Email}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"LastSession: {acc.LastSession}", 13));
+                Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
+            }
+            IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => acc != null && s.AccountId == acc.AccountId);
+            PenaltyLogDTO penalty = penaltyLogs.LastOrDefault(s => s.DateEnd > DateTime.Now);
+            if (penalty != null)
+            {
+                Session.SendPacket(Session.Character.GenerateSay("----- PENALTY -----", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Type: {penalty.Penalty}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"AdminName: {penalty.AdminName}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Reason: {penalty.Reason}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"DateStart: {penalty.DateStart}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"DateEnd: {penalty.DateEnd}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Bans: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Banned)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay($"Mutes: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Muted)}", 13));
+                Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
+            }
         }
 
         private async void ShutdownTask()
