@@ -88,7 +88,16 @@ namespace OpenNos.Handler
                                     _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("NOTVALIDATE")}");
                                 }
                                 break;
-
+                            case AuthorityType.Banned:
+                                {
+                                    _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("IDERROR")}");
+                                }
+                                break;
+                            case AuthorityType.Closed:
+                                {
+                                    _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("IDERROR")}");
+                                }
+                                break;
                             default:
                                 {
                                     int newSessionId = SessionFactory.Instance.GenerateSessionId();
