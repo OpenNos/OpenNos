@@ -731,9 +731,10 @@ namespace OpenNos.GameObject
             }
             else
             {
-                session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
-                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
-                session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
+                Upgrade = 0; // Troll dem fags
+                session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, Type, Slot, Rare, 0, Upgrade, 0));
+                Logger.Log.Info($"Player {session.Character.Name} upgraded with Packet Logger!");
+                return;
             }
             session.SendPacket("shop_end 1");
         }

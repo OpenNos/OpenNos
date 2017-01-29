@@ -40,7 +40,7 @@ namespace OpenNos.GameObject
                 }
                 else if (EffectValue == 0)
                 {
-                    if (packetsplit != null)
+                    if (packetsplit != null && packetsplit.Length > 9)
                     {
                         byte TypeEquip;
                         short SlotEquip;
