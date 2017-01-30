@@ -665,8 +665,8 @@ namespace OpenNos.Handler
             {
                 return;
             }
-
-            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null && Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head && byte.TryParse(packetsplit[2], out byte rank))
+            byte rank;
+            if (Session.Character.Family != null && Session.Character.FamilyCharacter != null && Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head && byte.TryParse(packetsplit[2], out rank))
             {
                 foreach (FamilyCharacter familyCharacter in Session.Character.Family.FamilyCharacters)
                 {
@@ -704,7 +704,8 @@ namespace OpenNos.Handler
                 }
 
                 FamilyCharacterDTO fchar = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Character.Name == packetsplit[2]);
-                if (fchar != null && byte.TryParse(packetsplit[3], out byte rank))
+                byte rank;
+                if (fchar != null && byte.TryParse(packetsplit[3], out rank))
                 {
                     fchar.Rank = (FamilyMemberRank)rank;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref fchar);
