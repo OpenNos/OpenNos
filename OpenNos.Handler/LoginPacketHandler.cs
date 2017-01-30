@@ -64,6 +64,11 @@ namespace OpenNos.Handler
         {
             // TODO: implement check for maintenances
             string[] packetsplit = packet.Split(' ');
+            if(packetsplit.Length < 3)
+            {
+                _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("PACKETMANIP")}");
+                return;
+            }
             UserDTO user = new UserDTO { Name = packetsplit[2], Password = ConfigurationManager.AppSettings["UseOldCrypto"] == "true" ? EncryptionBase.Sha512(LoginEncryption.GetPassword(packetsplit[3])).ToUpper() : packetsplit[3] };
             AccountDTO loadedAccount = DAOFactory.AccountDAO.LoadByName(user.Name);
             if (loadedAccount != null && loadedAccount.Password.ToUpper().Equals(user.Password))
