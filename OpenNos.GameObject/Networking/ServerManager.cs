@@ -185,6 +185,7 @@ namespace OpenNos.GameObject
         {
             return _items.FirstOrDefault(m => m.VNum.Equals(vnum));
         }
+
         public static MapInstance GenerateMapInstance(short MapId, MapInstanceType type)
         {
             Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
@@ -208,6 +209,7 @@ namespace OpenNos.GameObject
             }
             return null;
         }
+
         public static MapInstance GetMapInstance(Guid id)
         {
             return _mapinstances[id];

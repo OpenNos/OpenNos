@@ -158,19 +158,25 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$ArenaWinner")]
-        public void ArenaWinner(string packet)
+        /// <summary>
+        /// $ArenaWinner Command
+        /// </summary>
+        /// <param name="arenaWinner"></param>
+        public void ArenaWinner(ArenaWinner arenaWinner)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("Arena Winner Command", Session.SessionId);
             Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
-        [Packet("$Backpack")]
-        public void Backpack(string packet)
+        /// <summary>
+        /// $Backpack Command
+        /// </summary>
+        /// <param name="backpackPacket"></param>
+        public void Backpack(BackpackPacket backpackPacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("Backpack Command", Session.SessionId);
             Session.Character.Backpack = Session.Character.HaveBackpack() ? 1 : 0;
             Session.SendPacket(Session.Character.GenerateExts());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
@@ -331,9 +337,13 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$BlockPM")]
-        public void BlockPM()
+        /// <summary>
+        /// $BlockPM Command
+        /// </summary>
+        /// <param name="blockPMPacket"></param>
+        public void BlockPM(BlockPMPacket blockPMPacket)
         {
+            Logger.Debug("BlockPM Command", Session.SessionId);
             if (!Session.Character.GmPvtBlock)
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_ENABLE"), 10));
@@ -398,7 +408,6 @@ namespace OpenNos.Handler
             }
         }
 
-        /////////////////////////////////////////////////////////////////////////////////
         /// <summary>
         /// $ChangeClass Command
         /// </summary>
@@ -474,10 +483,13 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$ChangeSex")]
-        public void ChangeGender(string packet)
+        /// <summary>
+        /// $ChangeSex Command
+        /// </summary>
+        /// <param name="changeSexPacket"></param>
+        public void ChangeGender(ChangeSexPacket changeSexPacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("ChangeSex Command", Session.SessionId);
             Session.Character.ChangeSex();
         }
 
@@ -702,10 +714,14 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$Help")]
-        public void Command(string packet)
+
+        /// <summary>
+        /// $Help Command
+        /// </summary>
+        /// <param name="helpPacket"></param>
+        public void Command(HelpPacket helpPacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("Help Command", Session.SessionId);
 
             // TODO: Command displaying detailed informations about commands
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
@@ -1088,16 +1104,18 @@ namespace OpenNos.Handler
 
                 default:
                     Session.SendPacket(Session.Character.GenerateSay("$Gift USERNAME VNUM AMOUNT RARE UPGRADE", 10));
-
                     break;
             }
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GIFT_SENDED"), 10));
         }
 
-        [Packet("$GodMode")]
-        public void GodMode(string packet)
+        /// <summary>
+        /// $GodMode Command
+        /// </summary>
+        /// <param name="godModePacket"></param>
+        public void GodMode(GodModePacket godModePacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("GodMode Command", Session.SessionId);
             Session.Character.HasGodMode = !Session.Character.HasGodMode;
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
@@ -1188,10 +1206,7 @@ namespace OpenNos.Handler
         public void Guri(GuriCommandPacket guriCommandPacket)
         {
             Logger.Debug("Guri Command", Session.SessionId);
-            Session.SendPacket(guriCommandPacket != null
-                ? Session.Character.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument,
-                    guriCommandPacket.Value)
-                : Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
+            Session.SendPacket(guriCommandPacket != null ? Session.Character.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, guriCommandPacket.Value) : Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
         }
 
         /// <summary>
@@ -1234,10 +1249,13 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$Invisible")]
-        public void Invisible(string packet)
+        /// <summary>
+        /// $Invisible Command
+        /// </summary>
+        /// <param name="invisiblePacket"></param>
+        public void Invisible(InvisiblePacket invisiblePacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("Invisible Command", Session.SessionId);
             Session.Character.Invisible = !Session.Character.Invisible;
             Session.Character.InvisibleGm = !Session.Character.InvisibleGm;
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateInvisible());
@@ -1342,10 +1360,13 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$MapDance")]
-        public void MapDance(string packet)
+        /// <summary>
+        /// $MapDance Command
+        /// </summary>
+        /// <param name="mapDancePacket"></param>
+        public void MapDance(MapDancePacket mapDancePacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("MapDance Command", Session.SessionId);
             if (Session.HasCurrentMapInstance)
             {
                 Session.CurrentMapInstance.IsDancing = !Session.CurrentMapInstance.IsDancing;
@@ -1363,9 +1384,14 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$MapPVP")]
-        public void MapPVP()
+
+        /// <summary>
+        /// $MapPVP
+        /// </summary>
+        /// <param name="mapPVPPacket"></param>
+        public void MapPVP(MapPVPPacket mapPVPPacket)
         {
+            Logger.Debug("MapPVP Command", Session.SessionId);
             Session.CurrentMapInstance.IsPVP = !Session.CurrentMapInstance.IsPVP;
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
@@ -1515,10 +1541,13 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay(str, 10));
         }
 
-        [Packet("$Position")]
-        public void Position(string packet)
+        /// <summary>
+        /// $Position Command
+        /// </summary>
+        /// <param name="positionPacket"></param>
+        public void Position(PositionPacket positionPacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("Position Command", Session.SessionId);
             Session.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapInstance.Map.MapId} - X:{Session.Character.PositionX} - Y:{Session.Character.PositionY} - Dir:{Session.Character.Direction}", 12));
         }
 
@@ -1583,10 +1612,13 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$RemoveMob")]
-        public void RemoveMob(string packet)
+        /// <summary>
+        /// $RemoveMob Packet
+        /// </summary>
+        /// <param name="removeMobPacket"></param>
+        public void RemoveMob(RemoveMobPacket removeMobPacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("RemoveMob Command", Session.SessionId);
             if (Session.HasCurrentMapInstance)
             {
                 MapMonster monst = Session.CurrentMapInstance.GetMonster(Session.Character.LastMonsterId);
@@ -1614,10 +1646,13 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$RemovePortal")]
-        public void RemoveNearestPortal(string packet)
+        /// <summary>
+        /// $RemovePortal Command
+        /// </summary>
+        /// <param name="removePortalPacket"></param>
+        public void RemovePortal(RemovePortalPacket removePortalPacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("RemovePortal Command", Session.SessionId);
             if (Session.HasCurrentMapInstance)
             {
                 Portal pt = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapInstanceId == Session.Character.MapInstanceId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
@@ -1758,10 +1793,13 @@ namespace OpenNos.Handler
             ServerManager.Instance.Shout(message);
         }
 
-        [Packet("$Shutdown")]
-        public void Shutdown(string packet)
+        /// <summary>
+        /// $Shutdown Command
+        /// </summary>
+        /// <param name="shutdownPacket"></param>
+        public void Shutdown(ShutdownPacket shutdownPacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("Shutdown Command", Session.SessionId);
             if (ServerManager.Instance.TaskShutdown != null)
             {
                 ServerManager.Instance.ShutdownStop = true;
@@ -1796,10 +1834,13 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$SPRefill")]
-        public void SPRefill(string packet)
+        /// <summary>
+        /// $SPRefill Command
+        /// </summary>
+        /// <param name="sprefillPacket"></param>
+        public void SPRefill(SPRefillPacket sprefillPacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("SPRefill Command", Session.SessionId);
             Session.Character.SpPoint = 10000;
             Session.Character.SpAdditionPoint = 1000000;
             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_REFILL"), 0));
@@ -1821,10 +1862,13 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$Stat")]
-        public void Stat(string packet)
+        /// <summary>
+        /// $Stat Command
+        /// </summary>
+        /// <param name="statPacket"></param>
+        public void Stat(StatPacket statPacket)
         {
-            Logger.Debug(packet, Session.SessionId);
+            Logger.Debug("Stat Command", Session.SessionId);
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("XP_RATE_NOW")}: {ServerManager.XPRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("DROP_RATE_NOW")}: {ServerManager.DropRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_RATE_NOW")}: {ServerManager.GoldRate} ", 13));
