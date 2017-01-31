@@ -65,6 +65,7 @@ namespace OpenNos.GameObject
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     session.SendPacket(session.Character.GenerateSpPoint());
                     break;
+
                 //Atk/Def/HP/Exp potions
                 case 6600:
                     switch (EffectValue)
@@ -243,7 +244,6 @@ namespace OpenNos.GameObject
                                 {
                                     return;
                                 }
-                                // ReSharper disable once PossibleNullReferenceException HasCurrentMapInstance NullCheck
                                 MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = session.Character.MapY, MapX = session.Character.MapX, MapId = session.Character.MapInstance.Map.MapId, Position = (byte)session.Character.Direction, IsMoving = true, MapMonsterId = session.CurrentMapInstance.GetNextMonsterId(), ShouldRespawn = false };
                                 monster.Initialize(session.CurrentMapInstance);
                                 monster.StartLife();

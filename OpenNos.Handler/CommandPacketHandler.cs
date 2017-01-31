@@ -2213,6 +2213,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("---- CHARACTER ----", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Name: {character.Name}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Id: {character.CharacterId}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"State: {character.State}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Gender: {character.Gender}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Class: {character.Class}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Level: {character.Level}", 13));
@@ -2225,6 +2226,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"MapY: {Session.Character.PositionY}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Reputation: {character.Reput}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Dignity: {character.Dignity}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"Rage: {character.RagePoint}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Fraction: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
             Session.SendPacket(Session.Character.GenerateSay("---- --------- ----", 13));
@@ -2237,7 +2239,6 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay($"Authority: {acc.Authority}", 13));
                 Session.SendPacket(Session.Character.GenerateSay($"RegistrationIP: {acc.RegistrationIP}", 13));
                 Session.SendPacket(Session.Character.GenerateSay($"Email: {acc.Email}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"LastSession: {acc.LastSession}", 13));
                 Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
             }
             IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => acc != null && s.AccountId == acc.AccountId);

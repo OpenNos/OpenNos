@@ -54,11 +54,6 @@ namespace OpenNos.DAL.Mock
             return Container.SingleOrDefault(a => a.Name == name);
         }
 
-        public AccountDTO LoadBySessionId(int sessionId)
-        {
-            return Container.SingleOrDefault(a => a.LastSession == sessionId);
-        }
-
         public void LogIn(string name)
         {
             throw new NotImplementedException();
@@ -67,7 +62,6 @@ namespace OpenNos.DAL.Mock
         public void UpdateLastSessionAndIp(string name, int session, string ip)
         {
             AccountDTO account = Container.SingleOrDefault(a => a.Name == name);
-            account.LastSession = session;
         }
 
         public void WriteGeneralLog(long accountId, string ipAddress, long? characterId, string logType, string logData)
