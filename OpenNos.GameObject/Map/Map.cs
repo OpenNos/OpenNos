@@ -106,8 +106,6 @@ namespace OpenNos.GameObject
             return Math.Max(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
 
-
-
         public bool IsBlockedZone(int x, int y)
         {
             if (Grid != null)
@@ -183,9 +181,6 @@ namespace OpenNos.GameObject
             }
         }
 
-
-
-
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
         {
             short MinX = (short)(-xpoint + firstX);
@@ -205,7 +200,6 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-
             foreach (MapCell cell in cells.OrderBy(s => _random.Next(int.MaxValue)))
             {
                 if (!IsBlockedZone(firstX, firstY, cell.X, cell.Y))
@@ -215,10 +209,8 @@ namespace OpenNos.GameObject
                     return true;
                 }
             }
-
             return false;
         }
-
 
         internal List<GridPos> StraightPath(GridPos mapCell1, GridPos mapCell2)
         {
