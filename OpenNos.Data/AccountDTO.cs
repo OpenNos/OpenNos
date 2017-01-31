@@ -27,8 +27,6 @@ namespace OpenNos.Data
 
         public DateTime LastCompliment { get; set; }
 
-        public int LastSession { get; set; }
-
         public string Name { get; set; }
 
         public string Password { get; set; }
