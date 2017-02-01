@@ -194,10 +194,12 @@ namespace OpenNos.GameObject
         {
             return GetAllItems().Where(s => s.ItemVNum == itemVNum).Sum(i => i.Amount);
         }
+
         public int CountItemInAnInventory(InventoryType inv)
         {
             return GetAllItems().Count(s => s.Type == inv);
         }
+
         public Tuple<short, InventoryType> DeleteById(Guid id)
         {
             if (Owner != null)

@@ -202,6 +202,7 @@ namespace OpenNos.GameObject
                 _inventory = value;
             }
         }
+
         public FamilyCharacterDTO FamilyCharacter
         {
             get
@@ -209,6 +210,7 @@ namespace OpenNos.GameObject
                 return Family?.FamilyCharacters.FirstOrDefault(s => s.CharacterId == CharacterId);
             }
         }
+
         public bool Invisible
         {
             get
