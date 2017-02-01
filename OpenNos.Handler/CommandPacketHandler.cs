@@ -1932,6 +1932,21 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        /// $ChannelInfo Command
+        /// </summary>
+        /// <param name="channelInfoPacket"></param>
+        public void ChannelInfo(ChannelInfoPacket channelInfoPacket)
+        {
+            Logger.Debug("ChannelInfo Command", Session.SessionId);
+            Session.SendPacket(Session.Character.GenerateSay("---------CHANNEL INFO---------", 11));
+            foreach (ClientSession session in ServerManager.Instance.Sessions)
+            {
+                Session.SendPacket(Session.Character.GenerateSay($"CharacterName: {session.Character.Name} SessionId:{session.SessionId}", 12));
+            }
+            Session.SendPacket(Session.Character.GenerateSay("---------------------------------------", 11));
+        }
+
+        /// <summary>
         /// $TeleportToMe Command
         /// </summary>
         /// <param name="teleportToMePacket"></param>
