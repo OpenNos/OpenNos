@@ -182,6 +182,28 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
+        /// <summary>
+        /// $Clr Command
+        /// </summary>
+        /// <param name="clearInventoryPacket"></param>
+        public void ClearInventory(ClearInventoryPacket clearInventoryPacket)
+        {
+            Logger.Debug("ClearInventory Command", Session.SessionId);
+            if (clearInventoryPacket != null && clearInventoryPacket.InventoryType != InventoryType.Wear)
+            {
+                foreach (ItemInstance inv in Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType))
+                {
+                    Session.Character.Inventory.DeleteById(inv.Id);
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0, 0));
+                }
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$Clr INVENTORYTYPE", 10));
+            }
+        }
+
         [Packet("$Ban")]
         public void Ban(string packet)
         {
