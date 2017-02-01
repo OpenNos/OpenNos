@@ -97,6 +97,7 @@
     <Compile Include="Packets\CommandPackets\BackpackPacket.cs" />
     <Compile Include="Packets\CommandPackets\BlockPMPacket.cs" />
     <Compile Include="Packets\CommandPackets\ChangeSexPacket.cs" />
+    <Compile Include="Packets\CommandPackets\ChannelInfoPacket.cs" />
     <Compile Include="Packets\CommandPackets\EventPacket.cs" />
     <Compile Include="Packets\CommandPackets\GiftPacket.cs" />
     <Compile Include="Packets\CommandPackets\GodModePacket.cs" />

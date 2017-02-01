@@ -48,7 +48,7 @@ namespace OpenNos.WebApi.SelfHost
             Clients.All.refreshPenaltyLog(id);
         }
 
-        
+
         /// <summary>
         /// Refresh Family
         /// </summary>
@@ -227,15 +227,16 @@ namespace OpenNos.WebApi.SelfHost
         {
             return ServerCommunicationHelper.Instance.WorldserverGroups.FirstOrDefault(s => s.GroupName == worldgroup).Servers.Any(c => c.ConnectedCharacters.ContainsValue(CharacterId));
         }
+
         public IEnumerable<string> RetrieveServerStatistics()
         {
             List<string> result = new List<string>();
             try
             {
-                foreach(WorldserverGroupDTO servergroup in ServerCommunicationHelper.Instance.WorldserverGroups)
+                foreach (WorldserverGroupDTO servergroup in ServerCommunicationHelper.Instance.WorldserverGroups)
                 {
                     int serverSessionAmount = 0;
-                    foreach(WorldserverDTO world in servergroup.Servers)
+                    foreach (WorldserverDTO world in servergroup.Servers)
                     {
                         int channelSessionAmount = world.ConnectedAccounts.Count();
                         serverSessionAmount += channelSessionAmount;
