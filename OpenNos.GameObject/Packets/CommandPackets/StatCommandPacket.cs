@@ -5,7 +5,7 @@ using OpenNos.Domain;
 namespace OpenNos.GameObject
 {
     [PacketHeader("$Stat", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
-    public class StatPacket : PacketDefinition
+    public class StatCommandPacket : PacketDefinition
     {
     }
 }
