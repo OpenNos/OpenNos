@@ -938,8 +938,6 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            session.SendPacket(session.Character.GenerateAt());
-            session.SendPacket(session.Character.GenerateCMap());
             session.SendPacket(session.Character.GenerateMapOut());
             session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
         }
