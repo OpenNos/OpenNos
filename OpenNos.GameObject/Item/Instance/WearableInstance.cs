@@ -391,23 +391,15 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            for (int i = 0; i > point; i--)
+                            for (int i = 0; i > Rare * 10; i--)
                             {
-                                int rndn = ServerManager.RandomNumber(0, 3);
-                                if (rndn == 0)
-                                {
-                                    Concentrate--;
-                                    HitRate--;
-                                }
-                                else
-                                {
-                                    DamageMinimum--;
-                                    DamageMaximum--;
-                                }
+                                DamageMinimum--;
+                                DamageMaximum--;
                             }
                         }
                     }
                     break;
+
                 case EquipmentType.Armor:
                     {
                         int point = CharacterHelper.RarityPoint(Rare, Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum);
@@ -436,20 +428,11 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            for (int i = 0; i > point; i--)
+                            for (int i = 0; i > Rare * 10; i--)
                             {
-                                int rndn = ServerManager.RandomNumber(0, 3);
-                                if (rndn == 0)
-                                {
-                                    DefenceDodge--;
-                                    DistanceDefenceDodge--;
-                                }
-                                else
-                                {
-                                    DistanceDefence--;
-                                    MagicDefence--;
-                                    CloseDefence--;
-                                }
+                                DistanceDefence--;
+                                MagicDefence--;
+                                CloseDefence--;
                             }
                         }
                     }

@@ -386,18 +386,6 @@ namespace OpenNos.GameObject
             int p;
             switch (rarity)
             {
-                default:
-                    p = 0;
-                    break;
-
-                case -2:
-                    p = -2;
-                    break;
-
-                case -1:
-                    p = -1;
-                    break;
-
                 case 0:
                     p = 0;
                     break;
@@ -431,10 +419,14 @@ namespace OpenNos.GameObject
                     break;
 
                 case 8:
-                    p = ServerManager.RandomNumber(11, 16);
+                    p = 15;
+                    break;
+
+                default:
+                    p = rarity * 2;
                     break;
             }
-            return p * (lvl / 5) + 1;
+            return p * (lvl / 5 + 1);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
