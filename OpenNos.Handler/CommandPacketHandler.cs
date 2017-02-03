@@ -2223,7 +2223,7 @@ namespace OpenNos.Handler
         private void SendStats(CharacterDTO character)
         {
             // TODO: Optimize THIS!
-            Session.SendPacket(Session.Character.GenerateSay("---- CHARACTER ----", 13));
+            Session.SendPacket(Session.Character.GenerateSay("----- CHARACTER -----", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Name: {character.Name}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Id: {character.CharacterId}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"State: {character.State}", 13));
@@ -2242,7 +2242,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"Rage: {character.RagePoint}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Fraction: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
-            Session.SendPacket(Session.Character.GenerateSay("---- --------- ----", 13));
+            Session.SendPacket(Session.Character.GenerateSay("----- --------- -----", 13));
             AccountDTO acc = DAOFactory.AccountDAO.LoadById(character.AccountId);
             if (acc != null)
             {
