@@ -187,7 +187,7 @@ namespace OpenNos.Handler
                 int soldedamount = bz.Amount - Item.Amount;
                 long taxes = bz.MedalUsed ? 0 : (long)(bz.Price * 0.10 * soldedamount);
                 long price = bz.Price * soldedamount - taxes;
-                if (Session.Character.Gold + price <= 1000000000)
+                if (Session.Character.Gold + price <= ServerManager.MaxGold)
                 {
                     Session.Character.Gold += price;
                     Session.SendPacket(Session.Character.GenerateGold());
@@ -240,6 +240,7 @@ namespace OpenNos.Handler
             long taxmax = price > 100000 ? price / 200 : 500;
             long taxmin = price >= 4000 ? (60 + (price - 4000) / 2000 * 30 > 10000 ? 10000 : 60 + (price - 4000) / 2000 * 30) : 50;
             long tax = medal == null ? taxmax : taxmin;
+            long maxGold = ServerManager.MaxGold;
             if (Session.Character.Gold < tax || cRegPacket.Amount <= 0 || Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
             {
                 return;
@@ -254,7 +255,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LIMIT_EXCEEDED"), 0));
                 return;
             }
-            if (price >= (medal == null ? 1000000 : 1000000000))
+            if (price >= (medal == null ? 1000000 : maxGold))
             {
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PRICE_EXCEEDED"), 0));
                 return;

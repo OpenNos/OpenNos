@@ -1135,7 +1135,8 @@ namespace OpenNos.Handler
             if (goldPacket != null)
             {
                 long gold = goldPacket.Amount;
-                gold = gold > 1000000000 ? 1000000000 : gold;
+                long maxGold = ServerManager.MaxGold;
+                gold = gold > maxGold ? maxGold : gold;
                 if (gold >= 0)
                 {
                     Session.Character.Gold = gold;

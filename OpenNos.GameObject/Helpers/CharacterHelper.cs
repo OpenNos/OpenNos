@@ -593,6 +593,11 @@ namespace OpenNos.GameObject
                 case 15:
                     point += 173;
                     break;
+
+                    // lil easter egg ;)
+                    //default:
+                    //    point += 173 + (25 + (5 * (upgrade - 15)));
+                    //    break;
             }
 
             return point;
