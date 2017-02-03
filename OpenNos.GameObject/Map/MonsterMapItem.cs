@@ -59,8 +59,7 @@ namespace OpenNos.GameObject
         public void Rarify(ClientSession session)
         {
             ItemInstance instance = GetItemInstance();
-            if (instance.Item.EquipmentSlot == EquipmentType.Armor || instance.Item.EquipmentSlot == EquipmentType.MainWeapon
-                || instance.Item.EquipmentSlot == EquipmentType.SecondaryWeapon)
+            if (instance.Item.Type == InventoryType.Equipment && (instance.Item.ItemType == ItemType.Weapon || instance.Item.ItemType == ItemType.Armor))
             {
                 WearableInstance wearableInstance = instance as WearableInstance;
                 wearableInstance?.RarifyItem(session, RarifyMode.Drop, RarifyProtection.None);
