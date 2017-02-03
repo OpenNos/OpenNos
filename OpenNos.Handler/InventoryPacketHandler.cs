@@ -304,7 +304,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            for (int j = 6, i = 0; j <= packetsplit.Length; j += 3, i++)
+            for (int j = 6, i = 0; j <= packetsplit.Length && i<10; j += 3, i++)
             {
                 byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
