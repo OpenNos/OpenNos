@@ -365,11 +365,6 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            if (IsFixed)
-            {
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
-                return;
-            }
             if (Session.Character.Inventory.CountItem(fullmoonVnum) < fullmoon[Upgrade])
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(fullmoonVnum).Name, fullmoon[Upgrade])), 10));
