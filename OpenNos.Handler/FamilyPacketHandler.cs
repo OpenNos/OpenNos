@@ -225,7 +225,7 @@ namespace OpenNos.Handler
                 List<ClientSession> tmp = ServerManager.Instance.Sessions.ToList();
                 foreach (ClientSession s in tmp)
                 {
-                    if (s.HasSelectedCharacter && s.Character.Family != null && s.Character.FamilyCharacter != null)
+                    if (s.HasSelectedCharacter && s.Character.Family != null && Session.Character.Family != null)
                     {
                         if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
                         {
