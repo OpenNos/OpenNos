@@ -1,58 +1,44 @@
-﻿using System;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 using OpenNos.GameObject.Buff.Indicators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
 
 namespace OpenNos.GameObject.Buff
 {
     public class BuffContainer
     {
+        #region Members
+
         private readonly ClientSession Session;
-        private List<IndicatorBase> Indicators;
+        private readonly List<IndicatorBase> Indicators;
+
+        #endregion
+
+        #region Instantiation
+
         public BuffContainer(ClientSession session)
         {
             Session = session;
             Indicators = new List<IndicatorBase>();
         }
 
-        public void Clear()
-        {
-            IndicatorBase[] items = new IndicatorBase[Indicators.Count];
-            Indicators.CopyTo(items);
-            foreach (IndicatorBase i in items.Where(s => !s.StaticBuff && !s.Disabled).ToList())
-            {
-                i.Disable(Session);
-            }
-        }
+        #endregion
 
-        public void DisableEffects(bool good, bool bad, int level)
-        {
-            if (good)
-            {
-                lock (Indicators)
-                {
-                    IndicatorBase[] items = new IndicatorBase[Indicators.Count];
-                    Indicators.CopyTo(items);
-                    foreach (IndicatorBase i in items.Where(s => !s.BadBuff && s._buffLevel < level).ToList())
-                    {
-                        i.Disable(Session);
-                    }
-                }
-            }
-            if (bad)
-            {
-                lock (Indicators)
-                {
-                    IndicatorBase[] items = new IndicatorBase[Indicators.Count];
-                    Indicators.CopyTo(items);
-                    foreach (IndicatorBase i in items.Where(s => s.BadBuff && s._buffLevel < level).ToList())
-                    {
-                        i.Disable(Session);
-                    }
-                }
-            }
-        }
+        #region Methods
 
         public void Add(IndicatorBase indicator)
         {
@@ -65,16 +51,56 @@ namespace OpenNos.GameObject.Buff
                 {
                     i.Disable(Session);
                 }
+                Indicators.Add(indicator);
             }
-            Indicators.Add(indicator);
             indicator.Enable(Session);
+        }
+
+        public void Clear()
+        {
+            lock (Indicators)
+            {
+                IndicatorBase[] items = new IndicatorBase[Indicators.Count];
+                Indicators.CopyTo(items);
+                foreach (IndicatorBase i in items.Where(s => !IndicatorBase.StaticBuff && !s.Disabled).ToList())
+                {
+                    i.Disable(Session);
+                }
+            }
+        }
+
+        public void DisableEffects(bool good, bool bad, int level)
+        {
+            if (good)
+            {
+                lock (Indicators)
+                {
+                    IndicatorBase[] items = new IndicatorBase[Indicators.Count];
+                    Indicators.CopyTo(items);
+                    foreach (IndicatorBase i in items.Where(s => !IndicatorBase.BadBuff && IndicatorBase._buffLevel < level).ToList())
+                    {
+                        i.Disable(Session);
+                    }
+                }
+            }
+            if (bad)
+            {
+                lock (Indicators)
+                {
+                    IndicatorBase[] items = new IndicatorBase[Indicators.Count];
+                    Indicators.CopyTo(items);
+                    foreach (IndicatorBase i in items.Where(s => IndicatorBase.BadBuff && IndicatorBase._buffLevel < level).ToList())
+                    {
+                        i.Disable(Session);
+                    }
+                }
+            }
         }
 
         public int[] Get(BCard.Type type, BCard.SubType subType, bool pvp, bool affectingOpposite = false)
         {
             int value1 = 0;
             int value2 = 0;
-            List<string> appliedBuffs = new List<string>();
             lock (Indicators)
             {
                 IndicatorBase[] items = new IndicatorBase[Indicators.Count + 5];
@@ -98,9 +124,10 @@ namespace OpenNos.GameObject.Buff
                 }
             }
 
+            // Not yet implemented
 
-            //Not yet implemented, idek if I'll use this shit
             #region Equipment
+
             //switch (type)
             //{
             //    #region Damage
@@ -109,107 +136,72 @@ namespace OpenNos.GameObject.Buff
             //        {
             //            case BCard.SubType.Increase:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMelee:
+            // break; case BCard.SubType.IncreaseMelee:
 
-            //                break;
-            //            case BCard.SubType.IncreaseDistance:
+            // break; case BCard.SubType.IncreaseDistance:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMagic:
+            // break; case BCard.SubType.IncreaseMagic:
 
-            //                break;
-            //            case BCard.SubType.IncreaseLevel:
+            // break; case BCard.SubType.IncreaseLevel:
 
-            //                break;
-            //            case BCard.SubType.IncreasePercentage:
+            // break; case BCard.SubType.IncreasePercentage:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMeleePercentage:
+            // break; case BCard.SubType.IncreaseMeleePercentage:
 
-            //                break;
-            //            case BCard.SubType.IncreaseDistancePercentage:
+            // break; case BCard.SubType.IncreaseDistancePercentage:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMagicPercentage:
+            // break; case BCard.SubType.IncreaseMagicPercentage:
 
-            //                break;
-            //            case BCard.SubType.IncreasePercentageChance:
+            // break; case BCard.SubType.IncreasePercentageChance:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMeleePercentageChance:
+            // break; case BCard.SubType.IncreaseMeleePercentageChance:
 
-            //                break;
-            //            case BCard.SubType.IncreaseDistancePercentageChance:
+            // break; case BCard.SubType.IncreaseDistancePercentageChance:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMagicPercentageChance:
+            // break; case BCard.SubType.IncreaseMagicPercentageChance:
 
-            //                break;
-            //            default:
-            //                Logger.Error(new NotImplementedException("BCard.SubType not implemented for this BCard.Type!"));
-            //                break;
-            //        }
-            //        break;
-            //    #endregion
+            // break; default: Logger.Error(new NotImplementedException("BCard.SubType not
+            // implemented for this BCard.Type!")); break; } break; #endregion
 
-            //    #region Defense
-            //    case BCard.Type.Defense:
-            //        switch (subType)
-            //        {
-            //            case BCard.SubType.Increase:
+            // #region Defense case BCard.Type.Defense: switch (subType) { case BCard.SubType.Increase:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMelee:
+            // break; case BCard.SubType.IncreaseMelee:
 
-            //                break;
-            //            case BCard.SubType.IncreaseDistance:
+            // break; case BCard.SubType.IncreaseDistance:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMagic:
+            // break; case BCard.SubType.IncreaseMagic:
 
-            //                break;
-            //            case BCard.SubType.IncreaseLevel:
+            // break; case BCard.SubType.IncreaseLevel:
 
-            //                break;
-            //            case BCard.SubType.IncreasePercentage:
+            // break; case BCard.SubType.IncreasePercentage:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMeleePercentage:
+            // break; case BCard.SubType.IncreaseMeleePercentage:
 
-            //                break;
-            //            case BCard.SubType.IncreaseDistancePercentage:
+            // break; case BCard.SubType.IncreaseDistancePercentage:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMagicPercentage:
+            // break; case BCard.SubType.IncreaseMagicPercentage:
 
-            //                break;
-            //            case BCard.SubType.IncreasePercentageChance:
+            // break; case BCard.SubType.IncreasePercentageChance:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMeleePercentageChance:
+            // break; case BCard.SubType.IncreaseMeleePercentageChance:
 
-            //                break;
-            //            case BCard.SubType.IncreaseDistancePercentageChance:
+            // break; case BCard.SubType.IncreaseDistancePercentageChance:
 
-            //                break;
-            //            case BCard.SubType.IncreaseMagicPercentageChance:
+            // break; case BCard.SubType.IncreaseMagicPercentageChance:
 
-            //                break;
-            //            default:
-            //                Logger.Error(new NotImplementedException("BCard.SubType not implemented for this BCard.Type!"));
-            //                break;
-            //        }
-            //        break;
-            //    #endregion
+            // break; default: Logger.Error(new NotImplementedException("BCard.SubType not
+            // implemented for this BCard.Type!")); break; } break; #endregion
 
             //    default:
             //        Logger.Error(new NotImplementedException("BCard.Type not implemented!"));
             //        break;
             //}
+
             #endregion
 
-            return new int[] { value1, value2 };
+            return new[] { value1, value2 };
         }
+
+        #endregion
     }
 }

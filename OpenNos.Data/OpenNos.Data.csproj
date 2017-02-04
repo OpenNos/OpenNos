@@ -52,6 +52,7 @@
     <Compile Include="Base\SynchronizableBaseDTO.cs" />
     <Compile Include="BazaarItemDTO.cs" />
     <Compile Include="BoxItemDTO.cs" />
+    <Compile Include="CardDTO.cs" />
     <Compile Include="CellonOptionDTO.cs" />
     <Compile Include="CharacterRelationDTO.cs" />
     <Compile Include="ComboDTO.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Enums\DeleteResult.cs" />
     <Compile Include="Enums\SaveResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SkillCardDTO.cs" />
     <Compile Include="SkillDTO.cs" />
     <Compile Include="ShopSkillDTO.cs" />
     <Compile Include="CharacterSkillDTO.cs" />

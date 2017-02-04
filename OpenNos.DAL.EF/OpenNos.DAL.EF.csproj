@@ -83,6 +83,7 @@
     <Compile Include="Entities\Base\SynchronizableBaseEntity.cs" />
     <Compile Include="Entities\BazaarItem.cs" />
     <Compile Include="Entities\BoxInstance.cs" />
+    <Compile Include="Entities\Card.cs" />
     <Compile Include="Entities\CellonOption.cs" />
     <Compile Include="CellonOptionDAO.cs" />
     <Compile Include="Entities\Character.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Entities\MapTypeMap.cs" />
     <Compile Include="Entities\PenaltyLog.cs" />
     <Compile Include="Entities\RespawnMapType.cs" />
+    <Compile Include="Entities\SkillCard.cs" />
     <Compile Include="Entities\SpecialistInstance.cs" />
     <Compile Include="Entities\StaticBonus.cs" />
     <Compile Include="Entities\StaticBuff.cs" />
@@ -197,6 +199,10 @@
     <Compile Include="Migrations\201701272045282_Aphrodite18.cs" />
     <Compile Include="Migrations\201701272045282_Aphrodite18.Designer.cs">
       <DependentUpon>201701272045282_Aphrodite18.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702041342396_Aphrodite19.cs" />
+    <Compile Include="Migrations\201702041342396_Aphrodite19.Designer.cs">
+      <DependentUpon>201702041342396_Aphrodite19.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -326,6 +332,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701272045282_Aphrodite18.resx">
       <DependentUpon>201701272045282_Aphrodite18.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702041342396_Aphrodite19.resx">
+      <DependentUpon>201702041342396_Aphrodite19.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

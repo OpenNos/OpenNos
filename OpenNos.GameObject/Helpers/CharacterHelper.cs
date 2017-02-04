@@ -15,7 +15,7 @@
 using OpenNos.Domain;
 using System;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Helpers
 {
     public class CharacterHelper
     {
@@ -752,7 +752,7 @@ namespace OpenNos.GameObject
                     }
                     ++j;
                 }
-                _hp[(int)ClassType.Swordman, i] = (int)(hp);
+                _hp[(int)ClassType.Swordman, i] = hp;
             }
 
             // Magician HP
@@ -778,7 +778,7 @@ namespace OpenNos.GameObject
                     }
                     ++j;
                 }
-                _hp[(int)ClassType.Archer, i] = (int)(hp);
+                _hp[(int)ClassType.Archer, i] = hp;
             }
         }
 

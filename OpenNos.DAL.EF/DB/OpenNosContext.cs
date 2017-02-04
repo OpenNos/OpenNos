@@ -38,6 +38,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<BazaarItem> BazaarItem { get; set; }
 
+        public virtual DbSet<Card> Card { get; set; }
+
         public virtual DbSet<CellonOption> CellonOption { get; set; }
 
         public virtual DbSet<Character> Character { get; set; }
@@ -99,6 +101,8 @@ namespace OpenNos.DAL.EF.DB
         public virtual DbSet<ShopSkill> ShopSkill { get; set; }
 
         public virtual DbSet<Skill> Skill { get; set; }
+
+        public virtual DbSet<SkillCard> SkillCard { get; set; }
 
         public virtual DbSet<StaticBonus> StaticBonus { get; set; }
 
@@ -325,6 +329,18 @@ namespace OpenNos.DAL.EF.DB
             modelBuilder.Entity<Map>()
                 .HasMany(e => e.Teleporter)
                 .WithRequired(e => e.Map)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<SkillCard>()
+                .HasRequired(e => e.Skill)
+                .WithMany(e => e.SkillCard)
+                .HasForeignKey(e => e.SkillVNum)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<SkillCard>()
+                .HasRequired(e => e.Card)
+                .WithMany(e => e.SkillCard)
+                .HasForeignKey(e => e.CardId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<MapTypeMap>()

@@ -27,10 +27,6 @@ namespace OpenNos.Handler
 {
     public class FamilyPacketHandler : IPacketHandler
     {
-        #region Members
-
-        #endregion
-
         #region Instantiation
 
         public FamilyPacketHandler(ClientSession session)
@@ -169,7 +165,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("%Cridefamille")]
-        [Packet("%Familyshout")]
+        [Packet("%FamilyShout")]
         public void FamilyCall(string packet)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
@@ -192,7 +188,7 @@ namespace OpenNos.Handler
             }
         }
 
-        public void FamilyChangeMessage(TodayPacket packet)
+        public void FamilyChangeMessage(TodayPacket todayPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             Session.SendPacket("today_stc");
@@ -274,7 +270,7 @@ namespace OpenNos.Handler
               });
         }
 
-        [Packet("%Familykick")]
+        [Packet("%FamilyKick")]
         [Packet("%Rejetdefamille")]
         public void FamilyKick(string packet)
         {
@@ -329,7 +325,7 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("%Familyleave")]
+        [Packet("%FamilyLeave")]
         [Packet("%Congédefamille")]
         public void FamilyLeave(string packet)
         {
@@ -552,18 +548,18 @@ namespace OpenNos.Handler
             }
         }
 
-        public void FamilyRank(FrankCtsPacket frank)
+        public void FamilyRank(FrankCtsPacket frankCtsPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
-            Session.SendPacket(Session.Character.GenerateFrank(frank.Type));
+            Session.SendPacket(Session.Character.GenerateFrank(frankCtsPacket.Type));
         }
 
-        public void FamilyRefreshHist(FhistctsPacket packet)
+        public void FamilyRefreshHist(FhistCtsPacket fhistCtsPacket)
         {
             Session.SendPackets(Session.Character.GetFamilyHistory());
         }
 
-        [Packet("%Familyinvite")]
+        [Packet("%FamilyInvite")]
         [Packet("%Invitationdefamille")]
         public void InviteFamily(string packet)
         {
