@@ -31,8 +31,6 @@ namespace OpenNos.Data
 
         public int ArenaWinner { get; set; }
 
-        public int Backpack { get; set; }
-
         public string Biography { get; set; }
 
         public bool BuffBlocked { get; set; }
