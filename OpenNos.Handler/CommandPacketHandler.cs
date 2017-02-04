@@ -1485,16 +1485,20 @@ namespace OpenNos.Handler
                     session?.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
                     if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
-                        PenaltyLogDTO log = new PenaltyLogDTO
+                        if (!session.Character.IsMuted())
                         {
-                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
-                            Reason = reason,
-                            Penalty = PenaltyType.Muted,
-                            DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddHours(duration),
-                            AdminName = Session.Character.Name
-                        };
-                        Session.Character.InsertOrUpdatePenalty(log);
+                            PenaltyLogDTO log = new PenaltyLogDTO
+                            {
+                                AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                                Reason = reason,
+                                Penalty = PenaltyType.Muted,
+                                DateStart = DateTime.Now,
+                                DateEnd = DateTime.Now.AddHours(duration),
+                                AdminName = Session.Character.Name
+                            };
+
+                            session.Character.InsertOrUpdatePenalty(log);
+                        }
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
                     else
