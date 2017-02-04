@@ -263,42 +263,25 @@ namespace OpenNos.GameObject
             return GetAllItems().Where(i => inventoryitemids.Contains(i.Id)).OrderBy(i => i.Slot).FirstOrDefault();
         }
 
-        public bool GetFreeSlotAmount(List<ItemInstance> itemInstances, int backPack)
+        public bool EnoughPlace(List<ItemInstance> itemInstances, int backPack)
         {
-            short[] place = new short[itemInstances.Count];
-            for (byte k = 0; k < itemInstances.Count; k++)
+            Dictionary<InventoryType, int> place = new Dictionary<InventoryType, int>();
+            foreach (var itemgroup in itemInstances.GroupBy(s => s.ItemVNum))
             {
-                place[k] = (byte)(DEFAULT_BACKPACK_SIZE + backPack * 12);
-                for (short i = 0; i < DEFAULT_BACKPACK_SIZE + backPack * 12; i++)
+                InventoryType type = itemgroup.FirstOrDefault().Type;
+                List<ItemInstance> listitem = GetAllItems().Where(i => i.Type == type).ToList();
+                if (!place.ContainsKey(type))
                 {
-                    ItemInstance loadedItemInstance = LoadBySlotAndType(i, itemInstances[k].Item.Type);
-                    if (loadedItemInstance != null && loadedItemInstance.Type == 0)
-                    {
-                        place[k]--;
-                    }
-                    else if (loadedItemInstance != null)
-                    {
-                        bool check = false;
-                        foreach (ItemInstance itemInstance in itemInstances)
-                        {
-                            if (itemInstance.Item.Type != 0 && itemInstance.Amount + loadedItemInstance.Amount <= MAX_ITEM_AMOUNT)
-                            {
-                                check = true;
-                            }
-                        }
-                        if (!check)
-                        {
-                            place[k]--;
-                        }
-                    }
+                    place.Add(type, DEFAULT_BACKPACK_SIZE + backPack * 12 - listitem.Count);
                 }
-            }
-            for (int i = 0; i < itemInstances.Count; i++)
-            {
-                if (place[i] == 0)
-                {
+
+                int amount = itemgroup.Sum(s => s.Amount);
+                int rest = amount % (type == InventoryType.Equipment ? 1 : 99);
+                bool needanotherslot = !listitem.Any(s => s.ItemVNum == itemgroup.Key && s.Amount + rest <= MAX_ITEM_AMOUNT);
+                place[itemgroup.FirstOrDefault().Type] -= (int)(amount / (type == InventoryType.Equipment ? 1 : 99)) - (needanotherslot ? 1:0);
+
+                if (place[itemgroup.FirstOrDefault().Type] < 0)
                     return false;
-                }
             }
             return true;
         }

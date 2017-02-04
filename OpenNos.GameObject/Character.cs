@@ -4882,13 +4882,7 @@ namespace OpenNos.GameObject
                 DAOFactory.AccountDAO.InsertOrUpdate(ref account);
 
                 CharacterDTO character = DeepCopy();
-                SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
-
-                // wait for any exchange to be finished
-                while (IsExchanging)
-                {
-                    // do nothing and wait until Exchange has been finished
-                }
+                DAOFactory.CharacterDAO.InsertOrUpdate(ref character); 
 
                 if (Inventory != null)
                 {
