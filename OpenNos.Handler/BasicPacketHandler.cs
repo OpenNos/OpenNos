@@ -19,6 +19,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.WebApi.Reference;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -227,19 +228,19 @@ namespace OpenNos.Handler
                     {
                         if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                         {
-                            ItemInstance newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
+                            List<ItemInstance> newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
 
-                            if (newInv != null)
+                            if (newInv.Any())
                             {
-                                newInv.Upgrade = mail.AttachmentUpgrade;
-                                newInv.Rare = (sbyte)mail.AttachmentRarity;
-                                if (newInv.Rare != 0)
+                                newInv.First().Upgrade = mail.AttachmentUpgrade;
+                                newInv.First().Rare = (sbyte)mail.AttachmentRarity;
+                                if (newInv.First().Rare != 0)
                                 {
-                                    WearableInstance wearable = newInv as WearableInstance;
+                                    WearableInstance wearable = newInv.First() as WearableInstance;
                                     wearable?.SetRarityPoint();
                                 }
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
-                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.Item.Name} x {mail.AttachmentAmount}", 12));
+                                newInv.ForEach(s=>Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
+                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.First().Item.Name} x {mail.AttachmentAmount}", 12));
 
                                 if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                                 {
@@ -982,18 +983,18 @@ namespace OpenNos.Handler
                                     if (randomAmount <= (double)dropChance * RateDrop / 5000.000)
                                     {
                                         short vnum = drop.ItemVNum;
-                                        ItemInstance newInv = Session.Character.Inventory.AddNewToInventory(vnum);
+                                        List<ItemInstance> newInv = Session.Character.Inventory.AddNewToInventory(vnum);
                                         Session.Character.LastMapObject = DateTime.Now;
                                         Session.Character.TimesUsed++;
                                         if (Session.Character.TimesUsed >= 4)
                                         {
                                             Session.Character.TimesUsed = 0;
                                         }
-                                        if (newInv != null)
+                                        if (newInv.Any())
                                         {
-                                            Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
-                                            Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 0));
-                                            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.Item.Name), 11));
+                                            newInv.ForEach(s=>Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
+                                            Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.First().Item.Name), 0));
+                                            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.First().Item.Name), 11));
                                         }
                                         else
                                         {

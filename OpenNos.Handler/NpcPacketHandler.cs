@@ -292,20 +292,20 @@ namespace OpenNos.Handler
                                     }
                                 }
 
-                                ItemInstance newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount);
-                                if (newItem == null)
+                                List<ItemInstance> newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount);
+                                if (!newItem.Any())
                                 {
                                     Session.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE")));
                                     return;
                                 }
 
-                                newItem.Rare = rare;
-                                newItem.Upgrade = item.Upgrade;
-                                newItem.Design = item.Color;
+                                newItem.First().Rare = rare;
+                                newItem.First().Upgrade = item.Upgrade;
+                                newItem.First().Design = item.Color;
 
-                                if (newItem.Slot != -1)
+                                if (newItem.Any())
                                 {
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum, newItem.Amount, newItem.Type, newItem.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
+                                    newItem.ForEach(s=>Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                                     if (iteminfo.ReputPrice == 0)
                                     {
                                         Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
@@ -556,32 +556,31 @@ namespace OpenNos.Handler
                                 return;
                             }
 
-                            ItemInstance inv = Session.Character.Inventory.AddNewToInventory(rec.ItemVNum, rec.Amount);
-                            if (inv == null)
+                            List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(rec.ItemVNum, rec.Amount);
+                            if (!inv.Any())
                             {
                                 return;
                             }
                             if (inv.GetType().Equals(typeof(WearableInstance)))
                             {
-                                WearableInstance item = inv as WearableInstance;
+                                WearableInstance item = inv.First() as WearableInstance;
                                 if (item != null && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
                                 {
                                     item.SetRarityPoint();
                                 }
                             }
-                            short Slot = inv.Slot;
-                            if (Slot != -1)
+                            if (inv.Any())
                             {
                                 foreach (RecipeItemDTO ite in rec.Items)
                                 {
                                     Session.Character.Inventory.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, 0, inv.Rare, inv.Upgrade, 0));
+                                inv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, 0, s.Rare, s.Upgrade, 0)));
 
-                                Session.SendPacket($"pdti 11 {inv.ItemVNum} {rec.Amount} 29 {inv.Upgrade} 0");
+                                Session.SendPacket($"pdti 11 {inv.First().ItemVNum} {rec.Amount} 29 {inv.First().Upgrade} 0");
                                 Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
 
-                                Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.Item.Name, rec.Amount), 0));
+                                Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.First().Item.Name, rec.Amount), 0));
                             }
                         }
                     }
@@ -854,15 +853,15 @@ namespace OpenNos.Handler
             {
                 amount = shopitem.SellAmount;
             }
-            ItemInstance inv = shopitem.ItemInstance.Type == InventoryType.Equipment
+            List<ItemInstance> inv = shopitem.ItemInstance.Type == InventoryType.Equipment
                    ? clientSession.Character.Inventory.AddToInventory(shopitem.ItemInstance)
                    : clientSession.Character.Inventory.AddNewToInventory(shopitem.ItemInstance.ItemVNum, amount, shopitem.ItemInstance.Type);
 
-            if (inv == null)
+            if (!inv.Any())
             {
                 return false;
             }
-            Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
+            inv.ForEach(s=> Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
             shopOwnerSession.Character.Gold += shopitem.Price * amount;
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateGold());
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), Session.Character.Name, shopitem.ItemInstance.Item.Name, amount)));

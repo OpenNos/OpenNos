@@ -19,6 +19,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.WebApi.Reference;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -143,10 +144,10 @@ namespace OpenNos.Handler
                             newBz.Amount = cBuyPacket.Amount;
                             newBz.Type = newBz.Item.Type;
 
-                            ItemInstance newInv = Session.Character.Inventory.AddToInventory(newBz);
-                            if (newInv != null)
+                            List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(newBz);
+                            if (newInv.Any())
                             {
-                                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                                newInv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                                 Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: { bzcree.Item.Item.Name} x {cBuyPacket.Amount}", 10));
                             }
 
@@ -198,10 +199,10 @@ namespace OpenNos.Handler
                         newBz.Id = Guid.NewGuid();
                         newBz.Type = newBz.Item.Type;
 
-                        ItemInstance newInv = Session.Character.Inventory.AddToInventory(newBz);
-                        if (newInv != null)
+                        List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(newBz);
+                        if (newInv.Any())
                         {
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                            newInv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                         }
                     }
                     Session.SendPacket($"rc_scalc 1 {bz.Price} {bz.Amount - Item.Amount} {bz.Amount} {taxes} {price + taxes}");

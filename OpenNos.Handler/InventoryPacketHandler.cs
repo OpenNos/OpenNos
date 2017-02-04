@@ -468,7 +468,7 @@ namespace OpenNos.Handler
 
                                                 bool @continue = true;
                                                 bool goldmax = false;
-                                                if (!targetSession.Character.Inventory.EnoughPlace(targetExchange.ExchangeList, Session.Character.HaveBackpack() ? 1 : 0))
+                                                if (!Session.Character.Inventory.EnoughPlace(targetExchange.ExchangeList, Session.Character.HaveBackpack() ? 1 : 0))
                                                 {
                                                     @continue = false;
                                                 }
@@ -606,16 +606,17 @@ namespace OpenNos.Handler
                         {
                             lock (Session.Character.Inventory)
                             {
-                                ItemInstance newInv = Session.Character.Inventory.AddToInventory(mapItemInstance);
-                                if (newInv != null)
+                                byte amount = mapItem.Amount;
+                                List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(mapItemInstance);
+                                if (newInv.Any())
                                 {
                                     Session.CurrentMapInstance.DroppedList.Remove(packet.TransportId);
                                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
-                                    Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.Item.Name} x {mapItem.Amount}", 12));
+                                    newInv.ForEach(s=>Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
+                                    Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {amount}", 12));
                                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
                                     {
-                                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{String.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {newInv.Item.Name} x {mapItem.Amount}", 10));
+                                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{String.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {newInv.First().Item.Name} x {mapItem.Amount}", 10));
                                     }
                                 }
                                 else
@@ -1662,12 +1663,12 @@ namespace OpenNos.Handler
             {
                 ItemInstance item2 = item.DeepCopy();
                 item2.Id = Guid.NewGuid();
-                ItemInstance inv = targetSession.Character.Inventory.AddToInventory(item2);
-                if (inv == null || inv.Slot == -1)
+                List<ItemInstance> inv = targetSession.Character.Inventory.AddToInventory(item2);
+                if (!inv.Any())
                 {
                     continue;
                 }
-                targetSession.SendPacket(targetSession.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, inv.Type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
+                inv.ForEach(s => targetSession.SendPacket(targetSession.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
             }
 
             // handle gold

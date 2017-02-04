@@ -86,7 +86,7 @@ namespace OpenNos.GameObject
             return newItem;
         }
 
-        public ItemInstance AddNewToInventory(short vnum, byte amount = 1, InventoryType? type = null)
+        public List<ItemInstance> AddNewToInventory(short vnum, byte amount = 1, InventoryType? type = null)
         {
             if (Owner != null)
             {
@@ -94,11 +94,12 @@ namespace OpenNos.GameObject
                 ItemInstance newItem = InstantiateItemInstance(vnum, Owner.CharacterId, amount);
                 return AddToInventory(newItem, type);
             }
-            return null;
+            return new List<ItemInstance>();
         }
 
-        public ItemInstance AddToInventory(ItemInstance newItem, InventoryType? type = null)
+        public List<ItemInstance> AddToInventory(ItemInstance newItem, InventoryType? type = null)
         {
+            List<ItemInstance> invlist = new List<ItemInstance>();
             if (Owner != null)
             {
                 Logger.Debug(newItem.ItemVNum.ToString(), Owner.Session.SessionId);
@@ -109,20 +110,27 @@ namespace OpenNos.GameObject
                 {
                     newItem.Type = type.Value;
                 }
+           
 
                 // check if item can be stapled
-                if (newItem.Type != InventoryType.Equipment && newItem.Type != InventoryType.Wear)
+                if (newItem.Item.Type != InventoryType.Equipment)
                 {
-                    IEnumerable<ItemInstance> slotfree = LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
-                    inv = GetFreeSlot(slotfree.Where(s => s.Type == newItem.Type));
+                    IEnumerable<ItemInstance> slotNotFull = GetAllItems().Where(i => i.ItemVNum.Equals(newItem.ItemVNum) && i.Amount <= MAX_ITEM_AMOUNT);
+                    int freeslot = DEFAULT_BACKPACK_SIZE + Owner.Backpack * 12 - GetAllItems().Where(s => s.Type == newItem.Type).Count();
+                    if (newItem.Amount <= freeslot * MAX_ITEM_AMOUNT + slotNotFull.Sum(s => MAX_ITEM_AMOUNT - s.Amount))
+                    {
+                        foreach (ItemInstance slot in slotNotFull)
+                        {
+                            int max = slot.Amount + newItem.Amount;
+                            max = max > MAX_ITEM_AMOUNT ? MAX_ITEM_AMOUNT : max;
+                            newItem.Amount = (byte)(slot.Amount + newItem.Amount - max);
+                            newItem.Amount = (byte)(newItem.Amount < 0 ? 0 : newItem.Amount);
+                            slot.Amount = (byte)max;
+                            invlist.Add(slot);
+                        }
+                    }
                 }
-
-                if (inv != null)
-                {
-                    // add item amount
-                    inv.Amount = (byte)(newItem.Amount + inv.Amount);
-                }
-                else
+                if (newItem.Amount > 0)
                 {
                     // create new item
                     short? freeSlot = newItem.Type == InventoryType.Wear ? (LoadBySlotAndType((short)newItem.Item.EquipmentSlot, InventoryType.Wear) == null
@@ -132,12 +140,13 @@ namespace OpenNos.GameObject
                     if (freeSlot.HasValue)
                     {
                         inv = AddToInventoryWithSlotAndType(newItem, newItem.Type, freeSlot.Value);
+                        invlist.Add(inv);
                     }
                 }
 
-                return inv;
             }
-            else return null;
+
+            return invlist;
         }
 
         /// <summary>
@@ -277,8 +286,8 @@ namespace OpenNos.GameObject
 
                 int amount = itemgroup.Sum(s => s.Amount);
                 int rest = amount % (type == InventoryType.Equipment ? 1 : 99);
-                bool needanotherslot = !listitem.Any(s => s.ItemVNum == itemgroup.Key && s.Amount + rest <= MAX_ITEM_AMOUNT);
-                place[itemgroup.FirstOrDefault().Type] -= (int)(amount / (type == InventoryType.Equipment ? 1 : 99)) - (needanotherslot ? 1:0);
+                bool needanotherslot = listitem.Where(s => s.ItemVNum == itemgroup.Key).Sum(s => MAX_ITEM_AMOUNT - s.Amount) <= rest;
+                place[itemgroup.FirstOrDefault().Type] -= (int)(amount / (type == InventoryType.Equipment ? 1 : 99)) + (needanotherslot ? 1 : 0);
 
                 if (place[itemgroup.FirstOrDefault().Type] < 0)
                     return false;
@@ -358,11 +367,6 @@ namespace OpenNos.GameObject
                     where T : ItemInstance
         {
             return (T)this[id];
-        }
-
-        private IEnumerable<ItemInstance> LoadBySlotAllowed(short itemVNum, int amount)
-        {
-            return GetAllItems().Where(i => i.ItemVNum.Equals(itemVNum) && i.Amount + amount <= MAX_ITEM_AMOUNT);
         }
 
         public T LoadBySlotAndType<T>(short slot, InventoryType type)

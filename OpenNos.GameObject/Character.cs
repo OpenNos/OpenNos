@@ -4485,10 +4485,10 @@ namespace OpenNos.GameObject
                         {
                             ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
                         }
-                        ItemInstance newInv = Inventory.AddToInventory(newItem);
-                        if (newInv != null)
+                        List<ItemInstance> newInv = Inventory.AddToInventory(newItem);
+                        if (newInv.Any())
                         {
-                            Session.SendPacket(GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                            newInv.ForEach(s=> Session.SendPacket(GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                             Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
                         }
                         else

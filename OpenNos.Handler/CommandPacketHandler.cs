@@ -897,26 +897,21 @@ namespace OpenNos.Handler
                         }
                     }
                     amount = amount > 99 ? (byte)99 : amount;
-                    ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount);
-                    if (inv != null)
+                    List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(vnum, amount);
+                    if (inv.Any())
                     {
-                        inv.Rare = rare;
-                        inv.Upgrade = upgrade;
-                        inv.Design = design;
+                        inv.First().Rare = rare;
+                        inv.First().Upgrade = upgrade;
+                        inv.First().Design = design;
 
-                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
+                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.First().Slot, inv.First().Type);
 
                         if (wearable != null && (wearable.Item.EquipmentSlot == EquipmentType.Armor || wearable.Item.EquipmentSlot == EquipmentType.MainWeapon || wearable.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
                         {
                             wearable.SetRarityPoint();
                         }
-
-                        short slot = inv.Slot;
-                        if (slot != -1)
-                        {
-                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.Amount, iteminfo.Type, slot, rare, design, upgrade, 0));
-                        }
+                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
+                        inv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, s.Amount, iteminfo.Type, s.Slot, rare, design, upgrade, 0)));
                     }
                     else
                     {
