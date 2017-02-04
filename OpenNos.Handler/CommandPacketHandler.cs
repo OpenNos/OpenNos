@@ -1104,7 +1104,6 @@ namespace OpenNos.Handler
                     else
                     {
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
-                        return;
                     }
                 }
             }
@@ -1915,7 +1914,6 @@ namespace OpenNos.Handler
         public void Teleport(TeleportPacket teleportPacket)
         {
             Logger.Debug("Teleport Command", Session.SessionId);
-            short mapId;
             if (teleportPacket != null)
             {
                 if (Session.Character.HasShopOpened || Session.Character.InExchangeOrTrade)
@@ -1926,6 +1924,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
+                short mapId;
                 if (short.TryParse(teleportPacket.Data, out mapId))
                 {
                     ServerManager.Instance.LeaveMap(Session.Character.CharacterId);

@@ -23,35 +23,27 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 
 namespace OpenNos.Handler
 {
     public class BasicPacketHandler : IPacketHandler
     {
-        #region Members
-
-        private readonly ClientSession _session;
-
-        #endregion
-
         #region Instantiation
 
         public BasicPacketHandler(ClientSession session)
         {
-            _session = session;
+            Session = session;
         }
 
         #endregion
 
         #region Properties
 
-        private ClientSession Session => _session;
+        private ClientSession Session { get; }
 
         #endregion
 
         #region Methods
-
 
         /// <summary>
         /// gop packet
@@ -174,6 +166,7 @@ namespace OpenNos.Handler
                             ServerManager.Instance.SetProperty(complimentedCharacterId, nameof(Character.Compliment), compliment);
                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentedCharacterId, nameof(Character.Name))), 12));
                             Session.Account.LastCompliment = DateTime.Now;
+
                             //Session.Character.RefreshComplimentRankingIfNeeded();
                             Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
                         }
@@ -369,7 +362,6 @@ namespace OpenNos.Handler
                     ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(pjoinPacket.CharacterId);
                     if (targetSession != null)
                     {
-
                         if (Session.Character.IsBlockedByCharacter(pjoinPacket.CharacterId))
                         {
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
@@ -398,7 +390,6 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_SHARE_INFO")));
                     Session.Character.Group.Characters.Where(s => s.Character.CharacterId != Session.Character.CharacterId).ToList().ForEach(s => s.SendPacket(Session.Character.GenerateDialog($"#pjoin^6^{ Session.Character.CharacterId} #pjoin^7^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INVITED_YOU_SHARE"), Session.Character.Name)}")));
                 }
-
             }
         }
 
@@ -425,10 +416,7 @@ namespace OpenNos.Handler
                     // target session with character id does not exist or invalid request packet
                     return;
                 }
-                else
-                {
-                    targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
-                }
+                targetSession.Character.GroupSentRequestCharacterIds.Remove(Session.Character.CharacterId);
 
                 // accepted, join the group
                 if (pjoinPacket.RequestType.Equals(GroupRequestType.Accepted))
@@ -510,6 +498,7 @@ namespace OpenNos.Handler
                 }
             }
         }
+
         /// <summary>
         /// pleave packet
         /// </summary>
@@ -578,7 +567,6 @@ namespace OpenNos.Handler
                 long characterId;
                 if (long.TryParse(packetsplit[2], out characterId))
                 {
-
                     Session.Character.DeleteRelation(characterId);
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_DELETED")));
                 }
@@ -892,6 +880,7 @@ namespace OpenNos.Handler
                         Session.Character.IsWaitingForEvent = true;
                     }
                     break;
+
                 case "199":
                     short[] listWingOfFriendship = { 2160, 2312, 10048 };
                     short vnumToUse = -1;
@@ -1199,13 +1188,14 @@ namespace OpenNos.Handler
                                 }
                                 else
                                 {
-                                    Session.Character.Inventory.RemoveItemAmount(saver, 1);
+                                    Session.Character.Inventory.RemoveItemAmount(saver);
                                     Session.Character.Hp = (int)Session.Character.HPLoad();
                                     Session.Character.Mp = (int)Session.Character.MPLoad();
                                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateRevive());
                                     Session.SendPacket(Session.Character.GenerateStat());
                                 }
                                 break;
+
                             default:
                                 const int seed = 1012;
                                 if (Session.Character.Inventory.CountItem(seed) < 10 && Session.Character.Level > 20)
@@ -1239,6 +1229,7 @@ namespace OpenNos.Handler
                     case 1:
                         ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
                         break;
+
                     case 2:
                         if (Session.Character.Gold >= 100)
                         {
@@ -1499,7 +1490,7 @@ namespace OpenNos.Handler
                 return;
             }
             Session.CurrentMapInstance = Session.Character.MapInstance;
-            if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & !Session.Character.GeneralLogs.Where(s => s.LogType == "Connection").Any())
+            if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.All(s => s.LogType != "Connection"))
             {
                 Session.SendPacket("scene 40");
             }
@@ -1645,6 +1636,7 @@ namespace OpenNos.Handler
                 }
             }
         }
+
         /// <summary>
         /// / packet
         /// </summary>

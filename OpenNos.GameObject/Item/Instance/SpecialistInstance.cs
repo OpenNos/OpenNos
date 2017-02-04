@@ -340,7 +340,7 @@ namespace OpenNos.GameObject
 
         public void UpgradeSp(ClientSession Session, UpgradeProtection protect)
         {
-            if (Upgrade >= 15 || Upgrade < 0)
+            if (Upgrade >= 15)
                 return;
 
             short[] upfail = { 20, 25, 30, 40, 50, 60, 65, 70, 75, 80, 90, 93, 95, 97, 99 };

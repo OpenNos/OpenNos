@@ -1267,18 +1267,6 @@ Veux-tu le porter ?</value>
   <data name="NOT_ENOUGH_SAVER" xml:space="preserve">
     <value>Tu n'as pas assez de fontaine magique pour pouvoir résscuciter.</value>
   </data>
-  <data name="INSTANTBATTLE_MINUTES_REMAINING" xml:space="preserve">
-    <value>La bataille se termine dans {0} minutes.</value>
-  </data>
-  <data name="INSTANTBATTLE_MONSTERS_APPEAR" xml:space="preserve">
-    <value>Ouaaah ! Les monstres sont apparus !</value>
-  </data>
-  <data name="INSTANTBATTLE_MONSTERS_HERE" xml:space="preserve">
-    <value>Les monstres sont apparus !</value>
-  </data>
-  <data name="INSTANTBATTLE_MONSTERS_WALKS" xml:space="preserve">
-    <value>Les monstres s'approchent lentement en masse...</value>
-  </data>
   <data name="INSTANTBATTLE_MONSTERS_WAVE" xml:space="preserve">
     <value>Les monstres vont apparaître dans 40 secondes.</value>
   </data>
@@ -1288,16 +1276,13 @@ Veux-tu le porter ?</value>
   <data name="INSTANTBATTLE_SUCCEEDED" xml:space="preserve">
     <value>Tu as gagné le combat instantané ! Félicitations !</value>
   </data>
-  <data name="ISTANTBATTLE_MINUTES" xml:space="preserve">
-    <value>Dans {0} minutes un combat instantané va commencer.</value>
-  </data>
-  <data name="ISTANTBATTLE_QUESTION" xml:space="preserve">
+  <data name="INSTANTBATTLE_QUESTION" xml:space="preserve">
     <value>Veux-tu participer au combat instantané ?</value>
   </data>
-  <data name="ISTANTBATTLE_SECONDS" xml:space="preserve">
+  <data name="INSTANTBATTLE_SECONDS" xml:space="preserve">
     <value>Dans {0} secondes un combat instantané va commencer.</value>
   </data>
-  <data name="ISTANTBATTLE_STARTED" xml:space="preserve">
+  <data name="INSTANTBATTLE_STARTED" xml:space="preserve">
     <value>Un combat instantané a commencé.</value>
   </data>
   <data name="MINILAND_VISITOR" xml:space="preserve">
@@ -1314,5 +1299,20 @@ Veux-tu le porter ?</value>
   </data>
   <data name="WIN_SP_POINT" xml:space="preserve">
     <value>Tu reçois {0} points de spécialiste supplémentaires en récompense de ta victoire.</value>
+  </data>
+  <data name="INSTANTBATTLE_MINUTES" xml:space="preserve">
+    <value>Dans {0} minutes un combat instantané va commencer.</value>
+  </data>
+  <data name="INSTANTBATTLE_MINUTES_REMAINING" xml:space="preserve">
+    <value>La bataille se termine dans {0} minutes.</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_APPEAR" xml:space="preserve">
+    <value>Ouaaah ! Les monstres sont apparus !</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_HERE" xml:space="preserve">
+    <value>Les monstres sont apparus !</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_INCOMING" xml:space="preserve">
+    <value>Les monstres s'approchent lentement en masse...</value>
   </data>
 </root>

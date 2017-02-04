@@ -11,24 +11,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-
-namespace OpenNos.GameObject.Buff.Indicators.Item
+namespace OpenNos.GameObject.Buff.Indicators.NoSP.Archer
 {
-    public class ExperiencePotion : IndicatorBase
+    public class RitualOfHawk : IndicatorBase
     {
-        #region Instantiation
-
-        public ExperiencePotion(int Level)
+        public RitualOfHawk(int Level)
         {
-            Name = "Experience Increase";
-            Duration = 6000;
-            Id = 119;
+            Name = "Ritual Of Hawk";
+            Duration = 3000;
+            Id = 74;
             _level = Level;
-            DirectBuffs.Add(new BCardEntry(BCard.Type.Experience, BCard.SubType.IncreasePercentage, 20, 0, false));
-            DirectBuffs.Add(new BCardEntry(BCard.Type.JobExperience, BCard.SubType.IncreasePercentage, 20, 0, false));
-            DirectBuffs.Add(new BCardEntry(BCard.Type.SPExperience, BCard.SubType.IncreasePercentage, 20, 0, false));
+            DirectBuffs.Add(new BCardEntry(BCard.Type.Damage, BCard.SubType.Increase, 25, 0, false));
+            DirectBuffs.Add(new BCardEntry(BCard.Type.HitRate, BCard.SubType.Increase, 15, 0, false));
         }
-
-        #endregion
     }
 }

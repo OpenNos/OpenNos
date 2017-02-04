@@ -1,4 +1,18 @@
-﻿using OpenNos.Core;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
@@ -12,13 +26,12 @@ namespace OpenNos.GameObject.Event
     {
         #region Methods
 
-        public static List<Tuple<short, int, short, short>> GenerateDrop(Map map, short vnum, int amountofdrop, int amount)
+        public static IEnumerable<Tuple<short, int, short, short>> GenerateDrop(Map map, short vnum, int amountofdrop, int amount)
         {
             List<Tuple<short, int, short, short>> dropParameters = new List<Tuple<short, int, short, short>>();
-            MapCell cell = null;
             for (int i = 0; i < amountofdrop; i++)
             {
-                cell = map.GetRandomPosition();
+                MapCell cell = map.GetRandomPosition();
                 dropParameters.Add(new Tuple<short, int, short, short>(vnum, amount, cell.X, cell.Y));
             }
             return dropParameters;
@@ -26,20 +39,20 @@ namespace OpenNos.GameObject.Event
 
         public static void GenerateInstantBattle()
         {
-            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_MINUTES"), 5), 0));
-            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_MINUTES"), 5), 1));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES"), 5), 0));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES"), 5), 1));
             Thread.Sleep(4 * 60 * 1000);
-            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_MINUTES"), 1), 0));
-            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_MINUTES"), 1), 1));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES"), 1), 0));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES"), 1), 1));
             Thread.Sleep(30 * 1000);
-            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_SECONDS"), 30), 0));
-            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_SECONDS"), 30), 1));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS"), 30), 0));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS"), 30), 1));
             Thread.Sleep(20 * 1000);
-            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_SECONDS"), 10), 0));
-            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("ISTANTBATTLE_SECONDS"), 10), 1));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS"), 10), 0));
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS"), 10), 1));
             Thread.Sleep(10 * 1000);
-            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("ISTANTBATTLE_STARTED"), 1));
-            ServerManager.Instance.Broadcast($"qnaml 1 #guri^506 {Language.Instance.GetMessageFromKey("ISTANTBATTLE_QUESTION")}");
+            ServerManager.Instance.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_STARTED"), 1));
+            ServerManager.Instance.Broadcast($"qnaml 1 #guri^506 {Language.Instance.GetMessageFromKey("INSTANTBATTLE_QUESTION")}");
             ServerManager.Instance.EventInWaiting = true;
             Thread.Sleep(30 * 1000);
             ServerManager.Instance.EventInWaiting = false;
@@ -82,7 +95,10 @@ namespace OpenNos.GameObject.Event
                     map = ServerManager.GenerateMapInstance(2004, MapInstanceType.NormalInstance);
                     maps.Add(new Tuple<MapInstance, byte>(map, instancelevel));
                 }
-                ServerManager.Instance.TeleportOnRandomPlaceInMap(s, map.MapInstanceId);
+                if (map != null)
+                {
+                    ServerManager.Instance.TeleportOnRandomPlaceInMap(s, map.MapInstanceId);
+                }
 
                 level = s.Character.Level;
             }
@@ -102,15 +118,15 @@ namespace OpenNos.GameObject.Event
                     {
                         if (!mapinstance.Item1.Monsters.Any(s => s.CurrentHp > 0))
                         {
-                            mapinstance.Item1.CreatePortal(new Portal() { SourceX = 47, SourceY = 33, DestinationMapId = 1 });
+                            mapinstance.Item1.CreatePortal(new Portal { SourceX = 47, SourceY = 33, DestinationMapId = 1 });
                             mapinstance.Item1.Broadcast(ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
                             foreach (ClientSession cli in mapinstance.Item1.Sessions.Where(s => s.Character != null).ToList())
                             {
                                 cli.Character.GetReput(cli.Character.Level * 50);
                                 cli.Character.Gold += cli.Character.Level * 1000;
-                                cli.Character.Gold = (cli.Character.Gold > maxGold) ? maxGold : cli.Character.Gold;
+                                cli.Character.Gold = cli.Character.Gold > maxGold ? maxGold : cli.Character.Gold;
                                 cli.Character.SpAdditionPoint += cli.Character.Level * 100;
-                                cli.Character.SpAdditionPoint = (cli.Character.SpAdditionPoint > 1000000) ? 1000000 : cli.Character.SpAdditionPoint;
+                                cli.Character.SpAdditionPoint = cli.Character.SpAdditionPoint > 1000000 ? 1000000 : cli.Character.SpAdditionPoint;
                                 cli.SendPacket(cli.Character.GenerateSpPoint());
                                 cli.SendPacket(cli.Character.GenerateGold());
                                 cli.SendPacket(cli.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("WIN_MONEY"), cli.Character.Level * 1000), 10));
@@ -124,23 +140,23 @@ namespace OpenNos.GameObject.Event
                 });
 
                 mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(15), EventActionType.DISPOSE, null);
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(3), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 12), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(5), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 10), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(10), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 5), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(11), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 4), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(12), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 3), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(13), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 2), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 1), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, ServerManager.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WALKS"), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(3), EventActionType.MESSAGE, ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 12), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(5), EventActionType.MESSAGE, ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 10), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(10), EventActionType.MESSAGE, ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 5), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(11), EventActionType.MESSAGE, ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 4), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(12), EventActionType.MESSAGE, ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 3), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(13), EventActionType.MESSAGE, ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 2), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14), EventActionType.MESSAGE, ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 1), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, ServerManager.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_INCOMING"), 0));
                 mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(7), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_APPEAR"), 0));
                 mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(3), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
 
                 for (int wave = 0; wave < 4; wave++)
                 {
                     mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(130 + wave * 160), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WAVE"), 0));
-                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(160 + wave * 160), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WALKS"), 0));
+                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(160 + wave * 160), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_INCOMING"), 0));
                     mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(170 + wave * 160), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
                     mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(10 + wave * 160), EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, wave));
                     mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(140 + wave * 160), EventActionType.DROPITEMS, GetInstantBattleDrop(mapinstance.Item1.Map, mapinstance.Item2, wave));
@@ -152,10 +168,9 @@ namespace OpenNos.GameObject.Event
         public static List<MonsterToSummon> GenerateMonsters(Map map, short vnum, short amount, bool move)
         {
             List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
-            MapCell cell;
             for (int i = 0; i < amount; i++)
             {
-                cell = map.GetRandomPosition();
+                MapCell cell = map.GetRandomPosition();
                 SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, true));
             }
             return SummonParameters;
