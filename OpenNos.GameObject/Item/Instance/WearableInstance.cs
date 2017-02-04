@@ -16,6 +16,7 @@ using System;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.GameObject
 {
@@ -391,23 +392,15 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            for (int i = 0; i > point; i--)
+                            for (int i = 0; i > Rare * 10; i--)
                             {
-                                int rndn = ServerManager.RandomNumber(0, 3);
-                                if (rndn == 0)
-                                {
-                                    Concentrate--;
-                                    HitRate--;
-                                }
-                                else
-                                {
-                                    DamageMinimum--;
-                                    DamageMaximum--;
-                                }
+                                DamageMinimum--;
+                                DamageMaximum--;
                             }
                         }
                     }
                     break;
+
                 case EquipmentType.Armor:
                     {
                         int point = CharacterHelper.RarityPoint(Rare, Item.IsHeroic ? (short)(95 + Item.LevelMinimum) : Item.LevelMinimum);
@@ -436,20 +429,11 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            for (int i = 0; i > point; i--)
+                            for (int i = 0; i > Rare * 10; i--)
                             {
-                                int rndn = ServerManager.RandomNumber(0, 3);
-                                if (rndn == 0)
-                                {
-                                    DefenceDodge--;
-                                    DistanceDefenceDodge--;
-                                }
-                                else
-                                {
-                                    DistanceDefence--;
-                                    MagicDefence--;
-                                    CloseDefence--;
-                                }
+                                DistanceDefence--;
+                                MagicDefence--;
+                                CloseDefence--;
                             }
                         }
                     }
@@ -523,7 +507,7 @@ namespace OpenNos.GameObject
             }
             if (Upgrade < 10)
             {
-                short[] upsuccess;
+                short[] upfail;
                 short[] upfix;
                 int[] goldprice;
                 short[] cella;
@@ -531,16 +515,18 @@ namespace OpenNos.GameObject
 
                 if (Rare == 8)
                 {
-                    upsuccess = new short[] { 50, 50, 45, 30, 20, 10, 5, 3, 2, 1 };
-                    upfix = new short[] { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
+                    upfix = new short[] { 50, 40, 70, 65, 80, 90, 95, 97, 98, 99 };
+                    upfail = new short[] { 50, 40, 60, 50, 60, 70, 75, 77, 83, 89 };
+
                     goldprice = new[] { 5000, 15000, 30000, 100000, 300000, 800000, 1500000, 4000000, 7000000, 10000000 };
                     cella = new short[] { 40, 100, 160, 240, 320, 440, 560, 760, 960, 1200 };
                     gem = new short[] { 2, 2, 4, 4, 6, 2, 2, 4, 4, 6 };
                 }
                 else
                 {
-                    upsuccess = new short[] { 100, 100, 100, 95, 80, 60, 40, 30, 20, 11 };
-                    upfix = new short[] { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
+                    upfail = new short[] { 0, 0, 10, 20, 40, 60, 80, 90, 95, 99 };
+                    upfix = new short[] { 0, 0, 0, 5, 20, 40, 60, 70, 75, 79 };
+
                     goldprice = new[] { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
                     cella = new short[] { 20, 50, 80, 120, 160, 220, 280, 380, 480, 600 };
                     gem = new short[] { 1, 1, 2, 2, 3, 1, 1, 2, 2, 3 };
@@ -659,26 +645,9 @@ namespace OpenNos.GameObject
                 ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
 
                 int rnd = ServerManager.RandomNumber();
-
                 if (Rare == 8)
                 {
-                    if (rnd <= upsuccess[Upgrade])
-                    {
-                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3005), session.Character.MapX, session.Character.MapY);
-                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
-                        wearable.Upgrade++;
-                        session.Character.Family?.InsertFamilyLog(FamilyLogType.Upgrade, session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
-                        session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, wearable.Upgrade, 0));
-                    }
-                    else if (rnd <= upfix[Upgrade])
-                    {
-                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
-                        wearable.IsFixed = true;
-                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
-                    }
-                    else
+                    if (rnd <= upfail[Upgrade])
                     {
                         if (protection == UpgradeProtection.None)
                         {
@@ -692,6 +661,22 @@ namespace OpenNos.GameObject
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
                             session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
                         }
+                    }
+                    else if (rnd <= upfix[Upgrade])
+                    {
+                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
+                        wearable.IsFixed = true;
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
+                    }
+                    else
+                    {
+                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3005), session.Character.MapX, session.Character.MapY);
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
+                        wearable.Upgrade++;
+                        session.Character.Family?.InsertFamilyLog(FamilyLogType.Upgrade, session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
+                        session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, wearable.Upgrade, 0));
                     }
                 }
                 else
@@ -703,16 +688,7 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
                         session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                     }
-                    else if (rnd <= upsuccess[Upgrade])
-                    {
-                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3005), session.Character.MapX, session.Character.MapY);
-                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
-                        wearable.Upgrade++;
-                        session.Character.Family?.InsertFamilyLog(FamilyLogType.Upgrade, session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
-                        session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, wearable.Upgrade, 0));
-                    }
-                    else
+                    else if (rnd <= upfail[Upgrade])
                     {
                         if (protection == UpgradeProtection.None)
                         {
@@ -727,16 +703,19 @@ namespace OpenNos.GameObject
                             session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
                         }
                     }
+                    else
+                    {
+                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3005), session.Character.MapX, session.Character.MapY);
+                        session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
+                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
+                        wearable.Upgrade++;
+                        session.Character.Family?.InsertFamilyLog(FamilyLogType.Upgrade, session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
+                        session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, 0, wearable.Upgrade, 0));
+                    }
                 }
+                session.SendPacket("shop_end 1");
             }
-            else
-            {
-                Upgrade = 0; // Troll dem fags
-                session.SendPacket(session.Character.GenerateInventoryAdd(ItemVNum, 1, Type, Slot, Rare, 0, Upgrade, 0));
-                Logger.Log.Info($"Player {session.Character.Name} upgraded with Packet Logger!");
-                return;
-            }
-            session.SendPacket("shop_end 1");
+
         }
 
         #endregion

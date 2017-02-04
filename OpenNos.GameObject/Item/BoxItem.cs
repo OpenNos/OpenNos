@@ -15,6 +15,8 @@
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -46,10 +48,10 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                ItemInstance newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
-                                if (newInv != null)
+                                List<ItemInstance> newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
+                                if (newInv.Any())
                                 {
-                                    SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(newInv.Slot, newInv.Type);
+                                    SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(newInv.First().Slot, newInv.First().Type);
 
                                     if (specialist != null)
                                     {
@@ -77,7 +79,7 @@ namespace OpenNos.GameObject
                                         if (specialist != null)
                                         {
                                             session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {specialist.Item.Name} + {specialist.Upgrade}", 12));
-                                            session.SendPacket(session.Character.GenerateInventoryAdd(specialist.ItemVNum, newInv.Amount, specialist.Type, newInv.Slot, 0, 0, specialist.Upgrade, 0));
+                                            newInv.ForEach(s=>session.SendPacket(session.Character.GenerateInventoryAdd(specialist.ItemVNum, s.Amount, specialist.Type, s.Slot, 0, 0, specialist.Upgrade, 0)));
                                         }
                                         session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
                                     }
@@ -100,10 +102,10 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                ItemInstance newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
-                                if (newInv != null)
+                                List<ItemInstance> newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
+                                if (newInv.Any())
                                 {
-                                    WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(newInv.Slot, newInv.Type);
+                                    WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(newInv.First().Slot, newInv.First().Type);
 
                                     if (fairy != null)
                                     {
@@ -116,7 +118,7 @@ namespace OpenNos.GameObject
                                         if (fairy != null)
                                         {
                                             session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {fairy.Item.Name} ({fairy.ElementRate}%)", 12));
-                                            session.SendPacket(session.Character.GenerateInventoryAdd(fairy.ItemVNum, newInv.Amount, fairy.Type, newInv.Slot, 0, 0, fairy.Upgrade, 0));
+                                            newInv.ForEach(s => session.SendPacket(session.Character.GenerateInventoryAdd(fairy.ItemVNum, s.Amount, fairy.Type, s.Slot, 0, 0, fairy.Upgrade, 0)));
                                         }
                                         session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
                                     }
@@ -139,14 +141,14 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                ItemInstance newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
-                                if (newInv != null)
+                                List<ItemInstance> newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
+                                if (newInv.Any())
                                 {
                                     short Slot = inv.Slot;
                                     if (Slot != -1)
                                     {
-                                        session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.Item.Name} x 1)", 12));
-                                        session.SendPacket(session.Character.GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, 0, 0, newInv.Upgrade, 0));
+                                        session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
+                                        newInv.ForEach(s => session.SendPacket(session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, 0, 0, s.Upgrade, 0)));
                                         session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
                                     }
                                 }

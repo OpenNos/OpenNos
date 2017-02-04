@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using OpenNos.GameObject.Helpers;
 using OpenNos.WebApi.SelfHost;
 using OpenNos.WebApi.Reference;
 
@@ -67,7 +68,7 @@ namespace OpenNos.GameObject
 
         public string GenerateMlinfobr()
         {
-            return $"mlinfobr 3800 {Name} {Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day).Count()} {Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland").Count()} 25 {MinilandMessage.Replace(' ', '^')}";
+            return $"mlinfobr 3800 {Name} {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day)} {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland")} 25 {MinilandMessage.Replace(' ', '^')}";
         }
 
         #endregion
@@ -1378,7 +1379,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCInfo()
         {
-            return $"c_info {Name} - -1 {(Family != null ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {(Family != null ? Family.FamilyLevel : 0)} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
+            return $"c_info {Name} - -1 {(Family != null ? $"{Family.FamilyId} {Family.Name}({Language.Instance.GetMessageFromKey(FamilyCharacter.Authority.ToString().ToUpper())})" : "-1 -")} {CharacterId} {(Invisible ? 6 : Undercover ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {(byte)HairColor} {(byte)Class} {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} {Family?.FamilyLevel ?? 0} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
 
         public string GenerateCMap()
@@ -1766,7 +1767,7 @@ namespace OpenNos.GameObject
             }
             if (skill.Type == 1)
             {
-                if (Map.GetDistance(new MapCell() { X = PositionX, Y = PositionY }, new MapCell() { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) < 4)
+                if (Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) < 4)
                     baseDamage = (int)(baseDamage * 0.85);
             }
 
@@ -2465,7 +2466,7 @@ namespace OpenNos.GameObject
             }
             if (skill.Type == 1)
             {
-                if (Map.GetDistance(new MapCell() { X = PositionX, Y = PositionY }, new MapCell() { X = target.PositionX, Y = target.PositionY }) < 4)
+                if (Map.GetDistance(new MapCell { X = PositionX, Y = PositionY }, new MapCell { X = target.PositionX, Y = target.PositionY }) < 4)
                     baseDamage = (int)(baseDamage * 0.85);
             }
 
@@ -2696,7 +2697,7 @@ namespace OpenNos.GameObject
 
         public string GenerateMlinfo()
         {
-            return $"mlinfo 3800 2000 100 {Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day).Count()} {Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland").Count()} 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}";
+            return $"mlinfo 3800 2000 100 {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day)} {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland")} 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}";
         }
 
         public string GenerateDelay(int delay, int type, string argument)
@@ -3278,7 +3279,8 @@ namespace OpenNos.GameObject
 
                     // gold calculation
                     int gold = GetGold(monsterToAttack);
-                    gold = gold > 1000000000 ? 1000000000 : gold;
+                    long maxGold = ServerManager.MaxGold;
+                    gold = gold > maxGold ? (int)maxGold : gold;
                     double randChance = ServerManager.RandomNumber() * random.NextDouble();
 
                     if (gold > 0 && randChance <= (int)(ServerManager.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
@@ -3301,9 +3303,9 @@ namespace OpenNos.GameObject
                                         if (session != null)
                                         {
                                             session.Character.Gold += drop2.Amount;
-                                            if (session.Character.Gold > 1000000000)
+                                            if (session.Character.Gold > maxGold)
                                             {
-                                                session.Character.Gold = 1000000000;
+                                                session.Character.Gold = maxGold;
                                                 session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                                             }
                                             session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
@@ -4484,10 +4486,10 @@ namespace OpenNos.GameObject
                         {
                             ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
                         }
-                        ItemInstance newInv = Inventory.AddToInventory(newItem);
-                        if (newInv != null)
+                        List<ItemInstance> newInv = Inventory.AddToInventory(newItem);
+                        if (newInv.Any())
                         {
-                            Session.SendPacket(GenerateInventoryAdd(newInv.ItemVNum, newInv.Amount, newInv.Type, newInv.Slot, newInv.Rare, newInv.Design, newInv.Upgrade, 0));
+                            newInv.ForEach(s=> Session.SendPacket(GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                             Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
                         }
                         else
@@ -4565,7 +4567,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedByCharacter(long characterId)
         {
-            return CharacterRelations.Any(b => b.RelationType == CharacterRelationType.Blocked && b.CharacterId.Equals(CharacterId));
+            return CharacterRelations.Any(b => b.RelationType == CharacterRelationType.Blocked && b.CharacterId.Equals(characterId));
         }
 
         public bool IsBlockingCharacter(long characterId)
@@ -4882,13 +4884,7 @@ namespace OpenNos.GameObject
                 DAOFactory.AccountDAO.InsertOrUpdate(ref account);
 
                 CharacterDTO character = DeepCopy();
-                SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
-
-                // wait for any exchange to be finished
-                while (IsExchanging)
-                {
-                    // do nothing and wait until Exchange has been finished
-                }
+                DAOFactory.CharacterDAO.InsertOrUpdate(ref character); 
 
                 if (Inventory != null)
                 {
@@ -5269,7 +5265,7 @@ namespace OpenNos.GameObject
         {
             Reput += val;
             Session.SendPacket(Session.Character.GenerateFd());
-            Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), val), 11));
+            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), val), 11));
             //RefreshReputationRankingIfNeeded(); //Fix Hardcore lags
         }
 

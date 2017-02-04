@@ -115,15 +115,15 @@ namespace OpenNos.GameObject
         public void FamilyRefresh(long FamilyId)
         {
             inFamilyRefreshMode = true;
-            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family, FamilyId.ToString(), null).Result;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", ServerManager.ServerGroup, FamilyId);
+            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerGroup, "fhis_stc", Instance.ChannelId, MessageType.Family, FamilyId.ToString(), null).Result;
+            ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", ServerGroup, FamilyId);
             SpinWait.SpinUntil(() => !inFamilyRefreshMode);
 
         }
         public void BazaarRefresh(long BazaarItemId)
         {
             inBazaarRefreshMode = true;
-            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh", ServerManager.ServerGroup, BazaarItemId);
+            ServerCommunicationClient.Instance.HubProxy.Invoke("BazaarRefresh", ServerGroup, BazaarItemId);
             SpinWait.SpinUntil(() => !inBazaarRefreshMode);
         }
         public void LoadFamilies()
@@ -171,6 +171,7 @@ namespace OpenNos.GameObject
         public List<Family> FamilyList { get; set; }
         public List<BazaarItemLink> BazaarList { get; set; }
         public List<CharacterRelationDTO> CharacterRelations { get; set; }
+        public static long MaxGold { get; set; }
 
         #endregion
 
@@ -634,16 +635,17 @@ namespace OpenNos.GameObject
         public void Initialize()
         {
             // parse rates
-            XPRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXp"]);
-            DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
-            GoldDropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["GoldRateDrop"]);
-            GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
-            FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
-            MaxLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxLevel"]);
-            MaxJobLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxJobLevel"]);
-            MaxSPLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxSPLevel"]);
-            MaxHeroLevel = byte.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxHeroLevel"]);
-            Schedules = System.Configuration.ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
+            XPRate = int.Parse(ConfigurationManager.AppSettings["RateXp"]);
+            DropRate = int.Parse(ConfigurationManager.AppSettings["RateDrop"]);
+            MaxGold = long.Parse(ConfigurationManager.AppSettings["MaxGold"]);
+            GoldDropRate = int.Parse(ConfigurationManager.AppSettings["GoldRateDrop"]);
+            GoldRate = int.Parse(ConfigurationManager.AppSettings["RateGold"]);
+            FairyXpRate = int.Parse(ConfigurationManager.AppSettings["RateFairyXp"]);
+            MaxLevel = byte.Parse(ConfigurationManager.AppSettings["MaxLevel"]);
+            MaxJobLevel = byte.Parse(ConfigurationManager.AppSettings["MaxJobLevel"]);
+            MaxSPLevel = byte.Parse(ConfigurationManager.AppSettings["MaxSPLevel"]);
+            MaxHeroLevel = byte.Parse(ConfigurationManager.AppSettings["MaxHeroLevel"]);
+            Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
 
             // load explicite type of ItemDTO
@@ -938,8 +940,6 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            session.SendPacket(session.Character.GenerateAt());
-            session.SendPacket(session.Character.GenerateCMap());
             session.SendPacket(session.Character.GenerateMapOut());
             session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
         }
@@ -1165,7 +1165,7 @@ namespace OpenNos.GameObject
                 BotProcess();
             });
 
-            ServerManager.Instance.EnableMapEffect(98, false);
+            Instance.EnableMapEffect(98, false);
 
             foreach (Schedule schedul in Schedules)
             {

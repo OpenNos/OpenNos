@@ -12,24 +12,34 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.GameObject.Buff.BCard
+namespace OpenNos.Data
 {
-    public enum Type
+    public class CardDTO
     {
-        Damage,
-        Element,
-        HitRate,
-        Morale,
-        Defense,
-        Dodge,
-        Resistance,
-        HP,
-        MP,
-        Speed,
-        Effect,
-        Cooldown,
-        Experience,
-        JobExperience,
-        SPExperience
+        #region Properties
+
+        public short CardId { get; set; }
+
+        public int Duration { get; set; }
+
+        public int EffectId { get; set; }
+
+        public short FirstData { get; set; }
+
+        public byte Level { get; set; }
+
+        public string Name { get; set; }
+
+        public short Period { get; set; }
+
+        public byte Propability { get; set; }
+
+        public short SecondData { get; set; }
+
+        public byte SubType { get; set; }
+
+        public byte Type { get; set; }
+
+        #endregion
     }
 }

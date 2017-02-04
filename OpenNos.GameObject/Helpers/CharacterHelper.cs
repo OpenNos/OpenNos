@@ -15,7 +15,7 @@
 using OpenNos.Domain;
 using System;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Helpers
 {
     public class CharacterHelper
     {
@@ -386,18 +386,6 @@ namespace OpenNos.GameObject
             int p;
             switch (rarity)
             {
-                default:
-                    p = 0;
-                    break;
-
-                case -2:
-                    p = -2;
-                    break;
-
-                case -1:
-                    p = -1;
-                    break;
-
                 case 0:
                     p = 0;
                     break;
@@ -431,10 +419,14 @@ namespace OpenNos.GameObject
                     break;
 
                 case 8:
-                    p = ServerManager.RandomNumber(11, 16);
+                    p = 15;
+                    break;
+
+                default:
+                    p = rarity * 2;
                     break;
             }
-            return p * (lvl / 5) + 1;
+            return p * (lvl / 5 + 1);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
@@ -601,6 +593,11 @@ namespace OpenNos.GameObject
                 case 15:
                     point += 173;
                     break;
+
+                    // lil easter egg ;)
+                    //default:
+                    //    point += 173 + (25 + (5 * (upgrade - 15)));
+                    //    break;
             }
 
             return point;
@@ -755,7 +752,7 @@ namespace OpenNos.GameObject
                     }
                     ++j;
                 }
-                _hp[(int)ClassType.Swordman, i] = (int)(hp);
+                _hp[(int)ClassType.Swordman, i] = hp;
             }
 
             // Magician HP
@@ -781,7 +778,7 @@ namespace OpenNos.GameObject
                     }
                     ++j;
                 }
-                _hp[(int)ClassType.Archer, i] = (int)(hp);
+                _hp[(int)ClassType.Archer, i] = hp;
             }
         }
 

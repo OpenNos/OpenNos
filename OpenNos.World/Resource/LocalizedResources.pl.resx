@@ -157,7 +157,7 @@
     <value>Coś^nie^działa?^Zajrzyj^do^Troubleshooting.md</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>Potrzebujesz^pomocy?^Użyj^naszego^servera^Discord:^https://discordapp.com/invite/N8eqPUh</value>
+    <value>Potrzebujesz^pomocy?^Użyj^naszego^servera^Discord:^https://discordapp.com/qdPMDv5</value>
   </data>
   <data name="BN3" xml:space="preserve">
     <value>Pozdrowienia^od^Teamu^OpenNos!</value>
@@ -169,7 +169,7 @@
     <value>OpenNos^autorstwa:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^Martazza,^KrisYiu,^Anthony</value>
   </data>
   <data name="BN6" xml:space="preserve">
-    <value>Chcesz^wziaść^udziać^w^naszym^projekcie?^github.com/OpenNos/OpenNos</value>
+    <value>Chcesz^wziąć^udział^w^naszym^projekcie?^github.com/OpenNos/OpenNos</value>
   </data>
   <data name="BUFF_BLOCKED" xml:space="preserve">
     <value>Ikony buff'ów zablokowane.</value>
@@ -725,7 +725,7 @@
     <value>Ulepszanie karty specjalisty powiodło się!</value>
   </data>
   <data name="MINILAND_WELCOME_MESSAGE" xml:space="preserve">
-    <value>Witamy</value>
+    <value>Witamy!</value>
   </data>
   <data name="DROP_RATE_NOW" xml:space="preserve">
     <value>Drop rate</value>
@@ -1127,7 +1127,7 @@
     <value>Nie masz skrzydeł przyjaźni!</value>
   </data>
   <data name="WANT_TO_SAVE_POSITION" xml:space="preserve">
-    <value>czy chcesz zapisać tą pozycje?</value>
+    <value>Czy chcesz zapisać swoją pozycje?</value>
   </data>
   <data name="BOT_MESSAGE_4" xml:space="preserve">
     <value>Nigdy nie ufaj graczom proszącym cię o wejście w jakiś link</value>
@@ -1278,5 +1278,71 @@
   </data>
   <data name="OBJECT_IN_BAZAAR" xml:space="preserve">
     <value>Przedmiot został dodany do bazaru!</value>
+  </data>
+  <data name="INSTANTBATTLE_MINUTES" xml:space="preserve">
+    <value>Błyskawiczna Bitwa rozpocznie się za {0} minut.</value>
+  </data>
+  <data name="INSTANTBATTLE_MINUTES_REMAINING" xml:space="preserve">
+    <value>Blyskawiczna Bitwa zakończy się za {0} minut.</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_APPEAR" xml:space="preserve">
+    <value>Uwaga! Potwory nadchodzą!</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_HERE" xml:space="preserve">
+    <value>Uwaga! Wsparcie potworów przybywa!</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_INCOMING" xml:space="preserve">
+    <value>Potwory nadchodzą!</value>
+  </data>
+  <data name="INSTANTBATTLE_MONSTERS_WAVE" xml:space="preserve">
+    <value>Kolejna fala potworów przybywa!</value>
+  </data>
+  <data name="INSTANTBATTLE_QUESTION" xml:space="preserve">
+    <value>Czy chcesz dołączyć do Błyskawicznej Bitwy?</value>
+  </data>
+  <data name="INSTANTBATTLE_SECONDS" xml:space="preserve">
+    <value>Błyskawiczna Bitwa rozpocznie się za {0} sekund.</value>
+  </data>
+  <data name="INSTANTBATTLE_SECONDS_REMAINING" xml:space="preserve">
+    <value>Błyskawiczna Bitwa zakończy się za {0} sekund.</value>
+  </data>
+  <data name="INSTANTBATTLE_STARTED" xml:space="preserve">
+    <value>Błyskawiczna Bitwa rozpoczęta!</value>
+  </data>
+  <data name="INSTANTBATTLE_SUCCEEDED" xml:space="preserve">
+    <value>Wygraliście Błyskawiczną Bitwę!</value>
+  </data>
+  <data name="LOD_CLOSED" xml:space="preserve">
+    <value>Wrota Krainy Śmierci zostały zamknięte!</value>
+  </data>
+  <data name="LOD_REQUIERE_LVL" xml:space="preserve">
+    <value>Musisz osiągnąć 55 poziom, aby móc użyć wrót Krainy Śmierci</value>
+  </data>
+  <data name="MINILAND_VISITOR" xml:space="preserve">
+    <value>Wizyt: {0}, dzisiejsze wizyty: {1}</value>
+  </data>
+  <data name="NEED_FAMILY" xml:space="preserve">
+    <value>Nie możesz przejść przez wrota Krainy Śmierci bez rodziny</value>
+  </data>
+  <data name="NOT_ENOUGH_SAVER" xml:space="preserve">
+    <value>Nie masz wystarczająco Fontanny Wybawcy, aby się odrodzić!</value>
+  </data>
+  <data name="REPUT_INCREASE" xml:space="preserve">
+    <value>Reputacja podniesiona!</value>
+  </data>
+  <data name="WIN_MONEY" xml:space="preserve">
+    <value>Złoto: +{0}</value>
+  </data>
+  <data name="WIN_REPUT" xml:space="preserve">
+    <value>Reputacja: +{0}</value>
+  </data>
+  <data name="WIN_SP_POINT" xml:space="preserve">
+    <value>Punkty SP: +{0}</value>
+  </data>
+  <data name="HORN_APPEAR" xml:space="preserve">
+    <value>Rzeź Mrocznego Władcy rozpoczęła się!</value>
+  </data>
+  <data name="HORN_DISAPEAR" xml:space="preserve">
+    <value>Mroczny Władca zniknął</value>
   </data>
 </root>

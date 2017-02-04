@@ -58,25 +58,33 @@ namespace OpenNos.Core
         #region Methods
         public bool CheckMessageIsCorrectLanguage(string completeTextString)
         {
-          
+
             RestClient client = new RestClient("http://ws.detectlanguage.com");
             RestRequest request = new RestRequest("/0.2/detect", Method.POST);
 
-            request.AddParameter("key", System.Configuration.ConfigurationManager.AppSettings["DetectLanguageApiKey"]); 
+            request.AddParameter("key", System.Configuration.ConfigurationManager.AppSettings["DetectLanguageApiKey"]);
             request.AddParameter("q", completeTextString);
 
             IRestResponse response = client.Execute(request);
             RestSharp.Deserializers.JsonDeserializer deserializer = new RestSharp.Deserializers.JsonDeserializer();
-            Result result = deserializer.Deserialize<Result>(response);
-            Detection detection = result?.data?.detections.FirstOrDefault();
 
-            if (detection == null)
+            try
+            {
+                Result result = deserializer.Deserialize<Result>(response);
+                Detection detection = result?.data?.detections.FirstOrDefault();
+
+                if (detection == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return detection.confidence < 10 || detection.language == _resourceCulture.TwoLetterISOLanguageName;
+                }
+            }
+            catch
             {
                 return true;
-            }
-            else
-            {
-                return detection.confidence < 10 || detection.language == _resourceCulture.TwoLetterISOLanguageName;
             }
         }
         public string GetMessageFromKey(string message)

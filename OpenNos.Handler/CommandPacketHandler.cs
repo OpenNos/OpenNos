@@ -897,26 +897,21 @@ namespace OpenNos.Handler
                         }
                     }
                     amount = amount > 99 ? (byte)99 : amount;
-                    ItemInstance inv = Session.Character.Inventory.AddNewToInventory(vnum, amount);
-                    if (inv != null)
+                    List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(vnum, amount);
+                    if (inv.Any())
                     {
-                        inv.Rare = rare;
-                        inv.Upgrade = upgrade;
-                        inv.Design = design;
+                        inv.First().Rare = rare;
+                        inv.First().Upgrade = upgrade;
+                        inv.First().Design = design;
 
-                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
+                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.First().Slot, inv.First().Type);
 
                         if (wearable != null && (wearable.Item.EquipmentSlot == EquipmentType.Armor || wearable.Item.EquipmentSlot == EquipmentType.MainWeapon || wearable.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
                         {
                             wearable.SetRarityPoint();
                         }
-
-                        short slot = inv.Slot;
-                        if (slot != -1)
-                        {
-                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.Amount, iteminfo.Type, slot, rare, design, upgrade, 0));
-                        }
+                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
+                        inv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, s.Amount, iteminfo.Type, s.Slot, rare, design, upgrade, 0)));
                     }
                     else
                     {
@@ -1104,7 +1099,6 @@ namespace OpenNos.Handler
                     else
                     {
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
-                        return;
                     }
                 }
             }
@@ -1135,7 +1129,8 @@ namespace OpenNos.Handler
             if (goldPacket != null)
             {
                 long gold = goldPacket.Amount;
-                gold = gold > 1000000000 ? 1000000000 : gold;
+                long maxGold = ServerManager.MaxGold;
+                gold = gold > maxGold ? maxGold : gold;
                 if (gold >= 0)
                 {
                     Session.Character.Gold = gold;
@@ -1914,7 +1909,6 @@ namespace OpenNos.Handler
         public void Teleport(TeleportPacket teleportPacket)
         {
             Logger.Debug("Teleport Command", Session.SessionId);
-            short mapId;
             if (teleportPacket != null)
             {
                 if (Session.Character.HasShopOpened || Session.Character.InExchangeOrTrade)
@@ -1925,6 +1919,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
+                short mapId;
                 if (short.TryParse(teleportPacket.Data, out mapId))
                 {
                     ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
@@ -2223,7 +2218,7 @@ namespace OpenNos.Handler
         private void SendStats(CharacterDTO character)
         {
             // TODO: Optimize THIS!
-            Session.SendPacket(Session.Character.GenerateSay("---- CHARACTER ----", 13));
+            Session.SendPacket(Session.Character.GenerateSay("----- CHARACTER -----", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Name: {character.Name}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Id: {character.CharacterId}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"State: {character.State}", 13));
@@ -2242,7 +2237,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"Rage: {character.RagePoint}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Compliment: {character.Compliment}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Fraction: {(character.Faction == 2 ? Language.Instance.GetMessageFromKey("DEMON") : Language.Instance.GetMessageFromKey("ANGEL"))}", 13));
-            Session.SendPacket(Session.Character.GenerateSay("---- --------- ----", 13));
+            Session.SendPacket(Session.Character.GenerateSay("----- --------- -----", 13));
             AccountDTO acc = DAOFactory.AccountDAO.LoadById(character.AccountId);
             if (acc != null)
             {

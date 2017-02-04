@@ -28,6 +28,7 @@ namespace OpenNos.DAL.EF
             Combo = new HashSet<Combo>();
             NpcMonsterSkill = new HashSet<NpcMonsterSkill>();
             ShopSkill = new HashSet<ShopSkill>();
+            SkillCard = new HashSet<SkillCard>();
         }
 
         #endregion
@@ -45,6 +46,8 @@ namespace OpenNos.DAL.EF
         public short CastId { get; set; }
 
         public short CastTime { get; set; }
+
+        public virtual ICollection<SkillCard> SkillCard { get; set; }
 
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
 

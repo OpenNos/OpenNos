@@ -1,21 +1,33 @@
-﻿using OpenNos.Core;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core;
 using OpenNos.Domain;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace OpenNos.GameObject
+namespace OpenNos.GameObject.Event
 {
-   public class LOD
+    public class LOD
     {
-      public static void GenerateLod(int lodtime = 120)
+        #region Methods
+
+        public static void GenerateLod(int lodtime = 120)
         {
-            int HornTime = 30;
-            int HornRepawn = 4;
-            int HornStay = 1;
+            const int HornTime = 30;
+            const int HornRepawn = 4;
+            const int HornStay = 1;
             ServerManager.Instance.EnableMapEffect(98, true);
             foreach (Family fam in ServerManager.Instance.FamilyList)
             {
@@ -26,7 +38,7 @@ namespace OpenNos.GameObject
                 fam.LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(lodtime), EventActionType.DISPOSE, null);
                 for (int i = 0; i < 8; i++)
                 {
-                    Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + (HornRepawn * i))).Subscribe(
+                    Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + HornRepawn * i)).Subscribe(
                     x =>
                     {
                         SpawnDH(fam.LandOfDeath, HornStay);
@@ -46,5 +58,6 @@ namespace OpenNos.GameObject
             LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(HornStay), EventActionType.UNSPAWN, 443);
         }
 
+        #endregion
     }
 }
