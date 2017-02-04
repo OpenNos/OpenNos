@@ -469,11 +469,11 @@ namespace OpenNos.Handler
 
                                                 bool @continue = true;
                                                 bool goldmax = false;
-                                                if (!Session.Character.Inventory.GetFreeSlotAmount(targetExchange.ExchangeList, Session.Character.HaveBackpack() ? 1 : 0))
+                                                if (!targetSession.Character.Inventory.EnoughPlace(targetExchange.ExchangeList, Session.Character.HaveBackpack() ? 1 : 0))
                                                 {
                                                     @continue = false;
                                                 }
-                                                if (!inventory.GetFreeSlotAmount(Session.Character.ExchangeInfo.ExchangeList, backpack))
+                                                if (!inventory.EnoughPlace(Session.Character.ExchangeInfo.ExchangeList, backpack))
                                                 {
                                                     @continue = false;
                                                 }
