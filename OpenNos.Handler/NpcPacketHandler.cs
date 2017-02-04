@@ -76,7 +76,7 @@ namespace OpenNos.Handler
                         {
                             amount = item.SellAmount;
                         }
-                        if (item.Price * amount + ServerManager.Instance.GetProperty<long>(shop.Value.OwnerId, nameof(Character.Gold)) > 1000000000)
+                        if (item.Price * amount + ServerManager.Instance.GetProperty<long>(shop.Value.OwnerId, nameof(Character.Gold)) > ServerManager.MaxGold)
                         {
                             Session.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("MAX_GOLD")));
                             return;
@@ -619,7 +619,7 @@ namespace OpenNos.Handler
                 }
                 long price = inv.Item.ItemType == ItemType.Sell ? inv.Item.Price : inv.Item.Price / 20;
 
-                if (Session.Character.Gold + price * amount > 1000000000)
+                if (Session.Character.Gold + price * amount > ServerManager.MaxGold)
                 {
                     string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
                     Session.SendPacket(message);

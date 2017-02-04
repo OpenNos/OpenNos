@@ -3278,7 +3278,8 @@ namespace OpenNos.GameObject
 
                     // gold calculation
                     int gold = GetGold(monsterToAttack);
-                    gold = gold > 1000000000 ? 1000000000 : gold;
+                    long maxGold = ServerManager.MaxGold;
+                    gold = gold > maxGold ? (int)maxGold : gold;
                     double randChance = ServerManager.RandomNumber() * random.NextDouble();
 
                     if (gold > 0 && randChance <= (int)(ServerManager.GoldDropRate * 10 * CharacterHelper.GoldPenalty(Level, monsterToAttack.Monster.Level)))
@@ -3301,9 +3302,9 @@ namespace OpenNos.GameObject
                                         if (session != null)
                                         {
                                             session.Character.Gold += drop2.Amount;
-                                            if (session.Character.Gold > 1000000000)
+                                            if (session.Character.Gold > maxGold)
                                             {
-                                                session.Character.Gold = 1000000000;
+                                                session.Character.Gold = maxGold;
                                                 session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                                             }
                                             session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));

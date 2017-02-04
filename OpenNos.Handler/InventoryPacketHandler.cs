@@ -452,6 +452,7 @@ namespace OpenNos.Handler
 
                                         long gold = targetSession.Character.Gold;
                                         int backpack = targetSession.Character.HaveBackpack() ? 1 : 0;
+                                        long maxGold = ServerManager.MaxGold;
 
                                         if (targetExchange == null)
                                         {
@@ -475,7 +476,7 @@ namespace OpenNos.Handler
                                                 {
                                                     @continue = false;
                                                 }
-                                                if (Session.Character.ExchangeInfo.Gold + gold > 1000000000)
+                                                if (Session.Character.ExchangeInfo.Gold + gold > maxGold)
                                                 {
                                                     goldmax = true;
                                                 }
@@ -483,7 +484,7 @@ namespace OpenNos.Handler
                                                 {
                                                     return;
                                                 }
-                                                if (targetExchange.Gold + Session.Character.Gold > 1000000000)
+                                                if (targetExchange.Gold + Session.Character.Gold > maxGold)
                                                 {
                                                     goldmax = true;
                                                 }
@@ -627,15 +628,16 @@ namespace OpenNos.Handler
                     else
                     {
                         // handle gold drop
+                        long maxGold = ServerManager.MaxGold;
                         MonsterMapItem droppedGold = mapItem as MonsterMapItem;
-                        if (droppedGold != null && Session.Character.Gold + droppedGold.GoldAmount <= 1000000000)
+                        if (droppedGold != null && Session.Character.Gold + droppedGold.GoldAmount <= maxGold)
                         {
                             Session.Character.Gold += droppedGold.GoldAmount;
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapItem.GetItemInstance().Item.Name} x {droppedGold.GoldAmount}", 12));
                         }
                         else
                         {
-                            Session.Character.Gold = 1000000000;
+                            Session.Character.Gold = maxGold;
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                         }
                         Session.SendPacket(Session.Character.GenerateGold());

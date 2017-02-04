@@ -171,6 +171,7 @@ namespace OpenNos.GameObject
         public List<Family> FamilyList { get; set; }
         public List<BazaarItemLink> BazaarList { get; set; }
         public List<CharacterRelationDTO> CharacterRelations { get; set; }
+        public static long MaxGold { get; set; }
 
         #endregion
 
@@ -636,6 +637,7 @@ namespace OpenNos.GameObject
             // parse rates
             XPRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXp"]);
             DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
+            MaxGold = long.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxGold"]);
             GoldDropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["GoldRateDrop"]);
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
             FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
