@@ -76,6 +76,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<MapTypeMap> MapTypeMap { get; set; }
 
+        public virtual DbSet<MinilandObject> MinilandObject { get; set; }
+
         public virtual DbSet<NpcMonster> NpcMonster { get; set; }
 
         public virtual DbSet<NpcMonsterSkill> NpcMonsterSkill { get; set; }
@@ -107,6 +109,8 @@ namespace OpenNos.DAL.EF.DB
         public virtual DbSet<StaticBonus> StaticBonus { get; set; }
 
         public virtual DbSet<Teleporter> Teleporter { get; set; }
+
+        public virtual DbSet<WarehouseItem> WarehouseItem { get; set; }
 
         #endregion
 
@@ -202,6 +206,24 @@ namespace OpenNos.DAL.EF.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
+                .HasMany(e => e.MinilandObject)
+                .WithRequired(e => e.Character)
+                .HasForeignKey(e => e.CharacterId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Account>()
+                .HasMany(e => e.WarehouseItem)
+                .WithOptional(e => e.Account)
+                .HasForeignKey(e => e.AccountId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Family>()
+                .HasMany(e => e.WarehouseItem)
+                .WithOptional(e => e.Family)
+                .HasForeignKey(e => e.FamilyId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Character>()
                 .HasMany(e => e.Mail1)
                 .WithRequired(e => e.Receiver)
                 .HasForeignKey(e => e.ReceiverId)
@@ -229,6 +251,18 @@ namespace OpenNos.DAL.EF.DB
                 .HasRequired(e => e.ItemInstance)
                 .WithMany(e => e.BazaarItem)
                 .HasForeignKey(e => e.ItemInstanceId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<WarehouseItem>()
+                .HasRequired(e => e.ItemInstance)
+                .WithMany(e => e.WarehouseItem)
+                .HasForeignKey(e => e.ItemInstanceId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<MinilandObject>()
+                .HasRequired(e => e.Item)
+                .WithMany(e => e.MinilandObject)
+                .HasForeignKey(e => e.MinilandObjectVNum)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<FamilyCharacter>()

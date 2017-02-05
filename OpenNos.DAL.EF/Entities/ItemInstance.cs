@@ -21,23 +21,28 @@ namespace OpenNos.DAL.EF
 
     public class ItemInstance : SynchronizableBaseEntity
     {
+        #region Instantiation
+
         public ItemInstance()
         {
             BazaarItem = new HashSet<BazaarItem>();
+            WarehouseItem = new HashSet<WarehouseItem>();
         }
+
+        #endregion
 
         #region Properties
 
         public int Amount { get; set; }
 
+        public virtual ICollection<BazaarItem> BazaarItem { get; set; }
+
+        public long? BazaarItemId { get; set; }
+
         [ForeignKey(nameof(BoundCharacterId))]
         public Character BoundCharacter { get; set; }
 
         public long? BoundCharacterId { get; set; }
-
-        public virtual ICollection<BazaarItem> BazaarItem { get; set; }
-
-        public long? BazaarItemId { get; set; }
 
         public virtual Character Character { get; set; }
 
@@ -63,6 +68,8 @@ namespace OpenNos.DAL.EF
         public byte Type { get; set; }
 
         public byte Upgrade { get; set; }
+
+        public virtual ICollection<WarehouseItem> WarehouseItem { get; set; }
 
         #endregion
     }

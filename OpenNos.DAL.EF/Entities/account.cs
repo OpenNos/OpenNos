@@ -28,6 +28,7 @@ namespace OpenNos.DAL.EF
             Character = new HashSet<Character>();
             GeneralLog = new HashSet<GeneralLog>();
             PenaltyLog = new HashSet<PenaltyLog>();
+            WarehouseItem = new HashSet<WarehouseItem>();
         }
 
         #endregion
@@ -44,6 +45,8 @@ namespace OpenNos.DAL.EF
         public string Email { get; set; }
 
         public virtual ICollection<GeneralLog> GeneralLog { get; set; }
+
+        public virtual ICollection<WarehouseItem> WarehouseItem { get; set; }
 
         public DateTime LastCompliment { get; set; }
 
