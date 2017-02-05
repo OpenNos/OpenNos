@@ -37,6 +37,7 @@ namespace OpenNos.DAL.EF
             GeneralLog = new HashSet<GeneralLog>();
             Mail = new HashSet<Mail>();
             Mail1 = new HashSet<Mail>();
+            MinilandObject = new HashSet<MinilandObject>();
         }
 
         #endregion
@@ -55,14 +56,14 @@ namespace OpenNos.DAL.EF
 
         public int ArenaWinner { get; set; }
 
-        public int Backpack { get; set; }
-
         [MaxLength(255)]
         public string Biography { get; set; }
 
         public bool BuffBlocked { get; set; }
 
         public long CharacterId { get; set; }
+
+        public virtual ICollection<MinilandObject> MinilandObject { get; set; }
 
         public virtual ICollection<CharacterRelation> CharacterRelation1 { get; set; }
 

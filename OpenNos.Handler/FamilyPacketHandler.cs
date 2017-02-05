@@ -221,25 +221,22 @@ namespace OpenNos.Handler
                 List<ClientSession> tmp = ServerManager.Instance.Sessions.ToList();
                 foreach (ClientSession s in tmp)
                 {
-                    if (s.HasSelectedCharacter && s.Character.Family != null && Session.Character.Family != null)
+                    if (s.HasSelectedCharacter && s.Character.Family != null && Session.Character.Family != null && s.Character.Family?.FamilyId == Session.Character.Family?.FamilyId)
                     {
-                        if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
+                        if (Session.HasCurrentMapInstance && s.HasCurrentMapInstance && Session.CurrentMapInstance == s.CurrentMapInstance && !Session.Character.InvisibleGm)
                         {
-                            if (Session.HasCurrentMapInstance && s.HasCurrentMapInstance && Session.CurrentMapInstance == s.CurrentMapInstance && !Session.Character.InvisibleGm)
-                            {
-                                s.SendPacket(Session.Character.GenerateSay(msg, 6));
-                            }
-                            else
-                            {
-                                string prefix = $"[{Session.Character.Name}]:";
-                                if (Session.Account.Authority == AuthorityType.GameMaster)
-                                {
-                                    prefix = $"[GM {Session.Character.Name}]:";
-                                }
-                                s.SendPacket(Session.Character.GenerateSay(prefix + msg, 6));
-                            }
-                            s.SendPacket(Session.Character.GenerateSpk(msg, 1));
+                            s.SendPacket(Session.Character.GenerateSay(msg, 6));
                         }
+                        else
+                        {
+                            string prefix = $"[{Session.Character.Name}]:";
+                            if (Session.Account.Authority == AuthorityType.GameMaster)
+                            {
+                                prefix = $"[GM {Session.Character.Name}]:";
+                            }
+                            s.SendPacket(Session.Character.GenerateSay(prefix + msg, 6));
+                        }
+                        s.SendPacket(Session.Character.GenerateSpk(msg, 1));
                     }
                 }
             }
@@ -317,6 +314,11 @@ namespace OpenNos.Handler
                         FamilyCharacterDTO dbFamilyCharacter = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(dbCharacter.CharacterId);
                         if (dbFamilyCharacter != null && dbFamilyCharacter.FamilyId == Session.Character.Family.FamilyId)
                         {
+                            if (dbFamilyCharacter.Authority == FamilyAuthority.Head)
+                            {
+                                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CANT_KICK_HEAD")));
+                                return;
+                            }
                             DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
                             Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManage, dbCharacter.Name);
                         }
@@ -341,9 +343,12 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CANNOT_LEAVE_FAMILY")));
                     return;
                 }
-                Family fam = Session.Character.Family;
+                Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManage, Session.Character.Name);
+                long FamilyId = Session.Character.Family.FamilyId;
                 DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
-                fam.InsertFamilyLog(FamilyLogType.FamilyManage, Session.Character.Name);
+
+                ServerManager.Instance.FamilyRefresh(FamilyId);
+
 
                 System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
                        .Subscribe(

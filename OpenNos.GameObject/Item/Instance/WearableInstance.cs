@@ -137,7 +137,7 @@ namespace OpenNos.GameObject
             const byte cella = 5;
             const int cellaVnum = 1014;
             const int scrollVnum = 1218;
-            int rnd;
+            double rnd;
 
             if (session != null && !session.HasCurrentMapInstance)
             {
@@ -152,7 +152,7 @@ namespace OpenNos.GameObject
             }
             else
             {
-                rnd = ServerManager.RandomNumber();
+                rnd = ServerManager.RandomNumber(0, 1000) / 10D;
             }
             if (protection == RarifyProtection.RedAmulet)
             {
@@ -223,7 +223,7 @@ namespace OpenNos.GameObject
             }
             if (Item.IsHeroic && protection == RarifyProtection.Scroll)
             {
-                if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && Rare >= 8))
+                if (rnd < rare8 && !(protection == RarifyProtection.Scroll && Rare >= 8))
                 {
                     if (mode != RarifyMode.Drop)
                     {
@@ -240,7 +240,7 @@ namespace OpenNos.GameObject
                     return;
                 }
             }
-            if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && Rare >= 7))
+            if (rnd < rare7 && !(protection == RarifyProtection.Scroll && Rare >= 7))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -250,7 +250,7 @@ namespace OpenNos.GameObject
                 Rare = 7;
                 SetRarityPoint();
             }
-            else if (rnd <= rare6 && !(protection == RarifyProtection.Scroll && Rare >= 6))
+            else if (rnd < rare6 && !(protection == RarifyProtection.Scroll && Rare >= 6))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -259,7 +259,7 @@ namespace OpenNos.GameObject
                 Rare = 6;
                 SetRarityPoint();
             }
-            else if (rnd <= rare5 && !(protection == RarifyProtection.Scroll && Rare >= 5))
+            else if (rnd < rare5 && !(protection == RarifyProtection.Scroll && Rare >= 5))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -268,7 +268,7 @@ namespace OpenNos.GameObject
                 Rare = 5;
                 SetRarityPoint();
             }
-            else if (rnd <= rare4 && !(protection == RarifyProtection.Scroll && Rare >= 4))
+            else if (rnd < rare4 && !(protection == RarifyProtection.Scroll && Rare >= 4))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -277,7 +277,7 @@ namespace OpenNos.GameObject
                 Rare = 4;
                 SetRarityPoint();
             }
-            else if (rnd <= rare3 && !(protection == RarifyProtection.Scroll && Rare >= 3))
+            else if (rnd < rare3 && !(protection == RarifyProtection.Scroll && Rare >= 3))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -286,7 +286,7 @@ namespace OpenNos.GameObject
                 Rare = 3;
                 SetRarityPoint();
             }
-            else if (rnd <= rare2 && !(protection == RarifyProtection.Scroll && Rare >= 2))
+            else if (rnd < rare2 && !(protection == RarifyProtection.Scroll && Rare >= 2))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -295,7 +295,7 @@ namespace OpenNos.GameObject
                 Rare = 2;
                 SetRarityPoint();
             }
-            else if (rnd <= rare1 && !(protection == RarifyProtection.Scroll && Rare >= 1))
+            else if (rnd < rare1 && !(protection == RarifyProtection.Scroll && Rare >= 1))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -304,7 +304,7 @@ namespace OpenNos.GameObject
                 Rare = 1;
                 SetRarityPoint();
             }
-            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && Rare >= 0))
+            else if (rnd < rare0 && !(protection == RarifyProtection.Scroll && Rare >= 0))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -313,7 +313,7 @@ namespace OpenNos.GameObject
                 Rare = 0;
                 SetRarityPoint();
             }
-            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && Rare >= -1))
+            else if (rnd < raren1 && !(protection == RarifyProtection.Scroll && Rare >= -1))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -322,7 +322,7 @@ namespace OpenNos.GameObject
                 Rare = -1;
                 SetRarityPoint();
             }
-            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && Rare >= -2))
+            else if (rnd < raren2 && !(protection == RarifyProtection.Scroll && Rare >= -2))
             {
                 if (mode != RarifyMode.Drop)
                 {
@@ -469,7 +469,7 @@ namespace OpenNos.GameObject
                     session.Character.Gold -= goldprice[Upgrade];
 
                     int rnd = ServerManager.RandomNumber();
-                    if (rnd <= upsuccess[Upgrade + itemToSum.Upgrade])
+                    if (rnd < upsuccess[Upgrade + itemToSum.Upgrade])
                     {
                         Upgrade += (byte)(itemToSum.Upgrade + 1);
                         DarkResistance += (short)(itemToSum.DarkResistance + itemToSum.Item.DarkResistance);
@@ -524,8 +524,8 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    upfail = new short[] { 0, 0, 10, 20, 40, 60, 80, 90, 95, 99 };
-                    upfix = new short[] { 0, 0, 0, 5, 20, 40, 60, 70, 75, 79 };
+                    upfix = new short[] { 0, 0, 10, 15, 20, 20, 20, 20, 15, 14 };
+                    upfail = new short[] { 0, 0, 0, 5, 20, 40, 60, 70, 80, 85 };
 
                     goldprice = new[] { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
                     cella = new short[] { 20, 50, 80, 120, 160, 220, 280, 380, 480, 600 };
@@ -647,7 +647,7 @@ namespace OpenNos.GameObject
                 int rnd = ServerManager.RandomNumber();
                 if (Rare == 8)
                 {
-                    if (rnd <= upfail[Upgrade])
+                    if (rnd < upfail[Upgrade])
                     {
                         if (protection == UpgradeProtection.None)
                         {
@@ -662,7 +662,7 @@ namespace OpenNos.GameObject
                             session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
                         }
                     }
-                    else if (rnd <= upfix[Upgrade])
+                    else if (rnd < upfix[Upgrade])
                     {
                         session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
                         wearable.IsFixed = true;
@@ -681,14 +681,14 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    if (rnd <= upfix[Upgrade])
+                    if (rnd < upfix[Upgrade])
                     {
                         session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
                         wearable.IsFixed = true;
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
                         session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                     }
-                    else if (rnd <= upfail[Upgrade])
+                    else if (rnd < upfail[Upgrade] + upfix[Upgrade])
                     {
                         if (protection == UpgradeProtection.None)
                         {
