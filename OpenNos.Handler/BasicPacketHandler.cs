@@ -1668,7 +1668,7 @@ namespace OpenNos.Handler
                         return;
                     }
                 }
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, characterName, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5), ServerManager.Instance.ChannelId, MessageType.Whisper).Result;
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, characterName, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5), ServerManager.Instance.ChannelId, packetsplit[0] == "GM" ? MessageType.WhisperGM : MessageType.Whisper).Result;
                 if (sentChannelId == null)
                 {
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));

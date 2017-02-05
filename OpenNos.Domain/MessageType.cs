@@ -12,6 +12,7 @@ namespace OpenNos.Domain
         PrivateChat = 1,
         Family = 2,
         Shout = 3,
-        FamilyChat = 4
+        FamilyChat = 4,
+        WhisperGM = 5
     }
 }

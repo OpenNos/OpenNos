@@ -1258,13 +1258,11 @@ namespace OpenNos.GameObject
                     long familyId;
                     switch (message.Item6)
                     {
+                        case MessageType.WhisperGM:
                         case MessageType.Whisper:
+                            if (message.Item6 == MessageType.WhisperGM && targetSession.Account.Authority != AuthorityType.GameMaster)
+                                return;
 
-                            // else if (packetsplit[0] == "GM" && targetSession.Account.Authority != AuthorityType.GameMaster)
-                            // {
-                            //       Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("USER_IS_NOT_AN_ADMIN"), targetSession.Character.Name), 10));
-                            //
-                            //   }
                             if (targetSession.Character.GmPvtBlock)
                             {
                                 ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, targetSession.Character.Name, message.Item2, targetSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_CHAT_BLOCKED"), 10), ServerManager.Instance.ChannelId, MessageType.PrivateChat);
