@@ -221,25 +221,22 @@ namespace OpenNos.Handler
                 List<ClientSession> tmp = ServerManager.Instance.Sessions.ToList();
                 foreach (ClientSession s in tmp)
                 {
-                    if (s.HasSelectedCharacter && s.Character.Family != null && Session.Character.Family != null)
+                    if (s.HasSelectedCharacter && s.Character.Family != null && Session.Character.Family != null && s.Character.Family?.FamilyId == Session.Character.Family?.FamilyId)
                     {
-                        if (s.Character.Family.FamilyId == Session.Character.Family.FamilyId)
+                        if (Session.HasCurrentMapInstance && s.HasCurrentMapInstance && Session.CurrentMapInstance == s.CurrentMapInstance && !Session.Character.InvisibleGm)
                         {
-                            if (Session.HasCurrentMapInstance && s.HasCurrentMapInstance && Session.CurrentMapInstance == s.CurrentMapInstance && !Session.Character.InvisibleGm)
-                            {
-                                s.SendPacket(Session.Character.GenerateSay(msg, 6));
-                            }
-                            else
-                            {
-                                string prefix = $"[{Session.Character.Name}]:";
-                                if (Session.Account.Authority == AuthorityType.GameMaster)
-                                {
-                                    prefix = $"[GM {Session.Character.Name}]:";
-                                }
-                                s.SendPacket(Session.Character.GenerateSay(prefix + msg, 6));
-                            }
-                            s.SendPacket(Session.Character.GenerateSpk(msg, 1));
+                            s.SendPacket(Session.Character.GenerateSay(msg, 6));
                         }
+                        else
+                        {
+                            string prefix = $"[{Session.Character.Name}]:";
+                            if (Session.Account.Authority == AuthorityType.GameMaster)
+                            {
+                                prefix = $"[GM {Session.Character.Name}]:";
+                            }
+                            s.SendPacket(Session.Character.GenerateSay(prefix + msg, 6));
+                        }
+                        s.SendPacket(Session.Character.GenerateSpk(msg, 1));
                     }
                 }
             }
