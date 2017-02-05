@@ -55,6 +55,7 @@ namespace OpenNos.GameObject.Event
             ServerManager.Instance.Broadcast($"qnaml 1 #guri^506 {Language.Instance.GetMessageFromKey("INSTANTBATTLE_QUESTION")}");
             ServerManager.Instance.EventInWaiting = true;
             Thread.Sleep(30 * 1000);
+            ServerManager.Instance.Sessions.Where(s => s.Character != null && !s.Character.IsWaitingForEvent).ToList().ForEach(s => s.SendPacket("esf"));
             ServerManager.Instance.EventInWaiting = false;
             IEnumerable<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.IsWaitingForEvent && s.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance);
             List<Tuple<MapInstance, byte>> maps = new List<Tuple<MapInstance, byte>>();
