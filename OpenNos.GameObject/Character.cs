@@ -670,10 +670,23 @@ namespace OpenNos.GameObject
             if (chara != null)
             {
                 long id = chara.CharacterRelationId;
+                CharacterDTO charac = DAOFactory.CharacterDAO.LoadById(characterId);
                 DAOFactory.CharacterRelationDAO.Delete(id);
-                ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerManager.ServerGroup, id);
-                Session.SendPacket(Session.Character.GenerateFinit());
-                //TODO finit oposit
+                ServerManager.Instance.RelationRefresh(id);
+                
+                Session.SendPacket(Session.Character.GenerateFinit());              
+                if (charac != null)
+                {
+                    List<CharacterRelationDTO> lst = ServerManager.Instance.CharacterRelations.Where(s => s.CharacterId == CharacterId || s.RelatedCharacterId == CharacterId).ToList();
+                    string result = "finit";
+                    foreach (CharacterRelationDTO relation in lst.Where(c => c.RelationType == CharacterRelationType.Friend))
+                    {
+                        long id2 = relation.RelatedCharacterId == CharacterId ? relation.CharacterId : relation.RelatedCharacterId;
+                        bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.ServerGroup, id2).Result;
+                        result += $" {id2}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(id2).Name}";
+                    }
+                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, charac.Name, result , ServerManager.Instance.ChannelId, MessageType.PrivateChat).Result;
+                }
             }
         }
 
@@ -750,7 +763,7 @@ namespace OpenNos.GameObject
             {
                 long id = chara.CharacterRelationId;
                 DAOFactory.CharacterRelationDAO.Delete(id);
-                ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerManager.ServerGroup, id);
+                ServerManager.Instance.RelationRefresh(id);
                 Session.SendPacket(Session.Character.GenerateBlinit());
             }
         }
@@ -950,10 +963,10 @@ namespace OpenNos.GameObject
             };
 
             DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
-            ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerManager.ServerGroup, addRelation.CharacterRelationId);
+            ServerManager.Instance.RelationRefresh(addRelation.CharacterRelationId);
             Session.SendPacket(Session.Character.GenerateFinit());
             ClientSession target = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == characterId);
-            target?.SendPacket(Session.Character.GenerateFinit());
+            target?.SendPacket(target?.Character.GenerateFinit());
         }
 
 
@@ -3050,7 +3063,7 @@ namespace OpenNos.GameObject
 
             foreach (CharacterRelationDTO relation in CharacterRelations.Where(c => c.RelationType == CharacterRelationType.Friend))
             {
-                if (relatedCharacterLoggedId.HasValue && relatedCharacterLoggedId.Value == relation.RelatedCharacterId)
+                if (relatedCharacterLoggedId.HasValue && (relatedCharacterLoggedId.Value == relation.RelatedCharacterId || relatedCharacterLoggedId.Value == relation.CharacterId))
                 {
                     result += $" {relation.RelatedCharacterId}.{(isConnected ? 1 : 0)}";
                 }

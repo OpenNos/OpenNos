@@ -66,6 +66,7 @@ namespace OpenNos.GameObject
         private ThreadSafeSortedList<int, List<ShopSkillDTO>> _shopSkills;
         private ThreadSafeSortedList<int, List<TeleporterDTO>> _teleporters;
         private long lastGroupId;
+        private bool inRelationRefreshMode;
 
         #endregion
 
@@ -111,6 +112,14 @@ namespace OpenNos.GameObject
         public List<CharacterDTO> TopComplimented { get; set; }
         public List<CharacterDTO> TopPoints { get; set; }
         public List<CharacterDTO> TopReputation { get; set; }
+
+        public void RelationRefresh(long RelationId)
+        {
+            inRelationRefreshMode = true;
+            ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerManager.ServerGroup, RelationId);
+            SpinWait.SpinUntil(() => !inRelationRefreshMode);
+
+        }
 
         public void FamilyRefresh(long FamilyId)
         {
@@ -1327,6 +1336,7 @@ namespace OpenNos.GameObject
         }
         private void OnRelationRefresh(object sender, EventArgs e)
         {
+            inRelationRefreshMode = true;
             Tuple<string, long> tuple = (Tuple<string, long>)sender;
             if (ServerGroup != tuple.Item1)
             {
@@ -1353,6 +1363,7 @@ namespace OpenNos.GameObject
                     CharacterRelations.Remove(rel);
                 }
             }
+            inRelationRefreshMode = false;
         }
         private void OnPenaltyLogRefresh(object sender, EventArgs e)
         {
