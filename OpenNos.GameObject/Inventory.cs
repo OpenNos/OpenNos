@@ -317,7 +317,7 @@ namespace OpenNos.GameObject
                     {
                         invcopy.Type = InventoryType.Bazaar;
                         invcopy.Slot = i;
-                        invcopy.CharacterId = 1;
+                        invcopy.CharacterId = Owner.CharacterId;
                         DeleteFromSlotAndType(inv.Slot, inv.Type);
                         PutItem(invcopy);
                         break;

@@ -132,7 +132,7 @@ namespace OpenNos.Handler
             if (bz != null)
             {
                 ItemInstance Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
-                if (Item == null || Item.CharacterId != Session.Character.CharacterId)
+                if (Item == null || bz.SellerId != Session.Character.CharacterId)
                     return;
                 int soldedamount = bz.Amount - Item.Amount;
                 long taxes = bz.MedalUsed ? 0 : (long)(bz.Price * 0.10 * soldedamount);

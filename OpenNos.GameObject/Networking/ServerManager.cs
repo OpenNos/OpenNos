@@ -124,10 +124,8 @@ namespace OpenNos.GameObject
         public void FamilyRefresh(long FamilyId)
         {
             inFamilyRefreshMode = true;
-            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerGroup, string.Empty, FamilyId.ToString(), "fhis_stc", Instance.ChannelId, MessageType.Family).Result;
             ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", ServerGroup, FamilyId);
             SpinWait.SpinUntil(() => !inFamilyRefreshMode);
-
         }
         public void BazaarRefresh(long BazaarItemId)
         {

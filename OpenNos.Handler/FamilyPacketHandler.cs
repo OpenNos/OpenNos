@@ -95,12 +95,9 @@ namespace OpenNos.Handler
             FamilyDTO fam = Session.Character.Family;
             DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-            System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
-                         .Subscribe(
-                         o =>
-                         {
-                             Session.SendPacket(Session.Character.GenerateGInfo());
-                         });
+            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+            Session.SendPacket(Session.Character.GenerateGInfo());
+
         }
 
         [Packet("#glmk")]
@@ -155,12 +152,9 @@ namespace OpenNos.Handler
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
                 }
                 ServerManager.Instance.FamilyRefresh(family.FamilyId);
-                System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200))
-              .Subscribe(
-              o =>
-              {
-                  Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
-              });
+                int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
+
             }
         }
 
@@ -258,13 +252,10 @@ namespace OpenNos.Handler
             fam.FamilyLogs.ForEach(s => { DAOFactory.FamilyLogDAO.Delete(s.FamilyLogId); });
             DAOFactory.FamilyDAO.Delete(fam.FamilyId);
             ServerManager.Instance.FamilyRefresh(fam.FamilyId);
+            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
 
-            System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(200))
-              .Subscribe(
-              o =>
-              {
-                  sessions.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
-              });
+            sessions.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
+
         }
 
         [Packet("%FamilyKick")]
@@ -299,12 +290,10 @@ namespace OpenNos.Handler
                     DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
                     Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManage, kickSession.Character.Name);
 
-                    System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
-                   .Subscribe(
-                   o =>
-                   {
-                       kickSession.CurrentMapInstance?.Broadcast(kickSession.Character.GenerateGidx());
-                   });
+
+
+                    kickSession.CurrentMapInstance?.Broadcast(kickSession.Character.GenerateGidx());
+
                 }
                 else
                 {
@@ -348,14 +337,9 @@ namespace OpenNos.Handler
                 DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
 
                 ServerManager.Instance.FamilyRefresh(FamilyId);
+                int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
 
-
-                System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
-                       .Subscribe(
-                       o =>
-                       {
-                           Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
-                       });
             }
         }
 
@@ -425,14 +409,14 @@ namespace OpenNos.Handler
                             return;
                         }
                         targetSession.Character.FamilyCharacter.Authority = FamilyAuthority.Head;
-                        Session.Character.FamilyCharacter.Authority = FamilyAuthority.Assistant;
-                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("DONE")));
-
                         FamilyCharacterDTO chara = targetSession.Character.FamilyCharacter;
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
 
-                        chara = Session.Character.FamilyCharacter;
-                        DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
+                        Session.Character.FamilyCharacter.Authority = FamilyAuthority.Assistant;
+                        FamilyCharacterDTO chara2 = Session.Character.FamilyCharacter;
+                        DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara2);
+
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("DONE")));
 
                         break;
 
@@ -513,12 +497,13 @@ namespace OpenNos.Handler
                         break;
                 }
                 Session.Character.Family.InsertFamilyLog(FamilyLogType.AuthorityChange, Session.Character.Name, targetSession.Character.Name, right: auth);
-                System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
-                  .Subscribe(
-                  o =>
-                  {
-                      targetSession.CurrentMapInstance?.Broadcast(targetSession.Character.GenerateGidx());
-                  });
+
+                targetSession.CurrentMapInstance?.Broadcast(targetSession.Character.GenerateGidx());
+                if (auth == 0)
+                {
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
+                }
+
             }
         }
 
@@ -545,9 +530,10 @@ namespace OpenNos.Handler
                     FamilyDTO fam = Session.Character.Family;
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                     ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                    int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     if (!string.IsNullOrWhiteSpace(msg))
                     {
-                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Family.FamilyId.ToString(), Session.Character.Name,Session.Character.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage), ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Family.FamilyId.ToString(), Session.Character.Name, Session.Character.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage), ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     }
                 }
             }
@@ -642,15 +628,12 @@ namespace OpenNos.Handler
                                     Session.Character.Name, inviteSession.Character.Family.Name), 0),
                             ServerManager.Instance.ChannelId, MessageType.Family).Result;
 
-                    System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
-                        .Subscribe(
-                            o =>
-                            {
-                                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
-                                Session.SendPacket(Session.Character.GenerateFamilyMember());
-                                Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
-                                Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
-                            });
+
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
+                    Session.SendPacket(Session.Character.GenerateFamilyMember());
+                    Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
+                    Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
+
                 }
             }
         }
@@ -678,14 +661,11 @@ namespace OpenNos.Handler
                 fam.FamilyHeadGender = (GenderType)rank;
                 DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                 ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-                System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
-                         .Subscribe(
-                         o =>
-                         {
-                             Session.SendPacket(Session.Character.GenerateGInfo());
-                             Session.SendPacket(Session.Character.GenerateFamilyMember());
-                             Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
-                         });
+                int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                Session.SendPacket(Session.Character.GenerateGInfo());
+                Session.SendPacket(Session.Character.GenerateFamilyMember());
+                Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
+
                 int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, fam.FamilyId.ToString(), Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_HEAD_CHANGE_GENDER")), 0), ServerManager.Instance.ChannelId, MessageType.Family).Result;
             }
         }
@@ -710,14 +690,10 @@ namespace OpenNos.Handler
                     fchar.Rank = (FamilyMemberRank)rank;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref fchar);
                     ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                    int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                    Session.SendPacket(Session.Character.GenerateFamilyMember());
+                    Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
 
-                    System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
-                  .Subscribe(
-                  o =>
-                  {
-                      Session.SendPacket(Session.Character.GenerateFamilyMember());
-                      Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
-                  });
                 }
             }
         }

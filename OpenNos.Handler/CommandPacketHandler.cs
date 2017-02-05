@@ -603,6 +603,7 @@ namespace OpenNos.Handler
                     if (Session.Character.Family != null)
                     {
                         ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                        int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     }
                 }
                 else
