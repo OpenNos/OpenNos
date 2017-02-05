@@ -401,38 +401,32 @@ namespace OpenNos.WebApi.SelfHost
         /// Send a message to a Character
         /// </summary>
         /// <returns></returns>
-        public int? SendMessageToCharacter(string worldgroup, string messagePacket, int fromChannel, MessageType messageType, string characterName, int? characterId = null)
+        public int? SendMessageToCharacter(string worldgroup, string sourceCharacterName, string characterName, string messagePacket, int fromChannel, MessageType messageType)
         {
             try
             {
-                WorldserverDTO worldserver = ServerCommunicationHelper.Instance.WorldserverGroups.FirstOrDefault(s => s.GroupName == worldgroup).Servers.SingleOrDefault(c => c.ConnectedCharacters.Any(cc => cc.Key == characterName)
-                                                                                                             || characterId.HasValue && c.ConnectedCharacters.ContainsValue(characterId.Value));
+                WorldserverDTO worldserver = ServerCommunicationHelper.Instance.WorldserverGroups.FirstOrDefault(s => s.GroupName == worldgroup).Servers.SingleOrDefault(c => c.ConnectedCharacters.Any(cc => cc.Key == characterName));
 
                 if (worldserver != null)
                 {
-                    if (string.IsNullOrEmpty(characterName) && characterId.HasValue)
-                    {
-                        characterName = worldserver.ConnectedCharacters.SingleOrDefault(c => c.Value == characterId.Value).Key;
-                    }
-
                     //character is connected to different world
-                    Clients.All.sendMessageToCharacter(worldgroup, characterName, messagePacket, fromChannel, messageType);
+                    Clients.All.sendMessageToCharacter(worldgroup, sourceCharacterName, characterName, messagePacket, fromChannel, messageType);
                     return worldserver.ChannelId;
                 }
                 else if (messageType == MessageType.Shout)
                 {
                     //send to all registered worlds
-                    Clients.All.sendMessageToCharacter("*", characterName, messagePacket, fromChannel, messageType);
+                    Clients.All.sendMessageToCharacter("*", sourceCharacterName, characterName, messagePacket, fromChannel, messageType);
                     return null;
                 }
                 else if (messageType == MessageType.Family)
                 {
-                    Clients.All.sendMessageToCharacter(worldgroup, characterName, messagePacket, fromChannel, messageType);
+                    Clients.All.sendMessageToCharacter(worldgroup, sourceCharacterName, characterName, messagePacket, fromChannel, messageType);
                     return null;
                 }
                 else if (messageType == MessageType.FamilyChat)
                 {
-                    Clients.All.sendMessageToCharacter(worldgroup, characterName, messagePacket, fromChannel, messageType);
+                    Clients.All.sendMessageToCharacter(worldgroup, sourceCharacterName, characterName, messagePacket, fromChannel, messageType);
                     return null;
                 }
             }

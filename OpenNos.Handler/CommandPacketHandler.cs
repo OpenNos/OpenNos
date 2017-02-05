@@ -1730,7 +1730,7 @@ namespace OpenNos.Handler
             Logger.Debug("Shout Command", Session.SessionId);
             if (shoutPacket != null)
             {
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, shoutPacket.Message, ServerManager.Instance.ChannelId, MessageType.Shout, string.Empty, null).Result;
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, string.Empty, shoutPacket.Message, ServerManager.Instance.ChannelId, MessageType.Shout).Result;
             }
         }
 

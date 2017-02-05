@@ -98,7 +98,8 @@ namespace OpenNos.WebApi.Reference
         public void InitializeAndRegisterCallbacks()
         {
             _hubconnection = new HubConnection(remoteUrl);
-            _hubconnection.Closed += () => {
+            _hubconnection.Closed += () =>
+            {
                 IsConnected = false;
                 while (!IsConnected)
                 {
@@ -126,13 +127,13 @@ namespace OpenNos.WebApi.Reference
 
             _hubProxy.On<string, long>("refreshRelation", OnRelationRefresh);
 
-            _hubProxy.On<int>("refreshPenaltyLog", OnPenaltyLogRefresh);
+            _hubProxy.On<string, int>("refreshPenaltyLog", OnPenaltyLogRefresh);
 
             _hubProxy.On<string, long>("refreshBazaar", OnBazaarRefresh);
 
             _hubProxy.On<string>("refreshRanking", OnRankingRefresh);
 
-            _hubProxy.On<string, string, string, int, MessageType>("sendMessageToCharacter", OnMessageSentToCharacter);
+            _hubProxy.On<string, string, string, string, int, MessageType>("sendMessageToCharacter", OnMessageSentToCharacter);
 
             _hubconnection.Start().Wait();
         }
@@ -143,13 +144,13 @@ namespace OpenNos.WebApi.Reference
         }
         private void OnRelationRefresh(string worldgroup, long id)
         {
-           RelationRefresh?.Invoke(new Tuple<string, long>(worldgroup, id), new EventArgs());
+            RelationRefresh?.Invoke(new Tuple<string, long>(worldgroup, id), new EventArgs());
         }
-        private void OnPenaltyLogRefresh(int id)
+        private void OnPenaltyLogRefresh(string worldgroup, int id)
         {
-            PenaltyLogRefresh?.Invoke(id, new EventArgs());
+            PenaltyLogRefresh?.Invoke(new Tuple<string, long>(worldgroup, id), new EventArgs());
         }
-        
+
         private void OnBazaarRefresh(string worldgroup, long BazaarItemId)
         {
             BazaarRefresh?.Invoke(new Tuple<string, long>(worldgroup, BazaarItemId), new EventArgs());
@@ -158,9 +159,9 @@ namespace OpenNos.WebApi.Reference
         {
             RankingRefresh?.Invoke(worldgroup, new EventArgs());
         }
-        private void OnMessageSentToCharacter(string worldgroup, string characterName, string message, int fromChannel, MessageType messageType)
+        private void OnMessageSentToCharacter(string worldgroup, string sourcecharacterName, string characterName, string message, int fromChannel, MessageType messageType)
         {
-            MessageSentToCharacter?.Invoke(new Tuple<string, string, int, MessageType, string>(characterName, message, fromChannel, messageType, worldgroup), new EventArgs());
+            MessageSentToCharacter?.Invoke(new Tuple<string, string, string, string, int, MessageType>(worldgroup, sourcecharacterName, characterName, message, fromChannel, messageType), new EventArgs());
         }
         private void OnAccountDisconnected(string accountName)
         {

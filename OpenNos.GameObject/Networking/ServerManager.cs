@@ -115,7 +115,7 @@ namespace OpenNos.GameObject
         public void FamilyRefresh(long FamilyId)
         {
             inFamilyRefreshMode = true;
-            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerGroup, "fhis_stc", Instance.ChannelId, MessageType.Family, FamilyId.ToString(), null).Result;
+            int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerGroup, string.Empty, FamilyId.ToString(), "fhis_stc", Instance.ChannelId, MessageType.Family).Result;
             ServerCommunicationClient.Instance.HubProxy.Invoke("FamilyRefresh", ServerGroup, FamilyId);
             SpinWait.SpinUntil(() => !inFamilyRefreshMode);
 
@@ -912,7 +912,7 @@ namespace OpenNos.GameObject
         {
             IEnumerable<CharacterDTO> list = DAOFactory.CharacterDAO.LoadAll();
             TopComplimented = list.Where(s => DAOFactory.AccountDAO.LoadById(s.AccountId)?.Authority == AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList();
-            TopPoints = list.Where(s=>DAOFactory.AccountDAO.LoadById(s.AccountId)?.Authority == AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList();
+            TopPoints = list.Where(s => DAOFactory.AccountDAO.LoadById(s.AccountId)?.Authority == AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList();
             TopReputation = list.Where(s => DAOFactory.AccountDAO.LoadById(s.AccountId)?.Authority == AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList();
         }
         public bool IsCharacterMemberOfGroup(long characterId)
@@ -1237,34 +1237,59 @@ namespace OpenNos.GameObject
         {
             if (sender != null)
             {
-                Tuple<string, string, int, MessageType, string> message = (Tuple<string, string, int, MessageType, string>)sender;
-                if (ServerGroup != message.Item5 && message.Item5 != "*")
+                Tuple<string, string, string, string, int, MessageType> message = (Tuple<string, string, string, string, int, MessageType>)sender;
+                if (ServerGroup != message.Item1 && message.Item1 != "*")
                 {
                     return;
                 }
-                ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.Name == message.Item1);
+                ClientSession targetSession = Sessions.SingleOrDefault(s => s.Character.Name == message.Item3);
 
-                if (targetSession != null || message.Item4 == MessageType.Shout || message.Item4 == MessageType.FamilyChat || message.Item4 == MessageType.Family) //shout doesnt need targetSession
+                if (targetSession != null || message.Item6 == MessageType.Shout || message.Item6 == MessageType.FamilyChat || message.Item6 == MessageType.Family) //shout doesnt need targetSession
                 {
                     long familyId;
-                    switch (message.Item4)
+                    switch (message.Item6)
                     {
                         case MessageType.Whisper:
-                            targetSession?.SendPacket($"{message.Item2} <{Language.Instance.GetMessageFromKey("CHANNEL")}: {message.Item3}>");
+
+                            // else if (packetsplit[0] == "GM" && targetSession.Account.Authority != AuthorityType.GameMaster)
+                            // {
+                            //       Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("USER_IS_NOT_AN_ADMIN"), targetSession.Character.Name), 10));
+                            //
+                            //   }
+                            if (targetSession.Character.GmPvtBlock)
+                            {
+                                ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, targetSession.Character.Name, message.Item2, targetSession.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_CHAT_BLOCKED"), 10), ServerManager.Instance.ChannelId, MessageType.PrivateChat);
+                            }
+                            else if (targetSession.Character.WhisperBlocked)
+                            {
+                                ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, targetSession.Character.Name, message.Item2, targetSession.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_WHISPER_BLOCKED"), 0), ServerManager.Instance.ChannelId, MessageType.PrivateChat);
+                            }
+                            else
+                            {
+                                if (message.Item5 != ChannelId)
+                                {
+                                    ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, targetSession.Character.Name, message.Item2, targetSession.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MESSAGE_SENT_TO_CHARACTER"), message.Item3, ServerManager.Instance.ChannelId), 11), ServerManager.Instance.ChannelId, MessageType.PrivateChat);
+                                    targetSession?.SendPacket($"{message.Item4} <{Language.Instance.GetMessageFromKey("CHANNEL")}: {message.Item5}>");
+                                }
+                                else
+                                {
+                                    targetSession?.SendPacket(message.Item4);
+                                }
+                            }
                             break;
 
                         case MessageType.Shout:
-                            Shout(message.Item2);
+                            Shout(message.Item4);
                             break;
 
                         case MessageType.PrivateChat:
-                            targetSession?.SendPacket(message.Item2);
+                            targetSession?.SendPacket(message.Item4);
                             break;
 
                         case MessageType.FamilyChat:
-                            if (long.TryParse(message.Item1, out familyId))
+                            if (long.TryParse(message.Item3, out familyId))
                             {
-                                if (message.Item3 != ChannelId)
+                                if (message.Item5 != ChannelId)
                                 {
                                     foreach (ClientSession s in Instance.Sessions)
                                     {
@@ -1272,7 +1297,7 @@ namespace OpenNos.GameObject
                                         {
                                             if (s.Character.Family.FamilyId == familyId)
                                             {
-                                                s.SendPacket($"say 1 0 6 <{Language.Instance.GetMessageFromKey("CHANNEL")}: {message.Item3}>{message.Item2}");
+                                                s.SendPacket($"say 1 0 6 <{Language.Instance.GetMessageFromKey("CHANNEL")}: {message.Item5}>{message.Item4}");
                                             }
                                         }
                                     }
@@ -1281,7 +1306,7 @@ namespace OpenNos.GameObject
                             break;
 
                         case MessageType.Family:
-                            if (long.TryParse(message.Item1, out familyId))
+                            if (long.TryParse(message.Item3, out familyId))
                             {
                                 foreach (ClientSession s in Instance.Sessions)
                                 {
@@ -1289,7 +1314,7 @@ namespace OpenNos.GameObject
                                     {
                                         if (s.Character.Family.FamilyId == familyId)
                                         {
-                                            s.SendPacket(message.Item2);
+                                            s.SendPacket(message.Item4);
                                         }
                                     }
                                 }
@@ -1312,12 +1337,8 @@ namespace OpenNos.GameObject
             {
                 CharacterRelationDTO reldto = DAOFactory.CharacterRelationDAO.LoadById(relId);
                 CharacterRelationDTO rel = CharacterRelations.FirstOrDefault(s => s.CharacterRelationId == relId);
-                ClientSession sess1 = null;
-                ClientSession sess2 = null;
                 if (reldto != null)
                 {
-                    sess1 = Sessions.FirstOrDefault(s => s.Character?.CharacterId == reldto.CharacterId);
-                    sess2 = Sessions.FirstOrDefault(s => s.Character?.CharacterId == reldto.RelatedCharacterId);
                     if (rel != null)
                     {
                         rel = reldto;
@@ -1327,23 +1348,10 @@ namespace OpenNos.GameObject
                         CharacterRelations.Add(reldto);
                     }
                 }
-                else if(rel !=null)
+                else if (rel != null)
                 {
-                    sess1 = Sessions.FirstOrDefault(s => s.Character?.CharacterId == rel.CharacterId);
-                    sess2 = Sessions.FirstOrDefault(s => s.Character?.CharacterId == rel.RelatedCharacterId);
                     CharacterRelations.Remove(rel);
                 }
-                if (sess1 !=null)
-                {
-                    sess1.SendPacket(sess1.Character.GenerateFinit());
-                    sess1.SendPacket(sess1.Character.GenerateBlinit());
-                }
-                if (sess2 != null)
-                {
-                    sess2.SendPacket(sess2.Character.GenerateFinit());
-                    sess2.SendPacket(sess2.Character.GenerateBlinit());
-                }
-               
             }
         }
         private void OnPenaltyLogRefresh(object sender, EventArgs e)

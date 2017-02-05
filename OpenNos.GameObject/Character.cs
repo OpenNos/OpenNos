@@ -672,6 +672,8 @@ namespace OpenNos.GameObject
                 long id = chara.CharacterRelationId;
                 DAOFactory.CharacterRelationDAO.Delete(id);
                 ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerManager.ServerGroup, id);
+                Session.SendPacket(Session.Character.GenerateFinit());
+                //TODO finit oposit
             }
         }
 
@@ -749,6 +751,7 @@ namespace OpenNos.GameObject
                 long id = chara.CharacterRelationId;
                 DAOFactory.CharacterRelationDAO.Delete(id);
                 ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerManager.ServerGroup, id);
+                Session.SendPacket(Session.Character.GenerateBlinit());
             }
         }
 
@@ -948,6 +951,9 @@ namespace OpenNos.GameObject
 
             DAOFactory.CharacterRelationDAO.InsertOrUpdate(ref addRelation);
             ServerCommunicationClient.Instance.HubProxy.Invoke("RelationRefresh", ServerManager.ServerGroup, addRelation.CharacterRelationId);
+            Session.SendPacket(Session.Character.GenerateFinit());
+            ClientSession target = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.CharacterId == characterId);
+            target?.SendPacket(Session.Character.GenerateFinit());
         }
 
 
@@ -4086,7 +4092,7 @@ namespace OpenNos.GameObject
                         fam.FamilyExperience -= CharacterHelper.LoadFamilyXPData(Family.FamilyLevel);
                         fam.FamilyLevel++;
                         Family.InsertFamilyLog(FamilyLogType.FamilyLevel, level: fam.FamilyLevel);
-                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_UP")), 0), ServerManager.Instance.ChannelId, MessageType.Family, Family.FamilyId.ToString(), null).Result;
+                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, Family.FamilyId.ToString(), Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_UP")), 0), ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     }
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref famchar);
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
@@ -4489,7 +4495,7 @@ namespace OpenNos.GameObject
                         List<ItemInstance> newInv = Inventory.AddToInventory(newItem);
                         if (newInv.Any())
                         {
-                            newInv.ForEach(s=> Session.SendPacket(GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
+                            newInv.ForEach(s => Session.SendPacket(GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                             Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
                         }
                         else
@@ -4567,7 +4573,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedByCharacter(long characterId)
         {
-            return CharacterRelations.Any(b => b.RelationType == CharacterRelationType.Blocked && b.CharacterId.Equals(characterId));
+            return CharacterRelations.Any(b => b.RelationType == CharacterRelationType.Blocked && b.CharacterId.Equals(characterId) && characterId != CharacterId);
         }
 
         public bool IsBlockingCharacter(long characterId)
@@ -4884,7 +4890,7 @@ namespace OpenNos.GameObject
                 DAOFactory.AccountDAO.InsertOrUpdate(ref account);
 
                 CharacterDTO character = DeepCopy();
-                DAOFactory.CharacterDAO.InsertOrUpdate(ref character); 
+                DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
 
                 if (Inventory != null)
                 {

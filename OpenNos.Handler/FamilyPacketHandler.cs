@@ -183,7 +183,7 @@ namespace OpenNos.Handler
                         }
                         i++;
                     }
-                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.GenerateMsg($"<{Language.Instance.GetMessageFromKey("FAMILYCALL")}> {msg}", 0), ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
+                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, Session.Character.Family.FamilyId.ToString(), Session.Character.GenerateMsg($"<{Language.Instance.GetMessageFromKey("FAMILYCALL")}> {msg}", 0), ServerManager.Instance.ChannelId, MessageType.Family).Result;
                 }
             }
         }
@@ -217,7 +217,7 @@ namespace OpenNos.Handler
                     ccmsg = $"[GM {Session.Character.Name}]:{msg}";
                 }
 
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, ccmsg, ServerManager.Instance.ChannelId, MessageType.FamilyChat, Session.Character.Family.FamilyId.ToString(), null).Result;
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, Session.Character.Family.FamilyId.ToString(), ccmsg, ServerManager.Instance.ChannelId, MessageType.FamilyChat).Result;
                 List<ClientSession> tmp = ServerManager.Instance.Sessions.ToList();
                 foreach (ClientSession s in tmp)
                 {
@@ -507,7 +507,7 @@ namespace OpenNos.Handler
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
                         break;
                 }
-                Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChange, Session.Character.Name, targetSession.Character.Name, right: auth);
+                Session.Character.Family.InsertFamilyLog(FamilyLogType.AuthorityChange, Session.Character.Name, targetSession.Character.Name, right: auth);
                 System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
                   .Subscribe(
                   o =>
@@ -542,7 +542,7 @@ namespace OpenNos.Handler
                     ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                     if (!string.IsNullOrWhiteSpace(msg))
                     {
-                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage), ServerManager.Instance.ChannelId, MessageType.Family, Session.Character.Family.FamilyId.ToString(), null).Result;
+                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Family.FamilyId.ToString(), Session.Character.Name,Session.Character.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage), ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     }
                 }
             }
@@ -630,13 +630,12 @@ namespace OpenNos.Handler
                     inviteSession.Character.Family.InsertFamilyLog(FamilyLogType.UserManage,
                         inviteSession.Character.Name, Session.Character.Name);
                     int? sentChannelId =
-                        ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter",
-                            ServerManager.ServerGroup,
+                        ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name,
+                            inviteSession.Character.Family.FamilyId.ToString(),
                             Session.Character.GenerateMsg(
                                 string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"),
                                     Session.Character.Name, inviteSession.Character.Family.Name), 0),
-                            ServerManager.Instance.ChannelId, MessageType.Family,
-                            inviteSession.Character.Family.FamilyId.ToString(), null).Result;
+                            ServerManager.Instance.ChannelId, MessageType.Family).Result;
 
                     System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
                         .Subscribe(
@@ -682,7 +681,7 @@ namespace OpenNos.Handler
                              Session.SendPacket(Session.Character.GenerateFamilyMember());
                              Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                          });
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_HEAD_CHANGE_GENDER")), 0), ServerManager.Instance.ChannelId, MessageType.Family, fam.FamilyId.ToString(), null).Result;
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, fam.FamilyId.ToString(), Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_HEAD_CHANGE_GENDER")), 0), ServerManager.Instance.ChannelId, MessageType.Family).Result;
             }
         }
 

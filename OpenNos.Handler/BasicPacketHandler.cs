@@ -232,7 +232,7 @@ namespace OpenNos.Handler
                                     WearableInstance wearable = newInv.First() as WearableInstance;
                                     wearable?.SetRarityPoint();
                                 }
-                                newInv.ForEach(s=>Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
+                                newInv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                                 Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.First().Item.Name} x {mail.AttachmentAmount}", 12));
 
                                 if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
@@ -539,17 +539,13 @@ namespace OpenNos.Handler
 
                     message = message.Trim();
 
-                    ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
-                    if (otherSession != null)
-                    {
-                        // Yes, it has to be two spaces!
-                        otherSession.SendPacket($"talk  {Session.Character.CharacterId} {message}");
-                    }
-                    else
+
+                    CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(characterId);
+                    if (chara != null)
                     {
                         //session is not on current server, check api if the target character is on another server
-                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, $"talk  {Session.Character.CharacterId} {message}"
-                                                                         , ServerManager.Instance.ChannelId, MessageType.PrivateChat, null, (long?)characterId).Result;
+                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, chara.Name, $"talk  {Session.Character.CharacterId} {message}"
+                                                                         , ServerManager.Instance.ChannelId, MessageType.PrivateChat).Result;
                         if (!sentChannelId.HasValue) //character is even offline on different world
                         {
                             Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FRIEND_OFFLINE")));
@@ -688,6 +684,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.AddRelation(characterId, CharacterRelationType.Blocked);
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_ADDED")));
+                    Session.SendPacket(Session.Character.GenerateBlinit());
                 }
             }
         }
@@ -981,7 +978,7 @@ namespace OpenNos.Handler
                                         }
                                         if (newInv.Any())
                                         {
-                                            newInv.ForEach(s=>Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
+                                            newInv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                                             Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.First().Item.Name), 0));
                                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.First().Item.Name), 11));
                                         }
@@ -1661,6 +1658,7 @@ namespace OpenNos.Handler
 
                 message = message.Trim();
 
+                Session.SendPacket(Session.Character.GenerateSpk(message, 5));
                 CharacterDTO receiver = DAOFactory.CharacterDAO.LoadByName(characterName);
                 if (receiver != null)
                 {
@@ -1670,48 +1668,10 @@ namespace OpenNos.Handler
                         return;
                     }
                 }
-
-                ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(characterName);
-                if (targetSession == null)
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, characterName, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5), ServerManager.Instance.ChannelId, MessageType.Whisper).Result;
+                if (sentChannelId == null)
                 {
-                    //session is not on current server, check api if the target character is on another server
-                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5)
-                                                                                                  , ServerManager.Instance.ChannelId, MessageType.Whisper, characterName, null).Result;
-                    if (!sentChannelId.HasValue) //character is even offline on different world
-                    {
-                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
-                    }
-                    else
-                    {
-                        //send message to sender
-                        Session.SendPacket(Session.Character.GenerateSpk(message, 5));
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MESSAGE_SENT_TO_CHARACTER"), characterName, sentChannelId.Value), 11));
-                    }
-
-                    return;
-                }
-
-                if (packetsplit[0] == "GM" && targetSession.Account.Authority != AuthorityType.GameMaster)
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("USER_IS_NOT_AN_ADMIN"), targetSession.Character.Name), 10));
-                    return;
-                }
-
-                Session.SendPacket(Session.Character.GenerateSpk(message, 5));
-
-                if (targetSession.Character.GmPvtBlock)
-                {
-                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_CHAT_BLOCKED"), 10));
-                    return;
-                }
-
-                if (!targetSession.Character.WhisperBlocked)
-                {
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, Session.Account.Authority == AuthorityType.GameMaster ? 15 : 5), ReceiverType.OnlySomeone, characterName);
-                }
-                else
-                {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_WHISPER_BLOCKED"), 0));
+                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
                 }
             }
             catch (Exception e)

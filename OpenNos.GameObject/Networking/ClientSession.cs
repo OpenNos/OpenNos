@@ -543,16 +543,16 @@ namespace OpenNos.GameObject
             }
             if (Character.IsFriendOfCharacter(loggedInCharacter.Item3))
             {
-                if (Character != null && Character.Name != loggedInCharacter.Item1)
+                if (Character != null && Character.Name != loggedInCharacter.Item2)
                 {
-                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), loggedInCharacter.Item1), 10));
+                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), loggedInCharacter.Item2), 10));
                     _client.SendPacket(Character.GenerateFinfo(loggedInCharacter.Item3, true));
                 }
             }
             FamilyCharacter chara = Character.Family?.FamilyCharacters.FirstOrDefault(s => s.CharacterId == loggedInCharacter.Item3);
             if (chara != null && loggedInCharacter.Item3 != Character?.CharacterId)
             {
-                _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_FAMILY_LOGGED_IN"), loggedInCharacter.Item1, Language.Instance.GetMessageFromKey(chara.Authority.ToString().ToUpper())), 10));
+                _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_FAMILY_LOGGED_IN"), loggedInCharacter.Item2, Language.Instance.GetMessageFromKey(chara.Authority.ToString().ToUpper())), 10));
             }
         }
 
@@ -567,7 +567,7 @@ namespace OpenNos.GameObject
 
                 if (Character != null && Character.Name != loggedOutCharacter.Item2)
                 {
-                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item3), 10));
+                    _client.SendPacket(Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), loggedOutCharacter.Item2), 10));
                     _client.SendPacket(Character.GenerateFinfo(loggedOutCharacter.Item3, false));
                 }
         }
