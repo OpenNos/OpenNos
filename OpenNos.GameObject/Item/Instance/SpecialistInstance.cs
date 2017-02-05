@@ -262,7 +262,7 @@ namespace OpenNos.GameObject
             SpecialistInstance specialist = Session.Character.Inventory.LoadByItemInstance<SpecialistInstance>(Id);
 
             int rnd = ServerManager.RandomNumber();
-            if (rnd <= upsuccess[upmode - 1])
+            if (rnd < upsuccess[upmode - 1])
             {
                 byte type = (byte)ServerManager.RandomNumber(0, 16), count = 1;
                 if (upmode == 4)
@@ -536,7 +536,7 @@ namespace OpenNos.GameObject
             WearableInstance wearable = Session.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
             ItemInstance inventory = Session.Character.Inventory.GetItemInstanceById(Id);
             int rnd = ServerManager.RandomNumber();
-            if (rnd <= destroy[Upgrade])
+            if (rnd < destroy[Upgrade])
             {
                 if (protect == UpgradeProtection.Protected)
                 {
@@ -552,7 +552,7 @@ namespace OpenNos.GameObject
                     Session.SendPacket(Session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, SpStoneUpgrade));
                 }
             }
-            else if (rnd <= upfail[Upgrade])
+            else if (rnd < upfail[Upgrade])
             {
                 if (protect == UpgradeProtection.Protected)
                 {
