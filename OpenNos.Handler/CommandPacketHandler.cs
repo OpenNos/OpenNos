@@ -170,17 +170,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
-        /// <summary>
-        /// $Backpack Command
-        /// </summary>
-        /// <param name="backpackPacket"></param>
-        public void Backpack(BackpackPacket backpackPacket)
-        {
-            Logger.Debug("Backpack Command", Session.SessionId);
-            Session.Character.Backpack = Session.Character.HaveBackpack() ? 1 : 0;
-            Session.SendPacket(Session.Character.GenerateExts());
-            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        }
 
         /// <summary>
         /// $Clr Command
@@ -750,7 +739,6 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$AddSkill SKILLID", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ArenaWinner", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Backpack", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME TIME REASON ", 12));
             Session.SendPacket(Session.Character.GenerateSay("$BlockExp CHARACTERNAME", 12));
@@ -1485,16 +1473,20 @@ namespace OpenNos.Handler
                     session?.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
                     if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
-                        PenaltyLogDTO log = new PenaltyLogDTO
+                        if (!session.Character.IsMuted())
                         {
-                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
-                            Reason = reason,
-                            Penalty = PenaltyType.Muted,
-                            DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddHours(duration),
-                            AdminName = Session.Character.Name
-                        };
-                        Session.Character.InsertOrUpdatePenalty(log);
+                            PenaltyLogDTO log = new PenaltyLogDTO
+                            {
+                                AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                                Reason = reason,
+                                Penalty = PenaltyType.Muted,
+                                DateStart = DateTime.Now,
+                                DateEnd = DateTime.Now.AddHours(duration),
+                                AdminName = Session.Character.Name
+                            };
+
+                            session.Character.InsertOrUpdatePenalty(log);
+                        }
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
                     else
