@@ -314,6 +314,11 @@ namespace OpenNos.Handler
                         FamilyCharacterDTO dbFamilyCharacter = DAOFactory.FamilyCharacterDAO.LoadByCharacterId(dbCharacter.CharacterId);
                         if (dbFamilyCharacter != null && dbFamilyCharacter.FamilyId == Session.Character.Family.FamilyId)
                         {
+                            if (dbFamilyCharacter.Authority == FamilyAuthority.Head)
+                            {
+                                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CANT_KICK_HEAD")));
+                                return;
+                            }
                             DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
                             Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManage, dbCharacter.Name);
                         }
@@ -338,9 +343,12 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("CANNOT_LEAVE_FAMILY")));
                     return;
                 }
-                Family fam = Session.Character.Family;
+                Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManage, Session.Character.Name);
+                long FamilyId = Session.Character.Family.FamilyId;
                 DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
-                fam.InsertFamilyLog(FamilyLogType.FamilyManage, Session.Character.Name);
+
+                ServerManager.Instance.FamilyRefresh(FamilyId);
+
 
                 System.Reactive.Linq.Observable.Timer(TimeSpan.FromMilliseconds(100))
                        .Subscribe(
