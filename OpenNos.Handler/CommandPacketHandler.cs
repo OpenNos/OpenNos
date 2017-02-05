@@ -560,8 +560,10 @@ namespace OpenNos.Handler
                     Session.Character.Skills[(short)(200 + 20 * (byte)Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)Session.Character.Class), CharacterId = Session.Character.CharacterId };
                     Session.Character.Skills[(short)(201 + 20 * (byte)Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)Session.Character.Class), CharacterId = Session.Character.CharacterId };
                     Session.Character.Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = Session.Character.CharacterId };
-
-                    Session.SendPacket(Session.Character.GenerateSki());
+                    if (!Session.Character.UseSp)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSki());
+                    }
                     Session.Character.LearnAdventurerSkill();
                 }
                 else

@@ -252,7 +252,7 @@ namespace OpenNos.Handler
             fam.FamilyLogs.ForEach(s => { DAOFactory.FamilyLogDAO.Delete(s.FamilyLogId); });
             DAOFactory.FamilyDAO.Delete(fam.FamilyId);
             ServerManager.Instance.FamilyRefresh(fam.FamilyId);
-            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, fam.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
 
             sessions.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
 
