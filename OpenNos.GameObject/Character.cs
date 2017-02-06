@@ -948,6 +948,11 @@ namespace OpenNos.GameObject
                 return ServerManager.Instance.CharacterRelations.Where(s => s.CharacterId == CharacterId || s.RelatedCharacterId == CharacterId).ToList();
             }
         }
+
+        public int FoodAmount { get;  set; }
+        public int FoodHp { get;  set; }
+        public int FoodMp { get;  set; }
+        public int MaxFood { get;  set; }
         #endregion
 
         #region Methods

@@ -34,32 +34,35 @@ namespace OpenNos.GameObject
         public void Regenerate(ClientSession session, Item item, string[] packetsplit = null)
         {
             session.SendPacket(session.Character.GenerateEff(6000));
-            session.Character.SnackAmount++;
-            session.Character.MaxSnack = 0;
-            session.Character.SnackHp += item.Hp / 5;
-            session.Character.SnackMp += item.Mp / 5;
+            session.Character.FoodAmount++;
+            session.Character.MaxFood = 0;
+            session.Character.FoodHp += item.Hp / 5;
+            session.Character.FoodMp += item.Mp / 5;
             for (int i = 0; i < 5; i++)
             {
                 Thread.Sleep(1800);
             }
-            session.Character.SnackHp = item.Hp / 5;
-            session.Character.SnackMp = item.Mp / 5;
-            session.Character.SnackAmount--;
+            session.Character.FoodHp = item.Hp / 5;
+            session.Character.FoodMp = item.Mp / 5;
+            session.Character.FoodAmount--;
         }
 
         public void Sync(ClientSession session, Item item)
         {
-            for (session.Character.MaxSnack = 0; session.Character.MaxSnack < 5 && session.Character.IsSitting; session.Character.MaxSnack++)
+            for (session.Character.MaxFood = 0; session.Character.MaxFood < 5; session.Character.MaxFood++)
             {
-                if (session.Character.Hp <= 0)
+                if (session.Character.Hp <= 0 || !session.Character.IsSitting)
                 {
+                    session.Character.FoodAmount = 0;
+                    session.Character.FoodHp = 0;
+                    session.Character.FoodMp = 0;
                     return;
                 }
-                session.Character.Hp += session.Character.SnackHp;
-                session.Character.Mp += session.Character.SnackMp;
-                if (session.Character.SnackHp > 0 && session.Character.SnackHp > 0 && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
+                session.Character.Hp += session.Character.FoodHp;
+                session.Character.Mp += session.Character.FoodMp;
+                if (session.Character.FoodHp > 0 && session.Character.FoodHp > 0 && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
                 {
-                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp));
+                    session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRc(session.Character.FoodHp));
                 }
                 if (session.IsConnected)
                 {
@@ -94,11 +97,8 @@ namespace OpenNos.GameObject
                     if (!session.Character.IsSitting)
                     {
                         session.Character.Rest();
-                        session.Character.SnackAmount = 0;
-                        session.Character.SnackHp = 0;
-                        session.Character.SnackMp = 0;
                     }
-                    int amount = session.Character.SnackAmount;
+                    int amount = session.Character.FoodAmount;
                     if (amount < 5)
                     {
                         if (!session.Character.IsSitting)
