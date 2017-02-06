@@ -585,6 +585,12 @@ namespace OpenNos.Handler
                 return;
             }
 
+            if (Session.Character.Family.FamilyCharacters.Count()+1 > Session.Character.Family.MaxSize)
+            {
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_FULL")));
+                return;
+            }
+
             if (otherSession.Character.Family != null || otherSession.Character.FamilyCharacter != null)
             {
                 Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("ALREADY_IN_FAMILY")));
@@ -604,6 +610,10 @@ namespace OpenNos.Handler
             long characterId;
             if (packetsplit.Length == 3 && long.TryParse(packetsplit[2], out characterId) && packetsplit[1] == "1")
             {
+                if (Session.Character.Family.FamilyCharacters.Count() + 1 > Session.Character.Family.MaxSize)
+                {
+                    return;
+                }
                 ClientSession inviteSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
                 if (inviteSession != null &&
                     inviteSession.Character.FamilyInviteCharacters.Contains(Session.Character.CharacterId))
