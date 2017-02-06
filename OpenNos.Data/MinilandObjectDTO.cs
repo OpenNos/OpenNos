@@ -12,21 +12,20 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Data;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.GameObject
 {
-    public class MinilandObject
+    public class MinilandObjectDTO
     {
         #region Properties
-
-        public virtual Character Character { get; set; }
 
         public long CharacterId { get; set; }
 
         public int Durability { get; set; }
-
-        public virtual ItemInstance ItemInstance { get; set; }
 
         public byte Level1BoxAmount { get; set; }
 

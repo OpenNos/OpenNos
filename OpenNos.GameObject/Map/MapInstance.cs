@@ -44,6 +44,7 @@ namespace OpenNos.GameObject
 
         private bool _isSleepingRequest;
 
+        
         #endregion
 
         #region Instantiation
@@ -60,6 +61,7 @@ namespace OpenNos.GameObject
             _random = new Random();
             Map = map;
             MapInstanceId = guid;
+            MapObjects = new List< MapObject>();
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
@@ -133,6 +135,7 @@ namespace OpenNos.GameObject
         public Dictionary<long, MapShop> UserShops { get; }
 
         public int XpRate { get; set; }
+        public List< MapObject> MapObjects { get; set; }
 
         #endregion
 

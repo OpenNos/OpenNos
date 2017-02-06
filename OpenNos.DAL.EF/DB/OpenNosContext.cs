@@ -260,9 +260,9 @@ namespace OpenNos.DAL.EF.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<MinilandObject>()
-                .HasRequired(e => e.Item)
+                .HasOptional(e => e.ItemInstance)
                 .WithMany(e => e.MinilandObject)
-                .HasForeignKey(e => e.MinilandObjectVNum)
+                .HasForeignKey(e => e.ItemInstanceId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<FamilyCharacter>()

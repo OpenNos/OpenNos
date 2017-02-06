@@ -33,7 +33,6 @@ namespace OpenNos.DAL.EF
             Mail = new HashSet<Mail>();
             RecipeItem = new HashSet<RecipeItem>();
             ShopItem = new HashSet<ShopItem>();
-            MinilandObject = new HashSet<MinilandObject>();
         }
 
         #endregion
@@ -137,8 +136,6 @@ namespace OpenNos.DAL.EF
         public short MaxElementRate { get; set; }
 
         public byte MaximumAmmo { get; set; }
-
-        public virtual ICollection<MinilandObject> MinilandObject { get; set; }
 
         public short MoreHp { get; set; }
 

@@ -26,7 +26,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using OpenNos.GameObject.Helpers;
-using OpenNos.WebApi.SelfHost;
 using OpenNos.WebApi.Reference;
 
 namespace OpenNos.GameObject
@@ -941,6 +940,7 @@ namespace OpenNos.GameObject
         {
             get; set;
         }
+       
         public List<CharacterRelationDTO> CharacterRelations
         {
             get
@@ -3831,6 +3831,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(inv0);
             Session.SendPacket(inv1);
             Session.SendPacket(inv2);
+            Session.SendPacket(inv3);
             Session.SendPacket(inv6);
             Session.SendPacket(inv7);
         }

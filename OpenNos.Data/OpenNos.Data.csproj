@@ -71,6 +71,7 @@
     <Compile Include="MapNpcDTO.cs" />
     <Compile Include="MapTypeDTO.cs" />
     <Compile Include="MapTypeMapDTO.cs" />
+    <Compile Include="MinilandObjectDTO.cs" />
     <Compile Include="NpcMonsterSkillDTO.cs" />
     <Compile Include="PenaltyLogDTO.cs" />
     <Compile Include="QuicklistEntryDTO.cs" />

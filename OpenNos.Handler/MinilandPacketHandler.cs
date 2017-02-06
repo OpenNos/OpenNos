@@ -69,6 +69,29 @@ namespace OpenNos.Handler
             }
         }
 
+        public void MinilandAddObject(AddobjPacket packet)
+        {
+            ItemInstance minilandobject = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Slot, InventoryType.Miniland);
+            if (minilandobject != null)
+            {
+                MapObject mo = new MapObject()
+                {
+                    CharacterId = Session.Character.CharacterId,
+                    ItemInstanceId = minilandobject.Id,
+                    MapX = packet.PositionX,
+                    MapY = packet.PositionY,
+                    Durability = 0,
+                    Level1BoxAmount = 0,
+                    Level2BoxAmount = 0,
+                    Level3BoxAmount = 0,
+                    Level4BoxAmount = 0,
+                    Level5BoxAmount = 0,
+                };
+                Session.Character.Miniland.MapObjects.Add(mo);
+                Session.SendPacket($"eff_g  {minilandobject.Item.EffectValue} {minilandobject.ItemVNum} {mo.MapX} {mo.MapY} 0");
+            }
+        }
+
         public void MinilandEdit(MLeditPacket packet)
         {
             switch (packet.Type)
