@@ -12,39 +12,35 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using System;
+using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.GameObject;
+using OpenNos.Data.Enums;
+using OpenNos.DAL.EF;
 
-namespace OpenNos.GameObject
+namespace OpenNos.DAL.Mock
 {
-    public class MinilandObjectDTO : MappingBaseDTO
+    public class MinilandObjectDAO : BaseDAO<MinilandObjectDTO>, IMinilandObjectDAO
     {
-        #region Properties
+        #region Methods
+        public DeleteResult DeleteById(long id)
+        {
+            throw new NotImplementedException();
+        }
 
-        public long CharacterId { get; set; }
+        public SaveResult InsertOrUpdate(ref MinilandObjectDTO obj)
+        {
+            throw new NotImplementedException();
+        }
 
-        public int Durability { get; set; }
-
-        public byte Level1BoxAmount { get; set; }
-
-        public byte Level2BoxAmount { get; set; }
-
-        public byte Level3BoxAmount { get; set; }
-
-        public byte Level4BoxAmount { get; set; }
-
-        public byte Level5BoxAmount { get; set; }
-
-        public short MapX { get; set; }
-
-        public short MapY { get; set; }
-
-        public long MinilandObjectId { get; set; }
-
-        public Guid? ItemInstanceId { get; set; }
-
+        public IEnumerable<MinilandObjectDTO> LoadByCharacterId(long characterId)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

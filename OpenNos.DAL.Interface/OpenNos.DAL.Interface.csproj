@@ -60,6 +60,7 @@
     <Compile Include="ICharacterRelationDAO.cs" />
     <Compile Include="IComboDAO.cs" />
     <Compile Include="IDropDAO.cs" />
+    <Compile Include="IMinilandObjectDAO.cs" />
     <Compile Include="IMappingBaseDAO.cs" />
     <Compile Include="IGeneralLogDAO.cs" />
     <Compile Include="IAccountDAO.cs" />

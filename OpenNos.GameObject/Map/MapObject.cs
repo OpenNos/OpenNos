@@ -21,6 +21,15 @@ namespace OpenNos.GameObject
 
     public class MapObject : MinilandObjectDTO
     {
+        private Item item;
+        public Item Item
+        {
+            get
+            {
+                return item ?? (item = ServerManager.GetItem(VNum));
+            }
+        }
+        public short VNum { get; set; }
         public MapObject()
         {
 

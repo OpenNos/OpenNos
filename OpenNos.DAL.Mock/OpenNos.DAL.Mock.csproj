@@ -69,6 +69,7 @@
     <Compile Include="MapNpcDAO.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
+    <Compile Include="MinilandObjectDAO.cs" />
     <Compile Include="NpcMonsterDAO.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
     <Compile Include="PenaltyLogDAO.cs" />

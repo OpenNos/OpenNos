@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.DAL.Interface;
 using System;
+using OpenNos.DAL.EF;
 
 namespace OpenNos.DAL
 {
@@ -57,7 +58,9 @@ namespace OpenNos.DAL
         private static ISkillDAO _skillDAO;
         private static IStaticBonusDAO _staticBonusDAO;
         private static ITeleporterDAO _teleporterDAO;
+        private static IMinilandObjectDAO _minilandobjectDAO;
         private static readonly bool _useMock;
+
 
         #endregion
 
@@ -501,6 +504,26 @@ namespace OpenNos.DAL
                 }
 
                 return _npcmonsterDAO;
+            }
+        }
+
+        public static IMinilandObjectDAO MinilandObjectDAO
+        {
+            get
+            {
+                if (_minilandobjectDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _minilandobjectDAO = new Mock.MinilandObjectDAO();
+                    }
+                    else
+                    {
+                        _minilandobjectDAO = new EF.MinilandObjectDAO();
+                    }
+                }
+
+                return _minilandobjectDAO;
             }
         }
 

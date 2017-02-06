@@ -13,37 +13,21 @@
  */
 
 using OpenNos.Data;
-using System;
+using OpenNos.Data.Enums;
+using OpenNos.GameObject;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace OpenNos.GameObject
+namespace OpenNos.DAL.Interface
 {
-    public class MinilandObjectDTO : MappingBaseDTO
+    public interface IMinilandObjectDAO : IMappingBaseDAO
     {
-        #region Properties
+        #region Methods
 
-        public long CharacterId { get; set; }
+        DeleteResult DeleteById(long id);
 
-        public int Durability { get; set; }
+        SaveResult InsertOrUpdate(ref MinilandObjectDTO obj);
 
-        public byte Level1BoxAmount { get; set; }
-
-        public byte Level2BoxAmount { get; set; }
-
-        public byte Level3BoxAmount { get; set; }
-
-        public byte Level4BoxAmount { get; set; }
-
-        public byte Level5BoxAmount { get; set; }
-
-        public short MapX { get; set; }
-
-        public short MapY { get; set; }
-
-        public long MinilandObjectId { get; set; }
-
-        public Guid? ItemInstanceId { get; set; }
+        IEnumerable<MinilandObjectDTO> LoadByCharacterId(long characterId);
 
         #endregion
     }

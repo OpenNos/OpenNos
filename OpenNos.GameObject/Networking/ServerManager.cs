@@ -445,7 +445,7 @@ namespace OpenNos.GameObject
                     session.CurrentMapInstance = session.Character.MapInstance;
                     session.CurrentMapInstance.RegisterSession(session);
 
-
+                 
                     session.SendPacket(session.Character.GenerateCInfo());
                     session.SendPacket(session.Character.GenerateCMode());
                     session.SendPacket(session.Character.GenerateEq());
@@ -457,7 +457,7 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateCMap());
                     session.SendPacket(session.Character.GenerateStatChar());
                     session.SendPacket("rsfp 0 -1");
-
+                    session.SendPackets(session.CurrentMapInstance.GetMapObjects());
                     // in 2 // send only when partner present cond 2 // send only when partner present
                     session.SendPacket(session.Character.GeneratePairy());
                     session.SendPacket("pinit 0"); // clear party list
