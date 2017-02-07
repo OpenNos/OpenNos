@@ -672,8 +672,8 @@ namespace OpenNos.GameObject
                 CharacterDTO charac = DAOFactory.CharacterDAO.LoadById(characterId);
                 DAOFactory.CharacterRelationDAO.Delete(id);
                 ServerManager.Instance.RelationRefresh(id);
-                
-                Session.SendPacket(Session.Character.GenerateFinit());              
+
+                Session.SendPacket(Session.Character.GenerateFinit());
                 if (charac != null)
                 {
                     List<CharacterRelationDTO> lst = ServerManager.Instance.CharacterRelations.Where(s => s.CharacterId == CharacterId || s.RelatedCharacterId == CharacterId).ToList();
@@ -684,7 +684,7 @@ namespace OpenNos.GameObject
                         bool isOnline = ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.ServerGroup, id2).Result;
                         result += $" {id2}|{(short)relation.RelationType}|{(isOnline ? 1 : 0)}|{DAOFactory.CharacterDAO.LoadById(id2).Name}";
                     }
-                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, charac.Name, result , ServerManager.Instance.ChannelId, MessageType.PrivateChat).Result;
+                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, charac.Name, result, ServerManager.Instance.ChannelId, MessageType.PrivateChat).Result;
                 }
             }
         }
@@ -699,6 +699,19 @@ namespace OpenNos.GameObject
             if (Miniland == null)
             {
                 Miniland = ServerManager.GenerateMapInstance(20001, MapInstanceType.NormalInstance);
+                foreach (MinilandObjectDTO obj in DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId))
+                {
+                    MapObject mapobj = (MapObject)obj;
+                    if (mapobj.ItemInstanceId != null)
+                    {
+                        ItemInstance item = Inventory.LoadByItemInstance<ItemInstance>((Guid)mapobj.ItemInstanceId);
+                        if (item != null)
+                        {
+                            mapobj.VNum = item.Item.VNum;
+                            Miniland.MapObjects.Add(mapobj);
+                        }
+                    }
+                }
             }
         }
         public List<Portal> GetExtraPortal()
@@ -940,7 +953,7 @@ namespace OpenNos.GameObject
         {
             get; set;
         }
-       
+
         public List<CharacterRelationDTO> CharacterRelations
         {
             get
@@ -953,10 +966,10 @@ namespace OpenNos.GameObject
             }
         }
 
-        public int FoodAmount { get;  set; }
-        public int FoodHp { get;  set; }
-        public int FoodMp { get;  set; }
-        public int MaxFood { get;  set; }
+        public int FoodAmount { get; set; }
+        public int FoodHp { get; set; }
+        public int FoodMp { get; set; }
+        public int MaxFood { get; set; }
         #endregion
 
         #region Methods
@@ -3809,7 +3822,7 @@ namespace OpenNos.GameObject
                         case InventoryType.Etc:
                             inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
                             break;
-
+                            
                         case InventoryType.Miniland:
                             inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
                             break;
@@ -4974,6 +4987,20 @@ namespace OpenNos.GameObject
                 {
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
                 }
+
+                IEnumerable<MinilandObjectDTO> minilandobjectEntriesToInsertOrUpdate = Session.Character.Miniland.MapObjects.ToList();
+
+                IEnumerable<MinilandObjectDTO> currentlySavedMinilandObjectEntries = DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId).ToList();
+                foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Session.Character.Miniland.MapObjects))
+                {
+                    DAOFactory.MinilandObjectDAO.DeleteById(mobjToDelete.MinilandObjectId);
+                }
+                foreach (MinilandObjectDTO mobjEntry in minilandobjectEntriesToInsertOrUpdate)
+                {
+                    MinilandObjectDTO mobj = mobjEntry;
+                    DAOFactory.MinilandObjectDAO.InsertOrUpdate(ref mobj);
+                }
+
 
                 foreach (StaticBonusDTO bonus in Session.Character.StaticBonusList)
                 {
