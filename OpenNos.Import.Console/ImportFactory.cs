@@ -3176,9 +3176,9 @@ namespace OpenNos.Import.Console
 
                         if(item.Type == InventoryType.Miniland)
                         {
-                            item.EffectValue = ;
-                            item.Width = ;
-                            item.Length = ;
+                            item.EffectValue = Convert.ToByte(currentLine[8]);
+                            item.Width = Convert.ToByte(currentLine[9]);
+                            item.Height = Convert.ToByte(currentLine[10]);
                         }
 
                         if ((item.EquipmentSlot == EquipmentType.Boots || item.EquipmentSlot == EquipmentType.Gloves) && item.Type == 0)
