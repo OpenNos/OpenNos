@@ -536,8 +536,10 @@ namespace OpenNos.GameObject
                     {
                         // add and remove save inventory
                         destinationInventory = TakeItem(destinationInventory.Slot, destinationInventory.Type);
+                        if (destinationInventory == null) return;
                         destinationInventory.Slot = sourceSlot;
                         sourceInventory = TakeItem(sourceInventory.Slot, sourceInventory.Type);
+                        if (sourceInventory == null) return;
                         sourceInventory.Slot = destinationSlot;
                         PutItem(destinationInventory);
                         PutItem(sourceInventory);
