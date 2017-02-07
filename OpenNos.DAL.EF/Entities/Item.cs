@@ -41,7 +41,7 @@ namespace OpenNos.DAL.EF
 
         public byte BasicUpgrade { get; set; }
 
-        public byte Length { get; set; }
+        public byte Height { get; set; }
 
         public byte Width { get; set; }
 

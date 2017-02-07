@@ -3173,6 +3173,14 @@ namespace OpenNos.Import.Console
                                 // nothing to parse
                                 break;
                         }
+
+                        if(item.Type == InventoryType.Miniland)
+                        {
+                            item.EffectValue = ;
+                            item.Width = ;
+                            item.Length = ;
+                        }
+
                         if ((item.EquipmentSlot == EquipmentType.Boots || item.EquipmentSlot == EquipmentType.Gloves) && item.Type == 0)
                         {
                             item.FireResistance = Convert.ToByte(currentLine[7]);
