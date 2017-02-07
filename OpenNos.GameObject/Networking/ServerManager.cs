@@ -262,12 +262,15 @@ namespace OpenNos.GameObject
             {
                 Session.SendPacket(Session.Character.GenerateMsg(Session.Character.MinilandMessage.Replace(' ', '^'), 0));
                 Session.SendPacket(Session.Character.GenerateMlinfobr());
+                GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "Miniland", LogType = "World", Timestamp = DateTime.Now });
             }
             else
             {
                 Session.SendPacket(Session.Character.GenerateMlinfo());
             }
-            GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "Miniland", LogType = "World", Timestamp = DateTime.Now });
+            Session.SendPackets(MinilandOwner.Character.GetMinilandEffects());
+            Session.SendPacket(MinilandOwner.Character.GetMinilandObjectList());
+
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MINILAND_VISITOR"), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day).Count(), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland").Count()), 10));
 
         }
@@ -457,7 +460,6 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateCMap());
                     session.SendPacket(session.Character.GenerateStatChar());
                     session.SendPacket("rsfp 0 -1");
-                    session.SendPackets(session.CurrentMapInstance.GetMapObjects());
                     // in 2 // send only when partner present cond 2 // send only when partner present
                     session.SendPacket(session.Character.GeneratePairy());
                     session.SendPacket("pinit 0"); // clear party list

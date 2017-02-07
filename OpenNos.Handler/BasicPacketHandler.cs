@@ -1556,7 +1556,6 @@ namespace OpenNos.Handler
             Session.Character.GenerateStartupInventory();
 #pragma warning restore 618
 
-            // mlobjlst - miniland object list
             Session.SendPacket(Session.Character.GenerateGold());
             Session.SendPackets(Session.Character.GenerateQuicklist());
 

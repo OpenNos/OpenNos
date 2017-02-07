@@ -19,7 +19,7 @@ using System.Collections.Generic;
 namespace OpenNos.GameObject
 {
 
-    public class MapObject : MinilandObjectDTO
+    public class MinilandObject : MinilandObjectDTO
     {
         private Item item;
         public Item Item
@@ -30,7 +30,7 @@ namespace OpenNos.GameObject
             }
         }
         public short VNum { get; set; }
-        public MapObject()
+        public MinilandObject()
         {
 
         }

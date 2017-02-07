@@ -24,6 +24,10 @@ namespace OpenNos.Data
 
         public byte CellonLvl { get; set; }
 
+        public byte Height { get; set; }
+
+        public byte Width { get; set; }
+
         public byte Class { get; set; }
 
         public short CloseDefence { get; set; }

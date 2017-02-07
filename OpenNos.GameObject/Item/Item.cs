@@ -36,6 +36,8 @@ namespace OpenNos.GameObject
         public void InitializeItem(ItemDTO item)
         {
             // manual mapping to avoid automapper outside of DAO
+            Height = item.Height;
+            Width = item.Width;
             BasicUpgrade = item.BasicUpgrade;
             CellonLvl = item.CellonLvl;
             Class = item.Class;
