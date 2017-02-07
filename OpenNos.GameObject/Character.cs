@@ -947,7 +947,7 @@ namespace OpenNos.GameObject
             {
                 if(ServerManager.Instance.CharacterRelations == null)
                 {
-                    return new List<CharacterRelationDTO>;
+                    return new List<CharacterRelationDTO>();
                 }
                 return ServerManager.Instance.CharacterRelations.Where(s => s.CharacterId == CharacterId || s.RelatedCharacterId == CharacterId).ToList();
             }
