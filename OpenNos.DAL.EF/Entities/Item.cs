@@ -41,6 +41,10 @@ namespace OpenNos.DAL.EF
 
         public byte BasicUpgrade { get; set; }
 
+        public byte Length { get; set; }
+
+        public byte Width { get; set; }
+
         public byte CellonLvl { get; set; }
 
         public byte Class { get; set; }

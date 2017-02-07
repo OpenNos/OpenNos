@@ -63,6 +63,7 @@ namespace OpenNos.GameObject
             FamilyInviteCharacters = new List<long>();
             FriendRequestCharacters = new List<long>();
             StaticBonusList = new List<StaticBonusDTO>();
+            MinilandObjects = new List<MinilandObject>();
         }
 
         public string GenerateMlinfobr()
@@ -457,7 +458,31 @@ namespace OpenNos.GameObject
                 return respawn;
             }
         }
-
+        public string  GenerateMinilandEffect(MinilandObject mp, bool removed)
+        {
+            return $"eff_g  {mp.Item.EffectValue} {mp.MapX.ToString("00")}{mp.MapY.ToString("00")} {mp.MapX} {mp.MapY} {(removed?1:0)}";
+        }
+        public List<string> GetMinilandEffects()
+        {
+            List<string> str = new List<string>();
+            foreach (MinilandObject mp in MinilandObjects)
+            {
+                str.Add(GenerateMinilandEffect(mp,false));
+            }
+            return str;
+        }
+        public string GetMinilandObjectList()
+        {
+            string mlobjstring = "mlobjlst";
+            int i = 0;
+            //mlobjlst 0.1.31.3.4.2.0.100.0.1 1.1.23.12.0.0.0.100.0.0 
+            foreach (MinilandObject mp in MinilandObjects)
+            {
+                mlobjstring += $" {i}.1.{mp.MapX}.{mp.MapY}.1.1.0.100.0.1";
+                i++;
+            }
+            return mlobjstring;
+        }
         public string GenerateRCBList(CBListPacket packet)
         {
             string itembazar = string.Empty;
@@ -701,14 +726,14 @@ namespace OpenNos.GameObject
                 Miniland = ServerManager.GenerateMapInstance(20001, MapInstanceType.NormalInstance);
                 foreach (MinilandObjectDTO obj in DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId))
                 {
-                    MapObject mapobj = (MapObject)obj;
+                    MinilandObject mapobj = (MinilandObject)obj;
                     if (mapobj.ItemInstanceId != null)
                     {
                         ItemInstance item = Inventory.LoadByItemInstance<ItemInstance>((Guid)mapobj.ItemInstanceId);
                         if (item != null)
                         {
                             mapobj.VNum = item.Item.VNum;
-                            Miniland.MapObjects.Add(mapobj);
+                            MinilandObjects.Add(mapobj);
                         }
                     }
                 }
@@ -949,6 +974,7 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; set; }
 
+        public List<MinilandObject> MinilandObjects { get; set; }
         public MapInstance Miniland
         {
             get; set;
@@ -3818,7 +3844,7 @@ namespace OpenNos.GameObject
                         case InventoryType.Etc:
                             inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
                             break;
-                            
+
                         case InventoryType.Miniland:
                             inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
                             break;
@@ -4984,10 +5010,10 @@ namespace OpenNos.GameObject
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
                 }
 
-                IEnumerable<MinilandObjectDTO> minilandobjectEntriesToInsertOrUpdate = Session.Character.Miniland.MapObjects.ToList();
+                IEnumerable<MinilandObjectDTO> minilandobjectEntriesToInsertOrUpdate = Session.Character.MinilandObjects.ToList();
 
                 IEnumerable<MinilandObjectDTO> currentlySavedMinilandObjectEntries = DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId).ToList();
-                foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Session.Character.Miniland.MapObjects))
+                foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Session.Character.MinilandObjects))
                 {
                     DAOFactory.MinilandObjectDAO.DeleteById(mobjToDelete.MinilandObjectId);
                 }

@@ -75,11 +75,11 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.MinilandState == MinilandState.LOCK)
                 {
-                    MapObject mo = Session.Character.Miniland.MapObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
+                    MinilandObject mo = Session.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
                     if (mo != null)
                     {
-                        Session.Character.Miniland.MapObjects.Remove(mo);
-                        Session.SendPacket($"eff_g  {minilandobject.Item.EffectValue} {mo.VNum} {mo.MapX} {mo.MapY} 1");
+                        Session.Character.MinilandObjects.Remove(mo);
+                        Session.SendPacket(Session.Character.GenerateMinilandEffect(mo, true));
                         Session.SendPacket($"mlpt 2000 100");
                         Session.SendPacket($"mlobj 0 {packet.Slot} {mo.MapX} {mo.MapY} 2 2 0 0 0 0");
                     }
@@ -95,11 +95,11 @@ namespace OpenNos.Handler
             ItemInstance minilandobject = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Slot, InventoryType.Miniland);
             if (minilandobject != null)
             {
-                if (!Session.Character.Miniland.MapObjects.Any(s => s.ItemInstanceId == minilandobject.Id))
+                if (!Session.Character.MinilandObjects.Any(s => s.ItemInstanceId == minilandobject.Id))
                 {
                     if (Session.Character.MinilandState == MinilandState.LOCK)
                     {
-                        MapObject mo = new MapObject()
+                        MinilandObject mo = new MinilandObject()
                         {
                             CharacterId = Session.Character.CharacterId,
                             VNum = minilandobject.ItemVNum,
@@ -113,8 +113,8 @@ namespace OpenNos.Handler
                             Level4BoxAmount = 0,
                             Level5BoxAmount = 0,
                         };
-                        Session.Character.Miniland.MapObjects.Add(mo);
-                        Session.SendPacket($"eff_g  {minilandobject.Item.EffectValue} {mo.VNum} {mo.MapX} {mo.MapY} 0");
+                        Session.Character.MinilandObjects.Add(mo);
+                        Session.SendPacket(Session.Character.GenerateMinilandEffect(mo, false));
                         Session.SendPacket($"mlpt 2000 100");
                         Session.SendPacket($"mlobj 1 {packet.Slot} {packet.PositionX} {packet.PositionY} 2 2 0 0 0 0");
 

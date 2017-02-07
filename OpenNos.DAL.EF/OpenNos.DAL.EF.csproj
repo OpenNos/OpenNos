@@ -78,6 +78,10 @@
     <Compile Include="Base\MappingBaseDAO.cs" />
     <Compile Include="Base\SynchronizableBaseDAO.cs" />
     <Compile Include="BazaarItemDAO.cs" />
+    <Compile Include="Migrations\201702072152008_Aphrodite22.cs" />
+    <Compile Include="Migrations\201702072152008_Aphrodite22.Designer.cs">
+      <DependentUpon>201702072152008_Aphrodite22.cs</DependentUpon>
+    </Compile>
     <Compile Include="MinilandObjectDAO.cs" />
     <Compile Include="CharacterRelationDAO.cs" />
     <Compile Include="Entities\Account.cs" />
@@ -352,6 +356,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702062229059_Aphrodite21.resx">
       <DependentUpon>201702062229059_Aphrodite21.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702072152008_Aphrodite22.resx">
+      <DependentUpon>201702072152008_Aphrodite22.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

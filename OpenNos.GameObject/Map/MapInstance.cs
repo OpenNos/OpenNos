@@ -61,7 +61,6 @@ namespace OpenNos.GameObject
             _random = new Random();
             Map = map;
             MapInstanceId = guid;
-            MapObjects = new List< MapObject>();
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
@@ -134,8 +133,7 @@ namespace OpenNos.GameObject
 
         public Dictionary<long, MapShop> UserShops { get; }
 
-        public int XpRate { get; set; }
-        public List< MapObject> MapObjects { get; set; }
+        public int XpRate { get; set; }  
 
         #endregion
 
@@ -215,15 +213,7 @@ namespace OpenNos.GameObject
             return UserShops.Select(shop => $"shop 1 {shop.Value.OwnerId} 1 3 0 {shop.Value.Name}").ToList();
         }
 
-        public List<string> GetMapObjects()
-        {
-            List<string> str = new List<string>();
-            foreach(MapObject mp in MapObjects)
-            {
-                str.Add($"eff_g  {mp.Item.EffectValue} {mp.VNum} {mp.MapX} {mp.MapY} 0");
-            }
-            return str;
-        }
+      
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
             return _monsters.GetAllItems().Where(s => s.IsAlive && s.IsInRange(mapX, mapY, distance)).ToList();
