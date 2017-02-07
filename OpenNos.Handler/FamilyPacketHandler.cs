@@ -610,14 +610,14 @@ namespace OpenNos.Handler
             long characterId;
             if (packetsplit.Length == 3 && long.TryParse(packetsplit[2], out characterId) && packetsplit[1] == "1")
             {
-                if (Session.Character.Family.FamilyCharacters.Count() + 1 > Session.Character.Family.MaxSize)
-                {
-                    return;
-                }
                 ClientSession inviteSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
                 if (inviteSession != null &&
                     inviteSession.Character.FamilyInviteCharacters.Contains(Session.Character.CharacterId))
                 {
+                    if (inviteSession.Character.Family.FamilyCharacters.Count() + 1 > inviteSession.Character.Family.MaxSize)
+                    {
+                        return;
+                    }
                     FamilyCharacterDTO familyCharacter = new FamilyCharacterDTO
                     {
                         CharacterId = Session.Character.CharacterId,
