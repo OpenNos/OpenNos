@@ -3176,6 +3176,7 @@ namespace OpenNos.Import.Console
 
                         if(item.Type == InventoryType.Miniland)
                         {
+                            item.DurabilityPoint = int.Parse(currentLine[2]);
                             item.EffectValue = short.Parse(currentLine[8]);
                             item.Width = Convert.ToByte(currentLine[9]);
                             item.Height = Convert.ToByte(currentLine[10]);
