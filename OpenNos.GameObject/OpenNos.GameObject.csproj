@@ -93,6 +93,7 @@
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="Map\MonsterToSummon.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RmvobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\MLedit.cs" />
     <Compile Include="Packets\ClientPackets\MJoin.cs" />
     <Compile Include="Packets\CommandPackets\ArenaWinnerPacket.cs" />

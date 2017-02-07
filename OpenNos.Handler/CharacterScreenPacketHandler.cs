@@ -344,12 +344,13 @@ namespace OpenNos.Handler
                         {
                             Session.Character.Mp = (int)Session.Character.MPLoad();
                         }
-                        Session.Character.GenerateMiniland();
+                      
 
                         Session.Character.Respawns = DAOFactory.RespawnDAO.LoadByCharacter(Session.Character.CharacterId).ToList();
                         Session.Character.StaticBonusList = DAOFactory.StaticBonusDAO.LoadByCharacterId(Session.Character.CharacterId).ToList();
                         Session.Character.LoadInventory();
                         Session.Character.LoadQuicklists();
+                        Session.Character.GenerateMiniland();
                         Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
                         {
                             Session.Character.CharacterLife();

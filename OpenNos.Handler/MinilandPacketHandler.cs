@@ -68,7 +68,28 @@ namespace OpenNos.Handler
                 }
             }
         }
-
+        public void MinilandRemoveObject(RmvobjPacket packet)
+        {
+            ItemInstance minilandobject = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Slot, InventoryType.Miniland);
+            if (minilandobject != null)
+            {
+                if (Session.Character.MinilandState == MinilandState.LOCK)
+                {
+                    MapObject mo = Session.Character.Miniland.MapObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
+                    if (mo != null)
+                    {
+                        Session.Character.Miniland.MapObjects.Remove(mo);
+                        Session.SendPacket($"eff_g  {minilandobject.Item.EffectValue} {mo.VNum} {mo.MapX} {mo.MapY} 1");
+                        Session.SendPacket($"mlpt 2000 100");
+                        Session.SendPacket($"mlobj 0 {packet.Slot} {mo.MapX} {mo.MapY} 2 2 0 0 0 0");
+                    }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_NEED_LOCK"),0));
+                }
+            }
+        }
         public void MinilandAddObject(AddobjPacket packet)
         {
             ItemInstance minilandobject = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Slot, InventoryType.Miniland);
@@ -76,22 +97,32 @@ namespace OpenNos.Handler
             {
                 if (!Session.Character.Miniland.MapObjects.Any(s => s.ItemInstanceId == minilandobject.Id))
                 {
-                    MapObject mo = new MapObject()
+                    if (Session.Character.MinilandState == MinilandState.LOCK)
                     {
-                        CharacterId = Session.Character.CharacterId,
-                        VNum = minilandobject.ItemVNum,
-                        ItemInstanceId = minilandobject.Id,
-                        MapX = packet.PositionX,
-                        MapY = packet.PositionY,
-                        Durability = 0,
-                        Level1BoxAmount = 0,
-                        Level2BoxAmount = 0,
-                        Level3BoxAmount = 0,
-                        Level4BoxAmount = 0,
-                        Level5BoxAmount = 0,
-                    };
-                    Session.Character.Miniland.MapObjects.Add(mo);
-                    Session.SendPacket($"eff_g  {minilandobject.Item.EffectValue} {mo.VNum} {mo.MapX} {mo.MapY} 0");
+                        MapObject mo = new MapObject()
+                        {
+                            CharacterId = Session.Character.CharacterId,
+                            VNum = minilandobject.ItemVNum,
+                            ItemInstanceId = minilandobject.Id,
+                            MapX = packet.PositionX,
+                            MapY = packet.PositionY,
+                            Durability = 0,
+                            Level1BoxAmount = 0,
+                            Level2BoxAmount = 0,
+                            Level3BoxAmount = 0,
+                            Level4BoxAmount = 0,
+                            Level5BoxAmount = 0,
+                        };
+                        Session.Character.Miniland.MapObjects.Add(mo);
+                        Session.SendPacket($"eff_g  {minilandobject.Item.EffectValue} {mo.VNum} {mo.MapX} {mo.MapY} 0");
+                        Session.SendPacket($"mlpt 2000 100");
+                        Session.SendPacket($"mlobj 1 {packet.Slot} {packet.PositionX} {packet.PositionY} 2 2 0 0 0 0");
+
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_NEED_LOCK"), 0));
+                    }
                 }
             }
         }
@@ -117,7 +148,7 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_LOCK"), 0));
                             break;
                         case MinilandState.OPEN:
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_CLOSED"), 0));
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_OPEN"), 0));
                             break;
                     }
 
