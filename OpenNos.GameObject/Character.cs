@@ -479,19 +479,41 @@ namespace OpenNos.GameObject
             }
             return str;
         }
+        public string GenerateStashAll()
+        {
+            string stash = $"stash_all {WareHouseSize}";
+            //stash_all 56 0.5919.1.3.0.0 1.2514.2.13.0.0 2.2515.2.2.0.0 3.2206.2.2.0.0 4.2522.2.17.0.0 5.2048.2.32.0.0 6.2048.2.30.0.0 7.1874.1.10.0.0 8.1873.1.2.0.0 9.1872.1.4.0.0 10.1095.1.1.0.0 11.1317.1.2.0.0 13.566.0.1.1.72 14.574.0.1.3.62 15.575.0.1.4.78 16.566.0.1.6.72 17.572.0.1.4.77 18.5924.1.1.0.0 19.2044.2.99.0.0 20.2044.2.17.0.0 22.1021.1.8.0.0 28.1017.1.2.0.0
+            return stash;
+        }
+        public string GenerateMinilandObjectForFriends()
+        {
+            string mlobjstring = "mltobj";
+            int i = 0;
+            foreach(MinilandObject mp in MinilandObjects)
+            {
+                mlobjstring+= $" {mp.ItemInstance.ItemVNum}.{i}.{mp.MapX}.{mp.MapY}";
+                i++;
+            }
+            return mlobjstring;
+        }
+
         public string GetMinilandObjectList()
         {
             string mlobjstring = "mlobjlst";
             int i = 0;
-            foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.Miniland))
+            foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.Miniland).OrderBy(s=>s.Slot))
             {
+                if(item.Item.IsMinilandObject)
+                {
+                    Session.Character.WareHouseSize = item.Item.MinilandObjectPoint;
+                }
                 MinilandObject mp = MinilandObjects.FirstOrDefault(s => s.ItemInstanceId == item.Id);
                 bool used = false;
                 if (mp != null)
                 {
                     used = true;
                 }
-                mlobjstring += $" {i}.{(used ? 1 : 0)}.{(used ? mp.MapX : 0)}.{(used ? mp.MapY : 0)}.{item.Item.Width}.{item.Item.Width}.{(used ? mp.ItemInstance.DurabilityPoint : 0)}.100.0.1";
+                mlobjstring += $" {i}.{(used ? 1 : 0)}.{(used ? mp.MapX : 0)}.{(used ? mp.MapY : 0)}.{(item.Item.Width != 0 ? item.Item.Width : 1) }.{(item.Item.Height != 0 ? item.Item.Height : 1) }.{(used ? mp.ItemInstance.DurabilityPoint : 0)}.100.0.1";
                 i++;
             }
 
@@ -1010,6 +1032,7 @@ namespace OpenNos.GameObject
         public int FoodHp { get; set; }
         public int FoodMp { get; set; }
         public int MaxFood { get; set; }
+        public int WareHouseSize { get; set; }
         #endregion
 
         #region Methods
@@ -3891,6 +3914,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(inv3);
             Session.SendPacket(inv6);
             Session.SendPacket(inv7);
+            Session.SendPacket(GetMinilandObjectList());
         }
 
         public string GenerateStat()

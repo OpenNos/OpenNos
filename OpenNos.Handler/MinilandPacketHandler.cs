@@ -78,6 +78,10 @@ namespace OpenNos.Handler
                     MinilandObject mo = Session.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
                     if (mo != null)
                     {
+                        if (minilandobject.Item.IsMinilandObject)
+                        {
+                            Session.Character.WareHouseSize = 0;
+                        }
                         Session.Character.MinilandObjects.Remove(mo);
                         Session.SendPacket(Session.Character.GenerateMinilandEffect(mo, true));
                         Session.SendPacket(Session.Character.GenerateMinilandPoint());
@@ -112,6 +116,10 @@ namespace OpenNos.Handler
                             Level4BoxAmount = 0,
                             Level5BoxAmount = 0,
                         };
+                        if (minilandobject.Item.IsMinilandObject)
+                        {
+                            Session.Character.WareHouseSize = minilandobject.Item.MinilandObjectPoint;
+                        }
                         Session.Character.MinilandObjects.Add(mo);
                         Session.SendPacket(Session.Character.GenerateMinilandEffect(mo, false));
                         Session.SendPacket(Session.Character.GenerateMinilandPoint());
@@ -129,7 +137,7 @@ namespace OpenNos.Handler
 
         public void UseMinilandObject(UseobjPacket packet)
         {
-            ClientSession client = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == packet.CharacterName);
+            ClientSession client = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Miniland == Session.Character.MapInstance);
             if (client != null)
             {
                 ItemInstance minilandobject = client.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Slot, InventoryType.Miniland);
@@ -141,11 +149,11 @@ namespace OpenNos.Handler
                         if (!minilandobject.Item.IsMinilandObject)
                         {
                             bool full = false;
-                            Session.SendPacket($"mlo_info {(client == Session ? 1 : 0)} {minilandobject.ItemVNum} {packet.Slot} {Session.Character.MinilandPoint} {(minilandobject.DurabilityPoint < 1000 ? 1 : 0)} {(full?1:0)} 1 999 1000 4999 5000 7999 8000 11999 12000 15999 16000 1000000");
+                            Session.SendPacket($"mlo_info {(client == Session ? 1 : 0)} {minilandobject.ItemVNum} {packet.Slot} {Session.Character.MinilandPoint} {(minilandobject.DurabilityPoint < 1000 ? 1 : 0)} {(full ? 1 : 0)} 0 999 1000 4999 5000 7999 8000 11999 12000 15999 16000 1000000");
                         }
                         else
                         {
-                            //wearhouse
+                            Session.SendPacket(Session.Character.GenerateStashAll());
                         }
                     }
                 }
@@ -153,16 +161,38 @@ namespace OpenNos.Handler
         }
         public void MinigamePlay(MinigamePacket packet)
         {
-            ItemInstance minilandobject = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Type, InventoryType.Miniland);
-            if (minilandobject != null)
+            ClientSession client = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Miniland == Session.Character.MapInstance);
+            if (client != null)
             {
-                MinilandObject mlobj = Session.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
+                MinilandObject mlobj = client.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstance.ItemVNum == packet.MinigameVNum);
                 if (mlobj != null)
                 {
                     switch (packet.Type)
                     {
+                        case 1:
+                            int game = ((int)mlobj.ItemInstance.Item.EquipmentSlot == 0) ? 4 + mlobj.ItemInstance.ItemVNum % 10 : (int)mlobj.ItemInstance.Item.EquipmentSlot / 3;
+                            Session.SendPacket($"mlo_st {game}");
+                            break;
+                        case 2:
+                            //?
+                            break;
+                        case 3:
+                            Session.SendPacket($"mlo_lv 2");
+                            //mg 3 2 3125 8647 8647
+                            //mlo_lv 2
+                            //eff 1 626114 5102
+                            break;
+                        case 4:
+                            // mg 4 2 3125 2
+                            //ivn 2 42.2193.2.0
+                            //mlpt 1900 100
+                            //mlo_rw 2193 2
+                            break;
                         case 5:
-                            Session.SendPacket($"mlo_mg {packet.MinigameVNum} {Session.Character.MinilandPoint} 0 0 {mlobj.ItemInstance.Item.DurabilityPoint} {mlobj.ItemInstance.Item.DurabilityPoint}");
+                            Session.SendPacket($"mlo_mg {packet.MinigameVNum} {Session.Character.MinilandPoint} 0 0 {mlobj.ItemInstance.Item.MinilandObjectPoint} {mlobj.ItemInstance.Item.MinilandObjectPoint}");
+                            break;
+                        case 6:
+                            //refill
                             break;
                         case 7:
                             //mlo_pmg 3125 2000 0 0 0 0 393 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0

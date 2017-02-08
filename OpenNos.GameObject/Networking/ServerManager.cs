@@ -261,13 +261,14 @@ namespace OpenNos.GameObject
             if (Session.Character.Miniland.MapInstanceId != MinilandOwner.Character.Miniland.MapInstanceId)
             {
                 Session.SendPacket(Session.Character.GenerateMsg(Session.Character.MinilandMessage.Replace(' ', '^'), 0));
-                Session.SendPacket(Session.Character.GenerateMlinfobr());
-                Session.SendPacket(MinilandOwner.Character.GetMinilandObjectList());
+                Session.SendPacket(Session.Character.GenerateMlinfobr()); 
                 GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "Miniland", LogType = "World", Timestamp = DateTime.Now });
+                Session.SendPacket(MinilandOwner.Character.GenerateMinilandObjectForFriends());
             }
             else
             {
                 Session.SendPacket(Session.Character.GenerateMlinfo());
+                Session.SendPacket(MinilandOwner.Character.GetMinilandObjectList());
             }
             Session.SendPackets(MinilandOwner.Character.GetMinilandEffects());
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MINILAND_VISITOR"), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day).Count(), Session.Character.GeneralLogs.Where(s => s.LogData == "Miniland").Count()), 10));

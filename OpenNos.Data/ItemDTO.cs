@@ -22,11 +22,11 @@ namespace OpenNos.Data
 
         public byte BasicUpgrade { get; set; }
 
-        public byte CellonLvl { get; set; }
-
         public byte Height { get; set; }
 
         public byte Width { get; set; }
+
+        public byte CellonLvl { get; set; }
 
         public byte Class { get; set; }
 
@@ -53,8 +53,6 @@ namespace OpenNos.Data
         public short DistanceDefence { get; set; }
 
         public short DistanceDefenceDodge { get; set; }
-
-        public int DurabilityPoint { get; set; }
 
         public short Effect { get; set; }
 
@@ -110,6 +108,7 @@ namespace OpenNos.Data
 
         public short MagicDefence { get; set; }
 
+
         public byte MaxCellon { get; set; }
 
         public byte MaxCellonLvl { get; set; }
@@ -159,6 +158,7 @@ namespace OpenNos.Data
         public byte WaterElement { get; set; }
 
         public short WaterResistance { get; set; }
+        public int MinilandObjectPoint { get; set; }
 
         #endregion
     }

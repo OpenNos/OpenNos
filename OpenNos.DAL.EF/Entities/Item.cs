@@ -158,6 +158,8 @@ namespace OpenNos.DAL.EF
 
         public short PvpDefence { get; set; }
 
+        public int MinilandObjectPoint { get; set; }
+
         public byte PvpStrength { get; set; }
 
         public virtual ICollection<Recipe> Recipe { get; set; }

@@ -38,6 +38,7 @@ namespace OpenNos.GameObject
             // manual mapping to avoid automapper outside of DAO
             Height = item.Height;
             Width = item.Width;
+            MinilandObjectPoint = item.MinilandObjectPoint;
             BasicUpgrade = item.BasicUpgrade;
             CellonLvl = item.CellonLvl;
             Class = item.Class;
