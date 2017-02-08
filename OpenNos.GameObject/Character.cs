@@ -458,6 +458,14 @@ namespace OpenNos.GameObject
                 return respawn;
             }
         }
+        public string GenerateMinilandObject(MinilandObject mo, short slot, bool deleted)
+        {
+            return $"mlobj {(deleted ? 0 : 1)} {slot} {mo.MapX} {mo.MapY} {mo.Item.Width} {mo.Item.Width} 0 0 0 0";
+        }
+        public string GenerateMinilandPoint()
+        {
+            return $"mlpt {Session.Character.MinilandPoint} 100";
+        }
         public string  GenerateMinilandEffect(MinilandObject mp, bool removed)
         {
             return $"eff_g  {mp.Item.EffectValue} {mp.MapX.ToString("00")}{mp.MapY.ToString("00")} {mp.MapX} {mp.MapY} {(removed?1:0)}";

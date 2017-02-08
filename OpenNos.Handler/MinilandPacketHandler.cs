@@ -80,8 +80,8 @@ namespace OpenNos.Handler
                     {
                         Session.Character.MinilandObjects.Remove(mo);
                         Session.SendPacket(Session.Character.GenerateMinilandEffect(mo, true));
-                        Session.SendPacket($"mlpt {Session.Character.MinilandPoint} 100");
-                        Session.SendPacket($"mlobj 0 {packet.Slot} {mo.MapX} {mo.MapY} {mo.Item.Width} {mo.Item.Width} 0 0 0 0");
+                        Session.SendPacket(Session.Character.GenerateMinilandPoint());
+                        Session.SendPacket(Session.Character.GenerateMinilandObject(mo, packet.Slot, true));
                     }
                 }
                 else
@@ -115,8 +115,9 @@ namespace OpenNos.Handler
                         };
                         Session.Character.MinilandObjects.Add(mo);
                         Session.SendPacket(Session.Character.GenerateMinilandEffect(mo, false));
-                        Session.SendPacket($"mlpt {Session.Character.MinilandPoint} 100");
-                        Session.SendPacket($"mlobj 1 {packet.Slot} {packet.PositionX} {packet.PositionY} 2 2 0 0 0 0");
+                        Session.SendPacket(Session.Character.GenerateMinilandPoint());
+                        Session.SendPacket(Session.Character.GenerateMinilandObject(mo, packet.Slot, false));
+
 
                     }
                     else
