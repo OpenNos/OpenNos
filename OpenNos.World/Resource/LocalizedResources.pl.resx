@@ -787,12 +787,6 @@
   <data name="GROUP_ADMIN" xml:space="preserve">
     <value>Jesteś zarządcą tej grupy.</value>
   </data>
-  <data name="MUTED_PLURAL" xml:space="preserve">
-    <value>Zostałeś wyciszony za {0} na {1} godzin/y.</value>
-  </data>
-  <data name="MUTED_SINGULAR" xml:space="preserve">
-    <value>Zostałeś wyciszony za {0} na 1 godzinę.</value>
-  </data>
   <data name="NOT_ENOUGH_MP" xml:space="preserve">
     <value>Niewystarczająca ilość many, aby użyć tej umiejętności.</value>
   </data>

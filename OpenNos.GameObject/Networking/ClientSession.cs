@@ -591,17 +591,21 @@ namespace OpenNos.GameObject
                         if (HasSelectedCharacter || methodReference.ParentHandler.GetType().Name == "CharacterScreenPacketHandler" || methodReference.ParentHandler.GetType().Name == "LoginPacketHandler")
                         {
                             // call actual handler method
-                            if (methodReference.PacketDefinitionParameterType != null && ((byte)methodReference.Authority <= (byte)Account.Authority))
+                            if (methodReference.PacketDefinitionParameterType != null)
                             {
-                                object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, true);
+                                //check for the correct authority
+                                if((byte)methodReference.Authority <= (byte)Account.Authority)
+                                {
+                                    object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, true);
 
-                                if (deserializedPacket != null || methodReference.PassNonParseablePacket)
-                                {
-                                    methodReference.HandlerMethod(methodReference.ParentHandler, deserializedPacket);
-                                }
-                                else
-                                {
-                                    Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CORRUPT_PACKET"), packetHeader, packet);
+                                    if (deserializedPacket != null || methodReference.PassNonParseablePacket)
+                                    {
+                                        methodReference.HandlerMethod(methodReference.ParentHandler, deserializedPacket);
+                                    }
+                                    else
+                                    {
+                                        Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CORRUPT_PACKET"), packetHeader, packet);
+                                    }
                                 }
                             }
                             else

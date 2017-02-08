@@ -836,10 +836,7 @@ Veux-tu le porter ?</value>
     <value>Le joueur ne subis plus la sourdine.</value>
   </data>
   <data name="MUTED_PLURAL" xml:space="preserve">
-    <value>Tu as été sanctionné  ! Raison : {0} pour : {1} heures.</value>
-  </data>
-  <data name="MUTED_SINGULAR" xml:space="preserve">
-    <value>Tu as été sanctionné  ! Raison : {0} pour : 1 heures.</value>
+    <value>Tu as été sanctionné  ! Raison : {0} pour : {1} minutes.</value>
   </data>
   <data name="IMPOSSIBLE_TO_USE" xml:space="preserve">
     <value>C'est impossible de l'utiliser.</value>
