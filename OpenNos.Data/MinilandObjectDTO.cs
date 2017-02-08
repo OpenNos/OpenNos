@@ -25,8 +25,6 @@ namespace OpenNos.GameObject
 
         public long CharacterId { get; set; }
 
-        public int Durability { get; set; }
-
         public byte Level1BoxAmount { get; set; }
 
         public byte Level2BoxAmount { get; set; }

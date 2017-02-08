@@ -24,8 +24,6 @@ namespace OpenNos.DAL.EF
 
         public long CharacterId { get; set; }
 
-        public int Durability { get; set; }
-
         public virtual ItemInstance ItemInstance { get; set; }
 
         public byte Level1BoxAmount { get; set; }

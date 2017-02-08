@@ -102,11 +102,10 @@ namespace OpenNos.Handler
                         MinilandObject mo = new MinilandObject()
                         {
                             CharacterId = Session.Character.CharacterId,
-                            VNum = minilandobject.ItemVNum,
+                            ItemInstance = minilandobject,
                             ItemInstanceId = minilandobject.Id,
                             MapX = packet.PositionX,
                             MapY = packet.PositionY,
-                            Durability = 0,
                             Level1BoxAmount = 0,
                             Level2BoxAmount = 0,
                             Level3BoxAmount = 0,
@@ -141,7 +140,8 @@ namespace OpenNos.Handler
                     {
                         if (!minilandobject.Item.IsMinilandObject)
                         {
-                            Session.SendPacket($"mlo_info {(client == Session ? 1 : 0)} {minilandobject.ItemVNum} {packet.Slot} {Session.Character.MinilandPoint} 0 0 {(minilandobject.DurabilityPoint < 1000 ? 1 : 0)} 999 1000 4999 5000 7999 8000 11999 12000 15999 16000 1000000");
+                            bool full = false;
+                            Session.SendPacket($"mlo_info {(client == Session ? 1 : 0)} {minilandobject.ItemVNum} {packet.Slot} {Session.Character.MinilandPoint} {(minilandobject.DurabilityPoint < 1000 ? 1 : 0)} {(full?1:0)} 1 999 1000 4999 5000 7999 8000 11999 12000 15999 16000 1000000");
                         }
                         else
                         {
@@ -162,7 +162,7 @@ namespace OpenNos.Handler
                     switch (packet.Type)
                     {
                         case 5:
-                            Session.SendPacket($"mlo_mg {packet.MinigameVNum} {Session.Character.MinilandPoint} 0 0 {mlobj.Item.DurabilityPoint} {mlobj.Item.DurabilityPoint}");
+                            Session.SendPacket($"mlo_mg {packet.MinigameVNum} {Session.Character.MinilandPoint} 0 0 {mlobj.ItemInstance.Item.DurabilityPoint} {mlobj.ItemInstance.Item.DurabilityPoint}");
                             break;
                         case 7:
                             //mlo_pmg 3125 2000 0 0 0 0 393 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0

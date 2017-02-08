@@ -21,15 +21,8 @@ namespace OpenNos.GameObject
 
     public class MinilandObject : MinilandObjectDTO
     {
-        private Item item;
-        public Item Item
-        {
-            get
-            {
-                return item ?? (item = ServerManager.GetItem(VNum));
-            }
-        }
-        public short VNum { get; set; }
+        public ItemInstance ItemInstance;
+
         public MinilandObject()
         {
 
