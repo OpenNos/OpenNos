@@ -1923,7 +1923,14 @@ namespace OpenNos.Handler
                         ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                         short mapX = session.Character.PositionX;
                         short mapY = session.Character.PositionY;
-                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, session.Character.MapInstanceId, mapX, mapY);
+                        if (session.Character.Miniland == session.Character.MapInstance)
+                        {
+                            ServerManager.Instance.JoinMiniland(Session, session);
+                        }
+                        else
+                        {
+                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, session.Character.MapInstanceId, mapX, mapY);
+                        }
                     }
                     else
                     {
@@ -1996,7 +2003,15 @@ namespace OpenNos.Handler
                                     break;
                                 }
                             }
-                            ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.MapInstanceId, mapXPossibility, mapYPossibility);
+                            if (Session.Character.Miniland == Session.Character.MapInstance)
+                            {
+                                ServerManager.Instance.JoinMiniland(session, Session);
+                            }
+                            else
+                            {
+                                ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.MapInstanceId, mapXPossibility, mapYPossibility);
+                            }
+                           
                         }
                     }
                 }
