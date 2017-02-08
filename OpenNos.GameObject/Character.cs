@@ -2764,7 +2764,7 @@ namespace OpenNos.GameObject
 
         public string GenerateMlinfo()
         {
-            return $"mlinfo 3800 2000 100 {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day)} {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland")} 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}";
+            return $"mlinfo 3800 {Session.Character.MinilandPoint} 100 {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day)} {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland")} 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}";
         }
 
         public string GenerateDelay(int delay, int type, string argument)

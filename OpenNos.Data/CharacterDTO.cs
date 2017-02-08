@@ -31,6 +31,8 @@ namespace OpenNos.Data
 
         public int ArenaWinner { get; set; }
 
+        public short MinilandPoint { get; set; }
+
         public string Biography { get; set; }
 
         public bool BuffBlocked { get; set; }

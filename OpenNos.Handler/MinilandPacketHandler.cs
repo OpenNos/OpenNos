@@ -80,7 +80,7 @@ namespace OpenNos.Handler
                     {
                         Session.Character.MinilandObjects.Remove(mo);
                         Session.SendPacket(Session.Character.GenerateMinilandEffect(mo, true));
-                        Session.SendPacket($"mlpt 2000 100");
+                        Session.SendPacket($"mlpt {Session.Character.MinilandPoint} 100");
                         Session.SendPacket($"mlobj 0 {packet.Slot} {mo.MapX} {mo.MapY} {mo.Item.Width} {mo.Item.Width} 0 0 0 0");
                     }
                 }
@@ -115,7 +115,7 @@ namespace OpenNos.Handler
                         };
                         Session.Character.MinilandObjects.Add(mo);
                         Session.SendPacket(Session.Character.GenerateMinilandEffect(mo, false));
-                        Session.SendPacket($"mlpt 2000 100");
+                        Session.SendPacket($"mlpt {Session.Character.MinilandPoint} 100");
                         Session.SendPacket($"mlobj 1 {packet.Slot} {packet.PositionX} {packet.PositionY} 2 2 0 0 0 0");
 
                     }
@@ -138,14 +138,43 @@ namespace OpenNos.Handler
                     MinilandObject mlobj = client.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
                     if (mlobj != null)
                     {
-                        Session.SendPacket($"mlo_info 1 {minilandobject.ItemVNum} 2 2000 0 0 0 999 1000 4999 5000 7999 8000 11999 12000 15999 16000 1000000");
-                        Session.SendPacket($"mg 5 2 {minilandobject.ItemVNum}");
-                        Session.SendPacket($"mlo_mg {minilandobject.ItemVNum} 2000 0 0 {minilandobject.DurabilityPoint} {minilandobject.Item.DurabilityPoint}");
+                        if (!minilandobject.Item.IsMinilandObject)
+                        {
+                            Session.SendPacket($"mlo_info {(client == Session ? 1 : 0)} {minilandobject.ItemVNum} {packet.Slot} {Session.Character.MinilandPoint} 0 0 {(minilandobject.DurabilityPoint < 1000 ? 1 : 0)} 999 1000 4999 5000 7999 8000 11999 12000 15999 16000 1000000");
+                        }
+                        else
+                        {
+                            //wearhouse
+                        }
                     }
                 }
             }
         }
-
+        public void MinigamePlay(MinigamePacket packet)
+        {
+            ItemInstance minilandobject = Session.Character.Inventory.LoadBySlotAndType<ItemInstance>(packet.Type, InventoryType.Miniland);
+            if (minilandobject != null)
+            {
+                MinilandObject mlobj = Session.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstanceId == minilandobject.Id);
+                if (mlobj != null)
+                {
+                    switch (packet.Type)
+                    {
+                        case 5:
+                            Session.SendPacket($"mlo_mg {packet.MinigameVNum} {Session.Character.MinilandPoint} 0 0 {mlobj.Item.DurabilityPoint} {mlobj.Item.DurabilityPoint}");
+                            break;
+                        case 7:
+                            //mlo_pmg 3125 2000 0 0 0 0 393 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+                            break;
+                        case 8:
+                            /*  ivn 2 31.2039.4.0
+                                say 1 626114 12 Tu as reçu un objet : Bois normal x 4
+                                mlo_pmg 3125 2000 0 0 0 0 0 0 0 0 0 0 0 0 2039 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 */
+                            break;
+                    }
+                }
+            }
+        }
         public void MinilandEdit(MLeditPacket packet)
         {
             switch (packet.Type)

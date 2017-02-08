@@ -94,6 +94,7 @@ namespace OpenNos.DAL.EF
         [MaxLength(255)]
         public string MinilandMessage { get; set; }
 
+        public short MinilandPoint { get; set; }
         public virtual ICollection<FamilyCharacter> FamilyCharacter { get; set; }
 
         public bool FamilyRequestBlocked { get; set; }
