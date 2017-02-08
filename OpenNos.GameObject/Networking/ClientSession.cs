@@ -593,15 +593,19 @@ namespace OpenNos.GameObject
                             // call actual handler method
                             if (methodReference.PacketDefinitionParameterType != null)
                             {
-                                object serializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, true);
+                                //check for the correct authority
+                                if((byte)methodReference.Authority <= (byte)Account.Authority)
+                                {
+                                    object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, true);
 
-                                if ((serializedPacket != null || methodReference.PassNonParseablePacket) && (byte)methodReference.Authority <= (byte)Account.Authority)
-                                {
-                                    methodReference.HandlerMethod(methodReference.ParentHandler, serializedPacket);
-                                }
-                                else
-                                {
-                                    Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CORRUPT_PACKET"), packetHeader, packet);
+                                    if (deserializedPacket != null || methodReference.PassNonParseablePacket)
+                                    {
+                                        methodReference.HandlerMethod(methodReference.ParentHandler, deserializedPacket);
+                                    }
+                                    else
+                                    {
+                                        Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CORRUPT_PACKET"), packetHeader, packet);
+                                    }
                                 }
                             }
                             else

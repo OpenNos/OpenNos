@@ -810,9 +810,6 @@
   <data name="MUTED_MALE" xml:space="preserve">
     <value>Sono stato un cattivo ragazzo e mi hanno silenziato!</value>
   </data>
-  <data name="MUTED_SINGULAR" xml:space="preserve">
-    <value>Sei stato mutato! Ragione: {0}. Tempo: 1 Ora.</value>
-  </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>La punizione è terminata!</value>
   </data>
@@ -908,9 +905,6 @@
   </data>
   <data name="GROUP_ADMIN" xml:space="preserve">
     <value>Sei il capogruppo!</value>
-  </data>
-  <data name="MUTED_PLURAL" xml:space="preserve">
-    <value>Sei stato mutato! Ragione: {0}. Tempo: {1} Ore!</value>
   </data>
   <data name="MUTE_TIME" xml:space="preserve">
     <value>Durata punizione: {0}</value>

@@ -782,8 +782,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$MapDance", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Music BGM", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME TIME REASON ", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME DURATION(MINUTES) REASON", 12));
             Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Position", 12));
@@ -1449,59 +1448,55 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$Mute")]
-        public void Mute(string packet)
+        /// <summary>
+        /// $Mute Command
+        /// </summary>
+        /// <param name="mutePacket"></param>
+        public void Mute(MutePacket mutePacket)
         {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3)
+            if (mutePacket != null)
             {
-                string name = packetsplit[2];
-                string reason = string.Empty;
-                int duration;
-                bool isduration = int.TryParse(packetsplit[3], out duration);
+                Logger.Debug(mutePacket.ToString(), Session.SessionId);
 
-                duration = isduration ? duration : 1;
-
-                // get data from 3rd or 4th packetsplit depending on if duration was parsed or not
-                for (int i = isduration ? 4 : 3; i < packetsplit.Length; i++)
+                if (mutePacket.Duration == 0)
                 {
-                    reason += packetsplit[i] + " ";
+                    mutePacket.Duration = 60;
                 }
-                reason = reason.Trim();
 
-                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
-                if (duration != 0)
+                mutePacket.Reason = mutePacket.Reason?.Trim();
+
+                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == mutePacket.CharacterName);
+
+                session?.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), mutePacket.Reason, mutePacket.Duration)));
+
+                CharacterDTO characterToMute = DAOFactory.CharacterDAO.LoadByName(mutePacket.CharacterName);
+                if (characterToMute != null)
                 {
-                    session?.SendPacket(duration == 1 ? Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)) : Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)));
-                    if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    if (!session.Character.IsMuted())
                     {
-                        if (!session.Character.IsMuted())
+                        PenaltyLogDTO log = new PenaltyLogDTO
                         {
-                            PenaltyLogDTO log = new PenaltyLogDTO
-                            {
-                                AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
-                                Reason = reason,
-                                Penalty = PenaltyType.Muted,
-                                DateStart = DateTime.Now,
-                                DateEnd = DateTime.Now.AddHours(duration),
-                                AdminName = Session.Character.Name
-                            };
+                            AccountId = characterToMute.AccountId,
+                            Reason = mutePacket.Reason,
+                            Penalty = PenaltyType.Muted,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddMinutes(mutePacket.Duration),
+                            AdminName = Session.Character.Name
+                        };
 
-                            session.Character.InsertOrUpdatePenalty(log);
-                        }
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                        session.Character.InsertOrUpdatePenalty(log);
                     }
-                    else
-                    {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-                    }
+
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                 }
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME TIME REASON ", 10));
-                Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME DURATION(MINUTES) REASON", 10));
             }
         }
 
