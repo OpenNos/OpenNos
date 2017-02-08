@@ -591,13 +591,13 @@ namespace OpenNos.GameObject
                         if (HasSelectedCharacter || methodReference.ParentHandler.GetType().Name == "CharacterScreenPacketHandler" || methodReference.ParentHandler.GetType().Name == "LoginPacketHandler")
                         {
                             // call actual handler method
-                            if (methodReference.PacketDefinitionParameterType != null)
+                            if (methodReference.PacketDefinitionParameterType != null && ((byte)methodReference.Authority <= (byte)Account.Authority))
                             {
-                                object serializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, true);
+                                object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, true);
 
-                                if ((serializedPacket != null || methodReference.PassNonParseablePacket) && (byte)methodReference.Authority <= (byte)Account.Authority)
+                                if (deserializedPacket != null || methodReference.PassNonParseablePacket)
                                 {
-                                    methodReference.HandlerMethod(methodReference.ParentHandler, serializedPacket);
+                                    methodReference.HandlerMethod(methodReference.ParentHandler, deserializedPacket);
                                 }
                                 else
                                 {
