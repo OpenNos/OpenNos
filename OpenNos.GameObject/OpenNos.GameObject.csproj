@@ -98,6 +98,10 @@
     <Compile Include="Packets\ClientPackets\RmvobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\MLedit.cs" />
     <Compile Include="Packets\ClientPackets\MJoin.cs" />
+    <Compile Include="Packets\CommandPackets\BanPacket.cs" />
+    <Compile Include="Packets\CommandPackets\BlockExpPacket.cs" />
+    <Compile Include="Packets\CommandPackets\BlockFExpPacket.cs" />
+    <Compile Include="Packets\CommandPackets\BlockRepPacket.cs" />
     <Compile Include="Packets\CommandPackets\MutePacket.cs" />
     <Compile Include="Packets\CommandPackets\ArenaWinnerPacket.cs" />
     <Compile Include="Packets\CommandPackets\BackpackPacket.cs" />
