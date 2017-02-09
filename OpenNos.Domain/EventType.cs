@@ -5,6 +5,7 @@
         INSTANTBATTLE,
         LOD,
         REPUTEVENT,
-        LODDH
+        LODDH,
+        RANKINGREFRESH
     }
 }

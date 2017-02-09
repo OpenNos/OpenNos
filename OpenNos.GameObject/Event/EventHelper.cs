@@ -31,6 +31,10 @@ namespace OpenNos.GameObject.Event
                     ServerManager.Instance.StartedEvents.Add(type);
                     switch (type)
                     {
+                        case EventType.RANKINGREFRESH:
+                            ServerManager.Instance.RefreshRanking();
+                            break;
+
                         case EventType.LOD:
                             LOD.GenerateLod();
                             break;
