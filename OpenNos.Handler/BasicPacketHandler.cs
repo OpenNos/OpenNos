@@ -1524,7 +1524,7 @@ namespace OpenNos.Handler
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("LOGIN_MEDAL"), 12));
             }
-            if (Session.Character.MapInstance.Map.MapId == 138)
+            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.CleftOfDarkness))
             {
                 Session.SendPacket("bc 0 0 0");
             }
@@ -1538,11 +1538,11 @@ namespace OpenNos.Handler
                 Session.SendPacket($"bn {i} {Language.Instance.GetMessageFromKey($"BN{i}")}");
             }
             Session.SendPacket(Session.Character.GenerateExts());
-            Session.SendPacket(Session.Character.GenerateMlinfo()); // 0 before 10 = visitors
+            Session.SendPacket(Session.Character.GenerateMlinfo());
             Session.SendPacket("p_clear");
 
-            // sc_p pet sc_n nospartner Session.SendPacket("sc_p_stc 0"); // end pet and partner
-            Session.SendPacket("pinit 0"); // clean party list
+            // sc_p pet // sc_n nospartner // Session.SendPacket("sc_p_stc 0");
+            Session.SendPacket("pinit 0");
 
             Session.SendPacket("zzim");
             Session.SendPacket($"twk 2 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
@@ -1551,7 +1551,7 @@ namespace OpenNos.Handler
             Session.SendPacket("act6");
             Session.SendPacket(Session.Character.GenerateFaction());
 
-            // sc_p pet again sc_n nospartner again
+            // sc_p pet again // sc_n nospartner again
 #pragma warning disable 618
             Session.Character.GenerateStartupInventory();
 #pragma warning restore 618
@@ -1609,7 +1609,7 @@ namespace OpenNos.Handler
         {
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            int distance = Map.GetDistance(new MapCell() { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell() { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
+            int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
 
             if (!Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) && !Session.Character.IsChangingMapInstance && !Session.Character.HasShopOpened)
             {

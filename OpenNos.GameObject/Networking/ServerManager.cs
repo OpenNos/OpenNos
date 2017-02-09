@@ -483,7 +483,7 @@ namespace OpenNos.GameObject
                     }
 
                     // TODO: fix this
-                    if (session.CurrentMapInstance.Map.MapId == 138)
+                    if (session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.CleftOfDarkness))
                     {
                         session.SendPacket("bc 0 0 0");
                     }
