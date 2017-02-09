@@ -98,7 +98,6 @@
     <Compile Include="Packets\ClientPackets\RmvobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\MLedit.cs" />
     <Compile Include="Packets\ClientPackets\MJoin.cs" />
-    <Compile Include="Packets\CommandPackets\MutePacket.cs" />
     <Compile Include="Packets\CommandPackets\ArenaWinnerPacket.cs" />
     <Compile Include="Packets\CommandPackets\BackpackPacket.cs" />
     <Compile Include="Packets\CommandPackets\BlockPMPacket.cs" />
@@ -113,6 +112,7 @@
     <Compile Include="Packets\CommandPackets\MapDancePacket.cs" />
     <Compile Include="Packets\CommandPackets\MapPVPPacket.cs" />
     <Compile Include="Packets\CommandPackets\MorphPacket.cs" />
+    <Compile Include="Packets\CommandPackets\MutePacket.cs" />
     <Compile Include="Packets\CommandPackets\PacketCallbackPacket.cs" />
     <Compile Include="Packets\CommandPackets\PositionPacket.cs" />
     <Compile Include="Packets\CommandPackets\RemoveMobPacket.cs" />

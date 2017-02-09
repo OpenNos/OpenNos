@@ -1306,7 +1306,7 @@ namespace OpenNos.GameObject
                                     {
                                         return;
                                     }
-                                    Logger.Debug(specialist.ItemVNum.ToString(), Session.SessionId);
+                                    Logger.Debug(Session.GenerateIdentity(), specialist.ItemVNum.ToString());
                                     Session.Character.UseSp = false;
                                     Session.Character.LoadSpeed();
                                     Session.SendPacket(Session.Character.GenerateCond());

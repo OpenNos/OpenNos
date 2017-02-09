@@ -51,9 +51,9 @@ namespace OpenNos.Core
         /// <param name="message"></param>
         /// <param name="sessionId"></param>
         /// <param name="memberName"></param>
-        public static void Debug(string message, int sessionId = 0, [CallerMemberName] string memberName = "")
+        public static void Debug(string Caller, string message, [CallerMemberName] string memberName = "")
         {
-            Log?.Debug($"Session: {sessionId} Method: {memberName} Packet: {message}");
+            Log?.Debug($"{Caller} Method: {memberName} Packet: {message}");
         }
 
         /// <summary>

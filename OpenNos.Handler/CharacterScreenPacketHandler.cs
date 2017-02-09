@@ -40,7 +40,7 @@ namespace OpenNos.Handler
         [Packet("Char_NEW")]
         public void CreateCharacter(string packet)
         {
-            Logger.Debug(packet, Session.SessionId);
+             Logger.Debug(Session.GenerateIdentity(), packet);
             if (Session.HasCurrentMapInstance)
             {
                 return;
@@ -198,7 +198,7 @@ namespace OpenNos.Handler
 
         public void DeleteCharacter(CharacterDeletePacket characterDeletePacket)
         {
-            Logger.Debug(characterDeletePacket.ToString(), Session.SessionId);
+            Logger.Debug(Session.GenerateIdentity(), characterDeletePacket.ToString());
 
             if (Session.HasCurrentMapInstance)
             {
@@ -318,7 +318,7 @@ namespace OpenNos.Handler
         {
             try
             {
-                Logger.Debug(packet, Session.SessionId);
+                 Logger.Debug(Session.GenerateIdentity(), packet);
                 if (Session?.Account != null && !Session.HasSelectedCharacter)
                 {
                     string[] packetsplit = packet.Split(' ');
