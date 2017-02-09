@@ -1312,4 +1312,22 @@ Veux-tu le porter ?</value>
   <data name="INSTANTBATTLE_MONSTERS_INCOMING" xml:space="preserve">
     <value>Les monstres s'approchent lentement en masse...</value>
   </data>
+  <data name="MINILAND_CLOSED_BY_FRIEND" xml:space="preserve">
+    <value>Le Mini-pays est désormais fermé.</value>
+  </data>
+  <data name="MINILAND_INFO_CHANGED" xml:space="preserve">
+    <value>Ta description a été mise à jour</value>
+  </data>
+  <data name="MINILAND_LOCK" xml:space="preserve">
+    <value>Le Mini-pays est maintenant verrouillé.</value>
+  </data>
+  <data name="MINILAND_NEED_LOCK" xml:space="preserve">
+    <value>Ton mini pays a besoin d'être verrouillé pour effectuer des modifications.</value>
+  </data>
+  <data name="MINILAND_PRIVATE" xml:space="preserve">
+    <value>Le Mini-pays est maintenant privé.</value>
+  </data>
+  <data name="MINILAND_PUBLIC" xml:space="preserve">
+    <value>Le Mini-pays est maintenant ouvert au public</value>
+  </data>
 </root>

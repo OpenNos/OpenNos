@@ -470,7 +470,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            string[] packetHeader = packet.Split(new[] {' ', '^'}, StringSplitOptions.RemoveEmptyEntries);
+                            string[] packetHeader = packet.Split(new[] { ' ', '^' }, StringSplitOptions.RemoveEmptyEntries);
                             int permit = 1;
                             if (packetHeader.Length > 1)
                             {
@@ -594,7 +594,7 @@ namespace OpenNos.GameObject
                             if (methodReference.PacketDefinitionParameterType != null)
                             {
                                 //check for the correct authority
-                                if((byte)methodReference.Authority <= (byte)Account.Authority)
+                                if ((byte)methodReference.Authority <= (byte)Account.Authority)
                                 {
                                     object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, true);
 
@@ -630,6 +630,20 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CLIENTSESSION_DISPOSING"), packetHeader);
             }
+        }
+
+        public string GenerateIdentity()
+        {
+            string identity = string.Empty;
+            if (HasSelectedCharacter)
+            {
+                identity += $"Character: {Character.Name}";
+            }
+            else
+            {
+                identity += $"Account: {Account.Name}";
+            }
+            return identity;
         }
 
         #endregion

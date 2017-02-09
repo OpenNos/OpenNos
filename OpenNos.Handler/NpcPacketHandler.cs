@@ -53,7 +53,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Logger.Debug(buyPacket.ToString(), Session.SessionId);
+            Logger.Debug(Session.GenerateIdentity(), buyPacket.ToString());
 
             byte amount = buyPacket.Amount;
 
@@ -335,7 +335,7 @@ namespace OpenNos.Handler
         [Packet("m_shop")]
         public void CreateShop(string packet)
         {
-            Logger.Debug(packet, Session.SessionId);
+             Logger.Debug(Session.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             InventoryType[] type = new InventoryType[20];
             long[] gold = new long[20];
@@ -478,7 +478,7 @@ namespace OpenNos.Handler
         [Packet("n_run")]
         public void NpcRunFunction(string packet)
         {
-            Logger.Debug(packet, Session.SessionId);
+             Logger.Debug(Session.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 5)
             {
@@ -502,7 +502,7 @@ namespace OpenNos.Handler
         [Packet("pdtse")]
         public void Pdtse(string packet)
         {
-            Logger.Debug(packet, Session.SessionId);
+             Logger.Debug(Session.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length < 4 || !Session.HasCurrentMapInstance)
             {
@@ -591,7 +591,7 @@ namespace OpenNos.Handler
         [Packet("sell")]
         public void SellShop(string packet)
         {
-            Logger.Debug(packet, Session.SessionId);
+             Logger.Debug(Session.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             if (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
             {
@@ -660,7 +660,7 @@ namespace OpenNos.Handler
         [Packet("shopping")]
         public void Shopping(string packet)
         {
-            Logger.Debug(packet, Session.SessionId);
+             Logger.Debug(Session.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             byte type, typeshop = 0;
             int NpcId;
@@ -772,7 +772,7 @@ namespace OpenNos.Handler
         [Packet("npc_req")]
         public void ShowShop(string packet)
         {
-            Logger.Debug(packet, Session.SessionId);
+             Logger.Debug(Session.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             long owner;
             if (packetsplit.Length > 2)

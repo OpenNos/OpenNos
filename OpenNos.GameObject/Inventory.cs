@@ -90,7 +90,7 @@ namespace OpenNos.GameObject
         {
             if (Owner != null)
             {
-                Logger.Debug(vnum.ToString(), Owner.Session.SessionId);
+                Logger.Debug(Owner.Session.GenerateIdentity(),vnum.ToString());
                 ItemInstance newItem = InstantiateItemInstance(vnum, Owner.CharacterId, amount);
                 return AddToInventory(newItem, type);
             }
@@ -102,7 +102,7 @@ namespace OpenNos.GameObject
             List<ItemInstance> invlist = new List<ItemInstance>();
             if (Owner != null)
             {
-                Logger.Debug(newItem.ItemVNum.ToString(), Owner.Session.SessionId);
+                Logger.Debug(Owner.Session.GenerateIdentity(), newItem.ItemVNum.ToString());
                 ItemInstance inv = null;
 
                 // override type if necessary
@@ -160,7 +160,7 @@ namespace OpenNos.GameObject
         {
             if (Owner != null)
             {
-                Logger.Debug($"Slot: {slot} Type: {type} VNUM: {itemInstance.ItemVNum}", Owner.Session.SessionId);
+                Logger.Debug(Owner.Session.GenerateIdentity(),$"Slot: {slot} Type: {type} VNUM: {itemInstance.ItemVNum}");
                 itemInstance.Slot = slot;
                 itemInstance.Type = type;
                 itemInstance.CharacterId = Owner.Session.Character.CharacterId;
@@ -213,7 +213,7 @@ namespace OpenNos.GameObject
         {
             if (Owner != null)
             {
-                Logger.Debug(id.ToString(), Owner.Session.SessionId);
+                Logger.Debug(Owner.Session.GenerateIdentity(), id.ToString());
                 Tuple<short, InventoryType> removedPlace;
                 ItemInstance inv = this[id];
 
@@ -237,7 +237,7 @@ namespace OpenNos.GameObject
         {
             if (Owner != null)
             {
-                Logger.Debug($"Slot: {slot} Type: {type}", Owner.Session.SessionId);
+                Logger.Debug(Owner.Session.GenerateIdentity(), $"Slot: {slot} Type: {type}");
                 ItemInstance inv = GetAllItems().FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
 
                 if (inv != null)
@@ -488,7 +488,7 @@ namespace OpenNos.GameObject
 
         public void MoveItem(InventoryType type, short sourceSlot, byte amount, short destinationSlot, out ItemInstance sourceInventory, out ItemInstance destinationInventory)
         {
-            Logger.Debug($"type: {type} sourceSlot: {sourceSlot} amount: {amount} destinationSlot: {destinationSlot}", Owner.Session.SessionId);
+            Logger.Debug(Owner.Session.GenerateIdentity(), $"type: {type} sourceSlot: {sourceSlot} amount: {amount} destinationSlot: {destinationSlot}");
 
             // load source and destination slots
             sourceInventory = LoadBySlotAndType(sourceSlot, type);
@@ -563,14 +563,14 @@ namespace OpenNos.GameObject
         {
             if (Owner != null)
             {
-                Logger.Debug($"vnum: {vnum} amount: {amount}", Owner.Session.SessionId);
+                Logger.Debug(Owner.Session.GenerateIdentity(), $"vnum: {vnum} amount: {amount}");
                 int remainingAmount = amount;
 
                 foreach (ItemInstance inventory in GetAllItems().Where(s => s.ItemVNum == vnum).OrderBy(i => i.Slot))
                 {
                     if (remainingAmount > 0)
                     {
-                        Logger.Debug($"Remaining {remainingAmount}/{amount}, removing item {inventory.ItemVNum} from Slot {inventory.Slot} with amount {inventory.Amount}");
+                        Logger.Debug(Owner.Session.GenerateIdentity(),$"Remaining {remainingAmount}/{amount}, removing item {inventory.ItemVNum} from Slot {inventory.Slot} with amount {inventory.Amount}");
                         if (inventory.Amount > remainingAmount)
                         {
                             // amount completely removed
@@ -601,7 +601,7 @@ namespace OpenNos.GameObject
         {
             if (Owner != null)
             {
-                Logger.Debug($"InventoryId: {id} amount: {amount}", Owner.Session.SessionId);
+                Logger.Debug(Owner.Session.GenerateIdentity(), $"InventoryId: {id} amount: {amount}");
                 ItemInstance inv = GetAllItems().FirstOrDefault(i => i.Id.Equals(id));
 
                 if (inv != null)

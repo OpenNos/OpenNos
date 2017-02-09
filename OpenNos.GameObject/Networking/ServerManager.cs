@@ -948,7 +948,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        private void RefreshRanking()
+        public void RefreshRanking()
         {
             TopComplimented = DAOFactory.CharacterDAO.GetTopCompliment();
             TopPoints = DAOFactory.CharacterDAO.GetTopPoints();
@@ -1244,7 +1244,6 @@ namespace OpenNos.GameObject
             ServerCommunicationClient.Instance.RelationRefresh += OnRelationRefresh;
             ServerCommunicationClient.Instance.BazaarRefresh += OnBazaarRefresh;
             ServerCommunicationClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
-            ServerCommunicationClient.Instance.RankingRefresh += OnRankingRefresh;
             lastGroupId = 1;
         }
 
@@ -1463,14 +1462,6 @@ namespace OpenNos.GameObject
             else if (rel != null)
             {
                 PenaltyLogs.Remove(rel);
-            }
-        }
-
-        private void OnRankingRefresh(object sender, EventArgs e)
-        {
-            if ((string)sender == ServerGroup)
-            {
-                RefreshRanking();
             }
         }
 

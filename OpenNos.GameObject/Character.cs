@@ -1306,7 +1306,7 @@ namespace OpenNos.GameObject
                                     {
                                         return;
                                     }
-                                    Logger.Debug(specialist.ItemVNum.ToString(), Session.SessionId);
+                                    Logger.Debug(Session.GenerateIdentity(), specialist.ItemVNum.ToString());
                                     Session.Character.UseSp = false;
                                     Session.Character.LoadSpeed();
                                     Session.SendPacket(Session.Character.GenerateCond());
@@ -5388,91 +5388,9 @@ namespace OpenNos.GameObject
             Reput += val;
             Session.SendPacket(Session.Character.GenerateFd());
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), val), 11));
-            //RefreshReputationRankingIfNeeded(); //Fix Hardcore lags
         }
 
-        public void RefreshReputationRankingIfNeeded()
-        {
-            CharacterDTO chara2;
-
-            CharacterDTO chara = ServerManager.Instance.TopReputation.FirstOrDefault(s => s.CharacterId == CharacterId);
-            if (chara != null)
-            {
-                int index = ServerManager.Instance.TopReputation.IndexOf(chara);
-                chara2 = ServerManager.Instance.TopReputation.ElementAtOrDefault(index - 1);
-                if (chara2 == null || Reput > chara2.Reput)
-                {
-                    CharacterDTO character = DeepCopy();
-                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
-                }
-            }
-            else
-            {
-                chara2 = ServerManager.Instance.TopReputation.Last();
-                if (Reput > chara2.Reput)
-                {
-                    CharacterDTO character = DeepCopy();
-                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
-                }
-            }
-        }
-        public void RefreshPointsRankingIfNeeded()
-        {
-            CharacterDTO chara2;
-
-            CharacterDTO chara = ServerManager.Instance.TopPoints.FirstOrDefault(s => s.CharacterId == CharacterId);
-            if (chara != null)
-            {
-                int index = ServerManager.Instance.TopPoints.IndexOf(chara);
-                chara2 = ServerManager.Instance.TopPoints.ElementAtOrDefault(index - 1);
-                if (chara2 == null || Act4Points > chara2.Act4Points)
-                {
-                    CharacterDTO character = DeepCopy();
-                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
-                }
-            }
-            else
-            {
-                chara2 = ServerManager.Instance.TopPoints.Last();
-                if (Act4Points > chara2.Act4Points)
-                {
-                    CharacterDTO character = DeepCopy();
-                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
-                }
-            }
-        }
-
-        public void RefreshComplimentRankingIfNeeded()
-        {
-            CharacterDTO chara2;
-            CharacterDTO chara = ServerManager.Instance.TopComplimented.FirstOrDefault(s => s.CharacterId == CharacterId);
-            if (chara != null)
-            {
-                int index = ServerManager.Instance.TopComplimented.IndexOf(chara);
-                chara2 = ServerManager.Instance.TopComplimented.ElementAtOrDefault(index - 1);
-                if (chara2 == null || Compliment > chara2.Compliment)
-                {
-                    CharacterDTO character = DeepCopy();
-                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
-                }
-            }
-            else
-            {
-                chara2 = ServerManager.Instance.TopComplimented.Last();
-                if (Compliment > chara2.Compliment)
-                {
-                    CharacterDTO character = DeepCopy();
-                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character);
-                    ServerCommunicationClient.Instance.HubProxy.Invoke("RankingRefresh", ServerManager.ServerGroup);
-                }
-            }
-        }
-
+      
         #endregion
     }
 }

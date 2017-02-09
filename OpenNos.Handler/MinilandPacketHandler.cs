@@ -221,7 +221,8 @@ namespace OpenNos.Handler
                     switch (state)
                     {
                         case MinilandState.CLOSED:
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_CLOSED"), 0));
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_PRIVATE"), 0));
+                            //Need to be review to permit one friend limit on the miniland
                             Session.Character.Miniland.Sessions.Where(s => s.Character != Session.Character).ToList().ForEach(s => ServerManager.Instance.ChangeMap(s.Character.CharacterId, s.Character.MapId, s.Character.MapX, s.Character.MapY));
                             break;
                         case MinilandState.LOCK:
@@ -229,7 +230,7 @@ namespace OpenNos.Handler
                             Session.Character.Miniland.Sessions.Where(s => s.Character != Session.Character).ToList().ForEach(s => ServerManager.Instance.ChangeMap(s.Character.CharacterId, s.Character.MapId, s.Character.MapX, s.Character.MapY));
                             break;
                         case MinilandState.OPEN:
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_OPEN"), 0));
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_PUBLIC"), 0));
                             break;
                     }
 
