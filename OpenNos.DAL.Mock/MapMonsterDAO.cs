@@ -40,7 +40,12 @@ namespace OpenNos.DAL.Mock
             return Container.Where(m => m.MapId == mapId);
         }
 
-        public void Insert(List<MapMonsterDTO> monsters)
+        public void Insert(IEnumerable<MapMonsterDTO> monsters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DoesMonsterExist(int mapMonsterId)
         {
             throw new NotImplementedException();
         }

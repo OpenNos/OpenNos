@@ -290,7 +290,7 @@ namespace OpenNos.Handler
             }
 
             // TODO: Wrap Database access up to GO
-            IList<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
+            IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
             Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.SessionId);
 
             // load characterlist packet for each character in CharacterDTO

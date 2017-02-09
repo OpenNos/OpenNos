@@ -54,7 +54,11 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IList<CharacterDTO> GetTopComplimented()
+        /// <summary>
+        /// Returns first 30 occurences of highest Compliment
+        /// </summary>
+        /// <returns></returns>
+        public List<CharacterDTO> GetTopCompliment()
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -62,7 +66,11 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IList<CharacterDTO> GetTopPoints()
+        /// <summary>
+        /// Returns first 30 occurences of highest Act4Points
+        /// </summary>
+        /// <returns></returns>
+        public List<CharacterDTO> GetTopPoints()
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -70,7 +78,11 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IList<CharacterDTO> GetTopReputation()
+        /// <summary>
+        /// Returns first 30 occurences of highest Reputation
+        /// </summary>
+        /// <returns></returns>
+        public List<CharacterDTO> GetTopReputation()
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -103,44 +115,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public int IsReputHero(long characterId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                List<Character> heroes = context.Character.Where(c => (byte)c.Account.Authority > (byte)AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList();
-
-                int i = 0;
-                foreach (Character c in heroes)
-                {
-                    i++;
-                    if (c.CharacterId == characterId)
-                    {
-                        if (i == 1)
-                        {
-                            return 5;
-                        }
-                        if (i == 2)
-                        {
-                            return 4;
-                        }
-                        if (i == 3)
-                        {
-                            return 3;
-                        }
-                        if (i <= 13)
-                        {
-                            return 2;
-                        }
-                        if (i <= 43)
-                        {
-                            return 1;
-                        }
-                    }
-                }
-                return 0;
-            }
-        }
-
+        [Obsolete("LoadAll is obsolete, create a separate DAO statement for your function")]
         public IEnumerable<CharacterDTO> LoadAll()
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -152,7 +127,7 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IList<CharacterDTO> LoadByAccount(long accountId)
+        public IEnumerable<CharacterDTO> LoadByAccount(long accountId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {

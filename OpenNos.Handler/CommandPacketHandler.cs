@@ -29,10 +29,6 @@ namespace OpenNos.Handler
 {
     public class CommandPacketHandler : IPacketHandler
     {
-        #region Members
-
-        #endregion
-
         #region Instantiation
 
         public CommandPacketHandler(ClientSession session)
@@ -78,9 +74,7 @@ namespace OpenNos.Handler
                     IsMoving = addMonsterPacket.IsMoving,
                     MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId()
                 };
-
-                // TODO Speed up with DoesMonsterExist
-                if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
+                if (!DAOFactory.MapMonsterDAO.DoesMonsterExist(monst.MapMonsterId))
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
                     MapMonster monster = DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) as MapMonster;
@@ -168,29 +162,6 @@ namespace OpenNos.Handler
             Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-        }
-
-
-        /// <summary>
-        /// $Clr Command
-        /// </summary>
-        /// <param name="clearInventoryPacket"></param>
-        public void ClearInventory(ClearInventoryPacket clearInventoryPacket)
-        {
-            Logger.Debug("ClearInventory Command", Session.SessionId);
-            if (clearInventoryPacket != null && clearInventoryPacket.InventoryType != InventoryType.Wear)
-            {
-                foreach (ItemInstance inv in Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType))
-                {
-                    Session.Character.Inventory.DeleteById(inv.Id);
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0, 0));
-                }
-                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-            }
-            else
-            {
-                Session.SendPacket(Session.Character.GenerateSay("$Clr INVENTORYTYPE", 10));
-            }
         }
 
         [Packet("$Ban")]
@@ -689,14 +660,27 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        /// $ChannelInfo Command
+        /// </summary>
+        /// <param name="channelInfoPacket"></param>
+        public void ChannelInfo(ChannelInfoPacket channelInfoPacket)
+        {
+            Logger.Debug("ChannelInfo Command", Session.SessionId);
+            Session.SendPacket(Session.Character.GenerateSay("---------CHANNEL INFO---------", 11));
+            foreach (ClientSession session in ServerManager.Instance.Sessions)
+            {
+                Session.SendPacket(Session.Character.GenerateSay($"CharacterName: {session.Character.Name} SessionId:{session.SessionId}", 12));
+            }
+            Session.SendPacket(Session.Character.GenerateSay("---------------------------------------", 11));
+        }
+
+        /// <summary>
         /// $CharStat Command
         /// </summary>
         /// <param name="characterStatsPacket"></param>
         public void CharStat(CharacterStatsPacket characterStatsPacket)
         {
             Logger.Debug("CharStat Command", Session.SessionId);
-
-            // TODO: Optimize this!
             if (characterStatsPacket != null)
             {
                 string name = characterStatsPacket.CharacterName;
@@ -728,6 +712,27 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// $Clr Command
+        /// </summary>
+        /// <param name="clearInventoryPacket"></param>
+        public void ClearInventory(ClearInventoryPacket clearInventoryPacket)
+        {
+            Logger.Debug("ClearInventory Command", Session.SessionId);
+            if (clearInventoryPacket != null && clearInventoryPacket.InventoryType != InventoryType.Wear)
+            {
+                foreach (ItemInstance inv in Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType))
+                {
+                    Session.Character.Inventory.DeleteById(inv.Id);
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0, 0));
+                }
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$Clr INVENTORYTYPE", 10));
+            }
+        }
 
         /// <summary>
         /// $Help Command
@@ -1374,7 +1379,6 @@ namespace OpenNos.Handler
             }
         }
 
-
         /// <summary>
         /// $MapPVP
         /// </summary>
@@ -1472,7 +1476,7 @@ namespace OpenNos.Handler
                 CharacterDTO characterToMute = DAOFactory.CharacterDAO.LoadByName(mutePacket.CharacterName);
                 if (characterToMute != null)
                 {
-                    if (!session.Character.IsMuted())
+                    if (session != null && !session.Character.IsMuted())
                     {
                         PenaltyLogDTO log = new PenaltyLogDTO
                         {
@@ -1946,21 +1950,6 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $ChannelInfo Command
-        /// </summary>
-        /// <param name="channelInfoPacket"></param>
-        public void ChannelInfo(ChannelInfoPacket channelInfoPacket)
-        {
-            Logger.Debug("ChannelInfo Command", Session.SessionId);
-            Session.SendPacket(Session.Character.GenerateSay("---------CHANNEL INFO---------", 11));
-            foreach (ClientSession session in ServerManager.Instance.Sessions)
-            {
-                Session.SendPacket(Session.Character.GenerateSay($"CharacterName: {session.Character.Name} SessionId:{session.SessionId}", 12));
-            }
-            Session.SendPacket(Session.Character.GenerateSay("---------------------------------------", 11));
-        }
-
-        /// <summary>
         /// $TeleportToMe Command
         /// </summary>
         /// <param name="teleportToMePacket"></param>
@@ -2011,7 +2000,6 @@ namespace OpenNos.Handler
                             {
                                 ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.MapInstanceId, mapXPossibility, mapYPossibility);
                             }
-                           
                         }
                     }
                 }
@@ -2222,7 +2210,6 @@ namespace OpenNos.Handler
         /// <param name="character"></param>
         private void SendStats(CharacterDTO character)
         {
-            // TODO: Optimize THIS!
             Session.SendPacket(Session.Character.GenerateSay("----- CHARACTER -----", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Name: {character.Name}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Id: {character.CharacterId}", 13));
@@ -2253,20 +2240,20 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay($"RegistrationIP: {acc.RegistrationIP}", 13));
                 Session.SendPacket(Session.Character.GenerateSay($"Email: {acc.Email}", 13));
                 Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
-            }
-            IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => acc != null && s.AccountId == acc.AccountId);
-            PenaltyLogDTO penalty = penaltyLogs.LastOrDefault(s => s.DateEnd > DateTime.Now);
-            if (penalty != null)
-            {
-                Session.SendPacket(Session.Character.GenerateSay("----- PENALTY -----", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Type: {penalty.Penalty}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"AdminName: {penalty.AdminName}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Reason: {penalty.Reason}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"DateStart: {penalty.DateStart}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"DateEnd: {penalty.DateEnd}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Bans: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Banned)}", 13));
-                Session.SendPacket(Session.Character.GenerateSay($"Mutes: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Muted)}", 13));
-                Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
+                IEnumerable<PenaltyLogDTO> penaltyLogs = ServerManager.Instance.PenaltyLogs.Where(s => s.AccountId == acc.AccountId).ToList();
+                PenaltyLogDTO penalty = penaltyLogs.LastOrDefault(s => s.DateEnd > DateTime.Now);
+                if (penalty != null)
+                {
+                    Session.SendPacket(Session.Character.GenerateSay("----- PENALTY -----", 13));
+                    Session.SendPacket(Session.Character.GenerateSay($"Type: {penalty.Penalty}", 13));
+                    Session.SendPacket(Session.Character.GenerateSay($"AdminName: {penalty.AdminName}", 13));
+                    Session.SendPacket(Session.Character.GenerateSay($"Reason: {penalty.Reason}", 13));
+                    Session.SendPacket(Session.Character.GenerateSay($"DateStart: {penalty.DateStart}", 13));
+                    Session.SendPacket(Session.Character.GenerateSay($"DateEnd: {penalty.DateEnd}", 13));
+                    Session.SendPacket(Session.Character.GenerateSay($"Bans: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Banned)}", 13));
+                    Session.SendPacket(Session.Character.GenerateSay($"Mutes: {penaltyLogs.Count(s => s.Penalty == PenaltyType.Muted)}", 13));
+                    Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
+                }
             }
         }
 

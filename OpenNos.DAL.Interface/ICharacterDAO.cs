@@ -24,16 +24,23 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult DeleteByPrimaryKey(long accountId, byte characterSlot);
 
-        SaveResult InsertOrUpdate(ref CharacterDTO character);   
+        SaveResult InsertOrUpdate(ref CharacterDTO character);
 
-        IList<CharacterDTO> LoadByAccount(long accountId);
+        IEnumerable<CharacterDTO> LoadByAccount(long accountId);
 
         CharacterDTO LoadById(long characterId);
 
         CharacterDTO LoadByName(string name);
 
         CharacterDTO LoadBySlot(long accountId, byte slot);
+
         IEnumerable<CharacterDTO> LoadAll();
+
+        List<CharacterDTO> GetTopCompliment();
+
+        List<CharacterDTO> GetTopReputation();
+
+        List<CharacterDTO> GetTopPoints();
 
         #endregion
     }

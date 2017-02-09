@@ -27,11 +27,13 @@ namespace OpenNos.DAL.Interface
 
         MapMonsterDTO Insert(MapMonsterDTO mapmonster);
 
-        void Insert(List<MapMonsterDTO> monsters);
+        void Insert(IEnumerable<MapMonsterDTO> monsters);
 
         MapMonsterDTO LoadById(int mapMonsterId);
 
         IEnumerable<MapMonsterDTO> LoadFromMap(short MapId);
+
+        bool DoesMonsterExist(int mapMonsterId);
 
         #endregion
     }
