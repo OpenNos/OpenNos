@@ -317,9 +317,9 @@ namespace OpenNos.GameObject
                     {
                         invcopy.Type = InventoryType.Bazaar;
                         invcopy.Slot = i;
-                        invcopy.CharacterId = Owner.CharacterId;
+                        invcopy.CharacterId = 1;
                         DeleteFromSlotAndType(inv.Slot, inv.Type);
-                        PutItem(invcopy);
+                        //PutItem(invcopy);
                         break;
                     }
                 }
@@ -336,7 +336,7 @@ namespace OpenNos.GameObject
                         invcopy.Slot = i;
                         invcopy.CharacterId = 1;
                         DeleteFromSlotAndType(inv.Slot, inv.Type);
-                        PutItem(invcopy);
+                        //PutItem(invcopy);
                         break;
                     }
                 }
@@ -354,7 +354,7 @@ namespace OpenNos.GameObject
                     invcopy.Type = InventoryType.Bazaar;
                     invcopy.Slot = i;
                     invcopy.CharacterId = 1;
-                    PutItem(invcopy);
+                    //PutItem(invcopy);
                     break;
                 }
             }
