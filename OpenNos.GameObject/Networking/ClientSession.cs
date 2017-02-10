@@ -471,27 +471,16 @@ namespace OpenNos.GameObject
                         else
                         {
                             string[] packetHeader = packet.Split(new[] { ' ', '^' }, StringSplitOptions.RemoveEmptyEntries);
-                            int permit = 1;
                             if (packetHeader.Length > 1)
                             {
-                                if (packetHeader[1][0] == '$')
-                                {
-                                    if (Account != null && Account.Authority != AuthorityType.GameMaster)
-                                    {
-                                        permit = 0;
-                                    }
-                                }
                                 if (packetHeader[1][0] == '/' || packetHeader[1][0] == ':' || packetHeader[1][0] == ';')
                                 {
                                     packetHeader[1] = packetHeader[1][0].ToString();
                                     packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
                                 }
-                                if (permit == 1)
+                                if (packetHeader[1] != "0")
                                 {
-                                    if (packetHeader[1] != "0")
-                                    {
-                                        TriggerHandler(packetHeader[1], packetstring, false);
-                                    }
+                                    TriggerHandler(packetHeader[1], packetstring, false);
                                 }
                             }
                         }

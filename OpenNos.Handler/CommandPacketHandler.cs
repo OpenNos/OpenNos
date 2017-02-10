@@ -782,101 +782,104 @@ namespace OpenNos.Handler
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
         {
-            Logger.Debug(packet, Session.GenerateIdentity());
-            string[] packetsplit = packet.Split(' ');
-            byte amount = 1, upgrade = 0, design = 0;
-            sbyte rare = 0;
-            short vnum;
-            if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
+            if (Session.Account.Authority >= AuthorityType.GameMaster)
             {
-                Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 10));
-                Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 10));
-                Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 10));
-                Session.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 10));
-                Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 10));
-                Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 10));
-            }
-            else if (short.TryParse(packetsplit[2], out vnum))
-            {
-                if (vnum == 1046)
+                Logger.Debug(packet, Session.GenerateIdentity());
+                string[] packetsplit = packet.Split(' ');
+                byte amount = 1, upgrade = 0, design = 0;
+                sbyte rare = 0;
+                short vnum;
+                if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
                 {
-                    return; // cannot create gold as item, use $Gold instead
+                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 10));
+                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 10));
+                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 10));
+                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 10));
+                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 10));
+                    Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 10));
                 }
-
-                Item iteminfo = ServerManager.GetItem(vnum);
-                if (iteminfo != null)
+                else if (short.TryParse(packetsplit[2], out vnum))
                 {
-                    if (iteminfo.IsColored)
+                    if (vnum == 1046)
                     {
-                        if (packetsplit.Length > 3)
-                        {
-                            byte.TryParse(packetsplit[3], out design);
-                        }
+                        return; // cannot create gold as item, use $Gold instead
                     }
-                    else if (iteminfo.Type == 0)
-                    {
-                        switch (packetsplit.Length)
-                        {
-                            case 4:
-                                sbyte.TryParse(packetsplit[3], out rare);
-                                break;
 
-                            case 5:
-                                if (iteminfo.EquipmentSlot == EquipmentType.Sp)
-                                {
-                                    byte.TryParse(packetsplit[3], out upgrade);
-                                    upgrade = upgrade > 15 ? (byte)15 : upgrade;
-                                    byte.TryParse(packetsplit[4], out design);
-                                }
-                                else
-                                {
+                    Item iteminfo = ServerManager.GetItem(vnum);
+                    if (iteminfo != null)
+                    {
+                        if (iteminfo.IsColored)
+                        {
+                            if (packetsplit.Length > 3)
+                            {
+                                byte.TryParse(packetsplit[3], out design);
+                            }
+                        }
+                        else if (iteminfo.Type == 0)
+                        {
+                            switch (packetsplit.Length)
+                            {
+                                case 4:
                                     sbyte.TryParse(packetsplit[3], out rare);
-                                    byte.TryParse(packetsplit[4], out upgrade);
-                                    upgrade = upgrade > 10 ? (byte)10 : upgrade;
-                                    if (upgrade == 0)
+                                    break;
+
+                                case 5:
+                                    if (iteminfo.EquipmentSlot == EquipmentType.Sp)
                                     {
-                                        if (iteminfo.BasicUpgrade != 0)
+                                        byte.TryParse(packetsplit[3], out upgrade);
+                                        upgrade = upgrade > 15 ? (byte)15 : upgrade;
+                                        byte.TryParse(packetsplit[4], out design);
+                                    }
+                                    else
+                                    {
+                                        sbyte.TryParse(packetsplit[3], out rare);
+                                        byte.TryParse(packetsplit[4], out upgrade);
+                                        upgrade = upgrade > 10 ? (byte)10 : upgrade;
+                                        if (upgrade == 0)
                                         {
-                                            upgrade = iteminfo.BasicUpgrade;
+                                            if (iteminfo.BasicUpgrade != 0)
+                                            {
+                                                upgrade = iteminfo.BasicUpgrade;
+                                            }
                                         }
                                     }
-                                }
-                                break;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            if (packetsplit.Length > 3 && !byte.TryParse(packetsplit[3], out amount))
+                            {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                                return;
+                            }
+                        }
+                        amount = amount > 99 ? (byte)99 : amount;
+                        List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(vnum, amount);
+                        if (inv.Any())
+                        {
+                            inv.First().Rare = rare;
+                            inv.First().Upgrade = upgrade;
+                            inv.First().Design = design;
+
+                            WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.First().Slot, inv.First().Type);
+
+                            if (wearable != null && (wearable.Item.EquipmentSlot == EquipmentType.Armor || wearable.Item.EquipmentSlot == EquipmentType.MainWeapon || wearable.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
+                            {
+                                wearable.SetRarityPoint();
+                            }
+                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
+                            inv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, s.Amount, iteminfo.Type, s.Slot, rare, design, upgrade, 0)));
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                         }
                     }
                     else
                     {
-                        if (packetsplit.Length > 3 && !byte.TryParse(packetsplit[3], out amount))
-                        {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-                            return;
-                        }
+                        Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_ITEM"), 0);
                     }
-                    amount = amount > 99 ? (byte)99 : amount;
-                    List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(vnum, amount);
-                    if (inv.Any())
-                    {
-                        inv.First().Rare = rare;
-                        inv.First().Upgrade = upgrade;
-                        inv.First().Design = design;
-
-                        WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.First().Slot, inv.First().Type);
-
-                        if (wearable != null && (wearable.Item.EquipmentSlot == EquipmentType.Armor || wearable.Item.EquipmentSlot == EquipmentType.MainWeapon || wearable.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
-                        {
-                            wearable.SetRarityPoint();
-                        }
-                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                        inv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, s.Amount, iteminfo.Type, s.Slot, rare, design, upgrade, 0)));
-                    }
-                    else
-                    {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
-                    }
-                }
-                else
-                {
-                    Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_ITEM"), 0);
                 }
             }
         }
