@@ -5000,13 +5000,7 @@ namespace OpenNos.GameObject
                     lock (Inventory)
                     {
                         DAOFactory.BazaarItemDAO.RemoveOutDated();
-                        foreach (var item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.Bazaar))
-                        {
-                            if (DAOFactory.BazaarItemDAO.LoadAll().ToList().FirstOrDefault(s => s.ItemInstanceId == item.Id) == null)
-                            {
-                                Inventory.DeleteById(item.Id);
-                            }
-                        }
+
                         // load and concat inventory with equipment
                         List<ItemInstance> inventories = Inventory.GetAllItems();
                         IList<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
@@ -5018,7 +5012,7 @@ namespace OpenNos.GameObject
                         }
 
                         // create or update all which are new or do still exist
-                        foreach (ItemInstance itemInstance in inventories.Where(s => s.Item.Type != InventoryType.Bazaar))
+                        foreach (ItemInstance itemInstance in inventories.Where(s => s.Type != InventoryType.Bazaar))
                         {
                             DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
                         }
