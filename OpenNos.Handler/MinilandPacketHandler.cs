@@ -117,10 +117,9 @@ namespace OpenNos.Handler
                             Level5BoxAmount = 0,
                         };
 
-                        if (minilandobject.Item.ItemType == ItemType.House && Session.Character.MinilandObjects.Any(s => s.ItemInstance.Item.ItemType == ItemType.House && s.ItemInstance.Item.ItemSubType == minilandobject.Item.ItemSubType))
+                        if (minilandobject.Item.ItemType == ItemType.House)
                         {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ALREADY_THIS_MINILANDOBJECT"), 0));
-                            return;
+                           Session.Character.MinilandObjects.RemoveAll(s => s.ItemInstance.Item.ItemType == ItemType.House && s.ItemInstance.Item.ItemSubType == minilandobject.Item.ItemSubType);
                         }
 
                         if (minilandobject.Item.IsMinilandObject)
@@ -138,6 +137,10 @@ namespace OpenNos.Handler
                     {
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_NEED_LOCK"), 0));
                     }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ALREADY_THIS_MINILANDOBJECT"), 0));
                 }
             }
         }
