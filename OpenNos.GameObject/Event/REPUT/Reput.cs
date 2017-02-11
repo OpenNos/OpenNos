@@ -17,6 +17,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.WebApi.Reference;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.GameObject.Event
@@ -27,7 +28,10 @@ namespace OpenNos.GameObject.Event
 
         public static void GenerateReput()
         {
-            foreach (var genlog in ServerManager.GeneralLogs.Where(s => s.LogData == "MINILAND" && s.Timestamp > DateTime.Now.AddDays(-1)).GroupBy(s => s.CharacterId))
+            ServerManager.Instance.SaveAll();
+            GeneralLogDTO gen = DAOFactory.GeneralLogDAO.LoadByAccount(null).LastOrDefault(s => s.LogData == "MinilandRefresh" && s.LogType == "World");
+
+            foreach (var genlog in ServerManager.Instance.Sessions.Where(s=>s.HasSelectedCharacter).SelectMany(c => c.Character.GeneralLogs.Where(s => s.LogData == "MINILAND" && s.Timestamp > DateTime.Now.AddDays(-1)).GroupBy(s => s.CharacterId)))
             {
                 if (genlog.Key != null)
                 {
@@ -38,16 +42,21 @@ namespace OpenNos.GameObject.Event
                     }
                     else if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.ServerGroup, (long)genlog.Key).Result)
                     {
-                        CharacterDTO chara = DAOFactory.CharacterDAO.LoadById((long)genlog.Key);
-                        if (chara != null)
+                        if (gen == null || gen.Timestamp.Day != DateTime.Now.Day)
                         {
-                            chara.Reput += 2 * genlog.Count();
-                            DAOFactory.CharacterDAO.InsertOrUpdate(ref chara);
+                            CharacterDTO chara = DAOFactory.CharacterDAO.LoadById((long)genlog.Key);
+                            if (chara != null)
+                            {
+                                chara.Reput += 2 * genlog.Count();
+                                DAOFactory.GeneralLogDAO.Insert(new GeneralLogDTO { IpAddress = Session.IpAddress, LogData = "MinilandRefresh", LogType = "World", Timestamp = DateTime.Now });
+                                DAOFactory.CharacterDAO.InsertOrUpdate(ref chara);
+                            }
                         }
                     }
                 }
-                ServerManager.Instance.StartedEvents.Remove(EventType.REPUTEVENT);
+                
             }
+            ServerManager.Instance.StartedEvents.Remove(EventType.REPUTEVENT);
         }
 
         #endregion

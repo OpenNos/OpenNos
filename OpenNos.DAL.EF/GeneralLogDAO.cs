@@ -72,11 +72,11 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<GeneralLogDTO> LoadByAccount(long accountId)
+        public IEnumerable<GeneralLogDTO> LoadByAccount(long? accountId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (GeneralLog GeneralLog in context.GeneralLog.Where(s => s.AccountId.Equals(accountId)))
+                foreach (GeneralLog GeneralLog in context.GeneralLog.Where(s => s.AccountId == accountId))
                 {
                     yield return _mapper.Map<GeneralLogDTO>(GeneralLog);
                 }

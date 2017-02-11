@@ -144,13 +144,8 @@ namespace OpenNos.DAL.EF
 
         private AccountDTO Insert(AccountDTO account, OpenNosContext context)
         {
-            if (account.LastCompliment == DateTime.MinValue)
-            {
-                account.LastCompliment = DateTime.Now;
-            }
-
+        
             Account entity = _mapper.Map<Account>(account);
-            entity.LastCompliment = DateTime.Now.AddDays(-1);
             context.Account.Add(entity);
             context.SaveChanges();
             return _mapper.Map<AccountDTO>(entity);
@@ -163,7 +158,6 @@ namespace OpenNos.DAL.EF
                 // The Mapper breaks context.SaveChanges(), so we need to "map" the data by hand...
                 // entity = _mapper.Map<Account>(account);
                 entity.Authority = account.Authority;
-                entity.LastCompliment = account.LastCompliment;
                 entity.Name = account.Name;
                 entity.Password = account.Password;
                 context.Entry(entity).State = System.Data.Entity.EntityState.Modified;

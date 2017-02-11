@@ -23,7 +23,7 @@ namespace OpenNos.DAL.EF
 
         public virtual Account Account { get; set; }
 
-        public long AccountId { get; set; }
+        public long? AccountId { get; set; }
 
         public virtual Character Character { get; set; }
 

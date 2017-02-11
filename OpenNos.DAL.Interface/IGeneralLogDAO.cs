@@ -26,7 +26,7 @@ namespace OpenNos.DAL.Interface
 
         GeneralLogDTO Insert(GeneralLogDTO generallog);
 
-        IEnumerable<GeneralLogDTO> LoadByAccount(long accountId);
+        IEnumerable<GeneralLogDTO> LoadByAccount(long? accountId);
 
         IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, Nullable<long> CharacterId);
 

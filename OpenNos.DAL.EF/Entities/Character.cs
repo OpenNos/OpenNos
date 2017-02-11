@@ -129,8 +129,6 @@ namespace OpenNos.DAL.EF
 
         public long JobLevelXp { get; set; }
 
-        public DateTime LastLogin { get; set; }
-
         public byte Level { get; set; }
 
         public long LevelXp { get; set; }

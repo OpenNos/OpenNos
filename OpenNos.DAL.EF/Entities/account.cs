@@ -48,8 +48,6 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<WarehouseItem> WarehouseItem { get; set; }
 
-        public DateTime LastCompliment { get; set; }
-
         [MaxLength(255)]
         public string Name { get; set; }
 

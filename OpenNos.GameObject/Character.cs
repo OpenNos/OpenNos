@@ -151,12 +151,7 @@ namespace OpenNos.GameObject
 
         public List<GeneralLogDTO> GeneralLogs
         {
-            get
-            {
-                GeneralLogDTO[] logs = new GeneralLogDTO[ServerManager.GeneralLogs.Count + 50];
-                ServerManager.GeneralLogs.CopyTo(logs);
-                return logs.Where(s => s != null && s.CharacterId == CharacterId).ToList();
-            }
+            get { return Session.Account.GeneralLogs.Where(s => s.CharacterId == CharacterId).ToList(); }
         }
 
         public Family Family
@@ -484,7 +479,7 @@ namespace OpenNos.GameObject
             string stash = $"stash_all {WareHouseSize}";
             foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.Warehouse))
             {
-                stash += $" {GenerateStashPacket(item,item.Slot)}";
+                stash += $" {GenerateStashPacket(item, item.Slot)}";
             }
             return stash;
         }
@@ -2138,7 +2133,7 @@ namespace OpenNos.GameObject
         }
         private string GenerateStashPacket(ItemInstance item, short Slot)
         {
-            if(item == null)
+            if (item == null)
             {
                 return $"{Slot}.-1.0.0.0";
             }
@@ -2149,7 +2144,7 @@ namespace OpenNos.GameObject
                     return packet + $".{item.Amount}.{item.Rare}.{item.Upgrade}";
                 case InventoryType.Specialist:
                     SpecialistInstance sp = item as SpecialistInstance;
-                    return packet + $".{item.Upgrade}.{(sp!=null? sp.SpStoneUpgrade : 0)}.0";
+                    return packet + $".{item.Upgrade}.{(sp != null ? sp.SpStoneUpgrade : 0)}.0";
                 default:
                     return packet + $".{item.Amount}.0.0";
             }

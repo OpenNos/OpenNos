@@ -82,8 +82,6 @@ namespace OpenNos.GameObject
 
         public static int FairyXpRate { get; set; }
 
-        public static List<GeneralLogDTO> GeneralLogs { get; set; }
-
         public static int GoldDropRate { get; set; }
 
         public static int GoldRate { get; set; }
@@ -856,7 +854,6 @@ namespace OpenNos.GameObject
 
                 StartedEvents = new List<EventType>();
                 LoadFamilies();
-                GeneralLogs = DAOFactory.GeneralLogDAO.LoadAll().ToList();
                 LaunchEvents();
                 RefreshRanking();
                 CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
@@ -890,7 +887,7 @@ namespace OpenNos.GameObject
             {
                 Session.SendPacket(Session.Character.GenerateMsg(Session.Character.MinilandMessage.Replace(' ', '^'), 0));
                 Session.SendPacket(Session.Character.GenerateMlinfobr());
-                GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "Miniland", LogType = "World", Timestamp = DateTime.Now });
+                MinilandOwner.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "Miniland", LogType = "World", Timestamp = DateTime.Now });
                 Session.SendPacket(MinilandOwner.Character.GenerateMinilandObjectForFriends());
             }
             else

@@ -29,7 +29,7 @@ namespace OpenNos.DAL.Mock
             return Container.Any(gl => gl.LogId == id);
         }
 
-        public IEnumerable<GeneralLogDTO> LoadByAccount(long accountId)
+        public IEnumerable<GeneralLogDTO> LoadByAccount(long? accountId)
         {
             return Container.Where(c => c.AccountId == accountId).Select(e => MapEntity(e));
         }

@@ -142,12 +142,6 @@ namespace OpenNos.DAL.EF.DB
                 .HasForeignKey(e => e.AccountId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Account>()
-                .HasMany(e => e.GeneralLog)
-                .WithRequired(e => e.Account)
-                .HasForeignKey(e => e.AccountId)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<Character>()
                 .Property(e => e.Name)
                 .IsUnicode(false);

@@ -83,8 +83,6 @@ namespace OpenNos.Data
 
         public long JobLevelXp { get; set; }
 
-        public DateTime LastLogin { get; set; }
-
         public byte Level { get; set; }
 
         public long LevelXp { get; set; }
