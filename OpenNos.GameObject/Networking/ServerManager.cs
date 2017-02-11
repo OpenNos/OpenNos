@@ -582,10 +582,13 @@ namespace OpenNos.GameObject
                         grp.Characters.CopyTo(grpmembers);
                         foreach (ClientSession targetSession in grpmembers)
                         {
-                            targetSession.SendPacket("pinit 0");
-                            targetSession.SendPacket(targetSession.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
-                            Broadcast(targetSession.Character.GeneratePidx(true));
-                            grp.LeaveGroup(targetSession);
+                            if (targetSession != null)
+                            {
+                                targetSession.SendPacket("pinit 0");
+                                targetSession.SendPacket(targetSession.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
+                                Broadcast(targetSession.Character.GeneratePidx(true));
+                                grp.LeaveGroup(targetSession);
+                            }
                         }
                         RemoveGroup(grp);
                     }
