@@ -1047,7 +1047,7 @@ namespace OpenNos.GameObject
                     }
                     string str = $"pinit {myGroup.Characters.Count}";
                     int i = 0;
-                    IList<ClientSession> groupMembers = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters;
+                    ThreadSafeGenericList<ClientSession> groupMembers = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters;
                     if (groupMembers != null)
                     {
                         foreach (ClientSession session in groupMembers)
