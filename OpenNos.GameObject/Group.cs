@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private List<ClientSession> _characters;
+        private ThreadSafeGenericList<ClientSession> _characters;
         private int _order;
 
         #endregion
@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
 
         public Group()
         {
-            _characters = new List<ClientSession>();
+            _characters = new ThreadSafeGenericList<ClientSession>();
             GroupId = ServerManager.Instance.GetNextGroupId();
             _order = 0;
         }
@@ -49,7 +49,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public List<ClientSession> Characters
+        public ThreadSafeGenericList<ClientSession> Characters
         {
             get
             {
@@ -118,7 +118,7 @@ namespace OpenNos.GameObject
         public void JoinGroup(ClientSession session)
         {
             session.Character.Group = this;
-            _characters[_characters.Count] = session;
+            _characters.Add(session);
         }
 
         public void LeaveGroup(ClientSession session)
