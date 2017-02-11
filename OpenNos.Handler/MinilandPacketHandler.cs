@@ -116,6 +116,13 @@ namespace OpenNos.Handler
                             Level4BoxAmount = 0,
                             Level5BoxAmount = 0,
                         };
+
+                        if (minilandobject.Item.ItemType == ItemType.House && Session.Character.MinilandObjects.Any(s => s.ItemInstance.Item.ItemType == ItemType.House && s.ItemInstance.Item.ItemSubType == minilandobject.Item.ItemSubType))
+                        {
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ALREADY_THIS_MINILANDOBJECT"), 0));
+                            return;
+                        }
+
                         if (minilandobject.Item.IsMinilandObject)
                         {
                             Session.Character.WareHouseSize = minilandobject.Item.MinilandObjectPoint;
@@ -220,7 +227,7 @@ namespace OpenNos.Handler
 
                     switch (state)
                     {
-                        case MinilandState.CLOSED:
+                        case MinilandState.PRIVATE:
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_PRIVATE"), 0));
                             //Need to be review to permit one friend limit on the miniland
                             Session.Character.Miniland.Sessions.Where(s => s.Character != Session.Character).ToList().ForEach(s => ServerManager.Instance.ChangeMap(s.Character.CharacterId, s.Character.MapId, s.Character.MapX, s.Character.MapY));

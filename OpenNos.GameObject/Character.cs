@@ -460,7 +460,7 @@ namespace OpenNos.GameObject
         }
         public string GenerateMinilandObject(MinilandObject mo, short slot, bool deleted)
         {
-            return $"mlobj {(deleted ? 0 : 1)} {slot} {mo.MapX} {mo.MapY} {mo.ItemInstance.Item.Width} {mo.ItemInstance.Item.Width} {mo.ItemInstance.DurabilityPoint} 0 0 0";
+            return $"mlobj {(deleted ? 0 : 1)} {slot} {mo.MapX} {mo.MapY} {mo.ItemInstance.Item.Width} {mo.ItemInstance.Item.Height} 0 {mo.ItemInstance.DurabilityPoint} 0 {(mo.ItemInstance.Item.IsMinilandObject ? 1 : 0)}";
         }
         public string GenerateMinilandPoint()
         {
@@ -482,16 +482,19 @@ namespace OpenNos.GameObject
         public string GenerateStashAll()
         {
             string stash = $"stash_all {WareHouseSize}";
-            //stash_all 56 0.5919.1.3.0.0 1.2514.2.13.0.0 2.2515.2.2.0.0 3.2206.2.2.0.0 4.2522.2.17.0.0 5.2048.2.32.0.0 6.2048.2.30.0.0 7.1874.1.10.0.0 8.1873.1.2.0.0 9.1872.1.4.0.0 10.1095.1.1.0.0 11.1317.1.2.0.0 13.566.0.1.1.72 14.574.0.1.3.62 15.575.0.1.4.78 16.566.0.1.6.72 17.572.0.1.4.77 18.5924.1.1.0.0 19.2044.2.99.0.0 20.2044.2.17.0.0 22.1021.1.8.0.0 28.1017.1.2.0.0
+            foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.Warehouse))
+            {
+                stash += $" {GenerateStashPacket(item,item.Slot)}";
+            }
             return stash;
         }
         public string GenerateMinilandObjectForFriends()
         {
             string mlobjstring = "mltobj";
             int i = 0;
-            foreach(MinilandObject mp in MinilandObjects)
+            foreach (MinilandObject mp in MinilandObjects)
             {
-                mlobjstring+= $" {mp.ItemInstance.ItemVNum}.{i}.{mp.MapX}.{mp.MapY}";
+                mlobjstring += $" {mp.ItemInstance.ItemVNum}.{i}.{mp.MapX}.{mp.MapY}";
                 i++;
             }
             return mlobjstring;
@@ -500,10 +503,9 @@ namespace OpenNos.GameObject
         public string GetMinilandObjectList()
         {
             string mlobjstring = "mlobjlst";
-            int i = 0;
-            foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.Miniland).OrderBy(s=>s.Slot))
+            foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.Miniland).OrderBy(s => s.Slot))
             {
-                if(item.Item.IsMinilandObject)
+                if (item.Item.IsMinilandObject)
                 {
                     Session.Character.WareHouseSize = item.Item.MinilandObjectPoint;
                 }
@@ -513,8 +515,7 @@ namespace OpenNos.GameObject
                 {
                     used = true;
                 }
-                mlobjstring += $" {i}.{(used ? 1 : 0)}.{(used ? mp.MapX : 0)}.{(used ? mp.MapY : 0)}.{(item.Item.Width != 0 ? item.Item.Width : 1) }.{(item.Item.Height != 0 ? item.Item.Height : 1) }.{(used ? mp.ItemInstance.DurabilityPoint : 0)}.100.0.1";
-                i++;
+                mlobjstring += $" {item.Slot}.{(used ? 1 : 0)}.{(used ? mp.MapX : 0)}.{(used ? mp.MapY : 0)}.{(item.Item.Width != 0 ? item.Item.Width : 1) }.{(item.Item.Height != 0 ? item.Item.Height : 1) }.{(used ? mp.ItemInstance.DurabilityPoint : 0)}.100.0.1";
             }
 
             return mlobjstring;
@@ -2131,6 +2132,30 @@ namespace OpenNos.GameObject
             return damage;
         }
 
+        public string GenerateStash(ItemInstance item, short Slot)
+        {
+            return $"stash {GenerateStashPacket(item, Slot)}";
+        }
+        private string GenerateStashPacket(ItemInstance item, short Slot)
+        {
+            if(item == null)
+            {
+                return $"{Slot}.-1.0.0.0";
+            }
+            string packet = $"{Slot}.{item.ItemVNum}.{(byte)item.Item.Type}";
+            switch (item.Item.Type)
+            {
+                case InventoryType.Equipment:
+                    return packet + $".{item.Amount}.{item.Rare}.{item.Upgrade}";
+                case InventoryType.Specialist:
+                    SpecialistInstance sp = item as SpecialistInstance;
+                    return packet + $".{item.Upgrade}.{(sp!=null? sp.SpStoneUpgrade : 0)}.0";
+                default:
+                    return packet + $".{item.Amount}.0.0";
+            }
+
+        }
+
         public void GetAct4Points(int point)
         {
             //Session.Character.RefreshComplimentRankingIfNeeded();
@@ -2801,7 +2826,7 @@ namespace OpenNos.GameObject
 
         public string GenerateMlinfo()
         {
-            return $"mlinfo 3800 {Session.Character.MinilandPoint} 100 {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day)} {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland")} 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}";
+            return $"mlinfo 3800 {Session.Character.MinilandPoint} 100 {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day)} {Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland")} 10 {(byte)Session.Character.MinilandState} {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}";
         }
 
         public string GenerateDelay(int delay, int type, string argument)
@@ -4780,25 +4805,19 @@ namespace OpenNos.GameObject
                 Session.SendPackets(GenerateQuicklist());
             }
         }
-
         public void LoadInventory()
         {
             IEnumerable<ItemInstanceDTO> inventories = DAOFactory.IteminstanceDAO.LoadByCharacterId(CharacterId).ToList();
-
-            Inventory = new Inventory(this);
+            IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
+            foreach (CharacterDTO character in characters.Where(s => s.CharacterId != CharacterId))
+            {
+                inventories.Concat(DAOFactory.IteminstanceDAO.LoadByCharacterId(CharacterId).Where(s => s.Type == InventoryType.Warehouse).ToList());
+            }
             Inventory = new Inventory(this);
             foreach (ItemInstanceDTO inventory in inventories)
             {
                 inventory.CharacterId = CharacterId;
-
-                if (inventory.Type != InventoryType.Wear)
-                {
-                    Inventory[inventory.Id] = (ItemInstance)inventory;
-                }
-                else
-                {
-                    Inventory[inventory.Id] = (ItemInstance)inventory;
-                }
+                Inventory[inventory.Id] = (ItemInstance)inventory;
             }
         }
 
@@ -5384,7 +5403,7 @@ namespace OpenNos.GameObject
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REPUT_INCREASE"), val), 11));
         }
 
-      
+
         #endregion
     }
 }

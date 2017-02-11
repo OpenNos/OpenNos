@@ -273,7 +273,7 @@ namespace OpenNos.GameObject
         // SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
         public void SendPacket(string packet, byte priority = 10)
         {
-            if (!IsDisposing)
+            if (!IsDisposing && packet != string.Empty)
             {
                 _client.SendPacket(packet, priority);
             }

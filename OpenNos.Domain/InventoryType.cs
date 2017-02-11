@@ -23,6 +23,7 @@ namespace OpenNos.Domain
         Specialist = 6,
         Costume = 7,
         Wear = 8,
-        Bazaar = 9
+        Bazaar = 9,
+        Warehouse = 10
     }
 }

@@ -58,6 +58,11 @@ namespace OpenNos.Handler
             // idk
         }
 
+        public void FStashEnd(StashEndPacket packet)
+        {
+            // idk
+        }
+
         public void Lbs(LbsPacket packet)
         {
             // idk

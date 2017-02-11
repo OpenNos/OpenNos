@@ -24,7 +24,6 @@ namespace OpenNos.GameObject
         #region Members
 
         private List<ClientSession> _characters;
-        private bool _disposed;
         private int _order;
 
         #endregion
