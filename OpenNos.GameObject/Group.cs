@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private ThreadSafeSortedList<long, ClientSession> _characters;
+        private List<ClientSession> _characters;
         private bool _disposed;
         private int _order;
 
@@ -33,7 +33,7 @@ namespace OpenNos.GameObject
 
         public Group()
         {
-            _characters = new ThreadSafeSortedList<long, ClientSession>();
+            _characters = new List<ClientSession>();
             GroupId = ServerManager.Instance.GetNextGroupId();
             _order = 0;
         }
@@ -54,7 +54,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return _characters.GetAllItems();
+                return _characters;
             }
         }
 
@@ -65,16 +65,6 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-                _disposed = true;
-            }
-        }
 
         public List<string> GeneratePst()
         {
@@ -109,12 +99,12 @@ namespace OpenNos.GameObject
 
         public bool IsMemberOfGroup(long characterId)
         {
-            return _characters != null && _characters.ContainsKey(characterId);
+            return _characters != null && _characters.Any(s => s?.Character?.CharacterId == characterId);
         }
 
         public bool IsMemberOfGroup(ClientSession session)
         {
-            return _characters != null && _characters.ContainsKey(session.Character.CharacterId);
+            return _characters != null && _characters.Any(s => s?.Character?.CharacterId == session.Character.CharacterId);
         }
 
         public void JoinGroup(long characterId)
@@ -129,23 +119,16 @@ namespace OpenNos.GameObject
         public void JoinGroup(ClientSession session)
         {
             session.Character.Group = this;
-            _characters[session.Character.CharacterId] = session;
+            _characters[_characters.Count] = session;
         }
 
         public void LeaveGroup(ClientSession session)
         {
             session.Character.Group = null;
-            _characters.Remove(session.Character.CharacterId);
+            _characters.RemoveAll(s=>s?.Character.CharacterId == session.Character.CharacterId);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _characters.Dispose();
-            }
-        }
-
+    
         #endregion
     }
 }
