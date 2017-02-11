@@ -560,7 +560,7 @@ namespace OpenNos.GameObject
                 Group grp = Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId));
                 if (grp != null)
                 {
-                    if (grp.CharacterCount == 3)
+                    if (grp.CharacterCount >= 3)
                     {
                         if (grp.Characters.ElementAt(0) == session)
                         {
@@ -578,7 +578,9 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        foreach (ClientSession targetSession in grp.Characters)
+                        ClientSession[] grpmembers = new ClientSession[3];
+                        grp.Characters.CopyTo(grpmembers);
+                        foreach (ClientSession targetSession in grpmembers)
                         {
                             targetSession.SendPacket("pinit 0");
                             targetSession.SendPacket(targetSession.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));

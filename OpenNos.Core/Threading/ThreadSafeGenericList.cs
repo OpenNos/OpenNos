@@ -107,5 +107,10 @@ namespace OpenNos.Core
                 return _list.Single(p);
             }
         }
+
+        public void CopyTo(T[] grpmembers)
+        {
+            _list.CopyTo(grpmembers);
+        }
     }
 }
