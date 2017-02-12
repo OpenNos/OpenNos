@@ -22,7 +22,7 @@ namespace OpenNos.GameObject
         public byte NewSlot { get; set; }
 
         [PacketIndex(4)]
-        public short Unknown { get; set; }
+        public byte? Unknown { get; set; }
 
         #endregion
     }

@@ -623,16 +623,7 @@ namespace OpenNos.GameObject
 
         public string GenerateIdentity()
         {
-            string identity = string.Empty;
-            if (HasSelectedCharacter)
-            {
-                identity += $"Character: {Character.Name}";
-            }
-            else
-            {
-                identity += $"Account: {Account.Name}";
-            }
-            return identity;
+            return $"Account: {Account.Name}";
         }
 
         #endregion

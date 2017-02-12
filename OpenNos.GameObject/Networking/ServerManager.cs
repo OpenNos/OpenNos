@@ -948,8 +948,12 @@ namespace OpenNos.GameObject
                 FamilyCharacter familyCharacter = fami.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
                 if (familyCharacter != null)
                 {
-                    fami.Warehouse = new List<ItemInstance>();
-                    DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList().ForEach(s => fami.Warehouse.Add((ItemInstance)s));
+                    fami.Warehouse = new Inventory((Character)familyCharacter.Character);
+                    foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                    {
+                        inventory.CharacterId = familyCharacter.CharacterId;
+                        fami.Warehouse[inventory.Id] = (ItemInstance)inventory;
+                    }
                 }
                 fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
                 FamilyList.Add(fami);
@@ -1335,6 +1339,16 @@ namespace OpenNos.GameObject
                         {
                             fam.FamilyCharacters.Add((FamilyCharacter)famchar);
                         }
+                        FamilyCharacter familyCharacter = fam.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                        if (familyCharacter != null)
+                        {
+                            fam.Warehouse = new Inventory((Character)familyCharacter.Character);
+                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                            {
+                                inventory.CharacterId = familyCharacter.CharacterId;
+                                fam.Warehouse[inventory.Id] = (ItemInstance)inventory;
+                            }
+                        }
                         fam.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fam.FamilyId).ToList();
                         fam.LandOfDeath = lod;
                         FamilyList.Add(fam);
@@ -1346,6 +1360,16 @@ namespace OpenNos.GameObject
                         foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
                         {
                             fami.FamilyCharacters.Add((FamilyCharacter)famchar);
+                        }
+                        FamilyCharacter familyCharacter = fami.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                        if (familyCharacter != null)
+                        {
+                            fami.Warehouse = new Inventory((Character)familyCharacter.Character);
+                            foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                            {
+                                inventory.CharacterId = familyCharacter.CharacterId;
+                                fami.Warehouse[inventory.Id] = (ItemInstance)inventory;
+                            }
                         }
                         fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
                         FamilyList.Add(fami);

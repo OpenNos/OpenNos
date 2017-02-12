@@ -26,6 +26,7 @@ namespace OpenNos.Domain
         RightChange =8,
         AuthorityChange = 9,
         FamilyManage = 10,
-        UserManage = 11
+        UserManage = 11,
+        WareHouseAdd = 12
     }
 }

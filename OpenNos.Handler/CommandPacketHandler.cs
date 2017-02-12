@@ -52,7 +52,7 @@ namespace OpenNos.Handler
         /// <param name="addMonsterPacket"></param>
         public void AddMonster(AddMonsterPacket addMonsterPacket)
         {
-            Logger.Debug("Add Monster Command", Session.GenerateIdentity());
+            Logger.Debug("Add Monster Command", Session.Character.GenerateIdentity());
             if (addMonsterPacket != null)
             {
                 if (!Session.HasCurrentMapInstance)
@@ -100,7 +100,7 @@ namespace OpenNos.Handler
         /// <param name="addSkillPacket"></param>
         public void AddSkill(AddSkillPacket addSkillPacket)
         {
-            Logger.Debug("Add Skill Command", Session.GenerateIdentity());
+            Logger.Debug("Add Skill Command", Session.Character.GenerateIdentity());
             if (addSkillPacket != null)
             {
                 short skillVNum = addSkillPacket.SkillVnum;
@@ -158,7 +158,7 @@ namespace OpenNos.Handler
         /// <param name="arenaWinner"></param>
         public void ArenaWinner(ArenaWinner arenaWinner)
         {
-            Logger.Debug("Arena Winner Command", Session.GenerateIdentity());
+            Logger.Debug("Arena Winner Command", Session.Character.GenerateIdentity());
             Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
@@ -172,7 +172,7 @@ namespace OpenNos.Handler
         {
             if (banPacket != null)
             {
-                Logger.Debug(banPacket.ToString(), Session.GenerateIdentity());
+                Logger.Debug(banPacket.ToString(), Session.Character.GenerateIdentity());
 
                 banPacket.Reason = banPacket.Reason?.Trim();
                 CharacterDTO character = DAOFactory.CharacterDAO.LoadByName(banPacket.CharacterName);
@@ -211,7 +211,7 @@ namespace OpenNos.Handler
         {
             if (blockExpPacket != null)
             {
-                Logger.Debug(blockExpPacket.ToString(), Session.GenerateIdentity());
+                Logger.Debug(blockExpPacket.ToString(), Session.Character.GenerateIdentity());
                 if (blockExpPacket.Duration == 0)
                 {
                     blockExpPacket.Duration = 60;
@@ -254,7 +254,7 @@ namespace OpenNos.Handler
         {
             if (blockFExpPacket != null)
             {
-                Logger.Debug(blockFExpPacket.ToString(), Session.GenerateIdentity());
+                Logger.Debug(blockFExpPacket.ToString(), Session.Character.GenerateIdentity());
                 if (blockFExpPacket.Duration == 0)
                 {
                     blockFExpPacket.Duration = 60;
@@ -295,7 +295,7 @@ namespace OpenNos.Handler
         /// <param name="blockPMPacket"></param>
         public void BlockPM(BlockPMPacket blockPMPacket)
         {
-            Logger.Debug("BlockPM Command", Session.GenerateIdentity());
+            Logger.Debug("BlockPM Command", Session.Character.GenerateIdentity());
             if (!Session.Character.GmPvtBlock)
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GM_BLOCK_ENABLE"), 10));
@@ -316,7 +316,7 @@ namespace OpenNos.Handler
         {
             if (blockRepPacket != null)
             {
-                Logger.Debug(blockRepPacket.ToString(), Session.GenerateIdentity());
+                Logger.Debug(blockRepPacket.ToString(), Session.Character.GenerateIdentity());
                 if (blockRepPacket.Duration == 0)
                 {
                     blockRepPacket.Duration = 60;
@@ -357,7 +357,7 @@ namespace OpenNos.Handler
         /// <param name="changeClassPacket"></param>
         public void ChangeClass(ChangeClassPacket changeClassPacket)
         {
-            Logger.Debug("Change Class Command", Session.GenerateIdentity());
+            Logger.Debug("Change Class Command", Session.Character.GenerateIdentity());
             if (changeClassPacket != null)
             {
                 Session.Character.ChangeClass(changeClassPacket.ClassType);
@@ -374,7 +374,7 @@ namespace OpenNos.Handler
         /// <param name="changeDignityPacket"></param>
         public void ChangeDignity(ChangeDignityPacket changeDignityPacket)
         {
-            Logger.Debug("Change Dignity Command", Session.GenerateIdentity());
+            Logger.Debug("Change Dignity Command", Session.Character.GenerateIdentity());
             if (changeDignityPacket != null)
             {
                 if (changeDignityPacket.Dignity >= -1000 && changeDignityPacket.Dignity <= 100)
@@ -402,7 +402,7 @@ namespace OpenNos.Handler
         /// <param name="changeFairyLevelPacket"></param>
         public void ChangeFairyLevel(ChangeFairyLevelPacket changeFairyLevelPacket)
         {
-            Logger.Debug("Change FairyLevel Command", Session.GenerateIdentity());
+            Logger.Debug("Change FairyLevel Command", Session.Character.GenerateIdentity());
             WearableInstance fairy = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
             if (changeFairyLevelPacket != null)
             {
@@ -432,7 +432,7 @@ namespace OpenNos.Handler
         /// <param name="changeSexPacket"></param>
         public void ChangeGender(ChangeSexPacket changeSexPacket)
         {
-            Logger.Debug("ChangeSex Command", Session.GenerateIdentity());
+            Logger.Debug("ChangeSex Command", Session.Character.GenerateIdentity());
             Session.Character.ChangeSex();
         }
 
@@ -442,7 +442,7 @@ namespace OpenNos.Handler
         /// <param name="changeHeroLevelPacket"></param>
         public void ChangeHeroLevel(ChangeHeroLevelPacket changeHeroLevelPacket)
         {
-            Logger.Debug("Change HeroLevel Command", Session.GenerateIdentity());
+            Logger.Debug("Change HeroLevel Command", Session.Character.GenerateIdentity());
             if (changeHeroLevelPacket != null)
             {
                 if (changeHeroLevelPacket.HeroLevel <= 255)
@@ -475,7 +475,7 @@ namespace OpenNos.Handler
         /// <param name="changeJobLevelPacket"></param>
         public void ChangeJobLevel(ChangeJobLevelPacket changeJobLevelPacket)
         {
-            Logger.Debug("Change JobLevel Command", Session.GenerateIdentity());
+            Logger.Debug("Change JobLevel Command", Session.Character.GenerateIdentity());
             if (changeJobLevelPacket != null)
             {
                 if ((Session.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20 || Session.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 255) && changeJobLevelPacket.JobLevel > 0)
@@ -515,7 +515,7 @@ namespace OpenNos.Handler
         /// <param name="changeLevelPacket"></param>
         public void ChangeLevel(ChangeLevelPacket changeLevelPacket)
         {
-            Logger.Debug("Change Level Packet", Session.GenerateIdentity());
+            Logger.Debug("Change Level Packet", Session.Character.GenerateIdentity());
             if (changeLevelPacket != null)
             {
                 if (changeLevelPacket.Level > 0)
@@ -557,7 +557,7 @@ namespace OpenNos.Handler
         /// <param name="changeReputationPacket"></param>
         public void ChangeReputation(ChangeReputationPacket changeReputationPacket)
         {
-            Logger.Debug("Change Reputation Command", Session.GenerateIdentity());
+            Logger.Debug("Change Reputation Command", Session.Character.GenerateIdentity());
             if (changeReputationPacket != null)
             {
                 if (changeReputationPacket.Reputation > 0)
@@ -585,7 +585,7 @@ namespace OpenNos.Handler
         /// <param name="changeSpecialistLevelPacket"></param>
         public void ChangeSpecialistLevel(ChangeSpecialistLevelPacket changeSpecialistLevelPacket)
         {
-            Logger.Debug("Change SpecialistLevel Command", Session.GenerateIdentity());
+            Logger.Debug("Change SpecialistLevel Command", Session.Character.GenerateIdentity());
             SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
 
             if (changeSpecialistLevelPacket != null)
@@ -626,7 +626,7 @@ namespace OpenNos.Handler
         /// <param name="channelInfoPacket"></param>
         public void ChannelInfo(ChannelInfoPacket channelInfoPacket)
         {
-            Logger.Debug("ChannelInfo Command", Session.GenerateIdentity());
+            Logger.Debug("ChannelInfo Command", Session.Character.GenerateIdentity());
             Session.SendPacket(Session.Character.GenerateSay("---------CHANNEL INFO---------", 11));
             foreach (ClientSession session in ServerManager.Instance.Sessions)
             {
@@ -641,7 +641,7 @@ namespace OpenNos.Handler
         /// <param name="characterStatsPacket"></param>
         public void CharStat(CharacterStatsPacket characterStatsPacket)
         {
-            Logger.Debug("CharStat Command", Session.GenerateIdentity());
+            Logger.Debug("CharStat Command", Session.Character.GenerateIdentity());
             if (characterStatsPacket != null)
             {
                 string name = characterStatsPacket.CharacterName;
@@ -679,7 +679,7 @@ namespace OpenNos.Handler
         /// <param name="clearInventoryPacket"></param>
         public void ClearInventory(ClearInventoryPacket clearInventoryPacket)
         {
-            Logger.Debug("ClearInventory Command", Session.GenerateIdentity());
+            Logger.Debug("ClearInventory Command", Session.Character.GenerateIdentity());
             if (clearInventoryPacket != null && clearInventoryPacket.InventoryType != InventoryType.Wear)
             {
                 foreach (ItemInstance inv in Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType))
@@ -701,7 +701,7 @@ namespace OpenNos.Handler
         /// <param name="helpPacket"></param>
         public void Command(HelpPacket helpPacket)
         {
-            Logger.Debug("Help Command", Session.GenerateIdentity());
+            Logger.Debug("Help Command", Session.Character.GenerateIdentity());
 
             // TODO: Command displaying detailed informations about commands
             Session.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
@@ -784,7 +784,7 @@ namespace OpenNos.Handler
         {
             if (Session.Account.Authority >= AuthorityType.GameMaster)
             {
-                Logger.Debug(packet, Session.GenerateIdentity());
+                Logger.Debug(packet, Session.Character.GenerateIdentity());
                 string[] packetsplit = packet.Split(' ');
                 byte amount = 1, upgrade = 0, design = 0;
                 sbyte rare = 0;
@@ -890,7 +890,7 @@ namespace OpenNos.Handler
         /// <param name="portalToPacket"></param>
         public void CreatePortal(PortalToPacket portalToPacket)
         {
-            Logger.Debug("PortalTo Command", Session.GenerateIdentity());
+            Logger.Debug("PortalTo Command", Session.Character.GenerateIdentity());
             if (portalToPacket != null)
             {
                 if (!Session.HasCurrentMapInstance)
@@ -926,7 +926,7 @@ namespace OpenNos.Handler
         /// <param name="demotePacket"></param>
         public void Demote(DemotePacket demotePacket)
         {
-            Logger.Debug("Demote Command", Session.GenerateIdentity());
+            Logger.Debug("Demote Command", Session.Character.GenerateIdentity());
             if (demotePacket != null)
             {
                 string name = demotePacket.CharacterName;
@@ -966,7 +966,7 @@ namespace OpenNos.Handler
         /// <param name="dropRatePacket"></param>
         public void DropRate(DropRatePacket dropRatePacket)
         {
-            Logger.Debug("DropRate Changed", Session.GenerateIdentity());
+            Logger.Debug("DropRate Changed", Session.Character.GenerateIdentity());
             if (dropRatePacket != null)
             {
                 if (dropRatePacket.Value <= 1000)
@@ -991,7 +991,7 @@ namespace OpenNos.Handler
         /// <param name="effectCommandpacket"></param>
         public void Effect(EffectCommandPacket effectCommandpacket)
         {
-            Logger.Debug("Effect Command", Session.GenerateIdentity());
+            Logger.Debug("Effect Command", Session.Character.GenerateIdentity());
             if (effectCommandpacket != null)
             {
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(effectCommandpacket.EffectId), Session.Character.PositionX, Session.Character.PositionY);
@@ -1008,7 +1008,7 @@ namespace OpenNos.Handler
         /// <param name="fairyXpRatePacket"></param>
         public void FairyXpRate(FairyXpRatePacket fairyXpRatePacket)
         {
-            Logger.Debug("Fairy Xp Rate Changed", Session.GenerateIdentity());
+            Logger.Debug("Fairy Xp Rate Changed", Session.Character.GenerateIdentity());
             if (fairyXpRatePacket != null)
             {
                 if (fairyXpRatePacket.Value <= 1000)
@@ -1033,7 +1033,7 @@ namespace OpenNos.Handler
         /// <param name="giftPacket"></param>
         public void Gift(GiftPacket giftPacket)
         {
-            Logger.Debug("Gift Command", Session.GenerateIdentity());
+            Logger.Debug("Gift Command", Session.Character.GenerateIdentity());
             if (giftPacket != null)
             {
                 if (giftPacket.Name == "*")
@@ -1073,7 +1073,7 @@ namespace OpenNos.Handler
         /// <param name="godModePacket"></param>
         public void GodMode(GodModePacket godModePacket)
         {
-            Logger.Debug("GodMode Command", Session.GenerateIdentity());
+            Logger.Debug("GodMode Command", Session.Character.GenerateIdentity());
             Session.Character.HasGodMode = !Session.Character.HasGodMode;
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
@@ -1084,7 +1084,7 @@ namespace OpenNos.Handler
         /// <param name="goldPacket"></param>
         public void Gold(GoldPacket goldPacket)
         {
-            Logger.Debug("Gold Command", Session.GenerateIdentity());
+            Logger.Debug("Gold Command", Session.Character.GenerateIdentity());
             if (goldPacket != null)
             {
                 long gold = goldPacket.Amount;
@@ -1113,7 +1113,7 @@ namespace OpenNos.Handler
         /// <param name="goldDropRatePacket"></param>
         public void GoldDropRate(GoldDropRatePacket goldDropRatePacket)
         {
-            Logger.Debug("GoldDropRate Changed", Session.GenerateIdentity());
+            Logger.Debug("GoldDropRate Changed", Session.Character.GenerateIdentity());
             if (goldDropRatePacket != null)
             {
                 if (goldDropRatePacket.Value <= 1000)
@@ -1138,7 +1138,7 @@ namespace OpenNos.Handler
         /// <param name="goldRatePacket"></param>
         public void GoldRate(GoldRatePacket goldRatePacket)
         {
-            Logger.Debug("Gold Rate Changed", Session.GenerateIdentity());
+            Logger.Debug("Gold Rate Changed", Session.Character.GenerateIdentity());
             if (goldRatePacket != null)
             {
                 if (goldRatePacket.Value <= 1000)
@@ -1164,7 +1164,7 @@ namespace OpenNos.Handler
         /// <param name="guriCommandPacket"></param>
         public void Guri(GuriCommandPacket guriCommandPacket)
         {
-            Logger.Debug("Guri Command", Session.GenerateIdentity());
+            Logger.Debug("Guri Command", Session.Character.GenerateIdentity());
             Session.SendPacket(guriCommandPacket != null ? Session.Character.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, guriCommandPacket.Value) : Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
         }
 
@@ -1174,7 +1174,7 @@ namespace OpenNos.Handler
         /// <param name="hairColorPacket"></param>
         public void Haircolor(HairColorPacket hairColorPacket)
         {
-            Logger.Debug("Hair Color Command", Session.GenerateIdentity());
+            Logger.Debug("Hair Color Command", Session.Character.GenerateIdentity());
             if (hairColorPacket != null)
             {
                 Session.Character.HairColor = hairColorPacket.HairColor;
@@ -1194,7 +1194,7 @@ namespace OpenNos.Handler
         /// <param name="hairStylePacket"></param>
         public void Hairstyle(HairStylePacket hairStylePacket)
         {
-            Logger.Debug("Hair Style Command", Session.GenerateIdentity());
+            Logger.Debug("Hair Style Command", Session.Character.GenerateIdentity());
             if (hairStylePacket != null)
             {
                 Session.Character.HairStyle = hairStylePacket.HairStyle;
@@ -1214,7 +1214,7 @@ namespace OpenNos.Handler
         /// <param name="invisiblePacket"></param>
         public void Invisible(InvisiblePacket invisiblePacket)
         {
-            Logger.Debug("Invisible Command", Session.GenerateIdentity());
+            Logger.Debug("Invisible Command", Session.Character.GenerateIdentity());
             Session.Character.Invisible = !Session.Character.Invisible;
             Session.Character.InvisibleGm = !Session.Character.InvisibleGm;
             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateInvisible());
@@ -1237,7 +1237,7 @@ namespace OpenNos.Handler
         /// <param name="kickPacket"></param>
         public void Kick(KickPacket kickPacket)
         {
-            Logger.Debug("Kick Command", Session.GenerateIdentity());
+            Logger.Debug("Kick Command", Session.Character.GenerateIdentity());
             if (kickPacket != null)
             {
                 if (kickPacket.CharacterName == "*")
@@ -1260,7 +1260,7 @@ namespace OpenNos.Handler
         /// </summary>
         public void KickSession(KickSessionPacket kickPacket)
         {
-            Logger.Debug("KickSession Command", Session.GenerateIdentity());
+            Logger.Debug("KickSession Command", Session.Character.GenerateIdentity());
             if (kickPacket != null)
             {
                 if (kickPacket.SessionId.HasValue) //if you set the sessionId, remove account verification
@@ -1282,7 +1282,7 @@ namespace OpenNos.Handler
         /// <param name="killPacket"></param>
         public void Kill(KillPacket killPacket)
         {
-            Logger.Debug("Kill Command", Session.GenerateIdentity());
+            Logger.Debug("Kill Command", Session.Character.GenerateIdentity());
             if (killPacket != null)
             {
                 string name = killPacket.CharacterName;
@@ -1325,7 +1325,7 @@ namespace OpenNos.Handler
         /// <param name="mapDancePacket"></param>
         public void MapDance(MapDancePacket mapDancePacket)
         {
-            Logger.Debug("MapDance Command", Session.GenerateIdentity());
+            Logger.Debug("MapDance Command", Session.Character.GenerateIdentity());
             if (Session.HasCurrentMapInstance)
             {
                 Session.CurrentMapInstance.IsDancing = !Session.CurrentMapInstance.IsDancing;
@@ -1349,7 +1349,7 @@ namespace OpenNos.Handler
         /// <param name="mapPVPPacket"></param>
         public void MapPVP(MapPVPPacket mapPVPPacket)
         {
-            Logger.Debug("MapPVP Command", Session.GenerateIdentity());
+            Logger.Debug("MapPVP Command", Session.Character.GenerateIdentity());
             Session.CurrentMapInstance.IsPVP = !Session.CurrentMapInstance.IsPVP;
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
@@ -1360,7 +1360,7 @@ namespace OpenNos.Handler
         /// <param name="morphPacket"></param>
         public void Morph(MorphPacket morphPacket)
         {
-            Logger.Debug("Morph Command", Session.GenerateIdentity());
+            Logger.Debug("Morph Command", Session.Character.GenerateIdentity());
             if (morphPacket != null)
             {
                 if (morphPacket.MorphId < 30 && morphPacket.MorphId > 0)
@@ -1401,7 +1401,7 @@ namespace OpenNos.Handler
         /// <param name="musicPacket"></param>
         public void Music(MusicPacket musicPacket)
         {
-            Logger.Debug("Music Command", Session.GenerateIdentity());
+            Logger.Debug("Music Command", Session.Character.GenerateIdentity());
             if (musicPacket != null)
             {
                 if (musicPacket.Music > -1)
@@ -1424,7 +1424,7 @@ namespace OpenNos.Handler
         {
             if (mutePacket != null)
             {
-                Logger.Debug(mutePacket.ToString(), Session.GenerateIdentity());
+                Logger.Debug(mutePacket.ToString(), Session.Character.GenerateIdentity());
                 if (mutePacket.Duration == 0)
                 {
                     mutePacket.Duration = 60;
@@ -1470,7 +1470,7 @@ namespace OpenNos.Handler
         /// <param name="packetCallbackPacket"></param>
         public void PacketCallBack(PacketCallbackPacket packetCallbackPacket)
         {
-            Logger.Debug("PacketCallback Command", Session.GenerateIdentity());
+            Logger.Debug("PacketCallback Command", Session.Character.GenerateIdentity());
             if (packetCallbackPacket != null)
             {
                 Session.SendPacket(packetCallbackPacket.Packet);
@@ -1484,7 +1484,7 @@ namespace OpenNos.Handler
         /// <param name="positionPacket"></param>
         public void Position(PositionPacket positionPacket)
         {
-            Logger.Debug("Position Command", Session.GenerateIdentity());
+            Logger.Debug("Position Command", Session.Character.GenerateIdentity());
             Session.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapInstance.Map.MapId} - X:{Session.Character.PositionX} - Y:{Session.Character.PositionY} - Dir:{Session.Character.Direction}", 12));
         }
 
@@ -1494,7 +1494,7 @@ namespace OpenNos.Handler
         /// <param name="promotePacket"></param>
         public void Promote(PromotePacket promotePacket)
         {
-            Logger.Debug("Promote Command", Session.GenerateIdentity());
+            Logger.Debug("Promote Command", Session.Character.GenerateIdentity());
             if (promotePacket != null)
             {
                 string name = promotePacket.CharacterName;
@@ -1534,7 +1534,7 @@ namespace OpenNos.Handler
         /// <param name="rarifyPacket"></param>
         public void Rarify(RarifyPacket rarifyPacket)
         {
-            Logger.Debug("Rarify Command", Session.GenerateIdentity());
+            Logger.Debug("Rarify Command", Session.Character.GenerateIdentity());
             if (rarifyPacket != null)
             {
                 if (rarifyPacket.Slot > -1)
@@ -1555,7 +1555,7 @@ namespace OpenNos.Handler
         /// <param name="removeMobPacket"></param>
         public void RemoveMob(RemoveMobPacket removeMobPacket)
         {
-            Logger.Debug("RemoveMob Command", Session.GenerateIdentity());
+            Logger.Debug("RemoveMob Command", Session.Character.GenerateIdentity());
             if (Session.HasCurrentMapInstance)
             {
                 MapMonster monst = Session.CurrentMapInstance.GetMonster(Session.Character.LastMonsterId);
@@ -1589,7 +1589,7 @@ namespace OpenNos.Handler
         /// <param name="removePortalPacket"></param>
         public void RemovePortal(RemovePortalPacket removePortalPacket)
         {
-            Logger.Debug("RemovePortal Command", Session.GenerateIdentity());
+            Logger.Debug("RemovePortal Command", Session.Character.GenerateIdentity());
             if (Session.HasCurrentMapInstance)
             {
                 Portal pt = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapInstanceId == Session.Character.MapInstanceId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
@@ -1612,7 +1612,7 @@ namespace OpenNos.Handler
         /// <param name="resizePacket"></param>
         public void Resize(ResizePacket resizePacket)
         {
-            Logger.Debug("Resize Packet", Session.GenerateIdentity());
+            Logger.Debug("Resize Packet", Session.Character.GenerateIdentity());
             if (resizePacket != null)
             {
                 if (resizePacket.Value > -1)
@@ -1633,7 +1633,7 @@ namespace OpenNos.Handler
         /// <param name="searchItemPacket"></param>
         public void SearchItem(SearchItemPacket searchItemPacket)
         {
-            Logger.Debug("SearchItem Command", Session.GenerateIdentity());
+            Logger.Debug("SearchItem Command", Session.Character.GenerateIdentity());
             if (searchItemPacket != null)
             {
                 IEnumerable<ItemDTO> itemlist = DAOFactory.ItemDAO.FindByName(searchItemPacket.Name).OrderBy(s => s.VNum).ToList();
@@ -1661,7 +1661,7 @@ namespace OpenNos.Handler
         /// <param name="searchMonsterPacket"></param>
         public void SearchMonster(SearchMonsterPacket searchMonsterPacket)
         {
-            Logger.Debug("SearchMonster Command", Session.GenerateIdentity());
+            Logger.Debug("SearchMonster Command", Session.Character.GenerateIdentity());
             if (searchMonsterPacket != null)
             {
                 IEnumerable<NpcMonsterDTO> monsterlist = DAOFactory.NpcMonsterDAO.FindByName(searchMonsterPacket.Name).OrderBy(s => s.NpcMonsterVNum).ToList();
@@ -1689,7 +1689,7 @@ namespace OpenNos.Handler
         /// <param name="shoutPacket"></param>
         public void Shout(ShoutPacket shoutPacket)
         {
-            Logger.Debug("Shout Command", Session.GenerateIdentity());
+            Logger.Debug("Shout Command", Session.Character.GenerateIdentity());
             if (shoutPacket != null)
             {
                 int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, string.Empty, shoutPacket.Message, ServerManager.Instance.ChannelId, MessageType.Shout).Result;
@@ -1702,7 +1702,7 @@ namespace OpenNos.Handler
         /// <param name="shoutHerePacket"></param>
         public void ShoutHere(ShoutHerePacket shoutHerePacket)
         {
-            Logger.Debug("ShoutHere Command", Session.GenerateIdentity());
+            Logger.Debug("ShoutHere Command", Session.Character.GenerateIdentity());
             if (shoutHerePacket != null)
             {
                 ServerManager.Instance.Shout(shoutHerePacket.Message);
@@ -1715,7 +1715,7 @@ namespace OpenNos.Handler
         /// <param name="shutdownPacket"></param>
         public void Shutdown(ShutdownPacket shutdownPacket)
         {
-            Logger.Debug("Shutdown Command", Session.GenerateIdentity());
+            Logger.Debug("Shutdown Command", Session.Character.GenerateIdentity());
             if (ServerManager.Instance.TaskShutdown != null)
             {
                 ServerManager.Instance.ShutdownStop = true;
@@ -1734,7 +1734,7 @@ namespace OpenNos.Handler
         /// <param name="speedPacket"></param>
         public void Speed(SpeedPacket speedPacket)
         {
-            Logger.Debug("Speed Command", Session.GenerateIdentity());
+            Logger.Debug("Speed Command", Session.Character.GenerateIdentity());
             if (speedPacket != null)
             {
                 if (speedPacket.Value < 60)
@@ -1756,7 +1756,7 @@ namespace OpenNos.Handler
         /// <param name="sprefillPacket"></param>
         public void SPRefill(SPRefillPacket sprefillPacket)
         {
-            Logger.Debug("SPRefill Command", Session.GenerateIdentity());
+            Logger.Debug("SPRefill Command", Session.Character.GenerateIdentity());
             Session.Character.SpPoint = 10000;
             Session.Character.SpAdditionPoint = 1000000;
             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_REFILL"), 0));
@@ -1769,7 +1769,7 @@ namespace OpenNos.Handler
         /// <param name="eventPacket"></param>
         public void StartEvent(EventPacket eventPacket)
         {
-            Logger.Debug("Event Command", Session.GenerateIdentity());
+            Logger.Debug("Event Command", Session.Character.GenerateIdentity());
             if (eventPacket != null)
             {
                 EventHelper.GenerateEvent(eventPacket.EventType);
@@ -1782,7 +1782,7 @@ namespace OpenNos.Handler
         /// <param name="statCommandPacket"></param>
         public void Stat(StatCommandPacket statCommandPacket)
         {
-            Logger.Debug("Stat Command", Session.GenerateIdentity());
+            Logger.Debug("Stat Command", Session.Character.GenerateIdentity());
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("XP_RATE_NOW")}: {ServerManager.XPRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("DROP_RATE_NOW")}: {ServerManager.DropRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_RATE_NOW")}: {ServerManager.GoldRate} ", 13));
@@ -1803,7 +1803,7 @@ namespace OpenNos.Handler
         /// <param name="summonPacket"></param>
         public void Summon(SummonPacket summonPacket)
         {
-            Logger.Debug("Summon Command", Session.GenerateIdentity());
+            Logger.Debug("Summon Command", Session.Character.GenerateIdentity());
             if (summonPacket != null)
             {
                 if (Session.IsOnMap && Session.HasCurrentMapInstance)
@@ -1862,7 +1862,7 @@ namespace OpenNos.Handler
         /// <param name="teleportPacket"></param>
         public void Teleport(TeleportPacket teleportPacket)
         {
-            Logger.Debug("Teleport Command", Session.GenerateIdentity());
+            Logger.Debug("Teleport Command", Session.Character.GenerateIdentity());
             if (teleportPacket != null)
             {
                 if (Session.Character.HasShopOpened || Session.Character.InExchangeOrTrade)
@@ -1915,7 +1915,7 @@ namespace OpenNos.Handler
         /// <param name="teleportToMePacket"></param>
         public void TeleportToMe(TeleportToMePacket teleportToMePacket)
         {
-            Logger.Debug("TeleportToMe Command", Session.GenerateIdentity());
+            Logger.Debug("TeleportToMe Command", Session.Character.GenerateIdentity());
             Random random = new Random();
             if (teleportToMePacket != null)
             {
@@ -1994,7 +1994,7 @@ namespace OpenNos.Handler
         /// <param name="unbanPacket"></param>
         public void Unban(UnbanPacket unbanPacket)
         {
-            Logger.Debug("Unban Command", Session.GenerateIdentity());
+            Logger.Debug("Unban Command", Session.Character.GenerateIdentity());
             if (unbanPacket != null)
             {
                 string name = unbanPacket.CharacterName;
@@ -2030,7 +2030,7 @@ namespace OpenNos.Handler
         /// <param name="undercoverPacket"></param>
         public void Undercover(UndercoverPacket undercoverPacket)
         {
-            Logger.Debug("Undercover Command", Session.GenerateIdentity());
+            Logger.Debug("Undercover Command", Session.Character.GenerateIdentity());
             Session.Character.Undercover = !Session.Character.Undercover;
             Session.SendPacket(Session.Character.GenerateEq());
             Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
@@ -2043,7 +2043,7 @@ namespace OpenNos.Handler
         /// <param name="unmutePacket"></param>
         public void Unmute(UnmutePacket unmutePacket)
         {
-            Logger.Debug("Unmute Command", Session.GenerateIdentity());
+            Logger.Debug("Unmute Command", Session.Character.GenerateIdentity());
             if (unmutePacket != null)
             {
                 string name = unmutePacket.CharacterName;
@@ -2082,7 +2082,7 @@ namespace OpenNos.Handler
         /// <param name="upgradePacket"></param>
         public void Upgrade(UpgradePacket upgradePacket)
         {
-            Logger.Debug("Upgrade Command", Session.GenerateIdentity());
+            Logger.Debug("Upgrade Command", Session.Character.GenerateIdentity());
             if (upgradePacket != null)
             {
                 if (upgradePacket.Slot > -1)
@@ -2103,7 +2103,7 @@ namespace OpenNos.Handler
         /// <param name="wigColorPacket"></param>
         public void WigColor(WigColorPacket wigColorPacket)
         {
-            Logger.Debug("Wig Color Command", Session.GenerateIdentity());
+            Logger.Debug("Wig Color Command", Session.Character.GenerateIdentity());
             if (wigColorPacket != null)
             {
                 WearableInstance wig = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
@@ -2132,7 +2132,7 @@ namespace OpenNos.Handler
         /// <param name="xpRatePacket"></param>
         public void XpRate(XpRatePacket xpRatePacket)
         {
-            Logger.Debug("Xp Rate Changed", Session.GenerateIdentity());
+            Logger.Debug("Xp Rate Changed", Session.Character.GenerateIdentity());
             if (xpRatePacket != null)
             {
                 if (xpRatePacket.Value <= 1000)
@@ -2158,7 +2158,7 @@ namespace OpenNos.Handler
         /// <param name="zoomPacket"></param>
         public void Zoom(ZoomPacket zoomPacket)
         {
-            Logger.Debug("Zoom Command", Session.GenerateIdentity());
+            Logger.Debug("Zoom Command", Session.Character.GenerateIdentity());
             Session.SendPacket(zoomPacket != null
                 ? Session.Character.GenerateGuri(15, zoomPacket.Value)
                 : Session.Character.GenerateSay("$Zoom VALUE", 10));

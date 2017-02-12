@@ -251,6 +251,30 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void FDepositItem(InventoryType inventory, byte slot, byte amount, byte newSlot, ref ItemInstance item, ref ItemInstance itemdest)
+        {
+            if (item != null && amount <= item.Amount && amount > 0)
+            {
+                FamilyCharacter fhead = Owner.Family?.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                if (fhead == null)
+                    return;
+
+                MoveItem(inventory, InventoryType.FamilyWareHouse, slot, amount, newSlot, out item, out itemdest);
+                itemdest.CharacterId = fhead.CharacterId;
+                DAOFactory.IteminstanceDAO.InsertOrUpdate(itemdest);
+                Owner.Session.SendPacket(item != null
+                    ? Owner.Session.Character.GenerateInventoryAdd(item.ItemVNum, item.Amount,
+                       inventory, item.Slot, item.Rare, item.Design,
+                        item.Upgrade, 0)
+                    : Owner.Session.Character.GenerateInventoryAdd(-1, 0, inventory, slot, 0, 0, 0, 0));
+
+                if (itemdest != null)
+                {
+                    Owner.Session.SendPacket(Owner.GenerateFStash(itemdest, itemdest.Slot));
+                }
+                Owner.Family?.InsertFamilyLog(FamilyLogType.WareHouseAdd, Owner.Name);
+            }
+        }
         private void GenerateClearInventory(InventoryType type)
         {
             if (Owner != null)
@@ -713,7 +737,7 @@ namespace OpenNos.GameObject
 
                 if (itemdest != null)
                 {
-                    Owner.Session.SendPacket(Owner.GenerateStash(itemdest, itemdest.Slot));
+                    Owner.Session.SendPacket(Owner.GenerateFStash(itemdest, itemdest.Slot));
                 }
             }
 

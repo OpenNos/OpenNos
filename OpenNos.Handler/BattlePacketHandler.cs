@@ -76,7 +76,7 @@ namespace OpenNos.Handler
                 Session.SendPacket("cancel 0 0");
                 return;
             }
-            Logger.Debug(Session.GenerateIdentity(), mutliTargetListPacket.ToString());
+            Logger.Debug(Session.Character.GenerateIdentity(), mutliTargetListPacket.ToString());
             if (mutliTargetListPacket.TargetsAmount > 0 && mutliTargetListPacket.TargetsAmount == mutliTargetListPacket.Targets.Count)
             {
                 foreach (MultiTargetListSubPacket subpacket in mutliTargetListPacket.Targets)
@@ -825,7 +825,7 @@ namespace OpenNos.Handler
                     return;
                 }
                 
-                Logger.Debug(Session.GenerateIdentity(), useSkillPacket.ToString());
+                Logger.Debug(Session.Character.GenerateIdentity(), useSkillPacket.ToString());
 
                 if (useSkillPacket.MapX.HasValue && useSkillPacket.MapY.HasValue)
                 {
@@ -912,7 +912,7 @@ namespace OpenNos.Handler
                     Session.SendPacket("cancel 0 0");
                     return;
                 }
-                Logger.Debug(Session.GenerateIdentity(), useAOESkillPacket.ToString());
+                Logger.Debug(Session.Character.GenerateIdentity(), useAOESkillPacket.ToString());
                 if (Session.Character.CanFight)
                 {
                     if (Session.Character.Hp > 0)

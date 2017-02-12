@@ -3,18 +3,21 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("f_withdraw")]
-    public class FWithdrawPacket : PacketDefinition
+    [PacketHeader("f_repos")]
+    public class FReposPacket : PacketDefinition
     {
         #region Properties        
 
         [PacketIndex(0)]
-        public short Slot { get; set; }
+        public byte OldSlot { get; set; }
 
         [PacketIndex(1)]
         public byte Amount { get; set; }
 
         [PacketIndex(2)]
+        public byte NewSlot { get; set; }
+
+        [PacketIndex(3)]
         public byte? Unknown { get; set; }
         #endregion
     }

@@ -500,7 +500,7 @@ namespace OpenNos.GameObject
         public string GenerateFStashAll()
         {
             string stash = $"f_stash_all {Family.WarehouseSize}";
-            foreach (ItemInstance item in Family.Warehouse)
+            foreach (ItemInstance item in Family.Warehouse.GetAllItems())
             {
                 stash += $" {GenerateStashPacket(item, item.Slot)}";
             }
@@ -741,6 +741,11 @@ namespace OpenNos.GameObject
             }
 
             return $"rc_blist {packet.Index} {itembazar} ";
+        }
+
+        public string GenerateIdentity()
+        {
+            return $"Character: {Name}";
         }
 
         public void DeleteRelation(long characterId)
@@ -1325,7 +1330,7 @@ namespace OpenNos.GameObject
                                     {
                                         return;
                                     }
-                                    Logger.Debug(Session.GenerateIdentity(), specialist.ItemVNum.ToString());
+                                    Logger.Debug(GenerateIdentity(), specialist.ItemVNum.ToString());
                                     Session.Character.UseSp = false;
                                     Session.Character.LoadSpeed();
                                     Session.SendPacket(Session.Character.GenerateCond());
@@ -2153,6 +2158,10 @@ namespace OpenNos.GameObject
         public string GenerateStash(ItemInstance item, short Slot)
         {
             return $"stash {GenerateStashPacket(item, Slot)}";
+        }
+        public string GenerateFStash(ItemInstance item, short Slot)
+        {
+            return $"f_stash {GenerateStashPacket(item, Slot)}";
         }
         private string GenerateStashPacket(ItemInstance item, short Slot)
         {

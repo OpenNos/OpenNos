@@ -40,7 +40,7 @@ namespace OpenNos.Handler
         [Packet("Char_NEW")]
         public void CreateCharacter(string packet)
         {
-             Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.GenerateIdentity(), packet);
             if (Session.HasCurrentMapInstance)
             {
                 return;
