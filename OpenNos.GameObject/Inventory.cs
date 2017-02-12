@@ -738,7 +738,7 @@ namespace OpenNos.GameObject
 
                 if (itemdest != null)
                 {
-                    Owner.Session.SendPacket(Owner.GenerateFStash(itemdest, itemdest.Slot));
+                    Owner.Session.SendPacket(Owner.GenerateStash(itemdest, itemdest.Slot));
                 }
             }
 
