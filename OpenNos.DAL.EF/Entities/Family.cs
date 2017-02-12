@@ -38,7 +38,9 @@ namespace OpenNos.DAL.EF
 
         public int FamilyExperience { get; set; }
 
-        public long FamilyId { get; set; }   
+        public long FamilyId { get; set; }
+
+        public byte WarehouseSize { get; set; }
 
         public byte FamilyLevel { get; set; }
 

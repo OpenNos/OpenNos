@@ -38,6 +38,8 @@ namespace OpenNos.GameObject
 
         public List<FamilyLogDTO> FamilyLogs { get; set; }
 
+        public List<ItemInstance> Warehouse { get; set; }
+
         public MapInstance LandOfDeath { get; set; }
 
         #endregion

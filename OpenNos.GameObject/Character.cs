@@ -417,6 +417,19 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string OpenFamilyWarehouse()
+        {
+            if (Family == null || Family.WarehouseSize == 0)
+            {
+                return Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_WAREHOUSE"));
+            }
+            else
+            {
+                return Session.Character.GenerateFStashAll();
+            }
+        }
+
+
         public List<RespawnDTO> Respawns { get; set; }
 
         public RespawnMapTypeDTO Return
@@ -478,6 +491,16 @@ namespace OpenNos.GameObject
         {
             string stash = $"stash_all {WareHouseSize}";
             foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.Warehouse))
+            {
+                stash += $" {GenerateStashPacket(item, item.Slot)}";
+            }
+            return stash;
+        }
+
+        public string GenerateFStashAll()
+        {
+            string stash = $"f_stash_all {Family.WarehouseSize}";
+            foreach (ItemInstance item in Family.Warehouse)
             {
                 stash += $" {GenerateStashPacket(item, item.Slot)}";
             }
@@ -4802,7 +4825,7 @@ namespace OpenNos.GameObject
         }
         public void LoadInventory()
         {
-            IEnumerable<ItemInstanceDTO> inventories = DAOFactory.IteminstanceDAO.LoadByCharacterId(CharacterId).ToList();
+            IEnumerable<ItemInstanceDTO> inventories = DAOFactory.IteminstanceDAO.LoadByCharacterId(CharacterId).Where(s => s.Type != InventoryType.FamilyWareHouse).ToList();
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
             foreach (CharacterDTO character in characters.Where(s => s.CharacterId != CharacterId))
             {
@@ -5026,7 +5049,7 @@ namespace OpenNos.GameObject
                         }
 
                         // create or update all which are new or do still exist
-                        foreach (ItemInstance itemInstance in inventories.Where(s => s.Type != InventoryType.Bazaar))
+                        foreach (ItemInstance itemInstance in inventories.Where(s => s.Type != InventoryType.Bazaar && s.Type != InventoryType.FamilyWareHouse))
                         {
                             DAOFactory.IteminstanceDAO.InsertOrUpdate(itemInstance);
                         }

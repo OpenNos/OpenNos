@@ -187,7 +187,10 @@ namespace OpenNos.Handler
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             Session.SendPacket("today_stc");
         }
+        public void FamilyWithdraw(FWithdrawPacket packet)
+        {
 
+        }
         [Packet(":")]
         public void FamilyChat(string packet)
         {

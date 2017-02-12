@@ -945,6 +945,12 @@ namespace OpenNos.GameObject
                 {
                     fami.FamilyCharacters.Add((FamilyCharacter)famchar);
                 }
+                FamilyCharacter familyCharacter = fami.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                if (familyCharacter != null)
+                {
+                    fami.Warehouse = new List<ItemInstance>();
+                    DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList().ForEach(s => fami.Warehouse.Add((ItemInstance)s));
+                }
                 fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
                 FamilyList.Add(fami);
             }

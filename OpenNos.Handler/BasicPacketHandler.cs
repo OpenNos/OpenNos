@@ -158,11 +158,11 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Level >= 30)
                 {
-                    GeneralLogDTO dto = Session.Character.GeneralLogs.Last(s => s.LogData == "World" && s.LogType == "Connection");
-                    GeneralLogDTO lastcompliment = Session.Character.GeneralLogs.Last(s => s.LogData == "World" && s.LogType == "Compliment");
+                    GeneralLogDTO dto = Session.Character.GeneralLogs.LastOrDefault(s => s.LogData == "World" && s.LogType == "Connection");
+                    GeneralLogDTO lastcompliment = Session.Character.GeneralLogs.LastOrDefault(s => s.LogData == "World" && s.LogType == "Compliment");
                     if (dto.Timestamp.AddMinutes(60) <= DateTime.Now)
                     {
-                        if (lastcompliment.Timestamp.AddDays(1) <= DateTime.Now.Date)
+                        if (lastcompliment == null || lastcompliment.Timestamp.AddDays(1) <= DateTime.Now.Date)
                         {
                             short? compliment = ServerManager.Instance.GetProperty<short?>(complimentedCharacterId, nameof(Character.Compliment));
                             compliment++;

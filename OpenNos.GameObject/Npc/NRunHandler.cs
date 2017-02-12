@@ -219,7 +219,12 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
-
+                case 1600:
+                    if (npc != null)
+                    {
+                        Session.SendPacket(Session.Character.OpenFamilyWarehouse());
+                    }
+                    break;
                 case 23:
                     if (type == 0)
                     {
