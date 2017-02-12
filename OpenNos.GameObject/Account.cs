@@ -31,7 +31,6 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public List<GeneralLogDTO> GeneralLogs { get; set; }
         public List<PenaltyLogDTO> PenaltyLogs
         {
             get

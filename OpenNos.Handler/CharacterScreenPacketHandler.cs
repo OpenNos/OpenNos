@@ -263,7 +263,6 @@ namespace OpenNos.Handler
                                 Name = account.Name,
                                 Password = account.Password.ToLower(),
                                 Authority = account.Authority,
-                                GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(account.AccountId).ToList()
                         };
                             accountobject.Initialize();
 
@@ -325,6 +324,7 @@ namespace OpenNos.Handler
                     Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2])) as Character;
                     if (character != null)
                     {
+                        character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s=>s.CharacterId == character.CharacterId).ToList();
                         character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId((short)character.MapId);
                         character.PositionX = character.MapX;
                         character.PositionY = character.MapY;

@@ -151,7 +151,7 @@ namespace OpenNos.GameObject
 
         public List<GeneralLogDTO> GeneralLogs
         {
-            get { return Session.Account.GeneralLogs.Where(s => s.CharacterId == CharacterId).ToList(); }
+            get; set;
         }
 
         public Family Family
@@ -5113,7 +5113,7 @@ namespace OpenNos.GameObject
                 }
                 DAOFactory.StaticBonusDAO.RemoveOutDated();
 
-                foreach (GeneralLogDTO general in Session.Character.GeneralLogs.Concat(Session.Account.GeneralLogs.Where(s => s.CharacterId == null)))
+                foreach (GeneralLogDTO general in Session.Character.GeneralLogs)
                 {
                     if (!DAOFactory.GeneralLogDAO.IdAlreadySet(general.LogId))
                     {
