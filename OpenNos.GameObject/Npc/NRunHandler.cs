@@ -225,6 +225,12 @@ namespace OpenNos.GameObject
                         Session.SendPacket(Session.Character.OpenFamilyWarehouse());
                     }
                     break;
+                case 1601:
+                    if (npc != null)
+                    {
+                        Session.SendPackets(Session.Character.OpenFamilyWarehouseHist());
+                    }
+                    break;
                 case 23:
                     if (type == 0)
                     {

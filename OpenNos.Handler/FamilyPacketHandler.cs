@@ -189,9 +189,18 @@ namespace OpenNos.Handler
         }
         public void FamilyWithdraw(FWithdrawPacket packet)
         {
-            if (Session.Character.Family == null)
+            if (Session.Character.Family == null ||
+              !
+           (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
+           || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant)
+           || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL)
+           || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL)
+           )
+          )
+            {
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
                 return;
-
+            }
             ItemInstance previousInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.Slot, InventoryType.FamilyWareHouse);
             if (packet.Amount <= 0 || previousInventory == null || packet.Amount > previousInventory.Amount)
             {
@@ -224,8 +233,7 @@ namespace OpenNos.Handler
                     return;
                 DAOFactory.IteminstanceDAO.DeleteFromSlotAndType(fhead.CharacterId, packet.Slot, InventoryType.FamilyWareHouse);
             }
-
-            Session.Character.Family.InsertFamilyLog(FamilyLogType.WareHouseAdd, Session.Character.Name);
+            Session.Character.Family.InsertFamilyLog(FamilyLogType.WareHouseRemove, Session.Character.Name, message : $"{item2.ItemVNum}|{packet.Amount}");
 
         }
         public void FamilyRepos(FReposPacket packet)
@@ -233,11 +241,21 @@ namespace OpenNos.Handler
             ItemInstance sourceInventory;
             ItemInstance destinationInventory;
 
-            // check if the destination slot is out of range
-          
+            if (Session.Character.Family == null ||
+                !
+             (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
+             || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant)
+             || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL)
+             || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL)
+             )
+            )
+            {
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
+                return;
+            }
 
             // check if the character is allowed to move the item
-            if (Session.Character.InExchangeOrTrade || Session.Character.Family == null || packet.Amount <= 0)
+            if (Session.Character.InExchangeOrTrade || packet.Amount <= 0)
             {
                 return;
             }
@@ -311,11 +329,24 @@ namespace OpenNos.Handler
 
         public void FamilyDeposit(FDepositPacket packet)
         {
+            if (Session.Character.Family == null ||
+                 !
+              (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
+              || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant)
+              || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType != FamilyAuthorityType.NONE)
+              || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType != FamilyAuthorityType.NONE)
+              )
+             )
+            {
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
+                return;
+            }
+
             ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory);
             ItemInstance itemdest = Session.Character.Inventory.LoadBySlotAndType(packet.NewSlot, InventoryType.Warehouse);
 
             // check if the destination slot is out of range
-            if (Session.Character.Family == null || packet.NewSlot > Session.Character.Family.WarehouseSize)
+            if (packet.NewSlot > Session.Character.Family.WarehouseSize)
             {
                 return;
             }

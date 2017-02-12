@@ -158,7 +158,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return ServerManager.Instance.FamilyList.FirstOrDefault(s => s != null && s.FamilyCharacters.Any(c => c != null && c.CharacterId == CharacterId))?.DeepCopy();
+                return ServerManager.Instance.FamilyList.FirstOrDefault(s => s != null && s.FamilyCharacters.Any(c => c != null && c.CharacterId == CharacterId));
             }
         }
 
@@ -415,6 +415,57 @@ namespace OpenNos.GameObject
                 }
                 return respawn;
             }
+        }
+
+        public List<string> OpenFamilyWarehouseHist()
+        {
+            List<string> packetList = new List<string>();
+            if (Family == null ||
+            !
+         (FamilyCharacter.Authority == FamilyAuthority.Head
+         || (FamilyCharacter.Authority == FamilyAuthority.Assistant)
+         || (FamilyCharacter.Authority == FamilyAuthority.Member && Family.MemberCanGetHistory)
+         || (FamilyCharacter.Authority == FamilyAuthority.Manager && Family.ManagerCanGetHistory)
+         )
+        )
+            {
+                packetList.Add( Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
+                return packetList;
+            }
+            else
+            {
+                return Session.Character.GenerateFamilyWarehouseHist();
+            }
+        }
+
+        public List<string> GenerateFamilyWarehouseHist()
+        {
+            if (Family != null)
+            {
+                string packetheader = "fslog_stc";
+                List<string> packetList = new List<string>();
+                string packet = string.Empty;
+                int i = 0;
+                int amount = -1;
+                foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s=>s.FamilyLogType == FamilyLogType.WareHouseAdd || s.FamilyLogType == FamilyLogType.WareHouseRemove).OrderByDescending(s => s.Timestamp).Take(100))
+                {
+                    packet += $" {(log.FamilyLogType == FamilyLogType.WareHouseAdd?0:1)}|{log.FamilyLogData}|{(int)(DateTime.Now - log.Timestamp).TotalHours}";
+                    i++;
+                    if (i == 50)
+                    {
+                        i = 0;
+                        packetList.Add($"{packetheader} {(amount)}{packet}");
+                        amount++;
+                    }
+                    else if (i == Family.FamilyLogs.Count)
+                    {
+                        packetList.Add($"{packetheader} {(amount)}{packet}");
+                    }
+                }
+
+                return packetList;
+            }
+            return new List<string>();
         }
 
         public string OpenFamilyWarehouse()
@@ -812,7 +863,7 @@ namespace OpenNos.GameObject
                 string packet = string.Empty;
                 int i = 0;
                 int amount = 0;
-                foreach (FamilyLogDTO log in Family.FamilyLogs.OrderByDescending(s => s.Timestamp).Take(100))
+                foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s=>s.FamilyLogType!=FamilyLogType.WareHouseAdd && s.FamilyLogType!=FamilyLogType.WareHouseRemove).OrderByDescending(s => s.Timestamp).Take(100))
                 {
                     packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(int)(DateTime.Now - log.Timestamp).TotalHours}";
                     i++;

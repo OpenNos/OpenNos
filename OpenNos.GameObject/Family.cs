@@ -18,6 +18,7 @@ using OpenNos.Domain;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace OpenNos.GameObject
 {
@@ -97,6 +98,11 @@ namespace OpenNos.GameObject
 
                 case FamilyLogType.RightChange:
                     value = $"{characterName}|{right}|{righttype}|{rightvalue}";
+                    break;
+
+                case FamilyLogType.WareHouseAdd:
+                case FamilyLogType.WareHouseRemove:
+                    value = $"{characterName}|{message}";
                     break;
             }
             FamilyLogDTO log = new FamilyLogDTO
