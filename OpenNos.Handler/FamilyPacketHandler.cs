@@ -234,17 +234,17 @@ namespace OpenNos.Handler
             ItemInstance destinationInventory;
 
             // check if the destination slot is out of range
-            if (packet.NewSlot > Session.Character.WareHouseSize)
-            {
-                return;
-            }
+          
 
             // check if the character is allowed to move the item
             if (Session.Character.InExchangeOrTrade || Session.Character.Family == null || packet.Amount <= 0)
             {
                 return;
             }
-
+            if (packet.NewSlot > Session.Character.Family.WarehouseSize)
+            {
+                return;
+            }
 
             sourceInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.OldSlot, InventoryType.FamilyWareHouse);
             destinationInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.NewSlot, InventoryType.FamilyWareHouse);
