@@ -119,7 +119,28 @@ namespace OpenNos.Handler
 
                         if (minilandobject.Item.ItemType == ItemType.House)
                         {
-                           Session.Character.MinilandObjects.RemoveAll(s => s.ItemInstance.Item.ItemType == ItemType.House && s.ItemInstance.Item.ItemSubType == minilandobject.Item.ItemSubType);
+                            switch(minilandobject.Item.ItemSubType)
+                            {
+                                case 2:
+                                    mo.MapX = 31;
+                                    mo.MapY = 3;
+                                    break;
+                                case 0:
+                                    mo.MapX = 24;
+                                    mo.MapY = 7;
+                                    break;
+                                case 1:
+                                    mo.MapX = 21;
+                                    mo.MapY = 4;
+                                    break;
+                            }
+
+                            MinilandObject min = Session.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstance.Item.ItemType == ItemType.House && s.ItemInstance.Item.ItemSubType == minilandobject.Item.ItemSubType);
+                            if (min !=null)
+                            {
+                                MinilandRemoveObject(new RmvobjPacket() { Slot = min.ItemInstance.Slot});
+                            }
+
                         }
 
                         if (minilandobject.Item.IsMinilandObject)
