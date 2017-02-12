@@ -77,10 +77,7 @@ namespace OpenNos.Core
                 {
                     return true;
                 }
-                else
-                {
-                    return detection.confidence < 10 || detection.language == _resourceCulture.TwoLetterISOLanguageName;
-                }
+                return detection.confidence < 10 || detection.language == _resourceCulture.TwoLetterISOLanguageName;
             }
             catch
             {
