@@ -144,6 +144,11 @@ namespace OpenNos.GameObject
             _monsters[monster.MapMonsterId] = monster;
         }
 
+        public void AddNPC(MapNpc monster)
+        {
+            _npcs[monster.MapNpcId] = monster;
+        }
+
         public override void Dispose()
         {
             if (!_disposed)

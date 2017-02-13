@@ -1857,6 +1857,64 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        /// $SummonNPC Command
+        /// </summary>
+        /// <param name="summonPacket"></param>
+        public void SummonNPC(SummonNPCPacket summonPacket)
+        {
+            Logger.Debug("SummonNPC Command", Session.GenerateIdentity());
+            if (summonPacket != null)
+            {
+                if (Session.IsOnMap && Session.HasCurrentMapInstance)
+                {
+                    Random random = new Random();
+
+                    short vnum = summonPacket.NpcMonsterVNum;
+                    byte amount = summonPacket.Amount;
+                    bool isMoving = summonPacket.IsMoving;
+
+                    NpcMonster npcmonster = ServerManager.GetNpc(vnum);
+                    if (npcmonster == null)
+                    {
+                        return;
+                    }
+                    for (int i = 0; i < amount; i++)
+                    {
+                        List<MapCell> possibilities = new List<MapCell>();
+                        for (short x = -4; x < 5; x++)
+                        {
+                            for (short y = -4; y < 5; y++)
+                            {
+                                possibilities.Add(new MapCell { X = x, Y = y });
+                            }
+                        }
+                        foreach (MapCell possibilitie in possibilities.OrderBy(s => random.Next()))
+                        {
+                            short mapx = (short)(Session.Character.PositionX + possibilitie.X);
+                            short mapy = (short)(Session.Character.PositionY + possibilitie.Y);
+                            if (!Session.CurrentMapInstance?.Map.IsBlockedZone(mapx, mapy) ?? false)
+                            {
+                                break;
+                            }
+                        }
+
+                        if (Session.HasCurrentMapInstance)
+                        {
+                            MapNpc monster = new MapNpc { NpcVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstance.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapNpcId = Session.CurrentMapInstance.GetNextMonsterId() };
+                            monster.Initialize();
+                            Session.CurrentMapInstance.AddNPC(monster);
+                            Session.CurrentMapInstance.Broadcast(monster.GenerateIn2());
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$SummonNPC VNUM AMOUNT MOVE", 10));
+            }
+        }
+
+        /// <summary>
         /// $Teleport Command
         /// </summary>
         /// <param name="teleportPacket"></param>
