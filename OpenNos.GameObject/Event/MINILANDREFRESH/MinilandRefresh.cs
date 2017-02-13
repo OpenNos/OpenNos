@@ -22,11 +22,11 @@ using System.Linq;
 
 namespace OpenNos.GameObject.Event
 {
-    public class Reput
+    public class MinilandRefresh
     {
         #region Methods
 
-        public static void GenerateReput()
+        public static void GenerateMinilandEvent()
         {
             ServerManager.Instance.SaveAll();
             GeneralLogDTO gen = DAOFactory.GeneralLogDAO.LoadByAccount(null).LastOrDefault(s => s.LogData == "MinilandRefresh" && s.LogType == "World");
@@ -39,6 +39,7 @@ namespace OpenNos.GameObject.Event
                     if (Session != null)
                     {
                         Session.Character.GetReput(2 * genlog.Count());
+                        Session.Character.MinilandPoint = 2000;
                     }
                     else if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.ServerGroup, (long)genlog.Key).Result)
                     {
@@ -48,6 +49,7 @@ namespace OpenNos.GameObject.Event
                             if (chara != null)
                             {
                                 chara.Reput += 2 * genlog.Count();
+                                chara.MinilandPoint = 2000;
                                 DAOFactory.GeneralLogDAO.Insert(new GeneralLogDTO { IpAddress = Session.IpAddress, LogData = "MinilandRefresh", LogType = "World", Timestamp = DateTime.Now });
                                 DAOFactory.CharacterDAO.InsertOrUpdate(ref chara);
                             }
@@ -56,7 +58,7 @@ namespace OpenNos.GameObject.Event
                 }
                 
             }
-            ServerManager.Instance.StartedEvents.Remove(EventType.REPUTEVENT);
+            ServerManager.Instance.StartedEvents.Remove(EventType.MINILANDREFRESHEVENT);
         }
 
         #endregion

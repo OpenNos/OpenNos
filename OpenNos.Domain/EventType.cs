@@ -4,7 +4,7 @@
     {
         INSTANTBATTLE,
         LOD,
-        REPUTEVENT,
+        MINILANDREFRESHEVENT,
         LODDH,
         RANKINGREFRESH
     }

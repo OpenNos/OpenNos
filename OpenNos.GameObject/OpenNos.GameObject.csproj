@@ -89,7 +89,7 @@
     <Compile Include="Event\EventSchedule.cs" />
     <Compile Include="Event\INSTANTBATTLE\InstantBattle.cs" />
     <Compile Include="Event\LOD\LOD.cs" />
-    <Compile Include="Event\REPUT\Reput.cs" />
+    <Compile Include="Event\MINILANDREFRESH\MinilandRefresh.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="Map\MonsterToSummon.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
@@ -321,6 +321,7 @@
     <Compile Include="Packets\ServerPackets\VbPacket.cs" />
     <Compile Include="Packets\ServerPackets\WearPacket.cs" />
     <Compile Include="Packets\ServerPackets\WithDrawPacket.cs" />
+    <Compile Include="Gift.cs" />
     <Compile Include="Recipe.cs" />
     <Compile Include="Map\MapObject.cs" />
     <Compile Include="Shop.cs" />

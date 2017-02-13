@@ -429,7 +429,7 @@ namespace OpenNos.GameObject
          )
         )
             {
-                packetList.Add( Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
+                packetList.Add(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
                 return packetList;
             }
             else
@@ -447,9 +447,9 @@ namespace OpenNos.GameObject
                 string packet = string.Empty;
                 int i = 0;
                 int amount = -1;
-                foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s=>s.FamilyLogType == FamilyLogType.WareHouseAdd || s.FamilyLogType == FamilyLogType.WareHouseRemove).OrderByDescending(s => s.Timestamp).Take(100))
+                foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s => s.FamilyLogType == FamilyLogType.WareHouseAdd || s.FamilyLogType == FamilyLogType.WareHouseRemove).OrderByDescending(s => s.Timestamp).Take(100))
                 {
-                    packet += $" {(log.FamilyLogType == FamilyLogType.WareHouseAdd?0:1)}|{log.FamilyLogData}|{(int)(DateTime.Now - log.Timestamp).TotalHours}";
+                    packet += $" {(log.FamilyLogType == FamilyLogType.WareHouseAdd ? 0 : 1)}|{log.FamilyLogData}|{(int)(DateTime.Now - log.Timestamp).TotalHours}";
                     i++;
                     if (i == 50)
                     {
@@ -466,6 +466,11 @@ namespace OpenNos.GameObject
                 return packetList;
             }
             return new List<string>();
+        }
+
+        public string GenerateMloMg(MinilandObject mlobj, MinigamePacket packet)
+        {
+            return $"mlo_mg {packet.MinigameVNum} {MinilandPoint} 0 0 {mlobj.ItemInstance.DurabilityPoint} {mlobj.ItemInstance.Item.MinilandObjectPoint}";
         }
 
         public string OpenFamilyWarehouse()
@@ -863,7 +868,7 @@ namespace OpenNos.GameObject
                 string packet = string.Empty;
                 int i = 0;
                 int amount = 0;
-                foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s=>s.FamilyLogType!=FamilyLogType.WareHouseAdd && s.FamilyLogType!=FamilyLogType.WareHouseRemove).OrderByDescending(s => s.Timestamp).Take(100))
+                foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s => s.FamilyLogType != FamilyLogType.WareHouseAdd && s.FamilyLogType != FamilyLogType.WareHouseRemove).OrderByDescending(s => s.Timestamp).Take(100))
                 {
                     packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(int)(DateTime.Now - log.Timestamp).TotalHours}";
                     i++;
@@ -1275,7 +1280,7 @@ namespace OpenNos.GameObject
 
                 if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
                 {
-                   
+
                     if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
                     {
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == ClassType.Adventurer ? 0 : (byte)Session.Character.Class - 1)), Session.Character.PositionX, Session.Character.PositionY);
@@ -3326,7 +3331,8 @@ namespace OpenNos.GameObject
             {
                 case 2:
                     return $"guri 2 {argument} {CharacterId}";
-
+                case 6:
+                    return $"guri 6 1 {CharacterId} 0 0";
                 case 10:
                     return $"guri 10 {argument} {value} {CharacterId}";
 

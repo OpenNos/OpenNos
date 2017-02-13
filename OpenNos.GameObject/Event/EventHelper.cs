@@ -39,8 +39,8 @@ namespace OpenNos.GameObject.Event
                             LOD.GenerateLod();
                             break;
 
-                        case EventType.REPUTEVENT:
-                            Reput.GenerateReput();
+                        case EventType.MINILANDREFRESHEVENT:
+                            MinilandRefresh.GenerateMinilandEvent();
                             break;
 
                         case EventType.INSTANTBATTLE:
