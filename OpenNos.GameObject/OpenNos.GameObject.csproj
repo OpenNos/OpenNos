@@ -135,6 +135,7 @@
     <Compile Include="Packets\CommandPackets\ShutdownPacket.cs" />
     <Compile Include="Packets\CommandPackets\SPRefillPacket.cs" />
     <Compile Include="Packets\CommandPackets\StatCommandPacket.cs" />
+    <Compile Include="Packets\CommandPackets\SummonNPCPacket.cs" />
     <Compile Include="Packets\CommandPackets\TeleportPacket.cs" />
     <Compile Include="Packets\CommandPackets\UndercoverPacket.cs" />
     <Compile Include="Portal.cs" />
