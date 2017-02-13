@@ -3,20 +3,22 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("mg")]
-    public class MinigamePacket : PacketDefinition
+    [PacketHeader("f_repos")]
+    public class FReposPacket : PacketDefinition
     {
-        #region Properties
+        #region Properties        
+
         [PacketIndex(0)]
-        public byte Type { get; set; }
+        public byte OldSlot { get; set; }
+
         [PacketIndex(1)]
-        public byte Id { get; set; }
+        public byte Amount { get; set; }
+
         [PacketIndex(2)]
-        public short MinigameVNum { get; set; }
+        public byte NewSlot { get; set; }
 
         [PacketIndex(3)]
-        public int? Point { get; set; }
-
+        public byte? Unknown { get; set; }
         #endregion
     }
 }

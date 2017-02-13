@@ -18,6 +18,7 @@ using OpenNos.Domain;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace OpenNos.GameObject
 {
@@ -37,6 +38,8 @@ namespace OpenNos.GameObject
         public List<FamilyCharacter> FamilyCharacters { get; set; }
 
         public List<FamilyLogDTO> FamilyLogs { get; set; }
+
+        public Inventory Warehouse { get; set; }
 
         public MapInstance LandOfDeath { get; set; }
 
@@ -95,6 +98,11 @@ namespace OpenNos.GameObject
 
                 case FamilyLogType.RightChange:
                     value = $"{characterName}|{right}|{righttype}|{rightvalue}";
+                    break;
+
+                case FamilyLogType.WareHouseAdd:
+                case FamilyLogType.WareHouseRemove:
+                    value = $"{characterName}|{message}";
                     break;
             }
             FamilyLogDTO log = new FamilyLogDTO

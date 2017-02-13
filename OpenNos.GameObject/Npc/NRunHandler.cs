@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using System;
@@ -219,7 +220,111 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+                case 1600:
+                    Session.SendPacket(Session.Character.OpenFamilyWarehouse());
+                    break;
+                case 1601:
+                    Session.SendPackets(Session.Character.OpenFamilyWarehouseHist());
+                    break;
+                case 1602:
+                    if(Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 3 && Session.Character.Family.WarehouseSize < 21)
+                    {
+                        if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                        {
+                            if (500000 >= Session.Character.Gold)
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                                return;
+                            }
+                            Session.Character.Family.WarehouseSize = 21;
+                            Session.Character.Gold -= 500000;
+                            Session.SendPacket(Session.Character.GenerateGold());
+                            FamilyDTO fam = Session.Character.Family;
+                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 10));
+                            Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
+                        }
 
+                    }
+                    break;
+                case 1603:
+                    if (Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 7 && Session.Character.Family.WarehouseSize < 49)
+                    {
+                        if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                        { 
+                            if (2000000 >= Session.Character.Gold)
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                                return;
+                            }
+                            Session.Character.Family.WarehouseSize = 49;
+                            Session.Character.Gold -= 2000000;
+                            Session.SendPacket(Session.Character.GenerateGold());
+                            FamilyDTO fam = Session.Character.Family;
+                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 10));
+                            Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
+                        }
+
+                    }
+                    break;
+                case 1604:
+                    if (Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 5 && Session.Character.Family.MaxSize < 70)
+                    {
+                        if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                        {
+                            if (5000000 >= Session.Character.Gold)
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                                return;
+                            }
+                            Session.Character.Family.MaxSize = 70;
+                            Session.Character.Gold -= 5000000;
+                            Session.SendPacket(Session.Character.GenerateGold());
+                            FamilyDTO fam = Session.Character.Family;
+                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 10));
+                            Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
+                        }
+                    }
+                    break;
+                case 1605:
+                    if (Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 9 && Session.Character.Family.MaxSize < 100)
+                    {
+                        if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                        {
+                            if (10000000 >= Session.Character.Gold)
+                            {
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                                return;
+                            }
+                            Session.Character.Family.MaxSize = 100;
+                            Session.Character.Gold -= 10000000;
+                            Session.SendPacket(Session.Character.GenerateGold());
+                            FamilyDTO fam = Session.Character.Family;
+                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
+                            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+
+                        }
+                        else
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 10));
+                            Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
+                        }
+                    }
+                    break;
                 case 23:
                     if (type == 0)
                     {

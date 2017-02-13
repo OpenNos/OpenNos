@@ -30,6 +30,8 @@ namespace OpenNos.Data
 
         public byte MaxSize { get; set; }
 
+        public byte WarehouseSize { get; set; }
+
         public string Name { get; set; }
 
         public bool ManagerCanInvite { get; set; }

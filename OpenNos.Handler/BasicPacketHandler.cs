@@ -151,24 +151,25 @@ namespace OpenNos.Handler
         [Packet("compl")]
         public void Compliment(string packet)
         {
-            Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] complimentPacket = packet.Split(' ');
             long complimentedCharacterId;
             if (long.TryParse(complimentPacket[3], out complimentedCharacterId))
             {
                 if (Session.Character.Level >= 30)
                 {
-                    if (Session.Character.LastLogin.AddMinutes(60) <= DateTime.Now)
+                    GeneralLogDTO dto = Session.Character.GeneralLogs.LastOrDefault(s => s.LogData == "World" && s.LogType == "Connection");
+                    GeneralLogDTO lastcompliment = Session.Character.GeneralLogs.LastOrDefault(s => s.LogData == "World" && s.LogType == "Compliment");
+                    if (dto.Timestamp.AddMinutes(60) <= DateTime.Now)
                     {
-                        if (Session.Account.LastCompliment.Date.AddDays(1) <= DateTime.Now.Date)
+                        if (lastcompliment == null || lastcompliment.Timestamp.AddDays(1) <= DateTime.Now.Date)
                         {
                             short? compliment = ServerManager.Instance.GetProperty<short?>(complimentedCharacterId, nameof(Character.Compliment));
                             compliment++;
                             ServerManager.Instance.SetProperty(complimentedCharacterId, nameof(Character.Compliment), compliment);
                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentedCharacterId, nameof(Character.Name))), 12));
-                            Session.Account.LastCompliment = DateTime.Now;
+                            Session.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Compliment", Timestamp = DateTime.Now });
 
-                            //Session.Character.RefreshComplimentRankingIfNeeded();
                             Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
                         }
                         else
@@ -178,7 +179,7 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_LOGIN_COOLDOWN"), (Session.Character.LastLogin.AddMinutes(60) - DateTime.Now).Minutes), 11));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_LOGIN_COOLDOWN"), (dto.Timestamp.AddMinutes(60) - DateTime.Now).Minutes), 11));
                     }
                 }
                 else
@@ -204,7 +205,7 @@ namespace OpenNos.Handler
         [Packet("pcl")]
         public void GetGift(string packet)
         {
-             Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3)
             {
@@ -337,7 +338,7 @@ namespace OpenNos.Handler
         /// <param name="pjoinPacket"></param>
         public void GroupJoin(PJoinPacket pjoinPacket)
         {
-            Logger.Debug(Session.GenerateIdentity(), "Joining group");
+            Logger.Debug(Session.Character.GenerateIdentity(), "Joining group");
 
             if (pjoinPacket.RequestType.Equals(GroupRequestType.Requested) || pjoinPacket.RequestType.Equals(GroupRequestType.Invited))
             {
@@ -397,7 +398,7 @@ namespace OpenNos.Handler
         [Packet("#pjoin")]
         public void GroupJoinValid(string packet)
         {
-             Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
 
             // serialization hack -> dialog answer packet isnt supported by PacketFactory atm
             PJoinPacket pjoinPacket = PacketFactory.Deserialize<PJoinPacket>(packet.Replace('^', ' ').Replace('#', ' '), true);
@@ -868,7 +869,7 @@ namespace OpenNos.Handler
         [Packet("#guri")]
         public void GuriAnswer(string packet)
         {
-             Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ', '^');
             switch (packetsplit[2])
             {
@@ -1060,7 +1061,7 @@ namespace OpenNos.Handler
         [Packet("preq")]
         public void Preq(string packet)
         {
-             Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstance)
@@ -1127,7 +1128,7 @@ namespace OpenNos.Handler
         [Packet("req_info")]
         public void ReqInfo(string packet)
         {
-             Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2] == "5")
             {
@@ -1159,7 +1160,7 @@ namespace OpenNos.Handler
         [Packet("#revival")]
         public void Revive(string packet)
         {
-             Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ', '^');
             if (packetsplit.Length > 2)
             {
@@ -1295,7 +1296,7 @@ namespace OpenNos.Handler
         [Packet("pst")]
         public void SendMail(string packet)
         {
-             Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             switch (packetsplit.Length)
             {
@@ -1396,7 +1397,7 @@ namespace OpenNos.Handler
         [Packet("qset")]
         public void SetQuicklist(string packet)
         {
-             Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 4)
             {

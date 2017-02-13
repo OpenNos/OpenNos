@@ -25,8 +25,6 @@ namespace OpenNos.Data
 
         public AuthorityType Authority { get; set; }
 
-        public DateTime LastCompliment { get; set; }
-
         public string Name { get; set; }
 
         public string Password { get; set; }

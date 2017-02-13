@@ -20,7 +20,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public long AccountId { get; set; }
+        public long? AccountId { get; set; }
 
         public long? CharacterId { get; set; }
 

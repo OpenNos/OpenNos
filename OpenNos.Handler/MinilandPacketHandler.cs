@@ -116,6 +116,33 @@ namespace OpenNos.Handler
                             Level4BoxAmount = 0,
                             Level5BoxAmount = 0,
                         };
+
+                        if (minilandobject.Item.ItemType == ItemType.House)
+                        {
+                            switch (minilandobject.Item.ItemSubType)
+                            {
+                                case 2:
+                                    mo.MapX = 31;
+                                    mo.MapY = 3;
+                                    break;
+                                case 0:
+                                    mo.MapX = 24;
+                                    mo.MapY = 7;
+                                    break;
+                                case 1:
+                                    mo.MapX = 21;
+                                    mo.MapY = 4;
+                                    break;
+                            }
+
+                            MinilandObject min = Session.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstance.Item.ItemType == ItemType.House && s.ItemInstance.Item.ItemSubType == minilandobject.Item.ItemSubType);
+                            if (min != null)
+                            {
+                                MinilandRemoveObject(new RmvobjPacket() { Slot = min.ItemInstance.Slot });
+                            }
+
+                        }
+
                         if (minilandobject.Item.IsMinilandObject)
                         {
                             Session.Character.WareHouseSize = minilandobject.Item.MinilandObjectPoint;
@@ -131,6 +158,10 @@ namespace OpenNos.Handler
                     {
                         Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_NEED_LOCK"), 0));
                     }
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ALREADY_THIS_MINILANDOBJECT"), 0));
                 }
             }
         }
@@ -148,8 +179,9 @@ namespace OpenNos.Handler
                     {
                         if (!minilandobject.Item.IsMinilandObject)
                         {
+                            byte game = (byte)((mlobj.ItemInstance.Item.EquipmentSlot == 0) ? 4 + mlobj.ItemInstance.ItemVNum % 10 : ((int)mlobj.ItemInstance.Item.EquipmentSlot / 3));
                             bool full = false;
-                            Session.SendPacket($"mlo_info {(client == Session ? 1 : 0)} {minilandobject.ItemVNum} {packet.Slot} {Session.Character.MinilandPoint} {(minilandobject.DurabilityPoint < 1000 ? 1 : 0)} {(full ? 1 : 0)} 0 999 1000 4999 5000 7999 8000 11999 12000 15999 16000 1000000");
+                            Session.SendPacket($"mlo_info {(client == Session ? 1 : 0)} {minilandobject.ItemVNum} {packet.Slot} {Session.Character.MinilandPoint} {(minilandobject.DurabilityPoint < 1000 ? 1 : 0)} {(full ? 1 : 0)} 0 {GetMinilandMaxPoint(game)[0]} {GetMinilandMaxPoint(game)[0] + 1} {GetMinilandMaxPoint(game)[1]} {GetMinilandMaxPoint(game)[1] + 1} {GetMinilandMaxPoint(game)[2]} {GetMinilandMaxPoint(game)[2] + 2} {GetMinilandMaxPoint(game)[3]} {GetMinilandMaxPoint(game)[3] + 1} {GetMinilandMaxPoint(game)[4]} {GetMinilandMaxPoint(game)[4] + 1} {GetMinilandMaxPoint(game)[5]}");
                         }
                         else
                         {
@@ -167,26 +199,46 @@ namespace OpenNos.Handler
                 MinilandObject mlobj = client.Character.MinilandObjects.FirstOrDefault(s => s.ItemInstance.ItemVNum == packet.MinigameVNum);
                 if (mlobj != null)
                 {
+                    byte game = (byte)((mlobj.ItemInstance.Item.EquipmentSlot == 0) ? 4 + mlobj.ItemInstance.ItemVNum % 10 : ((int)mlobj.ItemInstance.Item.EquipmentSlot / 3));
                     switch (packet.Type)
                     {
-                        case 1:
-                            int game = ((int)mlobj.ItemInstance.Item.EquipmentSlot == 0) ? 4 + mlobj.ItemInstance.ItemVNum % 10 : (int)mlobj.ItemInstance.Item.EquipmentSlot / 3;
+                        case 1://play
+
+                            Session.Character.CurrentMinigame = (short)(game == 0 ? 5102 : game == 1 ? 5103 : game == 2 ? 5105 : game == 3 ? 5104 : game == 4 ? 5113 : 5112);
                             Session.SendPacket($"mlo_st {game}");
                             break;
-                        case 2:
-                            //?
+                        case 2://stop
+                            Session.Character.CurrentMinigame = 0;
                             break;
                         case 3:
-                            Session.SendPacket($"mlo_lv 2");
-                            //mg 3 2 3125 8647 8647
-                            //mlo_lv 2
-                            //eff 1 626114 5102
+                            Session.Character.CurrentMinigame = 0;
+                            int Level = -1;
+                            for (short i = 0; i < GetMinilandMaxPoint(game).Count(); i++)
+                            {
+                                if (packet.Point > GetMinilandMaxPoint(game)[i])
+                                {
+                                    Level = i;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            Session.SendPacket($"mlo_lv {Level}");
                             break;
-                        case 4:
-                            // mg 4 2 3125 2
-                            //ivn 2 42.2193.2.0
-                            //mlpt 1900 100
-                            //mlo_rw 2193 2
+                        case 4: // select gift
+                            if (Session.Character.MinilandPoint >= 100)
+                            {
+                                Tuple<short, byte> obj = GetMinilandGift(game, (int)packet.Point);
+                                Session.SendPacket($"mlo_rw {obj.Item2} {packet.Point}");
+                                Session.SendPacket(Session.Character.GenerateMinilandPoint());
+                                List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(obj.Item1, obj.Item2);
+                                Session.Character.MinilandPoint -= 100;
+                                if (!inv.Any())
+                                {
+                                    Session.Character.SendGift(Session.Character.CharacterId, obj.Item1, obj.Item2, 0, 0, false);
+                                }
+                            }
                             break;
                         case 5:
                             Session.SendPacket($"mlo_mg {packet.MinigameVNum} {Session.Character.MinilandPoint} 0 0 {mlobj.ItemInstance.Item.MinilandObjectPoint} {mlobj.ItemInstance.Item.MinilandObjectPoint}");
@@ -194,17 +246,60 @@ namespace OpenNos.Handler
                         case 6:
                             //refill
                             break;
-                        case 7:
+                        case 7://gift
                             //mlo_pmg 3125 2000 0 0 0 0 393 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
                             break;
-                        case 8:
+                        case 8://get gift
                             /*  ivn 2 31.2039.4.0
                                 say 1 626114 12 Tu as reçu un objet : Bois normal x 4
                                 mlo_pmg 3125 2000 0 0 0 0 0 0 0 0 0 0 0 0 2039 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 */
                             break;
+                        case 9://coupon
+
+                            break;
                     }
                 }
             }
+        }
+
+        private Tuple<short, byte> GetMinilandGift(byte game, int point)
+        {
+            List<Tuple<short, byte>> lst = new List<Tuple<short, byte>>();
+            Random rand = new Random();
+            switch (game)
+            {
+                default:
+                    lst.Add(new Tuple<short, byte>(1012,2));
+                    break;
+            }
+           return lst.OrderBy(s=>rand.Next()).FirstOrDefault();
+        }
+
+        private static int[] GetMinilandMaxPoint(byte game)
+        {
+            int[] arr = new int[] { 999, 4999, 7999, 11999, 15999, 1000000 };
+            switch (game)
+            {
+                case 0:
+                    arr = new int[] { 999, 4999, 7999, 11999, 15999, 1000000 };
+                    break;
+                case 1:
+                    arr = new int[] { 999, 4999, 7999, 11999, 15999, 1000000 };
+                    break;
+                case 2:
+                    arr = new int[] { 999, 4999, 7999, 11999, 15999, 1000000 };
+                    break;
+                case 3:
+                    arr = new int[] { 999, 4999, 7999, 11999, 15999, 1000000 };
+                    break;
+                case 4:
+                    arr = new int[] { 999, 4999, 7999, 11999, 15999, 1000000 };
+                    break;
+                case 5:
+                    arr = new int[] { 999, 4999, 7999, 11999, 15999, 1000000 };
+                    break;
+            }
+            return arr;
         }
         public void MinilandEdit(MLeditPacket packet)
         {
@@ -220,7 +315,7 @@ namespace OpenNos.Handler
 
                     switch (state)
                     {
-                        case MinilandState.CLOSED:
+                        case MinilandState.PRIVATE:
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINILAND_PRIVATE"), 0));
                             //Need to be review to permit one friend limit on the miniland
                             Session.Character.Miniland.Sessions.Where(s => s.Character != Session.Character).ToList().ForEach(s => ServerManager.Instance.ChangeMap(s.Character.CharacterId, s.Character.MapId, s.Character.MapX, s.Character.MapY));

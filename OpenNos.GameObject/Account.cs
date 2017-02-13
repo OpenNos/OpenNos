@@ -31,16 +31,6 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public List<GeneralLogDTO> GeneralLogs
-        {
-            get
-            {
-                GeneralLogDTO[] logs = new GeneralLogDTO[ServerManager.GeneralLogs.Count + 10];
-                ServerManager.GeneralLogs.CopyTo(logs);
-                return logs.Where(s => s != null && s.AccountId == AccountId && s.CharacterId == null).ToList();
-            }
-        }
-
         public List<PenaltyLogDTO> PenaltyLogs
         {
             get

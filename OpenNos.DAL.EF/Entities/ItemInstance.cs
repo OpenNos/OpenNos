@@ -26,7 +26,6 @@ namespace OpenNos.DAL.EF
         public ItemInstance()
         {
             BazaarItem = new HashSet<BazaarItem>();
-            WarehouseItem = new HashSet<WarehouseItem>();
             MinilandObject = new HashSet<MinilandObject>();
         }
 
@@ -71,8 +70,7 @@ namespace OpenNos.DAL.EF
         public byte Type { get; set; }
 
         public byte Upgrade { get; set; }
-
-        public virtual ICollection<WarehouseItem> WarehouseItem { get; set; }
+        
 
         #endregion
     }

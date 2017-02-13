@@ -38,6 +38,12 @@ namespace OpenNos.Domain
         Part = 25,
         Teacher = 26,
         Ammo = 27,
-        Quest2 = 28
+        Quest2 = 28,
+        House = 30,
+        Garden=31,
+        Minigame=32,
+        Terrace=33,
+        MinilandTheme = 34
+
     }
 }

@@ -109,8 +109,7 @@ namespace OpenNos.DAL.EF.DB
         public virtual DbSet<StaticBonus> StaticBonus { get; set; }
 
         public virtual DbSet<Teleporter> Teleporter { get; set; }
-
-        public virtual DbSet<WarehouseItem> WarehouseItem { get; set; }
+        
 
         #endregion
 
@@ -138,12 +137,6 @@ namespace OpenNos.DAL.EF.DB
 
             modelBuilder.Entity<Account>()
                 .HasMany(e => e.PenaltyLog)
-                .WithRequired(e => e.Account)
-                .HasForeignKey(e => e.AccountId)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Account>()
-                .HasMany(e => e.GeneralLog)
                 .WithRequired(e => e.Account)
                 .HasForeignKey(e => e.AccountId)
                 .WillCascadeOnDelete(false);
@@ -211,18 +204,6 @@ namespace OpenNos.DAL.EF.DB
                 .HasForeignKey(e => e.CharacterId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Account>()
-                .HasMany(e => e.WarehouseItem)
-                .WithOptional(e => e.Account)
-                .HasForeignKey(e => e.AccountId)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Family>()
-                .HasMany(e => e.WarehouseItem)
-                .WithOptional(e => e.Family)
-                .HasForeignKey(e => e.FamilyId)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<Character>()
                 .HasMany(e => e.Mail1)
                 .WithRequired(e => e.Receiver)
@@ -250,12 +231,6 @@ namespace OpenNos.DAL.EF.DB
             modelBuilder.Entity<BazaarItem>()
                 .HasRequired(e => e.ItemInstance)
                 .WithMany(e => e.BazaarItem)
-                .HasForeignKey(e => e.ItemInstanceId)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<WarehouseItem>()
-                .HasRequired(e => e.ItemInstance)
-                .WithMany(e => e.WarehouseItem)
                 .HasForeignKey(e => e.ItemInstanceId)
                 .WillCascadeOnDelete(false);
 

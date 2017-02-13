@@ -40,7 +40,7 @@ namespace OpenNos.Handler
         [Packet("Char_NEW")]
         public void CreateCharacter(string packet)
         {
-             Logger.Debug(Session.GenerateIdentity(), packet);
+            Logger.Debug(Session.GenerateIdentity(), packet);
             if (Session.HasCurrentMapInstance)
             {
                 return;
@@ -263,8 +263,7 @@ namespace OpenNos.Handler
                                 Name = account.Name,
                                 Password = account.Password.ToLower(),
                                 Authority = account.Authority,
-                                LastCompliment = account.LastCompliment
-                            };
+                        };
                             accountobject.Initialize();
 
                             Session.InitializeAccount(accountobject);
@@ -325,17 +324,17 @@ namespace OpenNos.Handler
                     Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2])) as Character;
                     if (character != null)
                     {
+                        character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s=>s.CharacterId == character.CharacterId).ToList();
                         character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId((short)character.MapId);
                         character.PositionX = character.MapX;
                         character.PositionY = character.MapY;
                         character.Authority = Session.Account.Authority;
                         Session.SetCharacter(character);
-                        if (Session.Character.LastLogin.Date != DateTime.Now.Date)
+                        if (!Session.Character.GeneralLogs.Any(s=> s.Timestamp == DateTime.Now && s.LogData == "World" && s.LogType == "Connection" ))
                         {
                             Session.Character.SpAdditionPoint += Session.Character.SpPoint;
                             Session.Character.SpPoint = 10000;
                         }
-                        Session.Character.LastLogin = DateTime.Now;
                         if (Session.Character.Hp > Session.Character.HPLoad())
                         {
                             Session.Character.Hp = (int)Session.Character.HPLoad();
@@ -344,8 +343,6 @@ namespace OpenNos.Handler
                         {
                             Session.Character.Mp = (int)Session.Character.MPLoad();
                         }
-                      
-
                         Session.Character.Respawns = DAOFactory.RespawnDAO.LoadByCharacter(Session.Character.CharacterId).ToList();
                         Session.Character.StaticBonusList = DAOFactory.StaticBonusDAO.LoadByCharacterId(Session.Character.CharacterId).ToList();
                         Session.Character.LoadInventory();
@@ -355,7 +352,7 @@ namespace OpenNos.Handler
                         {
                             Session.Character.CharacterLife();
                         });
-                        ServerManager.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Connection", Timestamp = DateTime.Now });
+                        Session.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Connection", Timestamp = DateTime.Now });
 
                         Session.SendPacket("OK");
 

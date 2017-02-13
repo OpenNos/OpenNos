@@ -28,7 +28,6 @@ namespace OpenNos.DAL.EF
         {
             FamilyCharacters = new HashSet<FamilyCharacter>();
             FamilyLogs = new HashSet<FamilyLog>();
-            WarehouseItem = new HashSet<WarehouseItem>();
         }
 
         #endregion
@@ -41,7 +40,7 @@ namespace OpenNos.DAL.EF
 
         public long FamilyId { get; set; }
 
-        public virtual ICollection<WarehouseItem> WarehouseItem { get; set; }
+        public byte WarehouseSize { get; set; }
 
         public byte FamilyLevel { get; set; }
 
