@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using System;
@@ -238,6 +239,8 @@ namespace OpenNos.GameObject
                             Session.Character.Family.WarehouseSize = 21;
                             Session.Character.Gold -= 500000;
                             Session.SendPacket(Session.Character.GenerateGold());
+                            FamilyDTO fam = Session.Character.Family;
+                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                         }
                         else
@@ -261,6 +264,8 @@ namespace OpenNos.GameObject
                             Session.Character.Family.WarehouseSize = 49;
                             Session.Character.Gold -= 2000000;
                             Session.SendPacket(Session.Character.GenerateGold());
+                            FamilyDTO fam = Session.Character.Family;
+                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                         }
                         else
@@ -284,6 +289,8 @@ namespace OpenNos.GameObject
                             Session.Character.Family.MaxSize = 70;
                             Session.Character.Gold -= 5000000;
                             Session.SendPacket(Session.Character.GenerateGold());
+                            FamilyDTO fam = Session.Character.Family;
+                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
                         }
                         else
@@ -306,6 +313,8 @@ namespace OpenNos.GameObject
                             Session.Character.Family.MaxSize = 100;
                             Session.Character.Gold -= 10000000;
                             Session.SendPacket(Session.Character.GenerateGold());
+                            FamilyDTO fam = Session.Character.Family;
+                            DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
 
                         }

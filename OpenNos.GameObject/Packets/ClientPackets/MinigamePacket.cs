@@ -14,6 +14,9 @@ namespace OpenNos.GameObject
         [PacketIndex(2)]
         public short MinigameVNum { get; set; }
 
+        [PacketIndex(3)]
+        public int? Point { get; set; }
+
         #endregion
     }
 }

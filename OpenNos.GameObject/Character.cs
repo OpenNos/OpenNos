@@ -1108,6 +1108,7 @@ namespace OpenNos.GameObject
         public int FoodMp { get; set; }
         public int MaxFood { get; set; }
         public int WareHouseSize { get; set; }
+        public short CurrentMinigame { get; set; }
         #endregion
 
         #region Methods
@@ -1266,8 +1267,15 @@ namespace OpenNos.GameObject
             else
             {
                 WearableInstance amulet = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
+                if (Session.Character.CurrentMinigame != 0 && Session.Character.LastEffect.AddSeconds(3) <= DateTime.Now)
+                {
+                    Session.Character.MapInstance.Broadcast(Session.Character.GenerateEff(Session.Character.CurrentMinigame));
+                    Session.Character.LastEffect = DateTime.Now;
+                }
+
                 if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
                 {
+                   
                     if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
                     {
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == ClassType.Adventurer ? 0 : (byte)Session.Character.Class - 1)), Session.Character.PositionX, Session.Character.PositionY);
