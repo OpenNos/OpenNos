@@ -281,7 +281,7 @@ namespace OpenNos.Handler
                                         Session.Character.SendGift(Session.Character.CharacterId, obj.VNum, obj.Amount, 0, 0, false);
                                     }
 
-                                    if (client == Session)
+                                    if (client != Session)
                                     {
                                         switch (packet.Point)
                                         {
