@@ -305,7 +305,6 @@ namespace OpenNos.Handler
 
                                 if (newItem.Any())
                                 {
-                                    newItem.ForEach(s=>Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                                     if (iteminfo.ReputPrice == 0)
                                     {
                                         Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
@@ -575,8 +574,6 @@ namespace OpenNos.Handler
                                 {
                                     Session.Character.Inventory.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
-                                inv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, 0, s.Rare, s.Upgrade, 0)));
-
                                 Session.SendPacket($"pdti 11 {inv.First().ItemVNum} {rec.Amount} 29 {inv.First().Upgrade} 0");
                                 Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
 
@@ -861,7 +858,7 @@ namespace OpenNos.Handler
             {
                 return false;
             }
-            inv.ForEach(s=> Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
+           
             shopOwnerSession.Character.Gold += shopitem.Price * amount;
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateGold());
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), Session.Character.Name, shopitem.ItemInstance.Item.Name, amount)));

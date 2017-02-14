@@ -79,7 +79,6 @@ namespace OpenNos.GameObject
                                         if (specialist != null)
                                         {
                                             session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {specialist.Item.Name} + {specialist.Upgrade}", 12));
-                                            newInv.ForEach(s=>session.SendPacket(session.Character.GenerateInventoryAdd(specialist.ItemVNum, s.Amount, specialist.Type, s.Slot, 0, 0, specialist.Upgrade, 0)));
                                         }
                                         session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
                                     }
@@ -118,7 +117,6 @@ namespace OpenNos.GameObject
                                         if (fairy != null)
                                         {
                                             session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {fairy.Item.Name} ({fairy.ElementRate}%)", 12));
-                                            newInv.ForEach(s => session.SendPacket(session.Character.GenerateInventoryAdd(fairy.ItemVNum, s.Amount, fairy.Type, s.Slot, 0, 0, fairy.Upgrade, 0)));
                                         }
                                         session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
                                     }
@@ -148,7 +146,6 @@ namespace OpenNos.GameObject
                                     if (Slot != -1)
                                     {
                                         session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
-                                        newInv.ForEach(s => session.SendPacket(session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, 0, 0, s.Upgrade, 0)));
                                         session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
                                     }
                                 }

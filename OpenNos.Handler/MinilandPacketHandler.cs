@@ -271,12 +271,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateMinilandPoint());
                                     List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(obj.VNum, obj.Amount);
                                     Session.Character.MinilandPoint -= 100;
-                                    if (inv.Any())
-                                    {
-                                        inv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
-
-                                    }
-                                    else
+                                    if (!inv.Any())
                                     {
                                         Session.Character.SendGift(Session.Character.CharacterId, obj.VNum, obj.Amount, 0, 0, false);
                                     }
@@ -369,8 +364,7 @@ namespace OpenNos.Handler
                                     List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(objlst.ElementAt(i).VNum, objlst.ElementAt(i).Amount);
                                     if (inv.Any())
                                     {
-                                        inv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
-                                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(objlst.ElementAt(i).VNum).Name} x {objlst.ElementAt(i).Amount}", 12));
+                                       Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(objlst.ElementAt(i).VNum).Name} x {objlst.ElementAt(i).Amount}", 12));
                                     }
                                     else
                                     {

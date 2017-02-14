@@ -273,6 +273,7 @@ namespace OpenNos.GameObject
                 {
                     Owner.Session.SendPacket(Owner.GenerateFStash(itemdest, itemdest.Slot));
                     Owner.Family?.InsertFamilyLog(FamilyLogType.WareHouseAdd, Owner.Name, message: $"{itemdest.ItemVNum}|{amount}");
+                    DeleteById(itemdest.Id);
                 }
            
             }
