@@ -223,6 +223,7 @@ namespace OpenNos.Handler
                         case 1://play
                             if (mlobj.ItemInstance.DurabilityPoint <= 0)
                             {
+                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_DURABILITY_POINT"),0));
                                 return;
                             }
                             if (Session.Character.MinilandPoint <= 0)
