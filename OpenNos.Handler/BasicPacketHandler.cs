@@ -233,7 +233,6 @@ namespace OpenNos.Handler
                                     WearableInstance wearable = newInv.First() as WearableInstance;
                                     wearable?.SetRarityPoint();
                                 }
-                                newInv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                                 Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.First().Item.Name} x {mail.AttachmentAmount}", 12));
 
                                 if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
@@ -979,7 +978,6 @@ namespace OpenNos.Handler
                                         }
                                         if (newInv.Any())
                                         {
-                                            newInv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                                             Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.First().Item.Name), 0));
                                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), newInv.First().Item.Name), 11));
                                         }

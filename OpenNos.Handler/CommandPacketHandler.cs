@@ -869,8 +869,7 @@ namespace OpenNos.Handler
                                 wearable.SetRarityPoint();
                             }
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                            inv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(vnum, s.Amount, iteminfo.Type, s.Slot, rare, design, upgrade, 0)));
-                        }
+                            }
                         else
                         {
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));

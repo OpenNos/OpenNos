@@ -340,7 +340,7 @@ namespace OpenNos.Handler
             }
 
             ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory);
-            ItemInstance itemdest = Session.Character.Inventory.LoadBySlotAndType(packet.NewSlot, InventoryType.Warehouse);
+            ItemInstance itemdest = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.NewSlot, InventoryType.FamilyWareHouse);
 
             // check if the destination slot is out of range
             if (packet.NewSlot > Session.Character.Family.WarehouseSize)
