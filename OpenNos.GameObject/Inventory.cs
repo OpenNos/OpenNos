@@ -243,9 +243,8 @@ namespace OpenNos.GameObject
 
                 if (inv != null)
                 {
-                    if (!Owner.Session.Character.MinilandObjects.Any(s => s.ItemInstanceId == inv.Id))
+                    if (Owner.Session.Character.MinilandObjects.Any(s => s.ItemInstanceId == inv.Id))
                     {
-                        Owner.Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_IN_MINILAND"), 0);
                         return;
                     }
 

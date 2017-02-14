@@ -608,9 +608,8 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                if (!Session.Character.MinilandObjects.Any(s => s.ItemInstanceId == inv.Id))
+                if (Session.Character.MinilandObjects.Any(s => s.ItemInstanceId == inv.Id))
                 {
-                    Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_IN_MINILAND"), 0);
                     return;
                 }
                 if (!inv.Item.IsSoldable)
