@@ -265,7 +265,7 @@ namespace OpenNos.Handler
                         case 4: // select gift
                             if (Session.Character.MinilandPoint >= 100)
                             {
-                                Gift obj = GetMinilandGift(game, (int)packet.Point);
+                                Gift obj = GetMinilandGift(packet.MinigameVNum, (int)packet.Point);
                                 if (obj != null)
                                 {
                                     Session.SendPacket($"mlo_rw {obj.VNum} {packet.Point}");
@@ -343,7 +343,7 @@ namespace OpenNos.Handler
                             List<Gift> objlst = new List<Gift>();
                             for (int i = 0; i < amount; i++)
                             {
-                                Gift s = GetMinilandGift(game, (int)packet.Point);
+                                Gift s = GetMinilandGift(packet.MinigameVNum, (int)packet.Point);
                                 if (s != null)
                                 {
                                     if (objlst.Any(o => o.VNum == s.VNum))
@@ -396,7 +396,7 @@ namespace OpenNos.Handler
             }
         }
 
-        private Gift GetMinilandGift(byte game, int point)
+        private Gift GetMinilandGift(short game, int point)
         {
             List<Gift> lst = new List<Gift>();
             Random rand = new Random();
