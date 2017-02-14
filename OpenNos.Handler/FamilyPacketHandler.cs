@@ -582,6 +582,7 @@ namespace OpenNos.Handler
                         FamilyCharacterDTO chara = targetSession.Character.FamilyCharacter;
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
 
+                        Session.Character.Family.Warehouse.GetAllItems().ForEach(s => { s.CharacterId = targetSession.Character.CharacterId; DAOFactory.IteminstanceDAO.InsertOrUpdate(s); });
                         Session.Character.FamilyCharacter.Authority = FamilyAuthority.Assistant;
                         FamilyCharacterDTO chara2 = Session.Character.FamilyCharacter;
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara2);

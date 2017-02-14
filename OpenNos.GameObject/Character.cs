@@ -5115,6 +5115,12 @@ namespace OpenNos.GameObject
                         List<ItemInstance> inventories = Inventory.GetAllItems();
                         IList<Guid> currentlySavedInventoryIds = DAOFactory.IteminstanceDAO.LoadSlotAndTypeByCharacterId(CharacterId);
 
+                        IEnumerable<MinilandObjectDTO> currentlySavedMinilandObjectEntries = DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId).ToList();
+                        foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Session.Character.MinilandObjects))
+                        {
+                            DAOFactory.MinilandObjectDAO.DeleteById(mobjToDelete.MinilandObjectId);
+                        }
+
                         // remove all which are saved but not in our current enumerable
                         foreach (var inventoryToDeleteId in currentlySavedInventoryIds.Except(inventories.Select(i => i.Id)))
                         {
@@ -5155,14 +5161,9 @@ namespace OpenNos.GameObject
                 {
                     DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
                 }
-
+                
                 IEnumerable<MinilandObjectDTO> minilandobjectEntriesToInsertOrUpdate = Session.Character.MinilandObjects.ToList();
 
-                IEnumerable<MinilandObjectDTO> currentlySavedMinilandObjectEntries = DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId).ToList();
-                foreach (MinilandObjectDTO mobjToDelete in currentlySavedMinilandObjectEntries.Except(Session.Character.MinilandObjects))
-                {
-                    DAOFactory.MinilandObjectDAO.DeleteById(mobjToDelete.MinilandObjectId);
-                }
                 foreach (MinilandObjectDTO mobjEntry in minilandobjectEntriesToInsertOrUpdate)
                 {
                     MinilandObjectDTO mobj = mobjEntry;

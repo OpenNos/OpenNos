@@ -334,7 +334,7 @@ namespace OpenNos.Handler
         [Packet("m_shop")]
         public void CreateShop(string packet)
         {
-             Logger.Debug(Session.Character.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             InventoryType[] type = new InventoryType[20];
             long[] gold = new long[20];
@@ -477,7 +477,7 @@ namespace OpenNos.Handler
         [Packet("n_run")]
         public void NpcRunFunction(string packet)
         {
-             Logger.Debug(Session.Character.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 5)
             {
@@ -501,7 +501,7 @@ namespace OpenNos.Handler
         [Packet("pdtse")]
         public void Pdtse(string packet)
         {
-             Logger.Debug(Session.Character.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length < 4 || !Session.HasCurrentMapInstance)
             {
@@ -588,7 +588,7 @@ namespace OpenNos.Handler
         [Packet("sell")]
         public void SellShop(string packet)
         {
-             Logger.Debug(Session.Character.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             if (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.IsShopping)
             {
@@ -606,6 +606,11 @@ namespace OpenNos.Handler
                 ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot, type);
                 if (inv == null || amount > inv.Amount)
                 {
+                    return;
+                }
+                if (!Session.Character.MinilandObjects.Any(s => s.ItemInstanceId == inv.Id))
+                {
+                    Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_IN_MINILAND"), 0);
                     return;
                 }
                 if (!inv.Item.IsSoldable)
@@ -657,7 +662,7 @@ namespace OpenNos.Handler
         [Packet("shopping")]
         public void Shopping(string packet)
         {
-             Logger.Debug(Session.Character.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             byte type, typeshop = 0;
             int NpcId;
@@ -769,7 +774,7 @@ namespace OpenNos.Handler
         [Packet("npc_req")]
         public void ShowShop(string packet)
         {
-             Logger.Debug(Session.Character.GenerateIdentity(), packet);
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             long owner;
             if (packetsplit.Length > 2)
@@ -858,7 +863,7 @@ namespace OpenNos.Handler
             {
                 return false;
             }
-           
+
             shopOwnerSession.Character.Gold += shopitem.Price * amount;
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateGold());
             shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), Session.Character.Name, shopitem.ItemInstance.Item.Name, amount)));

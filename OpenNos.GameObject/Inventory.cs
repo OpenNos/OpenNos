@@ -243,6 +243,12 @@ namespace OpenNos.GameObject
 
                 if (inv != null)
                 {
+                    if (!Owner.Session.Character.MinilandObjects.Any(s => s.ItemInstanceId == inv.Id))
+                    {
+                        Owner.Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_IN_MINILAND"), 0);
+                        return;
+                    }
+
                     Remove(inv.Id);
                 }
                 else
@@ -275,7 +281,7 @@ namespace OpenNos.GameObject
                     Owner.Family?.InsertFamilyLog(FamilyLogType.WareHouseAdd, Owner.Name, message: $"{itemdest.ItemVNum}|{amount}");
                     DeleteById(itemdest.Id);
                 }
-           
+
             }
         }
         private void GenerateClearInventory(InventoryType type)
