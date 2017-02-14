@@ -298,7 +298,6 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE")));
                                     return;
                                 }
-
                                 newItem.First().Rare = rare;
                                 newItem.First().Upgrade = item.Upgrade;
                                 newItem.First().Design = item.Color;

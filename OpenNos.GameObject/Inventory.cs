@@ -57,6 +57,9 @@ namespace OpenNos.GameObject
             {
                 switch (newItem.Item.Type)
                 {
+                    case InventoryType.Miniland:
+                        newItem.DurabilityPoint = newItem.Item.MinilandObjectPoint / 2;
+                        break;
                     case InventoryType.Equipment:
                         newItem = newItem.Item.ItemType == ItemType.Specialist ? new SpecialistInstance
                         {
@@ -313,7 +316,7 @@ namespace OpenNos.GameObject
                 List<ItemInstance> listitem = GetAllItems().Where(i => i.Type == type).ToList();
                 if (!place.ContainsKey(type))
                 {
-                    place.Add(type, DEFAULT_BACKPACK_SIZE + backPack * 12 - listitem.Count);
+                    place.Add(type, (type != InventoryType.Miniland ? (DEFAULT_BACKPACK_SIZE + backPack * 12) : 50)- listitem.Count);
                 }
 
                 int amount = itemgroup.Sum(s => s.Amount);
@@ -727,9 +730,9 @@ namespace OpenNos.GameObject
             IEnumerable<int> itemInstanceSlotsByType = GetAllItems().Where(i => i.Type == type).OrderBy(i => i.Slot).Select(i => (int)i.Slot);
             IEnumerable<int> instanceSlotsByType = itemInstanceSlotsByType as int[] ?? itemInstanceSlotsByType.ToArray();
             int nextFreeSlot = instanceSlotsByType.Any()
-                                ? Enumerable.Range(0, DEFAULT_BACKPACK_SIZE + backPack * 12 + 1).Except(instanceSlotsByType).FirstOrDefault()
+                                ? Enumerable.Range(0, (type != InventoryType.Miniland ? (DEFAULT_BACKPACK_SIZE + backPack * 12) : 50) + 1).Except(instanceSlotsByType).FirstOrDefault()
                                 : 0;
-            return (short?)nextFreeSlot < DEFAULT_BACKPACK_SIZE + backPack * 12 ? (short?)nextFreeSlot : null;
+            return (short?)nextFreeSlot < (type != InventoryType.Miniland ? (DEFAULT_BACKPACK_SIZE + backPack * 12) : 50) ? (short?)nextFreeSlot : null;
         }
 
         public void DepositItem(InventoryType inventory, byte slot, byte amount, byte NewSlot, ref ItemInstance item, ref ItemInstance itemdest)
