@@ -10,6 +10,7 @@ namespace OpenNos.GameObject
 
         [PacketIndex(0, SerializeToEnd = true)]
         public string Message { get; set; }
+
         #endregion
     }
 }

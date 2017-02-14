@@ -1354,4 +1354,7 @@
   <data name="MINILAND_PUBLIC" xml:space="preserve">
     <value>The mini-land is now public.</value>
   </data>
+  <data name="SUPPORT" xml:space="preserve">
+    <value>Support</value>
+  </data>
 </root>
