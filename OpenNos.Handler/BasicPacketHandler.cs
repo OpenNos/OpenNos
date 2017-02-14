@@ -1288,7 +1288,13 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), 0), ReceiverType.AllExceptMe);
+                    byte type = 0;
+                    if (Session.Character.Authority == AuthorityType.Moderator)
+                    {
+                        type = 12;
+                        message = $"[{Language.Instance.GetMessageFromKey("SUPPORT")} {Session.Character.Name}]: " + message;
+                    }
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), type), ReceiverType.AllExceptMe);
                 }
             }
         }

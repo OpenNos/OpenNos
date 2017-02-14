@@ -454,12 +454,12 @@ namespace OpenNos.GameObject
                     if (i == 50)
                     {
                         i = 0;
-                        packetList.Add($"{packetheader} {(amount)}{packet}");
+                        packetList.Add($"{packetheader} {amount}{packet}");
                         amount++;
                     }
                     else if (i == Family.FamilyLogs.Count)
                     {
-                        packetList.Add($"{packetheader} {(amount)}{packet}");
+                        packetList.Add($"{packetheader} {amount}{packet}");
                     }
                 }
 
@@ -3355,7 +3355,7 @@ namespace OpenNos.GameObject
                 {
                     color = headWearable.Design;
                 }
-                fairy = Inventory.LoadBySlotAndType((byte)EquipmentType.Fairy, InventoryType.Wear);
+                fairy = Inventory.LoadBySlotAndType((byte) EquipmentType.Fairy, InventoryType.Wear);
             }
             return $"in 1 {Name} - {CharacterId} {PositionX} {PositionY} {Direction} {(Undercover ? (byte)AuthorityType.User : (byte)Authority)} {(byte)Gender} {(byte)HairStyle} {color} {(byte)Class} {GenerateEqListForPacket()} {Math.Ceiling(Hp / HPLoad() * 100)} {Math.Ceiling(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} {Group?.GroupId ?? -1} {(fairy != null ? 2 : 0)} {fairy?.Item.Element ?? 0} 0 {fairy?.Item.Morph ?? 0} 0 {(UseSp || IsVehicled ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {(GetDignityIco() == 1 ? GetReputIco() : -GetDignityIco())} {(Invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }

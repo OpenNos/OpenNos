@@ -1339,4 +1339,7 @@
   <data name="HORN_DISAPEAR" xml:space="preserve">
     <value>Mroczny Władca zniknął</value>
   </data>
+  <data name="SUPPORT" xml:space="preserve">
+    <value>Support</value>
+  </data>
 </root>
