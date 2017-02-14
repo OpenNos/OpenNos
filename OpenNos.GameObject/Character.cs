@@ -4714,7 +4714,6 @@ namespace OpenNos.GameObject
                         List<ItemInstance> newInv = Inventory.AddToInventory(newItem);
                         if (newInv.Any())
                         {
-                            newInv.ForEach(s => Session.SendPacket(GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                             Session.SendPacket(GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
                         }
                         else

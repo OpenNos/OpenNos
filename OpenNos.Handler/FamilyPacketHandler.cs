@@ -217,10 +217,7 @@ namespace OpenNos.Handler
                 previousInventory = null;
             }
             List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(item2, item2.Item.Type);
-            if (newInv.Any())
-            {
-                newInv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
-            }
+
             Session.SendPacket(Session.Character.GenerateFStash(previousInventory, packet.Slot));
             if (previousInventory != null)
             {

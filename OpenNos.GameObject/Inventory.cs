@@ -127,6 +127,7 @@ namespace OpenNos.GameObject
                             newItem.Amount = (byte)(newItem.Amount < 0 ? 0 : newItem.Amount);
                             slot.Amount = (byte)max;
                             invlist.Add(slot);
+                            Owner.Session.SendPacket(Owner.GenerateInventoryAdd(slot.ItemVNum, slot.Amount, slot.Type, slot.Slot, slot.Rare, slot.Design, slot.Upgrade, 0));
                         }
                     }
                 }
@@ -171,7 +172,7 @@ namespace OpenNos.GameObject
                     return null;
                 }
 
-                string inventoryPacket = Owner.Session.Character.GenerateInventoryAdd(itemInstance.ItemVNum, itemInstance.Amount, type, slot, itemInstance.Rare, itemInstance.Design, itemInstance.Upgrade, 0);
+                string inventoryPacket = Owner.GenerateInventoryAdd(itemInstance.ItemVNum, itemInstance.Amount, type, slot, itemInstance.Rare, itemInstance.Design, itemInstance.Upgrade, 0);
                 if (!string.IsNullOrEmpty(inventoryPacket))
                 {
                     Owner.Session.SendPacket(inventoryPacket);

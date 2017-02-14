@@ -613,7 +613,6 @@ namespace OpenNos.Handler
                                 {
                                     Session.CurrentMapInstance.DroppedList.Remove(packet.TransportId);
                                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
-                                    newInv.ForEach(s => Session.SendPacket(Session.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
                                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {amount}", 12));
                                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
                                     {
@@ -1738,7 +1737,6 @@ namespace OpenNos.Handler
                 {
                     continue;
                 }
-                inv.ForEach(s => targetSession.SendPacket(targetSession.Character.GenerateInventoryAdd(s.ItemVNum, s.Amount, s.Type, s.Slot, s.Rare, s.Design, s.Upgrade, 0)));
             }
 
             // handle gold
