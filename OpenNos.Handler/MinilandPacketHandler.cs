@@ -408,9 +408,9 @@ namespace OpenNos.Handler
             return lst.OrderBy(s => rand.Next()).FirstOrDefault();
         }
 
-        private static int[] GetMinilandMaxPoint(byte game)
+        private int[] GetMinilandMaxPoint(byte game)
         {
-            int[] arr = new int[] { 999, 4999, 7999, 11999, 15999, 1000000 };
+            int[] arr;
             switch (game)
             {
                 case 0:
@@ -429,6 +429,9 @@ namespace OpenNos.Handler
                     arr = new int[] { 999, 4999, 7999, 11999, 15999, 1000000 };
                     break;
                 case 5:
+                    arr = new int[] { 999, 4999, 7999, 11999, 15999, 1000000 };
+                    break;
+                default:
                     arr = new int[] { 999, 4999, 7999, 11999, 15999, 1000000 };
                     break;
             }
