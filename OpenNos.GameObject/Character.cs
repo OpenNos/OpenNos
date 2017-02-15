@@ -4902,7 +4902,7 @@ namespace OpenNos.GameObject
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
             foreach (CharacterDTO character in characters.Where(s => s.CharacterId != CharacterId))
             {
-                inventories.Concat(DAOFactory.IteminstanceDAO.LoadByCharacterId(CharacterId).Where(s => s.Type == InventoryType.Warehouse).ToList());
+                inventories= inventories.Concat(DAOFactory.IteminstanceDAO.LoadByCharacterId(character.CharacterId).Where(s => s.Type == InventoryType.Warehouse).ToList());
             }
             Inventory = new Inventory(this);
             foreach (ItemInstanceDTO inventory in inventories)
