@@ -29,35 +29,30 @@ namespace OpenNos.GameObject.Event
         public static void GenerateMinilandEvent()
         {
             ServerManager.Instance.SaveAll();
-            GeneralLogDTO gen = DAOFactory.GeneralLogDAO.LoadByAccount(null).LastOrDefault(s => s.LogData == "MinilandRefresh" && s.LogType == "World");
-
-            foreach (var genlog in ServerManager.Instance.Sessions.Where(s=>s.HasSelectedCharacter).SelectMany(c => c.Character.GeneralLogs.Where(s => s.LogData == "MINILAND" && s.Timestamp > DateTime.Now.AddDays(-1)).GroupBy(s => s.CharacterId)))
+            foreach (CharacterDTO chara in DAOFactory.CharacterDAO.LoadAll())
             {
-                if (genlog.Key != null)
+                GeneralLogDTO gen = DAOFactory.GeneralLogDAO.LoadByAccount(null).LastOrDefault(s => s.LogData == "MinilandRefresh" && s.LogType == "World" && s.Timestamp.Day == DateTime.Now.Day);
+                int count = DAOFactory.GeneralLogDAO.LoadByAccount(chara.AccountId).Count(s => s.LogData == "MINILAND" && s.Timestamp > DateTime.Now.AddDays(-1) && s.CharacterId == chara.CharacterId);
+
+                ClientSession Session = ServerManager.Instance.GetSessionByCharacterId(chara.CharacterId);
+                if (Session != null)
                 {
-                    ClientSession Session = ServerManager.Instance.GetSessionByCharacterId((long)genlog.Key);
-                    if (Session != null)
-                    {
-                        Session.Character.GetReput(2 * genlog.Count());
-                        Session.Character.MinilandPoint = 2000;
-                    }
-                    else if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.ServerGroup, (long)genlog.Key).Result)
-                    {
-                        if (gen == null || gen.Timestamp.Day != DateTime.Now.Day)
-                        {
-                            CharacterDTO chara = DAOFactory.CharacterDAO.LoadById((long)genlog.Key);
-                            if (chara != null)
-                            {
-                                chara.Reput += 2 * genlog.Count();
-                                chara.MinilandPoint = 2000;
-                                DAOFactory.GeneralLogDAO.Insert(new GeneralLogDTO { IpAddress = Session.IpAddress, LogData = "MinilandRefresh", LogType = "World", Timestamp = DateTime.Now });
-                                DAOFactory.CharacterDAO.InsertOrUpdate(ref chara);
-                            }
-                        }
-                    }
+
+                    Session.Character.GetReput(2 * count);
+                    Session.Character.MinilandPoint = 2000;
                 }
-                
+                else if (!ServerCommunicationClient.Instance.HubProxy.Invoke<bool>("CharacterIsConnected", ServerManager.ServerGroup, chara.CharacterId).Result)
+                {
+                    if (gen == null)
+                    {
+                        chara.Reput += 2 * count;
+                    }
+                    chara.MinilandPoint = 2000;
+                    CharacterDTO chara2 = chara;
+                    DAOFactory.CharacterDAO.InsertOrUpdate(ref chara2);
+                }
             }
+            DAOFactory.GeneralLogDAO.Insert(new GeneralLogDTO { LogData = "MinilandRefresh", LogType = "World", Timestamp = DateTime.Now });
             ServerManager.Instance.StartedEvents.Remove(EventType.MINILANDREFRESHEVENT);
         }
 
