@@ -4900,10 +4900,10 @@ namespace OpenNos.GameObject
         {
             IEnumerable<ItemInstanceDTO> inventories = DAOFactory.IteminstanceDAO.LoadByCharacterId(CharacterId).Where(s => s.Type != InventoryType.FamilyWareHouse).ToList();
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
-            foreach (CharacterDTO character in characters.Where(s => s.CharacterId != CharacterId))
-            {
-                inventories= inventories.Concat(DAOFactory.IteminstanceDAO.LoadByCharacterId(character.CharacterId).Where(s => s.Type == InventoryType.Warehouse).ToList());
-            }
+            //foreach (CharacterDTO character in characters.Where(s => s.CharacterId != CharacterId))
+            //{
+            //    inventories= inventories.Concat(DAOFactory.IteminstanceDAO.LoadByCharacterId(character.CharacterId).Where(s => s.Type == InventoryType.Warehouse).ToList());
+            //}
             Inventory = new Inventory(this);
             foreach (ItemInstanceDTO inventory in inventories)
             {
