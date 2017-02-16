@@ -116,7 +116,7 @@ namespace OpenNos.GameObject
 
 
                 // check if item can be stapled
-                if (newItem.Item.Type == InventoryType.Etc || newItem.Item.Type == InventoryType.Main)
+                if (newItem.Type != InventoryType.Bazaar && (newItem.Item.Type == InventoryType.Etc || newItem.Item.Type == InventoryType.Main))
                 {
                     IEnumerable<ItemInstance> slotNotFull = GetAllItems().Where(i => i.ItemVNum.Equals(newItem.ItemVNum) && i.Amount < MAX_ITEM_AMOUNT);
                     int freeslot = DEFAULT_BACKPACK_SIZE + (Owner.Session.Character.HaveBackpack() ? 1 : 0) * 12 - GetAllItems().Where(s => s.Type == newItem.Type).Count();
@@ -316,7 +316,7 @@ namespace OpenNos.GameObject
                 List<ItemInstance> listitem = GetAllItems().Where(i => i.Type == type).ToList();
                 if (!place.ContainsKey(type))
                 {
-                    place.Add(type, (type != InventoryType.Miniland ? (DEFAULT_BACKPACK_SIZE + backPack * 12) : 50)- listitem.Count);
+                    place.Add(type, (type != InventoryType.Miniland ? (DEFAULT_BACKPACK_SIZE + backPack * 12) : 50) - listitem.Count);
                 }
 
                 int amount = itemgroup.Sum(s => s.Amount);
