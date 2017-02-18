@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace OpenNos.Import.Console
@@ -46,7 +45,7 @@ namespace OpenNos.Import.Console
 
         #region Methods
 
-        public void ImportAccounts()
+        public static void ImportAccounts()
         {
             AccountDTO acc1 = new AccountDTO
             {
@@ -815,8 +814,10 @@ namespace OpenNos.Import.Console
 
                     if (currentLine.Length > 2 && currentLine[1] == "VNUM")
                     {
-                        npc = new NpcMonsterDTO();
-                        npc.NpcMonsterVNum = Convert.ToInt16(currentLine[2]);
+                        npc = new NpcMonsterDTO
+                        {
+                            NpcMonsterVNum = Convert.ToInt16(currentLine[2])
+                        };
                         itemAreaBegin = true;
                         unknownData = 0;
                     }
@@ -1786,8 +1787,10 @@ namespace OpenNos.Import.Console
 
                     if (currentLine.Length > 2 && currentLine[1] == "VNUM")
                     {
-                        skill = new SkillDTO();
-                        skill.SkillVNum = short.Parse(currentLine[2]);
+                        skill = new SkillDTO
+                        {
+                            SkillVNum = short.Parse(currentLine[2])
+                        };
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
@@ -1804,9 +1807,9 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
                     {
-                        for (int i = 3; i < currentLine.Count() - 4; i += 3)
+                        for (int i = 3; i < currentLine.Length - 4; i += 3)
                         {
-                            ComboDTO comb = new ComboDTO()
+                            ComboDTO comb = new ComboDTO
                             {
                                 SkillVNum = skill.SkillVNum,
                                 Hit = short.Parse(currentLine[i]),
