@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace OpenNos.Import.Console
@@ -52,7 +53,7 @@ namespace OpenNos.Import.Console
                 AccountId = 1,
                 Authority = AuthorityType.GameMaster,
                 Name = "admin",
-                Password = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff"
+                Password = EncryptionBase.Sha512("test")
             };
             DAOFactory.AccountDAO.InsertOrUpdate(ref acc1);
 
@@ -61,7 +62,7 @@ namespace OpenNos.Import.Console
                 AccountId = 2,
                 Authority = AuthorityType.User,
                 Name = "test",
-                Password = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff"
+                Password = EncryptionBase.Sha512("test")
             };
             DAOFactory.AccountDAO.InsertOrUpdate(ref acc2);
         }

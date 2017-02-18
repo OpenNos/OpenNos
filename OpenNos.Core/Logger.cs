@@ -48,8 +48,8 @@ namespace OpenNos.Core
         /// <summary>
         /// Wraps up the message with the CallerMemberName
         /// </summary>
+        /// <param name="Caller"></param>
         /// <param name="message"></param>
-        /// <param name="sessionId"></param>
         /// <param name="memberName"></param>
         public static void Debug(string Caller, string message, [CallerMemberName] string memberName = "")
         {
