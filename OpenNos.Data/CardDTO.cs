@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class CardDTO
+    public class CardDTO : MappingBaseDTO
     {
         #region Properties
 

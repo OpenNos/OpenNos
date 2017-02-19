@@ -12,25 +12,20 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System.Collections.Generic;
+using OpenNos.Data;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IBazaarItemDAO : IMappingBaseDAO
+    public interface ICardDAO : IMappingBaseDAO
     {
         #region Methods
 
-        DeleteResult Delete(long bazaarItemId);
+        CardDTO Insert(ref CardDTO cardObject);
 
-        SaveResult InsertOrUpdate(ref BazaarItemDTO bazaarItem);
+        IEnumerable<CardDTO> LoadAll();
 
-        IEnumerable<BazaarItemDTO> LoadAll();
-
-        BazaarItemDTO LoadById(long bazaarItemId);
-
-        void RemoveOutDated();
+        CardDTO LoadById(short cardId);
 
         #endregion
     }

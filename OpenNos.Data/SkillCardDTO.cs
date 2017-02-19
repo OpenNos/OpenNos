@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class SkillCardDTO
+    public class SkillCardDTO : MappingBaseDTO
     {
         #region Properties
 

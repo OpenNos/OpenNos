@@ -14,7 +14,7 @@ namespace OpenNos.DAL.EF
 
         protected IMapper _mapper;
 
-        protected IDictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
+        protected readonly IDictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
 
         #endregion
 

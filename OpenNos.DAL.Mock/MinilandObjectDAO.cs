@@ -12,21 +12,18 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using System.Collections.Generic;
-using System.Linq;
-using OpenNos.GameObject;
 using OpenNos.Data.Enums;
-using OpenNos.DAL.EF;
+using OpenNos.GameObject;
+using System;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
     public class MinilandObjectDAO : BaseDAO<MinilandObjectDTO>, IMinilandObjectDAO
     {
         #region Methods
+
         public DeleteResult DeleteById(long id)
         {
             throw new NotImplementedException();
@@ -41,6 +38,7 @@ namespace OpenNos.DAL.Mock
         {
             throw new NotImplementedException();
         }
+
         #endregion
     }
 }

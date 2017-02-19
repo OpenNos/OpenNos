@@ -12,25 +12,36 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using OpenNos.Data.Enums;
+using System;
 using System.Collections.Generic;
 
-namespace OpenNos.DAL.Interface
+namespace OpenNos.DAL.Mock
 {
-    public interface IBazaarItemDAO : IMappingBaseDAO
+    public class SkillCardDAO : BaseDAO<SkillCardDTO>, ISkillCardDAO
     {
         #region Methods
 
-        DeleteResult Delete(long bazaarItemId);
+        public void Insert(List<SkillCardDTO> skillCards)
+        {
+            throw new NotImplementedException();
+        }
 
-        SaveResult InsertOrUpdate(ref BazaarItemDTO bazaarItem);
+        public IEnumerable<SkillCardDTO> LoadByCardId(short cardId)
+        {
+            throw new NotImplementedException();
+        }
 
-        IEnumerable<BazaarItemDTO> LoadAll();
+        public SkillCardDTO LoadByCardIdAndSkillVNum(short cardId, short skillVNum)
+        {
+            throw new NotImplementedException();
+        }
 
-        BazaarItemDTO LoadById(long bazaarItemId);
-
-        void RemoveOutDated();
+        public IEnumerable<SkillCardDTO> LoadBySkillVNum(short skillVNum)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
     }

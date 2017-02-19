@@ -119,11 +119,8 @@ namespace OpenNos.World
                     Logger.Log.Info("Port already in use! Incrementing...");
                     goto portloop;
                 }
-                else
-                {
-                    Logger.Log.Error("General Error", ex);
-                    Environment.Exit(1);
-                }
+                Logger.Log.Error("General Error", ex);
+                Environment.Exit(1);
             }
 
             ServerManager.ServerGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
@@ -196,6 +193,8 @@ namespace OpenNos.World
             DAOFactory.ShopDAO.RegisterMapping(typeof(Shop)).InitializeMapper();
             DAOFactory.ShopItemDAO.RegisterMapping(typeof(ShopItemDTO)).InitializeMapper();
             DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
+            DAOFactory.CardDAO.RegisterMapping(typeof(CardDTO)).InitializeMapper();
+            DAOFactory.SkillCardDAO.RegisterMapping(typeof(SkillCardDTO)).InitializeMapper();
             DAOFactory.SkillDAO.RegisterMapping(typeof(Skill)).InitializeMapper();
             DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
             DAOFactory.StaticBonusDAO.RegisterMapping(typeof(StaticBonusDTO)).InitializeMapper();

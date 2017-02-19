@@ -22,21 +22,21 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class MapTypeMapDAO : MappingBaseDAO<MapTypeMap, MapTypeMapDTO>, IMapTypeMapDAO
+    public class SkillCardDAO : MappingBaseDAO<SkillCard, SkillCardDTO>, ISkillCardDAO
     {
         #region Methods
 
-        public void Insert(List<MapTypeMapDTO> mapTypeMaps)
+        public void Insert(List<SkillCardDTO> skillCards)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (MapTypeMapDTO mapTypeMap in mapTypeMaps)
+                    foreach (SkillCardDTO skillCard in skillCards)
                     {
-                        MapTypeMap entity = _mapper.Map<MapTypeMap>(mapTypeMap);
-                        context.MapTypeMap.Add(entity);
+                        SkillCard entity = _mapper.Map<SkillCard>(skillCard);
+                        context.SkillCard.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
                     context.SaveChanges();
@@ -48,24 +48,35 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<MapTypeMapDTO> LoadAll()
+        public IEnumerable<SkillCardDTO> LoadAll()
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapTypeMap MapTypeMap in context.MapTypeMap)
+                foreach (SkillCard skillCard in context.SkillCard)
                 {
-                    yield return _mapper.Map<MapTypeMapDTO>(MapTypeMap);
+                    yield return _mapper.Map<SkillCardDTO>(skillCard);
                 }
             }
         }
 
-        public MapTypeMapDTO LoadByMapAndMapType(short mapId, short maptypeId)
+        public IEnumerable<SkillCardDTO> LoadByCardId(short cardId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (SkillCard skillCard in context.SkillCard.Where(c => c.CardId.Equals(cardId)))
+                {
+                    yield return _mapper.Map<SkillCardDTO>(skillCard);
+                }
+            }
+        }
+
+        public SkillCardDTO LoadByCardIdAndSkillVNum(short cardId, short skillVNum)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<MapTypeMapDTO>(context.MapTypeMap.FirstOrDefault(i => i.MapId.Equals(mapId) && i.MapTypeId.Equals(maptypeId)));
+                    return _mapper.Map<SkillCardDTO>(context.SkillCard.FirstOrDefault(i => i.CardId.Equals(cardId) && i.SkillVNum.Equals(skillVNum)));
                 }
             }
             catch (Exception e)
@@ -75,24 +86,13 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<MapTypeMapDTO> LoadByMapId(short mapId)
+        public IEnumerable<SkillCardDTO> LoadBySkillVNum(short skillVNum)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapTypeMap MapTypeMap in context.MapTypeMap.Where(c => c.MapId.Equals(mapId)))
+                foreach (SkillCard skillCard in context.SkillCard.Where(c => c.SkillVNum.Equals(skillVNum)))
                 {
-                    yield return _mapper.Map<MapTypeMapDTO>(MapTypeMap);
-                }
-            }
-        }
-
-        public IEnumerable<MapTypeMapDTO> LoadByMapTypeId(short maptypeId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (MapTypeMap MapTypeMap in context.MapTypeMap.Where(c => c.MapTypeId.Equals(maptypeId)))
-                {
-                    yield return _mapper.Map<MapTypeMapDTO>(MapTypeMap);
+                    yield return _mapper.Map<SkillCardDTO>(skillCard);
                 }
             }
         }

@@ -15,7 +15,6 @@
 using OpenNos.Core;
 using OpenNos.DAL.Interface;
 using System;
-using OpenNos.DAL.EF;
 
 namespace OpenNos.DAL
 {
@@ -23,8 +22,10 @@ namespace OpenNos.DAL
     {
         #region Members
 
+        private static readonly bool _useMock;
         private static IAccountDAO _accountDAO;
         private static IBazaarItemDAO _bazaarItemDAO;
+        private static ICardDAO _cardDAO;
         private static ICellonOptionDAO _cellonoptionDAO;
         private static ICharacterDAO _characterDAO;
         private static ICharacterRelationDAO _characterRelationDAO;
@@ -43,6 +44,7 @@ namespace OpenNos.DAL
         private static IMapNpcDAO _mapnpcDAO;
         private static IMapTypeDAO _maptypeDAO;
         private static IMapTypeMapDAO _maptypemapDAO;
+        private static IMinilandObjectDAO _minilandobjectDAO;
         private static INpcMonsterDAO _npcmonsterDAO;
         private static INpcMonsterSkillDAO _npcmonsterskillDAO;
         private static IPenaltyLogDAO _penaltylogDAO;
@@ -55,12 +57,10 @@ namespace OpenNos.DAL
         private static IShopDAO _shopDAO;
         private static IShopItemDAO _shopitemDAO;
         private static IShopSkillDAO _shopskillDAO;
+        private static ISkillCardDAO _skillCardDAO;
         private static ISkillDAO _skillDAO;
         private static IStaticBonusDAO _staticBonusDAO;
         private static ITeleporterDAO _teleporterDAO;
-        private static IMinilandObjectDAO _minilandobjectDAO;
-        private static readonly bool _useMock;
-
 
         #endregion
 
@@ -124,6 +124,26 @@ namespace OpenNos.DAL
                 }
 
                 return _bazaarItemDAO;
+            }
+        }
+
+        public static ICardDAO CardDAO
+        {
+            get
+            {
+                if (_cardDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _cardDAO = new Mock.CardDAO();
+                    }
+                    else
+                    {
+                        _cardDAO = new EF.CardDAO();
+                    }
+                }
+
+                return _cardDAO;
             }
         }
 
@@ -487,26 +507,6 @@ namespace OpenNos.DAL
             }
         }
 
-        public static INpcMonsterDAO NpcMonsterDAO
-        {
-            get
-            {
-                if (_npcmonsterDAO == null)
-                {
-                    if (_useMock)
-                    {
-                        _npcmonsterDAO = new Mock.NpcMonsterDAO();
-                    }
-                    else
-                    {
-                        _npcmonsterDAO = new EF.NpcMonsterDAO();
-                    }
-                }
-
-                return _npcmonsterDAO;
-            }
-        }
-
         public static IMinilandObjectDAO MinilandObjectDAO
         {
             get
@@ -524,6 +524,26 @@ namespace OpenNos.DAL
                 }
 
                 return _minilandobjectDAO;
+            }
+        }
+
+        public static INpcMonsterDAO NpcMonsterDAO
+        {
+            get
+            {
+                if (_npcmonsterDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _npcmonsterDAO = new Mock.NpcMonsterDAO();
+                    }
+                    else
+                    {
+                        _npcmonsterDAO = new EF.NpcMonsterDAO();
+                    }
+                }
+
+                return _npcmonsterDAO;
             }
         }
 
@@ -744,6 +764,26 @@ namespace OpenNos.DAL
                 }
 
                 return _shopskillDAO;
+            }
+        }
+
+        public static ISkillCardDAO SkillCardDAO
+        {
+            get
+            {
+                if (_skillCardDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _skillCardDAO = new Mock.SkillCardDAO();
+                    }
+                    else
+                    {
+                        _skillCardDAO = new EF.SkillCardDAO();
+                    }
+                }
+
+                return _skillCardDAO;
             }
         }
 

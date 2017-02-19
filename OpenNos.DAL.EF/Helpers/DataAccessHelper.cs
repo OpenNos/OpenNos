@@ -27,23 +27,9 @@ namespace OpenNos.DAL.EF.Helpers
 
         #endregion
 
-        #region Instantiation
-
-        static DataAccessHelper()
-        {
-        }
-
-        #endregion
-
         #region Properties
 
-        public static OpenNosContext Context
-        {
-            get
-            {
-                return _context ?? (_context = CreateContext());
-            }
-        }
+        private static OpenNosContext Context => _context ?? (_context = CreateContext());
 
         #endregion
 
@@ -93,7 +79,7 @@ namespace OpenNos.DAL.EF.Helpers
             {
                 try
                 {
-                    context.Database.Initialize(force: true);
+                    context.Database.Initialize(true);
                     context.Database.Connection.Open();
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_INITIALIZED"));
                 }

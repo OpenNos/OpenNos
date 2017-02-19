@@ -13,24 +13,23 @@
  */
 
 using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IBazaarItemDAO : IMappingBaseDAO
+    public interface ISkillCardDAO : IMappingBaseDAO
     {
         #region Methods
 
-        DeleteResult Delete(long bazaarItemId);
+        void Insert(List<SkillCardDTO> skillCards);
 
-        SaveResult InsertOrUpdate(ref BazaarItemDTO bazaarItem);
+        IEnumerable<SkillCardDTO> LoadAll();
 
-        IEnumerable<BazaarItemDTO> LoadAll();
+        SkillCardDTO LoadByCardIdAndSkillVNum(short cardId, short skillVNum);
 
-        BazaarItemDTO LoadById(long bazaarItemId);
+        IEnumerable<SkillCardDTO> LoadByCardId(short cardId);
 
-        void RemoveOutDated();
+        IEnumerable<SkillCardDTO> LoadBySkillVNum(short skillVNum);
 
         #endregion
     }
