@@ -15,11 +15,16 @@
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
     public class CardDAO : BaseDAO<CardDTO>, ICardDAO
     {
+        public void Insert(List<CardDTO> card)
+        {
+            throw new NotImplementedException();
+        }
         #region Methods
 
         public CardDTO Insert(ref CardDTO cardObject)

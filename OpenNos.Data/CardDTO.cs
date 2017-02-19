@@ -24,7 +24,7 @@ namespace OpenNos.Data
 
         public int EffectId { get; set; }
 
-        public short FirstData { get; set; }
+        public int FirstData { get; set; }
 
         public byte Level { get; set; }
 
@@ -34,11 +34,11 @@ namespace OpenNos.Data
 
         public byte Propability { get; set; }
 
-        public short SecondData { get; set; }
+        public int SecondData { get; set; }
 
         public byte SubType { get; set; }
 
-        public byte Type { get; set; }
+        public sbyte Type { get; set; }
 
         #endregion
     }

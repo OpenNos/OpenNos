@@ -70,6 +70,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} cards parsed.
+        /// </summary>
+        internal static string CARDS_PARSED {
+            get {
+                return ResourceManager.GetString("CARDS_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Database has been initialized..
         /// </summary>
         internal static string DATABASE_INITIALIZED {
@@ -214,6 +223,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Cards?.
+        /// </summary>
+        internal static string PARSE_CARDS {
+            get {
+                return ResourceManager.GetString("PARSE_CARDS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to parse Drop? !for MapType dependant drop use MapTypes!.
         /// </summary>
         internal static string PARSE_DROP {
@@ -246,15 +264,6 @@ namespace OpenNos.Import.Console.Resource {
         internal static string PARSE_MAPS {
             get {
                 return ResourceManager.GetString("PARSE_MAPS", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Do you want to parse MapTypeMaps?.
-        /// </summary>
-        internal static string PARSE_MAPTYPEMAPS {
-            get {
-                return ResourceManager.GetString("PARSE_MAPTYPEMAPS", resourceCulture);
             }
         }
         
@@ -340,6 +349,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse SkillCards?.
+        /// </summary>
+        internal static string PARSE_SKILLCARDS {
+            get {
+                return ResourceManager.GetString("PARSE_SKILLCARDS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to parse Skills?.
         /// </summary>
         internal static string PARSE_SKILLS {
@@ -408,6 +426,15 @@ namespace OpenNos.Import.Console.Resource {
         internal static string SHOPSKILLS_PARSED {
             get {
                 return ResourceManager.GetString("SHOPSKILLS_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} skillcards parsed.
+        /// </summary>
+        internal static string SKILLCARDS_PARSED {
+            get {
+                return ResourceManager.GetString("SKILLCARDS_PARSED", resourceCulture);
             }
         }
         

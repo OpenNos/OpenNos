@@ -177,9 +177,6 @@
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Voulez-vous analyser les cartes ?</value>
   </data>
-  <data name="PARSE_MAPTYPEMAPS" xml:space="preserve">
-    <value>Voulez-vous analysez carte des types de cartes ?</value>
-  </data>
   <data name="PARSE_MAPTYPES" xml:space="preserve">
     <value>Voulez-vous anlysez les types de cartes ?</value>
   </data>

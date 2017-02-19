@@ -23,6 +23,8 @@ namespace OpenNos.DAL.Interface
 
         CardDTO Insert(ref CardDTO cardObject);
 
+        void Insert(List<CardDTO> card);
+
         IEnumerable<CardDTO> LoadAll();
 
         CardDTO LoadById(short cardId);

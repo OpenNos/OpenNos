@@ -54,17 +54,17 @@ namespace OpenNos.Import.Console
             System.Console.BackgroundColor = ConsoleColor.Blue;
             System.Console.WriteLine(@"Root");
             System.Console.ResetColor();
-            System.Console.WriteLine($@"-----_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_BCard.txt");
+            System.Console.WriteLine($@"-----_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_Card.txt");
             System.Console.WriteLine($@"-----_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_Item.txt");
             System.Console.WriteLine($@"-----_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_MapIDData.txt");
             System.Console.WriteLine($@"-----_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_monster.txt");
             System.Console.WriteLine($@"-----_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_Skill.txt");
-            System.Console.WriteLine(@"-----BCard.dat");
+            System.Console.WriteLine(@"-----packet.txt");
+            System.Console.WriteLine(@"-----Card.dat");
             System.Console.WriteLine(@"-----Item.dat");
             System.Console.WriteLine(@"-----MapIDData.dat");
             System.Console.WriteLine(@"-----monster.dat");
             System.Console.WriteLine(@"-----Skill.dat");
-            System.Console.WriteLine(@"-----packet.txt");
             System.Console.BackgroundColor = ConsoleColor.Blue;
             System.Console.WriteLine(@"-----map");
             System.Console.ResetColor();
@@ -103,6 +103,10 @@ namespace OpenNos.Import.Console
                     factory.ImportPortals();
                     factory.ImportItems();
                     factory.ImportSkills();
+                    factory.ImportCards();
+
+                    // TODO: fix it!
+                    //factory.ImportSkillCards();
                     factory.ImportNpcMonsters();
                     factory.ImportNpcMonsterData();
                     factory.ImportMapNpcs();
@@ -128,85 +132,108 @@ namespace OpenNos.Import.Console
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportMapType();
-                    }
-                    System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_MAPTYPEMAPS")} [Y/n]");
-                    key = System.Console.ReadKey(true);
-                    if (key.KeyChar != 'n')
-                    {
                         factory.ImportMapTypeMap();
                     }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_ACCOUNTS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         ImportFactory.ImportAccounts();
                     }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_PORTALS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportPortals();
                     }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportItems();
                     }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_NPCMONSTERS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportNpcMonsters();
                     }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_NPCMONSTERDATA")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportNpcMonsterData();
                     }
+
+                    System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_CARDS")} [Y/n]");
+                    key = System.Console.ReadKey(true);
+                    if (key.KeyChar != 'n')
+                    {
+                        factory.ImportCards();
+                    }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_SKILLS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportSkills();
                     }
+
+                    // TODO: fix it!
+                    //System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_SKILLCARDS")} [Y/n]");
+                    //key = System.Console.ReadKey(true);
+                    //if (key.KeyChar != 'n')
+                    //{
+                    //    factory.ImportSkillCards();
+                    //}
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_MAPNPCS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportMapNpcs();
                     }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_MONSTERS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportMonsters();
                     }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_SHOPS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportShops();
                     }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_TELEPORTERS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportTeleporters();
                     }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_SHOPITEMS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportShopItems();
                     }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_SHOPSKILLS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
                         factory.ImportShopSkills();
                     }
+
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_RECIPES")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
@@ -253,6 +280,8 @@ namespace OpenNos.Import.Console
             DAOFactory.ShopDAO.RegisterMapping(typeof(ShopDTO)).InitializeMapper();
             DAOFactory.ShopItemDAO.RegisterMapping(typeof(ShopItemDTO)).InitializeMapper();
             DAOFactory.ShopSkillDAO.RegisterMapping(typeof(ShopSkillDTO)).InitializeMapper();
+            DAOFactory.CardDAO.RegisterMapping(typeof(CardDTO)).InitializeMapper();
+            DAOFactory.SkillCardDAO.RegisterMapping(typeof(SkillCardDTO)).InitializeMapper();
             DAOFactory.SkillDAO.RegisterMapping(typeof(SkillDTO)).InitializeMapper();
             DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
         }

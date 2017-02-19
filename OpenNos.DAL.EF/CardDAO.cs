@@ -45,6 +45,28 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public void Insert(List<CardDTO> cards)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (CardDTO card in cards)
+                    {
+                        Card entity = _mapper.Map<Card>(card);
+                        context.Card.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
         public IEnumerable<CardDTO> LoadAll()
         {
             using (var context = DataAccessHelper.CreateContext())

@@ -208,7 +208,7 @@
     <value>Czy chcesz wprowadzić Umiejętności?</value>
   </data>
   <data name="PARSE_TELEPORTERS" xml:space="preserve">
-    <value>Czy chcesz wprowadzić Teleportery?</value>
+    <value>Czy chcesz wprowadzić Teleporters?</value>
   </data>
   <data name="PORTALS_PARSED" xml:space="preserve">
     <value>{0} portali wprowadzonych</value>
@@ -231,13 +231,22 @@
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
     <value>{0} teleporterów wprowadzonych</value>
   </data>
-  <data name="PARSE_MAPTYPEMAPS" xml:space="preserve">
-    <value>Czy chcesz wprowadzić MapTypeMaps?</value>
-  </data>
   <data name="PARSE_NPCMONSTERDATA" xml:space="preserve">
     <value>Czy chesz wprowadzić dane NpcMonster?</value>
   </data>
   <data name="RESPAWNTYPE_PARSED" xml:space="preserve">
     <value>RespawnType został wprowadzone</value>
+  </data>
+  <data name="PARSE_CARDS" xml:space="preserve">
+    <value>Czy chcesz wprowadzić Cards?</value>
+  </data>
+  <data name="PARSE_SKILLCARDS" xml:space="preserve">
+    <value>Czy chcesz wprowadzić SkillCards?</value>
+  </data>
+  <data name="CARDS_PARSED" xml:space="preserve">
+    <value>{0} cards wprowadzonych</value>
+  </data>
+  <data name="SKILLCARDS_PARSED" xml:space="preserve">
+    <value>{0} skillcards wprowadzonych</value>
   </data>
 </root>
