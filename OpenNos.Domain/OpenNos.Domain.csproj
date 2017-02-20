@@ -53,6 +53,7 @@
     <Compile Include="MapInstanceType.cs" />
     <Compile Include="FamilyLogType.cs" />
     <Compile Include="FamilyAuthorityType.cs" />
+    <Compile Include="MateType.cs" />
     <Compile Include="MedalType.cs" />
     <Compile Include="BCardType.cs" />
     <Compile Include="BuyShopType.cs" />

@@ -15,6 +15,7 @@
 using OpenNos.Domain;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
@@ -37,6 +38,7 @@ namespace OpenNos.DAL.EF
             Mail = new HashSet<Mail>();
             Mail1 = new HashSet<Mail>();
             MinilandObject = new HashSet<MinilandObject>();
+            Nosmate = new HashSet<Nosmate>();
         }
 
         #endregion
@@ -69,6 +71,8 @@ namespace OpenNos.DAL.EF
         public virtual ICollection<CharacterRelation> CharacterRelation2 { get; set; }
 
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
+
+        public virtual ICollection<Nosmate> Nosmate { get; set; }
 
         public byte Class { get; set; }
 

@@ -12,6 +12,9 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL.EF.Entities;
+using OpenNos.Domain;
+
 namespace OpenNos.DAL.EF.DB
 {
     using System.Data.Entity;
@@ -109,7 +112,8 @@ namespace OpenNos.DAL.EF.DB
         public virtual DbSet<StaticBonus> StaticBonus { get; set; }
 
         public virtual DbSet<Teleporter> Teleporter { get; set; }
-        
+
+        public virtual DbSet<Nosmate> Nosmate { get; set; }
 
         #endregion
 
@@ -147,6 +151,12 @@ namespace OpenNos.DAL.EF.DB
 
             modelBuilder.Entity<Character>()
                 .HasMany(e => e.Inventory)
+                .WithRequired(e => e.Character)
+                .HasForeignKey(e => e.CharacterId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Character>()
+                .HasMany(e => e.Nosmate)
                 .WithRequired(e => e.Character)
                 .HasForeignKey(e => e.CharacterId)
                 .WillCascadeOnDelete(false);
@@ -389,6 +399,12 @@ namespace OpenNos.DAL.EF.DB
                 .HasMany(e => e.Drop)
                 .WithOptional(e => e.NpcMonster)
                 .HasForeignKey(e => e.MonsterVNum)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<NpcMonster>()
+                .HasMany(e => e.Nosmate)
+                .WithRequired(e => e.NpcMonster)
+                .HasForeignKey(e => e.NpcMonsterVNum)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<NpcMonster>()
