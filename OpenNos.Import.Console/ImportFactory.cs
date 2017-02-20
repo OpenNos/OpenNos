@@ -1870,9 +1870,17 @@ namespace OpenNos.Import.Console
                                 CardId = cardid,
                                 SkillVNum = SkillVNum
                             };
-                            if (DAOFactory.CardDAO.LoadById(skillCard.CardId) != null && !skillCards.Any(s=>s.CardId == skillCard.CardId && s.SkillVNum == s.SkillVNum) && DAOFactory.SkillCardDAO.LoadByCardIdAndSkillVNum(skillCard.CardId, skillCard.SkillVNum) == null)
+                            if (DAOFactory.CardDAO.LoadById(skillCard.CardId) != null && DAOFactory.SkillCardDAO.LoadByCardIdAndSkillVNum(skillCard.CardId, skillCard.SkillVNum) == null)
                             {
-                                skillCards.Add(skillCard);
+                                if ( !skillCards.Any(s => s.CardId == skillCard.CardId && s.SkillVNum == skillCard.SkillVNum))
+                                {
+                                    skillCards.Add(skillCard);
+                                }
+                                else
+                                {
+                                    Logger.Log.Debug($"skill {skillCard.SkillVNum} already have cardid  {skillCard.CardId} ");// TODO remove when fixed
+                                }
+                               
                             }
                         }
 
