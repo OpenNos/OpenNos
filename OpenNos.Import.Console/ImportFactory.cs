@@ -2139,14 +2139,7 @@ namespace OpenNos.Import.Console
                                 if (currentLine[3] == "68")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]);
-                                    if (currentLine[4] == "0")
-                                    {
-                                        skill.SecondarySkillVNum = short.Parse(currentLine[6]);
-                                    }
-                                    else
-                                    {
-                                        skill.BuffId = short.Parse(currentLine[6]);
-                                    }
+                                    skill.SecondarySkillVNum = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "69")
                                 {
@@ -2157,7 +2150,6 @@ namespace OpenNos.Import.Console
                                 if (currentLine[3] == "72")
                                 {
                                     // skill.Times = short.Parse(currentLine[5]);
-                                    skill.BuffId = short.Parse(currentLine[6]);
                                 }
                                 if (currentLine[3] == "80")
                                 {
@@ -2168,7 +2160,6 @@ namespace OpenNos.Import.Console
                                 if (currentLine[3] == "81")
                                 {
                                     skill.SkillChance = short.Parse(currentLine[5]); // abs * 4
-                                    skill.BuffId = short.Parse(currentLine[6]);
                                 }
                                 else
                                 {

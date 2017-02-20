@@ -20,8 +20,6 @@ namespace OpenNos.Data
 
         public short AttackAnimation { get; set; }
 
-        public short BuffId { get; set; }
-
         public short CastAnimation { get; set; }
 
         public short CastEffect { get; set; }
