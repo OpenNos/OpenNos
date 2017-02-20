@@ -1847,9 +1847,7 @@ namespace OpenNos.Import.Console
         {
             string fileSkillId = $"{_folder}\\Skill.dat";
             List<SkillCardDTO> skillCards = new List<SkillCardDTO>();
-            SkillCardDTO skillCard;
-            short SkillVNum = 0;
-            short cardid = 0;
+            short skillVNum = 0;
             using (StreamReader skillIdStream = new StreamReader(fileSkillId, Encoding.GetEncoding(1252)))
             {
                 string line;
@@ -1858,17 +1856,19 @@ namespace OpenNos.Import.Console
                     string[] currentLine = line.Split('\t');
                     if (currentLine.Length > 2 && currentLine[1] == "VNUM")
                     {
-                        SkillVNum = short.Parse(currentLine[2]);
+                        skillVNum = short.Parse(currentLine[2]);
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "BASIC")
                     {
-                         cardid = (short)(short.Parse(currentLine[6]) / 4);
-                        if (cardid != 0 && SkillVNum != 0)
+                        short cardChance = (short)(short.Parse(currentLine[5]) / 5);
+                        short cardId = (short)(short.Parse(currentLine[6]) / 4);
+                        if (cardId != 0 && skillVNum != 0)
                         {
-                            skillCard = new SkillCardDTO
+                            SkillCardDTO skillCard = new SkillCardDTO
                             {
-                                CardId = cardid,
-                                SkillVNum = SkillVNum
+                                CardId = cardId,
+                                SkillVNum = skillVNum,
+                                CardChance = cardChance
                             };
                             if (DAOFactory.CardDAO.LoadById(skillCard.CardId) != null && DAOFactory.SkillCardDAO.LoadByCardIdAndSkillVNum(skillCard.CardId, skillCard.SkillVNum) == null)
                             {
@@ -1878,12 +1878,12 @@ namespace OpenNos.Import.Console
                                 }
                                 else
                                 {
-                                    Logger.Log.Debug($"skill {skillCard.SkillVNum} already have cardid  {skillCard.CardId} ");// TODO remove when fixed
+                                    // TODO: remove when fixed
+                                    Logger.Log.Debug($"skill {skillCard.SkillVNum} already have cardid {skillCard.CardId}");
                                 }
                                
                             }
                         }
-
                     }
                 }
                 DAOFactory.SkillCardDAO.Insert(skillCards);
