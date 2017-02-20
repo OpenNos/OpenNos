@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL.EF.Entities;
+
 namespace OpenNos.DAL.EF
 {
     using Domain;
@@ -29,6 +31,7 @@ namespace OpenNos.DAL.EF
             MapMonster = new HashSet<MapMonster>();
             MapNpc = new HashSet<MapNpc>();
             NpcMonsterSkill = new HashSet<NpcMonsterSkill>();
+            Nosmate = new HashSet<Nosmate>();
             MonsterType = MonsterType.Unknown;
         }
 
@@ -93,6 +96,8 @@ namespace OpenNos.DAL.EF
         public short MagicDefence { get; set; }
 
         public virtual ICollection<MapMonster> MapMonster { get; set; }
+
+        public virtual ICollection<Nosmate> Nosmate { get; set; }
 
         public virtual ICollection<MapNpc> MapNpc { get; set; }
 
