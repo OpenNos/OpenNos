@@ -104,9 +104,7 @@ namespace OpenNos.Import.Console
                     factory.ImportItems();
                     factory.ImportSkills();
                     factory.ImportCards();
-
-                    // TODO: fix it!
-                    //factory.ImportSkillCards();
+                    factory.ImportSkillCards();
                     factory.ImportNpcMonsters();
                     factory.ImportNpcMonsterData();
                     factory.ImportMapNpcs();
@@ -184,13 +182,12 @@ namespace OpenNos.Import.Console
                         factory.ImportSkills();
                     }
 
-                    // TODO: fix it!
-                    //System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_SKILLCARDS")} [Y/n]");
-                    //key = System.Console.ReadKey(true);
-                    //if (key.KeyChar != 'n')
-                    //{
-                    //    factory.ImportSkillCards();
-                    //}
+                    System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_SKILLCARDS")} [Y/n]");
+                    key = System.Console.ReadKey(true);
+                    if (key.KeyChar != 'n')
+                    {
+                       factory.ImportSkillCards();
+                    }
 
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_MAPNPCS")} [Y/n]");
                     key = System.Console.ReadKey(true);

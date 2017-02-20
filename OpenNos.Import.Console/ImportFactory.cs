@@ -1847,8 +1847,9 @@ namespace OpenNos.Import.Console
         {
             string fileSkillId = $"{_folder}\\Skill.dat";
             List<SkillCardDTO> skillCards = new List<SkillCardDTO>();
-            SkillCardDTO skillCard = new SkillCardDTO();
-            int counter = 0;
+            SkillCardDTO skillCard;
+            short SkillVNum = 0;
+            short cardid = 0;
             using (StreamReader skillIdStream = new StreamReader(fileSkillId, Encoding.GetEncoding(1252)))
             {
                 string line;
@@ -1857,23 +1858,28 @@ namespace OpenNos.Import.Console
                     string[] currentLine = line.Split('\t');
                     if (currentLine.Length > 2 && currentLine[1] == "VNUM")
                     {
-                        skillCard = new SkillCardDTO
-                        {
-                            SkillVNum = short.Parse(currentLine[2])
-                        };
+                        SkillVNum = short.Parse(currentLine[2]);
                     }
-                    if (currentLine.Length > 6 && currentLine[1] == "BASIC")
+                    else if (currentLine.Length > 6 && currentLine[1] == "BASIC")
                     {
-                        skillCard.CardId = (short)(short.Parse(currentLine[6]) / 4);
-                        if (DAOFactory.CardDAO.LoadById(skillCard.CardId) != null && DAOFactory.SkillCardDAO.LoadByCardIdAndSkillVNum(skillCard.CardId, skillCard.SkillVNum) == null)
+                         cardid = (short)(short.Parse(currentLine[6]) / 4);
+                        if (cardid != 0 && SkillVNum != 0)
                         {
-                            skillCards.Add(skillCard);
-                            counter++;
+                            skillCard = new SkillCardDTO
+                            {
+                                CardId = cardid,
+                                SkillVNum = SkillVNum
+                            };
+                            if (DAOFactory.CardDAO.LoadById(skillCard.CardId) != null && DAOFactory.SkillCardDAO.LoadByCardIdAndSkillVNum(skillCard.CardId, skillCard.SkillVNum) == null)
+                            {
+                                skillCards.Add(skillCard);
+                            }
                         }
+
                     }
                 }
                 DAOFactory.SkillCardDAO.Insert(skillCards);
-                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLCARDS_PARSED"), counter));
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLCARDS_PARSED"), skillCards.Count));
                 skillIdStream.Close();
             }
         }
