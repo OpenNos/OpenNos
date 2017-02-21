@@ -45,8 +45,6 @@ namespace OpenNos.DAL.EF
 
         public short CastTime { get; set; }
 
-        public virtual ICollection<SkillCard> SkillCard { get; set; }
-
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
 
         public byte Class { get; set; }
@@ -97,6 +95,8 @@ namespace OpenNos.DAL.EF
         public short SecondarySkillVNum { get; set; }
 
         public virtual ICollection<ShopSkill> ShopSkill { get; set; }
+
+        public virtual ICollection<SkillCard> SkillCard { get; set; }
 
         public short SkillChance { get; set; }
 

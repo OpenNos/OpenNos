@@ -66,83 +66,6 @@ namespace OpenNos.Import.Console
             DAOFactory.AccountDAO.InsertOrUpdate(ref acc2);
         }
 
-        public void ImportMapNpcs()
-        {
-            int npcCounter = 0;
-            short map = 0;
-            List<MapNpcDTO> npcs = new List<MapNpcDTO>();
-            List<int> npcMvPacketsList = new List<int>();
-            Dictionary<int, short> effPacketsDictionary = new Dictionary<int, short>();
-
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("mv") && o[1].Equals("2")))
-            {
-                if (long.Parse(currentPacket[2]) >= 20000)
-                {
-                    continue;
-                }
-                if (!npcMvPacketsList.Contains(Convert.ToInt32(currentPacket[2])))
-                {
-                    npcMvPacketsList.Add(Convert.ToInt32(currentPacket[2]));
-                }
-            }
-
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("eff") && o[1].Equals("2")))
-            {
-                if (long.Parse(currentPacket[2]) >= 20000)
-                {
-                    continue;
-                }
-                if (!effPacketsDictionary.ContainsKey(Convert.ToInt32(currentPacket[2])))
-                {
-                    effPacketsDictionary.Add(Convert.ToInt32(currentPacket[2]), Convert.ToInt16(currentPacket[3]));
-                }
-            }
-
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
-            {
-                if (currentPacket.Length > 5 && currentPacket[0] == "at")
-                {
-                    map = short.Parse(currentPacket[2]);
-                    continue;
-                }
-                if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "2")
-                {
-                    MapNpcDTO npctest = new MapNpcDTO
-                    {
-                        MapX = short.Parse(currentPacket[4]),
-                        MapY = short.Parse(currentPacket[5]),
-                        MapId = map,
-                        NpcVNum = short.Parse(currentPacket[2])
-                    };
-                    if (long.Parse(currentPacket[3]) > 20000)
-                    {
-                        continue;
-                    }
-                    npctest.MapNpcId = short.Parse(currentPacket[3]);
-                    if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
-                    {
-                        npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
-                    }
-                    npctest.EffectDelay = 4750;
-                    npctest.IsMoving = npcMvPacketsList.Contains(npctest.MapNpcId);
-                    npctest.Position = byte.Parse(currentPacket[6]);
-                    npctest.Dialog = short.Parse(currentPacket[9]);
-                    npctest.IsSitting = currentPacket[13] != "1";
-                    npctest.IsDisabled = false;
-
-                    if (DAOFactory.NpcMonsterDAO.LoadByVNum(npctest.NpcVNum) == null || DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null || npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0)
-                    {
-                        continue;
-                    }
-
-                    npcs.Add(npctest);
-                    npcCounter++;
-                }
-            }
-            DAOFactory.MapNpcDAO.Insert(npcs);
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
-        }
-
         public void ImportCards()
         {
             string fileCardDat = $"{_folder}\\Card.dat";
@@ -229,6 +152,133 @@ namespace OpenNos.Import.Console
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("CARDS_PARSED"), counter));
                 npcIdStream.Close();
             }
+        }
+
+        public void ImportItemCards()
+        {
+            string fileItemId = $"{_folder}\\Item.dat";
+            List<ItemCardDTO> itemCards = new List<ItemCardDTO>();
+            short itemVNum = 0;
+            using (StreamReader skillIdStream = new StreamReader(fileItemId, Encoding.GetEncoding(1252)))
+            {
+                string line;
+                while ((line = skillIdStream.ReadLine()) != null)
+                {
+                    string[] currentLine = line.Split('\t');
+                    if (currentLine.Length > 3 && currentLine[1] == "VNUM")
+                    {
+                        itemVNum = short.Parse(currentLine[2]);
+                    }
+                    else if (currentLine.Length > 26 && currentLine[1] == "BUFF")
+                    {
+                        for (int i = 2; i < currentLine.Length; i += 5)
+                        {
+                            if (currentLine[i] == currentLine[2])
+                            {
+                                // TODO: check the negative values on cardChance !investigate!
+                                short cardChance = (short)(int.Parse(currentLine[1 + i]) / 4);
+                                short cardId = (short)(int.Parse(currentLine[2 + i]) / 4);
+                                if (cardId != 0 && itemVNum != 0)
+                                {
+                                    ItemCardDTO itemCard = new ItemCardDTO
+                                    {
+                                        CardId = cardId,
+                                        ItemVNum = itemVNum,
+                                        CardChance = cardChance
+                                    };
+                                    if (DAOFactory.CardDAO.LoadById(itemCard.CardId) != null && DAOFactory.SkillCardDAO.LoadByCardIdAndSkillVNum(itemCard.CardId, itemCard.ItemVNum) == null)
+                                    {
+                                        if (!itemCards.Any(s => s.CardId == itemCard.CardId && s.ItemVNum == itemCard.ItemVNum))
+                                        {
+                                            itemCards.Add(itemCard);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                DAOFactory.ItemCardDAO.Insert(itemCards);
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMCARDS_PARSED"), itemCards.Count));
+                skillIdStream.Close();
+            }
+        }
+
+        public void ImportMapNpcs()
+        {
+            int npcCounter = 0;
+            short map = 0;
+            List<MapNpcDTO> npcs = new List<MapNpcDTO>();
+            List<int> npcMvPacketsList = new List<int>();
+            Dictionary<int, short> effPacketsDictionary = new Dictionary<int, short>();
+
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("mv") && o[1].Equals("2")))
+            {
+                if (long.Parse(currentPacket[2]) >= 20000)
+                {
+                    continue;
+                }
+                if (!npcMvPacketsList.Contains(Convert.ToInt32(currentPacket[2])))
+                {
+                    npcMvPacketsList.Add(Convert.ToInt32(currentPacket[2]));
+                }
+            }
+
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("eff") && o[1].Equals("2")))
+            {
+                if (long.Parse(currentPacket[2]) >= 20000)
+                {
+                    continue;
+                }
+                if (!effPacketsDictionary.ContainsKey(Convert.ToInt32(currentPacket[2])))
+                {
+                    effPacketsDictionary.Add(Convert.ToInt32(currentPacket[2]), Convert.ToInt16(currentPacket[3]));
+                }
+            }
+
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
+            {
+                if (currentPacket.Length > 5 && currentPacket[0] == "at")
+                {
+                    map = short.Parse(currentPacket[2]);
+                    continue;
+                }
+                if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "2")
+                {
+                    MapNpcDTO npctest = new MapNpcDTO
+                    {
+                        MapX = short.Parse(currentPacket[4]),
+                        MapY = short.Parse(currentPacket[5]),
+                        MapId = map,
+                        NpcVNum = short.Parse(currentPacket[2])
+                    };
+                    if (long.Parse(currentPacket[3]) > 20000)
+                    {
+                        continue;
+                    }
+                    npctest.MapNpcId = short.Parse(currentPacket[3]);
+                    if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
+                    {
+                        npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
+                    }
+                    npctest.EffectDelay = 4750;
+                    npctest.IsMoving = npcMvPacketsList.Contains(npctest.MapNpcId);
+                    npctest.Position = byte.Parse(currentPacket[6]);
+                    npctest.Dialog = short.Parse(currentPacket[9]);
+                    npctest.IsSitting = currentPacket[13] != "1";
+                    npctest.IsDisabled = false;
+
+                    if (DAOFactory.NpcMonsterDAO.LoadByVNum(npctest.NpcVNum) == null || DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null || npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0)
+                    {
+                        continue;
+                    }
+
+                    npcs.Add(npctest);
+                    npcCounter++;
+                }
+            }
+            DAOFactory.MapNpcDAO.Insert(npcs);
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
         }
 
         public void ImportMaps()
@@ -727,6 +777,7 @@ namespace OpenNos.Import.Console
                     mapTypeId = (short)MapTypeEnum.Citadel;
                     objectset = true;
                 }
+
                 // add "act6.1a" and "act6.1d" when ids found
                 if (objectset && DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.MapTypeMapDAO.LoadByMapAndMapType((short)i, mapTypeId) == null)
                 {
@@ -1860,7 +1911,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "BASIC")
                     {
-                        short cardChance = (short)(short.Parse(currentLine[5]) / 5);
+                        short cardChance = (short)(short.Parse(currentLine[5]) / 4);
                         short cardId = (short)(short.Parse(currentLine[6]) / 4);
                         if (cardId != 0 && skillVNum != 0)
                         {
@@ -1872,16 +1923,10 @@ namespace OpenNos.Import.Console
                             };
                             if (DAOFactory.CardDAO.LoadById(skillCard.CardId) != null && DAOFactory.SkillCardDAO.LoadByCardIdAndSkillVNum(skillCard.CardId, skillCard.SkillVNum) == null)
                             {
-                                if ( !skillCards.Any(s => s.CardId == skillCard.CardId && s.SkillVNum == skillCard.SkillVNum))
+                                if (!skillCards.Any(s => s.CardId == skillCard.CardId && s.SkillVNum == skillCard.SkillVNum))
                                 {
                                     skillCards.Add(skillCard);
                                 }
-                                else
-                                {
-                                    // TODO: remove when fixed
-                                    Logger.Log.Debug($"skill {skillCard.SkillVNum} already have cardid {skillCard.CardId}");
-                                }
-                               
                             }
                         }
                     }
@@ -2762,7 +2807,8 @@ namespace OpenNos.Import.Console
                             case ItemType.Box:
                                 switch (item.VNum)
                                 {
-                                    // add here your custom effect/effectvalue for box item, make sure its unique for boxitems
+                                    // add here your custom effect/effectvalue for box item, make
+                                    // sure its unique for boxitems
 
                                     case 287:
                                         item.Effect = 69;

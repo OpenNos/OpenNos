@@ -61,6 +61,7 @@ namespace OpenNos.DAL
         private static ISkillDAO _skillDAO;
         private static IStaticBonusDAO _staticBonusDAO;
         private static ITeleporterDAO _teleporterDAO;
+        private static IItemCardDAO _itemCardDAO;
 
         #endregion
 
@@ -104,6 +105,26 @@ namespace OpenNos.DAL
                 }
 
                 return _accountDAO;
+            }
+        }
+
+        public static IItemCardDAO ItemCardDAO
+        {
+            get
+            {
+                if (_itemCardDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _itemCardDAO = new Mock.ItemCardDAO();
+                    }
+                    else
+                    {
+                        _itemCardDAO = new EF.ItemCardDAO();
+                    }
+                }
+
+                return _itemCardDAO;
             }
         }
 

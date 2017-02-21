@@ -25,6 +25,7 @@ namespace OpenNos.DAL.EF
         public Card()
         {
             SkillCard = new HashSet<SkillCard>();
+            ItemCard = new HashSet<ItemCard>();
         }
 
         #endregion
@@ -53,6 +54,8 @@ namespace OpenNos.DAL.EF
         public int SecondData { get; set; }
 
         public virtual ICollection<SkillCard> SkillCard { get; set; }
+
+        public virtual ICollection<ItemCard> ItemCard { get; set; }
 
         public byte SubType { get; set; }
 

@@ -249,4 +249,10 @@
   <data name="SKILLCARDS_PARSED" xml:space="preserve">
     <value>{0} skillcards wprowadzonych</value>
   </data>
+  <data name="ITEMCARDS_PARSED" xml:space="preserve">
+    <value>{0} itemcards wprowadzonych</value>
+  </data>
+  <data name="PARSE_ITEMCARDS" xml:space="preserve">
+    <value>Czy chcesz wprowadzić ItemCards?</value>
+  </data>
 </root>

@@ -62,6 +62,7 @@
     <Compile Include="FamilyDAO.cs" />
     <Compile Include="FamilyLogDAO.cs" />
     <Compile Include="GeneralLogDAO.cs" />
+    <Compile Include="ItemCardDAO.cs" />
     <Compile Include="ItemInstanceDAO.cs" />
     <Compile Include="ItemDAO.cs" />
     <Compile Include="MailDAO.cs" />

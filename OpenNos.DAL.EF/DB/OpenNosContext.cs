@@ -13,7 +13,6 @@
  */
 
 using OpenNos.DAL.EF.Entities;
-using OpenNos.Domain;
 
 namespace OpenNos.DAL.EF.DB
 {
@@ -65,6 +64,8 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Item> Item { get; set; }
 
+        public virtual DbSet<ItemCard> ItemCard { get; set; }
+
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
 
         public virtual DbSet<Mail> Mail { get; set; }
@@ -80,6 +81,8 @@ namespace OpenNos.DAL.EF.DB
         public virtual DbSet<MapTypeMap> MapTypeMap { get; set; }
 
         public virtual DbSet<MinilandObject> MinilandObject { get; set; }
+
+        public virtual DbSet<Nosmate> Nosmate { get; set; }
 
         public virtual DbSet<NpcMonster> NpcMonster { get; set; }
 
@@ -112,8 +115,6 @@ namespace OpenNos.DAL.EF.DB
         public virtual DbSet<StaticBonus> StaticBonus { get; set; }
 
         public virtual DbSet<Teleporter> Teleporter { get; set; }
-
-        public virtual DbSet<Nosmate> Nosmate { get; set; }
 
         #endregion
 
@@ -359,6 +360,18 @@ namespace OpenNos.DAL.EF.DB
             modelBuilder.Entity<SkillCard>()
                 .HasRequired(e => e.Card)
                 .WithMany(e => e.SkillCard)
+                .HasForeignKey(e => e.CardId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ItemCard>()
+                .HasRequired(e => e.Item)
+                .WithMany(e => e.ItemCard)
+                .HasForeignKey(e => e.ItemVNum)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ItemCard>()
+                .HasRequired(e => e.Card)
+                .WithMany(e => e.ItemCard)
                 .HasForeignKey(e => e.CardId)
                 .WillCascadeOnDelete(false);
 

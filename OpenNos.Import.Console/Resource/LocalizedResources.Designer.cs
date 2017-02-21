@@ -124,6 +124,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} itemcards parsed.
+        /// </summary>
+        internal static string ITEMCARDS_PARSED {
+            get {
+                return ResourceManager.GetString("ITEMCARDS_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} items parsed.
         /// </summary>
         internal static string ITEMS_PARSED {
@@ -237,6 +246,15 @@ namespace OpenNos.Import.Console.Resource {
         internal static string PARSE_DROP {
             get {
                 return ResourceManager.GetString("PARSE_DROP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse ItemCards?.
+        /// </summary>
+        internal static string PARSE_ITEMCARDS {
+            get {
+                return ResourceManager.GetString("PARSE_ITEMCARDS", resourceCulture);
             }
         }
         

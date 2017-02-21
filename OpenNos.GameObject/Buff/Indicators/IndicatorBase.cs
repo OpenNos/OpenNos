@@ -23,17 +23,17 @@ namespace OpenNos.GameObject.Buff.Indicators
         #region Members
 
         public const int _buffLevel = 1;
-        public int _level;
         public const bool BadBuff = false;
-        public int Delay = -1;
+        public const bool StaticBuff = false;
         public readonly List<BCardEntry> DelayedBuffs = new List<BCardEntry>();
         public readonly List<BCardEntry> DirectBuffs = new List<BCardEntry>();
+        public int _level;
+        public int Delay = -1;
         public int Duration;
         public int Id;
-        public int Interval = -1;
+        public int Interval = -1; // never used
         public string Name;
         public DateTime Start = DateTime.Now;
-        public const bool StaticBuff = false;
 
         #endregion
 
