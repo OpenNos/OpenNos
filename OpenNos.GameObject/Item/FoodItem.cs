@@ -12,10 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Data;
 using System;
 using System.Threading;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -82,10 +83,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            else
-            {
-                session.Character.LastPotion = DateTime.Now;
-            }
+            session.Character.LastPotion = DateTime.Now;
             Item item = inv.Item;
             switch (Effect)
             {
@@ -111,7 +109,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        session.SendPacket(session.Character.Gender == Domain.GenderType.Female
+                        session.SendPacket(session.Character.Gender == GenderType.Female
                             ? session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1)
                             : session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
                     }

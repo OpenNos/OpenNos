@@ -12,12 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.Domain;
-using OpenNos.GameObject.Event;
-using OpenNos.WebApi.Reference;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -28,6 +22,12 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL;
+using OpenNos.Domain;
+using OpenNos.GameObject.Event;
+using OpenNos.WebApi.Reference;
 
 namespace OpenNos.GameObject
 {
@@ -821,7 +821,7 @@ namespace OpenNos.GameObject
                     Guid guid = Guid.NewGuid();
                     Map mapinfo = new Map(map.MapId, map.Data)
                     {
-                        Music = map.Music,
+                        Music = map.Music
                     };
                     _maps.Add(mapinfo);
 
@@ -1123,10 +1123,7 @@ namespace OpenNos.GameObject
             {
                 return _teleporters[npcMonsterVNum];
             }
-            else
-            {
-                return new List<TeleporterDTO>();
-            }
+            return new List<TeleporterDTO>();
         }
 
         internal void TeleportOnRandomPlaceInMap(ClientSession Session, Guid guid)

@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.GameObject.Buff.BCard;
+
 namespace OpenNos.GameObject.Buff.Indicators.Item
 {
     public class ExperiencePotion : IndicatorBase
@@ -24,9 +26,9 @@ namespace OpenNos.GameObject.Buff.Indicators.Item
             Duration = 6000;
             Id = 119;
             _level = Level;
-            DirectBuffs.Add(new BCardEntry(BCard.Type.Experience, BCard.SubType.IncreasePercentage, 20, 0, false));
-            DirectBuffs.Add(new BCardEntry(BCard.Type.JobExperience, BCard.SubType.IncreasePercentage, 20, 0, false));
-            DirectBuffs.Add(new BCardEntry(BCard.Type.SPExperience, BCard.SubType.IncreasePercentage, 20, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.Experience, SubType.IncreasePercentage, 20, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.JobExperience, SubType.IncreasePercentage, 20, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.SPExperience, SubType.IncreasePercentage, 20, 0, false));
         }
 
         #endregion

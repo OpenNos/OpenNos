@@ -12,9 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
 using OpenNos.Data;
-using System.Collections.Generic;
+using OpenNos.DAL;
 
 namespace OpenNos.GameObject
 {
@@ -22,10 +21,6 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
         private CharacterDTO _character;
-        public FamilyCharacter()
-        {
-
-        }
 
         #endregion
 

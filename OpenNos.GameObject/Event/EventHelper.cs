@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
 using System;
 using System.Threading.Tasks;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Event
 {

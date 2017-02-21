@@ -12,12 +12,13 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.Linq;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Buff.Indicators;
-using System;
-using System.Linq;
+using OpenNos.GameObject.Buff.Indicators.Item;
 
 namespace OpenNos.GameObject
 {
@@ -71,22 +72,22 @@ namespace OpenNos.GameObject
                     switch (EffectValue)
                     {
                         case 1:
-                            IndicatorBase buff1 = new Buff.Indicators.Item.AttackPotion(session.Character.Level);
+                            IndicatorBase buff1 = new AttackPotion(session.Character.Level);
                             session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff1);
                             break;
                         case 2:
-                            IndicatorBase buff2 = new Buff.Indicators.Item.DefensePotion(session.Character.Level);
+                            IndicatorBase buff2 = new DefensePotion(session.Character.Level);
                             session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff2);
                             break;
                         case 3:
-                            IndicatorBase buff3 = new Buff.Indicators.Item.EnergyPotion(session.Character.Level);
+                            IndicatorBase buff3 = new EnergyPotion(session.Character.Level);
                             session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff3);
                             break;
                         case 4:
-                            IndicatorBase buff4 = new Buff.Indicators.Item.ExperiencePotion(session.Character.Level);
+                            IndicatorBase buff4 = new ExperiencePotion(session.Character.Level);
                             session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
                             session.Character.Buff.Add(buff4);
                             break;

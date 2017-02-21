@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
-using System;
 
 namespace OpenNos.GameObject
 {
@@ -229,7 +229,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            else if (SpStoneUpgrade > 80)
+            if (SpStoneUpgrade > 80)
             {
                 upmode = 5;
             }

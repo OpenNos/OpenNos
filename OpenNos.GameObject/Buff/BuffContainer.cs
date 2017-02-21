@@ -12,10 +12,12 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.GameObject.Buff.Indicators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.GameObject.Buff.BCard;
+using OpenNos.GameObject.Buff.Indicators;
+using Type = OpenNos.GameObject.Buff.BCard.Type;
 
 namespace OpenNos.GameObject.Buff
 {
@@ -97,7 +99,7 @@ namespace OpenNos.GameObject.Buff
             }
         }
 
-        public int[] Get(BCard.Type type, BCard.SubType subType, bool pvp, bool affectingOpposite = false)
+        public int[] Get(Type type, SubType subType, bool pvp, bool affectingOpposite = false)
         {
             int value1 = 0;
             int value2 = 0;

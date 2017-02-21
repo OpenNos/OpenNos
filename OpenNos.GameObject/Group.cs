@@ -12,10 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
 
 namespace OpenNos.GameObject
 {

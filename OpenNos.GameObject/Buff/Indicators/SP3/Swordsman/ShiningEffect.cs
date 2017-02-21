@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
+﻿namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
 {
     public class ShiningEffect : IndicatorBase
     {

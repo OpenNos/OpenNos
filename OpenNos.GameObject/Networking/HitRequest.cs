@@ -1,6 +1,6 @@
-﻿using OpenNos.Data;
+﻿using System;
+using OpenNos.Data;
 using OpenNos.Domain;
-using System;
 
 namespace OpenNos.GameObject.Networking
 {

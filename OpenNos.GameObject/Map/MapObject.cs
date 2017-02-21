@@ -12,20 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using System;
-using System.Collections.Generic;
-
 namespace OpenNos.GameObject
 {
 
     public class MinilandObject : MinilandObjectDTO
     {
         public ItemInstance ItemInstance;
-
-        public MinilandObject()
-        {
-
-        }
     }
 }

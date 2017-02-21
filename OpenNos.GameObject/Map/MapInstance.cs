@@ -12,15 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using EpPathFinding;
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using EpPathFinding;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {

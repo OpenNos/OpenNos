@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
+﻿namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
 {
     public class GroupHealing : IndicatorBase
     {

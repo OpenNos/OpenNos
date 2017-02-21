@@ -14,6 +14,7 @@
 
 using OpenNos.Core;
 using OpenNos.Data;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -58,7 +59,7 @@ namespace OpenNos.GameObject
                                 switch (inv.ItemVNum)
                                 {
                                     case 1219:
-                                        WearableInstance equip = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
+                                        WearableInstance equip = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(SlotEquip, (InventoryType)TypeEquip);
                                         if (equip != null && equip.IsFixed)
                                         {
                                             equip.IsFixed = false;
@@ -71,7 +72,7 @@ namespace OpenNos.GameObject
 
                                     case 1365:
                                     case 9039:
-                                        SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (Domain.InventoryType)TypeEquip);
+                                        SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(SlotEquip, (InventoryType)TypeEquip);
                                         if (specialist != null && specialist.Rare == -2)
                                         {
                                             specialist.Rare = 0;
@@ -83,7 +84,7 @@ namespace OpenNos.GameObject
                                                 session.Character.SpPoint = 10000;
                                             }
                                             session.SendPacket(session.Character.GenerateSpPoint());
-                                            session.SendPacket(session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (Domain.InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                            session.SendPacket(session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
                                             isUsed = true;
                                         }
                                         break;

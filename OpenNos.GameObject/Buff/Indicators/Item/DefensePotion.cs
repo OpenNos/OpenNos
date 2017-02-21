@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.GameObject.Buff.BCard;
+
 namespace OpenNos.GameObject.Buff.Indicators.Item
 {
     public class DefensePotion : IndicatorBase
@@ -24,7 +26,7 @@ namespace OpenNos.GameObject.Buff.Indicators.Item
             Duration = 6000;
             Id = 117;
             _level = Level;
-            DirectBuffs.Add(new BCardEntry(BCard.Type.Defense, BCard.SubType.IncreasePercentage, 20, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.Defense, SubType.IncreasePercentage, 20, 0, false));
         }
 
         #endregion

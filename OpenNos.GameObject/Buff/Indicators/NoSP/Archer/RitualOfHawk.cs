@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.GameObject.Buff.BCard;
+
 namespace OpenNos.GameObject.Buff.Indicators.NoSP.Archer
 {
     public class RitualOfHawk : IndicatorBase
@@ -22,8 +24,8 @@ namespace OpenNos.GameObject.Buff.Indicators.NoSP.Archer
             Duration = 1800;
             Id = 30;
             _level = Level;
-            DirectBuffs.Add(new BCardEntry(BCard.Type.Damage, BCard.SubType.Increase, 25, 0, false));
-            DirectBuffs.Add(new BCardEntry(BCard.Type.HitRate, BCard.SubType.Increase, 15, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.Increase, 25, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.HitRate, SubType.Increase, 15, 0, false));
         }
     }
 }

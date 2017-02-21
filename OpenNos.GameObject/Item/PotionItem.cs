@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using System;
+using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
@@ -35,10 +35,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            else
-            {
-                session.Character.LastPotion = DateTime.Now;
-            }
+            session.Character.LastPotion = DateTime.Now;
             switch (Effect)
             {
                 default:

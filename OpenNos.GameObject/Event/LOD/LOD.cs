@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Domain;
 using System;
 using System.Reactive.Linq;
+using OpenNos.Core;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Event
 {

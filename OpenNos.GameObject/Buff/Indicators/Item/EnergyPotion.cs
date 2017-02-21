@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.GameObject.Buff.BCard;
+
 namespace OpenNos.GameObject.Buff.Indicators.Item
 {
     public class EnergyPotion : IndicatorBase
@@ -24,8 +26,8 @@ namespace OpenNos.GameObject.Buff.Indicators.Item
             Duration = 6000;
             Id = 118;
             _level = Level;
-            DirectBuffs.Add(new BCardEntry(BCard.Type.HP, BCard.SubType.IncreasePercentage, 20, 0, false));
-            DirectBuffs.Add(new BCardEntry(BCard.Type.MP, BCard.SubType.IncreasePercentage, 20, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.HP, SubType.IncreasePercentage, 20, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.MP, SubType.IncreasePercentage, 20, 0, false));
         }
 
         #endregion

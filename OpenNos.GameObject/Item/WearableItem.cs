@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.Diagnostics;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
-using System;
-using System.Diagnostics;
 using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.GameObject

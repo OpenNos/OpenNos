@@ -12,30 +12,19 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
+using OpenNos.Core;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Event
 {
     public class InstantBattle
     {
         #region Methods
-
-        public static IEnumerable<Tuple<short, int, short, short>> GenerateDrop(Map map, short vnum, int amountofdrop, int amount)
-        {
-            List<Tuple<short, int, short, short>> dropParameters = new List<Tuple<short, int, short, short>>();
-            for (int i = 0; i < amountofdrop; i++)
-            {
-                MapCell cell = map.GetRandomPosition();
-                dropParameters.Add(new Tuple<short, int, short, short>(vnum, amount, cell.X, cell.Y));
-            }
-            return dropParameters;
-        }
 
         public static void GenerateInstantBattle()
         {
@@ -167,18 +156,29 @@ namespace OpenNos.GameObject.Event
             }
         }
 
-        public static List<MonsterToSummon> GenerateMonsters(Map map, short vnum, short amount, bool move)
+        private static IEnumerable<Tuple<short, int, short, short>> GenerateDrop(Map map, short vnum, int amountofdrop, int amount)
+        {
+            List<Tuple<short, int, short, short>> dropParameters = new List<Tuple<short, int, short, short>>();
+            for (int i = 0; i < amountofdrop; i++)
+            {
+                MapCell cell = map.GetRandomPosition();
+                dropParameters.Add(new Tuple<short, int, short, short>(vnum, amount, cell.X, cell.Y));
+            }
+            return dropParameters;
+        }
+
+        private static IEnumerable<MonsterToSummon> GenerateMonsters(Map map, short vnum, short amount, bool move)
         {
             List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = map.GetRandomPosition();
-                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, true));
+                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move));
             }
             return SummonParameters;
         }
 
-        public static List<Tuple<short, int, short, short>> GetInstantBattleDrop(Map map, short instantbattletype, int wave)
+        private static List<Tuple<short, int, short, short>> GetInstantBattleDrop(Map map, short instantbattletype, int wave)
         {
             List<Tuple<short, int, short, short>> dropParameters = new List<Tuple<short, int, short, short>>();
             switch (instantbattletype)
@@ -370,7 +370,7 @@ namespace OpenNos.GameObject.Event
             return dropParameters;
         }
 
-        public static List<MonsterToSummon> GetInstantBattleMonster(Map map, short instantbattletype, int wave)
+        private static List<MonsterToSummon> GetInstantBattleMonster(Map map, short instantbattletype, int wave)
         {
             List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
 

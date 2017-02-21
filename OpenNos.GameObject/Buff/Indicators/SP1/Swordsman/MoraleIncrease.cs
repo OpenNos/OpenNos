@@ -1,4 +1,4 @@
-﻿using System;
+﻿using OpenNos.GameObject.Buff.BCard;
 
 namespace OpenNos.GameObject.Buff.Indicators.SP1.Swordsman
 {
@@ -7,7 +7,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Swordsman
         public MoraleIncrease(int Level)
         {
             Name = "Morale Increase";
-            DirectBuffs.Add(new BCardEntry(BCard.Type.Morale, BCard.SubType.Increase, Level, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.Morale, SubType.Increase, Level, 0, false));
             Duration = 3600;
             _level = Level;
             Id = 72;

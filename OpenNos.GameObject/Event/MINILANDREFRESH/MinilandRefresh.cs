@@ -12,13 +12,12 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
+using System;
+using System.Linq;
 using OpenNos.Data;
+using OpenNos.DAL;
 using OpenNos.Domain;
 using OpenNos.WebApi.Reference;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenNos.GameObject.Event
 {
@@ -37,7 +36,6 @@ namespace OpenNos.GameObject.Event
                 ClientSession Session = ServerManager.Instance.GetSessionByCharacterId(chara.CharacterId);
                 if (Session != null)
                 {
-
                     Session.Character.GetReput(2 * count);
                     Session.Character.MinilandPoint = 2000;
                 }

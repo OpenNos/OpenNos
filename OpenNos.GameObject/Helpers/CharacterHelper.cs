@@ -12,8 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
 using System;
+using System.Diagnostics.CodeAnalysis;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -429,7 +430,7 @@ namespace OpenNos.GameObject.Helpers
             return p * (lvl / 5 + 1);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
+        [SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
         public static int SlPoint(short spPoint, short mode)
         {
             try

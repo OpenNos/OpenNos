@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenNos.GameObject.Buff.BCard;
 
 namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
 {
@@ -14,8 +10,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
             Duration = 3000;
             Id = 155;
             _level = Level;
-            DirectBuffs.Add(new BCardEntry(BCard.Type.HP, BCard.SubType.IncreasePercentage, 30, 0, false));
-            DirectBuffs.Add(new BCardEntry(BCard.Type.MP, BCard.SubType.IncreasePercentage, 30, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.HP, SubType.IncreasePercentage, 30, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.MP, SubType.IncreasePercentage, 30, 0, false));
         }
     }
 }

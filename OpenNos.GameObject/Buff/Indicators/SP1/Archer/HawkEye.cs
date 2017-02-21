@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.GameObject.Buff.BCard;
+
 namespace OpenNos.GameObject.Buff.Indicators.SP1.Archer
 {
     public class HawkEye : IndicatorBase
@@ -24,7 +26,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Archer
             Duration = 3000;
             Id = 74;
             _level = Level;
-            DirectBuffs.Add(new BCardEntry(BCard.Type.Effect, BCard.SubType.EagleEyes, 1, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.Effect, SubType.EagleEyes, 1, 0, false));
         }
 
         #endregion

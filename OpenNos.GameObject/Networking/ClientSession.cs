@@ -12,16 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
-using OpenNos.Domain;
-using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using OpenNos.Core;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.GameObject.Buff;
+using OpenNos.WebApi.Reference;
 
 namespace OpenNos.GameObject
 {
@@ -60,7 +61,7 @@ namespace OpenNos.GameObject
             _random = new Random((int)client.ClientId);
 
             // initialize lagging mode
-            bool isLagMode = System.Configuration.ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
+            bool isLagMode = ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
 
             // initialize network client
             _client = client;
@@ -329,7 +330,7 @@ namespace OpenNos.GameObject
             // register for servermanager
             ServerManager.Instance.RegisterSession(this);
             Character.SetSession(this);
-            Character.Buff = new Buff.BuffContainer(this);
+            Character.Buff = new BuffContainer(this);
         }
 
         private void ClearReceiveQueue()

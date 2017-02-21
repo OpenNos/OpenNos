@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core;
+using OpenNos.Data;
+using OpenNos.DAL;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -189,7 +189,7 @@ namespace OpenNos.GameObject
                 this[itemInstance.Id] = itemInstance;
                 return itemInstance;
             }
-            else return null;
+            return null;
         }
 
         public bool CanAddItem(short itemVnum)
@@ -322,7 +322,7 @@ namespace OpenNos.GameObject
                 int amount = itemgroup.Sum(s => s.Amount);
                 int rest = amount % (type == InventoryType.Equipment ? 1 : 99);
                 bool needanotherslot = listitem.Where(s => s.ItemVNum == itemgroup.Key).Sum(s => MAX_ITEM_AMOUNT - s.Amount) <= rest;
-                place[itemgroup.FirstOrDefault().Type] -= (int)(amount / (type == InventoryType.Equipment ? 1 : 99)) + (needanotherslot ? 1 : 0);
+                place[itemgroup.FirstOrDefault().Type] -= amount / (type == InventoryType.Equipment ? 1 : 99) + (needanotherslot ? 1 : 0);
 
                 if (place[itemgroup.FirstOrDefault().Type] < 0)
                     return false;
