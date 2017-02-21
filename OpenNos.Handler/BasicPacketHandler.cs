@@ -697,7 +697,7 @@ namespace OpenNos.Handler
             {
                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
             }
-            if (guriPacket[2] == "2")
+            else if (guriPacket[2] == "2")
             {
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.PositionX, Session.Character.PositionY);
             }
@@ -872,6 +872,20 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ', '^');
             switch (packetsplit[2])
             {
+                case "300":
+                    if (packetsplit[3] == "8023")
+                    {
+                        short slot;
+                        if (short.TryParse(packetsplit[4], out slot))
+                        {
+                            ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
+                            if (box != null)
+                            {
+                                box.Item.Use(Session, ref box, true);
+                            }
+                        }
+                    }
+                    break;
                 case "506":
                     if (ServerManager.Instance.EventInWaiting)
                     {
@@ -1547,9 +1561,8 @@ namespace OpenNos.Handler
             }
             Session.SendPacket(Session.Character.GenerateExts());
             Session.SendPacket(Session.Character.GenerateMlinfo());
-            Session.SendPacket("p_clear");
+            Session.SendPacket(Session.Character.GeneratePClear());
 
-            // sc_p pet // sc_n nospartner // Session.SendPacket("sc_p_stc 0");
             Session.SendPacket("pinit 0");
 
             Session.SendPacket("zzim");
@@ -1558,8 +1571,8 @@ namespace OpenNos.Handler
             // qstlist target sqst bf
             Session.SendPacket("act6");
             Session.SendPacket(Session.Character.GenerateFaction());
-
-            // sc_p pet again // sc_n nospartner again
+            Session.SendPackets(Session.Character.GenerateScP());
+            Session.SendPackets(Session.Character.GenerateScN());
 #pragma warning disable 618
             Session.Character.GenerateStartupInventory();
 #pragma warning restore 618
@@ -1607,7 +1620,6 @@ namespace OpenNos.Handler
             }
 
             // finfo - friends info
-            Session.SendPacket("p_clear");
             Session.Character.RefreshMail();
             Session.Character.LoadSentMail();
             Session.Character.DeleteTimeout();

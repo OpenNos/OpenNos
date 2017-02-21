@@ -263,7 +263,7 @@ namespace OpenNos.Handler
                                 Name = account.Name,
                                 Password = account.Password.ToLower(),
                                 Authority = account.Authority,
-                        };
+                            };
                             accountobject.Initialize();
 
                             Session.InitializeAccount(accountobject);
@@ -305,9 +305,15 @@ namespace OpenNos.Handler
                     WearableInstance currentInstance = equipmentEntry as WearableInstance;
                     equipment[(short)currentInstance.Item.EquipmentSlot] = currentInstance;
                 }
-
+                string petlist = string.Empty;
+                List<MateDTO> mates = DAOFactory.MateDAO.LoadByCharacterId(character.CharacterId).ToList();
+                for (int i = 0; i < 26; i++)
+                {
+                    //0.2105.1102.319.0.632.0.333.0.318.0.317.0.9.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1
+                    petlist += $"{(i != 0 ? "." : "")}{(mates.Count > i ? $"0.{mates.ElementAt(i).NpcMonsterVNum}" : "-1")}";
+                }
                 // 1 1 before long string of -1.-1 = act completion
-                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {equipment[(byte)EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte)EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte)EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 -1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1 {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
+                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {equipment[(byte)EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte)EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte)EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 {petlist} {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
             }
             Session.SendPacket("clist_end");
         }
@@ -317,20 +323,20 @@ namespace OpenNos.Handler
         {
             try
             {
-                 Logger.Debug(Session.GenerateIdentity(), packet);
+                Logger.Debug(Session.GenerateIdentity(), packet);
                 if (Session?.Account != null && !Session.HasSelectedCharacter)
                 {
                     string[] packetsplit = packet.Split(' ');
                     Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2])) as Character;
                     if (character != null)
                     {
-                        character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s=>s.CharacterId == character.CharacterId).ToList();
+                        character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
                         character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId((short)character.MapId);
                         character.PositionX = character.MapX;
                         character.PositionY = character.MapY;
                         character.Authority = Session.Account.Authority;
                         Session.SetCharacter(character);
-                        if (!Session.Character.GeneralLogs.Any(s=> s.Timestamp == DateTime.Now && s.LogData == "World" && s.LogType == "Connection" ))
+                        if (!Session.Character.GeneralLogs.Any(s => s.Timestamp == DateTime.Now && s.LogData == "World" && s.LogType == "Connection"))
                         {
                             Session.Character.SpAdditionPoint += Session.Character.SpPoint;
                             Session.Character.SpPoint = 10000;
@@ -348,6 +354,14 @@ namespace OpenNos.Handler
                         Session.Character.LoadInventory();
                         Session.Character.LoadQuicklists();
                         Session.Character.GenerateMiniland();
+                        DAOFactory.MateDAO.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
+                        {
+                            Mate mate = (Mate)s;
+                            mate.Owner = Session.Character;
+                            mate.GetMateTransportId();
+                            mate.Monster = ServerManager.GetNpc(s.NpcMonsterVNum);
+                            Session.Character.Mates.Add(mate);
+                        });
                         Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
                         {
                             Session.Character.CharacterLife();

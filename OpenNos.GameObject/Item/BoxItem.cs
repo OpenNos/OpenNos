@@ -36,6 +36,31 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
+                case 1:
+                    if (!delay)
+                    {
+                        session.SendPacket($"qna #guri^300^8023^{inv.Slot} {Language.Instance.GetMessageFromKey("ASK_RELEASE_PET")}");
+                    }
+                    else
+                    {
+                        if (session.CurrentMapInstance == session.Character.Miniland)
+                        {
+                            Mate mate = new Mate(session.Character, (short)EffectValue, 1,MateType.Pet) { };
+                            session.Character.Mates.Add(mate);
+                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
+                            session.SendPacket(session.Character.GenerateInfo((Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD"))));
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                            session.SendPacket(session.Character.GeneratePClear());
+                            session.SendPackets(session.Character.GenerateScP());
+                            session.SendPackets(session.Character.GenerateScN());
+                        }
+                        else
+                        {
+                            //miniland needed
+                        }
+                    }
+
+                    break;
                 case 69:
                     if (EffectValue == 1 || EffectValue == 2)
                     {

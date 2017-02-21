@@ -50,6 +50,7 @@ namespace OpenNos.GameObject
             FriendRequestCharacters = new List<long>();
             StaticBonusList = new List<StaticBonusDTO>();
             MinilandObjects = new List<MinilandObject>();
+            Mates = new List<Mate>();
         }
 
         #endregion
@@ -68,6 +69,30 @@ namespace OpenNos.GameObject
             {
                 return ServerManager.Instance.CharacterRelations == null ? new List<CharacterRelationDTO>() : ServerManager.Instance.CharacterRelations.Where(s => s.CharacterId == CharacterId || s.RelatedCharacterId == CharacterId).ToList();
             }
+        }
+
+        public List<string> GenerateScN()
+        {
+            List<string> list = new List<string>();
+            int i = 0;
+            Mates.Where(s => s.MateType == MateType.Partner).ToList().ForEach(s =>
+            {
+                list.Add($"sc_n {i} {s.GenerateScPacket()}");
+                i++;
+            });
+            return list;
+        }
+
+        public List<string> GenerateScP()
+        {
+            List<string> list = new List<string>();
+            int i= 0;
+            Mates.Where(s => s.MateType == MateType.Pet).ToList().ForEach(s =>
+            {
+                list.Add($"sc_p {i} {s.GenerateScPacket()}");
+                i++;
+            });
+            return list;
         }
 
         public short CurrentMinigame { get; set; }
@@ -125,7 +150,7 @@ namespace OpenNos.GameObject
         public int FoodMp { get; set; }
 
         public List<long> FriendRequestCharacters { get; set; }
-
+        public List<Mate> Mates { get; set; }
         public List<GeneralLogDTO> GeneralLogs { get; set; }
 
         public bool GmPvtBlock { get; set; }
@@ -405,7 +430,7 @@ namespace OpenNos.GameObject
             JobLevel = 1;
             JobLevelXp = 0;
             Session.SendPacket("npinfo 0");
-            Session.SendPacket("p_clear");
+            Session.SendPacket(Session.Character.GeneratePClear());
 
             if (characterClass == (byte)ClassType.Adventurer)
             {
@@ -1863,6 +1888,11 @@ namespace OpenNos.GameObject
                     int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                 }
             }
+        }
+
+        public string GeneratePClear()
+        {
+            return "p_clear";
         }
 
         public string GenerateFd()
@@ -4711,6 +4741,20 @@ namespace OpenNos.GameObject
                     {
                         DAOFactory.CharacterSkillDAO.InsertOrUpdate(characterSkill);
                     }
+                }
+
+
+                IEnumerable<long> currentlySavedMates = DAOFactory.MateDAO.LoadByCharacterId(CharacterId).Select(s => s.MateId);
+
+                foreach (long matesToDeleteId in currentlySavedMates.Except(Mates.Select(s => s.MateId)))
+                {
+                    DAOFactory.MateDAO.Delete(matesToDeleteId);
+                }
+
+                foreach (Mate mate in Mates)
+                {
+                    MateDTO matesave = mate;
+                    DAOFactory.MateDAO.InsertOrUpdate(ref matesave);
                 }
 
                 IEnumerable<QuicklistEntryDTO> quickListEntriesToInsertOrUpdate = QuicklistEntries.ToList();

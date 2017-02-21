@@ -21,9 +21,14 @@ namespace OpenNos.Data
     {
         #region Properties
         public byte Attack { get; set; }
+        public short MapX { get; set; }
 
+        public short MapY { get; set; }
+        public byte Direction { get; set; }
         public bool CanPickUp { get; set; }
-
+        public bool IsTeamMember { get; set; }
+        public int Hp { get; set; }
+        public int Mp { get; set; }
         public long CharacterId { get; set; }
 
         public short NpcMonsterVNum { get; set; }

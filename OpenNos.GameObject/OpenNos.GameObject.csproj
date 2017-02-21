@@ -323,6 +323,7 @@
     <Compile Include="Packets\ServerPackets\WearPacket.cs" />
     <Compile Include="Packets\ServerPackets\WithDrawPacket.cs" />
     <Compile Include="Gift.cs" />
+    <Compile Include="Mate.cs" />
     <Compile Include="Recipe.cs" />
     <Compile Include="Map\MapObject.cs" />
     <Compile Include="Shop.cs" />

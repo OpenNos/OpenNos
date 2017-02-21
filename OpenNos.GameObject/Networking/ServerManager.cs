@@ -135,6 +135,7 @@ namespace OpenNos.GameObject
         public List<CharacterDTO> TopReputation { get; set; }
 
         public Guid WorldId { get; private set; }
+        public List<int> MateIds { get; internal set; } = new List<int>();
 
         #endregion
 
@@ -895,6 +896,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateMlinfo());
                 Session.SendPacket(MinilandOwner.Character.GetMinilandObjectList());
             }
+            MinilandOwner.Character.Mates.Where(s => !s.IsTeamMember).ToList().ForEach(s => Session.SendPacket(s.GenerateIn()));
             Session.SendPackets(MinilandOwner.Character.GetMinilandEffects());
             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MINILAND_VISITOR"), Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland" && s.Timestamp.Day == DateTime.Now.Day), Session.Character.GeneralLogs.Count(s => s.LogData == "Miniland")), 10));
         }
