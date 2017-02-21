@@ -62,6 +62,7 @@
     <Compile Include="IComboDAO.cs" />
     <Compile Include="IDropDAO.cs" />
     <Compile Include="IItemCardDAO.cs" />
+    <Compile Include="IMate.cs" />
     <Compile Include="IMinilandObjectDAO.cs" />
     <Compile Include="IMappingBaseDAO.cs" />
     <Compile Include="IGeneralLogDAO.cs" />

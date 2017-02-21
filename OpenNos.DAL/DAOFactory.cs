@@ -62,7 +62,7 @@ namespace OpenNos.DAL
         private static IStaticBonusDAO _staticBonusDAO;
         private static ITeleporterDAO _teleporterDAO;
         private static IItemCardDAO _itemCardDAO;
-
+        private static IMateDAO _mateDAO;
         #endregion
 
         #region Instantiation
@@ -105,6 +105,25 @@ namespace OpenNos.DAL
                 }
 
                 return _accountDAO;
+            }
+        }
+        public static IMateDAO MateDAO
+        {
+            get
+            {
+                if (_mateDAO == null)
+                {
+                    if (_useMock)
+                    {
+                        _mateDAO = new Mock.MateDAO();
+                    }
+                    else
+                    {
+                        _mateDAO = new EF.MateDAO();
+                    }
+                }
+
+                return _mateDAO;
             }
         }
 

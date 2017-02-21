@@ -57,6 +57,7 @@
     <Compile Include="CharacterRelationDTO.cs" />
     <Compile Include="ComboDTO.cs" />
     <Compile Include="DropDTO.cs" />
+    <Compile Include="MateDTO.cs" />
     <Compile Include="FamilyCharacterDTO.cs" />
     <Compile Include="FamilyDTO.cs" />
     <Compile Include="FamilyLogDTO.cs" />

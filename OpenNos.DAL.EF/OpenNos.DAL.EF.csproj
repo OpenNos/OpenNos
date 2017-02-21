@@ -80,7 +80,8 @@
     <Compile Include="BazaarItemDAO.cs" />
     <Compile Include="CardDAO.cs" />
     <Compile Include="Entities\ItemCard.cs" />
-    <Compile Include="Entities\Nosmate.cs" />
+    <Compile Include="Entities\Mate.cs" />
+    <Compile Include="MateDAO.cs" />
     <Compile Include="ItemCardDAO.cs" />
     <Compile Include="Migrations\201702072152008_Aphrodite22.cs" />
     <Compile Include="Migrations\201702072152008_Aphrodite22.Designer.cs">
@@ -137,6 +138,10 @@
     <Compile Include="Migrations\201702210941199_Aphrodite35.cs" />
     <Compile Include="Migrations\201702210941199_Aphrodite35.Designer.cs">
       <DependentUpon>201702210941199_Aphrodite35.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702211130531_Aphrodite36.cs" />
+    <Compile Include="Migrations\201702211130531_Aphrodite36.Designer.cs">
+      <DependentUpon>201702211130531_Aphrodite36.cs</DependentUpon>
     </Compile>
     <Compile Include="MinilandObjectDAO.cs" />
     <Compile Include="CharacterRelationDAO.cs" />
@@ -454,6 +459,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702210941199_Aphrodite35.resx">
       <DependentUpon>201702210941199_Aphrodite35.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702211130531_Aphrodite36.resx">
+      <DependentUpon>201702211130531_Aphrodite36.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

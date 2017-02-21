@@ -82,7 +82,7 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<MinilandObject> MinilandObject { get; set; }
 
-        public virtual DbSet<Nosmate> Nosmate { get; set; }
+        public virtual DbSet<Mate> Mate { get; set; }
 
         public virtual DbSet<NpcMonster> NpcMonster { get; set; }
 
@@ -157,7 +157,7 @@ namespace OpenNos.DAL.EF.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
-                .HasMany(e => e.Nosmate)
+                .HasMany(e => e.Mate)
                 .WithRequired(e => e.Character)
                 .HasForeignKey(e => e.CharacterId)
                 .WillCascadeOnDelete(false);
@@ -415,7 +415,7 @@ namespace OpenNos.DAL.EF.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<NpcMonster>()
-                .HasMany(e => e.Nosmate)
+                .HasMany(e => e.Mate)
                 .WithRequired(e => e.NpcMonster)
                 .HasForeignKey(e => e.NpcMonsterVNum)
                 .WillCascadeOnDelete(false);

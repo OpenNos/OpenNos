@@ -31,7 +31,7 @@ namespace OpenNos.DAL.EF
             MapMonster = new HashSet<MapMonster>();
             MapNpc = new HashSet<MapNpc>();
             NpcMonsterSkill = new HashSet<NpcMonsterSkill>();
-            Nosmate = new HashSet<Nosmate>();
+            Mate = new HashSet<Mate>();
             MonsterType = MonsterType.Unknown;
         }
 
@@ -97,7 +97,7 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<MapMonster> MapMonster { get; set; }
 
-        public virtual ICollection<Nosmate> Nosmate { get; set; }
+        public virtual ICollection<Mate> Mate { get; set; }
 
         public virtual ICollection<MapNpc> MapNpc { get; set; }
 

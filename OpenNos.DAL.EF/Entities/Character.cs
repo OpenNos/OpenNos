@@ -38,7 +38,7 @@ namespace OpenNos.DAL.EF
             Mail = new HashSet<Mail>();
             Mail1 = new HashSet<Mail>();
             MinilandObject = new HashSet<MinilandObject>();
-            Nosmate = new HashSet<Nosmate>();
+            Mate = new HashSet<Mate>();
         }
 
         #endregion
@@ -72,7 +72,7 @@ namespace OpenNos.DAL.EF
 
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
 
-        public virtual ICollection<Nosmate> Nosmate { get; set; }
+        public virtual ICollection<Mate> Mate { get; set; }
 
         public byte Class { get; set; }
 

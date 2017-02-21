@@ -13,23 +13,18 @@
  */
 
 using OpenNos.Domain;
-using System.ComponentModel.DataAnnotations;
+using System;
 
-namespace OpenNos.DAL.EF.Entities
+namespace OpenNos.Data
 {
-    public class Nosmate
+    public class MateDTO : MappingBaseDTO
     {
         #region Properties
-
-        public virtual Character Character { get; set; }
-
         public byte Attack { get; set; }
 
         public bool CanPickUp { get; set; }
 
         public long CharacterId { get; set; }
-
-        public virtual NpcMonster NpcMonster { get; set; }
 
         public short NpcMonsterVNum { get; set; }
 
@@ -47,11 +42,9 @@ namespace OpenNos.DAL.EF.Entities
 
         public MateType MateType { get; set; }
 
-        [MaxLength(255)]
         public string Name { get; set; }
 
-        [Key]
-        public long NosmateId { get; set; }
+        public long MateId { get; set; }
 
         #endregion
     }
