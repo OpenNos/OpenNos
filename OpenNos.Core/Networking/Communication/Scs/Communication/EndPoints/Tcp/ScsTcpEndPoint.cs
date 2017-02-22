@@ -78,17 +78,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp
         /// </summary>
         public int TcpPort { get; set; }
 
-        public override bool Equals(object obj)
-        {
-            return ((ScsTcpEndPoint)obj).IpAddress == IpAddress 
-                && ((ScsTcpEndPoint)obj).TcpPort == TcpPort;
-        }
-
-        public override int GetHashCode()
-        {
-            return IpAddress.GetHashCode() + TcpPort.GetHashCode();
-        }
-
         #endregion
 
         #region Methods
@@ -109,6 +98,17 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp
         public override IScsServer CreateServer()
         {
             return new ScsTcpServer(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ((ScsTcpEndPoint)obj).IpAddress == IpAddress
+                && ((ScsTcpEndPoint)obj).TcpPort == TcpPort;
+        }
+
+        public override int GetHashCode()
+        {
+            return IpAddress.GetHashCode() + TcpPort.GetHashCode();
         }
 
         /// <summary>

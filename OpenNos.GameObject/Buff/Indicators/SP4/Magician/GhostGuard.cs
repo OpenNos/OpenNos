@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Magician
 {
     public class GhostGuard : IndicatorBase
     {
+        #region Instantiation
+
         public GhostGuard(int Level)
         {
             Name = "Ghost Guard";
@@ -15,5 +17,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Magician
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreaseCriticalChance, 30, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.DecreasePercentage, 30, 0, false, true));
         }
+
+        #endregion
     }
 }

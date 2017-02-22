@@ -20,6 +20,7 @@ using OpenNos.GameObject;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -539,7 +540,6 @@ namespace OpenNos.Handler
 
                     message = message.Trim();
 
-
                     CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(characterId);
                     if (chara != null)
                     {
@@ -886,6 +886,7 @@ namespace OpenNos.Handler
                         }
                     }
                     break;
+
                 case "506":
                     if (ServerManager.Instance.EventInWaiting)
                     {
@@ -1295,8 +1296,8 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                string language = new CultureInfo(System.Configuration.ConfigurationManager.AppSettings["Language"]).EnglishName;
-                if (message.Split(' ').Length > 3 && System.Configuration.ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(message))
+                string language = new CultureInfo(ConfigurationManager.AppSettings["Language"]).EnglishName;
+                if (message.Split(' ').Length > 3 && ConfigurationManager.AppSettings["MainLanguageRequired"].ToLower() == "true" && !Language.Instance.CheckMessageIsCorrectLanguage(message))
                 {
                     Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 2));
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LANGUAGE_REQUIRED"), language), 11));
@@ -1510,11 +1511,11 @@ namespace OpenNos.Handler
                 return;
             }
             Session.CurrentMapInstance = Session.Character.MapInstance;
-            if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType != "Connection") < 2)
+            if (ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType != "Connection") < 2)
             {
                 Session.SendPacket("scene 40");
             }
-            if (System.Configuration.ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
+            if (ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
             {
                 Assembly assembly = Assembly.GetEntryAssembly();
                 string productVersion = assembly != null && assembly.Location != null ? FileVersionInfo.GetVersionInfo(assembly.Location).ProductVersion : "1337";

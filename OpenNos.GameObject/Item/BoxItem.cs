@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using System.Collections.Generic;
-using System.Linq;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -45,22 +45,19 @@ namespace OpenNos.GameObject
                     {
                         if (session.CurrentMapInstance == session.Character.Miniland)
                         {
-                            Mate mate = new Mate(session.Character, (short)EffectValue, 1,MateType.Pet) { };
+                            Mate mate = new Mate(session.Character, (short)EffectValue, 1, MateType.Pet);
                             session.Character.Mates.Add(mate);
                             session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
-                            session.SendPacket(session.Character.GenerateInfo((Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD"))));
+                            session.SendPacket(session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             session.SendPacket(session.Character.GeneratePClear());
                             session.SendPackets(session.Character.GenerateScP());
                             session.SendPackets(session.Character.GenerateScN());
                         }
-                        else
-                        {
-                            //miniland needed
-                        }
                     }
 
                     break;
+
                 case 69:
                     if (EffectValue == 1 || EffectValue == 2)
                     {

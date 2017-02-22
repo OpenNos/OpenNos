@@ -97,7 +97,6 @@ namespace OpenNos.Handler
             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
             int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
             Session.SendPacket(Session.Character.GenerateGInfo());
-
         }
 
         [Packet("#glmk")]
@@ -147,14 +146,13 @@ namespace OpenNos.Handler
                         Experience = 0,
                         Authority = Session.Character.CharacterId == c.Character.CharacterId ? FamilyAuthority.Head : FamilyAuthority.Assistant,
                         FamilyId = family.FamilyId,
-                        Rank = 0,
+                        Rank = 0
                     };
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
                 }
                 ServerManager.Instance.FamilyRefresh(family.FamilyId);
                 int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                 Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
-
             }
         }
 
@@ -165,7 +163,7 @@ namespace OpenNos.Handler
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
-                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerCanShout) || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerCanShout || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                 {
                     string msg = string.Empty;
                     int i = 0;
@@ -187,177 +185,7 @@ namespace OpenNos.Handler
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             Session.SendPacket("today_stc");
         }
-        public void FamilyWithdraw(FWithdrawPacket packet)
-        {
-            if (Session.Character.Family == null ||
-              !
-           (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
-           || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant)
-           || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL)
-           || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL)
-           )
-          )
-            {
-                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
-                return;
-            }
-            ItemInstance previousInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.Slot, InventoryType.FamilyWareHouse);
-            if (packet.Amount <= 0 || previousInventory == null || packet.Amount > previousInventory.Amount)
-            {
-                return;
-            }
-            ItemInstance item2 = previousInventory.DeepCopy();
-            item2.Id = Guid.NewGuid();
-            item2.Amount = packet.Amount;
-            item2.CharacterId = Session.Character.CharacterId;
 
-            previousInventory.Amount -= packet.Amount;
-            if (previousInventory.Amount <= 0)
-            {
-                previousInventory = null;
-            }
-            List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(item2, item2.Item.Type);
-
-            Session.SendPacket(Session.Character.GenerateFStash(previousInventory, packet.Slot));
-            if (previousInventory != null)
-            {
-                DAOFactory.IteminstanceDAO.InsertOrUpdate(previousInventory);
-            }
-            else
-            {
-                FamilyCharacter fhead = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
-                if (fhead == null)
-                    return;
-                DAOFactory.IteminstanceDAO.DeleteFromSlotAndType(fhead.CharacterId, packet.Slot, InventoryType.FamilyWareHouse);
-            }
-            Session.Character.Family.InsertFamilyLog(FamilyLogType.WareHouseRemove, Session.Character.Name, message : $"{item2.ItemVNum}|{packet.Amount}");
-
-        }
-        public void FamilyRepos(FReposPacket packet)
-        {
-            ItemInstance sourceInventory;
-            ItemInstance destinationInventory;
-
-            if (Session.Character.Family == null ||
-                !
-             (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
-             || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant)
-             || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL)
-             || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL)
-             )
-            )
-            {
-                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
-                return;
-            }
-
-            // check if the character is allowed to move the item
-            if (Session.Character.InExchangeOrTrade || packet.Amount <= 0)
-            {
-                return;
-            }
-            if (packet.NewSlot > Session.Character.Family.WarehouseSize)
-            {
-                return;
-            }
-
-            sourceInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.OldSlot, InventoryType.FamilyWareHouse);
-            destinationInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.NewSlot, InventoryType.FamilyWareHouse);
-
-            if (sourceInventory != null && packet.Amount <= sourceInventory.Amount)
-            {
-                if (destinationInventory == null)
-                {
-                    destinationInventory = sourceInventory.DeepCopy();
-                    sourceInventory.Amount -= packet.Amount;
-                    destinationInventory.Amount = packet.Amount;
-                    destinationInventory.Slot = packet.NewSlot;
-                    if (sourceInventory.Amount > 0)
-                    {
-                        destinationInventory.Id = Guid.NewGuid();
-                    }
-                    else
-                    {
-                        sourceInventory = null;
-                    }
-                }
-                else
-                {
-                    if (destinationInventory.ItemVNum == sourceInventory.ItemVNum && (byte)sourceInventory.Item.Type != 0)
-                    {
-                        if (destinationInventory.Amount + packet.Amount > 99)
-                        {
-                            int saveItemCount = destinationInventory.Amount;
-                            destinationInventory.Amount = 99;
-                            sourceInventory.Amount = (byte)(saveItemCount + sourceInventory.Amount - 99);
-                        }
-                        else
-                        {
-                            destinationInventory.Amount += packet.Amount;
-                            sourceInventory.Amount -= packet.Amount;
-                            if (sourceInventory.Amount == 0)
-                            {
-                                DAOFactory.IteminstanceDAO.Delete(sourceInventory.Id);
-                                sourceInventory = null;
-                            }
-
-                        }
-                    }
-                    else
-                    {
-                        destinationInventory.Slot = packet.OldSlot;
-                        sourceInventory.Slot = packet.NewSlot;
-                    }
-                }
-            }
-            if (sourceInventory != null && sourceInventory.Amount > 0)
-            {
-                DAOFactory.IteminstanceDAO.InsertOrUpdate(sourceInventory);
-            }
-            if (destinationInventory != null && destinationInventory.Amount > 0)
-            {
-                DAOFactory.IteminstanceDAO.InsertOrUpdate(destinationInventory);
-            }
-
-            Session.SendPacket(Session.Character.GenerateFStash(destinationInventory, packet.NewSlot));
-            Session.SendPacket(Session.Character.GenerateFStash(sourceInventory, packet.OldSlot));
-            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-        }
-
-        public void FamilyDeposit(FDepositPacket packet)
-        {
-            if (Session.Character.Family == null ||
-                 !
-              (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
-              || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant)
-              || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType != FamilyAuthorityType.NONE)
-              || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType != FamilyAuthorityType.NONE)
-              )
-             )
-            {
-                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
-                return;
-            }
-
-            ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory);
-            ItemInstance itemdest = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.NewSlot, InventoryType.FamilyWareHouse);
-
-            // check if the destination slot is out of range
-            if (packet.NewSlot > Session.Character.Family.WarehouseSize)
-            {
-                return;
-            }
-
-            // check if the character is allowed to move the item
-            if (Session.Character.InExchangeOrTrade)
-            {
-                return;
-            }
-
-            // actually move the item from source to destination
-            Session.Character.Inventory.FDepositItem(packet.Inventory, packet.Slot, packet.Amount, packet.NewSlot, ref item, ref itemdest);
-
-        }
         [Packet(":")]
         public void FamilyChat(string packet)
         {
@@ -406,6 +234,40 @@ namespace OpenNos.Handler
             }
         }
 
+        public void FamilyDeposit(FDepositPacket packet)
+        {
+            if (Session.Character.Family == null ||
+                 !
+              (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
+              || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
+              || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType != FamilyAuthorityType.NONE
+              || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType != FamilyAuthorityType.NONE
+              )
+             )
+            {
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
+                return;
+            }
+
+            ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory);
+            ItemInstance itemdest = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.NewSlot, InventoryType.FamilyWareHouse);
+
+            // check if the destination slot is out of range
+            if (packet.NewSlot > Session.Character.Family.WarehouseSize)
+            {
+                return;
+            }
+
+            // check if the character is allowed to move the item
+            if (Session.Character.InExchangeOrTrade)
+            {
+                return;
+            }
+
+            // actually move the item from source to destination
+            Session.Character.Inventory.FDepositItem(packet.Inventory, packet.Slot, packet.Amount, packet.NewSlot, ref item, ref itemdest);
+        }
+
         [Packet("#glrm")]
         public void FamilyDismiss(string packet)
         {
@@ -425,7 +287,6 @@ namespace OpenNos.Handler
             int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, fam.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
 
             sessions.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
-
         }
 
         [Packet("%FamilyKick")]
@@ -460,10 +321,7 @@ namespace OpenNos.Handler
                     DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
                     Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManage, kickSession.Character.Name);
 
-
-
                     kickSession.CurrentMapInstance?.Broadcast(kickSession.Character.GenerateGidx());
-
                 }
                 else
                 {
@@ -509,7 +367,6 @@ namespace OpenNos.Handler
                 ServerManager.Instance.FamilyRefresh(FamilyId);
                 int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
-
             }
         }
 
@@ -674,7 +531,6 @@ namespace OpenNos.Handler
                 {
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
                 }
-
             }
         }
 
@@ -685,7 +541,7 @@ namespace OpenNos.Handler
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             if (Session.Character.Family != null && Session.Character.FamilyCharacter != null)
             {
-                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerCanShout) || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
+                if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerCanShout || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                 {
                     string msg = string.Empty;
                     int i = 0;
@@ -721,6 +577,142 @@ namespace OpenNos.Handler
             Session.SendPackets(Session.Character.GetFamilyHistory());
         }
 
+        public void FamilyRepos(FReposPacket packet)
+        {
+            ItemInstance sourceInventory;
+            ItemInstance destinationInventory;
+
+            if (Session.Character.Family == null ||
+                !
+             (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
+             || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
+             || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL
+             || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL
+             )
+            )
+            {
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
+                return;
+            }
+
+            // check if the character is allowed to move the item
+            if (Session.Character.InExchangeOrTrade || packet.Amount <= 0)
+            {
+                return;
+            }
+            if (packet.NewSlot > Session.Character.Family.WarehouseSize)
+            {
+                return;
+            }
+
+            sourceInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.OldSlot, InventoryType.FamilyWareHouse);
+            destinationInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.NewSlot, InventoryType.FamilyWareHouse);
+
+            if (sourceInventory != null && packet.Amount <= sourceInventory.Amount)
+            {
+                if (destinationInventory == null)
+                {
+                    destinationInventory = sourceInventory.DeepCopy();
+                    sourceInventory.Amount -= packet.Amount;
+                    destinationInventory.Amount = packet.Amount;
+                    destinationInventory.Slot = packet.NewSlot;
+                    if (sourceInventory.Amount > 0)
+                    {
+                        destinationInventory.Id = Guid.NewGuid();
+                    }
+                    else
+                    {
+                        sourceInventory = null;
+                    }
+                }
+                else
+                {
+                    if (destinationInventory.ItemVNum == sourceInventory.ItemVNum && (byte)sourceInventory.Item.Type != 0)
+                    {
+                        if (destinationInventory.Amount + packet.Amount > 99)
+                        {
+                            int saveItemCount = destinationInventory.Amount;
+                            destinationInventory.Amount = 99;
+                            sourceInventory.Amount = (byte)(saveItemCount + sourceInventory.Amount - 99);
+                        }
+                        else
+                        {
+                            destinationInventory.Amount += packet.Amount;
+                            sourceInventory.Amount -= packet.Amount;
+                            if (sourceInventory.Amount == 0)
+                            {
+                                DAOFactory.IteminstanceDAO.Delete(sourceInventory.Id);
+                                sourceInventory = null;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        destinationInventory.Slot = packet.OldSlot;
+                        sourceInventory.Slot = packet.NewSlot;
+                    }
+                }
+            }
+            if (sourceInventory != null && sourceInventory.Amount > 0)
+            {
+                DAOFactory.IteminstanceDAO.InsertOrUpdate(sourceInventory);
+            }
+            if (destinationInventory != null && destinationInventory.Amount > 0)
+            {
+                DAOFactory.IteminstanceDAO.InsertOrUpdate(destinationInventory);
+            }
+
+            Session.SendPacket(Session.Character.GenerateFStash(destinationInventory, packet.NewSlot));
+            Session.SendPacket(Session.Character.GenerateFStash(sourceInventory, packet.OldSlot));
+            ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
+        }
+
+        public void FamilyWithdraw(FWithdrawPacket packet)
+        {
+            if (Session.Character.Family == null ||
+              !
+           (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
+           || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Assistant
+           || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member && Session.Character.Family.MemberAuthorityType == FamilyAuthorityType.ALL
+           || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && Session.Character.Family.ManagerAuthorityType == FamilyAuthorityType.ALL
+           )
+          )
+            {
+                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NO_FAMILY_RIGHT")));
+                return;
+            }
+            ItemInstance previousInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.Slot, InventoryType.FamilyWareHouse);
+            if (packet.Amount <= 0 || previousInventory == null || packet.Amount > previousInventory.Amount)
+            {
+                return;
+            }
+            ItemInstance item2 = previousInventory.DeepCopy();
+            item2.Id = Guid.NewGuid();
+            item2.Amount = packet.Amount;
+            item2.CharacterId = Session.Character.CharacterId;
+
+            previousInventory.Amount -= packet.Amount;
+            if (previousInventory.Amount <= 0)
+            {
+                previousInventory = null;
+            }
+            List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(item2, item2.Item.Type);
+
+            Session.SendPacket(Session.Character.GenerateFStash(previousInventory, packet.Slot));
+            if (previousInventory != null)
+            {
+                DAOFactory.IteminstanceDAO.InsertOrUpdate(previousInventory);
+            }
+            else
+            {
+                FamilyCharacter fhead = Session.Character.Family.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                if (fhead == null)
+                    return;
+                DAOFactory.IteminstanceDAO.DeleteFromSlotAndType(fhead.CharacterId, packet.Slot, InventoryType.FamilyWareHouse);
+            }
+            Session.Character.Family.InsertFamilyLog(FamilyLogType.WareHouseRemove, Session.Character.Name, message: $"{item2.ItemVNum}|{packet.Amount}");
+        }
+
         [Packet("%FamilyInvite")]
         [Packet("%Invitationdefamille")]
         public void InviteFamily(string packet)
@@ -737,7 +729,7 @@ namespace OpenNos.Handler
                 return;
             }
 
-            if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member || (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && !Session.Character.Family.ManagerCanInvite))
+            if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Member || Session.Character.FamilyCharacter.Authority == FamilyAuthority.Manager && !Session.Character.Family.ManagerCanInvite)
             {
                 Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("FAMILY_INVITATION_NOT_ALLOWED"))));
                 return;
@@ -796,7 +788,7 @@ namespace OpenNos.Handler
                         Experience = 0,
                         Authority = FamilyAuthority.Member,
                         FamilyId = inviteSession.Character.Family.FamilyId,
-                        Rank = 0,
+                        Rank = 0
                     };
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
                     inviteSession.Character.Family.InsertFamilyLog(FamilyLogType.UserManage,
@@ -809,12 +801,10 @@ namespace OpenNos.Handler
                                     Session.Character.Name, inviteSession.Character.Family.Name), 0),
                             ServerManager.Instance.ChannelId, MessageType.Family).Result;
 
-
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
                     Session.SendPacket(Session.Character.GenerateFamilyMember());
                     Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                     Session.SendPacket(Session.Character.GenerateFamilyMemberExp());
-
                 }
             }
         }
@@ -874,7 +864,6 @@ namespace OpenNos.Handler
                     int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     Session.SendPacket(Session.Character.GenerateFamilyMember());
                     Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
-
                 }
             }
         }

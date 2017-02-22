@@ -12,14 +12,16 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.Mock
 {
     public class FamilyDAO : BaseDAO<FamilyDTO>, IFamilyDAO
     {
+        #region Methods
+
         public DeleteResult Delete(long familyId)
         {
             return DeleteResult.Deleted;
@@ -44,5 +46,7 @@ namespace OpenNos.DAL.Mock
         {
             return null;
         }
+
+        #endregion
     }
 }

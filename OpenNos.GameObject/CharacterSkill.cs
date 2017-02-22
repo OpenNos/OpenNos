@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Data;
+using System;
 
 namespace OpenNos.GameObject
 {

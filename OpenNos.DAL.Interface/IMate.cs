@@ -20,10 +20,14 @@ namespace OpenNos.DAL.Interface
 {
     public interface IMateDAO : IMappingBaseDAO
     {
+        #region Methods
+
         DeleteResult Delete(long id);
 
         SaveResult InsertOrUpdate(ref MateDTO mate);
 
         IEnumerable<MateDTO> LoadByCharacterId(long characterId);
+
+        #endregion
     }
 }

@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Data;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -22,10 +22,6 @@ namespace OpenNos.GameObject
         #region Members
 
         private Skill skill;
-
-        #endregion
-
-        #region Instantiation
 
         #endregion
 

@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Domain;
 
 namespace OpenNos.Data
@@ -25,15 +24,15 @@ namespace OpenNos.Data
 
         public AuthorityType Authority { get; set; }
 
+        public string Email { get; set; }
+
         public string Name { get; set; }
 
         public string Password { get; set; }
 
-        public string Email { get; set; }
+        public string RegistrationIP { get; set; }
 
         public string VerificationToken { get; set; }
-
-        public string RegistrationIP { get; set; }
 
         #endregion
     }

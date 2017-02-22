@@ -12,15 +12,15 @@
  * GNU General Public License for more details.
  */
 
+using EpPathFinding;
+using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using EpPathFinding;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL;
-using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -44,7 +44,6 @@ namespace OpenNos.GameObject
 
         private bool _isSleepingRequest;
 
-        
         #endregion
 
         #region Instantiation
@@ -133,7 +132,7 @@ namespace OpenNos.GameObject
 
         public Dictionary<long, MapShop> UserShops { get; }
 
-        public int XpRate { get; set; }  
+        public int XpRate { get; set; }
 
         #endregion
 
@@ -218,7 +217,6 @@ namespace OpenNos.GameObject
             return UserShops.Select(shop => $"shop 1 {shop.Value.OwnerId} 1 3 0 {shop.Value.Name}").ToList();
         }
 
-      
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
             return _monsters.GetAllItems().Where(s => s.IsAlive && s.IsInRange(mapX, mapY, distance)).ToList();
@@ -445,7 +443,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case EventActionType.SPAWNONLASTENTRY:
-                        
+
                         //TODO REVIEW THIS CASE
                         Character lastincharacter = Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
                         List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();

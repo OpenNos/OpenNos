@@ -88,7 +88,8 @@ namespace OpenNos.Handler
                             return;
                         }
 
-                        // check if the item has been removed successfully from previous owner and remove it
+                        // check if the item has been removed successfully from previous owner and
+                        // remove it
                         if (BuyValidate(Session, shop, buyPacket.Slot, amount))
                         {
                             Session.Character.Gold -= item.Price * amount;
@@ -216,7 +217,7 @@ namespace OpenNos.Handler
                                         }
                                     }
 
-                                    Session.Character.Skills[buyPacket.Slot] = new CharacterSkill() { SkillVNum = buyPacket.Slot, CharacterId = Session.Character.CharacterId };
+                                    Session.Character.Skills[buyPacket.Slot] = new CharacterSkill { SkillVNum = buyPacket.Slot, CharacterId = Session.Character.CharacterId };
 
                                     Session.Character.Gold -= skillinfo.Price;
                                     Session.SendPacket(Session.Character.GenerateGold());
@@ -323,7 +324,6 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                                 }
                             }
-
                         }
                         break;
                     }
@@ -404,7 +404,7 @@ namespace OpenNos.Handler
                                         return;
                                     }
 
-                                    PersonalShopItem personalshopitem = new PersonalShopItem()
+                                    PersonalShopItem personalshopitem = new PersonalShopItem
                                     {
                                         ShopSlot = shopSlot,
                                         Price = gold[i],

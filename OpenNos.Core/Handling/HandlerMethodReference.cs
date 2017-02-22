@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
 using System;
 using System.Linq;
-using OpenNos.Domain;
 
 namespace OpenNos.Core
 {
@@ -47,6 +47,8 @@ namespace OpenNos.Core
 
         #region Properties
 
+        public AuthorityType Authority { get; set; }
+
         public Action<object, object> HandlerMethod { get; set; }
 
         public PacketAttribute HandlerMethodAttribute { get; set; }
@@ -61,8 +63,6 @@ namespace OpenNos.Core
         public IPacketHandler ParentHandler { get; set; }
 
         public bool PassNonParseablePacket { get; set; }
-
-        public AuthorityType Authority { get; set; }
 
         #endregion
     }

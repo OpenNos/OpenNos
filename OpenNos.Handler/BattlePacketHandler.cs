@@ -17,6 +17,19 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Buff.Indicators;
+using OpenNos.GameObject.Buff.Indicators.NoSP.Archer;
+using OpenNos.GameObject.Buff.Indicators.SP1.Archer;
+using OpenNos.GameObject.Buff.Indicators.SP1.Magician;
+using OpenNos.GameObject.Buff.Indicators.SP1.Swordsman;
+using OpenNos.GameObject.Buff.Indicators.SP2.Archer;
+using OpenNos.GameObject.Buff.Indicators.SP2.Magician;
+using OpenNos.GameObject.Buff.Indicators.SP2.Swordsman;
+using OpenNos.GameObject.Buff.Indicators.SP3.Archer;
+using OpenNos.GameObject.Buff.Indicators.SP3.Magician;
+using OpenNos.GameObject.Buff.Indicators.SP3.Swordsman;
+using OpenNos.GameObject.Buff.Indicators.SP4.Archer;
+using OpenNos.GameObject.Buff.Indicators.SP4.Magician;
+using OpenNos.GameObject.Buff.Indicators.SP4.Swordsman;
 using OpenNos.GameObject.Networking;
 using System;
 using System.Collections.Generic;
@@ -28,10 +41,6 @@ namespace OpenNos.Handler
 {
     public class BattlePacketHandler : IPacketHandler
     {
-        #region Members
-
-        #endregion
-
         #region Instantiation
 
         public BattlePacketHandler(ClientSession session)
@@ -104,6 +113,287 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// u_s
+        /// </summary>
+        /// <param name="useSkillPacket"></param>
+        public void UseSkill(UseSkillPacket useSkillPacket)
+        {
+            if (Session.Character.CanFight && useSkillPacket != null)
+            {
+                PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
+                if (Session.Character.IsMuted() && penalty != null)
+                {
+                    if (Session.Character.Gender == GenderType.Female)
+                    {
+                        Session.SendPacket("cancel 0 0");
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    }
+                    else
+                    {
+                        Session.SendPacket("cancel 0 0");
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    }
+                    return;
+                }
+
+                Logger.Debug(Session.Character.GenerateIdentity(), useSkillPacket.ToString());
+
+                if (useSkillPacket.MapX.HasValue && useSkillPacket.MapY.HasValue)
+                {
+                    Session.Character.PositionX = useSkillPacket.MapX.Value;
+                    Session.Character.PositionY = useSkillPacket.MapY.Value;
+                }
+                if (Session.Character.IsSitting)
+                {
+                    Session.Character.Rest();
+                }
+                if (Session.Character.IsVehicled || Session.Character.InvisibleGm)
+                {
+                    Session.SendPacket("cancel 0 0");
+                    return;
+                }
+                switch (useSkillPacket.UserType)
+                {
+                    case UserType.Monster:
+                        if (Session.Character.Hp > 0)
+                        {
+                            TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId);
+                        }
+                        break;
+
+                    case UserType.Player:
+                        if (Session.Character.Hp > 0)
+                        {
+                            if (useSkillPacket.MapMonsterId != Session.Character.CharacterId)
+                            {
+                                TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId, true);
+                            }
+                            else
+                            {
+                                TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId);
+                            }
+                        }
+                        else
+                        {
+                            Session.SendPacket("cancel 2 0");
+                        }
+                        break;
+
+                    default:
+                        Session.SendPacket("cancel 2 0");
+                        return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// u_as
+        /// </summary>
+        /// <param name="useAOESkillPacket"></param>
+        public void UseZonesSkill(UseAOESkillPacket useAOESkillPacket)
+        {
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
+            if (Session.Character.IsMuted() && penalty != null)
+            {
+                if (Session.Character.Gender == GenderType.Female)
+                {
+                    Session.SendPacket("cancel 0 0");
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                }
+                else
+                {
+                    Session.SendPacket("cancel 0 0");
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                }
+            }
+            else
+            {
+                if (Session.Character.LastTransform.AddSeconds(3) > DateTime.Now)
+                {
+                    Session.SendPacket("cancel 0 0");
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
+                    return;
+                }
+                if (Session.Character.IsVehicled)
+                {
+                    Session.SendPacket("cancel 0 0");
+                    return;
+                }
+                Logger.Debug(Session.Character.GenerateIdentity(), useAOESkillPacket.ToString());
+                if (Session.Character.CanFight)
+                {
+                    if (Session.Character.Hp > 0)
+                    {
+                        ZoneHit(useAOESkillPacket.CastId, useAOESkillPacket.MapX, useAOESkillPacket.MapY);
+                    }
+                }
+            }
+        }
+
+        private void PVPHit(HitRequest hitRequest, ClientSession target)
+        {
+            if (target.Character.Hp > 0 && hitRequest.Session.Character.Hp > 0)
+            {
+                int hitmode = 0;
+
+                // calculate damage
+                //int damage = hitRequest.Session.Character.GenerateDamage(this, hitRequest.Skill, ref hitmode);
+                int damage = hitRequest.Session.Character.GeneratePVPDamage(target.Character, hitRequest.Skill, ref hitmode);
+                if (target.Character.HasGodMode)
+                {
+                    damage = 0;
+                    hitmode = 1;
+                }
+                else if (target.Character.LastPVPRevive > DateTime.Now.AddSeconds(-10) || hitRequest.Session.Character.LastPVPRevive > DateTime.Now.AddSeconds(-10))
+                {
+                    damage = 0;
+                    hitmode = 1;
+                }
+                target.Character.GetDamage(damage / 2);
+                target.Character.LastDefence = DateTime.Now;
+                target.SendPacket(target.Character.GenerateStat());
+                bool IsAlive = target.Character.Hp > 0;
+                if (!IsAlive)
+                {
+                    if (target?.CurrentMapInstance?.Map?.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) == true)
+                    {
+                        hitRequest.Session.Character.Act4Kill += 1;
+                        target.Character.Act4Dead += 1;
+                        target.Character.GetAct4Points(-1);
+                        if (target.Character.Level + 10 >= hitRequest.Session.Character.Level && hitRequest.Session.Character.Level <= target.Character.Level - 10)
+                        {
+                            hitRequest.Session.Character.GetAct4Points(2);
+                        }
+                        if (target.Character.Reput < 50000)
+                        {
+                            target.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), 0), 11));
+                        }
+                        else
+                        {
+                            target.Character.Reput -= target.Character.Level * 50;
+                            hitRequest.Session.Character.Reput += target.Character.Level * 50;
+                            hitRequest.Session.SendPacket(hitRequest.Session.Character.GenerateLev());
+                            target.SendPacket(target.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), (short)(target.Character.Level * 50)), 11));
+                        }
+                        target.SendPacket(target.Character.GenerateFd());
+                        Session.Character.Buff.Clear();
+                        target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                        target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                        target.SendPacket(target.Character.GenerateSay(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 11));
+                        target.SendPacket(target.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 0));
+                        Observable.Timer(TimeSpan.FromMilliseconds(30000))
+                               .Subscribe(
+                               o =>
+                               {
+                                   ServerManager.Instance.LeaveMap(target.Character.CharacterId);
+                                   target.Character.Hp = (int)target.Character.HPLoad();
+                                   target.Character.Mp = (int)target.Character.MPLoad();
+                                   short x = (short)(39 + ServerManager.RandomNumber(-2, 3));
+                                   short y = (short)(42 + ServerManager.RandomNumber(-2, 3));
+                                   ServerManager.Instance.ChangeMap(target.Character.CharacterId, 130, x, y);
+                                   target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateTp());
+                                   target.CurrentMapInstance?.Broadcast(target.Character.GenerateRevive());
+                                   target.SendPacket(target.Character.GenerateStat());
+                               });
+                    }
+                    else
+                    {
+                        hitRequest.Session.Character.TalentWin += 1;
+                        target.Character.TalentLose += 1;
+                        Observable.Timer(TimeSpan.FromMilliseconds(1000))
+                               .Subscribe(
+                               o =>
+                               {
+                                   ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
+                               });
+                    }
+                }
+                switch (hitRequest.TargetHitType)
+                {
+                    case TargetHitType.SingleTargetHit:
+                        {
+                            // Target Hit
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                    case TargetHitType.SingleTargetHitCombo:
+                        {
+                            // Taget Hit Combo
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.SkillCombo.Animation} {hitRequest.SkillCombo.Effect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                    case TargetHitType.SingleAOETargetHit:
+                        {
+                            // Target Hit Single AOE
+                            switch (hitmode)
+                            {
+                                case 1:
+                                    hitmode = 4;
+                                    break;
+
+                                case 3:
+                                    hitmode = 6;
+                                    break;
+
+                                default:
+                                    hitmode = 5;
+                                    break;
+                            }
+                            if (hitRequest.ShowTargetHitAnimation)
+                            {
+                                hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} 0 0 {(IsAlive ? 1 : 0)} {(int)((double)target.Character.Hp / target.Character.HPLoad()) * 100} 0 0 {hitRequest.Skill.SkillType - 1}");
+                            }
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                    case TargetHitType.AOETargetHit:
+                        {
+                            // Target Hit AOE
+                            switch (hitmode)
+                            {
+                                case 1:
+                                    hitmode = 4;
+                                    break;
+
+                                case 3:
+                                    hitmode = 6;
+                                    break;
+
+                                default:
+                                    hitmode = 5;
+                                    break;
+                            }
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                    case TargetHitType.ZoneHit:
+                        {
+                            // Zone HIT
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.MapX} {hitRequest.MapY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} 5 {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                    case TargetHitType.SpecialZoneHit:
+                        {
+                            // Special Zone hit
+                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} 0 {hitRequest.Skill.SkillType - 1}");
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                // monster already has been killed, send cancel
+                hitRequest.Session.SendPacket($"cancel 2 {target.Character.CharacterId}");
+            }
+        }
+
         private void TargetHit(int castingId, int targetId, bool isPvp = false)
         {
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
@@ -153,7 +443,7 @@ namespace OpenNos.Handler
                         }
                         if (Session.HasCurrentMapInstance)
                         {
-                            Session.CurrentMapInstance.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {ski.Skill.SkillType - 1}");
+                            Session.CurrentMapInstance.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {skillinfo?.Skill.Effect ?? ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100} 0 -2 {ski.Skill.SkillType - 1}");
                             if (ski.Skill.TargetRange != 0 && Session.HasCurrentMapInstance)
                             {
                                 foreach (ClientSession character in ServerManager.Instance.Sessions.Where(s => s.CurrentMapInstance == Session.CurrentMapInstance && s.Character.CharacterId != Session.Character.CharacterId && s.Character.IsInRange(Session.Character.PositionX, Session.Character.PositionY, ski.Skill.TargetRange)))
@@ -202,28 +492,32 @@ namespace OpenNos.Handler
                     else if (ski.Skill.TargetType == 2 && ski.Skill.HitType == 0)
                     {
                         Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
-                        Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -1 {ski.Skill.SkillType - 1}");
+                        Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {targetId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100} 0 -1 {ski.Skill.SkillType - 1}");
                         ClientSession target = ServerManager.Instance.GetSessionByCharacterId(targetId) ?? Session;
                         switch (ski.Skill.Effect)
                         {
                             case 3409:
-                                IndicatorBase triplecharging = new GameObject.Buff.Indicators.SP3.Swordsman.FirstBlessing(Session.Character.Level);
+                                IndicatorBase triplecharging = new FirstBlessing(Session.Character.Level);
                                 target.Character.Buff.Add(triplecharging);
                                 break;
+
                             case 3411:
-                                IndicatorBase shiningeffect = new GameObject.Buff.Indicators.SP3.Swordsman.ShiningEffect(Session.Character.Level);
+                                IndicatorBase shiningeffect = new ShiningEffect(Session.Character.Level);
                                 target.Character.Buff.Add(shiningeffect);
                                 break;
+
                             case 4203:
-                                IndicatorBase hawkeye = new GameObject.Buff.Indicators.SP1.Archer.HawkEye(Session.Character.Level);
+                                IndicatorBase hawkeye = new HawkEye(Session.Character.Level);
                                 target.Character.Buff.Add(hawkeye);
                                 break;
+
                             case 4207:
-                                IndicatorBase windwalker = new GameObject.Buff.Indicators.SP1.Archer.WindWalker(Session.Character.Level);
+                                IndicatorBase windwalker = new WindWalker(Session.Character.Level);
                                 target.Character.Buff.Add(windwalker);
                                 break;
+
                             case 4403:
-                                IndicatorBase healing = new GameObject.Buff.Indicators.SP2.Magician.Healing(Session.Character.Level);
+                                IndicatorBase healing = new Healing(Session.Character.Level);
                                 target.Character.Buff.Add(healing);
                                 break;
                         }
@@ -231,7 +525,7 @@ namespace OpenNos.Handler
                     else if (ski.Skill.TargetType == 1 && ski.Skill.HitType != 1)
                     {
                         Session.CurrentMapInstance?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
-                        Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -1 {ski.Skill.SkillType - 1}");
+                        Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} {Session.Character.PositionX} {Session.Character.PositionY} 1 {(int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100} 0 -1 {ski.Skill.SkillType - 1}");
                         switch (ski.Skill.HitType)
                         {
                             case 2:
@@ -243,131 +537,155 @@ namespace OpenNos.Handler
                                         switch (ski.Skill.Effect)
                                         {
                                             case 4117:
-                                                IndicatorBase moraleincrease = new GameObject.Buff.Indicators.SP1.Swordsman.MoraleIncrease(Session.Character.Level);
-                                                IndicatorBase sprint = new GameObject.Buff.Indicators.SP1.Swordsman.Sprint(Session.Character.Level);
+                                                IndicatorBase moraleincrease = new MoraleIncrease(Session.Character.Level);
+                                                IndicatorBase sprint = new Sprint(Session.Character.Level);
                                                 target.Character.Buff.Add(moraleincrease);
                                                 target.Character.Buff.Add(sprint);
                                                 break;
+
                                             case 3417:
-                                                IndicatorBase prayerofdefence = new GameObject.Buff.Indicators.SP3.Swordsman.PrayerofDefence(Session.Character.Level);
+                                                IndicatorBase prayerofdefence = new PrayerofDefence(Session.Character.Level);
                                                 target.Character.Buff.Add(prayerofdefence);
                                                 break;
+
                                             case 3419:
-                                                IndicatorBase prayerofoffence = new GameObject.Buff.Indicators.SP3.Swordsman.PrayerofOffence(Session.Character.Level);
+                                                IndicatorBase prayerofoffence = new PrayerofOffence(Session.Character.Level);
                                                 target.Character.Buff.Add(prayerofoffence);
                                                 break;
+
                                             case 4013:
-                                                IndicatorBase fireblessing = new GameObject.Buff.Indicators.SP1.Magician.FireBlessing(Session.Character.Level);
+                                                IndicatorBase fireblessing = new FireBlessing(Session.Character.Level);
                                                 target.Character.Buff.Add(fireblessing);
                                                 break;
+
                                             case 4415:
-                                                IndicatorBase grouhealing = new GameObject.Buff.Indicators.SP2.Magician.GroupHealing(Session.Character.Level);
+                                                IndicatorBase grouhealing = new GroupHealing(Session.Character.Level);
                                                 target.Character.Buff.Add(grouhealing);
                                                 break;
+
                                             case 4417:
-                                                IndicatorBase holyweapon = new GameObject.Buff.Indicators.SP2.Magician.HolyWeapon(Session.Character.Level);
+                                                IndicatorBase holyweapon = new HolyWeapon(Session.Character.Level);
                                                 target.Character.Buff.Add(holyweapon);
                                                 break;
+
                                             case 4419:
-                                                IndicatorBase blessing = new GameObject.Buff.Indicators.SP2.Magician.Blessing(Session.Character.Level);
+                                                IndicatorBase blessing = new Blessing(Session.Character.Level);
                                                 target.Character.Buff.Add(blessing);
                                                 break;
+
                                             case 3815:
-                                                IndicatorBase bow = new GameObject.Buff.Indicators.SP3.Magician.BlessingofWater(Session.Character.Level);
+                                                IndicatorBase bow = new BlessingofWater(Session.Character.Level);
                                                 target.Character.Buff.Add(bow);
                                                 break;
+
                                             case 3910:
-                                                IndicatorBase darkforce = new GameObject.Buff.Indicators.SP4.Magician.DarkForce(Session.Character.Level);
+                                                IndicatorBase darkforce = new DarkForce(Session.Character.Level);
                                                 target.Character.Buff.Add(darkforce);
                                                 break;
+
                                             case 3708:
-                                                IndicatorBase elementalshine = new GameObject.Buff.Indicators.SP4.Archer.ElementalShine(Session.Character.Level);
+                                                IndicatorBase elementalshine = new ElementalShine(Session.Character.Level);
                                                 target.Character.Buff.Add(elementalshine);
                                                 break;
+
                                             case 3706:
                                                 switch (ski.Skill.SkillVNum)
                                                 {
                                                     case 931:
-                                                        IndicatorBase bearspirit = new GameObject.Buff.Indicators.SP4.Archer.BearSpirit(Session.Character.Level);
+                                                        IndicatorBase bearspirit = new BearSpirit(Session.Character.Level);
                                                         target.Character.Buff.Add(bearspirit);
                                                         break;
+
                                                     case 928:
-                                                        IndicatorBase wolfghost = new GameObject.Buff.Indicators.SP4.Archer.WolfGhost(Session.Character.Level);
+                                                        IndicatorBase wolfghost = new WolfGhost(Session.Character.Level);
                                                         target.Character.Buff.Add(wolfghost);
                                                         break;
                                                 }
                                                 break;
-
                                         }
                                     }
                                 }
                                 break;
+
                             case 0:
                                 switch (ski.Skill.Effect)
                                 {
                                     case 4106:
-                                        IndicatorBase ironskin = new GameObject.Buff.Indicators.SP1.Swordsman.IronSkin(Session.Character.Level);
+                                        IndicatorBase ironskin = new IronSkin(Session.Character.Level);
                                         Session.Character.Buff.Add(ironskin);
                                         break;
+
                                     case 4318:
-                                        IndicatorBase sharpedge = new GameObject.Buff.Indicators.SP2.Swordsman.SharpEdge(Session.Character.Level);
+                                        IndicatorBase sharpedge = new SharpEdge(Session.Character.Level);
                                         Session.Character.Buff.Add(sharpedge);
                                         break;
+
                                     case 4314:
-                                        IndicatorBase breathofrecovery = new GameObject.Buff.Indicators.SP2.Swordsman.BreathofRecovery(Session.Character.Level);
+                                        IndicatorBase breathofrecovery = new BreathofRecovery(Session.Character.Level);
                                         Session.Character.Buff.Add(breathofrecovery);
                                         break;
+
                                     case 3415:
-                                        IndicatorBase holyshield = new GameObject.Buff.Indicators.SP3.Swordsman.HolyShield(Session.Character.Level);
+                                        IndicatorBase holyshield = new HolyShield(Session.Character.Level);
                                         Session.Character.Buff.Add(holyshield);
                                         break;
+
                                     case 3506:
-                                        IndicatorBase berserker = new GameObject.Buff.Indicators.SP4.Swordsman.Berserker(Session.Character.Level);
+                                        IndicatorBase berserker = new Berserker(Session.Character.Level);
                                         Session.Character.Buff.Add(berserker);
                                         break;
+
                                     case 4504:
-                                        IndicatorBase crithit = new GameObject.Buff.Indicators.SP2.Archer.CriticalHit(Session.Character.Level);
+                                        IndicatorBase crithit = new CriticalHit(Session.Character.Level);
                                         Session.Character.Buff.Add(crithit);
-                                        IndicatorBase pod = new GameObject.Buff.Indicators.SP2.Archer.PactofDarkness(Session.Character.Level);
+                                        IndicatorBase pod = new PactofDarkness(Session.Character.Level);
                                         Session.Character.Buff.Add(pod);
-                                        IndicatorBase sinistershadow = new GameObject.Buff.Indicators.SP2.Archer.SinisterShadow(Session.Character.Level);
+                                        IndicatorBase sinistershadow = new SinisterShadow(Session.Character.Level);
                                         Session.Character.Buff.Add(sinistershadow);
                                         break;
+
                                     case 3615:
-                                        IndicatorBase mh = new GameObject.Buff.Indicators.SP3.Archer.MiraclousHealing(Session.Character.Level);
+                                        IndicatorBase mh = new MiraclousHealing(Session.Character.Level);
                                         Session.Character.Buff.Add(mh);
                                         break;
+
                                     case 3607:
-                                        IndicatorBase boost = new GameObject.Buff.Indicators.SP3.Archer.BoosterOn(Session.Character.Level);
+                                        IndicatorBase boost = new BoosterOn(Session.Character.Level);
                                         Session.Character.Buff.Add(boost);
                                         break;
+
                                     case 3706:
-                                        IndicatorBase eaglespirit = new GameObject.Buff.Indicators.SP4.Archer.EagleSpirit(Session.Character.Level);
+                                        IndicatorBase eaglespirit = new EagleSpirit(Session.Character.Level);
                                         Session.Character.Buff.Add(eaglespirit);
                                         break;
+
                                     case 4007:
-                                        IndicatorBase manatransfusion = new GameObject.Buff.Indicators.SP1.Magician.ManaTransfusion(Session.Character.Level);
+                                        IndicatorBase manatransfusion = new ManaTransfusion(Session.Character.Level);
                                         Session.Character.Buff.Add(manatransfusion);
                                         break;
+
                                     case 4407:
-                                        IndicatorBase manashield = new GameObject.Buff.Indicators.SP2.Magician.ManaShield(Session.Character.Level);
+                                        IndicatorBase manashield = new ManaShield(Session.Character.Level);
                                         Session.Character.Buff.Add(manashield);
                                         break;
+
                                     case 3811:
-                                        IndicatorBase frozenshield = new GameObject.Buff.Indicators.SP3.Magician.FrozenShield(Session.Character.Level);
+                                        IndicatorBase frozenshield = new FrozenShield(Session.Character.Level);
                                         Session.Character.Buff.Add(frozenshield);
                                         break;
+
                                     case 3906:
-                                        IndicatorBase ghostguard = new GameObject.Buff.Indicators.SP4.Magician.GhostGuard(Session.Character.Level);
+                                        IndicatorBase ghostguard = new GhostGuard(Session.Character.Level);
                                         Session.Character.Buff.Add(ghostguard);
                                         break;
                                 }
                                 break;
+
                             case 4:
                                 switch (ski.Skill.Effect)
                                 {
                                     case 281:
-                                        IndicatorBase ritualofhawk = new GameObject.Buff.Indicators.NoSP.Archer.RitualOfHawk(Session.Character.Level);
+                                        IndicatorBase ritualofhawk = new RitualOfHawk(Session.Character.Level);
                                         Session.Character.Buff.Add(ritualofhawk);
                                         break;
                                 }
@@ -415,6 +733,7 @@ namespace OpenNos.Handler
                                     {
                                         Thread.Sleep(ski.Skill.CastTime * 100);
                                     }
+
                                     // check if we will hit mutltiple targets
                                     if (ski.Skill.TargetRange != 0)
                                     {
@@ -437,7 +756,6 @@ namespace OpenNos.Handler
                                                             PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
                                                         }
                                                     }
-
                                                 }
                                                 else if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.PVPMap))
                                                 {
@@ -659,12 +977,11 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-
                             MapMonster monsterToAttack = Session.CurrentMapInstance.GetMonster(targetId);
                             if (monsterToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
                             {
                                 if (Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY },
-                                                    new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= (ski.Skill.Range) + monsterToAttack.Monster.BasicArea)
+                                                    new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + monsterToAttack.Monster.BasicArea)
                                 {
                                     Session.Character.LastSkillUse = DateTime.Now;
                                     ski.LastUse = DateTime.Now;
@@ -698,6 +1015,7 @@ namespace OpenNos.Handler
                                     {
                                         Thread.Sleep(ski.Skill.CastTime * 100);
                                     }
+
                                     // check if we will hit mutltiple targets
                                     if (ski.Skill.TargetRange != 0)
                                     {
@@ -799,130 +1117,6 @@ namespace OpenNos.Handler
             }
         }
 
-        /// <summary>
-        /// u_s
-        /// </summary>
-        /// <param name="useSkillPacket"></param>
-        public void UseSkill(UseSkillPacket useSkillPacket)
-        {
-            if (Session.Character.CanFight && useSkillPacket != null)
-            {
-                PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
-                if (Session.Character.IsMuted() && penalty != null)
-                {
-                    if (Session.Character.Gender == GenderType.Female)
-                    {
-                        Session.SendPacket("cancel 0 0");
-                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    }
-                    else
-                    {
-                        Session.SendPacket("cancel 0 0");
-                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    }
-                    return;
-                }
-                
-                Logger.Debug(Session.Character.GenerateIdentity(), useSkillPacket.ToString());
-
-                if (useSkillPacket.MapX.HasValue && useSkillPacket.MapY.HasValue)
-                {
-                    Session.Character.PositionX = useSkillPacket.MapX.Value;
-                    Session.Character.PositionY = useSkillPacket.MapY.Value;
-                }
-                if (Session.Character.IsSitting)
-                {
-                    Session.Character.Rest();
-                }
-                if (Session.Character.IsVehicled || Session.Character.InvisibleGm)
-                {
-                    Session.SendPacket("cancel 0 0");
-                    return;
-                }
-                switch (useSkillPacket.UserType)
-                {
-                    case UserType.Monster:
-                        if (Session.Character.Hp > 0)
-                        {
-                            TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId);
-                        }
-                        break;
-
-                    case UserType.Player:
-                        if (Session.Character.Hp > 0)
-                        {
-                            if (useSkillPacket.MapMonsterId != Session.Character.CharacterId)
-                            {
-                                TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId, true);
-                            }
-                            else
-                            {
-                                TargetHit(useSkillPacket.CastId, useSkillPacket.MapMonsterId);
-                            }
-                        }
-                        else
-                        {
-                            Session.SendPacket("cancel 2 0");
-                        }
-                        break;
-
-                    default:
-                        Session.SendPacket("cancel 2 0");
-                        return;
-                }
-            }
-        }
-
-        /// <summary>
-        /// u_as
-        /// </summary>
-        /// <param name="useAOESkillPacket"></param>
-        public void UseZonesSkill(UseAOESkillPacket useAOESkillPacket)
-        {
-            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.OrderByDescending(s => s.DateEnd).FirstOrDefault();
-            if (Session.Character.IsMuted() && penalty != null)
-            {
-                if (Session.Character.Gender == GenderType.Female)
-                {
-                    Session.SendPacket("cancel 0 0");
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
-                }
-                else
-                {
-                    Session.SendPacket("cancel 0 0");
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
-                }
-            }
-            else
-            {
-                if (Session.Character.LastTransform.AddSeconds(3) > DateTime.Now)
-                {
-                    Session.SendPacket("cancel 0 0");
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
-                    return;
-                }
-                if (Session.Character.IsVehicled)
-                {
-                    Session.SendPacket("cancel 0 0");
-                    return;
-                }
-                Logger.Debug(Session.Character.GenerateIdentity(), useAOESkillPacket.ToString());
-                if (Session.Character.CanFight)
-                {
-                    if (Session.Character.Hp > 0)
-                    {
-                        ZoneHit(useAOESkillPacket.CastId, useAOESkillPacket.MapX, useAOESkillPacket.MapY);
-                    }
-                }
-            }
-        }
-
         private void ZoneHit(int Castingid, short x, short y)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp.GetAllItems() : Session.Character.Skills.GetAllItems();
@@ -1006,163 +1200,6 @@ namespace OpenNos.Handler
             else
             {
                 Session.SendPacket("cancel 2 0");
-            }
-        }
-
-        private void PVPHit(HitRequest hitRequest, ClientSession target)
-        {
-            if (target.Character.Hp > 0 && hitRequest.Session.Character.Hp > 0)
-            {
-                int hitmode = 0;
-
-                // calculate damage
-                //int damage = hitRequest.Session.Character.GenerateDamage(this, hitRequest.Skill, ref hitmode);
-                int damage = hitRequest.Session.Character.GeneratePVPDamage(target.Character, hitRequest.Skill, ref hitmode);
-                if (target.Character.HasGodMode)
-                {
-                    damage = 0;
-                    hitmode = 1;
-                }
-                else if (target.Character.LastPVPRevive > DateTime.Now.AddSeconds(-10) || hitRequest.Session.Character.LastPVPRevive > DateTime.Now.AddSeconds(-10))
-                {
-                    damage = 0;
-                    hitmode = 1;
-                }
-                target.Character.GetDamage(damage / 2);
-                target.Character.LastDefence = DateTime.Now;
-                target.SendPacket(target.Character.GenerateStat());
-                bool IsAlive = target.Character.Hp > 0;
-                if (!IsAlive)
-                {
-                    if (target?.CurrentMapInstance?.Map?.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) == true)
-                    {
-                        hitRequest.Session.Character.Act4Kill += 1;
-                        target.Character.Act4Dead += 1;
-                        target.Character.GetAct4Points(-1);
-                        if (target.Character.Level + 10 >= hitRequest.Session.Character.Level && hitRequest.Session.Character.Level <= target.Character.Level - 10)
-                        {
-                            hitRequest.Session.Character.GetAct4Points(2);
-                        }
-                        if (target.Character.Reput < 50000)
-                        {
-                            target.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), 0), 11));
-                        }
-                        else
-                        {
-                            target.Character.Reput -= target.Character.Level * 50;
-                            hitRequest.Session.Character.Reput += target.Character.Level * 50;
-                            hitRequest.Session.SendPacket(hitRequest.Session.Character.GenerateLev());
-                            target.SendPacket(target.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_REP"), (short)(target.Character.Level * 50)), 11));
-                        }
-                        target.SendPacket(target.Character.GenerateFd());
-                        Session.Character.Buff.Clear();
-                        target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                        target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                        target.SendPacket(target.Character.GenerateSay(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 11));
-                        target.SendPacket(target.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 0));
-                        Observable.Timer(TimeSpan.FromMilliseconds(30000))
-                               .Subscribe(
-                               o =>
-                               {
-                                   ServerManager.Instance.LeaveMap(target.Character.CharacterId);
-                                   target.Character.Hp = (int)target.Character.HPLoad();
-                                   target.Character.Mp = (int)target.Character.MPLoad();
-                                   short x = (short)(39 + ServerManager.RandomNumber(-2, 3));
-                                   short y = (short)(42 + ServerManager.RandomNumber(-2, 3));
-                                   ServerManager.Instance.ChangeMap(target.Character.CharacterId, 130, x, y);
-                                   target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateTp());
-                                   target.CurrentMapInstance?.Broadcast(target.Character.GenerateRevive());
-                                   target.SendPacket(target.Character.GenerateStat());
-                               });
-                    }
-                    else
-                    {
-                        hitRequest.Session.Character.TalentWin += 1;
-                        target.Character.TalentLose += 1;
-                        Observable.Timer(TimeSpan.FromMilliseconds(1000))
-                               .Subscribe(
-                               o =>
-                               {
-                                   ServerManager.Instance.AskPVPRevive(target.Character.CharacterId);
-                               });
-                    }
-                }
-                switch (hitRequest.TargetHitType)
-                {
-                    case TargetHitType.SingleTargetHit:
-                        {
-                            // Target Hit
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
-                            break;
-                        }
-                    case TargetHitType.SingleTargetHitCombo:
-                        {
-                            // Taget Hit Combo
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.SkillCombo.Animation} {hitRequest.SkillCombo.Effect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
-                            break;
-                        }
-                    case TargetHitType.SingleAOETargetHit:
-                        {
-                            // Target Hit Single AOE
-                            switch (hitmode)
-                            {
-                                case 1:
-                                    hitmode = 4;
-                                    break;
-
-                                case 3:
-                                    hitmode = 6;
-                                    break;
-
-                                default:
-                                    hitmode = 5;
-                                    break;
-                            }
-                            if (hitRequest.ShowTargetHitAnimation)
-                            {
-                                hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} 0 0 {(IsAlive ? 1 : 0)} {((int)((double)target.Character.Hp / target.Character.HPLoad()) * 100)} 0 0 {hitRequest.Skill.SkillType - 1}");
-                            }
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
-                            break;
-                        }
-                    case TargetHitType.AOETargetHit:
-                        {
-                            // Target Hit AOE
-                            switch (hitmode)
-                            {
-                                case 1:
-                                    hitmode = 4;
-                                    break;
-
-                                case 3:
-                                    hitmode = 6;
-                                    break;
-
-                                default:
-                                    hitmode = 5;
-                                    break;
-                            }
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} {hitmode} {hitRequest.Skill.SkillType - 1}");
-                            break;
-                        }
-                    case TargetHitType.ZoneHit:
-                        {
-                            // Zone HIT
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.MapX} {hitRequest.MapY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} 5 {hitRequest.Skill.SkillType - 1}");
-                            break;
-                        }
-                    case TargetHitType.SpecialZoneHit:
-                        {
-                            // Special Zone hit
-                            hitRequest.Session.CurrentMapInstance?.Broadcast($"su 1 {hitRequest.Session.Character.CharacterId} 1 {target.Character.CharacterId} {hitRequest.Skill.SkillVNum} {hitRequest.Skill.Cooldown} {hitRequest.Skill.AttackAnimation} {hitRequest.SkillEffect} {hitRequest.Session.Character.PositionX} {hitRequest.Session.Character.PositionY} {(IsAlive ? 1 : 0)} {(int)((float)target.Character.Hp / (float)target.Character.HPLoad() * 100)} {damage} 0 {hitRequest.Skill.SkillType - 1}");
-                            break;
-                        }
-                }
-            }
-            else
-            {
-                // monster already has been killed, send cancel
-                hitRequest.Session.SendPacket($"cancel 2 {target.Character.CharacterId}");
             }
         }
 

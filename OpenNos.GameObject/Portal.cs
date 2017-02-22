@@ -12,29 +12,21 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Data;
+using System;
 
 namespace OpenNos.GameObject
 {
     public class Portal : PortalDTO
     {
-        #region Instantiation
+        #region Members
+
         private Guid destinationMapInstanceId;
         private Guid sourceMapInstanceId;
-        public Guid SourceMapInstanceId
-        {
 
-            get
-            {
-                if (sourceMapInstanceId == default(Guid))
-                {
-                    sourceMapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(SourceMapId);
-                }
-                return sourceMapInstanceId;
-            }
-            set { sourceMapInstanceId = value; }
-        }
+        #endregion
+
+        #region Properties
 
         public Guid DestinationMapInstanceId
         {
@@ -48,14 +40,19 @@ namespace OpenNos.GameObject
             }
             set { destinationMapInstanceId = value; }
         }
-       
-        #endregion
 
-        #region Properties
-
-        #endregion
-
-        #region Methods
+        public Guid SourceMapInstanceId
+        {
+            get
+            {
+                if (sourceMapInstanceId == default(Guid))
+                {
+                    sourceMapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(SourceMapId);
+                }
+                return sourceMapInstanceId;
+            }
+            set { sourceMapInstanceId = value; }
+        }
 
         #endregion
     }

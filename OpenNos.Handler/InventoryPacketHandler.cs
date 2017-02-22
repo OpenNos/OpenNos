@@ -15,12 +15,12 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.Handler
 {
@@ -142,40 +142,25 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("s_carrier")]
-        public void SpecialistHolder(string packet)
+        public void Deposit(DepositPacket packet)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
-            short slot;
-            short holderSlot;
-            if (short.TryParse(packetsplit[2], out slot) && short.TryParse(packetsplit[3], out holderSlot))
+            ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory);
+            ItemInstance itemdest = Session.Character.Inventory.LoadBySlotAndType(packet.NewSlot, InventoryType.Warehouse);
+
+            // check if the destination slot is out of range
+            if (packet.NewSlot > Session.Character.WareHouseSize)
             {
-                SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
-                BoxInstance holder = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(holderSlot, InventoryType.Equipment);
-                if (specialist != null && holder != null)
-                {
-                    holder.HoldingVNum = specialist.ItemVNum;
-                    holder.SlDamage = specialist.SlDamage;
-                    holder.SlDefence = specialist.SlDefence;
-                    holder.SlElement = specialist.SlElement;
-                    holder.SlHP = specialist.SlHP;
-                    holder.SpDamage = specialist.SpDamage;
-                    holder.SpDark = specialist.SpDark;
-                    holder.SpDefence = specialist.SpDefence;
-                    holder.SpElement = specialist.SpElement;
-                    holder.SpFire = specialist.SpFire;
-                    holder.SpHP = specialist.SpHP;
-                    holder.SpLevel = specialist.SpLevel;
-                    holder.SpLight = specialist.SpLight;
-                    holder.SpStoneUpgrade = specialist.SpStoneUpgrade;
-                    holder.SpWater = specialist.SpWater;
-                    holder.Upgrade = specialist.Upgrade;
-                    holder.XP = specialist.XP;
-                    Session.SendPacket("shop_end 2");
-                    Session.Character.Inventory.RemoveItemAmountFromInventory(1, specialist.Id);
-                }
+                return;
             }
+
+            // check if the character is allowed to move the item
+            if (Session.Character.InExchangeOrTrade)
+            {
+                return;
+            }
+
+            // actually move the item from source to destination
+            Session.Character.Inventory.DepositItem(packet.Inventory, packet.Slot, packet.Amount, packet.NewSlot, ref item, ref itemdest);
         }
 
         [Packet("eqinfo")]
@@ -356,7 +341,7 @@ namespace OpenNos.Handler
         [Packet("req_exc")]
         public void ExchangeRequest(string deserializedPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), deserializedPacket.ToString());
+            Logger.Debug(Session.Character.GenerateIdentity(), deserializedPacket);
             ExchangeRequestPacket packet = PacketFactory.Deserialize<ExchangeRequestPacket>(deserializedPacket, true);
             if (packet != null)
             {
@@ -380,7 +365,6 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
                                 return;
                             }
-
 
                             if (Session.Character.Speed == 0 || targetSession.Character.Speed == 0)
                             {
@@ -616,7 +600,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {amount}", 12));
                                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
                                     {
-                                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{String.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {newInv.First().Item.Name} x {mapItem.Amount}", 10));
+                                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{string.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {newInv.First().Item.Name} x {mapItem.Amount}", 10));
                                     }
                                 }
                                 else
@@ -820,6 +804,33 @@ namespace OpenNos.Handler
             }
         }
 
+        public void Repos(ReposPacket packet)
+        {
+            ItemInstance previousInventory;
+            ItemInstance newInventory;
+
+            // check if the destination slot is out of range
+            if (packet.NewSlot > Session.Character.WareHouseSize)
+            {
+                return;
+            }
+
+            // check if the character is allowed to move the item
+            if (Session.Character.InExchangeOrTrade)
+            {
+                return;
+            }
+
+            // actually move the item from source to destination
+            Session.Character.Inventory.MoveItem(InventoryType.Warehouse, InventoryType.Warehouse, packet.OldSlot, packet.Amount, packet.NewSlot, out previousInventory, out newInventory);
+            if (newInventory == null)
+            {
+                return;
+            }
+            Session.SendPacket(Session.Character.GenerateStash(newInventory, packet.NewSlot));
+            Session.SendPacket(Session.Character.GenerateStash(previousInventory, packet.OldSlot));
+        }
+
         [Packet("#sl")]
         public void Sl(string packet)
         {
@@ -868,6 +879,42 @@ namespace OpenNos.Handler
                         }
                     }
                     Session.Character.Inventory.Reorder(Session, i == 0 ? InventoryType.Specialist : InventoryType.Costume);
+                }
+            }
+        }
+
+        [Packet("s_carrier")]
+        public void SpecialistHolder(string packet)
+        {
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
+            string[] packetsplit = packet.Split(' ');
+            short slot;
+            short holderSlot;
+            if (short.TryParse(packetsplit[2], out slot) && short.TryParse(packetsplit[3], out holderSlot))
+            {
+                SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
+                BoxInstance holder = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(holderSlot, InventoryType.Equipment);
+                if (specialist != null && holder != null)
+                {
+                    holder.HoldingVNum = specialist.ItemVNum;
+                    holder.SlDamage = specialist.SlDamage;
+                    holder.SlDefence = specialist.SlDefence;
+                    holder.SlElement = specialist.SlElement;
+                    holder.SlHP = specialist.SlHP;
+                    holder.SpDamage = specialist.SpDamage;
+                    holder.SpDark = specialist.SpDark;
+                    holder.SpDefence = specialist.SpDefence;
+                    holder.SpElement = specialist.SpElement;
+                    holder.SpFire = specialist.SpFire;
+                    holder.SpHP = specialist.SpHP;
+                    holder.SpLevel = specialist.SpLevel;
+                    holder.SpLight = specialist.SpLight;
+                    holder.SpStoneUpgrade = specialist.SpStoneUpgrade;
+                    holder.SpWater = specialist.SpWater;
+                    holder.Upgrade = specialist.Upgrade;
+                    holder.XP = specialist.XP;
+                    Session.SendPacket("shop_end 2");
+                    Session.Character.Inventory.RemoveItemAmountFromInventory(1, specialist.Id);
                 }
             }
         }
@@ -1578,30 +1625,6 @@ namespace OpenNos.Handler
             }
         }
 
-        public void Deposit(DepositPacket packet)
-        {
-            ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory);
-            ItemInstance itemdest = Session.Character.Inventory.LoadBySlotAndType(packet.NewSlot, InventoryType.Warehouse);
-
-            // check if the destination slot is out of range
-            if (packet.NewSlot > Session.Character.WareHouseSize)
-            {
-                return;
-            }
-
-            // check if the character is allowed to move the item
-            if (Session.Character.InExchangeOrTrade)
-            {
-                return;
-            }
-
-            // actually move the item from source to destination
-            Session.Character.Inventory.DepositItem(packet.Inventory, packet.Slot, packet.Amount, packet.NewSlot, ref item, ref itemdest);
-
-
-        }
-
-
         public void Withdraw(WithdrawPacket packet)
         {
             ItemInstance previousInventory = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, InventoryType.Warehouse);
@@ -1616,35 +1639,6 @@ namespace OpenNos.Handler
             Session.Character.Inventory.AddToInventory(item2, item2.Item.Type);
             previousInventory = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, InventoryType.Warehouse);
             Session.SendPacket(Session.Character.GenerateStash(previousInventory, packet.Slot));
-       
-        }
-
-        public void Repos(ReposPacket packet)
-        {
-            ItemInstance previousInventory;
-            ItemInstance newInventory;
-
-            // check if the destination slot is out of range
-            if (packet.NewSlot > Session.Character.WareHouseSize)
-            {
-                return;
-            }
-
-            // check if the character is allowed to move the item
-            if (Session.Character.InExchangeOrTrade)
-            {
-                return;
-            }
-
-            // actually move the item from source to destination
-            Session.Character.Inventory.MoveItem(InventoryType.Warehouse, InventoryType.Warehouse, packet.OldSlot, packet.Amount, packet.NewSlot, out previousInventory, out newInventory);
-            if (newInventory == null)
-            {
-                return;
-            }
-            Session.SendPacket(Session.Character.GenerateStash(newInventory, packet.NewSlot));
-            Session.SendPacket(Session.Character.GenerateStash(previousInventory, packet.OldSlot));
-            
         }
 
         private void ChangeSP()
@@ -1683,7 +1677,7 @@ namespace OpenNos.Handler
                 {
                     if (ski.Class == Session.Character.Morph + 31 && sp.SpLevel >= ski.LevelMinimum)
                     {
-                        Session.Character.SkillsSp[ski.SkillVNum] = new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId };
+                        Session.Character.SkillsSp[ski.SkillVNum] = new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId };
                     }
                 }
                 Session.SendPacket(Session.Character.GenerateSki());
@@ -1735,7 +1729,6 @@ namespace OpenNos.Handler
                 List<ItemInstance> inv = targetSession.Character.Inventory.AddToInventory(item2);
                 if (!inv.Any())
                 {
-                    continue;
                 }
             }
 

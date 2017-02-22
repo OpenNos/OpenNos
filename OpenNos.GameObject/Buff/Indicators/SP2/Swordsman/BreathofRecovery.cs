@@ -2,6 +2,8 @@
 {
     public class BreathofRecovery : IndicatorBase
     {
+        #region Instantiation
+
         public BreathofRecovery(int Level)
         {
             Name = "Breath of Recovery";
@@ -10,6 +12,11 @@
 
             _level = Level;
         }
+
+        #endregion
+
+        #region Methods
+
         public override void Enable(ClientSession session)
         {
             base.Enable(session);
@@ -38,5 +45,7 @@
             session.SendPacket(session.Character.GenerateStat());
             Disable(session);
         }
+
+        #endregion
     }
 }

@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
 {
     public class FirstBlessing : IndicatorBase
     {
+        #region Instantiation
+
         public FirstBlessing(int Level)
         {
             Name = "The 1st Triple Blessing";
@@ -14,11 +16,17 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
             DirectBuffs.Add(new BCardEntry(Type.Defense, SubType.DecreaseCriticalDamage, 10, 0, false));
         }
 
+        #endregion
+
+        #region Methods
+
         public override void Disable(ClientSession session)
         {
             base.Disable(session);
             IndicatorBase buff = new SecondBlessing(_level);
             session.Character.Buff.Add(buff);
         }
+
+        #endregion
     }
 }

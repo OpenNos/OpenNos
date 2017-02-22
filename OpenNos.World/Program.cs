@@ -22,7 +22,10 @@ using OpenNos.GameObject;
 using OpenNos.Handler;
 using OpenNos.WebApi.Reference;
 using System;
+using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -61,7 +64,7 @@ namespace OpenNos.World
 
         public static void Main(string[] args)
         {
-            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
             // initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
@@ -69,7 +72,7 @@ namespace OpenNos.World
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
             Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}";
-            int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
+            int port = Convert.ToInt32(ConfigurationManager.AppSettings["WorldPort"]);
             string text = $"WORLD SERVER v{fileVersionInfo.ProductVersion} - by OpenNos Team";
             int offset = Console.WindowWidth / 2 + text.Length / 2;
             string separator = new string('=', Console.WindowWidth);
@@ -109,9 +112,9 @@ namespace OpenNos.World
             portloop:
             try
             {
-                networkManager = new NetworkManager<WorldEncryption>(System.Configuration.ConfigurationManager.AppSettings["IPADDRESS"], port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
+                networkManager = new NetworkManager<WorldEncryption>(ConfigurationManager.AppSettings["IPADDRESS"], port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
-            catch (System.Net.Sockets.SocketException ex)
+            catch (SocketException ex)
             {
                 if (ex.ErrorCode == 10048)
                 {
@@ -123,9 +126,9 @@ namespace OpenNos.World
                 Environment.Exit(1);
             }
 
-            ServerManager.ServerGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
-            int sessionLimit = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["SessionLimit"]);
-            int? newChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("RegisterWorldserver", ServerManager.ServerGroup, new WorldserverDTO(ServerManager.Instance.WorldId, new ScsTcpEndPoint(System.Configuration.ConfigurationManager.AppSettings["IPADDRESS"], port), sessionLimit)).Result;
+            ServerManager.ServerGroup = ConfigurationManager.AppSettings["ServerGroup"];
+            int sessionLimit = Convert.ToInt32(ConfigurationManager.AppSettings["SessionLimit"]);
+            int? newChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("RegisterWorldserver", ServerManager.ServerGroup, new WorldserverDTO(ServerManager.Instance.WorldId, new ScsTcpEndPoint(ConfigurationManager.AppSettings["IPADDRESS"], port), sessionLimit)).Result;
 
             if (newChannelId.HasValue)
             {
@@ -139,9 +142,9 @@ namespace OpenNos.World
 
         private static bool ExitHandler(CtrlType sig)
         {
-            string serverGroup = System.Configuration.ConfigurationManager.AppSettings["ServerGroup"];
-            int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
-            ServerCommunicationClient.Instance.HubProxy.Invoke("UnregisterWorldserver", serverGroup, new ScsTcpEndPoint(System.Configuration.ConfigurationManager.AppSettings["IPADDRESS"], port)).Wait();
+            string serverGroup = ConfigurationManager.AppSettings["ServerGroup"];
+            int port = Convert.ToInt32(ConfigurationManager.AppSettings["WorldPort"]);
+            ServerCommunicationClient.Instance.HubProxy.Invoke("UnregisterWorldserver", serverGroup, new ScsTcpEndPoint(ConfigurationManager.AppSettings["IPADDRESS"], port)).Wait();
 
             ServerManager.Instance.Shout(string.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 5));
             ServerManager.Instance.SaveAll();

@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
 {
     public class HolyShield : IndicatorBase
     {
+        #region Instantiation
+
         public HolyShield(int Level)
         {
             Name = "Holy Shield";
@@ -12,5 +14,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
             _level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Defense, SubType.NeverCritical, 1, 0, false));
         }
+
+        #endregion
     }
 }

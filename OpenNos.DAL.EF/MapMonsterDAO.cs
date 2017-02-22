@@ -51,6 +51,14 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public bool DoesMonsterExist(int mapMonsterId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return context.MapMonster.Any(i => i.MapMonsterId.Equals(mapMonsterId));
+            }
+        }
+
         public void Insert(IEnumerable<MapMonsterDTO> monsters)
         {
             try
@@ -116,14 +124,6 @@ namespace OpenNos.DAL.EF
                 {
                     yield return _mapper.Map<MapMonsterDTO>(MapMonsterobject);
                 }
-            }
-        }
-
-        public bool DoesMonsterExist(int mapMonsterId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return context.MapMonster.Any(i => i.MapMonsterId.Equals(mapMonsterId));
             }
         }
 

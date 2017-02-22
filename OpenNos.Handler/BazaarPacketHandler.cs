@@ -26,10 +26,6 @@ namespace OpenNos.Handler
 {
     public class BazaarPacketHandler : IPacketHandler
     {
-        #region Members
-
-        #endregion
-
         #region Instantiation
 
         public BazaarPacketHandler(ClientSession session)
@@ -289,7 +285,7 @@ namespace OpenNos.Handler
                 MedalUsed = medal != null,
                 Price = cRegPacket.Price,
                 SellerId = Session.Character.CharacterId,
-                ItemInstanceId = bazar.Id,
+                ItemInstanceId = bazar.Id
             };
 
             DAOFactory.BazaarItemDAO.InsertOrUpdate(ref bz);

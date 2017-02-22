@@ -18,6 +18,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -69,7 +70,7 @@ namespace OpenNos.Import.Console
         public void ImportCards()
         {
             string fileCardDat = $"{_folder}\\Card.dat";
-            string fileCardLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_Card.txt";
+            string fileCardLang = $"{_folder}\\_code_{ConfigurationManager.AppSettings["Language"]}_Card.txt";
             List<CardDTO> cards = new List<CardDTO>();
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             CardDTO card = new CardDTO();
@@ -284,7 +285,7 @@ namespace OpenNos.Import.Console
         public void ImportMaps()
         {
             string fileMapIdDat = $"{_folder}\\MapIDData.dat";
-            string fileMapIdLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_MapIDData.txt";
+            string fileMapIdLang = $"{_folder}\\_code_{ConfigurationManager.AppSettings["Language"]}_MapIDData.txt";
             string folderMap = $"{_folder}\\map";
             List<MapDTO> maps = new List<MapDTO>();
             Dictionary<int, string> dictionaryId = new Dictionary<int, string>();
@@ -383,7 +384,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "Act1",
                 PotionDelay = 300,
                 RespawnMapTypeId = (long)RespawnType.DefaultAct1,
-                ReturnMapTypeId = (long)RespawnType.ReturnAct1,
+                ReturnMapTypeId = (long)RespawnType.ReturnAct1
             };
             if (list.All(s => s.MapTypeId != mt1.MapTypeId))
             {
@@ -921,7 +922,7 @@ namespace OpenNos.Import.Console
             }
 
             string fileNpcId = $"{_folder}\\monster.dat";
-            string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_monster.txt";
+            string fileNpcLang = $"{_folder}\\_code_{ConfigurationManager.AppSettings["Language"]}_monster.txt";
             List<NpcMonsterDTO> npcs = new List<NpcMonsterDTO>();
 
             // Store like this: (vnum, (name, level))
@@ -1940,7 +1941,7 @@ namespace OpenNos.Import.Console
         public void ImportSkills()
         {
             string fileSkillId = $"{_folder}\\Skill.dat";
-            string fileSkillLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_Skill.txt";
+            string fileSkillLang = $"{_folder}\\_code_{ConfigurationManager.AppSettings["Language"]}_Skill.txt";
             List<SkillDTO> skills = new List<SkillDTO>();
 
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
@@ -2301,7 +2302,7 @@ namespace OpenNos.Import.Console
                     teleporter = new TeleporterDTO
                     {
                         MapNpcId = int.Parse(currentPacket[4]),
-                        Index = short.Parse(currentPacket[2]),
+                        Index = short.Parse(currentPacket[2])
                     };
                     continue;
                 }
@@ -2336,7 +2337,7 @@ namespace OpenNos.Import.Console
         internal void ImportItems()
         {
             string fileId = $"{_folder}\\Item.dat";
-            string fileLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_Item.txt";
+            string fileLang = $"{_folder}\\_code_{ConfigurationManager.AppSettings["Language"]}_Item.txt";
             Dictionary<string, string> dictionaryName = new Dictionary<string, string>();
             string line;
             List<ItemDTO> items = new List<ItemDTO>();

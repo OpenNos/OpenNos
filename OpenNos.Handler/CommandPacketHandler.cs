@@ -195,7 +195,6 @@ namespace OpenNos.Handler
                 {
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
                 }
-
             }
             else
             {
@@ -674,7 +673,7 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
-        /// $Clr Command
+        /// $Clear Command
         /// </summary>
         /// <param name="clearInventoryPacket"></param>
         public void ClearInventory(ClearInventoryPacket clearInventoryPacket)
@@ -691,7 +690,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.SendPacket(Session.Character.GenerateSay("$Clr INVENTORYTYPE", 10));
+                Session.SendPacket(Session.Character.GenerateSay("$Clear INVENTORYTYPE", 10));
             }
         }
 
@@ -719,6 +718,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$ChangeRep AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CharStat CHARACTERNAME", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Clear INVENTORYTYPE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
             Session.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 12));
@@ -779,6 +779,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
         }
 
+        // TODO: Convert that to PacketDefinition
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
         {
@@ -869,7 +870,7 @@ namespace OpenNos.Handler
                                 wearable.SetRarityPoint();
                             }
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                            }
+                        }
                         else
                         {
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
@@ -899,7 +900,7 @@ namespace OpenNos.Handler
                 short mapId = Session.Character.MapId;
                 short mapX = Session.Character.PositionX;
                 short mapY = Session.Character.PositionY;
-                Portal portal = new Portal()
+                Portal portal = new Portal
                 {
                     SourceMapId = mapId,
                     SourceX = mapX,

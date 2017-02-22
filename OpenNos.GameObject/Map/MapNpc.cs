@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
+using EpPathFinding;
+using OpenNos.Core;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using EpPathFinding;
-using OpenNos.Core;
-using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
@@ -62,12 +62,6 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        private string GenerateEff()
-        {
-            NpcMonster npc = ServerManager.GetNpc(NpcVNum);
-            return npc != null ? $"eff 2 {MapNpcId} {Effect}" : string.Empty;
-        }
-
         public string GenerateIn2()
         {
             NpcMonster npcinfo = ServerManager.GetNpc(NpcVNum);
@@ -76,11 +70,6 @@ namespace OpenNos.GameObject
                 return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
             }
             return string.Empty;
-        }
-
-        private string GenerateMv2()
-        {
-            return $"mv 2 {MapNpcId} {MapX} {MapY} {Npc.Speed}";
         }
 
         public string GetNpcDialog()
@@ -107,6 +96,38 @@ namespace OpenNos.GameObject
                 shop.Initialize();
                 Shop = shop;
             }
+        }
+
+        internal void StartLife()
+        {
+            if (LifeEvent == default(IDisposable))
+            {
+                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000d / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
+                {
+                    try
+                    {
+                        if (!MapInstance.IsSleeping)
+                        {
+                            NpcLife();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                });
+            }
+        }
+
+        private string GenerateEff()
+        {
+            NpcMonster npc = ServerManager.GetNpc(NpcVNum);
+            return npc != null ? $"eff 2 {MapNpcId} {Effect}" : string.Empty;
+        }
+
+        private string GenerateMv2()
+        {
+            return $"mv 2 {MapNpcId} {MapX} {MapY} {Npc.Speed}";
         }
 
         private void NpcLife()
@@ -239,7 +260,7 @@ namespace OpenNos.GameObject
                             int maxindex = Path.Count > Npc.Speed / 2 && Npc.Speed > 1 ? Npc.Speed / 2 : Path.Count;
                             short mapX = (short)Path.ElementAt(maxindex - 1).x;
                             short mapY = (short)Path.ElementAt(maxindex - 1).y;
-                            double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY}, new MapCell { X = MapX, Y = MapY}) / (double)Npc.Speed;
+                            double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Npc.Speed;
                             MapInstance.Broadcast(new BroadcastPacket(null, $"mv 2 {MapNpcId} {mapX} {mapY} {Npc.Speed}", ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                             LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
@@ -274,27 +295,6 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-            }
-        }
-
-        internal void StartLife()
-        {
-            if (LifeEvent == default(IDisposable))
-            {
-                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000d / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
-                {
-                    try
-                    {
-                        if (!MapInstance.IsSleeping)
-                        {
-                            NpcLife();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                });
             }
         }
 

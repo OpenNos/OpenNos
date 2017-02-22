@@ -12,14 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using OpenNos.DAL;
+using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
     public class FamilyCharacter : FamilyCharacterDTO
     {
-        #region Instantiation
+        #region Members
+
         private CharacterDTO _character;
 
         #endregion
@@ -35,7 +36,7 @@ namespace OpenNos.GameObject
                     _character = DAOFactory.CharacterDAO.LoadById(CharacterId);
                 }
                 return _character;
-             }
+            }
         }
 
         #endregion
@@ -44,7 +45,6 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
-
         }
 
         #endregion

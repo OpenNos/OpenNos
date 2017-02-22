@@ -21,11 +21,12 @@ namespace OpenNos.DAL.Mock
 {
     public class CardDAO : BaseDAO<CardDTO>, ICardDAO
     {
+        #region Methods
+
         public void Insert(List<CardDTO> card)
         {
             throw new NotImplementedException();
         }
-        #region Methods
 
         public CardDTO Insert(ref CardDTO cardObject)
         {

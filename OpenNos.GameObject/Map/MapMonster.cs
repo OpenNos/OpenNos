@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
 using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Buff.BCard;
 using OpenNos.GameObject.Networking;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
 using Type = OpenNos.GameObject.Buff.BCard.Type;
 
 namespace OpenNos.GameObject

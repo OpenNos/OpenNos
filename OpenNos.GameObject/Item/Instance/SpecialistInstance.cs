@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -563,7 +563,6 @@ namespace OpenNos.GameObject
             }
             else
             {
-
                 if (protect == UpgradeProtection.Protected)
                 {
                     Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);

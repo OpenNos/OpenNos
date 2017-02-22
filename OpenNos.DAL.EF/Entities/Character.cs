@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL.EF.Entities;
 using OpenNos.Domain;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
@@ -71,8 +71,6 @@ namespace OpenNos.DAL.EF
         public virtual ICollection<CharacterRelation> CharacterRelation2 { get; set; }
 
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
-
-        public virtual ICollection<Mate> Mate { get; set; }
 
         public byte Class { get; set; }
 
@@ -139,6 +137,8 @@ namespace OpenNos.DAL.EF
         public int MasterPoints { get; set; }
 
         public int MasterTicket { get; set; }
+
+        public virtual ICollection<Mate> Mate { get; set; }
 
         public bool MinilandInviteBlocked { get; set; }
 

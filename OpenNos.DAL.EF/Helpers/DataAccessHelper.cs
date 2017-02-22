@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.DAL.EF.DB;
 using System;
+using System.Data;
 using System.Data.Common;
 
 namespace OpenNos.DAL.EF.Helpers
@@ -43,8 +44,8 @@ namespace OpenNos.DAL.EF.Helpers
         public static DbTransaction BeginTransaction()
         {
             // an open connection is needed for a transaction
-            if (Context.Database.Connection.State == System.Data.ConnectionState.Broken ||
-                Context.Database.Connection.State == System.Data.ConnectionState.Closed)
+            if (Context.Database.Connection.State == ConnectionState.Broken ||
+                Context.Database.Connection.State == ConnectionState.Closed)
             {
                 Context.Database.Connection.Open();
             }

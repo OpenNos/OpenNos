@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Server;
-using System;
 using System.Collections.Generic;
 
 namespace OpenNos.Core
@@ -51,7 +51,7 @@ namespace OpenNos.Core
         {
             get
             {
-                return CommunicationState == Networking.Communication.Scs.Communication.CommunicationStates.Connected;
+                return CommunicationState == CommunicationStates.Connected;
             }
         }
 

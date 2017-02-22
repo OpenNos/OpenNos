@@ -15,6 +15,7 @@
 using Microsoft.AspNet.SignalR.Client;
 using OpenNos.Domain;
 using System;
+using System.Collections.Generic;
 
 namespace OpenNos.WebApi.Reference
 {
@@ -22,6 +23,7 @@ namespace OpenNos.WebApi.Reference
     {
         #region Members
 
+        public bool IsConnected;
         private const string remoteUrl = "http://localhost:6666/";
 
         private static ServerCommunicationClient _instance;
@@ -37,22 +39,22 @@ namespace OpenNos.WebApi.Reference
 
         public event EventHandler AccountDisconnectedEvent;
 
+        public event EventHandler BazaarRefresh;
+
         public event EventHandler CharacterConnectedEvent;
 
         public event EventHandler CharacterDisconnectedEvent;
 
-        public event EventHandler SessionKickedEvent;
+        public event EventHandler FamilyRefresh;
 
         public event EventHandler MessageSentToCharacter;
 
-        public event EventHandler FamilyRefresh;
+        public event EventHandler PenaltyLogRefresh;
 
         public event EventHandler RelationRefresh;
 
-        public event EventHandler PenaltyLogRefresh;
+        public event EventHandler SessionKickedEvent;
 
-        public event EventHandler BazaarRefresh;
-        
         #endregion
 
         #region Properties
@@ -77,8 +79,6 @@ namespace OpenNos.WebApi.Reference
                 return _hubProxy;
             }
         }
-
-        public bool IsConnected;
 
         #endregion
 
@@ -135,52 +135,6 @@ namespace OpenNos.WebApi.Reference
             _hubconnection.Start().Wait();
         }
 
-        private void OnFamilyRefresh(string worldgroup, long FamilyId)
-        {
-            FamilyRefresh?.Invoke(new Tuple<string, long>(worldgroup, FamilyId), new EventArgs());
-        }
-        private void OnRelationRefresh(string worldgroup, long id)
-        {
-            RelationRefresh?.Invoke(new Tuple<string, long>(worldgroup, id), new EventArgs());
-        }
-        private void OnPenaltyLogRefresh(int id)
-        {
-            PenaltyLogRefresh?.Invoke(id, new EventArgs());
-        }
-
-        private void OnBazaarRefresh(string worldgroup, long BazaarItemId)
-        {
-            BazaarRefresh?.Invoke(new Tuple<string, long>(worldgroup, BazaarItemId), new EventArgs());
-        }
-
-        private void OnMessageSentToCharacter(string worldgroup, string sourcecharacterName, string characterName, string message, int fromChannel, MessageType messageType)
-        {
-            MessageSentToCharacter?.Invoke(new Tuple<string, string, string, string, int, MessageType>(worldgroup, sourcecharacterName, characterName, message, fromChannel, messageType), new EventArgs());
-        }
-        private void OnAccountDisconnected(string accountName)
-        {
-            if (AccountDisconnectedEvent != null && !string.IsNullOrEmpty(accountName))
-            {
-                AccountDisconnectedEvent(accountName, new EventArgs());
-            }
-        }
-
-        private void OnCharacterDisconnected(string worldgroup, string characterName, long characterId)
-        {
-            if (CharacterDisconnectedEvent != null && !string.IsNullOrEmpty(characterName))
-            {
-                CharacterDisconnectedEvent(new Tuple<string, string, long>(worldgroup, characterName, characterId), new EventArgs());
-            }
-        }
-
-        private void OnSessionKicked(long? sessionId, string accountName)
-        {
-            if (SessionKickedEvent != null && (sessionId.HasValue || !string.IsNullOrEmpty(accountName)))
-            {
-                SessionKickedEvent(new Tuple<long?, string>(sessionId, accountName), new EventArgs());
-            }
-        }
-
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -193,8 +147,21 @@ namespace OpenNos.WebApi.Reference
         {
             if (AccountConnectedEvent != null && !string.IsNullOrEmpty(accountName))
             {
-                AccountConnectedEvent(new System.Collections.Generic.KeyValuePair<string, long>(accountName, sessionId), new EventArgs());
+                AccountConnectedEvent(new KeyValuePair<string, long>(accountName, sessionId), new EventArgs());
             }
+        }
+
+        private void OnAccountDisconnected(string accountName)
+        {
+            if (AccountDisconnectedEvent != null && !string.IsNullOrEmpty(accountName))
+            {
+                AccountDisconnectedEvent(accountName, new EventArgs());
+            }
+        }
+
+        private void OnBazaarRefresh(string worldgroup, long BazaarItemId)
+        {
+            BazaarRefresh?.Invoke(new Tuple<string, long>(worldgroup, BazaarItemId), new EventArgs());
         }
 
         private void OnCharacterConnected(string worldgroup, string characterName, long characterId)
@@ -202,6 +169,42 @@ namespace OpenNos.WebApi.Reference
             if (CharacterConnectedEvent != null && !string.IsNullOrEmpty(characterName))
             {
                 CharacterConnectedEvent(new Tuple<string, string, long>(worldgroup, characterName, characterId), new EventArgs());
+            }
+        }
+
+        private void OnCharacterDisconnected(string worldgroup, string characterName, long characterId)
+        {
+            if (CharacterDisconnectedEvent != null && !string.IsNullOrEmpty(characterName))
+            {
+                CharacterDisconnectedEvent(new Tuple<string, string, long>(worldgroup, characterName, characterId), new EventArgs());
+            }
+        }
+
+        private void OnFamilyRefresh(string worldgroup, long FamilyId)
+        {
+            FamilyRefresh?.Invoke(new Tuple<string, long>(worldgroup, FamilyId), new EventArgs());
+        }
+
+        private void OnMessageSentToCharacter(string worldgroup, string sourcecharacterName, string characterName, string message, int fromChannel, MessageType messageType)
+        {
+            MessageSentToCharacter?.Invoke(new Tuple<string, string, string, string, int, MessageType>(worldgroup, sourcecharacterName, characterName, message, fromChannel, messageType), new EventArgs());
+        }
+
+        private void OnPenaltyLogRefresh(int id)
+        {
+            PenaltyLogRefresh?.Invoke(id, new EventArgs());
+        }
+
+        private void OnRelationRefresh(string worldgroup, long id)
+        {
+            RelationRefresh?.Invoke(new Tuple<string, long>(worldgroup, id), new EventArgs());
+        }
+
+        private void OnSessionKicked(long? sessionId, string accountName)
+        {
+            if (SessionKickedEvent != null && (sessionId.HasValue || !string.IsNullOrEmpty(accountName)))
+            {
+                SessionKickedEvent(new Tuple<long?, string>(sessionId, accountName), new EventArgs());
             }
         }
 

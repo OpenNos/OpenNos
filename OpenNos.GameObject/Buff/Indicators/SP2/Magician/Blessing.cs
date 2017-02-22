@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
 {
     public class Blessing : IndicatorBase
     {
+        #region Instantiation
+
         public Blessing(int Level)
         {
             Name = "Blessing";
@@ -15,5 +17,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
             DirectBuffs.Add(new BCardEntry(Type.Defense, SubType.IncreaseMelee, Level * 2, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Defense, SubType.IncreaseDistance, Level * 2, 0, false));
         }
+
+        #endregion
     }
 }

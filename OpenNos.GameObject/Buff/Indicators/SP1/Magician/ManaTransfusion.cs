@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Magician
 {
     public class ManaTransfusion : IndicatorBase
     {
+        #region Instantiation
+
         public ManaTransfusion(int Level)
         {
             Name = "Mana Transfusion";
@@ -12,5 +14,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Magician
             _level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.DecreasePercentage, 20, 0, false, true));
         }
+
+        #endregion
     }
 }

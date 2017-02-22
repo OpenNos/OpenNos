@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -20,7 +21,6 @@ using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.DAL.EF.DB;
 
 namespace OpenNos.DAL.EF
 {
@@ -78,24 +78,6 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        private PenaltyLogDTO Insert(PenaltyLogDTO penaltylog, OpenNosContext context)
-        {
-            PenaltyLog entity = _mapper.Map<PenaltyLog>(penaltylog);
-            context.PenaltyLog.Add(entity);
-            context.SaveChanges();
-            return _mapper.Map<PenaltyLogDTO>(entity);
-        }
-
-        private PenaltyLogDTO Update(PenaltyLog entity, PenaltyLogDTO penaltylog, OpenNosContext context)
-        {
-            if (entity != null)
-            {
-                _mapper.Map(penaltylog, entity);
-                context.SaveChanges();
-            }
-            return _mapper.Map<PenaltyLogDTO>(entity);
-        }
-
         public IEnumerable<PenaltyLogDTO> LoadAll()
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -132,6 +114,24 @@ namespace OpenNos.DAL.EF
                 Logger.Error(e);
                 return null;
             }
+        }
+
+        private PenaltyLogDTO Insert(PenaltyLogDTO penaltylog, OpenNosContext context)
+        {
+            PenaltyLog entity = _mapper.Map<PenaltyLog>(penaltylog);
+            context.PenaltyLog.Add(entity);
+            context.SaveChanges();
+            return _mapper.Map<PenaltyLogDTO>(entity);
+        }
+
+        private PenaltyLogDTO Update(PenaltyLog entity, PenaltyLogDTO penaltylog, OpenNosContext context)
+        {
+            if (entity != null)
+            {
+                _mapper.Map(penaltylog, entity);
+                context.SaveChanges();
+            }
+            return _mapper.Map<PenaltyLogDTO>(entity);
         }
 
         #endregion

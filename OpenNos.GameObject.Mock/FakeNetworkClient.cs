@@ -56,7 +56,6 @@ namespace OpenNos.GameObject.Mock
 
             set
             {
-
                 _clientId = value;
             }
         }

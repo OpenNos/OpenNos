@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -715,7 +715,6 @@ namespace OpenNos.GameObject
                 }
                 session.SendPacket("shop_end 1");
             }
-
         }
 
         #endregion

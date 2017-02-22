@@ -490,7 +490,7 @@ namespace OpenNos.Domain
         private enum Capture : byte
         {
             CaptureAnimal = 11,
-            CaptureAnimalNegated = 12,
+            CaptureAnimalNegated = 12
         }
 
         private enum SpecialDamageAndExplosions : byte
@@ -598,7 +598,7 @@ namespace OpenNos.Domain
         private enum Count : byte
         {
             Summon = 11,
-            SummonChance = 12,
+            SummonChance = 12
         }
 
         private enum NoDefeatAndNoDamage : byte

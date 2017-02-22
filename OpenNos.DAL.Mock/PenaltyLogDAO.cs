@@ -15,9 +15,9 @@
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace OpenNos.DAL.Mock
 {
@@ -29,7 +29,6 @@ namespace OpenNos.DAL.Mock
         {
             throw new NotImplementedException();
         }
-
 
         public SaveResult InsertOrUpdate(ref PenaltyLogDTO log)
         {
@@ -45,7 +44,6 @@ namespace OpenNos.DAL.Mock
         {
             throw new NotImplementedException();
         }
-
 
         #endregion
     }

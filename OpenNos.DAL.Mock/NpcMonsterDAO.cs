@@ -29,17 +29,17 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
+        public void Insert(List<NpcMonsterDTO> npc)
+        {
+            throw new NotImplementedException();
+        }
+
         public SaveResult InsertOrUpdate(ref NpcMonsterDTO npcMonster)
         {
             throw new NotImplementedException();
         }
 
         public NpcMonsterDTO LoadByVNum(short MapId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Insert(List<NpcMonsterDTO> npc)
         {
             throw new NotImplementedException();
         }

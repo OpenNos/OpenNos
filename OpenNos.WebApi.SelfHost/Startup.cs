@@ -1,6 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved. Licensed under the Apache License, Version
 // 2.0. See License.txt in the project root for license information.
 
+using log4net.Config;
 using Microsoft.AspNet.SignalR;
 using Microsoft.Owin.Cors;
 using Owin;
@@ -31,7 +32,7 @@ namespace OpenNos.WebApi.SelfHost
                    .RunSignalR(config);
             });
 
-            log4net.Config.XmlConfigurator.Configure();
+            XmlConfigurator.Configure();
 
             // Turn tracing on programmatically
             //GlobalHost.TraceManager.Switch.Level = SourceLevels.Information;

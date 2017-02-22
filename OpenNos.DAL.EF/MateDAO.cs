@@ -14,19 +14,21 @@
 
 using OpenNos.Core;
 using OpenNos.DAL.EF.DB;
+using OpenNos.DAL.EF.Entities;
 using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.DAL.Interface;
-using OpenNos.DAL.EF.Entities;
 
 namespace OpenNos.DAL.EF
 {
     public class MateDAO : MappingBaseDAO<Mate, MateDTO>, IMateDAO
     {
+        #region Methods
+
         public DeleteResult Delete(long id)
         {
             try
@@ -49,7 +51,6 @@ namespace OpenNos.DAL.EF
                 return DeleteResult.Error;
             }
         }
-
 
         public SaveResult InsertOrUpdate(ref MateDTO mate)
         {
@@ -77,7 +78,6 @@ namespace OpenNos.DAL.EF
             }
         }
 
-
         public IEnumerable<MateDTO> LoadByCharacterId(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -87,7 +87,6 @@ namespace OpenNos.DAL.EF
                     yield return _mapper.Map<MateDTO>(mate);
                 }
             }
-
         }
 
         private MateDTO Insert(MateDTO mate, OpenNosContext context)
@@ -108,5 +107,7 @@ namespace OpenNos.DAL.EF
 
             return _mapper.Map<MateDTO>(entity);
         }
+
+        #endregion
     }
 }

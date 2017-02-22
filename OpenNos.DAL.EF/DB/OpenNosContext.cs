@@ -13,12 +13,11 @@
  */
 
 using OpenNos.DAL.EF.Entities;
+using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace OpenNos.DAL.EF.DB
 {
-    using System.Data.Entity;
-    using System.Data.Entity.ModelConfiguration.Conventions;
-
     public class OpenNosContext : DbContext
     {
         #region Instantiation
@@ -80,9 +79,9 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<MapTypeMap> MapTypeMap { get; set; }
 
-        public virtual DbSet<MinilandObject> MinilandObject { get; set; }
-
         public virtual DbSet<Mate> Mate { get; set; }
+
+        public virtual DbSet<MinilandObject> MinilandObject { get; set; }
 
         public virtual DbSet<NpcMonster> NpcMonster { get; set; }
 

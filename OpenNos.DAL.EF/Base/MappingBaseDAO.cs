@@ -12,9 +12,8 @@ namespace OpenNos.DAL.EF
     {
         #region Members
 
-        protected IMapper _mapper;
-
         protected readonly IDictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
+        protected IMapper _mapper;
 
         #endregion
 

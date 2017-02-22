@@ -217,12 +217,9 @@ namespace OpenNos.Core
         /// <summary> Converts a Sublist of Packets, For instance 0.4903.5.0.0 2.340.0.0.0
         /// 3.720.0.0.0 5.4912.6.0.0 9.227.0.0.0 10.803.0.0.0 to List<EquipSubPacket> </summary>
         /// <param name="currentValue">The value as String</param> <param
-        /// name="packetBasePropertyType">Type of the Property to convert to</param>
-        /// <param name="shouldRemoveSeparator"></param>
-        /// <param name="packetMatchCollections"></param>
-        /// <param name="currentIndex"></param>
-        /// <param name="includesKeepAliveIdentity"></param>
-        /// <returns></returns>
+        /// name="packetBasePropertyType">Type of the Property to convert to</param> <param
+        /// name="shouldRemoveSeparator"></param> <param name="packetMatchCollections"></param>
+        /// <param name="currentIndex"></param> <param name="includesKeepAliveIdentity"></param> <returns></returns>
         private static IList DeserializeSubpackets(string currentValue, Type packetBasePropertyType, bool shouldRemoveSeparator, MatchCollection packetMatchCollections, int? currentIndex, bool includesKeepAliveIdentity)
         {
             // split into single values

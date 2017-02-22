@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
 {
     public class EagleSpirit : IndicatorBase
     {
+        #region Instantiation
+
         public EagleSpirit(int Level)
         {
             Name = "Eagle Spirit";
@@ -13,5 +15,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
             DirectBuffs.Add(new BCardEntry(Type.HitRate, SubType.Increase, 30, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreaseCriticalChance, 10, 0, false));
         }
+
+        #endregion
     }
 }

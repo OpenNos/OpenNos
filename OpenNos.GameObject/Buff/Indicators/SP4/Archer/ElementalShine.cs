@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
 {
     public class ElementalShine : IndicatorBase
     {
+        #region Instantiation
+
         public ElementalShine(int Level)
         {
             Name = "Elemental Shine";
@@ -12,5 +14,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
             _level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Resistance, SubType.IncreaseLight, 30, 0, false));
         }
+
+        #endregion
     }
 }

@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Swordsman
 {
     public class IronSkin : IndicatorBase
     {
+        #region Instantiation
+
         public IronSkin(int Level)
         {
             Name = "Iron Skin";
@@ -15,5 +17,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Swordsman
             DelayedBuffs.Add(new BCardEntry(Type.Cooldown, SubType.DecreasePercentage, 15, 0, false));
             Delay = 2;
         }
+
+        #endregion
     }
 }

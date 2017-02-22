@@ -20,6 +20,6 @@ namespace OpenNos.Domain
         NormalInstance,
         LodInstance,
         GroupInstance,
-        Act4Instance,
+        Act4Instance
     }
 }

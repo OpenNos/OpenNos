@@ -1,23 +1,24 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
-using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Collections.Generic;
 
 namespace OpenNos.Data
 {
     public class WorldserverGroupDTO
     {
-        #region Properties
+        #region Instantiation
 
         public WorldserverGroupDTO(string groupName, WorldserverDTO firstWorldserver)
         {
             GroupName = groupName;
-            Servers = new List<WorldserverDTO>() { firstWorldserver };
-        } 
+            Servers = new List<WorldserverDTO> { firstWorldserver };
+        }
 
-        public List<WorldserverDTO> Servers { get; set; }
+        #endregion
+
+        #region Properties
 
         public string GroupName { get; set; }
+
+        public List<WorldserverDTO> Servers { get; set; }
 
         #endregion
     }

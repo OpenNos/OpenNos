@@ -12,12 +12,12 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Collections.Generic;
-using OpenNos.Data;
 using OpenNos.DAL;
+using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.WebApi.Reference;
+using System;
+using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
@@ -38,9 +38,9 @@ namespace OpenNos.GameObject
 
         public List<FamilyLogDTO> FamilyLogs { get; set; }
 
-        public Inventory Warehouse { get; set; }
-
         public MapInstance LandOfDeath { get; set; }
+
+        public Inventory Warehouse { get; set; }
 
         #endregion
 

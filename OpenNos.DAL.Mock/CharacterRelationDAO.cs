@@ -15,9 +15,9 @@
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace OpenNos.DAL.Mock
 {
@@ -31,7 +31,7 @@ namespace OpenNos.DAL.Mock
             //Container.Remove(dto);
             return DeleteResult.Deleted;
         }
-        
+
         public override CharacterRelationDTO Insert(CharacterRelationDTO dto)
         {
             dto.CharacterId = Container.Any() ? Container.Max(c => c.CharacterId) + 1 : 1;
@@ -46,11 +46,8 @@ namespace OpenNos.DAL.Mock
                 dto = character;
                 return SaveResult.Updated;
             }
-            else
-            {
-                Insert(character);
-                return SaveResult.Inserted;
-            }
+            Insert(character);
+            return SaveResult.Inserted;
         }
 
         public IEnumerable<CharacterRelationDTO> LoadAll(long characterId)
@@ -62,6 +59,7 @@ namespace OpenNos.DAL.Mock
         {
             return Container.SingleOrDefault(c => c.CharacterId == characterId);
         }
+
         #endregion
     }
 }

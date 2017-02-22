@@ -13,7 +13,6 @@
  */
 
 using OpenNos.Domain;
-using System;
 
 namespace OpenNos.Data
 {
@@ -21,9 +20,9 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public long CharacterRelationId { get; set; }
-
         public long CharacterId { get; set; }
+
+        public long CharacterRelationId { get; set; }
 
         public long RelatedCharacterId { get; set; }
 

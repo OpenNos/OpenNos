@@ -1,28 +1,11 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class Aphrodite35 : DbMigration
     {
-        public override void Up()
-        {
-            CreateTable(
-                "dbo.ItemCard",
-                c => new
-                    {
-                        ItemVNum = c.Short(nullable: false),
-                        CardId = c.Short(nullable: false),
-                        CardChance = c.Short(nullable: false),
-                    })
-                .PrimaryKey(t => new { t.ItemVNum, t.CardId })
-                .ForeignKey("dbo.Card", t => t.CardId)
-                .ForeignKey("dbo.Item", t => t.ItemVNum)
-                .Index(t => t.ItemVNum)
-                .Index(t => t.CardId);
-            
-        }
-        
+        #region Methods
+
         public override void Down()
         {
             DropForeignKey("dbo.ItemCard", "ItemVNum", "dbo.Item");
@@ -31,5 +14,24 @@ namespace OpenNos.DAL.EF.Migrations
             DropIndex("dbo.ItemCard", new[] { "ItemVNum" });
             DropTable("dbo.ItemCard");
         }
+
+        public override void Up()
+        {
+            CreateTable(
+                "dbo.ItemCard",
+                c => new
+                {
+                    ItemVNum = c.Short(nullable: false),
+                    CardId = c.Short(nullable: false),
+                    CardChance = c.Short(nullable: false)
+                })
+                .PrimaryKey(t => new { t.ItemVNum, t.CardId })
+                .ForeignKey("dbo.Card", t => t.CardId)
+                .ForeignKey("dbo.Item", t => t.ItemVNum)
+                .Index(t => t.ItemVNum)
+                .Index(t => t.CardId);
+        }
+
+        #endregion
     }
 }

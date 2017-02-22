@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Swordsman
 {
     public class Sprint : IndicatorBase
     {
+        #region Instantiation
+
         public Sprint(int Level)
         {
             Name = "Sprint";
@@ -12,5 +14,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Swordsman
             _level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Speed, SubType.Increase, 5, 0, false));
         }
+
+        #endregion
     }
 }

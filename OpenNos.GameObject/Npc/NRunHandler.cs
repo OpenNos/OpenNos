@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL;
-using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -181,6 +181,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 150:
                     if (npc != null)
                     {
@@ -209,6 +210,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 301:
                     if (npc != null)
                     {
@@ -220,14 +222,17 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 1600:
                     Session.SendPacket(Session.Character.OpenFamilyWarehouse());
                     break;
+
                 case 1601:
                     Session.SendPackets(Session.Character.OpenFamilyWarehouseHist());
                     break;
+
                 case 1602:
-                    if(Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 3 && Session.Character.Family.WarehouseSize < 21)
+                    if (Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 3 && Session.Character.Family.WarehouseSize < 21)
                     {
                         if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                         {
@@ -248,14 +253,14 @@ namespace OpenNos.GameObject
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 10));
                             Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
                         }
-
                     }
                     break;
+
                 case 1603:
                     if (Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 7 && Session.Character.Family.WarehouseSize < 49)
                     {
                         if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
-                        { 
+                        {
                             if (2000000 >= Session.Character.Gold)
                             {
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
@@ -273,9 +278,9 @@ namespace OpenNos.GameObject
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 10));
                             Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
                         }
-
                     }
                     break;
+
                 case 1604:
                     if (Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 5 && Session.Character.Family.MaxSize < 70)
                     {
@@ -300,6 +305,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 1605:
                     if (Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 9 && Session.Character.Family.MaxSize < 100)
                     {
@@ -316,7 +322,6 @@ namespace OpenNos.GameObject
                             FamilyDTO fam = Session.Character.Family;
                             DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-
                         }
                         else
                         {
@@ -325,6 +330,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 23:
                     if (type == 0)
                     {
@@ -387,6 +393,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 5001:
                     if (npc != null)
                     {
@@ -394,6 +401,7 @@ namespace OpenNos.GameObject
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 130, 12, 40);
                     }
                     break;
+
                 case 5011:
                     if (npc != null)
                     {
@@ -401,6 +409,7 @@ namespace OpenNos.GameObject
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 170, 127, 46);
                     }
                     break;
+
                 case 5012:
                     if (npc != null)
                     {

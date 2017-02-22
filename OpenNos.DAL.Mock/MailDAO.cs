@@ -38,11 +38,8 @@ namespace OpenNos.DAL.Mock
                 dto = mail;
                 return SaveResult.Updated;
             }
-            else
-            {
-                Insert(mail);
-                return SaveResult.Inserted;
-            }
+            Insert(mail);
+            return SaveResult.Inserted;
         }
 
         public MailDTO LoadById(long mailId)

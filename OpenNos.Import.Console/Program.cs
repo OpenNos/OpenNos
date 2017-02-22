@@ -18,7 +18,9 @@ using OpenNos.DAL;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.Data;
 using System;
+using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 
@@ -54,11 +56,11 @@ namespace OpenNos.Import.Console
             System.Console.BackgroundColor = ConsoleColor.Blue;
             System.Console.WriteLine(@"Root");
             System.Console.ResetColor();
-            System.Console.WriteLine($@"-----_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_Card.txt");
-            System.Console.WriteLine($@"-----_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_Item.txt");
-            System.Console.WriteLine($@"-----_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_MapIDData.txt");
-            System.Console.WriteLine($@"-----_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_monster.txt");
-            System.Console.WriteLine($@"-----_code_{System.Configuration.ConfigurationManager.AppSettings["Language"]}_Skill.txt");
+            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Card.txt");
+            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Item.txt");
+            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_MapIDData.txt");
+            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_monster.txt");
+            System.Console.WriteLine($@"-----_code_{ConfigurationManager.AppSettings["Language"]}_Skill.txt");
             System.Console.WriteLine(@"-----packet.txt");
             System.Console.WriteLine(@"-----Card.dat");
             System.Console.WriteLine(@"-----Item.dat");
@@ -187,7 +189,7 @@ namespace OpenNos.Import.Console
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
                     {
-                       factory.ImportSkillCards();
+                        factory.ImportSkillCards();
                     }
 
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_ITEMCARDS")} [Y/n]");
@@ -249,7 +251,7 @@ namespace OpenNos.Import.Console
                 System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("DONE")}");
                 Thread.Sleep(5000);
             }
-            catch (System.IO.FileNotFoundException)
+            catch (FileNotFoundException)
             {
                 Logger.Log.Error(Language.Instance.GetMessageFromKey("AT_LEAST_ONE_FILE_MISSING"));
                 Thread.Sleep(5000);

@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Archer
 {
     public class SinisterShadow : IndicatorBase
     {
+        #region Instantiation
+
         public SinisterShadow(int Level)
         {
             Name = "Sinister Shadow";
@@ -12,5 +14,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Archer
             _level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.Increase, 10, 0, true));
         }
+
+        #endregion
     }
 }

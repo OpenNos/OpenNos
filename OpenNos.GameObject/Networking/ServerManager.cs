@@ -12,6 +12,12 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Data;
+using OpenNos.Domain;
+using OpenNos.GameObject.Event;
+using OpenNos.WebApi.Reference;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -22,12 +28,6 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL;
-using OpenNos.Domain;
-using OpenNos.GameObject.Event;
-using OpenNos.WebApi.Reference;
 
 namespace OpenNos.GameObject
 {
@@ -122,6 +122,8 @@ namespace OpenNos.GameObject
 
         public static ServerManager Instance => _instance ?? (_instance = new ServerManager());
 
+        public List<int> MateIds { get; internal set; } = new List<int>();
+
         public List<PenaltyLogDTO> PenaltyLogs { get; set; }
 
         public List<EventType> StartedEvents { get; set; }
@@ -135,7 +137,6 @@ namespace OpenNos.GameObject
         public List<CharacterDTO> TopReputation { get; set; }
 
         public Guid WorldId { get; private set; }
-        public List<int> MateIds { get; internal set; } = new List<int>();
 
         #endregion
 
@@ -920,48 +921,6 @@ namespace OpenNos.GameObject
             session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
         }
 
-        private void LoadBazaar()
-        {
-            BazaarList = new List<BazaarItemLink>();
-            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
-            {
-                BazaarItemLink item = new BazaarItemLink { BazaarItem = bz };
-                CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
-                if (chara != null)
-                {
-                    item.Owner = chara.Name;
-                    item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
-                }
-                BazaarList.Add(item);
-            }
-        }
-
-        private void LoadFamilies()
-        {
-            FamilyList = new List<Family>();
-            foreach (FamilyDTO fam in DAOFactory.FamilyDAO.LoadAll())
-            {
-                Family fami = (Family)fam;
-                fami.FamilyCharacters = new List<FamilyCharacter>();
-                foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
-                {
-                    fami.FamilyCharacters.Add((FamilyCharacter)famchar);
-                }
-                FamilyCharacter familyCharacter = fami.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
-                if (familyCharacter != null)
-                {
-                    fami.Warehouse = new Inventory((Character)familyCharacter.Character);
-                    foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
-                    {
-                        inventory.CharacterId = familyCharacter.CharacterId;
-                        fami.Warehouse[inventory.Id] = (ItemInstance)inventory;
-                    }
-                }
-                fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
-                FamilyList.Add(fami);
-            }
-        }
-
         public void RefreshRanking()
         {
             TopComplimented = DAOFactory.CharacterDAO.GetTopCompliment();
@@ -1256,6 +1215,48 @@ namespace OpenNos.GameObject
             ServerCommunicationClient.Instance.BazaarRefresh += OnBazaarRefresh;
             ServerCommunicationClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
             lastGroupId = 1;
+        }
+
+        private void LoadBazaar()
+        {
+            BazaarList = new List<BazaarItemLink>();
+            foreach (BazaarItemDTO bz in DAOFactory.BazaarItemDAO.LoadAll())
+            {
+                BazaarItemLink item = new BazaarItemLink { BazaarItem = bz };
+                CharacterDTO chara = DAOFactory.CharacterDAO.LoadById(bz.SellerId);
+                if (chara != null)
+                {
+                    item.Owner = chara.Name;
+                    item.Item = (ItemInstance)DAOFactory.IteminstanceDAO.LoadById(bz.ItemInstanceId);
+                }
+                BazaarList.Add(item);
+            }
+        }
+
+        private void LoadFamilies()
+        {
+            FamilyList = new List<Family>();
+            foreach (FamilyDTO fam in DAOFactory.FamilyDAO.LoadAll())
+            {
+                Family fami = (Family)fam;
+                fami.FamilyCharacters = new List<FamilyCharacter>();
+                foreach (FamilyCharacterDTO famchar in DAOFactory.FamilyCharacterDAO.LoadByFamilyId(fami.FamilyId).ToList())
+                {
+                    fami.FamilyCharacters.Add((FamilyCharacter)famchar);
+                }
+                FamilyCharacter familyCharacter = fami.FamilyCharacters.FirstOrDefault(s => s.Authority == FamilyAuthority.Head);
+                if (familyCharacter != null)
+                {
+                    fami.Warehouse = new Inventory((Character)familyCharacter.Character);
+                    foreach (ItemInstanceDTO inventory in DAOFactory.IteminstanceDAO.LoadByCharacterId(familyCharacter.CharacterId).Where(s => s.Type == InventoryType.FamilyWareHouse).ToList())
+                    {
+                        inventory.CharacterId = familyCharacter.CharacterId;
+                        fami.Warehouse[inventory.Id] = (ItemInstance)inventory;
+                    }
+                }
+                fami.FamilyLogs = DAOFactory.FamilyLogDAO.LoadByFamilyId(fami.FamilyId).ToList();
+                FamilyList.Add(fami);
+            }
         }
 
         private void MailProcess()

@@ -15,17 +15,19 @@
 using OpenNos.Core;
 using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
+using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF
 {
     public class FamilyCharacterDAO : MappingBaseDAO<FamilyCharacter, FamilyCharacterDTO>, IFamilyCharacterDAO
     {
+        #region Methods
+
         public DeleteResult Delete(string characterName)
         {
             try
@@ -76,6 +78,22 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public FamilyCharacterDTO LoadByCharacterId(long characterId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<FamilyCharacterDTO>(context.FamilyCharacter.FirstOrDefault(c => c.CharacterId == characterId));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+        }
+
         public IList<FamilyCharacterDTO> LoadByFamilyId(long familyId)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -91,22 +109,6 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     return _mapper.Map<FamilyCharacterDTO>(context.FamilyCharacter.FirstOrDefault(c => c.FamilyCharacterId.Equals(familyCharacterId)));
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return null;
-            }
-        }
-
-        public FamilyCharacterDTO LoadByCharacterId(long characterId)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    return _mapper.Map<FamilyCharacterDTO>(context.FamilyCharacter.FirstOrDefault(c => c.CharacterId == characterId));
                 }
             }
             catch (Exception e)
@@ -134,5 +136,7 @@ namespace OpenNos.DAL.EF
 
             return _mapper.Map<FamilyCharacterDTO>(entity);
         }
+
+        #endregion
     }
 }

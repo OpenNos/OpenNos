@@ -12,6 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.GameObject.Buff;
+using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -19,10 +23,6 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
-using OpenNos.Core;
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
-using OpenNos.GameObject.Buff;
-using OpenNos.WebApi.Reference;
 
 namespace OpenNos.GameObject
 {
@@ -252,6 +252,11 @@ namespace OpenNos.GameObject
         public void Disconnect()
         {
             _client.Disconnect();
+        }
+
+        public string GenerateIdentity()
+        {
+            return $"Account: {Account.Name}";
         }
 
         public void Initialize(EncryptionBase encryptor, Type packetHandler, bool isWorldServer)
@@ -620,11 +625,6 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CLIENTSESSION_DISPOSING"), packetHeader);
             }
-        }
-
-        public string GenerateIdentity()
-        {
-            return $"Account: {Account.Name}";
         }
 
         #endregion

@@ -12,16 +12,18 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using System.Collections.Generic;
-using OpenNos.DAL.Interface;
 using System;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Mock
 {
     public class MateDAO : BaseDAO<MateDTO>, IMateDAO
     {
+        #region Methods
+
         public DeleteResult Delete(long id)
         {
             throw new NotImplementedException();
@@ -36,5 +38,7 @@ namespace OpenNos.DAL.Mock
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

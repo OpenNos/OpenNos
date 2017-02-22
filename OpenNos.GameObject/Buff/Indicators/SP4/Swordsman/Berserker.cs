@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Swordsman
 {
     public class Berserker : IndicatorBase
     {
+        #region Instantiation
+
         public Berserker(int Level)
         {
             Name = "Berserker";
@@ -18,5 +20,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Swordsman
             DelayedBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreasePercentage, 20, 0, true));
             Delay = 400;
         }
+
+        #endregion
     }
 }

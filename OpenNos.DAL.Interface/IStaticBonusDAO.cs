@@ -23,17 +23,11 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         /// <summary>
-        /// Deletes already existing object from database
-        /// </summary>
-        void RemoveOutDated();
-
-        /// <summary>
         /// Inserts new object to database context
         /// </summary>
         /// <param name="staticBonus"></param>
         /// <returns></returns>
         SaveResult InsertOrUpdate(ref StaticBonusDTO staticBonus);
-
 
         /// <summary>
         /// Loads staticBonus by characterid
@@ -41,6 +35,11 @@ namespace OpenNos.DAL.Interface
         /// <param name="characterId"></param>
         /// <returns></returns>
         IEnumerable<StaticBonusDTO> LoadByCharacterId(long characterId);
+
+        /// <summary>
+        /// Deletes already existing object from database
+        /// </summary>
+        void RemoveOutDated();
 
         #endregion
     }

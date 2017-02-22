@@ -36,6 +36,7 @@ An Interface for the StaticGrid Class.
 
 */
 
+using System;
 using System.Collections.Generic;
 
 namespace EpPathFinding
@@ -50,7 +51,7 @@ namespace EpPathFinding
 
         #region Instantiation
 
-        public StaticGrid(int iWidth, int iHeight, bool[][] iMatrix = null) : base()
+        public StaticGrid(int iWidth, int iHeight, bool[][] iMatrix = null)
         {
             Width = iWidth;
             Height = iHeight;
@@ -115,7 +116,7 @@ namespace EpPathFinding
 
         public override Node GetNodeAt(int iX, int iY)
         {
-            return this._mNodes[iX][iY];
+            return _mNodes[iX][iY];
         }
 
         public override Node GetNodeAt(GridPos iPos)
@@ -125,7 +126,7 @@ namespace EpPathFinding
 
         public override bool IsWalkableAt(int iX, int iY)
         {
-            return IsInside(iX, iY) && (this._mNodes[iX][iY].walkable == 0 || this._mNodes[iX][iY].walkable == 2 || this._mNodes[iX][iY].walkable >= 16 && this._mNodes[iX][iY].walkable <= 19);
+            return IsInside(iX, iY) && (_mNodes[iX][iY].walkable == 0 || _mNodes[iX][iY].walkable == 2 || _mNodes[iX][iY].walkable >= 16 && _mNodes[iX][iY].walkable <= 19);
         }
 
         public override bool IsWalkableAt(GridPos iPos)
@@ -154,7 +155,7 @@ namespace EpPathFinding
             }
             if (iMatrix.Length != Width || iMatrix[0].Length != Height)
             {
-                throw new System.Exception("Matrix size does not fit");
+                throw new Exception("Matrix size does not fit");
             }
 
             for (int widthTrav = 0; widthTrav < Width; widthTrav++)
@@ -213,7 +214,7 @@ namespace EpPathFinding
 
             if (iMatrix.Count != iWidth || iMatrix[0].Length != iHeight)
             {
-                throw new System.Exception("Matrix size does not fit");
+                throw new Exception("Matrix size does not fit");
             }
 
             for (int widthTrav = 0; widthTrav < iWidth; widthTrav++)

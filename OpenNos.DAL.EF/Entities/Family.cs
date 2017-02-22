@@ -12,11 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using OpenNos.Domain;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
@@ -38,9 +36,9 @@ namespace OpenNos.DAL.EF
 
         public int FamilyExperience { get; set; }
 
-        public long FamilyId { get; set; }
+        public GenderType FamilyHeadGender { get; set; }
 
-        public byte WarehouseSize { get; set; }
+        public long FamilyId { get; set; }
 
         public byte FamilyLevel { get; set; }
 
@@ -49,26 +47,26 @@ namespace OpenNos.DAL.EF
         [MaxLength(255)]
         public string FamilyMessage { get; set; }
 
-        public byte MaxSize { get; set; }
-
-        [MaxLength(255)]
-        public string Name { get; set; }
-
-        public bool ManagerCanInvite { get; set; }
-
-        public bool ManagerCanShout { get; set; }
-
-        public bool ManagerCanNotice { get; set; }
-
         public FamilyAuthorityType ManagerAuthorityType { get; set; }
 
         public bool ManagerCanGetHistory { get; set; }
 
-        public bool MemberCanGetHistory { get; set; }
+        public bool ManagerCanInvite { get; set; }
 
-        public GenderType FamilyHeadGender { get; set; }
+        public bool ManagerCanNotice { get; set; }
+
+        public bool ManagerCanShout { get; set; }
+
+        public byte MaxSize { get; set; }
 
         public FamilyAuthorityType MemberAuthorityType { get; set; }
+
+        public bool MemberCanGetHistory { get; set; }
+
+        [MaxLength(255)]
+        public string Name { get; set; }
+
+        public byte WarehouseSize { get; set; }
 
         #endregion
     }

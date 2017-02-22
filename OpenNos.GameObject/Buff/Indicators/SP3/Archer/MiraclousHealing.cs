@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Archer
 {
     public class MiraclousHealing : IndicatorBase
     {
+        #region Instantiation
+
         public MiraclousHealing(int Level)
         {
             Name = "Miraclous Healing";
@@ -12,5 +14,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Archer
             _level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreasePercentage, 15, 0, false));
         }
+
+        #endregion
     }
 }

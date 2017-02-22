@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
 {
     public class HolyWeapon : IndicatorBase
     {
+        #region Instantiation
+
         public HolyWeapon(int Level)
         {
             Name = "Holy Weapon";
@@ -14,5 +16,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
             DirectBuffs.Add(new BCardEntry(Type.Resistance, SubType.IncreaseLight, 20, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.Increase, Level * 2, 0, false));
         }
+
+        #endregion
     }
 }

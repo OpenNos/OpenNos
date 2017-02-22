@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Archer
 {
     public class PactofDarkness : IndicatorBase
     {
+        #region Instantiation
+
         public PactofDarkness(int Level)
         {
             Name = "Pact of Darkness";
@@ -12,5 +14,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Archer
             _level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.IncreaseCriticalChance, 30, 0, false));
         }
+
+        #endregion
     }
 }

@@ -163,7 +163,7 @@ namespace OpenNos.Core
                     Lock.ExitReadLock();
                 }
             }
-                return false;
+            return false;
         }
 
         /// <summary>

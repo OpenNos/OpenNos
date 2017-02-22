@@ -23,6 +23,8 @@ namespace OpenNos.DAL.EF
 
         public virtual Card Card { get; set; }
 
+        public short CardChance { get; set; }
+
         [Key, Column(Order = 1)]
         public short CardId { get; set; }
 
@@ -30,8 +32,6 @@ namespace OpenNos.DAL.EF
 
         [Key, Column(Order = 0)]
         public short SkillVNum { get; set; }
-
-        public short CardChance { get; set; }
 
         #endregion
     }

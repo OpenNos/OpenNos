@@ -1,20 +1,11 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class Aphrodite21 : DbMigration
     {
-        public override void Up()
-        {
-            DropForeignKey("dbo.MinilandObject", "MinilandObjectVNum", "dbo.Item");
-            DropIndex("dbo.MinilandObject", new[] { "MinilandObjectVNum" });
-            AddColumn("dbo.MinilandObject", "ItemInstanceId", c => c.Guid());
-            CreateIndex("dbo.MinilandObject", "ItemInstanceId");
-            AddForeignKey("dbo.MinilandObject", "ItemInstanceId", "dbo.ItemInstance", "Id");
-            DropColumn("dbo.MinilandObject", "MinilandObjectVNum");
-        }
-        
+        #region Methods
+
         public override void Down()
         {
             AddColumn("dbo.MinilandObject", "MinilandObjectVNum", c => c.Short(nullable: false));
@@ -24,5 +15,17 @@ namespace OpenNos.DAL.EF.Migrations
             CreateIndex("dbo.MinilandObject", "MinilandObjectVNum");
             AddForeignKey("dbo.MinilandObject", "MinilandObjectVNum", "dbo.Item", "VNum");
         }
+
+        public override void Up()
+        {
+            DropForeignKey("dbo.MinilandObject", "MinilandObjectVNum", "dbo.Item");
+            DropIndex("dbo.MinilandObject", new[] { "MinilandObjectVNum" });
+            AddColumn("dbo.MinilandObject", "ItemInstanceId", c => c.Guid());
+            CreateIndex("dbo.MinilandObject", "ItemInstanceId");
+            AddForeignKey("dbo.MinilandObject", "ItemInstanceId", "dbo.ItemInstance", "Id");
+            DropColumn("dbo.MinilandObject", "MinilandObjectVNum");
+        }
+
+        #endregion
     }
 }

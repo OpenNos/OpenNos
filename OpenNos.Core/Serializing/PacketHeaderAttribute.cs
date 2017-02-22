@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenNos.Domain;
+using System;
 
 namespace OpenNos.Core
 {
@@ -16,6 +17,11 @@ namespace OpenNos.Core
         #region Properties
 
         /// <summary>
+        /// Permission to handle the packet
+        /// </summary>
+        public AuthorityType Authority { get; set; }
+
+        /// <summary>
         /// Unique identification of the Packet
         /// </summary>
         public string Identification { get; set; }
@@ -24,11 +30,6 @@ namespace OpenNos.Core
         /// Pass the packet to handler method even if the serialization has failed.
         /// </summary>
         public bool PassNonParseablePacket { get; set; }
-
-        /// <summary>
-        /// Permission to handle the packet
-        /// </summary>
-        public Domain.AuthorityType Authority { get; set; }
 
         #endregion
     }

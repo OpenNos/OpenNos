@@ -18,6 +18,8 @@ namespace OpenNos.GameObject.Buff.Indicators.NoSP.Archer
 {
     public class RitualOfHawk : IndicatorBase
     {
+        #region Instantiation
+
         public RitualOfHawk(int Level)
         {
             Name = "Ritual Of Hawk";
@@ -27,5 +29,7 @@ namespace OpenNos.GameObject.Buff.Indicators.NoSP.Archer
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.Increase, 25, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.HitRate, SubType.Increase, 15, 0, false));
         }
+
+        #endregion
     }
 }

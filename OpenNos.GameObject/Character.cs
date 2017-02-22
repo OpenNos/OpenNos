@@ -12,21 +12,21 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reactive.Linq;
 using OpenNos.Core;
-using OpenNos.Data;
 using OpenNos.DAL;
+using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Buff;
 using OpenNos.GameObject.Buff.BCard;
 using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.WebApi.Reference;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reactive.Linq;
 using Type = OpenNos.GameObject.Buff.BCard.Type;
 
 namespace OpenNos.GameObject
@@ -69,30 +69,6 @@ namespace OpenNos.GameObject
             {
                 return ServerManager.Instance.CharacterRelations == null ? new List<CharacterRelationDTO>() : ServerManager.Instance.CharacterRelations.Where(s => s.CharacterId == CharacterId || s.RelatedCharacterId == CharacterId).ToList();
             }
-        }
-
-        public List<string> GenerateScN()
-        {
-            List<string> list = new List<string>();
-            int i = 0;
-            Mates.Where(s => s.MateType == MateType.Partner).ToList().ForEach(s =>
-            {
-                list.Add($"sc_n {i} {s.GenerateScPacket()}");
-                i++;
-            });
-            return list;
-        }
-
-        public List<string> GenerateScP()
-        {
-            List<string> list = new List<string>();
-            int i= 0;
-            Mates.Where(s => s.MateType == MateType.Pet).ToList().ForEach(s =>
-            {
-                list.Add($"sc_p {i} {s.GenerateScPacket()}");
-                i++;
-            });
-            return list;
         }
 
         public short CurrentMinigame { get; set; }
@@ -150,7 +126,7 @@ namespace OpenNos.GameObject
         public int FoodMp { get; set; }
 
         public List<long> FriendRequestCharacters { get; set; }
-        public List<Mate> Mates { get; set; }
+
         public List<GeneralLogDTO> GeneralLogs { get; set; }
 
         public bool GmPvtBlock { get; set; }
@@ -239,6 +215,8 @@ namespace OpenNos.GameObject
         public MapInstance MapInstance => ServerManager.GetMapInstance(MapInstanceId);
 
         public Guid MapInstanceId { get; set; }
+
+        public List<Mate> Mates { get; set; }
 
         public int MaxDistance { get; set; }
 
@@ -1890,11 +1868,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GeneratePClear()
-        {
-            return "p_clear";
-        }
-
         public string GenerateFd()
         {
             return $"fd {Reput} {GetReputIco()} {(int)Dignity} {Math.Abs(GetDignityIco())}";
@@ -2566,6 +2539,11 @@ namespace OpenNos.GameObject
         public string GenerateParcel(MailDTO mail)
         {
             return mail.AttachmentVNum != null ? $"parcel 1 1 {MailList.First(s => s.Value.MailId == mail.MailId).Key} {(mail.Title == "NOSMALL" ? 1 : 4)} 0 {mail.Date.ToString("yyMMddHHmm")} {mail.Title} {mail.AttachmentVNum} {mail.AttachmentAmount} {(byte)ServerManager.GetItem((short)mail.AttachmentVNum).Type}" : string.Empty;
+        }
+
+        public string GeneratePClear()
+        {
+            return "p_clear";
         }
 
         public string GeneratePidx(bool isLeaveGroup = false)
@@ -3625,6 +3603,30 @@ namespace OpenNos.GameObject
             return $"char_sc 1 {CharacterId} {Size}";
         }
 
+        public List<string> GenerateScN()
+        {
+            List<string> list = new List<string>();
+            int i = 0;
+            Mates.Where(s => s.MateType == MateType.Partner).ToList().ForEach(s =>
+            {
+                list.Add($"sc_n {i} {s.GenerateScPacket()}");
+                i++;
+            });
+            return list;
+        }
+
+        public List<string> GenerateScP()
+        {
+            List<string> list = new List<string>();
+            int i = 0;
+            Mates.Where(s => s.MateType == MateType.Pet).ToList().ForEach(s =>
+            {
+                list.Add($"sc_p {i} {s.GenerateScPacket()}");
+                i++;
+            });
+            return list;
+        }
+
         public string GenerateShop(string shopname)
         {
             return $"shop 1 {CharacterId} 1 3 0 {shopname}";
@@ -4586,9 +4588,9 @@ namespace OpenNos.GameObject
             if (Family == null ||
             !
          (FamilyCharacter.Authority == FamilyAuthority.Head
-         || (FamilyCharacter.Authority == FamilyAuthority.Assistant)
-         || (FamilyCharacter.Authority == FamilyAuthority.Member && Family.MemberCanGetHistory)
-         || (FamilyCharacter.Authority == FamilyAuthority.Manager && Family.ManagerCanGetHistory)
+         || FamilyCharacter.Authority == FamilyAuthority.Assistant
+         || FamilyCharacter.Authority == FamilyAuthority.Member && Family.MemberCanGetHistory
+         || FamilyCharacter.Authority == FamilyAuthority.Manager && Family.ManagerCanGetHistory
          )
         )
             {
@@ -4742,7 +4744,6 @@ namespace OpenNos.GameObject
                         DAOFactory.CharacterSkillDAO.InsertOrUpdate(characterSkill);
                     }
                 }
-
 
                 IEnumerable<long> currentlySavedMates = DAOFactory.MateDAO.LoadByCharacterId(CharacterId).Select(s => s.MateId);
 

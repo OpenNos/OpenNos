@@ -64,7 +64,7 @@ namespace OpenNos.Handler
         {
             // TODO: implement check for maintenances
             string[] packetsplit = packet.Split(' ');
-            if(packetsplit.Length < 3)
+            if (packetsplit.Length < 3)
             {
                 _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("PACKETMANIP")}");
                 return;
@@ -93,16 +93,19 @@ namespace OpenNos.Handler
                                     _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("NOTVALIDATE")}");
                                 }
                                 break;
+
                             case AuthorityType.Banned:
                                 {
                                     _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("IDERROR")}");
                                 }
                                 break;
+
                             case AuthorityType.Closed:
                                 {
                                     _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("IDERROR")}");
                                 }
                                 break;
+
                             default:
                                 {
                                     int newSessionId = SessionFactory.Instance.GenerateSessionId();

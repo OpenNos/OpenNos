@@ -14,9 +14,12 @@
 
 namespace OpenNos.GameObject
 {
-
     public class MinilandObject : MinilandObjectDTO
     {
+        #region Members
+
         public ItemInstance ItemInstance;
+
+        #endregion
     }
 }

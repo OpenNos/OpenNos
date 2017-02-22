@@ -103,8 +103,8 @@
     <Compile Include="Packets\ClientPackets\MinigamePacket.cs" />
     <Compile Include="Packets\ClientPackets\UseobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\RmvobjPacket.cs" />
-    <Compile Include="Packets\ClientPackets\MLedit.cs" />
-    <Compile Include="Packets\ClientPackets\MJoin.cs" />
+    <Compile Include="Packets\ClientPackets\MLEditPacket.cs" />
+    <Compile Include="Packets\ClientPackets\MJoinPacket.cs" />
     <Compile Include="Packets\CommandPackets\BanPacket.cs" />
     <Compile Include="Packets\CommandPackets\BlockExpPacket.cs" />
     <Compile Include="Packets\CommandPackets\BlockFExpPacket.cs" />

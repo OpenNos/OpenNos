@@ -12,16 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using System;
+using OpenNos.Core;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
-using OpenNos.Data;
+using OpenNos.Data.Enums;
+using OpenNos.GameObject;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.GameObject;
-using OpenNos.Data.Enums;
-using OpenNos.DAL.EF.DB;
-using OpenNos.Core;
 
 namespace OpenNos.DAL.EF
 {
@@ -84,7 +83,7 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MinilandObject obj in context.MinilandObject.Where(s=>s.CharacterId == characterId))
+                foreach (MinilandObject obj in context.MinilandObject.Where(s => s.CharacterId == characterId))
                 {
                     yield return _mapper.Map<MinilandObjectDTO>(obj);
                 }

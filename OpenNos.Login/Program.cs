@@ -21,7 +21,9 @@ using OpenNos.GameObject;
 using OpenNos.Handler;
 using OpenNos.WebApi.Reference;
 using System;
+using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 
 namespace OpenNos.Login
@@ -36,7 +38,7 @@ namespace OpenNos.Login
             {
                 try
                 {
-                    System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+                    CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
                     // initialize Logger
                     Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
@@ -44,7 +46,7 @@ namespace OpenNos.Login
                     FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
                     Console.Title = $"OpenNos Login Server v{fileVersionInfo.ProductVersion}";
-                    int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
+                    int port = Convert.ToInt32(ConfigurationManager.AppSettings["LoginPort"]);
                     string text = $"LOGIN SERVER v{fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
                     int offset = Console.WindowWidth / 2 + text.Length / 2;
                     string separator = new string('=', Console.WindowWidth);

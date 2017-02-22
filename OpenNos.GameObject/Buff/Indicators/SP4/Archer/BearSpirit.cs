@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
 {
     public class BearSpirit : IndicatorBase
     {
+        #region Instantiation
+
         public BearSpirit(int Level)
         {
             Name = "Bear Spirit";
@@ -13,5 +15,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
             DirectBuffs.Add(new BCardEntry(Type.HP, SubType.IncreasePercentage, 30, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.MP, SubType.IncreasePercentage, 30, 0, false));
         }
+
+        #endregion
     }
 }

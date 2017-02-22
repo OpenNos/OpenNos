@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
+
 namespace OpenNos.DAL.EF
 {
-    using Domain;
-
     public class CharacterRelation
     {
         #region Properties

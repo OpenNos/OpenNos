@@ -14,6 +14,8 @@
 
 using OpenNos.Core.LanguageDetection;
 using RestSharp;
+using RestSharp.Deserializers;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -28,13 +30,14 @@ namespace OpenNos.Core
         private static Language instance;
         private ResourceManager _manager;
         private CultureInfo _resourceCulture;
+
         #endregion
 
         #region Instantiation
 
         private Language()
         {
-            _resourceCulture = new CultureInfo(System.Configuration.ConfigurationManager.AppSettings["Language"]);
+            _resourceCulture = new CultureInfo(ConfigurationManager.AppSettings["Language"]);
             if (Assembly.GetEntryAssembly() != null)
             {
                 _manager = new ResourceManager(Assembly.GetEntryAssembly().GetName().Name + ".Resource.LocalizedResources", Assembly.GetEntryAssembly());
@@ -56,17 +59,17 @@ namespace OpenNos.Core
         #endregion
 
         #region Methods
+
         public bool CheckMessageIsCorrectLanguage(string completeTextString)
         {
-
             RestClient client = new RestClient("http://ws.detectlanguage.com");
             RestRequest request = new RestRequest("/0.2/detect", Method.POST);
 
-            request.AddParameter("key", System.Configuration.ConfigurationManager.AppSettings["DetectLanguageApiKey"]);
+            request.AddParameter("key", ConfigurationManager.AppSettings["DetectLanguageApiKey"]);
             request.AddParameter("q", completeTextString);
 
             IRestResponse response = client.Execute(request);
-            RestSharp.Deserializers.JsonDeserializer deserializer = new RestSharp.Deserializers.JsonDeserializer();
+            JsonDeserializer deserializer = new JsonDeserializer();
 
             try
             {
@@ -84,6 +87,7 @@ namespace OpenNos.Core
                 return true;
             }
         }
+
         public string GetMessageFromKey(string message)
         {
             string resourceMessage = _manager != null ? _manager.GetString(message, _resourceCulture) : string.Empty;

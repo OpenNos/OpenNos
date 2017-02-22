@@ -5,7 +5,7 @@ using OpenNos.Core;
 namespace OpenNos.GameObject
 {
     [PacketHeader("mledit")]
-    public class MLeditPacket : PacketDefinition
+    public class MLEditPacket : PacketDefinition
     {
         #region Properties
         [PacketIndex(0)]

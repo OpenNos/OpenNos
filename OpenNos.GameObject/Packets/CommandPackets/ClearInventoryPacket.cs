@@ -5,7 +5,7 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$Clr", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
+    [PacketHeader("$Clear", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
     public class ClearInventoryPacket : PacketDefinition
     {
         [PacketIndex(0)]

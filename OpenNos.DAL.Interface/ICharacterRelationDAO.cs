@@ -27,6 +27,7 @@ namespace OpenNos.DAL.Interface
         SaveResult InsertOrUpdate(ref CharacterRelationDTO relation);
 
         IEnumerable<CharacterRelationDTO> LoadAll();
+
         CharacterRelationDTO LoadById(long relId);
 
         #endregion

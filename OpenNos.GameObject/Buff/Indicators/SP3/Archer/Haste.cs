@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Archer
 {
     public class Haste : IndicatorBase
     {
+        #region Instantiation
+
         public Haste(int Level)
         {
             Name = "Haste";
@@ -12,5 +14,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Archer
             _level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Speed, SubType.Increase, 2, 0, false));
         }
+
+        #endregion
     }
 }

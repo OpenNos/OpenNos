@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Swordsman
 {
     public class MoraleIncrease : IndicatorBase
     {
+        #region Instantiation
+
         public MoraleIncrease(int Level)
         {
             Name = "Morale Increase";
@@ -12,5 +14,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Swordsman
             _level = Level;
             Id = 72;
         }
+
+        #endregion
     }
 }

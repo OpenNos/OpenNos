@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Magician
 {
     public class DarkForce : IndicatorBase
     {
+        #region Instantiation
+
         public DarkForce(int Level)
         {
             Name = "Dark Force";
@@ -15,5 +17,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Magician
             DirectBuffs.Add(new BCardEntry(Type.HitRate, SubType.Increase, 20, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.Damage, SubType.DecreaseCriticalChance, 20, 0, false, true));
         }
+
+        #endregion
     }
 }

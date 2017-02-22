@@ -23,7 +23,7 @@ namespace OpenNos.Test
             Thread.Sleep(1000);
 
             // client A asks client B for group
-            PJoinPacket pjoinPacketRequest = new PJoinPacket()
+            PJoinPacket pjoinPacketRequest = new PJoinPacket
             {
                 CharacterId = clientB.Session.Character.CharacterId,
                 RequestType = GroupRequestType.Invited
@@ -33,7 +33,7 @@ namespace OpenNos.Test
             HandlerTestHelper.WaitForPackets(clientA, 1);
 
             // client B accepts group request
-            PJoinPacket pjoinPacketAccept = new PJoinPacket()
+            PJoinPacket pjoinPacketAccept = new PJoinPacket
             {
                 CharacterId = clientA.Session.Character.CharacterId,
                 RequestType = GroupRequestType.Accepted
@@ -63,7 +63,7 @@ namespace OpenNos.Test
             // login, create character, start game
             FakeNetworkClient client = HandlerTestHelper.InitializeTestEnvironment();
 
-            CharacterOptionPacket optionPacket = new CharacterOptionPacket() { IsActive = false, Option = CharacterOption.FamilyRequestBlocked };
+            CharacterOptionPacket optionPacket = new CharacterOptionPacket { IsActive = false, Option = CharacterOption.FamilyRequestBlocked };
 
             // check family request
             client.ReceivePacket(optionPacket);
@@ -80,7 +80,7 @@ namespace OpenNos.Test
             // login, create character, start game
             FakeNetworkClient client = HandlerTestHelper.InitializeTestEnvironment();
 
-            WalkPacket walkPacket = new WalkPacket() { Speed = 11, XCoordinate = 89, YCoordinate = 126 };
+            WalkPacket walkPacket = new WalkPacket { Speed = 11, XCoordinate = 89, YCoordinate = 126 };
 
             // send walkpacket to client
             client.ReceivePacket(walkPacket);

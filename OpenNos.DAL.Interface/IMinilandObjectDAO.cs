@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using OpenNos.Data.Enums;
 using OpenNos.GameObject;
 using System.Collections.Generic;

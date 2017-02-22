@@ -19,6 +19,7 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
+using System.Data.Entity;
 using System.Linq;
 
 namespace OpenNos.DAL.EF
@@ -144,7 +145,6 @@ namespace OpenNos.DAL.EF
 
         private AccountDTO Insert(AccountDTO account, OpenNosContext context)
         {
-        
             Account entity = _mapper.Map<Account>(account);
             context.Account.Add(entity);
             context.SaveChanges();
@@ -160,7 +160,7 @@ namespace OpenNos.DAL.EF
                 entity.Authority = account.Authority;
                 entity.Name = account.Name;
                 entity.Password = account.Password;
-                context.Entry(entity).State = System.Data.Entity.EntityState.Modified;
+                context.Entry(entity).State = EntityState.Modified;
                 context.SaveChanges();
             }
             return _mapper.Map<AccountDTO>(entity);

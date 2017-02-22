@@ -12,9 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using System.Collections.Generic;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.DAL.Mock
@@ -23,14 +24,14 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
+        public void Insert(List<MapDTO> maps)
+        {
+            throw new NotImplementedException();
+        }
+
         public MapDTO LoadById(short mapId)
         {
             return Container.SingleOrDefault(c => c.MapId.Equals(mapId));
-        }
-
-        public void Insert(List<MapDTO> maps)
-        {
-            throw new System.NotImplementedException();
         }
 
         #endregion

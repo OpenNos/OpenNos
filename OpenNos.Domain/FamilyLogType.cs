@@ -23,7 +23,7 @@ namespace OpenNos.Domain
         FamilyLevel = 5,
         Level = 6,
         Upgrade = 7,
-        RightChange =8,
+        RightChange = 8,
         AuthorityChange = 9,
         FamilyManage = 10,
         UserManage = 11,

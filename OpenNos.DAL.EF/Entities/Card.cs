@@ -42,6 +42,8 @@ namespace OpenNos.DAL.EF
 
         public int FirstData { get; set; }
 
+        public virtual ICollection<ItemCard> ItemCard { get; set; }
+
         public byte Level { get; set; }
 
         [MaxLength(255)]
@@ -54,8 +56,6 @@ namespace OpenNos.DAL.EF
         public int SecondData { get; set; }
 
         public virtual ICollection<SkillCard> SkillCard { get; set; }
-
-        public virtual ICollection<ItemCard> ItemCard { get; set; }
 
         public byte SubType { get; set; }
 

@@ -14,7 +14,6 @@
 
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using System;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
@@ -25,6 +24,8 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult DeleteById(int mapMonsterId);
 
+        bool DoesMonsterExist(int mapMonsterId);
+
         MapMonsterDTO Insert(MapMonsterDTO mapmonster);
 
         void Insert(IEnumerable<MapMonsterDTO> monsters);
@@ -32,8 +33,6 @@ namespace OpenNos.DAL.Interface
         MapMonsterDTO LoadById(int mapMonsterId);
 
         IEnumerable<MapMonsterDTO> LoadFromMap(short MapId);
-
-        bool DoesMonsterExist(int mapMonsterId);
 
         #endregion
     }

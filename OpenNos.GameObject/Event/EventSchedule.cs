@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Xml;
-using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {

@@ -2,6 +2,8 @@
 {
     public class ShiningEffect : IndicatorBase
     {
+        #region Instantiation
+
         public ShiningEffect(int Level)
         {
             Name = "Shining Effect";
@@ -10,6 +12,11 @@
 
             _level = Level;
         }
+
+        #endregion
+
+        #region Methods
+
         public override void Enable(ClientSession session)
         {
             base.Enable(session);
@@ -27,5 +34,7 @@
             session.SendPacket(session.Character.GenerateStat());
             Disable(session);
         }
+
+        #endregion
     }
 }

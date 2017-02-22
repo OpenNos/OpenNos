@@ -4,6 +4,8 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
 {
     public class WolfGhost : IndicatorBase
     {
+        #region Instantiation
+
         public WolfGhost(int Level)
         {
             Name = "Wolf Spirit";
@@ -13,5 +15,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP4.Archer
             _level = Level;
             Id = 153;
         }
+
+        #endregion
     }
 }

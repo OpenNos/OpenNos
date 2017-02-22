@@ -18,11 +18,11 @@ namespace OpenNos.Data
     {
         #region Properties
 
+        public short CardChance { get; set; }
+
         public short CardId { get; set; }
 
         public short SkillVNum { get; set; }
-
-        public short CardChance { get; set; }
 
         #endregion
     }

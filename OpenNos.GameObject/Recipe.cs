@@ -12,19 +12,15 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL;
+using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.Data;
-using OpenNos.DAL;
 
 namespace OpenNos.GameObject
 {
     public class Recipe : RecipeDTO
     {
-        #region Instantiation
-
-        #endregion
-
         #region Properties
 
         public List<RecipeItemDTO> Items { get; set; }

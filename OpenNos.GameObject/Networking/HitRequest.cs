@@ -1,6 +1,6 @@
-﻿using System;
-using OpenNos.Data;
+﻿using OpenNos.Data;
 using OpenNos.Domain;
+using System;
 
 namespace OpenNos.GameObject.Networking
 {
@@ -45,6 +45,11 @@ namespace OpenNos.GameObject.Networking
 
         public ClientSession Session { get; set; }
 
+        /// <summary>
+        /// Some AOE Skills need to show additional SU packet for Animation
+        /// </summary>
+        public bool ShowTargetHitAnimation { get; set; }
+
         public Skill Skill { get; set; }
 
         public ComboDTO SkillCombo { get; set; }
@@ -52,11 +57,6 @@ namespace OpenNos.GameObject.Networking
         public short SkillEffect { get; set; }
 
         public TargetHitType TargetHitType { get; set; }
-
-        /// <summary>
-        /// Some AOE Skills need to show additional SU packet for Animation
-        /// </summary>
-        public bool ShowTargetHitAnimation { get; set; }
 
         #endregion
 

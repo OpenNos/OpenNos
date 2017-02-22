@@ -25,9 +25,9 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<SkillCardDTO> LoadAll();
 
-        SkillCardDTO LoadByCardIdAndSkillVNum(short cardId, short skillVNum);
-
         IEnumerable<SkillCardDTO> LoadByCardId(short cardId);
+
+        SkillCardDTO LoadByCardIdAndSkillVNum(short cardId, short skillVNum);
 
         IEnumerable<SkillCardDTO> LoadBySkillVNum(short skillVNum);
 

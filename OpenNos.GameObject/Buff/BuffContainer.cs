@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.GameObject.Buff.BCard;
+using OpenNos.GameObject.Buff.Indicators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenNos.GameObject.Buff.BCard;
-using OpenNos.GameObject.Buff.Indicators;
 using Type = OpenNos.GameObject.Buff.BCard.Type;
 
 namespace OpenNos.GameObject.Buff
@@ -25,8 +25,8 @@ namespace OpenNos.GameObject.Buff
     {
         #region Members
 
-        private readonly ClientSession Session;
         private readonly List<IndicatorBase> Indicators;
+        private readonly ClientSession Session;
 
         #endregion
 
