@@ -274,7 +274,7 @@ namespace OpenNos.GameObject
                     count = (byte)ServerManager.RandomNumber(3, 6);
                 }
 
-                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(CharacterId, 3005), Session.Character.MapX, Session.Character.MapY);
 
                 if (type < 3)
                 {
@@ -331,7 +331,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 11));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 0));
             }
-            Session.SendPacket(Session.Character.GenerateInventoryAdd(ItemVNum, Amount, InventoryType.Equipment, Slot, Rare, Design, Upgrade, SpStoneUpgrade));
+            Session.SendPacket(Session.Character.GenerateInventoryAdd(specialist, InventoryType.Equipment, Slot));
             Session.Character.Gold -= goldprice[upmode - 1];
             Session.SendPacket(Session.Character.GenerateGold());
             Session.Character.Inventory.RemoveItemAmount(stonevnum, stoneprice[upmode - 1]);
@@ -540,7 +540,7 @@ namespace OpenNos.GameObject
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
+                    Session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(CharacterId, 3004), Session.Character.MapX, Session.Character.MapY);
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 11));
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 0));
                 }
@@ -549,14 +549,14 @@ namespace OpenNos.GameObject
                     wearable.Rare = -2;
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 11));
                     Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 0));
-                    Session.SendPacket(Session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, SpStoneUpgrade));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(wearable, inventory.Type, inventory.Slot));
                 }
             }
             else if (rnd < upfail[Upgrade])
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
+                    Session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(CharacterId, 3004), Session.Character.MapX, Session.Character.MapY);
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 11));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 0));
@@ -565,14 +565,14 @@ namespace OpenNos.GameObject
             {
                 if (protect == UpgradeProtection.Protected)
                 {
-                    Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3004), Session.Character.MapX, Session.Character.MapY);
+                    Session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(CharacterId, 3004), Session.Character.MapX, Session.Character.MapY);
                 }
-                Session.CurrentMapInstance.Broadcast(Session.Character.GenerateEff(3005), Session.Character.MapX, Session.Character.MapY);
+                Session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(CharacterId, 3005), Session.Character.MapX, Session.Character.MapY);
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
                 wearable.Upgrade++;
                 Session.Character.Family?.InsertFamilyLog(FamilyLogType.Upgrade, Session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
-                Session.SendPacket(Session.Character.GenerateInventoryAdd(ItemVNum, 1, inventory.Type, inventory.Slot, wearable.Rare, wearable.Design, wearable.Upgrade, SpStoneUpgrade));
+                Session.SendPacket(Session.Character.GenerateInventoryAdd(wearable, inventory.Type, inventory.Slot));
             }
             Session.SendPacket(Session.Character.GenerateGold());
             Session.SendPacket(Session.Character.GenerateEq());

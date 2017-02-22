@@ -293,15 +293,12 @@ namespace OpenNos.Handler
                                     }
                                 }
 
-                                List<ItemInstance> newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount);
+                                List<ItemInstance> newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount, Rare: rare, Upgrade: item.Upgrade, Design: item.Color);
                                 if (!newItem.Any())
                                 {
                                     Session.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE")));
                                     return;
                                 }
-                                newItem.First().Rare = rare;
-                                newItem.First().Upgrade = item.Upgrade;
-                                newItem.First().Design = item.Color;
 
                                 if (newItem.Any())
                                 {
@@ -473,27 +470,44 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("n_run")]
-        public void NpcRunFunction(string packet)
+
+        public void NpcRunFunction(NRunPacket packet)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length <= 5)
-            {
-                return;
-            }
-            byte type;
-            short runner;
-            short value;
-            short npcid;
-            byte.TryParse(packetsplit[3], out type);
-            short.TryParse(packetsplit[2], out runner);
-            short.TryParse(packetsplit[4], out value);
-            short.TryParse(packetsplit[5], out npcid);
-            Session.Character.LastNRunId = npcid;
+            Logger.Debug(Session.Character.GenerateIdentity(), packet.ToString());
+            Session.Character.LastNRunId = packet.NpcId;
             if (Session.Character.Hp > 0)
             {
-                NRunHandler.NRun(Session, type, runner, npcid);
+                NRunHandler.NRun(Session, packet);
+            }
+        }
+        public void PetTalk(SayPPacket packet)
+        {
+            Mate mate = Session.Character.Mates.FirstOrDefault(s=>s.MateTransportId == packet.PetId);
+            if (mate != null)
+            {
+                Session.CurrentMapInstance.Broadcast(mate.GenerateSay(packet.Message,2));
+            }
+               
+        }
+        public void PetMove(PtCtlPacket packet)
+        {
+            string[] packetsplit = packet.PacketEnd.Split(' ');
+            for (int i = 0; i < packet.Amount * 3; i += 3)
+            {
+                if (packetsplit.Count() >= packet.Amount * 3)
+                {
+                    int PetId = int.Parse(packetsplit[i]);
+                    short PositionX = short.Parse(packetsplit[i + 1]);
+                    short PositionY = short.Parse(packetsplit[i + 2]);
+
+                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
+                    if (mate != null)
+                    {
+                        mate.PositionX = PositionX;
+                        mate.PositionY = PositionY;
+                        Session.CurrentMapInstance.Broadcast($"mv 2 {PetId} {PositionX} {PositionY} {mate.Monster.Speed}");
+                    }
+                }
             }
         }
 
@@ -881,7 +895,7 @@ namespace OpenNos.Handler
                 shopOwnerSession.Character.Inventory.Remove(shopitem.ItemInstance.Id);
 
                 // send empty slot to owners inventory
-                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, shopitem.ItemInstance.Type, shopitem.ItemInstance.Slot, 0, 0, 0, 0));
+                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(null, shopitem.ItemInstance.Type, shopitem.ItemInstance.Slot));
 
                 // remove the sell amount
                 shopitem.SellAmount = 0;

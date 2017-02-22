@@ -15,15 +15,16 @@
 using OpenNos.Data;
 using OpenNos.Domain;
 using System.Linq;
+using System;
 
 namespace OpenNos.GameObject
 {
     public class Mate : MateDTO
     {
         #region Instantiation
-
         public Mate()
         {
+
         }
 
         public Mate(Character owner, short VNum, byte level, MateType matetype)
@@ -35,6 +36,9 @@ namespace OpenNos.GameObject
             Name = Monster.Name;
             MateType = matetype;
             Level = level;
+            Loyalty = 1000;
+            PositionY = (short)(owner.PositionY + 1);
+            PositionX = (short)(owner.PositionX + 1);
             MapX = (short)(owner.PositionX + 1);
             MapY = (short)(owner.PositionY + 1);
             Direction = 2;
@@ -49,29 +53,54 @@ namespace OpenNos.GameObject
         #region Properties
 
         public int MateTransportId { get; set; }
+        public short PositionX { get; set; }
+        public short PositionY { get; set; }
+        public bool IsSitting { get; set; }
+        private NpcMonster monster;
+        private Character owner;
+        public NpcMonster Monster
+        {
+            get
+            {
+                if (monster == null)
+                {
+                    monster = ServerManager.GetNpc(NpcMonsterVNum);
+                }
+                return monster;
+            }
+            set { monster = value; }
+        }
 
-        public NpcMonster Monster { get; set; }
-
-        public Character Owner { get; set; }
-
+        public Character Owner
+        {
+            get
+            {
+                if (owner == null)
+                {
+                    owner = ServerManager.Instance.GetSessionByCharacterId(CharacterId).Character;
+                }
+                return owner;
+            }
+            set
+            {
+                owner = value;
+            }
+        }
         #endregion
 
         #region Methods
-
-        public string GenerateIn()
-        {
-            return $"in 2 {NpcMonsterVNum} {MateTransportId} {MapX} {MapY} {Direction} 100 100 0 0 3 {CharacterId} 1 0 -1 {Name.Replace(' ', '^')} 0 -1 0 0 0 0 0 0 0 0";
-        }
-
+        public short MaxHp { get { return 200; } }
+        public short MaxMp { get { return 200; } }
+      
         public string GenerateScPacket()
         {
             switch (MateType)
             {
                 case MateType.Partner:
-                    return $"{NpcMonsterVNum} {MateTransportId} 32 1000 243248 991.0.0 996.0.0 -1 -1 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} -1 0 -1 -1 -1 -1";
+                    return $"{NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 991.0.0 996.0.0 -1 -1 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} -1 0 -1 -1 -1 -1";
 
                 case MateType.Pet:
-                    return $"{NpcMonsterVNum} {MateTransportId} 1 1000 0 0 0 37 35 27 4 70 0 38 31 17 31 13 0 0 0 3 13 156 156 10 10 0 15 0 {Name.Replace(' ', '^')} 0";
+                    return $"{NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 0 {Name.Replace(' ', '^')} 0";
             }
             return string.Empty;
         }
@@ -85,6 +114,20 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
+        }
+
+        public string GenerateSay(string message,int type)
+        {
+            return $"say 2 {MateTransportId} 2 {message}";
+        }
+        public string GenerateRest()
+        {
+            IsSitting = !IsSitting;
+            return $"rest 2 {MateTransportId} {(IsSitting ? 1 : 0)}";
+        }
+        public string GenerateIn()
+        {
+            return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 0 3 {CharacterId} 1 0 -1 {Name.Replace(' ', '^')} 0 -1 0 0 0 0 0 0 0 0";
         }
 
         #endregion

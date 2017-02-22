@@ -656,8 +656,8 @@ namespace OpenNos.Handler
                     ItemInstance inv = Session.Character.Inventory.MoveInInventory(packet.Slot, packet.InventoryType, packet.DestinationInventoryType, packet.DestinationSlot, false);
                     if (inv != null)
                     {
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, packet.DestinationInventoryType, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, packet.InventoryType, packet.Slot, 0, 0, 0, 0));
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inv,packet.DestinationInventoryType, inv.Slot));
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(null, packet.InventoryType, packet.Slot));
                     }
                 }
             }
@@ -693,13 +693,11 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInventory.ItemVNum, newInventory.Amount, packet.InventoryType, newInventory.Slot, newInventory.Rare, newInventory.Design, newInventory.Upgrade, 0));
+                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInventory, packet.InventoryType, newInventory.Slot));
 
                 Session.SendPacket(previousInventory != null
-                    ? Session.Character.GenerateInventoryAdd(previousInventory.ItemVNum, previousInventory.Amount,
-                        packet.InventoryType, previousInventory.Slot, previousInventory.Rare, previousInventory.Design,
-                        previousInventory.Upgrade, 0)
-                    : Session.Character.GenerateInventoryAdd(-1, 0, packet.InventoryType, packet.Slot, 0, 0, 0, 0));
+                    ? Session.Character.GenerateInventoryAdd(previousInventory, packet.InventoryType, previousInventory.Slot)
+                    : Session.Character.GenerateInventoryAdd(null, packet.InventoryType, packet.Slot));
             }
         }
 
@@ -725,7 +723,7 @@ namespace OpenNos.Handler
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
                                 return;
                             }
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemVNum, invitem.Amount, putPacket.InventoryType, invitem.Slot, invitem.Rare, invitem.Design, invitem.Upgrade, 0));
+                            Session.SendPacket(Session.Character.GenerateInventoryAdd(invitem, putPacket.InventoryType, invitem.Slot));
 
                             if (invitem.Amount == 0)
                             {
@@ -793,7 +791,7 @@ namespace OpenNos.Handler
 
                     if (inv.Slot != -1)
                     {
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inv.Amount, inv.Type, inv.Slot, inventory.Rare, inventory.Design, inventory.Upgrade, 0));
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory, inv.Type, inv.Slot));
                     }
 
                     Session.SendPacket(Session.Character.GenerateStatChar());
@@ -871,7 +869,7 @@ namespace OpenNos.Handler
                                 WearableInstance wearableInstance = invdest as WearableInstance;
                                 if (wearableInstance != null)
                                 {
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(invdest.ItemVNum, invdest.Amount, type, invdest.Slot, wearableInstance.Rare, wearableInstance.Design, wearableInstance.Upgrade, 0));
+                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(invdest, type, invdest.Slot));
                                 }
                                 Session.Character.DeleteItem(type, (short)(x + 1));
                                 gravity = true;
@@ -1619,7 +1617,7 @@ namespace OpenNos.Handler
                     if (inv?.Item != null)
                     {
                         inv.Item.Use(Session, ref inv);
-                        Session.SendPacket(Session.Character.GenerateEff(123));
+                        Session.SendPacket(ServerManager.GenerateEff(Session.Character.CharacterId, 123));
                     }
                 }
             }
@@ -1665,7 +1663,7 @@ namespace OpenNos.Handler
                 Session.Character.MorphUpgrade2 = sp.Design;
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
                 Session.SendPacket(Session.Character.GenerateLev());
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstance?.Broadcast(ServerManager.GenerateEff(Session.Character.CharacterId, 196), Session.Character.PositionX, Session.Character.PositionY);
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.PositionX, Session.Character.PositionY);
                 Session.SendPacket(Session.Character.GenerateSpPoint());
                 Session.Character.LoadSpeed();

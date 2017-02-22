@@ -68,7 +68,7 @@ namespace OpenNos.Core
 
         public void SendPacket(string packet, byte priority = 10)
         {
-            if (!IsDisposing)
+            if (!IsDisposing && packet != null)
             {
                 ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
 

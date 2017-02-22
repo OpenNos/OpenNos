@@ -141,7 +141,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-
+      
         public static MapInstance GenerateMapInstance(short MapId, MapInstanceType type)
         {
             Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
@@ -165,7 +165,15 @@ namespace OpenNos.GameObject
             }
             return null;
         }
-
+        public static EffectPacket GenerateEff(long CharacterId, int effectid, byte effecttype = 1)
+        {
+            return new EffectPacket
+            {
+                EffectType = effecttype,
+                CharacterId = CharacterId,
+                Id = effectid
+            };
+        }
         public static string GenerateMsg(string message, int type)
         {
             return $"msg {type} {message}";
@@ -392,11 +400,21 @@ namespace OpenNos.GameObject
 
                     // in 2 // send only when partner present cond 2 // send only when partner present
                     session.SendPacket(session.Character.GeneratePairy());
-                    session.SendPacket("pinit 0"); // clear party list
+                    session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
+                    {
+                        s.PositionX = (short)(session.Character.PositionX + 1);
+                        s.PositionY = (short)(session.Character.PositionY + 1);
+                        session.CurrentMapInstance.Broadcast(s.GenerateIn());
+                    });
+                    session.SendPacket(session.Character.GeneratePinit()); // clear party list
                     session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
-                    Sessions.Where(s => s.Character != null && s.Character.MapInstanceId.Equals(session.Character.MapInstanceId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
-                    Sessions.Where(s => s.Character != null && s.Character.MapInstanceId.Equals(session.Character.MapInstanceId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateGidx"));
+                    Sessions.Where(s => s.Character != null && s.Character.MapInstanceId.Equals(session.Character.MapInstanceId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s =>
+                    {
+                        session.SendPacket(s.Character.GenerateIn());
+                        session.SendPacket(s.Character.GenerateGidx());
+                        s.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => session.SendPacket(m.GenerateIn()));
+                    });
 
                     session.SendPackets(session.Character.GenerateGp());
 
@@ -572,7 +590,7 @@ namespace OpenNos.GameObject
                             groupSession.SendPacket(groupSession.Character.GeneratePinit());
                             groupSession.SendPacket(groupSession.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
-                        session.SendPacket("pinit 0");
+                        session.SendPacket(session.Character.GeneratePinit());
                         Broadcast(session.Character.GeneratePidx(true));
                         session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                     }
@@ -584,7 +602,7 @@ namespace OpenNos.GameObject
                         {
                             if (targetSession != null)
                             {
-                                targetSession.SendPacket("pinit 0");
+                                targetSession.SendPacket(targetSession.Character.GeneratePinit());
                                 targetSession.SendPacket(targetSession.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
                                 Broadcast(targetSession.Character.GeneratePidx(true));
                                 grp.LeaveGroup(targetSession);
@@ -943,18 +961,6 @@ namespace OpenNos.GameObject
                 map.Value.Dispose();
                 ((IDictionary)_mapinstances).Remove(map);
             }
-        }
-
-        public void RequireBroadcastFromUser(ClientSession client, long characterId, string methodName)
-        {
-            ClientSession session = GetSessionByCharacterId(characterId);
-            if (session == null)
-            {
-                return;
-            }
-            MethodInfo method = session.Character.GetType().GetMethod(methodName);
-            string result = (string)method.Invoke(session.Character, null);
-            client.SendPacket(result);
         }
 
         // Map

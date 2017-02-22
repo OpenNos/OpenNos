@@ -119,12 +119,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        private string GenerateEff()
-        {
-            NpcMonster npc = ServerManager.GetNpc(NpcVNum);
-            return npc != null ? $"eff 2 {MapNpcId} {Effect}" : string.Empty;
-        }
-
         private string GenerateMv2()
         {
             return $"mv 2 {MapNpcId} {MapX} {MapY} {Npc.Speed}";
@@ -135,7 +129,7 @@ namespace OpenNos.GameObject
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay && MapInstance.NpcEffectActivated)
             {
-                MapInstance.Broadcast(GenerateEff(), MapX, MapY);
+                MapInstance.Broadcast(ServerManager.GenerateEff(MapNpcId, Effect, 2), MapX, MapY);
                 LastEffect = DateTime.Now;
             }
 
@@ -208,7 +202,7 @@ namespace OpenNos.GameObject
 
                         if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                         {
-                            MapInstance.Broadcast(GenerateEff());
+                            MapInstance.Broadcast(ServerManager.GenerateEff(MapNpcId, Effect, 2));
                         }
 
                         monster.CurrentHp -= damage;

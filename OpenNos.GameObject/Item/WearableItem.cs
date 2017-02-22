@@ -113,7 +113,7 @@ namespace OpenNos.GameObject
                     ItemInstance currentlyEquippedItem = session.Character.Inventory.LoadBySlotAndType((short)EquipmentSlot, InventoryType.Wear);
                     if (EquipmentSlot == EquipmentType.Amulet)
                     {
-                        session.SendPacket(session.Character.GenerateEff(39));
+                        session.SendPacket(ServerManager.GenerateEff(session.Character.CharacterId, 39));
                         inv.BoundCharacterId = session.Character.CharacterId;
                     }
 
@@ -121,7 +121,7 @@ namespace OpenNos.GameObject
                     {
                         // move from equipment to wear
                         session.Character.Inventory.MoveInInventory(inv.Slot, itemToWearType, InventoryType.Wear);
-                        session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, itemToWearType, slot, 0, 0, 0, 0));
+                        session.SendPacket(session.Character.GenerateInventoryAdd(null, itemToWearType, slot));
                         session.SendPacket(session.Character.GenerateStatChar());
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateEq());
                         session.SendPacket(session.Character.GenerateEquipment());
@@ -132,9 +132,8 @@ namespace OpenNos.GameObject
                         // move from wear to equipment and back
                         session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, InventoryType.Wear, itemToWearType, inv.Slot);
 
-                        session.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, itemToWearType, slot, 0, 0, 0, 0));
-                        session.SendPacket(session.Character.GenerateInventoryAdd(currentlyEquippedItem.ItemVNum, currentlyEquippedItem.Amount,
-                            currentlyEquippedItem.Type, currentlyEquippedItem.Slot, currentlyEquippedItem.Rare, currentlyEquippedItem.Design, currentlyEquippedItem.Upgrade, (currentlyEquippedItem as SpecialistInstance)?.SpStoneUpgrade ?? (byte)0));
+                        session.SendPacket(session.Character.GenerateInventoryAdd(null,itemToWearType, slot));
+                        session.SendPacket(session.Character.GenerateInventoryAdd(currentlyEquippedItem, currentlyEquippedItem.Type, currentlyEquippedItem.Slot));
 
                         session.SendPacket(session.Character.GenerateStatChar());
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateEq());

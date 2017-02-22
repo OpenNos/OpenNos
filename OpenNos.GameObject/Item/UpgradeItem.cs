@@ -63,7 +63,7 @@ namespace OpenNos.GameObject
                                         if (equip != null && equip.IsFixed)
                                         {
                                             equip.IsFixed = false;
-                                            session.SendPacket(session.Character.GenerateEff(3003));
+                                            session.SendPacket(ServerManager.GenerateEff(session.Character.CharacterId, 3003));
                                             session.SendPacket(session.Character.GenerateGuri(17, 1, SlotEquip));
                                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
                                             isUsed = true;
@@ -84,7 +84,7 @@ namespace OpenNos.GameObject
                                                 session.Character.SpPoint = 10000;
                                             }
                                             session.SendPacket(session.Character.GenerateSpPoint());
-                                            session.SendPacket(session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, (InventoryType)TypeEquip, SlotEquip, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                            session.SendPacket(session.Character.GenerateInventoryAdd(specialist, (InventoryType)TypeEquip, SlotEquip));
                                             isUsed = true;
                                         }
                                         break;

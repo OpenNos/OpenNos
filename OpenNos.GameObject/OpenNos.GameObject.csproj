@@ -95,7 +95,10 @@
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\FDepositPacket.cs" />
     <Compile Include="Packets\ClientPackets\DepositPacket.cs" />
+    <Compile Include="Packets\ClientPackets\PtCtlPacket.cs" />
+    <Compile Include="Packets\ClientPackets\NRunPacket.cs" />
     <Compile Include="Packets\ClientPackets\FReposPacket.cs" />
+    <Compile Include="Packets\ClientPackets\SayPPacket.cs" />
     <Compile Include="Packets\ClientPackets\StashEndPacket.cs" />
     <Compile Include="Packets\ClientPackets\ReposPacket.cs" />
     <Compile Include="Packets\ClientPackets\FWithdrawPacket.cs" />

@@ -223,12 +223,10 @@ namespace OpenNos.Handler
                     {
                         if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
                         {
-                            List<ItemInstance> newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount);
+                            List<ItemInstance> newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity);
 
                             if (newInv.Any())
                             {
-                                newInv.First().Upgrade = mail.AttachmentUpgrade;
-                                newInv.First().Rare = (sbyte)mail.AttachmentRarity;
                                 if (newInv.First().Rare != 0)
                                 {
                                     WearableInstance wearable = newInv.First() as WearableInstance;
@@ -279,7 +277,7 @@ namespace OpenNos.Handler
                 long charId;
                 if (long.TryParse(characterInformationPacket[3], out charId))
                 {
-                    ServerManager.Instance.RequireBroadcastFromUser(Session, charId, "GenerateStatInfo");
+                    Session.SendPacket(ServerManager.Instance.GetSessionByCharacterId(charId)?.Character?.GenerateStatInfo());
                 }
             }
             if (characterInformationPacket[2] == "2" && Session.HasCurrentMapInstance)
@@ -695,7 +693,7 @@ namespace OpenNos.Handler
             string[] guriPacket = packet.Split(' ');
             if (guriPacket[2] == "10" && Convert.ToInt32(guriPacket[5]) >= 973 && Convert.ToInt32(guriPacket[5]) <= 999 && !Session.Character.EmoticonsBlocked)
             {
-                Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
+                Session.CurrentMapInstance?.Broadcast(Session, ServerManager.GenerateEff(Convert.ToInt64(guriPacket[4]), Convert.ToInt32(guriPacket[5]) + 4099, Convert.ToInt64(guriPacket[4]) == Session.Character.CharacterId ? (byte)1 : (byte)2), ReceiverType.AllNoEmoBlocked);
             }
             else if (guriPacket[2] == "2")
             {
@@ -1040,7 +1038,7 @@ namespace OpenNos.Handler
                                 Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
                                 Session.SendPacket("scr 0 0 0 0 0 0 0");
                                 Session.SendPacket(Session.Character.GenerateFaction());
-                                Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
+                                Session.SendPacket(ServerManager.GenerateEff(Session.Character.CharacterId, 4799 + faction));
                                 Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
                             }
                         }
@@ -1160,7 +1158,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                ServerManager.Instance.RequireBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
+                Session.SendPacket(ServerManager.Instance.GetSessionByCharacterId(Convert.ToInt64(packetsplit[3]))?.Character?.GenerateReqInfo());
             }
         }
 
@@ -1170,7 +1168,15 @@ namespace OpenNos.Handler
         /// <param name="sitpacket"></param>
         public void Rest(SitPacket sitpacket)
         {
-            Session.Character.Rest();
+            if(sitpacket.Option < 2)
+            {
+                Session.Character.Rest();
+            }
+            else
+            {
+                Session.CurrentMapInstance.Broadcast(Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == sitpacket.Option)?.GenerateRest());
+            }
+           
         }
 
         [Packet("#revival")]
@@ -1564,7 +1570,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateMlinfo());
             Session.SendPacket(Session.Character.GeneratePClear());
 
-            Session.SendPacket("pinit 0");
+            Session.SendPacket(Session.Character.GeneratePinit());
 
             Session.SendPacket("zzim");
             Session.SendPacket($"twk 2 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
