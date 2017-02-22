@@ -3,12 +3,20 @@ using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following set of attributes.
 // Change these attribute values to modify the information associated with an assembly.
-[assembly: AssemblyTitle("OpenNos.DAL.Mock")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyDescription("Open source nos-emulation poject")]
+[assembly: AssemblyCompany("OpenNos Team")]
+[assembly: AssemblyCopyright("OpenNos Team Copyright © 2017")]
 [assembly: AssemblyProduct("OpenNos.DAL.Mock")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+
+// Version information for an assembly consists of the following four values:
+//
+// Major Version Minor Version Build Number Revision
+//
+// You can specify all the values or you can default the Build and Revision Numbers by using the '*'
+// as shown below: [assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyTitle("OpenNos.DAL.Mock")]
+[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -18,12 +26,3 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("17391a4a-68fd-49c9-87ea-61cf0b30934b")]
-
-// Version information for an assembly consists of the following four values:
-//
-// Major Version Minor Version Build Number Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers by using the '*'
-// as shown below: [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
