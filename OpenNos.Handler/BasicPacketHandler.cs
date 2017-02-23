@@ -694,7 +694,18 @@ namespace OpenNos.Handler
             string[] guriPacket = packet.Split(' ');
             if (guriPacket[2] == "10" && Convert.ToInt32(guriPacket[5]) >= 973 && Convert.ToInt32(guriPacket[5]) <= 999 && !Session.Character.EmoticonsBlocked)
             {
-                Session.CurrentMapInstance?.Broadcast(Session, UserInterfaceHelper.Instance.GenerateEff(Convert.ToInt64(guriPacket[4]), Convert.ToInt32(guriPacket[5]) + 4099, Convert.ToInt64(guriPacket[4]) == Session.Character.CharacterId ? (byte)1 : (byte)2), ReceiverType.AllNoEmoBlocked);
+                if (Convert.ToInt64(guriPacket[4]) == Session.Character.CharacterId)
+                {
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
+                }
+                else
+                {
+                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == Convert.ToInt32(guriPacket[4]));
+                    if (mate != null)
+                    {
+                        Session.CurrentMapInstance?.Broadcast(Session, mate.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
+                    }
+                }
             }
             else if (guriPacket[2] == "2")
             {
@@ -709,20 +720,7 @@ namespace OpenNos.Handler
                     Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == int.Parse(guriPacket[5]));
                     if (mate != null)
                     {
-                        string message = string.Empty;
-
-                        // message = $" ";
-                        for (int i = 6; i < guriPacket.Length; i++)
-                        {
-                            message += guriPacket[i] + "^";
-                        }
-                        message = message.Substring(0, message.Length - 1); // Remove the last ^
-                        message = message.Trim();
-                        if (message.Length > 60)
-                        {
-                            message = message.Substring(0, 60);
-                        }
-                        mate.Name = message;
+                        mate.Name = guriPacket[6];
                         Session.CurrentMapInstance.Broadcast(mate.GenerateOut());
                         Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_NAME_PET")));
@@ -1067,7 +1065,7 @@ namespace OpenNos.Handler
                                 Session.Character.Inventory.RemoveItemAmount(baseVnum + faction);
                                 Session.SendPacket("scr 0 0 0 0 0 0 0");
                                 Session.SendPacket(Session.Character.GenerateFaction());
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, 4799 + faction));
+                                Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
                             }
                         }
@@ -1197,15 +1195,9 @@ namespace OpenNos.Handler
         /// <param name="sitpacket"></param>
         public void Rest(SitPacket sitpacket)
         {
-            if (sitpacket.Option < 2)
-            {
-                Session.Character.Rest();
-            }
-            else
-            {
-                Session.CurrentMapInstance.Broadcast(Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == sitpacket.Option)?.GenerateRest());
-            }
-
+            Session.Character.Rest();
+            //TODO REVIEW Rest Packet
+            //Session.CurrentMapInstance.Broadcast(Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == sitpacket.Option)?.GenerateRest());
         }
 
         [Packet("#revival")]

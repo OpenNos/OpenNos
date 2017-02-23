@@ -103,7 +103,15 @@ namespace OpenNos.GameObject
         {
             return $"out 3 {MapMonsterId}";
         }
-
+        public EffectPacket GenerateEff(int effectid)
+        {
+            return new EffectPacket
+            {
+                EffectType = 3,
+                CharacterId = MapMonsterId,
+                Id = effectid
+            };
+        }
         public string GenerateSay(string message, int type)
         {
             return $"say 3 {MapMonsterId} {type} {message}";
@@ -200,7 +208,7 @@ namespace OpenNos.GameObject
                     Target = character.CharacterId;
                     if (!Monster.NoAggresiveIcon)
                     {
-                        character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateEff(MapMonsterId,5000,2));
+                        character.Session.SendPacket(GenerateEff(5000));
                     }
                     Path.Clear();
                 }
@@ -1014,7 +1022,7 @@ namespace OpenNos.GameObject
                 int castTime = 0;
                 if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                 {
-                    MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(MapMonsterId, npcMonsterSkill.Skill.CastEffect,2), MapX, MapY);
+                    MapInstance.Broadcast(GenerateEff(npcMonsterSkill.Skill.CastEffect), MapX, MapY);
                     castTime = npcMonsterSkill.Skill.CastTime * 100;
                 }
                 Observable.Timer(TimeSpan.FromMilliseconds(castTime))

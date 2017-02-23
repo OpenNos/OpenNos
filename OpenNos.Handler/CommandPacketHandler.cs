@@ -483,8 +483,8 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateStatChar());
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, 6), Session.Character.PositionX, Session.Character.PositionY);
-                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, 198), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 6), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 198), Session.Character.PositionX, Session.Character.PositionY);
                 }
                 else
                 {
@@ -515,7 +515,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, 8), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 8), Session.Character.PositionX, Session.Character.PositionY);
 
                     Session.Character.Skills[(short)(200 + 20 * (byte)Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)Session.Character.Class), CharacterId = Session.Character.CharacterId };
                     Session.Character.Skills[(short)(201 + 20 * (byte)Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)Session.Character.Class), CharacterId = Session.Character.CharacterId };
@@ -559,8 +559,8 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateLev());
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, 6), Session.Character.PositionX, Session.Character.PositionY);
-                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, 198), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 6), Session.Character.PositionX, Session.Character.PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 198), Session.Character.PositionX, Session.Character.PositionY);
                     ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
                     if (Session.Character.Family != null)
                     {
@@ -630,7 +630,7 @@ namespace OpenNos.Handler
                         Session.Character.LearnSPSkill();
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                        Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, 8), Session.Character.PositionX, Session.Character.PositionY);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 8), Session.Character.PositionX, Session.Character.PositionY);
                     }
                     else
                     {
@@ -1019,7 +1019,7 @@ namespace OpenNos.Handler
             Logger.Debug("Effect Command", Session.Character.GenerateIdentity());
             if (effectCommandpacket != null)
             {
-                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, effectCommandpacket.EffectId), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( effectCommandpacket.EffectId), Session.Character.PositionX, Session.Character.PositionY);
             }
             else
             {

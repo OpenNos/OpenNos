@@ -13,10 +13,10 @@ namespace OpenNos.GameObject
         public byte Type { get; set; }
 
         [PacketIndex(1)]
-        public long CharacterId { get; set; }
+        public byte UserType { get; set; }
 
         [PacketIndex(2)]
-        public int Option { get; set; }
+        public long User1Id { get; set; }
 
         #endregion
     }

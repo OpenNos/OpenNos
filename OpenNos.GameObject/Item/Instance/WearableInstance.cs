@@ -457,7 +457,7 @@ namespace OpenNos.GameObject
                     {
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
-                        session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
+                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff( 3004), session.Character.MapX, session.Character.MapY);
                     }
                 }
             }
@@ -769,21 +769,21 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
+                            session.CurrentMapInstance.Broadcast(session.Character.GenerateEff( 3004), session.Character.MapX, session.Character.MapY);
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
                         }
                     }
                     else if (rnd < upfix[Upgrade])
                     {
-                        session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
+                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff( 3004), session.Character.MapX, session.Character.MapY);
                         wearable.IsFixed = true;
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                     }
                     else
                     {
-                        session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(CharacterId, 3005), session.Character.MapX, session.Character.MapY);
+                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff( 3005), session.Character.MapX, session.Character.MapY);
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
                         wearable.Upgrade++;
@@ -795,7 +795,7 @@ namespace OpenNos.GameObject
                 {
                     if (rnd < upfix[Upgrade])
                     {
-                        session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
+                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff( 3004), session.Character.MapX, session.Character.MapY);
                         wearable.IsFixed = true;
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
@@ -810,14 +810,14 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 3004), session.Character.MapX, session.Character.MapY);
+                            session.CurrentMapInstance.Broadcast(session.Character.GenerateEff(3004), session.Character.MapX, session.Character.MapY);
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
                         }
                     }
                     else
                     {
-                        session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 3005), session.Character.MapX, session.Character.MapY);
+                        session.CurrentMapInstance.Broadcast(session.Character.GenerateEff( 3005), session.Character.MapX, session.Character.MapY);
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
                         wearable.Upgrade++;

@@ -33,17 +33,35 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
         {
-
+            int x1 = 0;
             switch (Effect)
             {
                 case 13:
-                    int x1 = 0;
+
                     if (int.TryParse(packetsplit[3], out x1))
                     {
-                        if(session.Character.Mates.Any(s=>s.MateTransportId == x1))
+                        if (session.Character.Mates.Any(s => s.MateTransportId == x1))
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 1, x1, 2));
-                        }                  
+                        }
+                    }
+                    break;
+                case 14:
+                    if (int.TryParse(packetsplit[3], out x1))
+                    {
+                        Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == x1);
+                        if (mate != null)
+                        {
+                            if (!mate.CanPickUp)
+                            {
+                                session.Character.Inventory.RemoveItemAmount(inv.ItemVNum, 1);
+                                session.CurrentMapInstance.Broadcast(mate.GenerateEff(5));
+                                session.CurrentMapInstance.Broadcast(mate.GenerateEff(5002));
+                                mate.CanPickUp = true;
+                                session.SendPackets(session.Character.GenerateScP());
+                                session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PET_CAN_PICK_UP"), 10));
+                            }
+                        }
                     }
                     break;
                 default:
