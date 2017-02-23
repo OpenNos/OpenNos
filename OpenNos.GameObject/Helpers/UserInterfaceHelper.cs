@@ -415,15 +415,7 @@ namespace OpenNos.GameObject.Helpers
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
-        public EffectPacket GenerateEff(long CharacterId, int effectid, byte effecttype = 1)
-        {
-            return new EffectPacket
-            {
-                EffectType = effecttype,
-                CharacterId = CharacterId,
-                Id = effectid
-            };
-        }
+       
         public string GenerateGuri(byte type, byte argument, long CharacterId, int value = 0)
         {
             switch (type)

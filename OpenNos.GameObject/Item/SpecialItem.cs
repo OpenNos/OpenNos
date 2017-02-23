@@ -74,25 +74,25 @@ namespace OpenNos.GameObject
                     {
                         case 1:
                             IndicatorBase buff1 = new AttackPotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 203));
+                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff( 203));
                             session.Character.Buff.Add(buff1);
                             break;
 
                         case 2:
                             IndicatorBase buff2 = new DefensePotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 203));
+                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff( 203));
                             session.Character.Buff.Add(buff2);
                             break;
 
                         case 3:
                             IndicatorBase buff3 = new EnergyPotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 203));
+                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff( 203));
                             session.Character.Buff.Add(buff3);
                             break;
 
                         case 4:
                             IndicatorBase buff4 = new ExperiencePotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 203));
+                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff( 203));
                             session.Character.Buff.Add(buff4);
                             break;
                     }
@@ -196,7 +196,7 @@ namespace OpenNos.GameObject
                                 session.Character.MorphUpgrade = 0;
                                 session.Character.MorphUpgrade2 = 0;
                                 session.Character.Morph = Morph + (byte)session.Character.Gender;
-                                session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 196), session.Character.MapX, session.Character.MapY);
+                                session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff( 196), session.Character.MapX, session.Character.MapY);
                                 session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
                                 session.SendPacket(session.Character.GenerateCond());
                                 session.Character.LastSpeedChange = DateTime.Now;
@@ -293,7 +293,23 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
+                case 1006:
+                    if (!delay)
+                    {
+                        session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2 {Language.Instance.GetMessageFromKey("ASK_PET_MAX")}");
+                    }
+                    else
+                    {
+                        if(session.Character.MaxMateCount < 30)
+                        {
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GET_PET_PLACES"),10));
+                            session.SendPacket(session.Character.GenerateScpStc());
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1,inv.Id);
+                        }                      
+                    }
 
+
+                    break;
                 default:
                     Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;

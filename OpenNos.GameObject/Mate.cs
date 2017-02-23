@@ -45,7 +45,6 @@ namespace OpenNos.GameObject
             CharacterId = owner.CharacterId;
             Owner = owner;
             GetMateTransportId();
-            Owner.MapInstance.Broadcast(GenerateIn());
         }
 
         #endregion
@@ -100,11 +99,21 @@ namespace OpenNos.GameObject
                     return $"{NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 991.0.0 996.0.0 -1 -1 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} -1 0 -1 -1 -1 -1";
 
                 case MateType.Pet:
-                    return $"{NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 0 {Name.Replace(' ', '^')} 0";
+                    return $"{NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp?1:0)} {Name.Replace(' ', '^')} 0";
             }
             return string.Empty;
         }
-
+        /// <summary>
+        /// Checks if the current character is in range of the given position
+        /// </summary>
+        /// <param name="xCoordinate">The x coordinate of the object to check.</param>
+        /// <param name="yCoordinate">The y coordinate of the object to check.</param>
+        /// <param name="range">The range of the coordinates to be maximal distanced.</param>
+        /// <returns>True if the object is in Range, False if not.</returns>
+        public bool IsInRange(int xCoordinate, int yCoordinate, int range)
+        {
+            return Math.Abs(PositionX - xCoordinate) <= range && Math.Abs(PositionY - yCoordinate) <= range;
+        }
         public void GetMateTransportId()
         {
             int nextId = ServerManager.Instance.MateIds.Any() ? ServerManager.Instance.MateIds.Last() + 1 : 2000000;
@@ -129,7 +138,15 @@ namespace OpenNos.GameObject
         {
             return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 0 3 {CharacterId} 1 0 -1 {Name.Replace(' ', '^')} 0 -1 0 0 0 0 0 0 0 0";
         }
-
+        public EffectPacket GenerateEff(int effectid)
+        {
+            return new EffectPacket
+            {
+                EffectType = 2,
+                CharacterId = MateTransportId,
+                Id = effectid
+            };
+        }
         public string GenerateOut()
         {
             return $"out 2 {MateTransportId}";

@@ -113,7 +113,7 @@ namespace OpenNos.GameObject
                     ItemInstance currentlyEquippedItem = session.Character.Inventory.LoadBySlotAndType((short)EquipmentSlot, InventoryType.Wear);
                     if (EquipmentSlot == EquipmentType.Amulet)
                     {
-                        session.SendPacket(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 39));
+                        session.SendPacket(session.Character.GenerateEff( 39));
                         inv.BoundCharacterId = session.Character.CharacterId;
                     }
 

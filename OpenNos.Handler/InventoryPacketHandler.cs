@@ -263,7 +263,7 @@ namespace OpenNos.Handler
                     }
                     Session.SendPacket(inventory.Item.EquipmentSlot != EquipmentType.Sp ?
                         inventory.GenerateEInfo() : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ?
-                        (inventory as SpecialistInstance).GeneratePslInfo() :(inventory as SpecialistInstance).GenerateSlInfo());
+                        (inventory as SpecialistInstance).GeneratePslInfo() : (inventory as SpecialistInstance).GenerateSlInfo());
                 }
             }
         }
@@ -551,7 +551,20 @@ namespace OpenNos.Handler
             }
             if (mapItem != null)
             {
-                if (Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8) && Session.HasCurrentMapInstance)
+                bool canpick = false;
+                if (packet.PickerType == 1)
+                {
+                    Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
+                }
+                else if (packet.PickerType == 2)
+                {
+                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == packet.PickerId && s.CanPickUp);
+                    if (mate != null)
+                    {
+                        canpick = mate.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
+                    }
+                }
+                if (canpick && Session.HasCurrentMapInstance)
                 {
                     MonsterMapItem item = mapItem as MonsterMapItem;
                     if (item != null)
@@ -599,6 +612,10 @@ namespace OpenNos.Handler
                                 {
                                     Session.CurrentMapInstance.DroppedList.Remove(packet.TransportId);
                                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(packet.TransportId));
+                                    if (packet.PickerType == 2)
+                                    {
+                                        Session.SendPacket(Session.Character.GenerateIcon(1, 1, newInv.First().ItemVNum));
+                                    }
                                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {amount}", 12));
                                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
                                     {
@@ -619,6 +636,10 @@ namespace OpenNos.Handler
                         MonsterMapItem droppedGold = mapItem as MonsterMapItem;
                         if (droppedGold != null && Session.Character.Gold + droppedGold.GoldAmount <= maxGold)
                         {
+                            if (packet.PickerType == 2)
+                            {
+                                Session.SendPacket(Session.Character.GenerateIcon(1, 1, 1046));
+                            }
                             Session.Character.Gold += droppedGold.GoldAmount;
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapItem.GetItemInstance().Item.Name} x {droppedGold.GoldAmount}", 12));
                         }
@@ -1411,7 +1432,7 @@ namespace OpenNos.Handler
                     if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 3, "#sl^1"));
-                        Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1,Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
+                        Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
                     }
                     else
                     {
@@ -1620,7 +1641,7 @@ namespace OpenNos.Handler
                     if (inv?.Item != null)
                     {
                         inv.Item.Use(Session, ref inv);
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, 123));
+                        Session.SendPacket(Session.Character.GenerateEff(123));
                     }
                 }
             }
@@ -1666,8 +1687,8 @@ namespace OpenNos.Handler
                 Session.Character.MorphUpgrade2 = sp.Design;
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
                 Session.SendPacket(Session.Character.GenerateLev());
-                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, 196), Session.Character.PositionX, Session.Character.PositionY);
-                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1,Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
                 Session.SendPacket(Session.Character.GenerateSpPoint());
                 Session.Character.LoadSpeed();
                 Session.SendPacket(Session.Character.GenerateCond());
@@ -1771,7 +1792,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
                 Session.SendPacket($"sd {Session.Character.SpCooldown}");
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
-                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1,Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
 
                 // ms_c
                 Session.SendPacket(Session.Character.GenerateSki());
