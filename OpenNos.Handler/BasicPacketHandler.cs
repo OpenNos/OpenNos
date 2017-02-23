@@ -329,6 +329,12 @@ namespace OpenNos.Handler
         public void GetStats(NpinfoPacket npinfoPacket)
         {
             Session.SendPacket(Session.Character.GenerateStatChar());
+            if (npinfoPacket.Page != Session.Character.ScPage)
+            {
+                Session.Character.ScPage = npinfoPacket.Page;
+                Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
+                Session.SendPackets(Session.Character.GenerateScP(npinfoPacket.Page));
+            }
         }
 
         /// <summary>

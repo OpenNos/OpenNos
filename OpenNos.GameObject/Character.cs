@@ -406,6 +406,7 @@ namespace OpenNos.GameObject
         public int WareHouseSize { get; set; }
 
         public int WaterResistance { get; private set; }
+        public int ScPage { get; set; }
 
         #endregion
 
@@ -499,6 +500,11 @@ namespace OpenNos.GameObject
             {
                 Session.CurrentMapInstance?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
             }
+        }
+
+        public string GenerateScpStc()
+        {
+            return $"sc_p_stc {(MaxMateCount/10)}";
         }
 
         public void ChangeSex()
@@ -3102,11 +3108,11 @@ namespace OpenNos.GameObject
             return list;
         }
 
-        public List<string> GenerateScP()
+        public List<string> GenerateScP(byte Page = 0)
         {
             List<string> list = new List<string>();
             int i = 0;
-            Mates.Where(s => s.MateType == MateType.Pet).ToList().ForEach(s =>
+            Mates.Where(s => s.MateType == MateType.Pet).Skip(Page*10).Take(10).ToList().ForEach(s =>
             {
                 list.Add($"sc_p {i} {s.GenerateScPacket()}");
                 i++;

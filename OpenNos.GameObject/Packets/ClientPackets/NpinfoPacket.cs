@@ -10,7 +10,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         [PacketIndex(0)]
-        public int Type { get; set; }
+        public byte Page { get; set; }
 
         #endregion
     }

@@ -293,7 +293,23 @@ namespace OpenNos.GameObject
                         session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("EFFECT_ACTIVATED"), Name), 12));
                     }
                     break;
+                case 1006:
+                    if (!delay)
+                    {
+                        session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2 {Language.Instance.GetMessageFromKey("ASK_PET_MAX")}");
+                    }
+                    else
+                    {
+                        if(session.Character.MaxMateCount < 30)
+                        {
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GET_PET_PLACES"),10));
+                            session.SendPacket(session.Character.GenerateScpStc());
+                            session.Character.Inventory.RemoveItemAmountFromInventory(1,inv.Id);
+                        }                      
+                    }
 
+
+                    break;
                 default:
                     Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;

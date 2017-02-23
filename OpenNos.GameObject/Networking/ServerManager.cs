@@ -396,7 +396,7 @@ namespace OpenNos.GameObject
                     });
                     session.SendPacket(session.Character.GeneratePinit()); // clear party list
                     session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
-
+                    session.SendPacket(session.Character.GenerateScpStc());
                     Sessions.Where(s => s.Character != null && s.Character.MapInstanceId.Equals(session.Character.MapInstanceId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s =>
                     {
                         session.SendPacket(s.Character.GenerateIn());
