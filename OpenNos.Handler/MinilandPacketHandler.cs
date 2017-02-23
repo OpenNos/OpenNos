@@ -88,7 +88,7 @@ namespace OpenNos.Handler
                         {
                             Session.SendPacket($"qna #mg^1^7^3125^1^1 {Language.Instance.GetMessageFromKey("NOT_ENOUGH_MINILAND_POINT")}");
                         }
-                        Session.Character.MapInstance.Broadcast(Session.Character.GenerateGuri(2, 1));
+                        Session.Character.MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1,Session.Character.CharacterId));
                         Session.Character.CurrentMinigame = (short)(game == 0 ? 5102 : game == 1 ? 5103 : game == 2 ? 5105 : game == 3 ? 5104 : game == 4 ? 5113 : 5112);
                         Session.SendPacket($"mlo_st {game}");
                         break;
@@ -96,12 +96,12 @@ namespace OpenNos.Handler
                     //stop
                     case 2:
                         Session.Character.CurrentMinigame = 0;
-                        Session.Character.MapInstance.Broadcast(Session.Character.GenerateGuri(6, 1));
+                        Session.Character.MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1,Session.Character.CharacterId));
                         break;
 
                     case 3:
                         Session.Character.CurrentMinigame = 0;
-                        Session.Character.MapInstance.Broadcast(Session.Character.GenerateGuri(6, 1));
+                        Session.Character.MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1,Session.Character.CharacterId));
                         int Level = -1;
                         for (short i = 0; i < GetMinilandMaxPoint(game).Count(); i++)
                         {

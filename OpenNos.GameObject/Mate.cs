@@ -130,6 +130,11 @@ namespace OpenNos.GameObject
             return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 0 3 {CharacterId} 1 0 -1 {Name.Replace(' ', '^')} 0 -1 0 0 0 0 0 0 0 0";
         }
 
+        public string GenerateOut()
+        {
+            return $"out 2 {MateTransportId}";
+        }
+
         #endregion
     }
 }

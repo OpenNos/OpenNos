@@ -924,6 +924,7 @@ namespace OpenNos.GameObject
                 return;
             }
             session.SendPacket(UserInterfaceHelper.Instance.GenerateMapOut());
+            session.Character.Mates.Where(s=>s.IsTeamMember).ToList().ForEach(s=>session.CurrentMapInstance?.Broadcast(session, s.GenerateOut(), ReceiverType.AllExceptMe)); 
             session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
         }
 

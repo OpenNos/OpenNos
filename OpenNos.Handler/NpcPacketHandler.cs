@@ -589,7 +589,7 @@ namespace OpenNos.Handler
                                     Session.Character.Inventory.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
                                 Session.SendPacket($"pdti 11 {inv.First().ItemVNum} {rec.Amount} 29 {inv.First().Upgrade} 0");
-                                Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1,Session.Character.CharacterId, 1324));
 
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.First().Item.Name, rec.Amount), 0));
                             }

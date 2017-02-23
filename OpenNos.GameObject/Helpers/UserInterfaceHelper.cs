@@ -424,7 +424,26 @@ namespace OpenNos.GameObject.Helpers
                 Id = effectid
             };
         }
+        public string GenerateGuri(byte type, byte argument, long CharacterId, int value = 0)
+        {
+            switch (type)
+            {
+                case 2:
+                    return $"guri 2 {argument} {CharacterId}";
 
+                case 6:
+                    return $"guri 6 1 {CharacterId} 0 0";
+
+                case 10:
+                    return $"guri 10 {argument} {value} {CharacterId}";
+
+                case 15:
+                    return $"guri 15 {argument} 0 0";
+
+                default:
+                    return $"guri {type} {argument} {CharacterId} {value}";
+            }
+        }
         #endregion
     }
 }

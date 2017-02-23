@@ -14,6 +14,8 @@
 
 using OpenNos.Core;
 using OpenNos.Data;
+using OpenNos.GameObject.Helpers;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -31,8 +33,19 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
         {
+
             switch (Effect)
             {
+                case 13:
+                    int x1 = 0;
+                    if (int.TryParse(packetsplit[3], out x1))
+                    {
+                        if(session.Character.Mates.Any(s=>s.MateTransportId == x1))
+                        {
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 1, x1, 2));
+                        }                  
+                    }
+                    break;
                 default:
                     Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), GetType()));
                     break;

@@ -148,7 +148,7 @@ namespace OpenNos.GameObject
                     {
                         if (!delay)
                         {
-                            session.SendPacket(session.Character.GenerateGuri(10, 2, 1));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 2,session.Character.CharacterId, 1));
                         }
                     }
                     break;

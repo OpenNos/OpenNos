@@ -595,7 +595,7 @@ namespace OpenNos.GameObject
                         session.SendPacket($"pdti 10 {ItemVNum} 1 27 {Upgrade} 0");
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
-                        session.SendPacket(session.Character.GenerateGuri(19, 1, 1324));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, session.Character.CharacterId, 1324));
                         ItemInstance itemInstnace = session.Character.Inventory.GetItemInstanceById(Id);
                         session.SendPacket(itemInstnace.GenerateInventoryAdd());
                     }
@@ -603,11 +603,11 @@ namespace OpenNos.GameObject
                     {
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
-                        session.SendPacket(session.Character.GenerateGuri(19, 1, 1332));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1,session.Character.CharacterId, 1332));
                         session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
                         session.Character.DeleteItemByItemInstanceId(Id);
                     }
-                    session.CurrentMapInstance?.Broadcast(session.Character.GenerateGuri(6, 1), session.Character.MapX, session.Character.MapY);
+                    session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1,session.Character.CharacterId), session.Character.MapX, session.Character.MapY);
                     session.SendPacket(session.Character.GenerateGold());
                     session.SendPacket("shop_end 1");
                 }

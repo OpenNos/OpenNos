@@ -75,6 +75,7 @@ namespace OpenNos.GameObject
 
                 if (IsWorldServer && session.HasSelectedCharacter)
                 {
+                    session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => session.CurrentMapInstance?.Broadcast(session, s.GenerateOut(), ReceiverType.AllExceptMe));
                     session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
                 }
 
