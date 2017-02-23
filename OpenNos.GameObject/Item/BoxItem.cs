@@ -135,16 +135,37 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                SpecialistInstance cp = box.DeepCopy() as SpecialistInstance;
-                                cp.Id = Guid.NewGuid();
-                                cp.ItemVNum = box.HoldingVNum;
-                                List<ItemInstance> newInv = session.Character.Inventory.AddToInventory(cp as ItemInstance);
+                                List<ItemInstance> newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
                                 if (newInv.Any())
                                 {
+                                    SpecialistInstance specialist = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(newInv.First().Slot, newInv.First().Type);
+                                    if (specialist != null)
+                                    {
+                                        specialist.SlDamage = box.SlDamage;
+                                        specialist.SlDefence = box.SlDefence;
+                                        specialist.SlElement = box.SlElement;
+                                        specialist.SlHP = box.SlHP;
+                                        specialist.SpDamage = box.SpDamage;
+                                        specialist.SpDark = box.SpDark;
+                                        specialist.SpDefence = box.SpDefence;
+                                        specialist.SpElement = box.SpElement;
+                                        specialist.SpFire = box.SpFire;
+                                        specialist.SpHP = box.SpHP;
+                                        specialist.SpLevel = box.SpLevel;
+                                        specialist.SpLight = box.SpLight;
+                                        specialist.SpStoneUpgrade = box.SpStoneUpgrade;
+                                        specialist.SpWater = box.SpWater;
+                                        specialist.Upgrade = box.Upgrade;
+                                        specialist.XP = box.XP;
+                                    }
                                     short Slot = inv.Slot;
                                     if (Slot != -1)
                                     {
-                                        session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} + {newInv.First().Upgrade}", 12));
+                                        if (specialist != null)
+                                        {
+                                            session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {specialist.Item.Name} + {specialist.Upgrade}", 12));
+                                            newInv.ForEach(s => session.SendPacket(specialist.GenerateInventoryAdd()));
+                                        }
                                         session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
                                     }
                                 }
@@ -166,25 +187,21 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                ItemInstance cp = box.DeepCopy();
-                                cp.Id = Guid.NewGuid();
-                                cp.ItemVNum = box.HoldingVNum;
-                                List<ItemInstance> newInv = session.Character.Inventory.AddToInventory(cp);
+                                List<ItemInstance> newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
                                 if (newInv.Any())
                                 {
                                     WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>(newInv.First().Slot, newInv.First().Type);
-
                                     if (fairy != null)
                                     {
                                         fairy.ElementRate = box.ElementRate;
                                     }
-
                                     short Slot = inv.Slot;
                                     if (Slot != -1)
                                     {
                                         if (fairy != null)
                                         {
                                             session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {fairy.Item.Name} ({fairy.ElementRate}%)", 12));
+                                            newInv.ForEach(s => session.SendPacket(fairy.GenerateInventoryAdd()));
                                         }
                                         session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
                                     }
@@ -207,16 +224,14 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                ItemInstance cp = box.DeepCopy();
-                                cp.Id = Guid.NewGuid();
-                                cp.ItemVNum = box.HoldingVNum;
-                                List<ItemInstance> newInv = session.Character.Inventory.AddToInventory(cp);
+                                List<ItemInstance> newInv = session.Character.Inventory.AddNewToInventory(box.HoldingVNum);
                                 if (newInv.Any())
                                 {
                                     short Slot = inv.Slot;
                                     if (Slot != -1)
                                     {
                                         session.SendPacket(session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x 1)", 12));
+                                        newInv.ForEach(s => session.SendPacket(s.GenerateInventoryAdd()));
                                         session.Character.Inventory.RemoveItemAmountFromInventory(1, box.Id);
                                     }
                                 }
@@ -227,7 +242,6 @@ namespace OpenNos.GameObject
                             }
                         }
                     }
-
                     break;
 
                 default:
