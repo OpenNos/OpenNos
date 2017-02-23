@@ -146,10 +146,6 @@ namespace OpenNos.GameObject
 
         public int HitRate { get; set; }
 
-        public List<long> FamilyInviteCharacters { get; set; }
-
-        public List<long> FriendRequestCharacters { get; set; }
-
         public List<long> TradeRequests { get; set; }
 
         public bool InExchangeOrTrade => ExchangeInfo != null || Speed == 0;
