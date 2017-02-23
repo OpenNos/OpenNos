@@ -47,6 +47,7 @@ namespace OpenNos.GameObject
         {
             GroupSentRequestCharacterIds = new List<long>();
             FamilyInviteCharacters = new List<long>();
+            TradeRequests = new List<long>();
             FriendRequestCharacters = new List<long>();
             StaticBonusList = new List<StaticBonusDTO>();
             MinilandObjects = new List<MinilandObject>();
@@ -170,6 +171,8 @@ namespace OpenNos.GameObject
         public int HitCriticalRate { get; set; }
 
         public int HitRate { get; set; }
+
+        public List<long> TradeRequests { get; set; }
 
         public bool InExchangeOrTrade => ExchangeInfo != null || Speed == 0;
 

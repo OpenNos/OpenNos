@@ -71,7 +71,8 @@ namespace OpenNos.Handler
                             bool otherInExchangeOrTrade = ServerManager.Instance.GetProperty<bool>(characterId, nameof(Character.InExchangeOrTrade));
                             if (!Session.Character.InExchangeOrTrade || !otherInExchangeOrTrade)
                             {
-                                if (characterId == Session.Character.CharacterId || Session.Character.Speed == 0)
+                                ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
+                                if (characterId == Session.Character.CharacterId || Session.Character.Speed == 0 || otherSession == null || !otherSession.Character.TradeRequests.Any(s=>s==Session.Character.CharacterId))
                                 {
                                     return;
                                 }
@@ -401,6 +402,7 @@ namespace OpenNos.Handler
                                 else
                                 {
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateModal(string.Format(Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE"), targetSession.Character.Name), 0));
+                                    Session.Character.TradeRequests.Add(targetSession.Character.CharacterId);
                                     targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INCOMING_EXCHANGE"), Session.Character.Name)}"));
                                 }
                             }
