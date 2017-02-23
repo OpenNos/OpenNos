@@ -1190,7 +1190,7 @@ namespace OpenNos.Handler
         public void Guri(GuriCommandPacket guriCommandPacket)
         {
             Logger.Debug("Guri Command", Session.Character.GenerateIdentity());
-            Session.SendPacket(guriCommandPacket != null ? Session.Character.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument, guriCommandPacket.Value) : Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
+            Session.SendPacket(guriCommandPacket != null ? UserInterfaceHelper.Instance.GenerateGuri(guriCommandPacket.Type, guriCommandPacket.Argument,Session.Character.CharacterId, guriCommandPacket.Value) : Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
         }
 
         /// <summary>
@@ -1247,6 +1247,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateEq());
             if (Session.Character.InvisibleGm)
             {
+                Session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(Session, s.GenerateOut(), ReceiverType.AllExceptMe));
                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
             else
@@ -2243,7 +2244,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug("Zoom Command", Session.Character.GenerateIdentity());
             Session.SendPacket(zoomPacket != null
-                ? Session.Character.GenerateGuri(15, zoomPacket.Value)
+                ? UserInterfaceHelper.Instance.GenerateGuri(15, zoomPacket.Value,Session.Character.CharacterId)
                 : Session.Character.GenerateSay("$Zoom VALUE", 10));
         }
 

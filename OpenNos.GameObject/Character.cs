@@ -666,7 +666,7 @@ namespace OpenNos.GameObject
                                     Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), SpCooldown), 11));
                                     Session.SendPacket($"sd {SpCooldown}");
                                     Session.CurrentMapInstance?.Broadcast(GenerateCMode());
-                                    Session.CurrentMapInstance?.Broadcast(GenerateGuri(6, 1), PositionX, PositionY);
+                                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1,Session.Character.CharacterId), PositionX, PositionY);
 
                                     // ms_c
                                     Session.SendPacket(GenerateSki());
@@ -1863,28 +1863,6 @@ namespace OpenNos.GameObject
             }
 
             return gpList;
-        }
-
-
-        public string GenerateGuri(byte type, byte argument, int value = 0)
-        {
-            switch (type)
-            {
-                case 2:
-                    return $"guri 2 {argument} {CharacterId}";
-
-                case 6:
-                    return $"guri 6 1 {CharacterId} 0 0";
-
-                case 10:
-                    return $"guri 10 {argument} {value} {CharacterId}";
-
-                case 15:
-                    return $"guri 15 {argument} 0 0";
-
-                default:
-                    return $"guri {type} {argument} {CharacterId} {value}";
-            }
         }
 
         public string GenerateIdentity()

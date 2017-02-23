@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
                         session.Character.IsSitting = false;
                         session.SendPacket(session.Character.GenerateRest());
                     }
-                    session.SendPacket(session.Character.GenerateGuri(12, 1, EffectValue));
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(12, 1,session.Character.CharacterId, EffectValue));
                 }
                 else if (EffectValue == 0)
                 {
@@ -65,7 +65,7 @@ namespace OpenNos.GameObject
                                         {
                                             equip.IsFixed = false;
                                             session.SendPacket(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 3003));
-                                            session.SendPacket(session.Character.GenerateGuri(17, 1, SlotEquip));
+                                            session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(17, 1,session.Character.CharacterId, SlotEquip));
                                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_UNFIXED"), 12));
                                             isUsed = true;
                                         }
@@ -78,7 +78,7 @@ namespace OpenNos.GameObject
                                         {
                                             specialist.Rare = 0;
                                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
-                                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateGuri(13, 1, 1), session.Character.MapX, session.Character.MapY);
+                                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(13, 1, session.Character.CharacterId,1), session.Character.MapX, session.Character.MapY);
                                             session.Character.SpPoint = 10000;
                                             if (session.Character.SpPoint > 10000)
                                             {

@@ -698,11 +698,39 @@ namespace OpenNos.Handler
             }
             else if (guriPacket[2] == "2")
             {
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
             }
             else if (guriPacket[2] == "4")
             {
                 const int speakerVNum = 2173;
+                const int petnameVNum = 2157;
+                if (guriPacket[3] == "1")
+                {
+                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == int.Parse(guriPacket[5]));
+                    if (mate != null)
+                    {
+                        string message = string.Empty;
+
+                        // message = $" ";
+                        for (int i = 6; i < guriPacket.Length; i++)
+                        {
+                            message += guriPacket[i] + "^";
+                        }
+                        message = message.Substring(0, message.Length - 1); // Remove the last ^
+                        message = message.Trim();
+                        if (message.Length > 60)
+                        {
+                            message = message.Substring(0, 60);
+                        }
+                        mate.Name = message;
+                        Session.CurrentMapInstance.Broadcast(mate.GenerateOut());
+                        Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_NAME_PET")));
+                        Session.SendPacket(Session.Character.GeneratePinit());
+                        Session.SendPackets(Session.Character.GenerateScP());
+                        Session.Character.Inventory.RemoveItemAmount(petnameVNum);
+                    }
+                }
 
                 // presentation message
                 if (guriPacket[3] == "2")
@@ -1169,7 +1197,7 @@ namespace OpenNos.Handler
         /// <param name="sitpacket"></param>
         public void Rest(SitPacket sitpacket)
         {
-            if(sitpacket.Option < 2)
+            if (sitpacket.Option < 2)
             {
                 Session.Character.Rest();
             }
@@ -1177,7 +1205,7 @@ namespace OpenNos.Handler
             {
                 Session.CurrentMapInstance.Broadcast(Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == sitpacket.Option)?.GenerateRest());
             }
-           
+
         }
 
         [Packet("#revival")]
