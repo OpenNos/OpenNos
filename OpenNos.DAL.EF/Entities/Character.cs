@@ -64,6 +64,8 @@ namespace OpenNos.DAL.EF
 
         public bool BuffBlocked { get; set; }
 
+        public byte MaxMateCount { get; set; }
+
         public long CharacterId { get; set; }
 
         public virtual ICollection<CharacterRelation> CharacterRelation1 { get; set; }
