@@ -111,14 +111,14 @@ namespace OpenNos.Handler
                     }
                     Mate mate = new Mate(Session.Character, addPetPacket.MonsterVNum, addPetPacket.Level, MateType.Pet);
                     Session.Character.Mates.Add(mate);
-                    Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 0));
-                    Session.SendPacket(Session.Character.GeneratePClear());
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                     Session.SendPackets(Session.Character.GenerateScP());
                     Session.SendPackets(Session.Character.GenerateScN());
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_MINILAND"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_MINILAND"), 0));
                 }
             }
             else
