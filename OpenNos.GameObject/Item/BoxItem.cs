@@ -47,14 +47,16 @@ namespace OpenNos.GameObject
                     {
                         if (session.CurrentMapInstance == session.Character.Miniland)
                         {
-                            Mate mate = new Mate(session.Character, (short)EffectValue, 1, MateType.Pet);
-                            session.Character.Mates.Add(mate);
-                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
-                            session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
-                            session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                            session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
-                            session.SendPackets(session.Character.GenerateScP());
-                            session.SendPackets(session.Character.GenerateScN());
+                            Mate mate = new Mate(session.Character, (short)EffectValue, LevelMinimum, MateType.Pet);
+                            if (session.Character.AddPet(mate))
+                            {
+                                session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
+                            }
+                        }
+                        else
+                        {
+                            //TODO ADD MINILAND MESSAGE
                         }
                     }
 

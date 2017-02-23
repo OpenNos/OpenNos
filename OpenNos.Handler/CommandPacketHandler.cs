@@ -110,11 +110,7 @@ namespace OpenNos.Handler
                         addPetPacket.Level = 1;
                     }
                     Mate mate = new Mate(Session.Character, addPetPacket.MonsterVNum, addPetPacket.Level, MateType.Pet);
-                    Session.Character.Mates.Add(mate);
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 0));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
-                    Session.SendPackets(Session.Character.GenerateScP());
-                    Session.SendPackets(Session.Character.GenerateScN());
+                    Session.Character.AddPet(mate);
                 }
                 else
                 {
@@ -717,7 +713,7 @@ namespace OpenNos.Handler
                 foreach (ItemInstance inv in Session.Character.Inventory.GetAllItems().Where(s => s.Type == clearInventoryPacket.InventoryType))
                 {
                     Session.Character.Inventory.DeleteById(inv.Id);
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove( inv.Type, inv.Slot));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(inv.Type, inv.Slot));
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
