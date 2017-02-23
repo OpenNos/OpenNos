@@ -54,6 +54,31 @@ namespace OpenNos.GameObject
             Mates = new List<Mate>();
         }
 
+        public bool AddPet(Mate mate)
+        {
+            if (MaxMateCount > Mates.Count())
+            {
+                if (Level > mate.Level)
+                {
+                    Mates.Add(mate);
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
+                    Session.SendPackets(Session.Character.GenerateScP());
+                    Session.SendPackets(Session.Character.GenerateScN());
+                    return true;
+                }
+                else
+                {
+                    //TODO ADD LEVEL MESSAGE
+                }
+            }
+            else
+            {
+                //TODO ADD PLACE MESSAGE
+            }
+            return false;
+        }
+
         #endregion
 
         #region Properties
