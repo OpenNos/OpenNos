@@ -95,6 +95,38 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        /// $AddPet Command
+        /// </summary>
+        /// <param name="addPetPacket"></param>
+        public void AddPet(AddPetPacket addPetPacket)
+        {
+            if (addPetPacket != null)
+            {
+                if (Session.CurrentMapInstance == Session.Character.Miniland)
+                {
+                    if (addPetPacket.Level == 0)
+                    {
+                        addPetPacket.Level = 1;
+                    }
+                    Mate mate = new Mate(Session.Character, addPetPacket.MonsterVNum, addPetPacket.Level, MateType.Pet);
+                    Session.Character.Mates.Add(mate);
+                    Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 0));
+                    Session.SendPacket(Session.Character.GeneratePClear());
+                    Session.SendPackets(Session.Character.GenerateScP());
+                    Session.SendPackets(Session.Character.GenerateScN());
+                }
+                else
+                {
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_MINILAND"), 0));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$AddPet MONSTERVNUM LEVEL", 10));
+            }
+        }
+
+        /// <summary>
         /// $AddSkill Command
         /// </summary>
         /// <param name="addSkillPacket"></param>

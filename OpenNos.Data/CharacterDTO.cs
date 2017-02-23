@@ -40,6 +40,8 @@ namespace OpenNos.Data
 
         public short Compliment { get; set; }
 
+        public byte MaxMateCount { get; set; }
+
         public float Dignity { get; set; }
 
         public bool EmoticonsBlocked { get; set; }

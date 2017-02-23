@@ -81,6 +81,7 @@ namespace OpenNos.Handler
                                 MapX = (short)ServerManager.RandomNumber(78, 81),
                                 MapY = (short)ServerManager.RandomNumber(114, 118),
                                 Mp = 221,
+                                MaxMateCount = 10,
                                 SpPoint = 10000,
                                 SpAdditionPoint = 0,
                                 Name = characterName,

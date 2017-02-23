@@ -45,17 +45,20 @@ namespace OpenNos.GameObject
                     {
                         if (session.CurrentMapInstance == session.Character.Miniland)
                         {
-                            Mate mate = new Mate(session.Character, (short)EffectValue, 1, MateType.Pet);
+                            Mate mate = new Mate(session.Character, (short) EffectValue, 1, MateType.Pet);
                             session.Character.Mates.Add(mate);
-                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
+                            session.SendPacket(session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 0));
                             session.SendPacket(session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
                             session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             session.SendPacket(session.Character.GeneratePClear());
                             session.SendPackets(session.Character.GenerateScP());
                             session.SendPackets(session.Character.GenerateScN());
                         }
+                        else
+                        {
+                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_IN_MINILAND"), 0));
+                        }
                     }
-
                     break;
 
                 case 69:
