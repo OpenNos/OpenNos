@@ -165,6 +165,8 @@ namespace OpenNos.GameObject
             }
             return null;
         }
+
+        //TODO MOVE
         public static EffectPacket GenerateEff(long CharacterId, int effectid, byte effecttype = 1)
         {
             return new EffectPacket
@@ -174,6 +176,7 @@ namespace OpenNos.GameObject
                 Id = effectid
             };
         }
+        //TODO MOVE
         public static string GenerateMsg(string message, int type)
         {
             return $"msg {type} {message}";
@@ -419,11 +422,11 @@ namespace OpenNos.GameObject
                     session.SendPackets(session.Character.GenerateGp());
 
                     // wp 23 124 4 4 12 99
-                    session.SendPackets(session.Character.GenerateIn3());
-                    session.SendPackets(session.Character.GenerateIn2());
+                    session.SendPackets(session.Character.MapInstance.Monsters.Select(monster => monster.GenerateIn()).ToList());
+                    session.SendPackets(session.Character.MapInstance.Npcs.Select(npc => npc.GenerateIn()).ToList());
                     session.SendPackets(session.Character.GenerateNPCShopOnMap());
                     session.SendPackets(session.Character.GenerateDroppedItem());
-                    session.SendPackets(session.Character.GenerateShopOnMap());
+                    session.SendPackets(session.Character.MapInstance.GenerateUserShops());
                     session.SendPackets(session.Character.GeneratePlayerShopOnMap());
                     if (session.CurrentMapInstance.EndDate != default(DateTime))
                     {

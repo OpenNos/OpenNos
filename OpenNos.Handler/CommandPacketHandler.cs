@@ -83,7 +83,7 @@ namespace OpenNos.Handler
                         monster.Initialize(Session.CurrentMapInstance);
                         monster.StartLife();
                         Session.CurrentMapInstance.AddMonster(monster);
-                        Session.CurrentMapInstance?.Broadcast(monster.GenerateIn3());
+                        Session.CurrentMapInstance?.Broadcast(monster.GenerateIn());
                     }
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
@@ -907,7 +907,7 @@ namespace OpenNos.Handler
                     Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
                 };
                 Session.CurrentMapInstance.Portals.Add(portal);
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGp(portal));
+                Session.CurrentMapInstance?.Broadcast(Session.CurrentMapInstance.GenerateGp(portal));
             }
             else
             {
@@ -1593,7 +1593,7 @@ namespace OpenNos.Handler
                 {
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
                     Session.CurrentMapInstance.Portals.Remove(pt);
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGp(pt));
+                    Session.CurrentMapInstance?.Broadcast(Session.CurrentMapInstance.GenerateGp(pt));
                 }
                 else
                 {
@@ -1841,7 +1841,7 @@ namespace OpenNos.Handler
                             monster.Initialize(Session.CurrentMapInstance);
                             monster.StartLife();
                             Session.CurrentMapInstance.AddMonster(monster);
-                            Session.CurrentMapInstance.Broadcast(monster.GenerateIn3());
+                            Session.CurrentMapInstance.Broadcast(monster.GenerateIn());
                         }
                     }
                 }
@@ -1899,7 +1899,7 @@ namespace OpenNos.Handler
                             MapNpc monster = new MapNpc { NpcVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstance.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapNpcId = Session.CurrentMapInstance.GetNextMonsterId() };
                             monster.Initialize();
                             Session.CurrentMapInstance.AddNPC(monster);
-                            Session.CurrentMapInstance.Broadcast(monster.GenerateIn2());
+                            Session.CurrentMapInstance.Broadcast(monster.GenerateIn());
                         }
                     }
                 }

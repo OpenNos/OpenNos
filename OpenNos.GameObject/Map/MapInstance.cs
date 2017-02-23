@@ -348,7 +348,7 @@ namespace OpenNos.GameObject
                  s.CurrentHp = 0;
                  s.CurrentMp = 0;
                  s.Death = DateTime.Now;
-                 Broadcast(s.GenerateOut3());
+                 Broadcast(s.GenerateOut());
              });
         }
 
@@ -356,7 +356,7 @@ namespace OpenNos.GameObject
         {
             portal.SourceMapInstanceId = MapInstanceId;
             _portals.Add(portal);
-            Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.SendPacket(s.Character.GenerateGp(portal)));
+            Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.SendPacket(s.CurrentMapInstance.GenerateGp(portal)));
         }
 
         internal IEnumerable<Character> GetCharactersInRange(short mapX, short mapY, byte distance)
@@ -471,7 +471,7 @@ namespace OpenNos.GameObject
                     monster.Initialize(this);
                     monster.StartLife();
                     AddMonster(monster);
-                    Broadcast(monster.GenerateIn3());
+                    Broadcast(monster.GenerateIn());
                     ids.Add(monster.MapMonsterId);
                 }
             }
@@ -485,6 +485,11 @@ namespace OpenNos.GameObject
             {
                 _monsters.Dispose();
             }
+        }
+
+        public string GenerateGp(Portal portal)
+        { 
+            return $"gp {portal.SourceX} {portal.SourceY} {ServerManager.GetMapInstance(portal.DestinationMapInstanceId)?.Map.MapId} {portal.Type} {Portals.Count} {(Portals.Contains(portal) ? (portal.IsDisabled ? 1 : 0) : 1)}";
         }
 
         #endregion

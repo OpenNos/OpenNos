@@ -62,7 +62,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public string GenerateIn2()
+        public string GenerateIn()
         {
             NpcMonster npcinfo = ServerManager.GetNpc(NpcVNum);
             if (npcinfo != null && !IsDisabled)

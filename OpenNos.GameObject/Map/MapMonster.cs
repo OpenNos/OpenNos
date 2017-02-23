@@ -89,7 +89,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public string GenerateIn3()
+        public string GenerateIn()
         {
             if (IsAlive && !IsDisabled)
             {
@@ -98,7 +98,7 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
-        public string GenerateOut3()
+        public string GenerateOut()
         {
             return $"out 3 {MapMonsterId}";
         }
@@ -971,7 +971,7 @@ namespace OpenNos.GameObject
                 MapX = FirstX;
                 MapY = FirstY;
                 Path = new List<GridPos>();
-                MapInstance.Broadcast(GenerateIn3());
+                MapInstance.Broadcast(GenerateIn());
             }
         }
 

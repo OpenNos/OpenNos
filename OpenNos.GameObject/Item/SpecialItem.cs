@@ -252,7 +252,7 @@ namespace OpenNos.GameObject
                                 monster.Initialize(session.CurrentMapInstance);
                                 monster.StartLife();
                                 session.CurrentMapInstance.AddMonster(monster);
-                                session.CurrentMapInstance.Broadcast(monster.GenerateIn3());
+                                session.CurrentMapInstance.Broadcast(monster.GenerateIn());
                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             }
                         }
