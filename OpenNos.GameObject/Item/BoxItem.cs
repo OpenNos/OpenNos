@@ -80,6 +80,7 @@ namespace OpenNos.GameObject
                                         session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                                         session.SendPackets(session.Character.GenerateScP());
                                         session.SendPackets(session.Character.GenerateScN());
+                                        mate.GenerateOut();
                                     }
                                 }
 
@@ -89,13 +90,11 @@ namespace OpenNos.GameObject
                                 Mate mate = new Mate(session.Character, (short)box.HoldingVNum, 1, MateType.Pet);
                                 mate.Attack = box.SpDamage;
                                 mate.Defence = box.SpDefence;
-                                session.Character.Mates.Add(mate);
-                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
-                                session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
-                                session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                                session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
-                                session.SendPackets(session.Character.GenerateScP());
-                                session.SendPackets(session.Character.GenerateScN());
+                                if (session.Character.AddPet(mate))
+                                {
+                                    session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
+                                }
                             }
                         }
                     }
