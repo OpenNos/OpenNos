@@ -38,6 +38,68 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
+                case 0:
+                    if (!delay)
+                    {
+                        if (packetsplit.Length == 9)
+                        {
+                            BoxInstance box = session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot, InventoryType.Equipment);
+                            if (box != null)
+                            {
+                                if (box.HoldingVNum == 0)
+                                {
+                                    session.SendPacket($"qna #guri^300^8023^{inv.Slot}^{packetsplit[3]} {Language.Instance.GetMessageFromKey("ASK_STORE_PET")}");
+                                }
+                                else
+                                {
+                                    session.SendPacket($"qna #guri^300^8023^{inv.Slot} {Language.Instance.GetMessageFromKey("ASK_RELEASE_PET")}");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //u_i 2 2000000 0 21 0 0
+                        BoxInstance box = session.Character.Inventory.LoadBySlotAndType<BoxInstance>(inv.Slot, InventoryType.Equipment);
+                        if (box != null)
+                        {
+                            if (box.HoldingVNum == 0)
+                            {
+                                if (packetsplit.Length == 1)
+                                {
+                                    int PetId;
+                                    if (int.TryParse(packetsplit[0], out PetId))
+                                    {
+                                        Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == PetId);
+                                        box.HoldingVNum = mate.NpcMonsterVNum;
+                                        box.SpLevel = mate.Level;
+                                        box.SpDamage = mate.Attack;
+                                        box.SpDefence = mate.Defence;
+                                        session.Character.Mates.Remove(mate);
+                                        session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_STORED")));
+                                        session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
+                                        session.SendPackets(session.Character.GenerateScP());
+                                        session.SendPackets(session.Character.GenerateScN());
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                Mate mate = new Mate(session.Character, (short)box.HoldingVNum, 1, MateType.Pet);
+                                mate.Attack = box.SpDamage;
+                                mate.Defence = box.SpDefence;
+                                session.Character.Mates.Add(mate);
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
+                                session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_LEAVE_BEAD")));
+                                session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                                session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
+                                session.SendPackets(session.Character.GenerateScP());
+                                session.SendPackets(session.Character.GenerateScN());
+                            }
+                        }
+                    }
+                    break;
                 case 1:
                     if (!delay)
                     {

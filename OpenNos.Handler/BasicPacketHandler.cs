@@ -880,7 +880,14 @@ namespace OpenNos.Handler
                             ItemInstance box = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(slot, InventoryType.Equipment);
                             if (box != null)
                             {
-                                box.Item.Use(Session, ref box, true);
+                                if (packetsplit.Length == 6)
+                                {
+                                    box.Item.Use(Session, ref box, true, new string[] { packetsplit[5] });
+                                }
+                                else
+                                {
+                                    box.Item.Use(Session, ref box, true);
+                                }
                             }
                         }
                     }

@@ -200,6 +200,9 @@ namespace OpenNos.GameObject
                         // 5=fairy pearl
                         switch (subtype)
                         {
+                            case 0:
+                                return specialist.HoldingVNum == 0 ?
+    $"e_info 7 {ItemVNum} 0" : $"e_info 7 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} 100 {specialist.SpDamage} {specialist.SpDefence}";
                             case 2:
                                 Item spitem = ServerManager.GetItem(specialist.HoldingVNum);
                                 return specialist.HoldingVNum == 0 ?
