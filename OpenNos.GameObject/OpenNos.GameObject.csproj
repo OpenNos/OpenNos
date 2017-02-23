@@ -90,6 +90,7 @@
     <Compile Include="Event\INSTANTBATTLE\InstantBattle.cs" />
     <Compile Include="Event\LOD\LOD.cs" />
     <Compile Include="Event\MINILANDREFRESH\MinilandRefresh.cs" />
+    <Compile Include="Helpers\UserInterfaceHelper.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="Map\MonsterToSummon.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
@@ -328,7 +329,7 @@
     <Compile Include="Gift.cs" />
     <Compile Include="Mate.cs" />
     <Compile Include="Recipe.cs" />
-    <Compile Include="Map\MapObject.cs" />
+    <Compile Include="Map\MinilandObject.cs" />
     <Compile Include="Shop.cs" />
     <Compile Include="Item\Item.cs" />
     <Compile Include="Inventory.cs" />

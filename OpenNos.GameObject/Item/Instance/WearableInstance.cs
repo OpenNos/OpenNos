@@ -116,6 +116,118 @@ namespace OpenNos.GameObject
         {
             _random = new Random();
         }
+        public string GenerateEInfo()
+        {
+            EquipmentType equipmentslot = Item.EquipmentSlot;
+            ItemType itemType = Item.ItemType;
+            byte classe = Item.Class;
+            byte subtype = Item.ItemSubType;
+            DateTime test = ItemDeleteTime ?? DateTime.Now;
+            long time = ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0;
+            long seconds = IsBound ? time : Item.ItemValidTime;
+            if (seconds < 0)
+            {
+                seconds = 0;
+            }
+            switch (itemType)
+            {
+                case ItemType.Weapon:
+                    switch (equipmentslot)
+                    {
+                        case EquipmentType.MainWeapon:
+                            switch (classe)
+                            {
+                                case 4:
+                                    return $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0"; // -1 = {ShellEffectValue} {FirstShell}...
+                                case 8:
+                                    return $"e_info 5 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0";
+
+                                default:
+                                    return $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0";
+                            }
+                        case EquipmentType.SecondaryWeapon:
+                            switch (classe)
+                            {
+                                case 1:
+                                    return $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0";
+
+                                case 2:
+                                    return $"e_info 1 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0";
+
+                                default:
+                                    return $"e_info 0 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.DamageMinimum + DamageMinimum} {Item.DamageMaximum + DamageMaximum} {Item.HitRate + HitRate} {Item.CriticalLuckRate + CriticalLuckRate} {Item.CriticalRate + CriticalRate} {Ammo} {Item.MaximumAmmo} {Item.Price} -1 0 0 0";
+                            }
+                    }
+                    break;
+
+                case ItemType.Armor:
+                    return $"e_info 2 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.CloseDefence + CloseDefence} {Item.DistanceDefence + DistanceDefence} {Item.MagicDefence + MagicDefence} {Item.DefenceDodge + DefenceDodge} {Item.Price} -1 0 0 0";
+
+                case ItemType.Fashion:
+                    switch (equipmentslot)
+                    {
+                        case EquipmentType.CostumeHat:
+                            return $"e_info 3 {ItemVNum} {Item.LevelMinimum} {Item.CloseDefence + CloseDefence} {Item.DistanceDefence + DistanceDefence} {Item.MagicDefence + MagicDefence} {Item.DefenceDodge + DefenceDodge} {Item.FireResistance + FireResistance} {Item.WaterResistance + WaterResistance} {Item.LightResistance + LightResistance} {Item.DarkResistance + DarkResistance} {Item.Price} {(Item.ItemValidTime == 0 ? -1 : 0)} 2 {(Item.ItemValidTime == 0 ? -1 : seconds / 3600)}";
+
+                        case EquipmentType.CostumeSuit:
+                            return $"e_info 2 {ItemVNum} {Rare} {Upgrade} {(IsFixed ? 1 : 0)} {Item.LevelMinimum} {Item.CloseDefence + CloseDefence} {Item.DistanceDefence + DistanceDefence} {Item.MagicDefence + MagicDefence} {Item.DefenceDodge + DefenceDodge} {Item.Price} {(Item.ItemValidTime == 0 ? -1 : 0)} 1 {(Item.ItemValidTime == 0 ? -1 : seconds / 3600)}"; // 1 = IsCosmetic -1 = no shells
+
+                        default:
+                            return $"e_info 3 {ItemVNum} {Item.LevelMinimum} {Item.CloseDefence + CloseDefence} {Item.DistanceDefence + DistanceDefence} {Item.MagicDefence + MagicDefence} {Item.DefenceDodge + DefenceDodge} {Item.FireResistance + FireResistance} {Item.WaterResistance + WaterResistance} {Item.LightResistance + LightResistance} {Item.DarkResistance + DarkResistance} {Item.Price} {Upgrade} 0 -1"; // after Item.Price theres TimesConnected {(Item.ItemValidTime == 0 ? -1 : Item.ItemValidTime / (3600))}
+                    }
+
+                case ItemType.Jewelery:
+                    switch (equipmentslot)
+                    {
+                        case EquipmentType.Amulet:
+                            return $"e_info 4 {ItemVNum} {Item.LevelMinimum} {seconds * 10} 0 0 {Item.Price}";
+
+                        case EquipmentType.Fairy:
+                            return $"e_info 4 {ItemVNum} {Item.Element} {ElementRate + Item.ElementRate} 0 0 0 0 0"; // last IsNosmall
+
+                        default:
+                            return $"e_info 4 {ItemVNum} {Item.LevelMinimum} {Item.MaxCellonLvl} {Item.MaxCellon} {Cellon} {Item.Price}";
+                    }
+                case ItemType.Specialist:
+                    return $"e_info 8 {ItemVNum}";
+
+                case ItemType.Box:
+                    if (GetType() == typeof(BoxInstance))
+                    {
+                        BoxInstance specialist = (BoxInstance)this;
+
+                        // 0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl
+                        // 5=fairy pearl
+                        switch (subtype)
+                        {
+                            case 2:
+                                Item spitem = ServerManager.GetItem(specialist.HoldingVNum);
+                                return specialist.HoldingVNum == 0 ?
+                                    $"e_info 7 {ItemVNum} 0" :
+                                    $"e_info 7 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} {CharacterHelper.SPXPData[specialist.SpLevel - 1]} {Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
+
+                            case 4:
+                                return specialist.HoldingVNum == 0 ?
+                                    $"e_info 11 {ItemVNum} 0" :
+                                    $"e_info 11 {ItemVNum} 1 {specialist.HoldingVNum}";
+
+                            case 5:
+                                Item fairyitem = ServerManager.GetItem(specialist.HoldingVNum);
+                                return specialist.HoldingVNum == 0 ?
+                                    $"e_info 12 {ItemVNum} 0" :
+                                    $"e_info 12 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.ElementRate + fairyitem.ElementRate}";
+
+                            default:
+                                return $"e_info 8 {ItemVNum} {Design} {Rare}";
+                        }
+                    }
+                    return $"e_info 7 {ItemVNum} 0";
+
+                case ItemType.Shell:
+                    return $"e_info 4 {ItemVNum} {Item.LevelMinimum} {Rare} {Item.Price} 0"; // 0 = Number of effects
+            }
+            return string.Empty;
+        }
 
         public void RarifyItem(ClientSession session, RarifyMode mode, RarifyProtection protection,
             bool isCommand = false)
@@ -235,7 +347,7 @@ namespace OpenNos.GameObject
                     ItemInstance inventory = session?.Character.Inventory.GetItemInstanceById(Id);
                     if (inventory != null)
                     {
-                        session.SendPacket(session.Character.GenerateInventoryAdd(inventory, inventory.Type, inventory.Slot));
+                        session.SendPacket(inventory.GenerateInventoryAdd());
                     }
                     return;
                 }
@@ -339,13 +451,13 @@ namespace OpenNos.GameObject
                     {
                         session.Character.DeleteItemByItemInstanceId(Id);
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
                     }
                     else
                     {
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
-                        session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
+                        session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
                     }
                 }
             }
@@ -356,7 +468,7 @@ namespace OpenNos.GameObject
                 ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
                 if (inventory != null)
                 {
-                    session.SendPacket(session.Character.GenerateInventoryAdd(inventory, inventory.Type, inventory.Slot));
+                    session.SendPacket(inventory.GenerateInventoryAdd());
                 }
             }
         }
@@ -478,15 +590,15 @@ namespace OpenNos.GameObject
                         FireResistance += (short)(itemToSum.FireResistance + itemToSum.Item.FireResistance);
                         session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
                         session.SendPacket($"pdti 10 {ItemVNum} 1 27 {Upgrade} 0");
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                         session.SendPacket(session.Character.GenerateGuri(19, 1, 1324));
                         ItemInstance itemInstnace = session.Character.Inventory.GetItemInstanceById(Id);
-                        session.SendPacket(session.Character.GenerateInventoryAdd(itemInstnace,itemInstnace.Type, itemInstnace.Slot));
+                        session.SendPacket(itemInstnace.GenerateInventoryAdd());
                     }
                     else
                     {
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
                         session.SendPacket(session.Character.GenerateGuri(19, 1, 1332));
                         session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
@@ -652,65 +764,65 @@ namespace OpenNos.GameObject
                         if (protection == UpgradeProtection.None)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
-                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
                             session.Character.DeleteItemByItemInstanceId(Id);
                         }
                         else
                         {
-                            session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
+                            session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
-                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
                         }
                     }
                     else if (rnd < upfix[Upgrade])
                     {
-                        session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
+                        session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
                         wearable.IsFixed = true;
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                     }
                     else
                     {
-                        session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(CharacterId, 3005), session.Character.MapX, session.Character.MapY);
+                        session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(CharacterId, 3005), session.Character.MapX, session.Character.MapY);
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
                         wearable.Upgrade++;
                         session.Character.Family?.InsertFamilyLog(FamilyLogType.Upgrade, session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
-                        session.SendPacket(session.Character.GenerateInventoryAdd(wearable,  inventory.Type, inventory.Slot));
+                        session.SendPacket(wearable.GenerateInventoryAdd());
                     }
                 }
                 else
                 {
                     if (rnd < upfix[Upgrade])
                     {
-                        session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
+                        session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(CharacterId, 3004), session.Character.MapX, session.Character.MapY);
                         wearable.IsFixed = true;
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                     }
                     else if (rnd < upfail[Upgrade] + upfix[Upgrade])
                     {
                         if (protection == UpgradeProtection.None)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
-                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
                             session.Character.DeleteItemByItemInstanceId(Id);
                         }
                         else
                         {
-                            session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(session.Character.CharacterId, 3004), session.Character.MapX, session.Character.MapY);
+                            session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 3004), session.Character.MapX, session.Character.MapY);
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
-                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
                         }
                     }
                     else
                     {
-                        session.CurrentMapInstance.Broadcast(ServerManager.GenerateEff(session.Character.CharacterId, 3005), session.Character.MapX, session.Character.MapY);
+                        session.CurrentMapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 3005), session.Character.MapX, session.Character.MapY);
                         session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
                         wearable.Upgrade++;
                         session.Character.Family?.InsertFamilyLog(FamilyLogType.Upgrade, session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
-                        session.SendPacket(session.Character.GenerateInventoryAdd(wearable, inventory.Type, inventory.Slot));
+                        session.SendPacket(wearable.GenerateInventoryAdd());
                     }
                 }
                 session.SendPacket("shop_end 1");

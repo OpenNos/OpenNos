@@ -17,6 +17,7 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Buff.BCard;
+using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
 using System;
 using System.Collections.Concurrent;
@@ -199,7 +200,7 @@ namespace OpenNos.GameObject
                     Target = character.CharacterId;
                     if (!Monster.NoAggresiveIcon)
                     {
-                        character.Session.SendPacket(ServerManager.GenerateEff(MapMonsterId,5000,2));
+                        character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateEff(MapMonsterId,5000,2));
                     }
                     Path.Clear();
                 }
@@ -1013,7 +1014,7 @@ namespace OpenNos.GameObject
                 int castTime = 0;
                 if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                 {
-                    MapInstance.Broadcast(ServerManager.GenerateEff(MapMonsterId, npcMonsterSkill.Skill.CastEffect,2), MapX, MapY);
+                    MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(MapMonsterId, npcMonsterSkill.Skill.CastEffect,2), MapX, MapY);
                     castTime = npcMonsterSkill.Skill.CastTime * 100;
                 }
                 Observable.Timer(TimeSpan.FromMilliseconds(castTime))

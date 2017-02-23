@@ -15,6 +15,7 @@
 using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.Data;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -129,7 +130,7 @@ namespace OpenNos.GameObject
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay && MapInstance.NpcEffectActivated)
             {
-                MapInstance.Broadcast(ServerManager.GenerateEff(MapNpcId, Effect, 2), MapX, MapY);
+                MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(MapNpcId, Effect, 2), MapX, MapY);
                 LastEffect = DateTime.Now;
             }
 
@@ -202,7 +203,7 @@ namespace OpenNos.GameObject
 
                         if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                         {
-                            MapInstance.Broadcast(ServerManager.GenerateEff(MapNpcId, Effect, 2));
+                            MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(MapNpcId, Effect, 2));
                         }
 
                         monster.CurrentHp -= damage;

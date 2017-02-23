@@ -30,6 +30,7 @@ using OpenNos.GameObject.Buff.Indicators.SP3.Swordsman;
 using OpenNos.GameObject.Buff.Indicators.SP4.Archer;
 using OpenNos.GameObject.Buff.Indicators.SP4.Magician;
 using OpenNos.GameObject.Buff.Indicators.SP4.Swordsman;
+using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
 using System;
 using System.Collections.Generic;
@@ -77,7 +78,7 @@ namespace OpenNos.Handler
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
                 Session.SendPacket("cancel 0 0");
-                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACKNOW"), 0));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACKNOW"), 0));
                 return;
             }
             if (Session.Character.IsVehicled)
@@ -218,7 +219,7 @@ namespace OpenNos.Handler
                 if (Session.Character.LastTransform.AddSeconds(3) > DateTime.Now)
                 {
                     Session.SendPacket("cancel 0 0");
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
                     return;
                 }
                 if (Session.Character.IsVehicled)
@@ -287,7 +288,7 @@ namespace OpenNos.Handler
                         target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         target.SendPacket(target.Character.GenerateSay(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 11));
-                        target.SendPacket(target.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 0));
+                        target.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ACT4_PVP_DIE"), 0));
                         Observable.Timer(TimeSpan.FromMilliseconds(30000))
                                .Subscribe(
                                o =>
@@ -399,7 +400,7 @@ namespace OpenNos.Handler
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
                 Session.SendPacket("cancel 0 0");
-                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
                 return;
             }
 

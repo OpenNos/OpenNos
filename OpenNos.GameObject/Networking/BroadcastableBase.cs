@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -247,7 +248,7 @@ namespace OpenNos.GameObject
                                     }
                                     else
                                     {
-                                        sentPacket.Sender.SendPacket(sentPacket.Sender.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
+                                        sentPacket.Sender.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
                                     }
                                 }
                                 else

@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Threading;
 
@@ -34,7 +35,7 @@ namespace OpenNos.GameObject
 
         public void Regenerate(ClientSession session, Item item, string[] packetsplit = null)
         {
-            session.SendPacket(ServerManager.GenerateEff(session.Character.CharacterId, 6000));
+            session.SendPacket(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 6000));
             session.Character.FoodAmount++;
             session.Character.MaxFood = 0;
             session.Character.FoodHp += item.Hp / 5;

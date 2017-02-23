@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,7 +114,7 @@ namespace OpenNos.GameObject
                         break;
                     }
                 }
-                Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(null, inventory, slot));
+                Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory, slot));
                 return invcopy;
             }
             if (amount >= inv.Amount)
@@ -130,7 +131,7 @@ namespace OpenNos.GameObject
                         break;
                     }
                 }
-                Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(null, inventory, slot));
+                Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory, slot));
                 return invcopy;
             }
 
@@ -149,7 +150,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inv, inv.Type, inv.Slot));
+            Owner.Session.SendPacket(inv.GenerateInventoryAdd());
             return invcopy;
         }
 
@@ -196,7 +197,7 @@ namespace OpenNos.GameObject
                             newItem.Amount = (byte)(newItem.Amount < 0 ? 0 : newItem.Amount);
                             slot.Amount = (byte)max;
                             invlist.Add(slot);
-                            Owner.Session.SendPacket(Owner.GenerateInventoryAdd(slot, slot.Type, slot.Slot));
+                            Owner.Session.SendPacket(slot.GenerateInventoryAdd());
                         }
                     }
                 }
@@ -240,7 +241,7 @@ namespace OpenNos.GameObject
                     return null;
                 }
 
-                string inventoryPacket = Owner.GenerateInventoryAdd(itemInstance, type, slot);
+                string inventoryPacket = itemInstance.GenerateInventoryAdd();
                 if (!string.IsNullOrEmpty(inventoryPacket))
                 {
                     Owner.Session.SendPacket(inventoryPacket);
@@ -326,12 +327,12 @@ namespace OpenNos.GameObject
             {
                 MoveItem(inventory, InventoryType.Warehouse, slot, amount, NewSlot, out item, out itemdest);
                 Owner.Session.SendPacket(item != null
-                    ? Owner.Session.Character.GenerateInventoryAdd(item, inventory, item.Slot)
-                    : Owner.Session.Character.GenerateInventoryAdd(null, inventory, slot));
+                    ? item.GenerateInventoryAdd()
+                    : UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory, slot));
 
                 if (itemdest != null)
                 {
-                    Owner.Session.SendPacket(Owner.GenerateStash(itemdest, itemdest.Slot));
+                    Owner.Session.SendPacket(itemdest.GenerateStash());
                 }
             }
         }
@@ -371,12 +372,12 @@ namespace OpenNos.GameObject
                 itemdest.CharacterId = fhead.CharacterId;
                 DAOFactory.IteminstanceDAO.InsertOrUpdate(itemdest);
                 Owner.Session.SendPacket(item != null
-                    ? Owner.Session.Character.GenerateInventoryAdd(item, inventory, item.Slot)
-                    : Owner.Session.Character.GenerateInventoryAdd(null, inventory, slot));
+                    ? item.GenerateInventoryAdd()
+                    : UserInterfaceHelper.Instance.GenerateInventoryRemove( inventory, slot));
 
                 if (itemdest != null)
                 {
-                    Owner.Session.SendPacket(Owner.GenerateFStash(itemdest, itemdest.Slot));
+                    Owner.Session.SendPacket(itemdest.GenerateFStash());
                     Owner.Family?.InsertFamilyLog(FamilyLogType.WareHouseAdd, Owner.Name, message: $"{itemdest.ItemVNum}|{amount}");
                     DeleteById(itemdest.Id);
                 }
@@ -600,14 +601,14 @@ namespace OpenNos.GameObject
                             // amount completely removed
                             inventory.Amount -= (byte)remainingAmount;
                             remainingAmount = 0;
-                            Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inventory, inventory.Type, inventory.Slot));
+                            Owner.Session.SendPacket(inventory.GenerateInventoryAdd());
                         }
                         else
                         {
                             // amount partly removed
                             remainingAmount -= inventory.Amount;
                             DeleteById(inventory.Id);
-                            Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(null, inventory.Type, inventory.Slot));
+                            Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory.Type, inventory.Slot));
                         }
                     }
                     else
@@ -631,11 +632,11 @@ namespace OpenNos.GameObject
                     inv.Amount -= amount;
                     if (inv.Amount <= 0)
                     {
-                        Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(null, inv.Type, inv.Slot));
+                        Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove( inv.Type, inv.Slot));
                         Remove(inv.Id);
                         return;
                     }
-                    Owner.Session.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inv, inv.Type, inv.Slot));
+                    Owner.Session.SendPacket(inv.GenerateInventoryAdd());
                 }
             }
         }
@@ -666,7 +667,7 @@ namespace OpenNos.GameObject
 
                 // readd item to inventory
                 item.Slot = i;
-                Session.SendPacket(Session.Character.GenerateInventoryAdd(item, inventoryType, item.Slot));
+                Session.SendPacket(item.GenerateInventoryAdd());
                 this[item.Id] = item;
 
                 // increment slot
@@ -702,7 +703,7 @@ namespace OpenNos.GameObject
             {
                 for (short i = 0; i < DEFAULT_BACKPACK_SIZE; i++)
                 {
-                    Owner.Session.SendPacket(Owner.GenerateInventoryAdd(null, type, i));
+                    Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(type, i));
                 }
             }
         }

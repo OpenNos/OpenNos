@@ -297,6 +297,14 @@ namespace OpenNos.GameObject
             }
             return droppedItem;
         }
+        public string GetClock()
+        {
+            return $"evnt 1 0 {(int)((EndDate - DateTime.Now).TotalSeconds * 10)} 1";
+        }
+        public IEnumerable<string> GeneratePlayerShopOnMap()
+        {
+            return UserShops.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
+        }
 
         public void RemoveMapItem()
         {

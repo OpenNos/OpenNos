@@ -14,6 +14,7 @@
 
 using OpenNos.Core;
 using OpenNos.Domain;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Reactive.Linq;
 
@@ -52,8 +53,8 @@ namespace OpenNos.GameObject.Event
         {
             LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.SPAWNONLASTENTRY, 443);
             LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.MESSAGE, "df 2");
-            LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0));
-            LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(HornStay), EventActionType.MESSAGE, ServerManager.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0));
+            LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0));
+            LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(HornStay), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0));
             LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(HornStay), EventActionType.LOCK, true);
             LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(HornStay), EventActionType.UNSPAWN, 443);
         }
