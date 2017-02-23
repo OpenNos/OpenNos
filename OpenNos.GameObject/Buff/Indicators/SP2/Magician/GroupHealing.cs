@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
+﻿namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
 {
     public class GroupHealing : IndicatorBase
     {
+        #region Instantiation
+
         public GroupHealing(int Level)
         {
             Name = "Group Healing";
@@ -16,6 +12,11 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
 
             _level = Level;
         }
+
+        #endregion
+
+        #region Methods
+
         public override void Enable(ClientSession session)
         {
             base.Enable(session);
@@ -33,5 +34,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Magician
             session.SendPacket(session.Character.GenerateStat());
             Disable(session);
         }
+
+        #endregion
     }
 }

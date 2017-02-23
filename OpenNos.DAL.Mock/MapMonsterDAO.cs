@@ -30,6 +30,16 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
+        public bool DoesMonsterExist(int mapMonsterId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(IEnumerable<MapMonsterDTO> monsters)
+        {
+            throw new NotImplementedException();
+        }
+
         public MapMonsterDTO LoadById(int mapMonsterId)
         {
             return Container.SingleOrDefault(m => m.MapMonsterId == mapMonsterId);
@@ -38,16 +48,6 @@ namespace OpenNos.DAL.Mock
         public IEnumerable<MapMonsterDTO> LoadFromMap(short mapId)
         {
             return Container.Where(m => m.MapId == mapId);
-        }
-
-        public void Insert(IEnumerable<MapMonsterDTO> monsters)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool DoesMonsterExist(int mapMonsterId)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

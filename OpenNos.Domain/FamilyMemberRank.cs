@@ -39,7 +39,6 @@ namespace OpenNos.Domain
         LittleSon = 20,
         LittleDaughter = 21,
         MiddleLittleSon = 22,
-        MiddleLittleDaugter = 23,
-        
+        MiddleLittleDaugter = 23
     }
 }

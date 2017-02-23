@@ -34,14 +34,18 @@ namespace OpenNos.GameObject
             return list;
         }
 
-        public Schedule GetSchedule(XmlNode str)
+        private static Schedule GetSchedule(XmlNode str)
         {
-            Schedule result = new Schedule
+            if (str.Attributes != null)
             {
-                Event = (EventType)Enum.Parse(typeof(EventType), str.Attributes["event"].Value),
-                Time = TimeSpan.Parse(str.Attributes["time"].Value)
-            };
-            return result;
+                Schedule result = new Schedule
+                {
+                    Event = (EventType)Enum.Parse(typeof(EventType), str.Attributes["event"].Value),
+                    Time = TimeSpan.Parse(str.Attributes["time"].Value)
+                };
+                return result;
+            }
+            return null;
         }
 
         #endregion

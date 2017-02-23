@@ -18,7 +18,6 @@ using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,17 +52,6 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<CharacterRelationDTO> LoadAll()
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (CharacterRelation entity in context.CharacterRelation)
-                {
-                    yield return _mapper.Map<CharacterRelationDTO>(entity);
-                }
-            }
-        }
-
         public SaveResult InsertOrUpdate(ref CharacterRelationDTO relation)
         {
             try
@@ -90,6 +78,33 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<CharacterRelationDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (CharacterRelation entity in context.CharacterRelation)
+                {
+                    yield return _mapper.Map<CharacterRelationDTO>(entity);
+                }
+            }
+        }
+
+        public CharacterRelationDTO LoadById(long relId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<CharacterRelationDTO>(context.CharacterRelation.FirstOrDefault(s => s.CharacterRelationId.Equals(relId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
+        }
+
         private CharacterRelationDTO Insert(CharacterRelationDTO relation, OpenNosContext context)
         {
             CharacterRelation entity = _mapper.Map<CharacterRelation>(relation);
@@ -107,23 +122,6 @@ namespace OpenNos.DAL.EF
             }
 
             return _mapper.Map<CharacterRelationDTO>(entity);
-        }
-
-        public CharacterRelationDTO LoadById(long relId)
-        {
-             try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    return _mapper.Map<CharacterRelationDTO>(context.CharacterRelation.FirstOrDefault(s => s.CharacterRelationId.Equals(relId)));
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return null;
-            }
-            
         }
 
         #endregion

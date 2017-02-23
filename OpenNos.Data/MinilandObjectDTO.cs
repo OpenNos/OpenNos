@@ -14,8 +14,6 @@
 
 using OpenNos.Data;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -24,6 +22,8 @@ namespace OpenNos.GameObject
         #region Properties
 
         public long CharacterId { get; set; }
+
+        public Guid? ItemInstanceId { get; set; }
 
         public byte Level1BoxAmount { get; set; }
 
@@ -40,8 +40,6 @@ namespace OpenNos.GameObject
         public short MapY { get; set; }
 
         public long MinilandObjectId { get; set; }
-
-        public Guid? ItemInstanceId { get; set; }
 
         #endregion
     }

@@ -12,13 +12,14 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL.EF.Entities;
+using OpenNos.Domain;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace OpenNos.DAL.EF
 {
-    using Domain;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-
     public class NpcMonster
     {
         #region Instantiation
@@ -29,6 +30,7 @@ namespace OpenNos.DAL.EF
             MapMonster = new HashSet<MapMonster>();
             MapNpc = new HashSet<MapNpc>();
             NpcMonsterSkill = new HashSet<NpcMonsterSkill>();
+            Mate = new HashSet<Mate>();
             MonsterType = MonsterType.Unknown;
         }
 
@@ -95,6 +97,8 @@ namespace OpenNos.DAL.EF
         public virtual ICollection<MapMonster> MapMonster { get; set; }
 
         public virtual ICollection<MapNpc> MapNpc { get; set; }
+
+        public virtual ICollection<Mate> Mate { get; set; }
 
         public int MaxHP { get; set; }
 

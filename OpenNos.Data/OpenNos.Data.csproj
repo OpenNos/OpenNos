@@ -57,6 +57,7 @@
     <Compile Include="CharacterRelationDTO.cs" />
     <Compile Include="ComboDTO.cs" />
     <Compile Include="DropDTO.cs" />
+    <Compile Include="MateDTO.cs" />
     <Compile Include="FamilyCharacterDTO.cs" />
     <Compile Include="FamilyDTO.cs" />
     <Compile Include="FamilyLogDTO.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Interfaces\IItemInstance.cs" />
     <Compile Include="Interfaces\ISpecialistInstance.cs" />
     <Compile Include="Interfaces\IWearableInstance.cs" />
+    <Compile Include="ItemCardDTO.cs" />
     <Compile Include="MailDTO.cs" />
     <Compile Include="MapMonsterDTO.cs" />
     <Compile Include="MapNpcDTO.cs" />

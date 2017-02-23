@@ -44,7 +44,6 @@ namespace OpenNos.GameObject
 
         private bool _isSleepingRequest;
 
-        
         #endregion
 
         #region Instantiation
@@ -133,7 +132,7 @@ namespace OpenNos.GameObject
 
         public Dictionary<long, MapShop> UserShops { get; }
 
-        public int XpRate { get; set; }  
+        public int XpRate { get; set; }
 
         #endregion
 
@@ -218,7 +217,6 @@ namespace OpenNos.GameObject
             return UserShops.Select(shop => $"shop 1 {shop.Value.OwnerId} 1 3 0 {shop.Value.Name}").ToList();
         }
 
-      
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
             return _monsters.GetAllItems().Where(s => s.IsAlive && s.IsInRange(mapX, mapY, distance)).ToList();
@@ -299,6 +297,14 @@ namespace OpenNos.GameObject
             }
             return droppedItem;
         }
+        public string GetClock()
+        {
+            return $"evnt 1 0 {(int)((EndDate - DateTime.Now).TotalSeconds * 10)} 1";
+        }
+        public IEnumerable<string> GeneratePlayerShopOnMap()
+        {
+            return UserShops.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
+        }
 
         public void RemoveMapItem()
         {
@@ -350,7 +356,7 @@ namespace OpenNos.GameObject
                  s.CurrentHp = 0;
                  s.CurrentMp = 0;
                  s.Death = DateTime.Now;
-                 Broadcast(s.GenerateOut3());
+                 Broadcast(s.GenerateOut());
              });
         }
 
@@ -358,7 +364,7 @@ namespace OpenNos.GameObject
         {
             portal.SourceMapInstanceId = MapInstanceId;
             _portals.Add(portal);
-            Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.SendPacket(s.Character.GenerateGp(portal)));
+            Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.SendPacket(s.CurrentMapInstance.GenerateGp(portal)));
         }
 
         internal IEnumerable<Character> GetCharactersInRange(short mapX, short mapY, byte distance)
@@ -445,7 +451,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case EventActionType.SPAWNONLASTENTRY:
-                        
+
                         //TODO REVIEW THIS CASE
                         Character lastincharacter = Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
                         List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
@@ -473,7 +479,7 @@ namespace OpenNos.GameObject
                     monster.Initialize(this);
                     monster.StartLife();
                     AddMonster(monster);
-                    Broadcast(monster.GenerateIn3());
+                    Broadcast(monster.GenerateIn());
                     ids.Add(monster.MapMonsterId);
                 }
             }
@@ -487,6 +493,11 @@ namespace OpenNos.GameObject
             {
                 _monsters.Dispose();
             }
+        }
+
+        public string GenerateGp(Portal portal)
+        { 
+            return $"gp {portal.SourceX} {portal.SourceY} {ServerManager.GetMapInstance(portal.DestinationMapInstanceId)?.Map.MapId} {portal.Type} {Portals.Count} {(Portals.Contains(portal) ? (portal.IsDisabled ? 1 : 0) : 1)}";
         }
 
         #endregion

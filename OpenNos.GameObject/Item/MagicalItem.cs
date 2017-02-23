@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Helpers;
 using System;
 
 namespace OpenNos.GameObject
@@ -39,7 +40,7 @@ namespace OpenNos.GameObject
                 case 0:
                     if (ItemType == ItemType.Event)
                     {
-                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(EffectValue));
+                        session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, EffectValue));
                         if (MappingHelper.GuriItemEffects.ContainsKey(EffectValue))
                         {
                             session.CurrentMapInstance?.Broadcast(session.Character.GenerateGuri(19, 1, MappingHelper.GuriItemEffects[EffectValue]), session.Character.MapX, session.Character.MapY);
@@ -67,7 +68,7 @@ namespace OpenNos.GameObject
                             case 0:
                                 if (!delay)
                                 {
-                                    session.SendPacket(session.Character.GenerateDialog($"#u_i^{x1}^{x2}^{x3}^{x4}^1 #u_i^{x1}^{x2}^{x3}^{x4}^2 {Language.Instance.GetMessageFromKey("WANT_TO_SAVE_POSITION")}"));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#u_i^{x1}^{x2}^{x3}^{x4}^1 #u_i^{x1}^{x2}^{x3}^{x4}^2 {Language.Instance.GetMessageFromKey("WANT_TO_SAVE_POSITION")}"));
                                 }
                                 else
                                 {
@@ -76,11 +77,11 @@ namespace OpenNos.GameObject
                                         switch (x5)
                                         {
                                             case 1:
-                                                session.SendPacket(session.Character.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^3"));
+                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^3"));
                                                 break;
 
                                             case 2:
-                                                session.SendPacket(session.Character.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^4"));
+                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^4"));
                                                 break;
 
                                             case 3:
@@ -117,12 +118,12 @@ namespace OpenNos.GameObject
                                         case 0:
                                             if (resp.DefaultX != 0 && resp.DefaultY != 0 && resp.DefaultMapId != 0)
                                             {
-                                                session.SendPacket(session.Character.GenerateRp(resp.DefaultMapId, resp.DefaultX, resp.DefaultY, $"#u_i^{x1}^{x2}^{x3}^{x4}^1"));
+                                                session.SendPacket(UserInterfaceHelper.Instance.GenerateRp(resp.DefaultMapId, resp.DefaultX, resp.DefaultY, $"#u_i^{x1}^{x2}^{x3}^{x4}^1"));
                                             }
                                             break;
 
                                         case 1:
-                                            session.SendPacket(session.Character.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^2"));
+                                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^2"));
                                             break;
 
                                         case 2:
@@ -136,10 +137,11 @@ namespace OpenNos.GameObject
                                     }
                                 }
                                 break;
+
                             case 2:
                                 if (!delay)
                                 {
-                                    session.SendPacket(session.Character.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^1"));
+                                    session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^1"));
                                 }
                                 else
                                 {
@@ -173,7 +175,7 @@ namespace OpenNos.GameObject
                         {
                             if (session.Character.Class == (byte)ClassType.Adventurer && EffectValue > 1)
                             {
-                                session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
+                                session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
                                 return;
                             }
                             session.Character.HairStyle = Enum.IsDefined(typeof(HairStyleType), (byte)EffectValue) ? (HairStyleType)EffectValue : 0;
@@ -195,7 +197,7 @@ namespace OpenNos.GameObject
                             session.Character.Dignity = 100;
                         }
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff(49 - session.Character.Faction));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 49 - session.Character.Faction));
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -204,7 +206,7 @@ namespace OpenNos.GameObject
                     {
                         session.Character.Dignity = 100;
                         session.SendPacket(session.Character.GenerateFd());
-                        session.SendPacket(session.Character.GenerateEff(49 - session.Character.Faction));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 49 - session.Character.Faction));
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
@@ -249,7 +251,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"), 0));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"), 0));
                         }
                     }
                     break;

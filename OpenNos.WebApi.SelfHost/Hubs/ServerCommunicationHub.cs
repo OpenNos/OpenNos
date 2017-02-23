@@ -33,30 +33,7 @@ namespace OpenNos.WebApi.SelfHost
                 return false;
             }
         }
-        /// <summary>
-        /// Refresh Relation
-        /// </summary>
-        public void RelationRefresh(string worldgroup, long id)
-        {
-            Clients.All.refreshRelation(worldgroup, id);
-        }
-        /// <summary>
-        /// Refresh Relation
-        /// </summary>
-        public void PenaltyLogRefresh(int id)
-        {
-            Clients.All.refreshPenaltyLog(id);
-        }
 
-
-        /// <summary>
-        /// Refresh Family
-        /// </summary>
-        public void FamilyRefresh(string worldgroup, long FamilyId)
-        {
-
-            Clients.All.refreshFamily(worldgroup, FamilyId);
-        }
         /// <summary>
         /// Refresh Bazaar
         /// </summary>
@@ -64,7 +41,12 @@ namespace OpenNos.WebApi.SelfHost
         {
             Clients.All.refreshBazaar(worldgroup, BazaarItemId);
         }
-     
+
+        public bool CharacterIsConnected(string worldgroup, long CharacterId)
+        {
+            return ServerCommunicationHelper.Instance.WorldserverGroups.FirstOrDefault(s => s.GroupName == worldgroup).Servers.Any(c => c.ConnectedCharacters.ContainsValue(CharacterId));
+        }
+
         /// <summary>
         /// Cleanup hold Data, this is for restarting the server
         /// </summary>
@@ -191,6 +173,14 @@ namespace OpenNos.WebApi.SelfHost
         }
 
         /// <summary>
+        /// Refresh Family
+        /// </summary>
+        public void FamilyRefresh(string worldgroup, long FamilyId)
+        {
+            Clients.All.refreshFamily(worldgroup, FamilyId);
+        }
+
+        /// <summary>
         /// Checks if the Account is allowed to login, removes the permission to login
         /// </summary>
         /// <param name="accountName">Name of the Account.</param>
@@ -215,37 +205,6 @@ namespace OpenNos.WebApi.SelfHost
             }
 
             return false;
-        }
-
-        public bool CharacterIsConnected(string worldgroup, long CharacterId)
-        {
-            return ServerCommunicationHelper.Instance.WorldserverGroups.FirstOrDefault(s => s.GroupName == worldgroup).Servers.Any(c => c.ConnectedCharacters.ContainsValue(CharacterId));
-        }
-
-        public IEnumerable<string> RetrieveServerStatistics()
-        {
-            List<string> result = new List<string>();
-            try
-            {
-                foreach (WorldserverGroupDTO servergroup in ServerCommunicationHelper.Instance.WorldserverGroups)
-                {
-                    int serverSessionAmount = 0;
-                    foreach (WorldserverDTO world in servergroup.Servers)
-                    {
-                        int channelSessionAmount = world.ConnectedAccounts.Count();
-                        serverSessionAmount += channelSessionAmount;
-                        result.Add($"Channel{world.ChannelId}: {channelSessionAmount} sessions.");
-                    }
-
-                    result.Add($"Server {servergroup.GroupName}: {serverSessionAmount} sessions.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.Error("Error while retriving server statistics.", ex);
-            }
-
-            return result;
         }
 
         /// <summary>
@@ -284,6 +243,14 @@ namespace OpenNos.WebApi.SelfHost
             {
                 Logger.Log.Error("General Error", ex);
             }
+        }
+
+        /// <summary>
+        /// Refresh Relation
+        /// </summary>
+        public void PenaltyLogRefresh(int id)
+        {
+            Clients.All.refreshPenaltyLog(id);
         }
 
         /// <summary>
@@ -357,6 +324,14 @@ namespace OpenNos.WebApi.SelfHost
         }
 
         /// <summary>
+        /// Refresh Relation
+        /// </summary>
+        public void RelationRefresh(string worldgroup, long id)
+        {
+            Clients.All.refreshRelation(worldgroup, id);
+        }
+
+        /// <summary>
         /// Build the channel packets
         /// </summary>
         /// <param name="sessionId"></param>
@@ -385,10 +360,33 @@ namespace OpenNos.WebApi.SelfHost
                 }
                 return channelPacket;
             }
-            else
+            return null;
+        }
+
+        public IEnumerable<string> RetrieveServerStatistics()
+        {
+            List<string> result = new List<string>();
+            try
             {
-                return null;
+                foreach (WorldserverGroupDTO servergroup in ServerCommunicationHelper.Instance.WorldserverGroups)
+                {
+                    int serverSessionAmount = 0;
+                    foreach (WorldserverDTO world in servergroup.Servers)
+                    {
+                        int channelSessionAmount = world.ConnectedAccounts.Count();
+                        serverSessionAmount += channelSessionAmount;
+                        result.Add($"Channel{world.ChannelId}: {channelSessionAmount} sessions.");
+                    }
+
+                    result.Add($"Server {servergroup.GroupName}: {serverSessionAmount} sessions.");
+                }
             }
+            catch (Exception ex)
+            {
+                Logger.Log.Error("Error while retriving server statistics.", ex);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -407,18 +405,18 @@ namespace OpenNos.WebApi.SelfHost
                     Clients.All.sendMessageToCharacter(worldgroup, sourceCharacterName, characterName, messagePacket, fromChannel, messageType);
                     return worldserver.ChannelId;
                 }
-                else if (messageType == MessageType.Shout)
+                if (messageType == MessageType.Shout)
                 {
                     //send to all registered worlds
                     Clients.All.sendMessageToCharacter("*", sourceCharacterName, characterName, messagePacket, fromChannel, messageType);
                     return null;
                 }
-                else if (messageType == MessageType.Family)
+                if (messageType == MessageType.Family)
                 {
                     Clients.All.sendMessageToCharacter(worldgroup, sourceCharacterName, characterName, messagePacket, fromChannel, messageType);
                     return null;
                 }
-                else if (messageType == MessageType.FamilyChat)
+                if (messageType == MessageType.FamilyChat)
                 {
                     Clients.All.sendMessageToCharacter(worldgroup, sourceCharacterName, characterName, messagePacket, fromChannel, messageType);
                     return null;

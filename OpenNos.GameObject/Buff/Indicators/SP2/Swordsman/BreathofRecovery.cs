@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenNos.GameObject.Buff.Indicators.SP2.Swordsman
+﻿namespace OpenNos.GameObject.Buff.Indicators.SP2.Swordsman
 {
     public class BreathofRecovery : IndicatorBase
     {
+        #region Instantiation
+
         public BreathofRecovery(int Level)
         {
             Name = "Breath of Recovery";
@@ -16,6 +12,11 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Swordsman
 
             _level = Level;
         }
+
+        #endregion
+
+        #region Methods
+
         public override void Enable(ClientSession session)
         {
             base.Enable(session);
@@ -44,5 +45,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP2.Swordsman
             session.SendPacket(session.Character.GenerateStat());
             Disable(session);
         }
+
+        #endregion
     }
 }

@@ -12,20 +12,33 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 
-namespace OpenNos.GameObject
+namespace OpenNos.DAL.Mock
 {
-
-    public class MinilandObject : MinilandObjectDTO
+    public class MateDAO : BaseDAO<MateDTO>, IMateDAO
     {
-        public ItemInstance ItemInstance;
+        #region Methods
 
-        public MinilandObject()
+        public DeleteResult Delete(long id)
         {
-
+            throw new NotImplementedException();
         }
+
+        public SaveResult InsertOrUpdate(ref MateDTO mate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<MateDTO> LoadByCharacterId(long characterId)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

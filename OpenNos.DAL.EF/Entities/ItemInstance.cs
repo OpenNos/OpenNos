@@ -12,13 +12,12 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenNos.DAL.EF
 {
-    using System;
-    using System.ComponentModel.DataAnnotations.Schema;
-
     public class ItemInstance : SynchronizableBaseEntity
     {
         #region Instantiation
@@ -36,8 +35,6 @@ namespace OpenNos.DAL.EF
         public int Amount { get; set; }
 
         public virtual ICollection<BazaarItem> BazaarItem { get; set; }
-
-        public virtual ICollection<MinilandObject> MinilandObject { get; set; }
 
         public long? BazaarItemId { get; set; }
 
@@ -61,6 +58,8 @@ namespace OpenNos.DAL.EF
 
         public short ItemVNum { get; set; }
 
+        public virtual ICollection<MinilandObject> MinilandObject { get; set; }
+
         public short Rare { get; set; }
 
         [Index("IX_SlotAndType", 2, IsUnique = false, Order = 1)]
@@ -70,7 +69,6 @@ namespace OpenNos.DAL.EF
         public byte Type { get; set; }
 
         public byte Upgrade { get; set; }
-        
 
         #endregion
     }

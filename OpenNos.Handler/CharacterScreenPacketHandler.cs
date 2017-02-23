@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Text.RegularExpressions;
 
 namespace OpenNos.Handler
 {
@@ -56,7 +57,7 @@ namespace OpenNos.Handler
             {
                 if (characterName.Length > 3 && characterName.Length < 15)
                 {
-                    System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B]*$");
+                    Regex rg = new Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B]*$");
                     int isIllegalCharacter = rg.Matches(characterName).Count;
 
                     if (isIllegalCharacter == 1)
@@ -80,13 +81,14 @@ namespace OpenNos.Handler
                                 MapX = (short)ServerManager.RandomNumber(78, 81),
                                 MapY = (short)ServerManager.RandomNumber(114, 118),
                                 Mp = 221,
+                                MaxMateCount = 10,
                                 SpPoint = 10000,
                                 SpAdditionPoint = 0,
                                 Name = characterName,
                                 Slot = slot,
                                 AccountId = accountId,
                                 MinilandMessage = "Welcome",
-                                State = CharacterState.Active,
+                                State = CharacterState.Active
                             };
 
                             SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
@@ -104,7 +106,7 @@ namespace OpenNos.Handler
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Q2 = 1,
-                                Slot = 2,
+                                Slot = 2
                             };
                             QuicklistEntryDTO qlst3 = new QuicklistEntryDTO
                             {
@@ -137,7 +139,7 @@ namespace OpenNos.Handler
                                 Slot = (byte)EquipmentType.MainWeapon,
                                 Type = InventoryType.Wear,
                                 Amount = 1,
-                                ItemVNum = 1,
+                                ItemVNum = 1
                             };
                             startupInventory.Add(inventory);
 
@@ -262,8 +264,8 @@ namespace OpenNos.Handler
                                 AccountId = account.AccountId,
                                 Name = account.Name,
                                 Password = account.Password.ToLower(),
-                                Authority = account.Authority,
-                        };
+                                Authority = account.Authority
+                            };
                             accountobject.Initialize();
 
                             Session.InitializeAccount(accountobject);
@@ -305,9 +307,16 @@ namespace OpenNos.Handler
                     WearableInstance currentInstance = equipmentEntry as WearableInstance;
                     equipment[(short)currentInstance.Item.EquipmentSlot] = currentInstance;
                 }
+                string petlist = string.Empty;
+                List<MateDTO> mates = DAOFactory.MateDAO.LoadByCharacterId(character.CharacterId).ToList();
+                for (int i = 0; i < 26; i++)
+                {
+                    //0.2105.1102.319.0.632.0.333.0.318.0.317.0.9.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1
+                    petlist += $"{(i != 0 ? "." : "")}{(mates.Count > i ? $"0.{mates.ElementAt(i).NpcMonsterVNum}" : "-1")}";
+                }
 
                 // 1 1 before long string of -1.-1 = act completion
-                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {equipment[(byte)EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte)EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte)EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 -1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1 {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
+                Session.SendPacket($"clist {character.Slot} {character.Name} 0 {(byte)character.Gender} {(byte)character.HairStyle} {(byte)character.HairColor} 0 {(byte)character.Class} {character.Level} {character.HeroLevel} {equipment[(byte)EquipmentType.Hat]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Armor]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.WeaponSkin]?.ItemVNum ?? (equipment[(byte)EquipmentType.MainWeapon]?.ItemVNum ?? -1)}.{equipment[(byte)EquipmentType.SecondaryWeapon]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Mask]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.Fairy]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeSuit]?.ItemVNum ?? -1}.{equipment[(byte)EquipmentType.CostumeHat]?.ItemVNum ?? -1} {character.JobLevel}  1 1 {petlist} {(equipment[(byte)EquipmentType.Hat] != null && equipment[(byte)EquipmentType.Hat].Item.IsColored ? equipment[(byte)EquipmentType.Hat].Design : 0)} 0");
             }
             Session.SendPacket("clist_end");
         }
@@ -317,20 +326,20 @@ namespace OpenNos.Handler
         {
             try
             {
-                 Logger.Debug(Session.GenerateIdentity(), packet);
+                Logger.Debug(Session.GenerateIdentity(), packet);
                 if (Session?.Account != null && !Session.HasSelectedCharacter)
                 {
                     string[] packetsplit = packet.Split(' ');
                     Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2])) as Character;
                     if (character != null)
                     {
-                        character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s=>s.CharacterId == character.CharacterId).ToList();
-                        character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId((short)character.MapId);
+                        character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
+                        character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(character.MapId);
                         character.PositionX = character.MapX;
                         character.PositionY = character.MapY;
                         character.Authority = Session.Account.Authority;
                         Session.SetCharacter(character);
-                        if (!Session.Character.GeneralLogs.Any(s=> s.Timestamp == DateTime.Now && s.LogData == "World" && s.LogType == "Connection" ))
+                        if (!Session.Character.GeneralLogs.Any(s => s.Timestamp == DateTime.Now && s.LogData == "World" && s.LogType == "Connection"))
                         {
                             Session.Character.SpAdditionPoint += Session.Character.SpPoint;
                             Session.Character.SpPoint = 10000;
@@ -348,6 +357,14 @@ namespace OpenNos.Handler
                         Session.Character.LoadInventory();
                         Session.Character.LoadQuicklists();
                         Session.Character.GenerateMiniland();
+                        DAOFactory.MateDAO.LoadByCharacterId(Session.Character.CharacterId).ToList().ForEach(s =>
+                        {
+                            Mate mate = (Mate)s;
+                            mate.Owner = Session.Character;
+                            mate.GetMateTransportId();
+                            mate.Monster = ServerManager.GetNpc(s.NpcMonsterVNum);
+                            Session.Character.Mates.Add(mate);
+                        });
                         Observable.Interval(TimeSpan.FromMilliseconds(300)).Subscribe(x =>
                         {
                             Session.Character.CharacterLife();

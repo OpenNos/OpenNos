@@ -28,7 +28,7 @@ namespace OpenNos.DAL.EF
     {
         #region Methods
 
-      public void Insert(List<RespawnMapTypeDTO> respawnMapType)
+        public void Insert(List<RespawnMapTypeDTO> respawnMapType)
         {
             try
             {

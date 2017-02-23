@@ -1,29 +1,11 @@
+using System.Data.Entity.Migrations;
+
 namespace OpenNos.DAL.EF.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class Aphrodite17 : DbMigration
     {
-        public override void Up()
-        {
-            CreateTable(
-                "dbo.StaticBuff",
-                c => new
-                    {
-                        StaticBuffId = c.Long(nullable: false, identity: true),
-                        CharacterId = c.Long(nullable: false),
-                        EffectId = c.Int(nullable: false),
-                        RemainingTime = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.StaticBuffId)
-                .ForeignKey("dbo.Character", t => t.CharacterId)
-                .Index(t => t.CharacterId);
-            
-            AddColumn("dbo.Character", "MinilandState", c => c.Byte(nullable: false));
-            AddColumn("dbo.Character", "MinilandMessage", c => c.String(maxLength: 255));
-        }
-        
+        #region Methods
+
         public override void Down()
         {
             DropForeignKey("dbo.StaticBuff", "CharacterId", "dbo.Character");
@@ -32,5 +14,26 @@ namespace OpenNos.DAL.EF.Migrations
             DropColumn("dbo.Character", "MinilandState");
             DropTable("dbo.StaticBuff");
         }
+
+        public override void Up()
+        {
+            CreateTable(
+                "dbo.StaticBuff",
+                c => new
+                {
+                    StaticBuffId = c.Long(nullable: false, identity: true),
+                    CharacterId = c.Long(nullable: false),
+                    EffectId = c.Int(nullable: false),
+                    RemainingTime = c.Int(nullable: false)
+                })
+                .PrimaryKey(t => t.StaticBuffId)
+                .ForeignKey("dbo.Character", t => t.CharacterId)
+                .Index(t => t.CharacterId);
+
+            AddColumn("dbo.Character", "MinilandState", c => c.Byte(nullable: false));
+            AddColumn("dbo.Character", "MinilandMessage", c => c.String(maxLength: 255));
+        }
+
+        #endregion
     }
 }

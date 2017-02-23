@@ -14,6 +14,7 @@
 
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,6 +24,11 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
+        public void Insert(List<MapNpcDTO> npcs)
+        {
+            throw new NotImplementedException();
+        }
+
         public MapNpcDTO LoadById(int mapNpcId)
         {
             return Container.SingleOrDefault(n => n.MapNpcId == mapNpcId);
@@ -31,11 +37,6 @@ namespace OpenNos.DAL.Mock
         public IEnumerable<MapNpcDTO> LoadFromMap(short mapId)
         {
             return Container.Where(n => n.MapId == mapId);
-        }
-
-        public void Insert(List<MapNpcDTO> npcs)
-        {
-            throw new System.NotImplementedException();
         }
 
         #endregion

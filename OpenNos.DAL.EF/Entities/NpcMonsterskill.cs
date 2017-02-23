@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.DAL.EF
 {
-    using System.ComponentModel.DataAnnotations;
-
     public class NpcMonsterSkill
     {
         #region Properties

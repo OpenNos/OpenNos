@@ -26,16 +26,16 @@ namespace OpenNos.DAL.EF
     {
         #region Methods
 
-        public void Insert(List<MapTypeMapDTO> maptypemaps)
+        public void Insert(List<MapTypeMapDTO> mapTypeMaps)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (MapTypeMapDTO MapTypeMap in maptypemaps)
+                    foreach (MapTypeMapDTO mapTypeMap in mapTypeMaps)
                     {
-                        MapTypeMap entity = _mapper.Map<MapTypeMap>(MapTypeMap);
+                        MapTypeMap entity = _mapper.Map<MapTypeMap>(mapTypeMap);
                         context.MapTypeMap.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;

@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Server;
-using System;
 using System.Collections.Generic;
 
 namespace OpenNos.Core
@@ -51,7 +51,7 @@ namespace OpenNos.Core
         {
             get
             {
-                return CommunicationState == Networking.Communication.Scs.Communication.CommunicationStates.Connected;
+                return CommunicationState == CommunicationStates.Connected;
             }
         }
 
@@ -68,7 +68,7 @@ namespace OpenNos.Core
 
         public void SendPacket(string packet, byte priority = 10)
         {
-            if (!IsDisposing)
+            if (!IsDisposing && packet != null)
             {
                 ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
 

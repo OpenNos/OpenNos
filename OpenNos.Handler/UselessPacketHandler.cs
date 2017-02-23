@@ -47,7 +47,7 @@ namespace OpenNos.Handler
         #endregion
 
         #region Methods
-        
+
         public void CClose(CClosePacket packet)
         {
             // idk

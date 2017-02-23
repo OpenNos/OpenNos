@@ -21,14 +21,6 @@ namespace OpenNos.GameObject
 {
     public class Recipe : RecipeDTO
     {
-        #region Instantiation
-
-        public Recipe()
-        {
-        }
-
-        #endregion
-
         #region Properties
 
         public List<RecipeItemDTO> Items { get; set; }
@@ -42,7 +34,7 @@ namespace OpenNos.GameObject
             Items = new List<RecipeItemDTO>();
             foreach (RecipeItemDTO rec in DAOFactory.RecipeItemDAO.LoadByRecipe(RecipeId).ToList())
             {
-                Items.Add(rec as RecipeItemDTO);
+                Items.Add(rec);
             }
         }
 

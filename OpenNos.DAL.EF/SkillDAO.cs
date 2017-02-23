@@ -33,9 +33,9 @@ namespace OpenNos.DAL.EF
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (SkillDTO Skill in skills)
+                    foreach (SkillDTO skill in skills)
                     {
-                        Skill entity = _mapper.Map<Skill>(Skill);
+                        Skill entity = _mapper.Map<Skill>(skill);
                         context.Skill.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;

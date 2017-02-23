@@ -27,8 +27,7 @@ namespace OpenNos.GameObject
         #region Members
 
         private readonly Random _random;
-        public bool ShopAllowed { get; set; }
-        public short MapId { get; set; }
+
         #endregion
 
         #region Instantiation
@@ -62,7 +61,6 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-
         }
 
         #endregion
@@ -77,16 +75,19 @@ namespace OpenNos.GameObject
 
         public StaticGrid Grid { get; set; }
 
+        public short MapId { get; set; }
+
         public List<MapTypeDTO> MapTypes { get; }
+
+        public int Music { get; set; }
 
         /// <summary>
         /// This list ONLY for READ access to MapMonster, you CANNOT MODIFY them here. Use
         /// Add/RemoveMonster instead.
         /// </summary>
-
-        public int Music { get; set; }
-
         public string Name { get; set; }
+
+        public bool ShopAllowed { get; set; }
 
         private int XLength { get; set; }
 
@@ -106,38 +107,6 @@ namespace OpenNos.GameObject
             return Math.Max(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
 
-        public bool IsBlockedZone(int x, int y)
-        {
-            if (Grid != null)
-            {
-                if (!Grid.IsWalkableAt(new GridPos(x, y)))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private bool IsBlockedZone(int firstX, int firstY, int mapX, int mapY)
-        {
-            for (int i = 1; i <= Math.Abs(mapX - firstX); i++)
-            {
-                if (IsBlockedZone(firstX + Math.Sign(mapX - firstX) * i, firstY))
-                {
-                    return true;
-                }
-            }
-
-            for (int i = 1; i <= Math.Abs(mapY - firstY); i++)
-            {
-                if (IsBlockedZone(firstX, firstY + Math.Sign(mapY - firstY) * i))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public static List<GridPos> JPSPlus(JumpPointParam JumpPointParameters, GridPos cell1, GridPos cell2)
         {
             if (JumpPointParameters != null)
@@ -148,37 +117,32 @@ namespace OpenNos.GameObject
             return new List<GridPos>();
         }
 
-        private void LoadZone()
+        public MapCell GetRandomPosition()
         {
-            using (Stream stream = new MemoryStream(Data))
+            List<MapCell> cells = new List<MapCell>();
+            for (short y = 0; y <= XLength; y++)
             {
-                const int numBytesToRead = 1;
-                const int numBytesRead = 0;
-                byte[] bytes = new byte[numBytesToRead];
-
-                byte[] xlength = new byte[2];
-                byte[] ylength = new byte[2];
-                stream.Read(bytes, numBytesRead, numBytesToRead);
-                xlength[0] = bytes[0];
-                stream.Read(bytes, numBytesRead, numBytesToRead);
-                xlength[1] = bytes[0];
-                stream.Read(bytes, numBytesRead, numBytesToRead);
-                ylength[0] = bytes[0];
-                stream.Read(bytes, numBytesRead, numBytesToRead);
-                ylength[1] = bytes[0];
-                YLength = BitConverter.ToInt16(ylength, 0);
-                XLength = BitConverter.ToInt16(xlength, 0);
-
-                Grid = new StaticGrid(XLength, YLength);
-                for (int i = 0; i < YLength; ++i)
+                for (short x = 0; x <= YLength; x++)
                 {
-                    for (int t = 0; t < XLength; ++t)
+                    if (!IsBlockedZone(x, y))
                     {
-                        stream.Read(bytes, numBytesRead, numBytesToRead);
-                        Grid.SetWalkableAt(new GridPos(t, i), bytes[0]);
+                        cells.Add(new MapCell { X = x, Y = y });
                     }
                 }
             }
+            return cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
+        }
+
+        public bool IsBlockedZone(int x, int y)
+        {
+            if (Grid != null)
+            {
+                if (!Grid.IsWalkableAt(new GridPos(x, y)))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
@@ -265,22 +229,58 @@ namespace OpenNos.GameObject
             return Path;
         }
 
-        public MapCell GetRandomPosition()
+        private bool IsBlockedZone(int firstX, int firstY, int mapX, int mapY)
         {
-            List<MapCell> cells = new List<MapCell>();
-            for (short y = 0; y <= XLength; y++)
+            for (int i = 1; i <= Math.Abs(mapX - firstX); i++)
             {
-                for (short x = 0; x <= YLength; x++)
+                if (IsBlockedZone(firstX + Math.Sign(mapX - firstX) * i, firstY))
                 {
-                    if(!IsBlockedZone(x,y))
-                    {
-                        cells.Add(new MapCell { X = x, Y = y });
-                    }  
+                    return true;
                 }
             }
-            return cells.OrderBy(s => _random.Next(int.MaxValue)).FirstOrDefault();
+
+            for (int i = 1; i <= Math.Abs(mapY - firstY); i++)
+            {
+                if (IsBlockedZone(firstX, firstY + Math.Sign(mapY - firstY) * i))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
+        private void LoadZone()
+        {
+            using (Stream stream = new MemoryStream(Data))
+            {
+                const int numBytesToRead = 1;
+                const int numBytesRead = 0;
+                byte[] bytes = new byte[numBytesToRead];
+
+                byte[] xlength = new byte[2];
+                byte[] ylength = new byte[2];
+                stream.Read(bytes, numBytesRead, numBytesToRead);
+                xlength[0] = bytes[0];
+                stream.Read(bytes, numBytesRead, numBytesToRead);
+                xlength[1] = bytes[0];
+                stream.Read(bytes, numBytesRead, numBytesToRead);
+                ylength[0] = bytes[0];
+                stream.Read(bytes, numBytesRead, numBytesToRead);
+                ylength[1] = bytes[0];
+                YLength = BitConverter.ToInt16(ylength, 0);
+                XLength = BitConverter.ToInt16(xlength, 0);
+
+                Grid = new StaticGrid(XLength, YLength);
+                for (int i = 0; i < YLength; ++i)
+                {
+                    for (int t = 0; t < XLength; ++t)
+                    {
+                        stream.Read(bytes, numBytesRead, numBytesToRead);
+                        Grid.SetWalkableAt(new GridPos(t, i), bytes[0]);
+                    }
+                }
+            }
+        }
 
         #endregion
     }

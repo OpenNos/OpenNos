@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IBazaarItemDAO.cs" />
+    <Compile Include="ICardDAO.cs" />
     <Compile Include="IFamilyCharacterDAO.cs" />
     <Compile Include="IFamilyDAO.cs" />
     <Compile Include="IFamilyLogDAO.cs" />
@@ -60,6 +61,8 @@
     <Compile Include="ICharacterRelationDAO.cs" />
     <Compile Include="IComboDAO.cs" />
     <Compile Include="IDropDAO.cs" />
+    <Compile Include="IItemCardDAO.cs" />
+    <Compile Include="IMate.cs" />
     <Compile Include="IMinilandObjectDAO.cs" />
     <Compile Include="IMappingBaseDAO.cs" />
     <Compile Include="IGeneralLogDAO.cs" />
@@ -84,6 +87,7 @@
     <Compile Include="IMapDAO.cs" />
     <Compile Include="INpcMonsterDAO.cs" />
     <Compile Include="IPortalDAO.cs" />
+    <Compile Include="ISkillCardDAO.cs" />
     <Compile Include="ISkillDAO.cs" />
     <Compile Include="IShopSkillDAO.cs" />
     <Compile Include="ICharacterSkillDAO.cs" />

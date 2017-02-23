@@ -37,11 +37,8 @@ namespace OpenNos.DAL.Mock
                 dto = account;
                 return SaveResult.Updated;
             }
-            else
-            {
-                Insert(account);
-                return SaveResult.Inserted;
-            }
+            Insert(account);
+            return SaveResult.Inserted;
         }
 
         public AccountDTO LoadById(long accountId)

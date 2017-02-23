@@ -13,8 +13,6 @@
  */
 
 using OpenNos.Domain;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace OpenNos.DAL.EF

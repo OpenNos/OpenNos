@@ -25,6 +25,7 @@ namespace OpenNos.DAL.EF
         public Card()
         {
             SkillCard = new HashSet<SkillCard>();
+            ItemCard = new HashSet<ItemCard>();
         }
 
         #endregion
@@ -39,7 +40,9 @@ namespace OpenNos.DAL.EF
 
         public int EffectId { get; set; }
 
-        public short FirstData { get; set; }
+        public int FirstData { get; set; }
+
+        public virtual ICollection<ItemCard> ItemCard { get; set; }
 
         public byte Level { get; set; }
 
@@ -50,13 +53,13 @@ namespace OpenNos.DAL.EF
 
         public byte Propability { get; set; }
 
-        public short SecondData { get; set; }
+        public int SecondData { get; set; }
 
         public virtual ICollection<SkillCard> SkillCard { get; set; }
 
         public byte SubType { get; set; }
 
-        public byte Type { get; set; }
+        public short Type { get; set; }
 
         #endregion
     }

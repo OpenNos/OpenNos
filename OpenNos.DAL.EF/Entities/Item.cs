@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace OpenNos.DAL.EF
 {
-    using Domain;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-
     /// <summary>
     /// Do Not forget to change Mapping in Item GO when changing this class
     /// </summary>
@@ -33,6 +33,7 @@ namespace OpenNos.DAL.EF
             Mail = new HashSet<Mail>();
             RecipeItem = new HashSet<RecipeItem>();
             ShopItem = new HashSet<ShopItem>();
+            ItemCard = new HashSet<ItemCard>();
         }
 
         #endregion
@@ -40,10 +41,6 @@ namespace OpenNos.DAL.EF
         #region Properties
 
         public byte BasicUpgrade { get; set; }
-
-        public byte Height { get; set; }
-
-        public byte Width { get; set; }
 
         public byte CellonLvl { get; set; }
 
@@ -89,6 +86,8 @@ namespace OpenNos.DAL.EF
 
         public short FireResistance { get; set; }
 
+        public byte Height { get; set; }
+
         public short HitRate { get; set; }
 
         public short Hp { get; set; }
@@ -112,6 +111,8 @@ namespace OpenNos.DAL.EF
         public bool IsSoldable { get; set; }
 
         public bool IsTradable { get; set; }
+
+        public virtual ICollection<ItemCard> ItemCard { get; set; }
 
         public virtual ICollection<ItemInstance> ItemInstances { get; set; }
 
@@ -141,6 +142,8 @@ namespace OpenNos.DAL.EF
 
         public byte MaximumAmmo { get; set; }
 
+        public int MinilandObjectPoint { get; set; }
+
         public short MoreHp { get; set; }
 
         public short MoreMp { get; set; }
@@ -157,8 +160,6 @@ namespace OpenNos.DAL.EF
         public long Price { get; set; }
 
         public short PvpDefence { get; set; }
-
-        public int MinilandObjectPoint { get; set; }
 
         public byte PvpStrength { get; set; }
 
@@ -193,6 +194,8 @@ namespace OpenNos.DAL.EF
         public byte WaterElement { get; set; }
 
         public short WaterResistance { get; set; }
+
+        public byte Width { get; set; }
 
         #endregion
     }

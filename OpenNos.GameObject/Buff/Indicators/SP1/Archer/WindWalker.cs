@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.GameObject.Buff.BCard;
+
 namespace OpenNos.GameObject.Buff.Indicators.SP1.Archer
 {
     public class WindWalker : IndicatorBase
@@ -24,7 +26,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP1.Archer
             Duration = 4200;
             Id = 75;
             _level = Level;
-            DirectBuffs.Add(new BCardEntry(BCard.Type.Speed, BCard.SubType.Increase, 2, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.Speed, SubType.Increase, 2, 0, false));
         }
 
         #endregion

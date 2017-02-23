@@ -14,6 +14,7 @@
 
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,6 +23,11 @@ namespace OpenNos.DAL.Mock
     public class MapTypeMapDAO : BaseDAO<MapTypeMapDTO>, IMapTypeMapDAO
     {
         #region Methods
+
+        public void Insert(List<MapTypeMapDTO> maptypemap)
+        {
+            throw new NotImplementedException();
+        }
 
         public MapTypeMapDTO LoadByMapAndMapType(short mapId, short maptypeId)
         {
@@ -36,11 +42,6 @@ namespace OpenNos.DAL.Mock
         public IEnumerable<MapTypeMapDTO> LoadByMapTypeId(short maptypeId)
         {
             return Container.Where(m => m.MapTypeId == maptypeId);
-        }
-
-        public void Insert(List<MapTypeMapDTO> maptypemap)
-        {
-            throw new System.NotImplementedException();
         }
 
         #endregion

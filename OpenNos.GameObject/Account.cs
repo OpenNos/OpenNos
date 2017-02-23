@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,14 +20,6 @@ namespace OpenNos.GameObject
 {
     public class Account : AccountDTO
     {
-        #region Instantiation
-
-        public Account()
-        {
-        }
-
-        #endregion
-
         #region Properties
 
         public List<PenaltyLogDTO> PenaltyLogs

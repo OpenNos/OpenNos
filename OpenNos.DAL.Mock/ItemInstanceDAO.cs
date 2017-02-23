@@ -39,11 +39,6 @@ namespace OpenNos.DAL.Mock
             throw new NotImplementedException();
         }
 
-        IList<Guid> IItemInstanceDAO.LoadSlotAndTypeByCharacterId(long characterId)
-        {
-            throw new NotImplementedException();
-        }
-
         public void InitializeMapper(Type baseType)
         {
             _baseType = baseType;
@@ -78,6 +73,11 @@ namespace OpenNos.DAL.Mock
             return Container.Where(i => i.CharacterId == characterId && i.Type == type);
         }
 
+        IList<Guid> IItemInstanceDAO.LoadSlotAndTypeByCharacterId(long characterId)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<Guid> LoadSlotAndTypeByCharacterId(long characterId)
         {
             return Container.Where(i => i.CharacterId == characterId).Select(c => c.Id);
@@ -91,7 +91,7 @@ namespace OpenNos.DAL.Mock
                 itemInstanceMappings.Add(gameObjectType, itemInstanceType);
             }
 
-            return (IMappingBaseDAO)this;
+            return this;
         }
 
         #endregion

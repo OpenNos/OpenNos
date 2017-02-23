@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL.EF.Entities;
+using OpenNos.Domain;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.DAL.EF
 {
-    using Domain;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
     public class Character
     {
         #region Instantiation
@@ -38,6 +38,7 @@ namespace OpenNos.DAL.EF
             Mail = new HashSet<Mail>();
             Mail1 = new HashSet<Mail>();
             MinilandObject = new HashSet<MinilandObject>();
+            Mate = new HashSet<Mate>();
         }
 
         #endregion
@@ -56,26 +57,22 @@ namespace OpenNos.DAL.EF
 
         public int ArenaWinner { get; set; }
 
+        public virtual ICollection<BazaarItem> BazaarItem { get; set; }
+
         [MaxLength(255)]
         public string Biography { get; set; }
 
         public bool BuffBlocked { get; set; }
 
-        public long CharacterId { get; set; }
+        public byte MaxMateCount { get; set; }
 
-        public virtual ICollection<MinilandObject> MinilandObject { get; set; }
+        public long CharacterId { get; set; }
 
         public virtual ICollection<CharacterRelation> CharacterRelation1 { get; set; }
 
         public virtual ICollection<CharacterRelation> CharacterRelation2 { get; set; }
 
-        public virtual ICollection<StaticBonus> StaticBonus { get; set; }
-
-        public virtual ICollection<StaticBuff> StaticBuff { get; set; }
-
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
-
-        public virtual ICollection<BazaarItem> BazaarItem { get; set; }
 
         public byte Class { get; set; }
 
@@ -89,12 +86,6 @@ namespace OpenNos.DAL.EF
 
         public int Faction { get; set; }
 
-        public MinilandState MinilandState { get; set; }
-
-        [MaxLength(255)]
-        public string MinilandMessage { get; set; }
-
-        public short MinilandPoint { get; set; }
         public virtual ICollection<FamilyCharacter> FamilyCharacter { get; set; }
 
         public bool FamilyRequestBlocked { get; set; }
@@ -149,7 +140,18 @@ namespace OpenNos.DAL.EF
 
         public int MasterTicket { get; set; }
 
+        public virtual ICollection<Mate> Mate { get; set; }
+
         public bool MinilandInviteBlocked { get; set; }
+
+        [MaxLength(255)]
+        public string MinilandMessage { get; set; }
+
+        public virtual ICollection<MinilandObject> MinilandObject { get; set; }
+
+        public short MinilandPoint { get; set; }
+
+        public MinilandState MinilandState { get; set; }
 
         public bool MouseAimLock { get; set; }
 
@@ -175,6 +177,10 @@ namespace OpenNos.DAL.EF
         public int SpPoint { get; set; }
 
         public byte State { get; set; }
+
+        public virtual ICollection<StaticBonus> StaticBonus { get; set; }
+
+        public virtual ICollection<StaticBuff> StaticBuff { get; set; }
 
         public int TalentLose { get; set; }
 

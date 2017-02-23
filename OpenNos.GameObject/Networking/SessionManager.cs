@@ -50,6 +50,19 @@ namespace OpenNos.GameObject
             }
         }
 
+        public virtual void StopServer()
+        {
+            _sessions.Clear();
+            ServerManager.StopServer();
+        }
+
+        protected virtual ClientSession IntializeNewSession(INetworkClient client)
+        {
+            ClientSession session = new ClientSession(client);
+            client.SetClientSession(session);
+            return session;
+        }
+
         protected void RemoveSession(INetworkClient client)
         {
             ClientSession session;
@@ -60,7 +73,7 @@ namespace OpenNos.GameObject
             {
                 session.IsDisposing = true;
 
-                if(IsWorldServer && session.HasSelectedCharacter)
+                if (IsWorldServer && session.HasSelectedCharacter)
                 {
                     session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
                 }
@@ -87,21 +100,9 @@ namespace OpenNos.GameObject
 
                 client.Disconnect();
                 Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + client.ClientId);
+
                 // session = null;
             }
-        }
-
-        public virtual void StopServer()
-        {
-            _sessions.Clear();
-            ServerManager.StopServer();
-        }
-
-        protected virtual ClientSession IntializeNewSession(INetworkClient client)
-        {
-            ClientSession session = new ClientSession(client);
-            client.SetClientSession(session);
-            return session;
         }
 
         #endregion

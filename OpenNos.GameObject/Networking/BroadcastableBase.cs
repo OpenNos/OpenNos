@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,8 +45,6 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        protected DateTime LastUnregister { get; private set; }
-
         public IEnumerable<ClientSession> Sessions
         {
             get
@@ -53,6 +52,8 @@ namespace OpenNos.GameObject
                 return _sessions.GetAllItems().Where(s => s.HasSelectedCharacter && !s.IsDisposing && s.IsConnected);
             }
         }
+
+        protected DateTime LastUnregister { get; private set; }
 
         #endregion
 
@@ -116,6 +117,7 @@ namespace OpenNos.GameObject
                 _disposed = true;
             }
         }
+
         public ClientSession GetSessionByCharacterId(long characterId)
         {
             return _sessions.ContainsKey(characterId) ? _sessions[characterId] : null;
@@ -128,11 +130,38 @@ namespace OpenNos.GameObject
                 return;
             }
             session.RegisterTime = DateTime.Now;
+
             // Create a ChatClient and store it in a collection
             _sessions[session.Character.CharacterId] = session;
             if (session.HasCurrentMapInstance)
             {
                 session.CurrentMapInstance.IsSleeping = false;
+            }
+        }
+
+        public void UnregisterSession(long characterId)
+        {
+            // Get client from client list, if not in list do not continue
+            var session = _sessions[characterId];
+            if (session == null)
+            {
+                return;
+            }
+
+            // Remove client from online clients list
+            _sessions.Remove(characterId);
+            if (session.HasCurrentMapInstance && _sessions.Count == 0)
+            {
+                session.CurrentMapInstance.IsSleeping = true;
+            }
+            LastUnregister = DateTime.Now;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _sessions.Dispose();
             }
         }
 
@@ -219,7 +248,7 @@ namespace OpenNos.GameObject
                                     }
                                     else
                                     {
-                                        sentPacket.Sender.SendPacket(sentPacket.Sender.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
+                                        sentPacket.Sender.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
                                     }
                                 }
                                 else
@@ -229,7 +258,6 @@ namespace OpenNos.GameObject
                             }
                         }
                         break;
-
 
                     case ReceiverType.AllNoEmoBlocked:
                         foreach (ClientSession session in Sessions.Where(s => !s.Character.EmoticonsBlocked))
@@ -266,34 +294,7 @@ namespace OpenNos.GameObject
 
                     case ReceiverType.Unknown:
                         break;
-
                 }
-            }
-        }
-
-        public void UnregisterSession(long characterId)
-        {
-            // Get client from client list, if not in list do not continue
-            var session = _sessions[characterId];
-            if (session == null)
-            {
-                return;
-            }
-
-            // Remove client from online clients list
-            _sessions.Remove(characterId);
-            if (session.HasCurrentMapInstance && _sessions.Count == 0)
-            {
-                session.CurrentMapInstance.IsSleeping = true;
-            }
-            LastUnregister = DateTime.Now;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _sessions.Dispose();
             }
         }
 

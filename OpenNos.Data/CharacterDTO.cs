@@ -13,7 +13,6 @@
  */
 
 using OpenNos.Domain;
-using System;
 
 namespace OpenNos.Data
 {
@@ -31,21 +30,17 @@ namespace OpenNos.Data
 
         public int ArenaWinner { get; set; }
 
-        public short MinilandPoint { get; set; }
-
         public string Biography { get; set; }
 
         public bool BuffBlocked { get; set; }
 
         public long CharacterId { get; set; }
 
-        public MinilandState MinilandState { get; set; }
-
-        public string MinilandMessage { get; set; }
-
         public ClassType Class { get; set; }
 
         public short Compliment { get; set; }
+
+        public byte MaxMateCount { get; set; }
 
         public float Dignity { get; set; }
 
@@ -98,6 +93,12 @@ namespace OpenNos.Data
         public int MasterTicket { get; set; }
 
         public bool MinilandInviteBlocked { get; set; }
+
+        public string MinilandMessage { get; set; }
+
+        public short MinilandPoint { get; set; }
+
+        public MinilandState MinilandState { get; set; }
 
         public bool MouseAimLock { get; set; }
 

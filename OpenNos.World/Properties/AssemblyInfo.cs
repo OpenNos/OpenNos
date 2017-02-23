@@ -1,11 +1,12 @@
-﻿using System.Reflection;
+﻿using log4net.Config;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following set of attributes.
 // Change these attribute values to modify the information associated with an assembly.
 [assembly: AssemblyDescription("Open source nos-emulation poject")]
 [assembly: AssemblyCompany("OpenNos Team")]
-[assembly: AssemblyCopyright("OpenNos Team 2016 Copyright ©")]
+[assembly: AssemblyCopyright("OpenNos Team Copyright © 2017")]
 [assembly: AssemblyProduct("OpenNos.World")]
 
 // Version information for an assembly consists of the following four values:
@@ -14,7 +15,7 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers by using the '*'
 // as shown below: [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.4.*")]
+[assembly: AssemblyVersion("1.0.5.*")]
 [assembly: AssemblyTitle("OpenNos.World")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyTrademark("")]
@@ -25,5 +26,5 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ec300279-181e-4e6e-a94c-e8baf0eab2ad")]
-[assembly: log4net.Config.XmlConfigurator(Watch = true)]
+[assembly: Guid("b0720365-a61c-407e-854f-2a93526a39fb")]
+[assembly: XmlConfigurator(Watch = true)]

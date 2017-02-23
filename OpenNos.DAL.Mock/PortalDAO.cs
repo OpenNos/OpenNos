@@ -14,6 +14,7 @@
 
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,14 +24,14 @@ namespace OpenNos.DAL.Mock
     {
         #region Methods
 
+        public void Insert(List<PortalDTO> portals)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<PortalDTO> LoadByMap(short mapId)
         {
             return Container.Where(p => p.SourceMapId == mapId);
-        }
-
-        public void Insert(List<PortalDTO> portals)
-        {
-            throw new System.NotImplementedException();
         }
 
         #endregion

@@ -12,12 +12,12 @@
  * GNU General Public License for more details.
  */
 
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace OpenNos.DAL.EF
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-
     public class Skill
     {
         #region Instantiation
@@ -37,8 +37,6 @@ namespace OpenNos.DAL.EF
 
         public short AttackAnimation { get; set; }
 
-        public short BuffId { get; set; }
-
         public short CastAnimation { get; set; }
 
         public short CastEffect { get; set; }
@@ -46,8 +44,6 @@ namespace OpenNos.DAL.EF
         public short CastId { get; set; }
 
         public short CastTime { get; set; }
-
-        public virtual ICollection<SkillCard> SkillCard { get; set; }
 
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
 
@@ -99,6 +95,8 @@ namespace OpenNos.DAL.EF
         public short SecondarySkillVNum { get; set; }
 
         public virtual ICollection<ShopSkill> ShopSkill { get; set; }
+
+        public virtual ICollection<SkillCard> SkillCard { get; set; }
 
         public short SkillChance { get; set; }
 

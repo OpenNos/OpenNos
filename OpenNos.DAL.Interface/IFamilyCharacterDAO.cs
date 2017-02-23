@@ -20,14 +20,18 @@ namespace OpenNos.DAL.Interface
 {
     public interface IFamilyCharacterDAO : IMappingBaseDAO
     {
+        #region Methods
+
         DeleteResult Delete(string characterName);
 
         SaveResult InsertOrUpdate(ref FamilyCharacterDTO character);
 
-        IList<FamilyCharacterDTO> LoadByFamilyId(long familyId);
-
         FamilyCharacterDTO LoadByCharacterId(long characterId);
 
+        IList<FamilyCharacterDTO> LoadByFamilyId(long familyId);
+
         FamilyCharacterDTO LoadById(long familyCharacterId);
+
+        #endregion
     }
 }

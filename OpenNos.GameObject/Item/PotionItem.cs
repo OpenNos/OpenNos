@@ -35,10 +35,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            else
-            {
-                session.Character.LastPotion = DateTime.Now;
-            }
+            session.Character.LastPotion = DateTime.Now;
             switch (Effect)
             {
                 default:

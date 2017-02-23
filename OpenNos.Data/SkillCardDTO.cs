@@ -14,15 +14,15 @@
 
 namespace OpenNos.Data
 {
-    public class SkillCardDTO
+    public class SkillCardDTO : MappingBaseDTO
     {
         #region Properties
+
+        public short CardChance { get; set; }
 
         public short CardId { get; set; }
 
         public short SkillVNum { get; set; }
-
-        public short CardChance { get; set; }
 
         #endregion
     }

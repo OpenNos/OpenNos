@@ -102,10 +102,7 @@ namespace EpPathFinding
                     MNodes.Add(iPos, newNode);
                     return newNode;
                 }
-                else
-                {
-                    RemoveNode(iPos);
-                }
+                RemoveNode(iPos);
             }
             else
             {

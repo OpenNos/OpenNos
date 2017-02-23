@@ -13,14 +13,14 @@
  */
 
 using OpenNos.Core;
+using OpenNos.DAL.EF.DB;
 using OpenNos.DAL.EF.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using OpenNos.DAL.EF.DB;
+using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
@@ -54,6 +54,17 @@ namespace OpenNos.DAL.EF
             }
         }
 
+        public IEnumerable<StaticBonusDTO> LoadByCharacterId(long characterId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (StaticBonus entity in context.StaticBonus.Where(i => i.CharacterId == characterId))
+                {
+                    yield return _mapper.Map<StaticBonusDTO>(entity);
+                }
+            }
+        }
+
         public StaticBonusDTO LoadById(long sbId)
         {
             try
@@ -69,7 +80,25 @@ namespace OpenNos.DAL.EF
                 return null;
             }
         }
-        
+
+        public void RemoveOutDated()
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    foreach (StaticBonus entity in context.StaticBonus.Where(e => e.DateEnd < DateTime.Now))
+                    {
+                        context.StaticBonus.Remove(entity);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(e);
+            }
+        }
+
         private StaticBonusDTO Insert(StaticBonusDTO sb, OpenNosContext context)
         {
             try
@@ -94,35 +123,6 @@ namespace OpenNos.DAL.EF
                 context.SaveChanges();
             }
             return _mapper.Map<StaticBonusDTO>(entity);
-        }
-
-        public void RemoveOutDated()
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    foreach (StaticBonus entity in context.StaticBonus.Where(e => e.DateEnd < DateTime.Now))
-                    {
-                        context.StaticBonus.Remove(entity);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log.Error(e);
-            }
-        }
-
-        public IEnumerable<StaticBonusDTO> LoadByCharacterId(long characterId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (StaticBonus entity in context.StaticBonus.Where(i => i.CharacterId == characterId))
-                {
-                    yield return _mapper.Map<StaticBonusDTO>(entity);
-                }
-            }
         }
 
         #endregion

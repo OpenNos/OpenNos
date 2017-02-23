@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;

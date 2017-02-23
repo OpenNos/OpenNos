@@ -29,6 +29,7 @@ namespace OpenNos.DAL.Interface
         IEnumerable<BazaarItemDTO> LoadAll();
 
         BazaarItemDTO LoadById(long bazaarItemId);
+
         void RemoveOutDated();
 
         #endregion

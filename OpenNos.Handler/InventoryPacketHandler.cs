@@ -15,12 +15,12 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 using OpenNos.GameObject;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.Handler
 {
@@ -88,7 +88,7 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE"), 0), ReceiverType.OnlySomeone, string.Empty, characterId);
+                                Session.CurrentMapInstance?.Broadcast(Session, UserInterfaceHelper.Instance.GenerateModal(Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE"), 0), ReceiverType.OnlySomeone, string.Empty, characterId);
                             }
                             break;
 
@@ -116,7 +116,7 @@ namespace OpenNos.Handler
                 switch (Convert.ToInt32(packetsplit[4]))
                 {
                     case 1:
-                        Session.SendPacket(Session.Character.GenerateDialog($"#b_i^{type}^{slot}^2 #b_i^{type}^{slot}^5 {Language.Instance.GetMessageFromKey("SURE_TO_DELETE")}"));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#b_i^{type}^{slot}^2 #b_i^{type}^{slot}^5 {Language.Instance.GetMessageFromKey("SURE_TO_DELETE")}"));
                         break;
 
                     case 2:
@@ -139,44 +139,29 @@ namespace OpenNos.Handler
             short slot;
             if (byte.TryParse(packetsplit[2], out type) && short.TryParse(packetsplit[3], out slot))
             {
-                Session.SendPacket(Session.Character.GenerateDialog($"#b_i^{type}^{slot}^1 #b_i^0^0^5 {Language.Instance.GetMessageFromKey("ASK_TO_DELETE")}"));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#b_i^{type}^{slot}^1 #b_i^0^0^5 {Language.Instance.GetMessageFromKey("ASK_TO_DELETE")}"));
             }
         }
 
-        [Packet("s_carrier")]
-        public void SpecialistHolder(string packet)
+        public void Deposit(DepositPacket packet)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
-            short slot;
-            short holderSlot;
-            if (short.TryParse(packetsplit[2], out slot) && short.TryParse(packetsplit[3], out holderSlot))
+            ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory);
+            ItemInstance itemdest = Session.Character.Inventory.LoadBySlotAndType(packet.NewSlot, InventoryType.Warehouse);
+
+            // check if the destination slot is out of range
+            if (packet.NewSlot > Session.Character.WareHouseSize)
             {
-                SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
-                BoxInstance holder = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(holderSlot, InventoryType.Equipment);
-                if (specialist != null && holder != null)
-                {
-                    holder.HoldingVNum = specialist.ItemVNum;
-                    holder.SlDamage = specialist.SlDamage;
-                    holder.SlDefence = specialist.SlDefence;
-                    holder.SlElement = specialist.SlElement;
-                    holder.SlHP = specialist.SlHP;
-                    holder.SpDamage = specialist.SpDamage;
-                    holder.SpDark = specialist.SpDark;
-                    holder.SpDefence = specialist.SpDefence;
-                    holder.SpElement = specialist.SpElement;
-                    holder.SpFire = specialist.SpFire;
-                    holder.SpHP = specialist.SpHP;
-                    holder.SpLevel = specialist.SpLevel;
-                    holder.SpLight = specialist.SpLight;
-                    holder.SpStoneUpgrade = specialist.SpStoneUpgrade;
-                    holder.SpWater = specialist.SpWater;
-                    holder.Upgrade = specialist.Upgrade;
-                    holder.XP = specialist.XP;
-                    Session.SendPacket("shop_end 2");
-                    Session.Character.Inventory.RemoveItemAmountFromInventory(1, specialist.Id);
-                }
+                return;
             }
+
+            // check if the character is allowed to move the item
+            if (Session.Character.InExchangeOrTrade)
+            {
+                return;
+            }
+
+            // actually move the item from source to destination
+            Session.Character.Inventory.DepositItem(packet.Inventory, packet.Slot, packet.Amount, packet.NewSlot, ref item, ref itemdest);
         }
 
         [Packet("eqinfo")]
@@ -273,12 +258,12 @@ namespace OpenNos.Handler
                 {
                     if (inventory.IsEmpty || isNPCShopItem)
                     {
-                        Session.SendPacket(Session.Character.GenerateEInfo(inventory));
+                        Session.SendPacket(inventory.GenerateEInfo());
                         return;
                     }
                     Session.SendPacket(inventory.Item.EquipmentSlot != EquipmentType.Sp ?
-                        Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ?
-                        Session.Character.GeneratePslInfo(inventory as SpecialistInstance) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
+                        inventory.GenerateEInfo() : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ?
+                        (inventory as SpecialistInstance).GeneratePslInfo() :(inventory as SpecialistInstance).GenerateSlInfo());
                 }
             }
         }
@@ -357,7 +342,7 @@ namespace OpenNos.Handler
         [Packet("req_exc")]
         public void ExchangeRequest(string deserializedPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), deserializedPacket.ToString());
+            Logger.Debug(Session.Character.GenerateIdentity(), deserializedPacket);
             ExchangeRequestPacket packet = PacketFactory.Deserialize<ExchangeRequestPacket>(deserializedPacket, true);
             if (packet != null)
             {
@@ -378,10 +363,9 @@ namespace OpenNos.Handler
 
                             if (Session.Character.IsBlockedByCharacter(packet.CharacterId))
                             {
-                                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("BLACKLIST_BLOCKED")));
                                 return;
                             }
-
 
                             if (Session.Character.Speed == 0 || targetSession.Character.Speed == 0)
                             {
@@ -389,19 +373,19 @@ namespace OpenNos.Handler
                             }
                             if (targetSession.Character.LastSkillUse.AddSeconds(20) > DateTime.Now || targetSession.Character.LastDefence.AddSeconds(20) > DateTime.Now)
                             {
-                                Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("PLAYER_IN_BATTLE"), targetSession.Character.Name)));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("PLAYER_IN_BATTLE"), targetSession.Character.Name)));
                                 return;
                             }
 
                             if (Session.Character.LastSkillUse.AddSeconds(20) > DateTime.Now || Session.Character.LastDefence.AddSeconds(20) > DateTime.Now)
                             {
-                                Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("IN_BATTLE")));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("IN_BATTLE")));
                                 return;
                             }
 
                             if (Session.Character.HasShopOpened || targetSession.Character.HasShopOpened)
                             {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
                                 return;
                             }
 
@@ -413,13 +397,13 @@ namespace OpenNos.Handler
                             {
                                 if (Session.Character.InExchangeOrTrade || targetSession.Character.InExchangeOrTrade)
                                 {
-                                    Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE"), 0));
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateModal(Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE"), 0));
                                 }
                                 else
                                 {
-                                    Session.SendPacket(Session.Character.GenerateModal(string.Format(Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE"), targetSession.Character.Name), 0));
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateModal(string.Format(Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE"), targetSession.Character.Name), 0));
                                     Session.Character.TradeRequests.Add(targetSession.Character.CharacterId);
-                                    targetSession.SendPacket(Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INCOMING_EXCHANGE"), Session.Character.Name)}"));
+                                    targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {string.Format(Language.Instance.GetMessageFromKey("INCOMING_EXCHANGE"), Session.Character.Name)}"));
                                 }
                             }
                             break;
@@ -493,8 +477,8 @@ namespace OpenNos.Handler
                                                 }
                                                 if (!@continue || goldmax)
                                                 {
-                                                    string message = !@continue ? Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0)
-                                                        : Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
+                                                    string message = !@continue ? UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0)
+                                                        : UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
                                                     Session.SendPacket(message);
                                                     targetSession.SendPacket(message);
                                                     CloseExchange(Session, targetSession);
@@ -503,7 +487,7 @@ namespace OpenNos.Handler
                                                 {
                                                     if (Session.Character.ExchangeInfo.ExchangeList.Any(ei => !(ei.Item.IsTradable || ei.IsBound)))
                                                     {
-                                                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
+                                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
                                                         CloseExchange(Session, targetSession);
                                                     }
                                                     else // all items can be traded
@@ -522,7 +506,7 @@ namespace OpenNos.Handler
                                             }
                                             else
                                             {
-                                                Session.SendPacket(Session.Character.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("IN_WAITING_FOR"), targetSession.Character.Name)));
+                                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(string.Format(Language.Instance.GetMessageFromKey("IN_WAITING_FOR"), targetSession.Character.Name)));
                                             }
                                         }
                                     }
@@ -599,7 +583,7 @@ namespace OpenNos.Handler
                                 {
                                     Session.Character.SpPoint = 10000;
                                 }
-                                Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
                                 Session.SendPacket(Session.Character.GenerateSpPoint());
                             }
                             Session.CurrentMapInstance.DroppedList.Remove(packet.TransportId);
@@ -618,12 +602,12 @@ namespace OpenNos.Handler
                                     Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {amount}", 12));
                                     if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
                                     {
-                                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{String.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {newInv.First().Item.Name} x {mapItem.Amount}", 10));
+                                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{string.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {newInv.First().Item.Name} x {mapItem.Amount}", 10));
                                     }
                                 }
                                 else
                                 {
-                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                                 }
                             }
                         }
@@ -641,7 +625,7 @@ namespace OpenNos.Handler
                         else
                         {
                             Session.Character.Gold = maxGold;
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                         }
                         Session.SendPacket(Session.Character.GenerateGold());
                         Session.CurrentMapInstance.DroppedList.Remove(packet.TransportId);
@@ -674,8 +658,8 @@ namespace OpenNos.Handler
                     ItemInstance inv = Session.Character.Inventory.MoveInInventory(packet.Slot, packet.InventoryType, packet.DestinationInventoryType, packet.DestinationSlot, false);
                     if (inv != null)
                     {
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, packet.DestinationInventoryType, inv.Slot, inv.Rare, inv.Design, inv.Upgrade, 0));
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, packet.InventoryType, packet.Slot, 0, 0, 0, 0));
+                        Session.SendPacket(inv.GenerateInventoryAdd());
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(packet.InventoryType, packet.Slot));
                     }
                 }
             }
@@ -711,13 +695,11 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                Session.SendPacket(Session.Character.GenerateInventoryAdd(newInventory.ItemVNum, newInventory.Amount, packet.InventoryType, newInventory.Slot, newInventory.Rare, newInventory.Design, newInventory.Upgrade, 0));
+                Session.SendPacket(newInventory.GenerateInventoryAdd());
 
                 Session.SendPacket(previousInventory != null
-                    ? Session.Character.GenerateInventoryAdd(previousInventory.ItemVNum, previousInventory.Amount,
-                        packet.InventoryType, previousInventory.Slot, previousInventory.Rare, previousInventory.Design,
-                        previousInventory.Upgrade, 0)
-                    : Session.Character.GenerateInventoryAdd(-1, 0, packet.InventoryType, packet.Slot, 0, 0, 0, 0));
+                    ? previousInventory.GenerateInventoryAdd()
+                    : UserInterfaceHelper.Instance.GenerateInventoryRemove(packet.InventoryType, packet.Slot));
             }
         }
 
@@ -740,10 +722,10 @@ namespace OpenNos.Handler
                             MapItem droppedItem = Session.CurrentMapInstance.PutItem(putPacket.InventoryType, putPacket.Slot, putPacket.Amount, ref invitem, Session);
                             if (droppedItem == null)
                             {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0));
                                 return;
                             }
-                            Session.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemVNum, invitem.Amount, putPacket.InventoryType, invitem.Slot, invitem.Rare, invitem.Design, invitem.Upgrade, 0));
+                            Session.SendPacket(invitem.GenerateInventoryAdd());
 
                             if (invitem.Amount == 0)
                             {
@@ -753,17 +735,17 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_MAP_FULL"), 0));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_MAP_FULL"), 0));
                         }
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DROP_AMOUNT"), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DROP_AMOUNT"), 0));
                     }
                 }
                 else
                 {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE"), 0));
                 }
             }
         }
@@ -785,7 +767,7 @@ namespace OpenNos.Handler
                     {
                         if (Session.Character.IsVehicled)
                         {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
                             return;
                         }
                         if (Session.Character.LastSkillUse.AddSeconds(2) > DateTime.Now)
@@ -797,7 +779,7 @@ namespace OpenNos.Handler
                     }
                     else if (slot == (byte)EquipmentType.Sp && !Session.Character.UseSp && timeSpanSinceLastSpUsage <= Session.Character.SpCooldown)
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                         return;
                     }
 
@@ -805,13 +787,13 @@ namespace OpenNos.Handler
 
                     if (inv == null)
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                         return;
                     }
 
                     if (inv.Slot != -1)
                     {
-                        Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemVNum, inv.Amount, inv.Type, inv.Slot, inventory.Rare, inventory.Design, inventory.Upgrade, 0));
+                        Session.SendPacket(inventory.GenerateInventoryAdd());
                     }
 
                     Session.SendPacket(Session.Character.GenerateStatChar());
@@ -820,6 +802,33 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePairy());
                 }
             }
+        }
+
+        public void Repos(ReposPacket packet)
+        {
+            ItemInstance previousInventory;
+            ItemInstance newInventory;
+
+            // check if the destination slot is out of range
+            if (packet.NewSlot > Session.Character.WareHouseSize)
+            {
+                return;
+            }
+
+            // check if the character is allowed to move the item
+            if (Session.Character.InExchangeOrTrade)
+            {
+                return;
+            }
+
+            // actually move the item from source to destination
+            Session.Character.Inventory.MoveItem(InventoryType.Warehouse, InventoryType.Warehouse, packet.OldSlot, packet.Amount, packet.NewSlot, out previousInventory, out newInventory);
+            if (newInventory == null)
+            {
+                return;
+            }
+            Session.SendPacket(newInventory.GenerateStash());
+            Session.SendPacket(previousInventory.GenerateStash());
         }
 
         [Packet("#sl")]
@@ -862,7 +871,7 @@ namespace OpenNos.Handler
                                 WearableInstance wearableInstance = invdest as WearableInstance;
                                 if (wearableInstance != null)
                                 {
-                                    Session.SendPacket(Session.Character.GenerateInventoryAdd(invdest.ItemVNum, invdest.Amount, type, invdest.Slot, wearableInstance.Rare, wearableInstance.Design, wearableInstance.Upgrade, 0));
+                                    Session.SendPacket(invdest.GenerateInventoryAdd());
                                 }
                                 Session.Character.DeleteItem(type, (short)(x + 1));
                                 gravity = true;
@@ -870,6 +879,43 @@ namespace OpenNos.Handler
                         }
                     }
                     Session.Character.Inventory.Reorder(Session, i == 0 ? InventoryType.Specialist : InventoryType.Costume);
+                }
+            }
+        }
+
+        [Packet("s_carrier")]
+        public void SpecialistHolder(string packet)
+        {
+            Logger.Debug(Session.Character.GenerateIdentity(), packet);
+            string[] packetsplit = packet.Split(' ');
+            short slot;
+            short holderSlot;
+            if (short.TryParse(packetsplit[2], out slot) && short.TryParse(packetsplit[3], out holderSlot))
+            {
+                SpecialistInstance specialist = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>(slot, InventoryType.Equipment);
+                BoxInstance holder = Session.Character.Inventory.LoadBySlotAndType<BoxInstance>(holderSlot, InventoryType.Equipment);
+                if (specialist != null && holder != null)
+                {
+                    holder.HoldingVNum = specialist.ItemVNum;
+                    holder.SlDamage = specialist.SlDamage;
+                    holder.SlDefence = specialist.SlDefence;
+                    holder.SlElement = specialist.SlElement;
+                    holder.SlHP = specialist.SlHP;
+                    holder.SpDamage = specialist.SpDamage;
+                    holder.SpDark = specialist.SpDark;
+                    holder.SpDefence = specialist.SpDefence;
+                    holder.SpElement = specialist.SpElement;
+                    holder.SpFire = specialist.SpFire;
+                    holder.SpHP = specialist.SpHP;
+                    holder.SpLevel = specialist.SpLevel;
+                    holder.SpLight = specialist.SpLight;
+                    holder.SpStoneUpgrade = specialist.SpStoneUpgrade;
+                    holder.SpWater = specialist.SpWater;
+                    holder.Upgrade = specialist.Upgrade;
+                    holder.XP = specialist.XP;
+
+                    Session.SendPacket("shop_end 2");
+                    Session.Character.Inventory.RemoveItemAmountFromInventory(1, specialist.Id);
                 }
             }
         }
@@ -898,7 +944,7 @@ namespace OpenNos.Handler
                 }
                 if (!Session.Character.UseSp || specialistInstance == null || transportId != specialistInstance.TransportId)
                 {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
                 }
                 if (CharacterHelper.SPPoint(specialistInstance.SpLevel, specialistInstance.Upgrade) - specialistInstance.SlDamage - specialistInstance.SlHP - specialistInstance.SlElement - specialistInstance.SlDefence - specialistDamage - specialistDefense - specialistElement - specialistHealpoints < 0)
@@ -1323,24 +1369,24 @@ namespace OpenNos.Handler
 
                 Session.SendPacket(Session.Character.GenerateStatChar());
                 Session.SendPacket(Session.Character.GenerateStat());
-                Session.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
-                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_SET"), 0));
+                Session.SendPacket(specialistInstance.GenerateSlInfo());
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_SET"), 0));
             }
             else if (!Session.Character.IsSitting)
             {
                 if (Session.Character.Skills.GetAllItems().Any(s => !s.CanBeUsed()))
                 {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
                     return;
                 }
                 if (specialistInstance == null)
                 {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                     return;
                 }
                 if (Session.Character.IsVehicled)
                 {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
                     return;
                 }
 
@@ -1359,17 +1405,17 @@ namespace OpenNos.Handler
                     }
                     if (Session.Character.SpPoint == 0 && Session.Character.SpAdditionPoint == 0)
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_NOPOINTS"), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_NOPOINTS"), 0));
                     }
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
                     if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
-                        Session.SendPacket(Session.Character.GenerateDelay(5000, 3, "#sl^1"));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 3, "#sl^1"));
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(2, 1), Session.Character.PositionX, Session.Character.PositionY);
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                     }
                 }
             }
@@ -1446,7 +1492,7 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
                             }
                         }
                         break;
@@ -1486,7 +1532,7 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
                             }
                         }
                         break;
@@ -1504,7 +1550,7 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
                             }
                         }
                         break;
@@ -1522,7 +1568,7 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
                             }
                         }
                         break;
@@ -1574,35 +1620,11 @@ namespace OpenNos.Handler
                     if (inv?.Item != null)
                     {
                         inv.Item.Use(Session, ref inv);
-                        Session.SendPacket(Session.Character.GenerateEff(123));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, 123));
                     }
                 }
             }
         }
-
-        public void Deposit(DepositPacket packet)
-        {
-            ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory);
-            ItemInstance itemdest = Session.Character.Inventory.LoadBySlotAndType(packet.NewSlot, InventoryType.Warehouse);
-
-            // check if the destination slot is out of range
-            if (packet.NewSlot > Session.Character.WareHouseSize)
-            {
-                return;
-            }
-
-            // check if the character is allowed to move the item
-            if (Session.Character.InExchangeOrTrade)
-            {
-                return;
-            }
-
-            // actually move the item from source to destination
-            Session.Character.Inventory.DepositItem(packet.Inventory, packet.Slot, packet.Amount, packet.NewSlot, ref item, ref itemdest);
-
-
-        }
-
 
         public void Withdraw(WithdrawPacket packet)
         {
@@ -1617,36 +1639,7 @@ namespace OpenNos.Handler
             Session.Character.Inventory.RemoveItemAmountFromInventory(packet.Amount, previousInventory.Id);
             Session.Character.Inventory.AddToInventory(item2, item2.Item.Type);
             previousInventory = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, InventoryType.Warehouse);
-            Session.SendPacket(Session.Character.GenerateStash(previousInventory, packet.Slot));
-       
-        }
-
-        public void Repos(ReposPacket packet)
-        {
-            ItemInstance previousInventory;
-            ItemInstance newInventory;
-
-            // check if the destination slot is out of range
-            if (packet.NewSlot > Session.Character.WareHouseSize)
-            {
-                return;
-            }
-
-            // check if the character is allowed to move the item
-            if (Session.Character.InExchangeOrTrade)
-            {
-                return;
-            }
-
-            // actually move the item from source to destination
-            Session.Character.Inventory.MoveItem(InventoryType.Warehouse, InventoryType.Warehouse, packet.OldSlot, packet.Amount, packet.NewSlot, out previousInventory, out newInventory);
-            if (newInventory == null)
-            {
-                return;
-            }
-            Session.SendPacket(Session.Character.GenerateStash(newInventory, packet.NewSlot));
-            Session.SendPacket(Session.Character.GenerateStash(previousInventory, packet.OldSlot));
-            
+            Session.SendPacket(previousInventory.GenerateStash());
         }
 
         private void ChangeSP()
@@ -1657,12 +1650,12 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.GetReputIco() < sp.Item.ReputationMinimum)
                 {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
                     return;
                 }
                 if (fairy != null && sp.Item.Element != 0 && fairy.Item.Element != sp.Item.Element && fairy.Item.Element != sp.Item.SecondaryElement)
                 {
-                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                     return;
                 }
                 Session.Character.Buff.Clear();
@@ -1673,7 +1666,7 @@ namespace OpenNos.Handler
                 Session.Character.MorphUpgrade2 = sp.Design;
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
                 Session.SendPacket(Session.Character.GenerateLev());
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(Session.Character.CharacterId, 196), Session.Character.PositionX, Session.Character.PositionY);
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGuri(6, 1), Session.Character.PositionX, Session.Character.PositionY);
                 Session.SendPacket(Session.Character.GenerateSpPoint());
                 Session.Character.LoadSpeed();
@@ -1685,7 +1678,7 @@ namespace OpenNos.Handler
                 {
                     if (ski.Class == Session.Character.Morph + 31 && sp.SpLevel >= ski.LevelMinimum)
                     {
-                        Session.Character.SkillsSp[ski.SkillVNum] = new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId };
+                        Session.Character.SkillsSp[ski.SkillVNum] = new CharacterSkill { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId };
                     }
                 }
                 Session.SendPacket(Session.Character.GenerateSki());
@@ -1737,7 +1730,6 @@ namespace OpenNos.Handler
                 List<ItemInstance> inv = targetSession.Character.Inventory.AddToInventory(item2);
                 if (!inv.Any())
                 {
-                    continue;
                 }
             }
 

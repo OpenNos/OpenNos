@@ -40,10 +40,9 @@ namespace OpenNos.Domain
         Ammo = 27,
         Quest2 = 28,
         House = 30,
-        Garden=31,
-        Minigame=32,
-        Terrace=33,
+        Garden = 31,
+        Minigame = 32,
+        Terrace = 33,
         MinilandTheme = 34
-
     }
 }

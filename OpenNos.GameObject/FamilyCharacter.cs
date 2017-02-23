@@ -14,18 +14,14 @@
 
 using OpenNos.DAL;
 using OpenNos.Data;
-using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
     public class FamilyCharacter : FamilyCharacterDTO
     {
-        #region Instantiation
-        private CharacterDTO _character;
-        public FamilyCharacter()
-        {
+        #region Members
 
-        }
+        private CharacterDTO _character;
 
         #endregion
 
@@ -40,7 +36,7 @@ namespace OpenNos.GameObject
                     _character = DAOFactory.CharacterDAO.LoadById(CharacterId);
                 }
                 return _character;
-             }
+            }
         }
 
         #endregion
@@ -49,7 +45,6 @@ namespace OpenNos.GameObject
 
         public override void Initialize()
         {
-
         }
 
         #endregion

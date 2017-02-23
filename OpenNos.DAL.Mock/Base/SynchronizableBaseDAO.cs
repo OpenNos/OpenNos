@@ -35,10 +35,7 @@ namespace OpenNos.DAL.Mock
             {
                 return loadedDTO = dto;
             }
-            else
-            {
-                return Insert(dto);
-            }
+            return Insert(dto);
         }
 
         public TSynchronizableBaseDTO LoadById(Guid id)

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-
-namespace OpenNos.GameObject
+﻿namespace OpenNos.GameObject
 {
     public class TransportFactory
     {
@@ -39,6 +36,7 @@ namespace OpenNos.GameObject
 
             return _lastTransportId;
         }
+
         #endregion
     }
 }

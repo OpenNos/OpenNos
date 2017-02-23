@@ -16,6 +16,8 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Buff.Indicators;
+using OpenNos.GameObject.Buff.Indicators.Item;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Linq;
 
@@ -45,7 +47,7 @@ namespace OpenNos.GameObject
                     {
                         session.Character.SpAdditionPoint = 1000000;
                     }
-                    session.SendPacket(session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), EffectValue), 0));
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), EffectValue), 0));
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     session.SendPacket(session.Character.GenerateSpPoint());
                     break;
@@ -61,7 +63,7 @@ namespace OpenNos.GameObject
                     {
                         session.Character.SpPoint = 10000;
                     }
-                    session.SendPacket(session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDEDBOTH"), EffectValue, EffectValue * 3), 0));
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDEDBOTH"), EffectValue, EffectValue * 3), 0));
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     session.SendPacket(session.Character.GenerateSpPoint());
                     break;
@@ -71,29 +73,32 @@ namespace OpenNos.GameObject
                     switch (EffectValue)
                     {
                         case 1:
-                            IndicatorBase buff1 = new Buff.Indicators.Item.AttackPotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
+                            IndicatorBase buff1 = new AttackPotion(session.Character.Level);
+                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 203));
                             session.Character.Buff.Add(buff1);
                             break;
+
                         case 2:
-                            IndicatorBase buff2 = new Buff.Indicators.Item.DefensePotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
+                            IndicatorBase buff2 = new DefensePotion(session.Character.Level);
+                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 203));
                             session.Character.Buff.Add(buff2);
                             break;
+
                         case 3:
-                            IndicatorBase buff3 = new Buff.Indicators.Item.EnergyPotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
+                            IndicatorBase buff3 = new EnergyPotion(session.Character.Level);
+                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 203));
                             session.Character.Buff.Add(buff3);
                             break;
+
                         case 4:
-                            IndicatorBase buff4 = new Buff.Indicators.Item.ExperiencePotion(session.Character.Level);
-                            session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(203));
+                            IndicatorBase buff4 = new ExperiencePotion(session.Character.Level);
+                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 203));
                             session.Character.Buff.Add(buff4);
                             break;
                     }
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     break;
-                
+
                 // Divorce letter
                 case 6969: // this is imaginary number I = √(-1)
                     break;
@@ -109,7 +114,7 @@ namespace OpenNos.GameObject
                     }
                     session.SendPacket(session.Character.Family == null
                         ? $"qna #guri^750^{EffectValue} {Language.Instance.GetMessageFromKey($"ASK_CHANGE_FACTION{EffectValue}")}"
-                        : session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("IN_FAMILY"), 0));
+                        : UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("IN_FAMILY"), 0));
                     break;
 
                 // wings
@@ -133,7 +138,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                     }
                     break;
 
@@ -164,7 +169,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
+                        session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
                     }
                     break;
 
@@ -179,7 +184,7 @@ namespace OpenNos.GameObject
                                 session.Character.IsSitting = false;
                                 session.CurrentMapInstance?.Broadcast(session.Character.GenerateRest());
                             }
-                            session.SendPacket(session.Character.GenerateDelay(3000, 3, $"#u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2"));
+                            session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 3, $"#u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2"));
                         }
                         else
                         {
@@ -191,7 +196,7 @@ namespace OpenNos.GameObject
                                 session.Character.MorphUpgrade = 0;
                                 session.Character.MorphUpgrade2 = 0;
                                 session.Character.Morph = Morph + (byte)session.Character.Gender;
-                                session.CurrentMapInstance?.Broadcast(session.Character.GenerateEff(196), session.Character.MapX, session.Character.MapY);
+                                session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateEff(session.Character.CharacterId, 196), session.Character.MapX, session.Character.MapY);
                                 session.CurrentMapInstance?.Broadcast(session.Character.GenerateCMode());
                                 session.SendPacket(session.Character.GenerateCond());
                                 session.Character.LastSpeedChange = DateTime.Now;
@@ -248,7 +253,7 @@ namespace OpenNos.GameObject
                                 monster.Initialize(session.CurrentMapInstance);
                                 monster.StartLife();
                                 session.CurrentMapInstance.AddMonster(monster);
-                                session.CurrentMapInstance.Broadcast(monster.GenerateIn3());
+                                session.CurrentMapInstance.Broadcast(monster.GenerateIn());
                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                             }
                         }

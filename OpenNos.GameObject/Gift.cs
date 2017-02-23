@@ -12,23 +12,25 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
-using OpenNos.Data;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace OpenNos.GameObject
 {
     public class Gift
     {
         #region Instantiation
-        public short VNum { get; set; }
-        public byte Amount { get; set; }
+
         public Gift(short vnum, byte Amount)
         {
             VNum = vnum;
             Amount = Amount;
         }
+
+        #endregion
+
+        #region Properties
+
+        public byte Amount { get; set; }
+
+        public short VNum { get; set; }
 
         #endregion
     }

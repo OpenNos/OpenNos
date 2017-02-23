@@ -13,7 +13,6 @@
  */
 
 using OpenNos.Core;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -124,10 +123,9 @@ namespace OpenNos.GameObject
         public void LeaveGroup(ClientSession session)
         {
             session.Character.Group = null;
-            _characters.RemoveAll(s=>s?.Character.CharacterId == session.Character.CharacterId);
+            _characters.RemoveAll(s => s?.Character.CharacterId == session.Character.CharacterId);
         }
 
-    
         #endregion
     }
 }

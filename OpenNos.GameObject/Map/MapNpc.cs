@@ -15,6 +15,7 @@
 using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.Data;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,13 +63,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        private string GenerateEff()
-        {
-            NpcMonster npc = ServerManager.GetNpc(NpcVNum);
-            return npc != null ? $"eff 2 {MapNpcId} {Effect}" : string.Empty;
-        }
-
-        public string GenerateIn2()
+        public string GenerateIn()
         {
             NpcMonster npcinfo = ServerManager.GetNpc(NpcVNum);
             if (npcinfo != null && !IsDisabled)
@@ -76,11 +71,6 @@ namespace OpenNos.GameObject
                 return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
             }
             return string.Empty;
-        }
-
-        private string GenerateMv2()
-        {
-            return $"mv 2 {MapNpcId} {MapX} {MapY} {Npc.Speed}";
         }
 
         public string GetNpcDialog()
@@ -109,12 +99,38 @@ namespace OpenNos.GameObject
             }
         }
 
+        internal void StartLife()
+        {
+            if (LifeEvent == default(IDisposable))
+            {
+                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000d / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
+                {
+                    try
+                    {
+                        if (!MapInstance.IsSleeping)
+                        {
+                            NpcLife();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                });
+            }
+        }
+
+        private string GenerateMv2()
+        {
+            return $"mv 2 {MapNpcId} {MapX} {MapY} {Npc.Speed}";
+        }
+
         private void NpcLife()
         {
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay && MapInstance.NpcEffectActivated)
             {
-                MapInstance.Broadcast(GenerateEff(), MapX, MapY);
+                MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(MapNpcId, Effect, 2), MapX, MapY);
                 LastEffect = DateTime.Now;
             }
 
@@ -187,7 +203,7 @@ namespace OpenNos.GameObject
 
                         if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                         {
-                            MapInstance.Broadcast(GenerateEff());
+                            MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(MapNpcId, Effect, 2));
                         }
 
                         monster.CurrentHp -= damage;
@@ -239,7 +255,7 @@ namespace OpenNos.GameObject
                             int maxindex = Path.Count > Npc.Speed / 2 && Npc.Speed > 1 ? Npc.Speed / 2 : Path.Count;
                             short mapX = (short)Path.ElementAt(maxindex - 1).x;
                             short mapY = (short)Path.ElementAt(maxindex - 1).y;
-                            double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY}, new MapCell { X = MapX, Y = MapY}) / (double)Npc.Speed;
+                            double waitingtime = Map.GetDistance(new MapCell { X = mapX, Y = mapY }, new MapCell { X = MapX, Y = MapY }) / (double)Npc.Speed;
                             MapInstance.Broadcast(new BroadcastPacket(null, $"mv 2 {MapNpcId} {mapX} {mapY} {Npc.Speed}", ReceiverType.All, xCoordinate: mapX, yCoordinate: mapY));
                             LastMove = DateTime.Now.AddSeconds(waitingtime > 1 ? 1 : waitingtime);
 
@@ -274,27 +290,6 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-            }
-        }
-
-        internal void StartLife()
-        {
-            if (LifeEvent == default(IDisposable))
-            {
-                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000d / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
-                {
-                    try
-                    {
-                        if (!MapInstance.IsSleeping)
-                        {
-                            NpcLife();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                });
             }
         }
 

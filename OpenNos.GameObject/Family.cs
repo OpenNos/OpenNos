@@ -18,7 +18,6 @@ using OpenNos.Domain;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace OpenNos.GameObject
 {
@@ -39,9 +38,9 @@ namespace OpenNos.GameObject
 
         public List<FamilyLogDTO> FamilyLogs { get; set; }
 
-        public Inventory Warehouse { get; set; }
-
         public MapInstance LandOfDeath { get; set; }
+
+        public Inventory Warehouse { get; set; }
 
         #endregion
 

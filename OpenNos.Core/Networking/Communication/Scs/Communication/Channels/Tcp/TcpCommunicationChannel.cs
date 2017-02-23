@@ -18,6 +18,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -86,7 +87,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _clientSocket.NoDelay = true;
 
             // initialize lagging mode
-            bool isLagMode = System.Configuration.ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
+            bool isLagMode = ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
 
             var ipEndPoint = (IPEndPoint)_clientSocket.RemoteEndPoint;
             _remoteEndPoint = new ScsTcpEndPoint(ipEndPoint.Address.ToString(), ipEndPoint.Port);
@@ -200,7 +201,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
             if (!_clientSocket.Connected)
             {
-                return;
             }
         }
 
@@ -235,7 +235,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         protected override void Startpublic()
         {
             _running = true;
-            _clientSocket.BeginReceive(_buffer, 0, _buffer.Length, 0, new AsyncCallback(ReceiveCallback), null);
+            _clientSocket.BeginReceive(_buffer, 0, _buffer.Length, 0, ReceiveCallback, null);
         }
 
         private static void SendCallback(IAsyncResult ar)
@@ -304,7 +304,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 // Read more bytes if still running
                 if (_running)
                 {
-                    _clientSocket.BeginReceive(_buffer, 0, _buffer.Length, 0, new AsyncCallback(ReceiveCallback), null);
+                    _clientSocket.BeginReceive(_buffer, 0, _buffer.Length, 0, ReceiveCallback, null);
                 }
             }
             catch
@@ -334,7 +334,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             if (outgoingPacket.Any())
             {
                 _clientSocket.BeginSend(outgoingPacket.ToArray(), 0, outgoingPacket.Count(), SocketFlags.None,
-                new AsyncCallback(SendCallback), _clientSocket);
+                SendCallback, _clientSocket);
             }
         }
 

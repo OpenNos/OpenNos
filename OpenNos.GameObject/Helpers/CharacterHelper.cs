@@ -14,6 +14,7 @@
 
 using OpenNos.Domain;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenNos.GameObject.Helpers
 {
@@ -226,15 +227,19 @@ namespace OpenNos.GameObject.Helpers
                 case 6:
                     penalty = 0.9f;
                     break;
+
                 case 7:
                     penalty = 0.7f;
                     break;
+
                 case 8:
                     penalty = 0.5f;
                     break;
+
                 case 9:
                     penalty = 0.3f;
                     break;
+
                 default:
                     if (leveldifference > 9)
                     {
@@ -265,18 +270,23 @@ namespace OpenNos.GameObject.Helpers
                 case 5:
                     penalty = 0.9f;
                     break;
+
                 case 6:
                     penalty = 0.7f;
                     break;
+
                 case 7:
                     penalty = 0.5f;
                     break;
+
                 case 8:
                     penalty = 0.3f;
                     break;
+
                 case 9:
                     penalty = 0.2f;
                     break;
+
                 default:
                     if (leveldifference > 9 && leveldifference < 19)
                     {
@@ -315,42 +325,61 @@ namespace OpenNos.GameObject.Helpers
             {
                 case 1:
                     return 100000;
+
                 case 2:
                     return 250000;
+
                 case 3:
                     return 370000;
+
                 case 4:
                     return 560000;
+
                 case 5:
                     return 840000;
+
                 case 6:
                     return 1260000;
+
                 case 7:
                     return 1900000;
+
                 case 8:
                     return 2850000;
+
                 case 9:
                     return 3570000;
+
                 case 10:
                     return 3830000;
+
                 case 11:
                     return 4150000;
+
                 case 12:
                     return 4750000;
+
                 case 13:
                     return 5500000;
+
                 case 14:
                     return 6500000;
+
                 case 15:
                     return 7000000;
+
                 case 16:
                     return 8500000;
+
                 case 17:
                     return 9500000;
+
                 case 18:
                     return 10000000;
+
                 case 19:
                     return 17000000;
+
                 default:
                     return 999999999;
             }
@@ -429,7 +458,7 @@ namespace OpenNos.GameObject.Helpers
             return p * (lvl / 5 + 1);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
+        [SuppressMessage("Microsoft.StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "Easier to read")]
         public static int SlPoint(short spPoint, short mode)
         {
             try

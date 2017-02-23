@@ -13,16 +13,19 @@
  */
 
 using OpenNos.Data;
-using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
     public class BazaarItemLink
     {
-        public string Owner { get; set; }
+        #region Properties
+
+        public BazaarItemDTO BazaarItem { get; set; }
 
         public ItemInstance Item { get; set; }
 
-        public BazaarItemDTO BazaarItem { get; set; }
+        public string Owner { get; set; }
+
+        #endregion
     }
 }

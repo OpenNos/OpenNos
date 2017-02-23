@@ -26,6 +26,8 @@ namespace OpenNos.DAL.EF
 
         public virtual ItemInstance ItemInstance { get; set; }
 
+        public Guid? ItemInstanceId { get; set; }
+
         public byte Level1BoxAmount { get; set; }
 
         public byte Level2BoxAmount { get; set; }
@@ -41,8 +43,6 @@ namespace OpenNos.DAL.EF
         public short MapY { get; set; }
 
         public long MinilandObjectId { get; set; }
-
-        public Guid? ItemInstanceId { get; set; }
 
         #endregion
     }

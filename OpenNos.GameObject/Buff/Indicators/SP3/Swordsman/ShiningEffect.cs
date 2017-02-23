@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
+﻿namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
 {
     public class ShiningEffect : IndicatorBase
     {
+        #region Instantiation
+
         public ShiningEffect(int Level)
         {
             Name = "Shining Effect";
@@ -16,6 +12,11 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
 
             _level = Level;
         }
+
+        #endregion
+
+        #region Methods
+
         public override void Enable(ClientSession session)
         {
             base.Enable(session);
@@ -33,5 +34,7 @@ namespace OpenNos.GameObject.Buff.Indicators.SP3.Swordsman
             session.SendPacket(session.Character.GenerateStat());
             Disable(session);
         }
+
+        #endregion
     }
 }

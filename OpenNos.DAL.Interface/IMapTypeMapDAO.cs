@@ -21,7 +21,7 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-        void Insert(List<MapTypeMapDTO> maptypemap);
+        void Insert(List<MapTypeMapDTO> mapTypeMaps);
 
         IEnumerable<MapTypeMapDTO> LoadAll();
 

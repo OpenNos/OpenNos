@@ -17,12 +17,14 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject.Buff.BCard;
+using OpenNos.GameObject.Helpers;
 using OpenNos.GameObject.Networking;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using Type = OpenNos.GameObject.Buff.BCard.Type;
 
 namespace OpenNos.GameObject
 {
@@ -88,7 +90,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public string GenerateIn3()
+        public string GenerateIn()
         {
             if (IsAlive && !IsDisabled)
             {
@@ -97,7 +99,7 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
-        public string GenerateOut3()
+        public string GenerateOut()
         {
             return $"out 3 {MapMonsterId}";
         }
@@ -198,7 +200,7 @@ namespace OpenNos.GameObject
                     Target = character.CharacterId;
                     if (!Monster.NoAggresiveIcon)
                     {
-                        character.Session.SendPacket(GenerateEff(5000));
+                        character.Session.SendPacket(UserInterfaceHelper.Instance.GenerateEff(MapMonsterId,5000,2));
                     }
                     Path.Clear();
                 }
@@ -310,9 +312,9 @@ namespace OpenNos.GameObject
                 return 0;
             }
 
-            int playerDefense = targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.Increase, false)[0];
-            byte playerDefenseUpgrade = (byte)targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.IncreaseLevel, false)[0];
-            int playerDodge = targetCharacter.Buff.Get(Buff.BCard.Type.Dodge, SubType.Increase, false)[0];
+            int playerDefense = targetCharacter.Buff.Get(Type.Defense, SubType.Increase, false)[0];
+            byte playerDefenseUpgrade = (byte)targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseLevel, false)[0];
+            int playerDodge = targetCharacter.Buff.Get(Type.Dodge, SubType.Increase, false)[0];
 
             WearableInstance playerArmor = targetCharacter.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, InventoryType.Wear);
             if (playerArmor != null)
@@ -344,30 +346,30 @@ namespace OpenNos.GameObject
             {
                 case 0:
                     playerDefense += targetCharacter.Defence
-                        + targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.IncreaseMelee, false)[0];
+                        + targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseMelee, false)[0];
                     playerDodge += targetCharacter.DefenceRate
-                        + targetCharacter.Buff.Get(Buff.BCard.Type.Dodge, SubType.IncreaseDistance, false)[0];
-                    boostpercentage = targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.IncreaseMeleePercentage, false)[0];
+                        + targetCharacter.Buff.Get(Type.Dodge, SubType.IncreaseDistance, false)[0];
+                    boostpercentage = targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseMeleePercentage, false)[0];
                     playerDefense = (int)(playerDefense * (1 + boostpercentage / 100D));
-                    boostpercentage = targetCharacter.Buff.Get(Buff.BCard.Type.Dodge, SubType.IncreaseMeleePercentage, false)[0];
+                    boostpercentage = targetCharacter.Buff.Get(Type.Dodge, SubType.IncreaseMeleePercentage, false)[0];
                     playerDodge = (int)(playerDodge * (1 + boostpercentage / 100D));
                     break;
 
                 case 1:
                     playerDefense += targetCharacter.DistanceDefence
-                        + targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.IncreaseDistance, false)[0];
+                        + targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseDistance, false)[0];
                     playerDodge += targetCharacter.DistanceDefenceRate
-                        + targetCharacter.Buff.Get(Buff.BCard.Type.Dodge, SubType.IncreaseDistance, false)[0];
-                    boostpercentage = targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.IncreaseDistancePercentage, false)[0];
+                        + targetCharacter.Buff.Get(Type.Dodge, SubType.IncreaseDistance, false)[0];
+                    boostpercentage = targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseDistancePercentage, false)[0];
                     playerDefense = (int)(playerDefense * (1 + boostpercentage / 100D));
-                    boostpercentage = targetCharacter.Buff.Get(Buff.BCard.Type.Dodge, SubType.IncreaseDistancePercentage, false)[0];
+                    boostpercentage = targetCharacter.Buff.Get(Type.Dodge, SubType.IncreaseDistancePercentage, false)[0];
                     playerDodge = (int)(playerDodge * (1 + boostpercentage / 100D));
                     break;
 
                 case 2:
                     playerDefense += targetCharacter.MagicalDefence
-                        + targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.IncreaseMagic, false)[0];
-                    boostpercentage = targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.IncreaseMagicPercentage, false)[0];
+                        + targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseMagic, false)[0];
+                    boostpercentage = targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseMagicPercentage, false)[0];
                     playerDefense = (int)(playerDefense * (1 + boostpercentage / 100D));
                     break;
 
@@ -379,10 +381,10 @@ namespace OpenNos.GameObject
 
             #region Basic Damage Data Calculation
 
-            mainCritChance += targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.IncreaseCriticalChance, false)[0];
-            mainCritChance -= targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.DecreaseCriticalChance, false)[0];
-            mainCritHit += targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.IncreaseCriticalDamage, false)[0];
-            mainCritHit -= targetCharacter.Buff.Get(Buff.BCard.Type.Defense, SubType.DecreaseCriticalDamage, false)[0];
+            mainCritChance += targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseCriticalChance, false)[0];
+            mainCritChance -= targetCharacter.Buff.Get(Type.Defense, SubType.DecreaseCriticalChance, false)[0];
+            mainCritHit += targetCharacter.Buff.Get(Type.Defense, SubType.IncreaseCriticalDamage, false)[0];
+            mainCritHit -= targetCharacter.Buff.Get(Type.Defense, SubType.DecreaseCriticalDamage, false)[0];
             mainUpgrade -= playerDefenseUpgrade;
             if (mainUpgrade < -10)
             {
@@ -522,7 +524,7 @@ namespace OpenNos.GameObject
 
             #region Elementary Damage
 
-            int bonusrez = targetCharacter.Buff.Get(Buff.BCard.Type.Resistance, SubType.Increase, false)[0];
+            int bonusrez = targetCharacter.Buff.Get(Type.Resistance, SubType.Increase, false)[0];
 
             #region Calculate Elemental Boost + Rate
 
@@ -534,7 +536,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1:
-                    bonusrez += targetCharacter.Buff.Get(Buff.BCard.Type.Resistance, SubType.IncreaseFire, false)[0];
+                    bonusrez += targetCharacter.Buff.Get(Type.Resistance, SubType.IncreaseFire, false)[0];
                     playerRessistance = targetCharacter.FireResistance;
                     switch (targetCharacter.Element)
                     {
@@ -561,7 +563,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 2:
-                    bonusrez += targetCharacter.Buff.Get(Buff.BCard.Type.Resistance, SubType.IncreaseWater, false)[0];
+                    bonusrez += targetCharacter.Buff.Get(Type.Resistance, SubType.IncreaseWater, false)[0];
                     playerRessistance = targetCharacter.WaterResistance;
                     switch (targetCharacter.Element)
                     {
@@ -588,7 +590,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 3:
-                    bonusrez += targetCharacter.Buff.Get(Buff.BCard.Type.Resistance, SubType.IncreaseLight, false)[0];
+                    bonusrez += targetCharacter.Buff.Get(Type.Resistance, SubType.IncreaseLight, false)[0];
                     playerRessistance = targetCharacter.LightResistance;
                     switch (targetCharacter.Element)
                     {
@@ -615,7 +617,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 4:
-                    bonusrez += targetCharacter.Buff.Get(Buff.BCard.Type.Resistance, SubType.IncreaseShadow, false)[0];
+                    bonusrez += targetCharacter.Buff.Get(Type.Resistance, SubType.IncreaseShadow, false)[0];
                     playerRessistance = targetCharacter.DarkResistance;
                     switch (targetCharacter.Element)
                     {
@@ -738,11 +740,6 @@ namespace OpenNos.GameObject
             #endregion
 
             return totalDamage;
-        }
-
-        private string GenerateEff(int effect)
-        {
-            return $"eff 3 {MapMonsterId} {effect}";
         }
 
         private string GenerateMv3()
@@ -975,7 +972,7 @@ namespace OpenNos.GameObject
                 MapX = FirstX;
                 MapY = FirstY;
                 Path = new List<GridPos>();
-                MapInstance.Broadcast(GenerateIn3());
+                MapInstance.Broadcast(GenerateIn());
             }
         }
 
@@ -1017,7 +1014,7 @@ namespace OpenNos.GameObject
                 int castTime = 0;
                 if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                 {
-                    MapInstance.Broadcast(GenerateEff(npcMonsterSkill.Skill.CastEffect), MapX, MapY);
+                    MapInstance.Broadcast(UserInterfaceHelper.Instance.GenerateEff(MapMonsterId, npcMonsterSkill.Skill.CastEffect,2), MapX, MapY);
                     castTime = npcMonsterSkill.Skill.CastTime * 100;
                 }
                 Observable.Timer(TimeSpan.FromMilliseconds(castTime))

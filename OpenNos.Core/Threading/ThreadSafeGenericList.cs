@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.Core
 {
     //Definitely not the best approach, but it does what it has to do.
     public class ThreadSafeGenericList<T>
     {
+        #region Members
+
         private List<T> _list;
         private object _sync;
+
+        #endregion
+
+        #region Instantiation
 
         public ThreadSafeGenericList()
         {
@@ -18,6 +22,9 @@ namespace OpenNos.Core
             _sync = new object();
         }
 
+        #endregion
+
+        #region Properties
 
         public int Count
         {
@@ -30,13 +37,9 @@ namespace OpenNos.Core
             }
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            lock (_sync)
-            {
-                return _list.GetEnumerator();
-            }
-        }
+        #endregion
+
+        #region Methods
 
         public void Add(T value)
         {
@@ -45,21 +48,7 @@ namespace OpenNos.Core
                 _list.Add(value);
             }
         }
-        public T FirstOrDefault()
-        {
-            lock (_sync)
-            {
-                return _list.FirstOrDefault();
-            }
-        }
 
-        public void RemoveAll(Predicate<T> match)
-        {
-            lock (_sync)
-            {
-                _list.RemoveAll(match);
-            }
-        }
         public bool Any(Func<T, bool> predicate)
         {
             lock (_sync)
@@ -68,12 +57,9 @@ namespace OpenNos.Core
             }
         }
 
-        public IEnumerable<T> Where(Func<T, bool> p)
+        public void CopyTo(T[] grpmembers)
         {
-            lock (_sync)
-            {
-                return _list.Where(p);
-            }
+            _list.CopyTo(grpmembers);
         }
 
         public T ElementAt(int v)
@@ -84,11 +70,11 @@ namespace OpenNos.Core
             }
         }
 
-        public int Sum(Func<T, int> p)
+        public T FirstOrDefault()
         {
             lock (_sync)
             {
-                return _list.Sum(p);
+                return _list.FirstOrDefault();
             }
         }
 
@@ -100,6 +86,22 @@ namespace OpenNos.Core
             }
         }
 
+        public IEnumerator<T> GetEnumerator()
+        {
+            lock (_sync)
+            {
+                return _list.GetEnumerator();
+            }
+        }
+
+        public void RemoveAll(Predicate<T> match)
+        {
+            lock (_sync)
+            {
+                _list.RemoveAll(match);
+            }
+        }
+
         public T Single(Func<T, bool> p)
         {
             lock (_sync)
@@ -108,9 +110,22 @@ namespace OpenNos.Core
             }
         }
 
-        public void CopyTo(T[] grpmembers)
+        public int Sum(Func<T, int> p)
         {
-            _list.CopyTo(grpmembers);
+            lock (_sync)
+            {
+                return _list.Sum(p);
+            }
         }
+
+        public IEnumerable<T> Where(Func<T, bool> p)
+        {
+            lock (_sync)
+            {
+                return _list.Where(p);
+            }
+        }
+
+        #endregion
     }
 }

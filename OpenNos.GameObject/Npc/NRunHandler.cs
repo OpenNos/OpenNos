@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,35 +27,35 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public static void NRun(ClientSession Session, byte type, short runner, short npcid)
+        public static void NRun(ClientSession Session, NRunPacket packet)
         {
             if (!Session.HasCurrentMapInstance)
             {
                 return;
             }
-            MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == npcid);
-            switch (runner)
+            MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == packet.NpcId);
+            switch (packet.Runner)
             {
                 case 1:
                     if (Session.Character.Class != (byte)ClassType.Adventurer)
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ADVENTURER"), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ADVENTURER"), 0));
                         return;
                     }
                     if (Session.Character.Level < 15 || Session.Character.JobLevel < 20)
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                         return;
                     }
-                    if (type == (byte)Session.Character.Class)
+                    if (packet.Type == (byte)Session.Character.Class)
                     {
                         return;
                     }
                     if (Session.Character.Inventory.GetAllItems().All(i => i.Type != InventoryType.Wear))
                     {
-                        Session.Character.Inventory.AddNewToInventory((short)(4 + type * 14), type: InventoryType.Wear);
-                        Session.Character.Inventory.AddNewToInventory((short)(81 + type * 13), type: InventoryType.Wear);
-                        switch (type)
+                        Session.Character.Inventory.AddNewToInventory((short)(4 + packet.Type * 14), type: InventoryType.Wear);
+                        Session.Character.Inventory.AddNewToInventory((short)(81 + packet.Type * 13), type: InventoryType.Wear);
+                        switch (packet.Type)
                         {
                             case 1:
                                 Session.Character.Inventory.AddNewToInventory(68, type: InventoryType.Wear);
@@ -72,24 +73,67 @@ namespace OpenNos.GameObject
                         }
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEq());
                         Session.SendPacket(Session.Character.GenerateEquipment());
-                        Session.Character.ChangeClass((ClassType)type);
+                        Session.Character.ChangeClass((ClassType)packet.Type);
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
                     }
                     break;
 
                 case 2:
                     Session.SendPacket("wopen 1 0");
                     break;
+                case 4:
+                    Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == packet.NpcId);
+                    switch (packet.Type)
+                    {
+                        case 2:
+                            if (mate != null)
+                            {
+                                Mate teammate = Session.Character.Mates.Where(s=>s.IsTeamMember).FirstOrDefault(s => s.MateType == mate.MateType);
+                                if (teammate != null)
+                                {
+                                    teammate.IsTeamMember = false;
+                                    teammate.MapX = teammate.PositionX;
+                                    teammate.MapY = teammate.PositionY;
+                                }
+                                mate.IsTeamMember = true;
 
+                            }
+                            break;
+                        case 3:
+                            if (mate != null && Session.Character.Miniland == Session.Character.MapInstance)
+                            {
+                                mate.IsTeamMember = false;
+                                mate.MapX = mate.PositionX;
+                                mate.MapY = mate.PositionY;
+                            }
+                            break;
+                        case 4:
+                            if (mate != null)
+                            {
+                                if (Session.Character.Miniland == Session.Character.MapInstance)
+                                {
+                                    mate.IsTeamMember = false;
+                                    mate.MapX = mate.PositionX;
+                                    mate.MapY = mate.PositionY;
+                                }
+                                else
+                                {
+                                    //ask to expulse
+                                }
+                            }
+                            break;
+                    }
+                    Session.SendPacket(Session.Character.GeneratePinit());
+                    break;
                 case 10:
                     Session.SendPacket("wopen 3 0");
                     break;
 
                 case 12:
-                    Session.SendPacket($"wopen {type} 0");
+                    Session.SendPacket($"wopen {packet.Type} 0");
                     break;
 
                 case 14:
@@ -111,13 +155,13 @@ namespace OpenNos.GameObject
                 case 16:
                     if (npc != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
-                            if (Session.Character.Gold >= 1000 * type)
+                            if (Session.Character.Gold >= 1000 * packet.Type)
                             {
                                 ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                                Session.Character.Gold -= 1000 * type;
+                                Session.Character.Gold -= 1000 * packet.Type;
                                 Session.SendPacket(Session.Character.GenerateGold());
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
@@ -132,13 +176,13 @@ namespace OpenNos.GameObject
                 case 26:
                     if (npc != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
-                            if (Session.Character.Gold >= 5000 * type)
+                            if (Session.Character.Gold >= 5000 * packet.Type)
                             {
                                 ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                                Session.Character.Gold -= 5000 * type;
+                                Session.Character.Gold -= 5000 * packet.Type;
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, tp.MapId, tp.MapX, tp.MapY);
                             }
                             else
@@ -152,7 +196,7 @@ namespace OpenNos.GameObject
                 case 45:
                     if (npc != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
                             if (Session.Character.Gold >= 500)
@@ -173,7 +217,7 @@ namespace OpenNos.GameObject
                 case 132:
                     if (npc != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
                             ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
@@ -181,6 +225,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 150:
                     if (npc != null)
                     {
@@ -195,24 +240,25 @@ namespace OpenNos.GameObject
                                 }
                                 else
                                 {
-                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOD_REQUIERE_LVL"), 0));
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOD_REQUIERE_LVL"), 0));
                                 }
                             }
                             else
                             {
-                                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOD_CLOSED"), 0));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LOD_CLOSED"), 0));
                             }
                         }
                         else
                         {
-                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_FAMILY"), 0));
                         }
                     }
                     break;
+
                 case 301:
                     if (npc != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
                             ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
@@ -220,14 +266,17 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 1600:
                     Session.SendPacket(Session.Character.OpenFamilyWarehouse());
                     break;
+
                 case 1601:
                     Session.SendPackets(Session.Character.OpenFamilyWarehouseHist());
                     break;
+
                 case 1602:
-                    if(Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 3 && Session.Character.Family.WarehouseSize < 21)
+                    if (Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 3 && Session.Character.Family.WarehouseSize < 21)
                     {
                         if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
                         {
@@ -246,16 +295,16 @@ namespace OpenNos.GameObject
                         else
                         {
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 10));
-                            Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
                         }
-
                     }
                     break;
+
                 case 1603:
                     if (Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 7 && Session.Character.Family.WarehouseSize < 49)
                     {
                         if (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head)
-                        { 
+                        {
                             if (2000000 >= Session.Character.Gold)
                             {
                                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
@@ -271,11 +320,11 @@ namespace OpenNos.GameObject
                         else
                         {
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 10));
-                            Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
                         }
-
                     }
                     break;
+
                 case 1604:
                     if (Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 5 && Session.Character.Family.MaxSize < 70)
                     {
@@ -296,10 +345,11 @@ namespace OpenNos.GameObject
                         else
                         {
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 10));
-                            Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
                         }
                     }
                     break;
+
                 case 1605:
                     if (Session.Character.Family != null && Session.Character.Family.FamilyLevel >= 9 && Session.Character.Family.MaxSize < 100)
                     {
@@ -316,17 +366,17 @@ namespace OpenNos.GameObject
                             FamilyDTO fam = Session.Character.Family;
                             DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-
                         }
                         else
                         {
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 10));
-                            Session.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateModal(Language.Instance.GetMessageFromKey("ONLY_HEAD_CAN_BUY"), 1));
                         }
                     }
                     break;
+
                 case 23:
-                    if (type == 0)
+                    if (packet.Type == 0)
                     {
                         if (Session.Character.Group != null && Session.Character.Group.CharacterCount == 3)
                         {
@@ -334,28 +384,28 @@ namespace OpenNos.GameObject
                             {
                                 if (s.Character.Family != null)
                                 {
-                                    Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_MEMBER_ALREADY_IN_FAMILY")));
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_MEMBER_ALREADY_IN_FAMILY")));
                                     return;
                                 }
                             }
                         }
                         if (Session.Character.Group == null || Session.Character.Group.CharacterCount != 3)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_GROUP_NOT_FULL")));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_GROUP_NOT_FULL")));
                             return;
                         }
-                        Session.SendPacket(Session.Character.GenerateInbox($"#glmk^ {14} 1 {Language.Instance.GetMessageFromKey("CREATE_FAMILY").Replace(' ', '^')}"));
+                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateInbox($"#glmk^ {14} 1 {Language.Instance.GetMessageFromKey("CREATE_FAMILY").Replace(' ', '^')}"));
                     }
                     else
                     {
                         if (Session.Character.Family == null)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NOT_IN_FAMILY")));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NOT_IN_FAMILY")));
                             return;
                         }
                         if (Session.Character.Family != null && Session.Character.FamilyCharacter != null && Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
                         {
-                            Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NOT_FAMILY_HEAD")));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NOT_FAMILY_HEAD")));
                             return;
                         }
                         Session.SendPacket($"qna #glrm^1 {Language.Instance.GetMessageFromKey("DISMISS_FAMILY")}");
@@ -378,7 +428,7 @@ namespace OpenNos.GameObject
                 case 5002:
                     if (npc != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
                             Session.SendPacket("it 3");
@@ -387,6 +437,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 5001:
                     if (npc != null)
                     {
@@ -394,6 +445,7 @@ namespace OpenNos.GameObject
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 130, 12, 40);
                     }
                     break;
+
                 case 5011:
                     if (npc != null)
                     {
@@ -401,10 +453,11 @@ namespace OpenNos.GameObject
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, 170, 127, 46);
                     }
                     break;
+
                 case 5012:
                     if (npc != null)
                     {
-                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == packet.Type);
                         if (tp != null)
                         {
                             ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
@@ -414,7 +467,7 @@ namespace OpenNos.GameObject
                     break;
 
                 default:
-                    Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"), runner));
+                    Logger.Log.Warn(string.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"), packet.Runner));
                     break;
             }
         }

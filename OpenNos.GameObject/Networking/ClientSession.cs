@@ -14,11 +14,12 @@
 
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
-using OpenNos.Domain;
+using OpenNos.GameObject.Buff;
 using OpenNos.WebApi.Reference;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
@@ -60,7 +61,7 @@ namespace OpenNos.GameObject
             _random = new Random((int)client.ClientId);
 
             // initialize lagging mode
-            bool isLagMode = System.Configuration.ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
+            bool isLagMode = ConfigurationManager.AppSettings["LagMode"].ToLower() == "true";
 
             // initialize network client
             _client = client;
@@ -253,6 +254,11 @@ namespace OpenNos.GameObject
             _client.Disconnect();
         }
 
+        public string GenerateIdentity()
+        {
+            return $"Account: {Account.Name}";
+        }
+
         public void Initialize(EncryptionBase encryptor, Type packetHandler, bool isWorldServer)
         {
             _encryptor = encryptor;
@@ -329,7 +335,7 @@ namespace OpenNos.GameObject
             // register for servermanager
             ServerManager.Instance.RegisterSession(this);
             Character.SetSession(this);
-            Character.Buff = new Buff.BuffContainer(this);
+            Character.Buff = new BuffContainer(this);
         }
 
         private void ClearReceiveQueue()
@@ -619,11 +625,6 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CLIENTSESSION_DISPOSING"), packetHeader);
             }
-        }
-
-        public string GenerateIdentity()
-        {
-            return $"Account: {Account.Name}";
         }
 
         #endregion

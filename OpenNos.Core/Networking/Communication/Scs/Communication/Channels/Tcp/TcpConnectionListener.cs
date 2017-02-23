@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -122,7 +123,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
         /// </summary>
         private void StartSocket()
         {
-            _listenerSocket = new TcpListener(System.Net.IPAddress.Any, _endPoint.TcpPort);
+            _listenerSocket = new TcpListener(IPAddress.Any, _endPoint.TcpPort);
             _listenerSocket.Start();
         }
 

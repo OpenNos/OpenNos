@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using System.Collections.Generic;
+
 namespace OpenNos.DAL.EF
 {
-    using System.Collections.Generic;
-
     public class Recipe
     {
         #region Instantiation
