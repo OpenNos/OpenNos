@@ -554,7 +554,7 @@ namespace OpenNos.Handler
                 bool canpick = false;
                 if (packet.PickerType == 1)
                 {
-                    Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
+                    canpick = Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
                 }
                 else if (packet.PickerType == 2)
                 {
@@ -1660,7 +1660,7 @@ namespace OpenNos.Handler
             Session.Character.Inventory.RemoveItemAmountFromInventory(packet.Amount, previousInventory.Id);
             Session.Character.Inventory.AddToInventory(item2, item2.Item.Type);
             previousInventory = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, InventoryType.Warehouse);
-            Session.SendPacket(previousInventory.GenerateStash());
+            Session.SendPacket(previousInventory?.GenerateStash());
         }
 
         private void ChangeSP()
