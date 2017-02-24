@@ -414,14 +414,17 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
-                    Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), SessionId);
-
-                    if (!_waitForPacketsAmount.HasValue)
+                    int sessid;
+                    if (int.TryParse(sessionParts[1].Split('\\').FirstOrDefault(), out sessid))
                     {
-                        TriggerHandler("OpenNos.EntryPoint", string.Empty, false);
-                    }
+                        SessionId = sessid;
+                        Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), SessionId);
 
+                        if (!_waitForPacketsAmount.HasValue)
+                        {
+                            TriggerHandler("OpenNos.EntryPoint", string.Empty, false);
+                        }
+                    }
                     return;
                 }
 
