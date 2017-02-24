@@ -129,7 +129,7 @@ namespace OpenNos.GameObject
                                 }
                                 else
                                 {
-                                    //TODO ADD MESSAGE
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PET_HIGHER_LEVEL"), 0));
                                 }
                             }
                             break;
