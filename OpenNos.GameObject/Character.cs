@@ -58,24 +58,14 @@ namespace OpenNos.GameObject
         {
             if (MaxMateCount > Mates.Count())
             {
-                if (Level >= mate.Level)
-                {
-                    Mates.Add(mate);
-                    MapInstance.Broadcast(mate.GenerateIn());
-                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
-                    Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
-                    Session.SendPackets(Session.Character.GenerateScP());
-                    Session.SendPackets(Session.Character.GenerateScN());
-                    return true;
-                }
-                else
-                {
-                    //TODO ADD LEVEL MESSAGE
-                }
-            }
-            else
-            {
-                //TODO ADD PLACE MESSAGE
+                Mates.Add(mate);
+                MapInstance.Broadcast(mate.GenerateIn());
+                Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
+                Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
+                Session.SendPackets(Session.Character.GenerateScP());
+                Session.SendPackets(Session.Character.GenerateScN());
+                return true;
+
             }
             return false;
         }
@@ -504,7 +494,7 @@ namespace OpenNos.GameObject
 
         public string GenerateScpStc()
         {
-            return $"sc_p_stc {(MaxMateCount/10)}";
+            return $"sc_p_stc {(MaxMateCount / 10)}";
         }
 
         public void ChangeSex()
@@ -3112,11 +3102,11 @@ namespace OpenNos.GameObject
         {
             List<string> list = new List<string>();
             int i = 0;
-            Mates.Where(s => s.MateType == MateType.Pet).Skip(Page*10).Take(10).ToList().ForEach(s =>
-            {
-                list.Add($"sc_p {i} {s.GenerateScPacket()}");
-                i++;
-            });
+            Mates.Where(s => s.MateType == MateType.Pet).Skip(Page * 10).Take(10).ToList().ForEach(s =>
+              {
+                  list.Add($"sc_p {i} {s.GenerateScPacket()}");
+                  i++;
+              });
             return list;
         }
 

@@ -113,17 +113,24 @@ namespace OpenNos.GameObject
                         case 4:
                             if (mate != null)
                             {
-                                if (Session.Character.Miniland == Session.Character.MapInstance)
+                                if (Session.Character.Level >= mate.Level)
                                 {
-                                    mate.IsTeamMember = false;
-                                    mate.MapX = mate.PositionX;
-                                    mate.MapY = mate.PositionY;
+                                    if (Session.Character.Miniland == Session.Character.MapInstance)
+                                    {
+                                        mate.IsTeamMember = false;
+                                        mate.MapX = mate.PositionX;
+                                        mate.MapY = mate.PositionY;
+                                    }
+                                    else
+                                    {
+                                        Session.SendPacket($"qna #n_run^4^5^3^{mate.MateTransportId} {Language.Instance.GetMessageFromKey("ASK_KICK_PET")}");
+                                    }
+                                    break;
                                 }
                                 else
                                 {
-                                    Session.SendPacket($"qna #n_run^4^5^3^{mate.MateTransportId} {Language.Instance.GetMessageFromKey("ASK_KICK_PET")}");
+                                    //TODO ADD MESSAGE
                                 }
-                                break;
                             }
                             break;
                         case 5:
