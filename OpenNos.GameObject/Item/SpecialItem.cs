@@ -67,7 +67,15 @@ namespace OpenNos.GameObject
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     session.SendPacket(session.Character.GenerateSpPoint());
                     break;
-
+                case 305:
+                    Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == int.Parse(packetsplit[3]));
+                    if(mate !=null && EffectValue == mate.NpcMonsterVNum && mate.Skin == 0)
+                    {
+                        mate.Skin = Morph;
+                        session.SendPacket(mate.GenerateCMode(mate.Skin));
+                        session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
+                    }
+                    break;
                 //Atk/Def/HP/Exp potions
                 case 6600:
                     switch (EffectValue)

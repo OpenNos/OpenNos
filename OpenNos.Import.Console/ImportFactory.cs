@@ -2834,6 +2834,7 @@ namespace OpenNos.Import.Console
                                     default:
                                         item.Effect = Convert.ToInt16(currentLine[2]);
                                         item.EffectValue = Convert.ToInt32(currentLine[3]);
+                                        item.LevelMinimum = Convert.ToByte(currentLine[4]);
                                         break;
                                 }
                                 break;
@@ -3196,7 +3197,10 @@ namespace OpenNos.Import.Console
                                     case 204:
                                         item.EffectValue = 10000;
                                         break;
-
+                                    case 305:
+                                        item.EffectValue = Convert.ToInt32(currentLine[5]);
+                                        item.Morph = Convert.ToInt16(currentLine[4]);
+                                        break;
                                     default:
                                         item.EffectValue = item.EffectValue == 0 ? Convert.ToInt32(currentLine[4]) : item.EffectValue;
                                         break;

@@ -88,13 +88,14 @@ namespace OpenNos.GameObject
                         Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == x1 && s.MateType == MateType.Pet);
                         if (mate != null)
                         {
-                            if (mate.IsTeamMember)
+                            if (!mate.IsTeamMember)
                             {
                                 session.Character.Mates.Remove(mate);
                                 session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_RELEASED")));
                                 session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                                 session.SendPackets(session.Character.GenerateScP());
                                 session.SendPackets(session.Character.GenerateScN());
+                                session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                 session.CurrentMapInstance?.Broadcast(mate.GenerateOut());
                             }
                             else
@@ -110,13 +111,14 @@ namespace OpenNos.GameObject
                         Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == x1 && s.MateType == MateType.Partner);
                         if (mate != null)
                         {
-                            if (mate.IsTeamMember)
+                            if (!mate.IsTeamMember)
                             {
                                 session.Character.Mates.Remove(mate);
                                 session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("PET_RELEASED")));
                                 session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                                 session.SendPackets(session.Character.GenerateScP());
                                 session.SendPackets(session.Character.GenerateScN());
+                                session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                                 session.CurrentMapInstance?.Broadcast(mate.GenerateOut());
                             }
                             else

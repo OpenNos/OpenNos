@@ -312,7 +312,7 @@ namespace OpenNos.Handler
                 for (int i = 0; i < 26; i++)
                 {
                     //0.2105.1102.319.0.632.0.333.0.318.0.317.0.9.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1.-1
-                    petlist += $"{(i != 0 ? "." : "")}{(mates.Count > i ? $"0.{mates.ElementAt(i).NpcMonsterVNum}" : "-1")}";
+                    petlist += $"{(i != 0 ? "." : "")}{(mates.Count > i ? $"{mates.ElementAt(i).Skin}.{mates.ElementAt(i).NpcMonsterVNum}" : "-1")}";
                 }
 
                 // 1 1 before long string of -1.-1 = act completion

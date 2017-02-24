@@ -35,7 +35,7 @@ namespace OpenNos.DAL.EF.Entities
 
         public long Experience { get; set; }
 
-        public bool HasSkin { get; set; }
+        public short Skin { get; set; }
 
         public int Hp { get; set; }
 

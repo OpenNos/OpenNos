@@ -90,19 +90,26 @@ namespace OpenNos.GameObject
         #region Methods
         public short MaxHp { get { return 200; } }
         public short MaxMp { get { return 200; } }
-      
+
         public string GenerateScPacket()
         {
             switch (MateType)
             {
                 case MateType.Partner:
-                    return $"{NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 991.0.0 996.0.0 -1 -1 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} -1 0 -1 -1 -1 -1";
+                    return $"{NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 991.0.0 996.0.0 -1 -1 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} {(Skin != 0 ? Skin : -1)} 0 -1 -1 -1 -1";
 
                 case MateType.Pet:
-                    return $"{NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp?1:0)} {Name.Replace(' ', '^')} {(IsSummonable ? 1 : 0)}";
+                    return $"{NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(IsSummonable ? 1 : 0)}";
             }
             return string.Empty;
         }
+
+        public string GenerateCMode(short MorphId)
+        {
+            return $"c_mode 2 {MateTransportId} {MorphId} 0 0";
+        }
+
+
         /// <summary>
         /// Checks if the current character is in range of the given position
         /// </summary>
@@ -125,7 +132,7 @@ namespace OpenNos.GameObject
         {
         }
 
-        public string GenerateSay(string message,int type)
+        public string GenerateSay(string message, int type)
         {
             return $"say 2 {MateTransportId} 2 {message}";
         }
@@ -136,7 +143,7 @@ namespace OpenNos.GameObject
         }
         public string GenerateIn()
         {
-            return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 0 3 {CharacterId} 1 0 -1 {Name.Replace(' ', '^')} 0 -1 0 0 0 0 0 0 0 0";
+            return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 0 3 {CharacterId} 1 0 {(Skin!=0?Skin:-1)} {Name.Replace(' ', '^')} 0 -1 0 0 0 0 0 0 0 0";
         }
         public EffectPacket GenerateEff(int effectid)
         {
@@ -154,7 +161,7 @@ namespace OpenNos.GameObject
 
         public string GenerateEInfo()
         {
-            return $"e_info 10 {NpcMonsterVNum} {Level} {Monster.Element} {Monster.AttackClass} {Monster.ElementRate} {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Monster.MaxHP} {Monster.MaxMP} -1 {Name.Replace(' ', '^')}"; 
+            return $"e_info 10 {NpcMonsterVNum} {Level} {Monster.Element} {Monster.AttackClass} {Monster.ElementRate} {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Monster.MaxHP} {Monster.MaxMP} -1 {Name.Replace(' ', '^')}";
         }
 
         #endregion

@@ -108,7 +108,7 @@ namespace OpenNos.GameObject
                     {
                         if (session.CurrentMapInstance == session.Character.Miniland)
                         {
-                            Mate mate = new Mate(session.Character, (short)EffectValue, LevelMinimum, MateType.Pet);
+                            Mate mate = new Mate(session.Character, (short)EffectValue, LevelMinimum, ItemSubType == 1 ? MateType.Partner : MateType.Pet);
                             if (session.Character.AddPet(mate))
                             {
                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
