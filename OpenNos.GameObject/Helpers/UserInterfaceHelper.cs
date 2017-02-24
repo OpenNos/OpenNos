@@ -29,14 +29,14 @@ namespace OpenNos.GameObject.Helpers
 
         #region Properties
 
-    
+
         public static UserInterfaceHelper Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    instance= new UserInterfaceHelper();
+                    instance = new UserInterfaceHelper();
                 }
                 return instance;
             }
@@ -62,25 +62,26 @@ namespace OpenNos.GameObject.Helpers
         {
             return $"dlg {dialog}";
         }
+
+        public string GenerateStashRemove(short slot)
+        {
+            return $"stash {GenerateRemovePacket(slot)}";
+        }
+        public string GenerateFStashRemove(short slot)
+        {
+            return $"f_stash {GenerateRemovePacket(slot)}";
+        }
+
+        public string GenerateRemovePacket(short slot)
+        {
+            return $"{slot}.-1.0.0.0";
+        }
+
         public string GenerateInventoryRemove(InventoryType Type, short Slot)
         {
-            switch (Type)
-            {
-                case InventoryType.Equipment:
-                    return $"ivn 0 {Slot}.-1.0.0.0";
-                case InventoryType.Main:
-                    return $"ivn 1 {Slot}.-1.0.0.0";
-                case InventoryType.Etc:
-                    return $"ivn 2 {Slot}.-1.0.0.0";
-                case InventoryType.Miniland:
-                    return $"ivn 3 {Slot}.-1.0.0.0";
-                case InventoryType.Specialist:
-                    return $"ivn 6 {Slot}.-1.0.0.0";
-                case InventoryType.Costume:
-                    return $"ivn 7 {Slot}.-1.0.0.0";
-            }
-            return string.Empty;
+            return $"ivn {Type} {GenerateRemovePacket(Slot)}";
         }
+
         public string GenerateFrank(byte type)
         {
             string packet = "frank_stc";
@@ -415,7 +416,7 @@ namespace OpenNos.GameObject.Helpers
             return $"rc_blist {packet.Index} {itembazar} ";
         }
 
-       
+
         public string GenerateGuri(byte type, byte argument, long CharacterId, int value = 0)
         {
             switch (type)

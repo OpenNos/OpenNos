@@ -72,7 +72,7 @@ namespace OpenNos.Handler
                             if (!Session.Character.InExchangeOrTrade || !otherInExchangeOrTrade)
                             {
                                 ClientSession otherSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
-                                if (characterId == Session.Character.CharacterId || Session.Character.Speed == 0 || otherSession == null || !otherSession.Character.TradeRequests.Any(s=>s==Session.Character.CharacterId))
+                                if (characterId == Session.Character.CharacterId || Session.Character.Speed == 0 || otherSession == null || !otherSession.Character.TradeRequests.Any(s => s == Session.Character.CharacterId))
                                 {
                                     return;
                                 }
@@ -848,8 +848,10 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Session.SendPacket(newInventory.GenerateStash());
-            Session.SendPacket(previousInventory.GenerateStash());
+
+            Session.SendPacket((newInventory != null) ? newInventory.GenerateStash() : UserInterfaceHelper.Instance.GenerateStashRemove(packet.NewSlot));
+            Session.SendPacket((previousInventory != null) ? previousInventory.GenerateStash() : UserInterfaceHelper.Instance.GenerateStashRemove(packet.OldSlot));
+
         }
 
         [Packet("#sl")]
