@@ -697,8 +697,7 @@ namespace OpenNos.Handler
                 previousInventory = null;
             }
             List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(item2, item2.Item.Type);
-
-            Session.SendPacket(previousInventory.GenerateFStash());
+            Session.SendPacket(UserInterfaceHelper.Instance.GenerateFStashRemove(packet.Slot));
             if (previousInventory != null)
             {
                 DAOFactory.IteminstanceDAO.InsertOrUpdate(previousInventory);

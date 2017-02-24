@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
                 case 14:
                     if (int.TryParse(packetsplit[3], out x1))
                     {
-                        Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == x1);
+                        Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == x1 && s.MateType == MateType.Pet);
                         if (mate != null)
                         {
                             if (!mate.CanPickUp)
@@ -65,7 +65,23 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
-
+                case 17:
+                    if (int.TryParse(packetsplit[3], out x1))
+                    {
+                        Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == x1);
+                        if (mate != null)
+                        {
+                            if (!mate.IsSummonable)
+                            {
+                                session.Character.Inventory.RemoveItemAmount(inv.ItemVNum, 1);
+                                mate.IsSummonable = true;
+                                session.SendPackets(session.Character.GenerateScP());
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PET_SUMMONABLE"),mate.Name), 10));
+                                session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PET_SUMMONABLE"), mate.Name), 0));
+                            }
+                        }
+                    }
+                    break;
                 case 1000:
                     if (int.TryParse(packetsplit[3], out x1))
                     {

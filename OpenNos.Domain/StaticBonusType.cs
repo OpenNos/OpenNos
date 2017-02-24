@@ -18,6 +18,9 @@ namespace OpenNos.Domain
     {
         BazaarMedalGold = 0,
         BazaarMedalSilver = 1,
-        BackPack = 2
+        BackPack = 2,
+        PetBasket = 3,
+        PetBackPack = 4
+        
     }
 }

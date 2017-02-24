@@ -91,7 +91,7 @@ namespace OpenNos.GameObject
                         case 2:
                             if (mate != null)
                             {
-                                Mate teammate = Session.Character.Mates.Where(s=>s.IsTeamMember).FirstOrDefault(s => s.MateType == mate.MateType);
+                                Mate teammate = Session.Character.Mates.Where(s => s.IsTeamMember).FirstOrDefault(s => s.MateType == mate.MateType);
                                 if (teammate != null)
                                 {
                                     teammate.IsTeamMember = false;
@@ -121,8 +121,50 @@ namespace OpenNos.GameObject
                                 }
                                 else
                                 {
-                                    //ask to expulse
+                                    Session.SendPacket($"qna #n_run^4^5^3^{mate.MateTransportId} {Language.Instance.GetMessageFromKey("ASK_KICK_PET")}");
                                 }
+                                break;
+                            }
+                            break;
+                        case 5:
+                            if (mate != null)
+                            {
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 10, $"#n_run^4^6^3^{mate.MateTransportId}"));
+                            }
+                            break;
+                        case 6:
+                            if (mate != null)
+                            {
+                                if (Session.Character.Miniland != Session.Character.MapInstance)
+                                {
+                                    mate.IsTeamMember = false;
+                                    Session.CurrentMapInstance.Broadcast(mate.GenerateOut());
+                                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PET_KICKED"), mate.Name), 11));
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PET_KICKED"), mate.Name), 0));
+                                }
+                            }
+                            break;
+                        case 7:
+                            if (mate != null)
+                            {
+                                if (Session.Character.Mates.Any(s => s.MateType == mate.MateType && s.IsTeamMember))
+                                {
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ALREADY_PET_IN_TEAM"), 11));
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ALREADY_PET_IN_TEAM"), 0));
+                                }
+                                else
+                                {
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 10, $"#n_run^4^9^3^{mate.MateTransportId}"));
+                                }
+                            }
+                            break;
+                        case 9:
+                            if (mate != null)
+                            {
+                                mate.PositionX = (short)(Session.Character.PositionX + 1);
+                                mate.PositionY = (short)(Session.Character.PositionY + 1);
+                                mate.IsTeamMember = true;
+                                Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
                             }
                             break;
                     }

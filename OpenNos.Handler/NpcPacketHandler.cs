@@ -470,8 +470,11 @@ namespace OpenNos.Handler
                 }
             }
         }
-
-
+        [Packet("#n_run")]
+        public void SpecialUseItem(string packet)
+        {
+            NpcRunFunction(PacketFactory.Deserialize<NRunPacket>(packet.Replace('^', ' ').Replace('#', ' '), true));
+        }
         public void NpcRunFunction(NRunPacket packet)
         {
             Logger.Debug(Session.Character.GenerateIdentity(), packet.ToString());

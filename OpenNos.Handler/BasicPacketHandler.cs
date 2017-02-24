@@ -800,6 +800,13 @@ namespace OpenNos.Handler
                 }
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 4, $"#guri^199^{charId}"));
             }
+            else if (guriPacket[2] == "201")
+            {
+                if (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBasket))
+                {
+                    Session.SendPacket(Session.Character.GenerateStashAll());
+                }
+            }
             else if (guriPacket[2] == "208" && guriPacket[3] == "0")
             {
                 short pearlSlot;
@@ -1184,12 +1191,22 @@ namespace OpenNos.Handler
         {
             Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit[2] == "5")
+            if (packetsplit[2] == "6")
+            {
+                int mateVnum;
+                Mate mate = null;
+                if (int.TryParse(packetsplit[4], out mateVnum))
+                {
+                    mate = Session.CurrentMapInstance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.Mates != null && s.Character.Mates.Any(o => o.MateTransportId == mateVnum))?.Character.Mates.First(o => o.MateTransportId == mateVnum);
+                    Session.SendPacket(mate?.GenerateEInfo());
+                }
+            }
+            else if (packetsplit[2] == "5")
             {
                 short npcVNum;
                 if (short.TryParse(packetsplit[3], out npcVNum))
                 {
-                    NpcMonster npc = ServerManager.GetNpc(npcVNum);
+                    NpcMonster npc = ServerManager.GetNpc((short)npcVNum);
                     if (npc != null)
                     {
                         Session.SendPacket(npc.GenerateEInfo());
@@ -1594,6 +1611,12 @@ namespace OpenNos.Handler
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("LOGIN_MEDAL"), 12));
             }
+          
+            if (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBasket))
+            {
+                Session.SendPacket("ib 1278 1");
+            }
+
             if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.CleftOfDarkness))
             {
                 Session.SendPacket("bc 0 0 0");

@@ -79,7 +79,7 @@ namespace OpenNos.GameObject.Helpers
 
         public string GenerateInventoryRemove(InventoryType Type, short Slot)
         {
-            return $"ivn {Type} {GenerateRemovePacket(Slot)}";
+            return $"ivn {(byte)Type} {GenerateRemovePacket(Slot)}";
         }
 
         public string GenerateFrank(byte type)

@@ -3108,6 +3108,24 @@ namespace OpenNos.Import.Console
                                         item.EffectValue = 60;
                                         break;
 
+                                    case 1279:
+                                    case 9029:
+                                        item.Effect = 1007;
+                                        item.EffectValue = 30;
+                                        break;
+
+                                    case 1280:
+                                    case 9030:
+                                        item.Effect = 1007;
+                                        item.EffectValue = 60;
+                                        break;
+
+                                    case 1923:
+                                    case 9056:
+                                        item.Effect = 1007;
+                                        item.EffectValue = 10;
+                                        break;
+
                                     case 5060:
                                     case 9066:
                                         item.Effect = 1003;

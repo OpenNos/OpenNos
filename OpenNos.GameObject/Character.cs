@@ -60,8 +60,8 @@ namespace OpenNos.GameObject
             {
                 if (Level >= mate.Level)
                 {
-                    MapInstance.Broadcast(GenerateIn());
                     Mates.Add(mate);
+                    MapInstance.Broadcast(mate.GenerateIn());
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
                     Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                     Session.SendPackets(Session.Character.GenerateScP());
@@ -2300,7 +2300,7 @@ namespace OpenNos.GameObject
             foreach (Mate mate in Mates.Where(s => s.IsTeamMember))
             {
                 i++;
-                str += $" 2|{mate.MateTransportId}|0|{mate.Level}|{mate.Name.Replace(' ', '^')}|-1|319|0";
+                str += $" 2|{mate.MateTransportId}|1|{mate.Level}|{mate.Name.Replace(' ', '^')}|-1|319|1";
             }
             return $"pinit {i}{str}";
         }

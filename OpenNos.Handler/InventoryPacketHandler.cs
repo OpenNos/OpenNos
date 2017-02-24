@@ -1662,7 +1662,7 @@ namespace OpenNos.Handler
             Session.Character.Inventory.RemoveItemAmountFromInventory(packet.Amount, previousInventory.Id);
             Session.Character.Inventory.AddToInventory(item2, item2.Item.Type);
             previousInventory = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, InventoryType.Warehouse);
-            Session.SendPacket(previousInventory?.GenerateStash());
+            Session.SendPacket(UserInterfaceHelper.Instance.GenerateStashRemove(packet.Slot));
         }
 
         private void ChangeSP()

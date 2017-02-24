@@ -361,7 +361,7 @@ namespace OpenNos.Handler
                         {
                             Mate mate = (Mate)s;
                             mate.Owner = Session.Character;
-                            mate.GetMateTransportId();
+                            mate.GeneateMateTransportId();
                             mate.Monster = ServerManager.GetNpc(s.NpcMonsterVNum);
                             Session.Character.Mates.Add(mate);
                         });
