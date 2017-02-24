@@ -80,7 +80,7 @@ namespace OpenNos.GameObject
                                         session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                                         session.SendPackets(session.Character.GenerateScP());
                                         session.SendPackets(session.Character.GenerateScN());
-                                        mate.GenerateOut();
+                                        session.CurrentMapInstance?.Broadcast(mate.GenerateOut());
                                     }
                                 }
 

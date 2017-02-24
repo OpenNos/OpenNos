@@ -1208,9 +1208,16 @@ namespace OpenNos.Handler
         /// <param name="sitpacket"></param>
         public void Rest(SitPacket sitpacket)
         {
-            Session.Character.Rest();
-            //TODO REVIEW Rest Packet
-            //Session.CurrentMapInstance.Broadcast(Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == sitpacket.Option)?.GenerateRest());
+            sitpacket.Users.ForEach(u=> {
+                if(u.UserType == 1)
+                {
+                    Session.Character.Rest();
+                }
+                else
+                {
+                    Session.CurrentMapInstance.Broadcast(Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId)?.GenerateRest());
+                }
+            });
         }
 
         [Packet("#revival")]

@@ -19,6 +19,15 @@ namespace OpenNos.GameObject
         [PacketIndex(2, SerializeToEnd = true)]
         public string PacketEnd { get; set; }
 
+        /*
+         
+        [PacketIndex(2, RemoveSeparator = true)]
+        public List<PtCtlSubPacket> Users { get; set; }
+
+        [PacketIndex(3)]
+        public byte Option { get; set; }
+
+         */
         #endregion
     }
 }

@@ -510,6 +510,18 @@ namespace OpenNos.Handler
                     }
                 }
             }
+            /*
+             *   packet.Users.ForEach(u =>
+            {
+                Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId);
+                if (mate != null)
+                {
+                    mate.PositionX = u.UserX;
+                    mate.PositionY = u.UserY;
+                    Session.CurrentMapInstance.Broadcast($"mv 2 {u.UserId} { u.UserX} { u.UserY} {mate.Monster.Speed}");
+                }
+            });
+             */
         }
 
         [Packet("pdtse")]
