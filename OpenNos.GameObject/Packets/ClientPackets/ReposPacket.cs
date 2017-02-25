@@ -17,6 +17,9 @@ namespace OpenNos.GameObject
 
         [PacketIndex(2)]
         public byte NewSlot { get; set; }
+
+        [PacketIndex(3)]
+        public bool PartnerBackpack { get; set; }
         #endregion
     }
 }

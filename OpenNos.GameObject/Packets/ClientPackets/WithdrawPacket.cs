@@ -15,6 +15,9 @@ namespace OpenNos.GameObject
         [PacketIndex(1)]
         public byte Amount { get; set; }
 
+        [PacketIndex(2)]
+        public bool PetBackpack { get; set; }
+
         #endregion
     }
 }

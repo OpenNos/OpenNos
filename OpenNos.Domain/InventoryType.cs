@@ -25,6 +25,7 @@ namespace OpenNos.Domain
         Wear = 8,
         Bazaar = 9,
         Warehouse = 10,
-        FamilyWareHouse = 11
+        FamilyWareHouse = 11,
+        PetWarehouse = 12
     }
 }

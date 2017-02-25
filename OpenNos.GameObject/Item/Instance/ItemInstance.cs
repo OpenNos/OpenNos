@@ -71,6 +71,10 @@ namespace OpenNos.GameObject
         {
             return $"stash {GenerateStashPacket()}";
         }
+        public string GeneratePStash()
+        {
+            return $"pstash {GenerateStashPacket()}";
+        }
         public string GenerateFStash()
         {
             return $"f_stash {GenerateStashPacket()}";

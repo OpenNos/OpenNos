@@ -67,6 +67,11 @@ namespace OpenNos.GameObject.Helpers
         {
             return $"stash {GenerateRemovePacket(slot)}";
         }
+        public string GeneratePStashRemove(short slot)
+        {
+            return $"pstash {GenerateRemovePacket(slot)}";
+        }
+
         public string GenerateFStashRemove(short slot)
         {
             return $"f_stash {GenerateRemovePacket(slot)}";

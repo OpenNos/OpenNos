@@ -146,10 +146,10 @@ namespace OpenNos.Handler
         public void Deposit(DepositPacket packet)
         {
             ItemInstance item = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.Inventory);
-            ItemInstance itemdest = Session.Character.Inventory.LoadBySlotAndType(packet.NewSlot, InventoryType.Warehouse);
+            ItemInstance itemdest = Session.Character.Inventory.LoadBySlotAndType(packet.NewSlot, packet.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse);
 
             // check if the destination slot is out of range
-            if (packet.NewSlot > Session.Character.WareHouseSize)
+            if (packet.NewSlot >= (packet.PartnerBackpack ? Session.Character.WareHouseSize : (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)))
             {
                 return;
             }
@@ -161,7 +161,7 @@ namespace OpenNos.Handler
             }
 
             // actually move the item from source to destination
-            Session.Character.Inventory.DepositItem(packet.Inventory, packet.Slot, packet.Amount, packet.NewSlot, ref item, ref itemdest);
+            Session.Character.Inventory.DepositItem(packet.Inventory, packet.Slot, packet.Amount, packet.NewSlot, ref item, ref itemdest, packet.PartnerBackpack);
         }
 
         [Packet("eqinfo")]
@@ -831,7 +831,7 @@ namespace OpenNos.Handler
             ItemInstance newInventory;
 
             // check if the destination slot is out of range
-            if (packet.NewSlot > Session.Character.WareHouseSize)
+            if (packet.NewSlot >= (packet.PartnerBackpack ? Session.Character.WareHouseSize : (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)))
             {
                 return;
             }
@@ -843,14 +843,14 @@ namespace OpenNos.Handler
             }
 
             // actually move the item from source to destination
-            Session.Character.Inventory.MoveItem(InventoryType.Warehouse, InventoryType.Warehouse, packet.OldSlot, packet.Amount, packet.NewSlot, out previousInventory, out newInventory);
+            Session.Character.Inventory.MoveItem(packet.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, packet.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, packet.OldSlot, packet.Amount, packet.NewSlot, out previousInventory, out newInventory);
             if (newInventory == null)
             {
                 return;
             }
 
-            Session.SendPacket((newInventory != null) ? newInventory.GenerateStash() : UserInterfaceHelper.Instance.GenerateStashRemove(packet.NewSlot));
-            Session.SendPacket((previousInventory != null) ? previousInventory.GenerateStash() : UserInterfaceHelper.Instance.GenerateStashRemove(packet.OldSlot));
+            Session.SendPacket((newInventory != null) ? (packet.PartnerBackpack ? newInventory.GeneratePStash() : newInventory.GenerateStash()) : (packet.PartnerBackpack ? UserInterfaceHelper.Instance.GeneratePStashRemove(packet.NewSlot) : UserInterfaceHelper.Instance.GenerateStashRemove(packet.NewSlot)));
+            Session.SendPacket((previousInventory != null) ? (packet.PartnerBackpack ? previousInventory.GeneratePStash() : previousInventory.GenerateStash()) : (packet.PartnerBackpack ? UserInterfaceHelper.Instance.GeneratePStashRemove(packet.OldSlot) : UserInterfaceHelper.Instance.GenerateStashRemove(packet.OldSlot)));
 
         }
 
@@ -1623,35 +1623,28 @@ namespace OpenNos.Handler
                 inv?.Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#', packetsplit);
             }
         }
-
-        [Packet("wear")]
-        public void Wear(string packet)
+        public void Wear(WearPacket packet)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
+            Logger.Debug(Session.Character.GenerateIdentity(), packet.ToString());
             if (Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo.ExchangeList.Any() || Session.Character.Speed == 0)
             {
                 return;
             }
-            if (packetsplit.Length > 3 && Session.HasCurrentMapInstance && Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
+            if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
             {
-                InventoryType type;
-                short slot;
-                if (Enum.TryParse(packetsplit[3], out type) && short.TryParse(packetsplit[2], out slot))
+                ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(packet.InventorySlot, InventoryType.Main);
+                if (inv?.Item != null)
                 {
-                    ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot, type);
-                    if (inv?.Item != null)
-                    {
-                        inv.Item.Use(Session, ref inv);
-                        Session.SendPacket(Session.Character.GenerateEff(123));
-                    }
+                    inv.Item.Use(Session, ref inv);
+                    Session.SendPacket(Session.Character.GenerateEff(123));
                 }
+
             }
         }
 
         public void Withdraw(WithdrawPacket packet)
         {
-            ItemInstance previousInventory = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, InventoryType.Warehouse);
+            ItemInstance previousInventory = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.PetBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse);
             if (packet.Amount <= 0 || previousInventory == null || packet.Amount > previousInventory.Amount)
             {
                 return;
@@ -1661,8 +1654,8 @@ namespace OpenNos.Handler
             item2.Amount = packet.Amount;
             Session.Character.Inventory.RemoveItemAmountFromInventory(packet.Amount, previousInventory.Id);
             Session.Character.Inventory.AddToInventory(item2, item2.Item.Type);
-            previousInventory = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, InventoryType.Warehouse);
-            Session.SendPacket(UserInterfaceHelper.Instance.GenerateStashRemove(packet.Slot));
+            previousInventory = Session.Character.Inventory.LoadBySlotAndType(packet.Slot, packet.PetBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse);
+            Session.SendPacket(packet.PetBackpack ? UserInterfaceHelper.Instance.GeneratePStashRemove(packet.Slot) : UserInterfaceHelper.Instance.GenerateStashRemove(packet.Slot));
         }
 
         private void ChangeSP()

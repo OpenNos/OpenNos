@@ -2,10 +2,10 @@
 
 using OpenNos.Core;
 
-namespace OpenNos.GameObject.Packets.ServerPackets
+namespace OpenNos.GameObject
 {
     [PacketHeader("wear")]
-    public class WearjPacket : PacketDefinition
+    public class WearPacket : PacketDefinition
     {
         #region Properties
 

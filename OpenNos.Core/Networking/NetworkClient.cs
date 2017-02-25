@@ -17,6 +17,7 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Server;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.Core
 {
@@ -85,7 +86,7 @@ namespace OpenNos.Core
         public void SendPackets(IEnumerable<string> packets, byte priority = 10)
         {
             // TODO: maybe send at once with delimiter
-            foreach (string packet in packets)
+            foreach (string packet in packets.Where(p=>p!= string.Empty))
             {
                 SendPacket(packet, priority);
             }

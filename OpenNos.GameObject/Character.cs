@@ -1515,6 +1515,15 @@ namespace OpenNos.GameObject
             return damage;
         }
 
+        public string GeneratePStashAll()
+        {
+            string stash = $"pstash_all {(Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack)?50:0)}";
+            foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.PetWarehouse))
+            {
+                stash += $" {item.GenerateStashPacket()}";
+            }
+            return stash;
+        }
 
         public void GenerateDignity(NpcMonster monsterinfo)
         {

@@ -287,7 +287,7 @@ namespace OpenNos.GameObject
 
         public void SendPacket(PacketDefinition packet, byte priority = 10)
         {
-            if (!IsDisposing)
+            if (!IsDisposing && packet != null)
             {
                 _client.SendPacket(PacketFactory.Serialize(packet), priority);
             }
@@ -295,7 +295,7 @@ namespace OpenNos.GameObject
 
         public void SendPacketAfterWait(string packet, int Millisecond)
         {
-            if (!IsDisposing)
+            if (!IsDisposing && packet != string.Empty)
             {
                 Observable.Timer(TimeSpan.FromMilliseconds(Millisecond))
                 .Subscribe(
@@ -308,7 +308,7 @@ namespace OpenNos.GameObject
 
         public void SendPacketFormat(string packet, params object[] param)
         {
-            if (!IsDisposing)
+            if (!IsDisposing && packet != string.Empty)
             {
                 _client.SendPacketFormat(packet, param);
             }

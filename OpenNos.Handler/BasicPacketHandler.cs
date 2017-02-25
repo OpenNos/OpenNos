@@ -807,6 +807,11 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateStashAll());
                 }
             }
+            else if (guriPacket[2] == "202")
+            {
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PARTNER_BACKPACK"), 10));
+                Session.SendPacket(Session.Character.GeneratePStashAll());
+            }
             else if (guriPacket[2] == "208" && guriPacket[3] == "0")
             {
                 short pearlSlot;
@@ -1225,8 +1230,9 @@ namespace OpenNos.Handler
         /// <param name="sitpacket"></param>
         public void Rest(SitPacket sitpacket)
         {
-            sitpacket.Users.ForEach(u=> {
-                if(u.UserType == 1)
+            sitpacket.Users.ForEach(u =>
+            {
+                if (u.UserType == 1)
                 {
                     Session.Character.Rest();
                 }
@@ -1611,7 +1617,7 @@ namespace OpenNos.Handler
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("LOGIN_MEDAL"), 12));
             }
-          
+
             if (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBasket))
             {
                 Session.SendPacket("ib 1278 1");

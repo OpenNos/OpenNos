@@ -327,7 +327,7 @@
     <Compile Include="Packets\ServerPackets\UseItemPacket.cs" />
     <Compile Include="Packets\ServerPackets\UseObjPacket.cs" />
     <Compile Include="Packets\ServerPackets\VbPacket.cs" />
-    <Compile Include="Packets\ServerPackets\WearPacket.cs" />
+    <Compile Include="Packets\ClientPackets\WearPacket.cs" />
     <Compile Include="Packets\ServerPackets\WithDrawPacket.cs" />
     <Compile Include="Gift.cs" />
     <Compile Include="Mate.cs" />
