@@ -16,6 +16,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using System.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
@@ -90,16 +91,39 @@ namespace OpenNos.GameObject
         #region Methods
         public short MaxHp { get { return 200; } }
         public short MaxMp { get { return 200; } }
+        public byte PetId { get; set; }
+        public List<ItemInstance> GetInventory()
+        {
+            List<ItemInstance> items = new List<ItemInstance>();
+            switch (PetId)
+            {
+                case 1:
+                    items = Owner.Inventory.GetAllItems().Where(s => s.Type == InventoryType.FirstPartnerInventory).ToList();
+                    break;
+                case 2:
+                    items = Owner.Inventory.GetAllItems().Where(s => s.Type == InventoryType.SecondPartnerInventory).ToList();
+                    break;
+                case 3:
+                    items = Owner.Inventory.GetAllItems().Where(s => s.Type == InventoryType.ThirdPartnerInventory).ToList();
+                    break;
+            }
+            return items;
+        }
 
-        public string GenerateScPacket()
+        public string GenerateScPacket(int i)
         {
             switch (MateType)
             {
                 case MateType.Partner:
-                    return $"{NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 991.0.0 996.0.0 -1 -1 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} {(Skin != 0 ? Skin : -1)} 0 -1 -1 -1 -1";
+                    List<ItemInstance> items = GetInventory();
+                    ItemInstance Weapon = items.FirstOrDefault(s => s.Slot == 0);
+                    ItemInstance Armor = items.FirstOrDefault(s => s.Slot == 1);
+                    ItemInstance Gloves = items.FirstOrDefault(s => s.Slot == 2);
+                    ItemInstance Boots = items.FirstOrDefault(s => s.Slot == 3);
 
+                    return $"{i} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(Weapon != null? $"{Weapon.ItemVNum}.{Weapon.Rare}.{Weapon.Upgrade}" : "-1")} {(Armor != null ? $"{Armor.ItemVNum}.{Armor.Rare}.{Armor.Upgrade}" : "-1")} {(Gloves != null ? $"{Gloves.ItemVNum}.0.0" : "-1")} {(Boots != null ? $"{Boots.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} {(Skin != 0 ? Skin : -1)} 0 -1 -1 -1 -1";
                 case MateType.Pet:
-                    return $"{NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(IsSummonable ? 1 : 0)}";
+                    return $"{i} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(IsSummonable ? 1 : 0)}";
             }
             return string.Empty;
         }
@@ -143,7 +167,7 @@ namespace OpenNos.GameObject
         }
         public string GenerateIn()
         {
-            return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 0 3 {CharacterId} 1 0 {(Skin!=0?Skin:-1)} {Name.Replace(' ', '^')} 0 -1 0 0 0 0 0 0 0 0";
+            return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 0 3 {CharacterId} 1 0 {(Skin != 0 ? Skin : -1)} {Name.Replace(' ', '^')} 0 -1 0 0 0 0 0 0 0 0";
         }
         public EffectPacket GenerateEff(int effectid)
         {

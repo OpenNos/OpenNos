@@ -10,10 +10,10 @@ namespace OpenNos.GameObject
         #region Properties
 
         [PacketIndex(0)]
-        public byte Inventory { get; set; }
+        public byte InventorySlot { get; set; }
 
         [PacketIndex(1)]
-        public byte InventorySlot { get; set; }
+        public byte Type { get; set; }
 
         #endregion
     }

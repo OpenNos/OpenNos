@@ -26,6 +26,9 @@ namespace OpenNos.Domain
         Bazaar = 9,
         Warehouse = 10,
         FamilyWareHouse = 11,
-        PetWarehouse = 12
+        PetWarehouse = 12,
+        FirstPartnerInventory = 13,
+        SecondPartnerInventory = 14,
+        ThirdPartnerInventory = 15,
     }
 }

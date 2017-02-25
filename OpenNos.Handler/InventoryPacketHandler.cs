@@ -1632,7 +1632,7 @@ namespace OpenNos.Handler
             }
             if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
             {
-                ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(packet.InventorySlot, InventoryType.Main);
+                ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(packet.InventorySlot, InventoryType.Equipment);
                 if (inv?.Item != null)
                 {
                     inv.Item.Use(Session, ref inv);

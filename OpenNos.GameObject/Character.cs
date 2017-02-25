@@ -56,7 +56,7 @@ namespace OpenNos.GameObject
 
         public bool AddPet(Mate mate)
         {
-            if (MaxMateCount > Mates.Count())
+            if (mate.MateType == MateType.Pet? MaxMateCount > Mates.Count(): 3 > Mates.Where(s=>s.MateType == MateType.Partner).Count())
             {
                 Mates.Add(mate);
                 MapInstance.Broadcast(mate.GenerateIn());
@@ -3101,7 +3101,7 @@ namespace OpenNos.GameObject
             int i = 0;
             Mates.Where(s => s.MateType == MateType.Partner).ToList().ForEach(s =>
             {
-                list.Add($"sc_n {i} {s.GenerateScPacket()}");
+                list.Add($"sc_n {s.GenerateScPacket(i)}");
                 i++;
             });
             return list;
@@ -3113,7 +3113,7 @@ namespace OpenNos.GameObject
             int i = 0;
             Mates.Where(s => s.MateType == MateType.Pet).Skip(Page * 10).Take(10).ToList().ForEach(s =>
               {
-                  list.Add($"sc_p {i} {s.GenerateScPacket()}");
+                  list.Add($"sc_p {s.GenerateScPacket(i)}");
                   i++;
               });
             return list;
