@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using OpenNos.GameObject.Packets.ClientPackets;
 
 namespace OpenNos.Handler
 {
@@ -150,19 +151,21 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateStat());
         }
 
-        [Packet("compl")]
-        public void Compliment(string packet)
+        /// <summary>
+        /// compl
+        /// </summary>
+        /// <param name="complimentPacket"></param>
+        public void Compliment(ComplimentPacket complimentPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] complimentPacket = packet.Split(' ');
-            long complimentedCharacterId;
-            if (long.TryParse(complimentPacket[3], out complimentedCharacterId))
+            if (complimentPacket != null)
             {
+                Logger.Debug(Session.Character.GenerateIdentity(), "Compliment Packet");
+                long complimentedCharacterId = complimentPacket.CharacterId;
                 if (Session.Character.Level >= 30)
                 {
                     GeneralLogDTO dto = Session.Character.GeneralLogs.LastOrDefault(s => s.LogData == "World" && s.LogType == "Connection");
                     GeneralLogDTO lastcompliment = Session.Character.GeneralLogs.LastOrDefault(s => s.LogData == "World" && s.LogType == "Compliment");
-                    if (dto.Timestamp.AddMinutes(60) <= DateTime.Now)
+                    if (dto != null && dto.Timestamp.AddMinutes(60) <= DateTime.Now)
                     {
                         if (lastcompliment == null || lastcompliment.Timestamp.AddDays(1) <= DateTime.Now.Date)
                         {
@@ -170,9 +173,17 @@ namespace OpenNos.Handler
                             compliment++;
                             ServerManager.Instance.SetProperty(complimentedCharacterId, nameof(Character.Compliment), compliment);
                             Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentedCharacterId, nameof(Character.Name))), 12));
-                            Session.Character.GeneralLogs.Add(new GeneralLogDTO { AccountId = Session.Account.AccountId, CharacterId = Session.Character.CharacterId, IpAddress = Session.IpAddress, LogData = "World", LogType = "Compliment", Timestamp = DateTime.Now });
+                            Session.Character.GeneralLogs.Add(new GeneralLogDTO
+                            {
+                                AccountId = Session.Account.AccountId,
+                                CharacterId = Session.Character.CharacterId,
+                                IpAddress = Session.IpAddress,
+                                LogData = "World",
+                                LogType = "Compliment",
+                                Timestamp = DateTime.Now
+                            });
 
-                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
+                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, characterId: complimentedCharacterId);
                         }
                         else
                         {
@@ -181,7 +192,10 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_LOGIN_COOLDOWN"), (dto.Timestamp.AddMinutes(60) - DateTime.Now).Minutes), 11));
+                        if (dto != null)
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_LOGIN_COOLDOWN"), (dto.Timestamp.AddMinutes(60) - DateTime.Now).Minutes), 11));
+                        }
                     }
                 }
                 else
@@ -204,28 +218,25 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("pcl")]
-        public void GetGift(string packet)
+        /// <summary>
+        /// pcl packet
+        /// </summary>
+        /// <param name="getGiftPacket"></param>
+        public void GetGift(GetGiftPacket getGiftPacket)
         {
-            Logger.Debug(Session.Character.GenerateIdentity(), packet);
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3)
+            if (getGiftPacket != null)
             {
-                int id;
-                if (!int.TryParse(packetsplit[3], out id))
-                {
-                    return;
-                }
+                Logger.Debug(Session.Character.GenerateIdentity(), "GetGift packet");
+                int giftId = getGiftPacket.GiftId;
 
-                if (Session.Character.MailList.ContainsKey(id))
+                if (Session.Character.MailList.ContainsKey(giftId))
                 {
-                    MailDTO mail = Session.Character.MailList[id];
-                    if (packetsplit[2] == "4" && mail.AttachmentVNum != null)
+                    MailDTO mail = Session.Character.MailList[giftId];
+                    if (getGiftPacket.Type == 4 && mail.AttachmentVNum != null)
                     {
-                        if (Session.Character.Inventory.CanAddItem((short)mail.AttachmentVNum))
+                        if (Session.Character.Inventory.CanAddItem((short) mail.AttachmentVNum))
                         {
-                            List<ItemInstance> newInv = Session.Character.Inventory.AddNewToInventory((short)mail.AttachmentVNum, mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade, Rare: (sbyte)mail.AttachmentRarity);
-
+                            List<ItemInstance> newInv =Session.Character.Inventory.AddNewToInventory((short) mail.AttachmentVNum,mail.AttachmentAmount, Upgrade: mail.AttachmentUpgrade,Rare: (sbyte) mail.AttachmentRarity);
                             if (newInv.Any())
                             {
                                 if (newInv.First().Rare != 0)
@@ -233,16 +244,16 @@ namespace OpenNos.Handler
                                     WearableInstance wearable = newInv.First() as WearableInstance;
                                     wearable?.SetRarityPoint();
                                 }
-                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.First().Item.Name} x {mail.AttachmentAmount}", 12));
+                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_GIFTED")}: {newInv.First().Item.Name} x {mail.AttachmentAmount}",12));
 
                                 if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                                 {
                                     DAOFactory.MailDAO.DeleteById(mail.MailId);
                                 }
-                                Session.SendPacket($"parcel 2 1 {packetsplit[3]}");
-                                if (Session.Character.MailList.ContainsKey(id))
+                                Session.SendPacket($"parcel 2 1 {giftId}");
+                                if (Session.Character.MailList.ContainsKey(giftId))
                                 {
-                                    Session.Character.MailList.Remove(id);
+                                    Session.Character.MailList.Remove(giftId);
                                 }
                             }
                         }
@@ -252,17 +263,17 @@ namespace OpenNos.Handler
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                         }
                     }
-                    else if (packetsplit[2] == "5")
+                    else if (getGiftPacket.Type == 5)
                     {
-                        Session.SendPacket($"parcel 7 1 {packetsplit[3]}");
+                        Session.SendPacket($"parcel 7 1 {giftId}");
 
                         if (DAOFactory.MailDAO.LoadById(mail.MailId) != null)
                         {
                             DAOFactory.MailDAO.DeleteById(mail.MailId);
                         }
-                        if (Session.Character.MailList.ContainsKey(id))
+                        if (Session.Character.MailList.ContainsKey(giftId))
                         {
-                            Session.Character.MailList.Remove(id);
+                            Session.Character.MailList.Remove(giftId);
                         }
                     }
                 }

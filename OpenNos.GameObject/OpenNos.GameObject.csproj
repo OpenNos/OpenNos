@@ -94,8 +94,10 @@
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="Map\MonsterToSummon.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
+    <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />
     <Compile Include="Packets\ClientPackets\FDepositPacket.cs" />
     <Compile Include="Packets\ClientPackets\DepositPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GetGiftPacket.cs" />
     <Compile Include="Packets\ClientPackets\PtCtlSubPacket.cs" />
     <Compile Include="Packets\ClientPackets\BIPacket.cs" />
     <Compile Include="Packets\ClientPackets\SitSubPacket.cs" />
