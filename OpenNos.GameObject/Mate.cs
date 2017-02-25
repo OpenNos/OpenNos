@@ -97,33 +97,32 @@ namespace OpenNos.GameObject
             List<ItemInstance> items = new List<ItemInstance>();
             switch (PetId)
             {
-                case 1:
+                case 0:
                     items = Owner.Inventory.GetAllItems().Where(s => s.Type == InventoryType.FirstPartnerInventory).ToList();
                     break;
-                case 2:
+                case 1:
                     items = Owner.Inventory.GetAllItems().Where(s => s.Type == InventoryType.SecondPartnerInventory).ToList();
                     break;
-                case 3:
+                case 2:
                     items = Owner.Inventory.GetAllItems().Where(s => s.Type == InventoryType.ThirdPartnerInventory).ToList();
                     break;
             }
             return items;
         }
-
-        public string GenerateScPacket(int i)
+        public string GenerateScPacket()
         {
             switch (MateType)
             {
                 case MateType.Partner:
                     List<ItemInstance> items = GetInventory();
-                    ItemInstance Weapon = items.FirstOrDefault(s => s.Slot == 0);
-                    ItemInstance Armor = items.FirstOrDefault(s => s.Slot == 1);
-                    ItemInstance Gloves = items.FirstOrDefault(s => s.Slot == 2);
-                    ItemInstance Boots = items.FirstOrDefault(s => s.Slot == 3);
+                    ItemInstance Weapon = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.MainWeapon);
+                    ItemInstance Armor = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Armor);
+                    ItemInstance Gloves = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Gloves);
+                    ItemInstance Boots = items.FirstOrDefault(s => s.Slot == (short)EquipmentType.Boots);
 
-                    return $"{i} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(Weapon != null? $"{Weapon.ItemVNum}.{Weapon.Rare}.{Weapon.Upgrade}" : "-1")} {(Armor != null ? $"{Armor.ItemVNum}.{Armor.Rare}.{Armor.Upgrade}" : "-1")} {(Gloves != null ? $"{Gloves.ItemVNum}.0.0" : "-1")} {(Boots != null ? $"{Boots.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} {(Skin != 0 ? Skin : -1)} 0 -1 -1 -1 -1";
+                    return $"sc_n {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} {(Weapon != null? $"{Weapon.ItemVNum}.{Weapon.Rare}.{Weapon.Upgrade}" : "-1")} {(Armor != null ? $"{Armor.ItemVNum}.{Armor.Rare}.{Armor.Upgrade}" : "-1")} {(Gloves != null ? $"{Gloves.ItemVNum}.0.0" : "-1")} {(Boots != null ? $"{Boots.ItemVNum}.0.0" : "-1")} 0 0 1 0 142 174 232 4 70 0 73 158 86 158 69 0 0 0 0 0 2641 2641 1065 1065 0 285816 {Name.Replace(' ', '^')} {(Skin != 0 ? Skin : -1)} 0 -1 -1 -1 -1";
                 case MateType.Pet:
-                    return $"{i} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(IsSummonable ? 1 : 0)}";
+                    return $"sc_p {PetId} {NpcMonsterVNum} {MateTransportId} {Level} {Loyalty} {Experience} 0 0 {Monster.AttackUpgrade} {Monster.DamageMinimum} {Monster.DamageMaximum} {Monster.Concentrate} {Monster.CriticalChance} {Monster.CriticalRate} {Monster.DefenceUpgrade} {Monster.CloseDefence} {Monster.DefenceDodge} {Monster.DistanceDefence} {Monster.DistanceDefenceDodge} {Monster.MagicDefence} {Monster.FireResistance} {Monster.WaterResistance} {Monster.LightResistance} {Monster.DarkResistance} {Hp} {MaxHp} {Mp} {MaxMp} 0 15 {(CanPickUp ? 1 : 0)} {Name.Replace(' ', '^')} {(IsSummonable ? 1 : 0)}";
             }
             return string.Empty;
         }

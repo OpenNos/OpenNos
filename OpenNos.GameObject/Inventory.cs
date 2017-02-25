@@ -325,7 +325,7 @@ namespace OpenNos.GameObject
         {
             if (item != null && amount <= item.Amount && amount > 0)
             {
-                MoveItem(inventory, PartnerBackpack? InventoryType.PetWarehouse : InventoryType.Warehouse, slot, amount, NewSlot, out item, out itemdest);
+                MoveItem(inventory, PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse, slot, amount, NewSlot, out item, out itemdest);
                 Owner.Session.SendPacket(item != null
                     ? item.GenerateInventoryAdd()
                     : UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory, slot));
@@ -373,7 +373,7 @@ namespace OpenNos.GameObject
                 DAOFactory.IteminstanceDAO.InsertOrUpdate(itemdest);
                 Owner.Session.SendPacket(item != null
                     ? item.GenerateInventoryAdd()
-                    : UserInterfaceHelper.Instance.GenerateInventoryRemove( inventory, slot));
+                    : UserInterfaceHelper.Instance.GenerateInventoryRemove(inventory, slot));
 
                 if (itemdest != null)
                 {
@@ -498,10 +498,22 @@ namespace OpenNos.GameObject
                 }
 
                 // check for free target slot
-                short? nextFreeSlot = targetType == InventoryType.Wear ? (LoadBySlotAndType((short)sourceInstance.Item.EquipmentSlot, InventoryType.Wear) == null
+                short? nextFreeSlot;
+                switch (targetType)
+                {
+                    case InventoryType.FirstPartnerInventory:
+                    case InventoryType.SecondPartnerInventory:
+                    case InventoryType.ThirdPartnerInventory:
+                    case InventoryType.Wear:
+                        nextFreeSlot = (LoadBySlotAndType((short)sourceInstance.Item.EquipmentSlot, targetType) == null
                         ? (short)sourceInstance.Item.EquipmentSlot
-                        : (short)-1)
-                    : GetFreeSlot(targetType, Owner.HaveBackpack() ? 1 : 0);
+                        : (short)-1);
+                        break;
+
+                    default:
+                        nextFreeSlot = GetFreeSlot(targetType, Owner.HaveBackpack() ? 1 : 0);
+                        break;
+                }
                 if (nextFreeSlot.HasValue)
                 {
                     sourceInstance.Type = targetType;
@@ -632,7 +644,7 @@ namespace OpenNos.GameObject
                     inv.Amount -= amount;
                     if (inv.Amount <= 0)
                     {
-                        Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove( inv.Type, inv.Slot));
+                        Owner.Session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(inv.Type, inv.Slot));
                         Remove(inv.Id);
                         return;
                     }

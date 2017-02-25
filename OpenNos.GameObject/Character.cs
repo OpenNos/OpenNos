@@ -3098,10 +3098,11 @@ namespace OpenNos.GameObject
         public List<string> GenerateScN()
         {
             List<string> list = new List<string>();
-            int i = 0;
+            byte i = 0;
             Mates.Where(s => s.MateType == MateType.Partner).ToList().ForEach(s =>
             {
-                list.Add($"sc_n {s.GenerateScPacket(i)}");
+                s.PetId = i;
+                list.Add(s.GenerateScPacket());
                 i++;
             });
             return list;
@@ -3110,10 +3111,11 @@ namespace OpenNos.GameObject
         public List<string> GenerateScP(byte Page = 0)
         {
             List<string> list = new List<string>();
-            int i = 0;
+            byte i = 0;
             Mates.Where(s => s.MateType == MateType.Pet).Skip(Page * 10).Take(10).ToList().ForEach(s =>
               {
-                  list.Add($"sc_p {s.GenerateScPacket(i)}");
+                  s.PetId = i;
+                  list.Add(s.GenerateScPacket());
                   i++;
               });
             return list;

@@ -105,6 +105,7 @@
     <Compile Include="Packets\ClientPackets\StashEndPacket.cs" />
     <Compile Include="Packets\ClientPackets\ReposPacket.cs" />
     <Compile Include="Packets\ClientPackets\FWithdrawPacket.cs" />
+    <Compile Include="Packets\ClientPackets\RemovePacket.cs" />
     <Compile Include="Packets\ClientPackets\WithdrawPacket.cs" />
     <Compile Include="Packets\ClientPackets\MinigamePacket.cs" />
     <Compile Include="Packets\ClientPackets\UseobjPacket.cs" />
