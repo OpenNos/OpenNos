@@ -390,7 +390,7 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GeneratePairy());
                     session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
                     {
-                        s.PositionX = (short)(session.Character.PositionX + 1);
+                        s.PositionX = (short)(session.Character.PositionX + (s.MateType == MateType.Partner?-1:1));
                         s.PositionY = (short)(session.Character.PositionY + 1);
                         session.CurrentMapInstance.Broadcast(s.GenerateIn());
                     });

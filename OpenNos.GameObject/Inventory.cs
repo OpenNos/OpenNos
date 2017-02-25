@@ -158,7 +158,7 @@ namespace OpenNos.GameObject
         {
             if (Owner != null)
             {
-                Logger.Debug(Owner.Session.GenerateIdentity(), vnum.ToString());
+                Logger.Debug(Owner.GenerateIdentity(), vnum.ToString());
                 ItemInstance newItem = InstantiateItemInstance(vnum, Owner.CharacterId, amount);
                 newItem.Rare = Rare;
                 newItem.Upgrade = Upgrade;
@@ -173,7 +173,7 @@ namespace OpenNos.GameObject
             List<ItemInstance> invlist = new List<ItemInstance>();
             if (Owner != null)
             {
-                Logger.Debug(Owner.Session.GenerateIdentity(), newItem.ItemVNum.ToString());
+                Logger.Debug(Owner.GenerateIdentity(), newItem.ItemVNum.ToString());
                 ItemInstance inv = null;
 
                 // override type if necessary
@@ -186,7 +186,7 @@ namespace OpenNos.GameObject
                 if (newItem.Type != InventoryType.Bazaar && (newItem.Item.Type == InventoryType.Etc || newItem.Item.Type == InventoryType.Main))
                 {
                     IEnumerable<ItemInstance> slotNotFull = GetAllItems().Where(i => i.Type != InventoryType.Bazaar && i.Type != InventoryType.PetWarehouse && i.Type != InventoryType.Warehouse && i.Type != InventoryType.FamilyWareHouse && i.ItemVNum.Equals(newItem.ItemVNum) && i.Amount < MAX_ITEM_AMOUNT);
-                    int freeslot = DEFAULT_BACKPACK_SIZE + (Owner.Session.Character.HaveBackpack() ? 1 : 0) * 12 - GetAllItems().Where(s => s.Type == newItem.Type).Count();
+                    int freeslot = DEFAULT_BACKPACK_SIZE + (Owner.HaveBackpack() ? 1 : 0) * 12 - GetAllItems().Where(s => s.Type == newItem.Type).Count();
                     if (newItem.Amount <= freeslot * MAX_ITEM_AMOUNT + slotNotFull.Sum(s => MAX_ITEM_AMOUNT - s.Amount))
                     {
                         foreach (ItemInstance slot in slotNotFull)
@@ -197,7 +197,7 @@ namespace OpenNos.GameObject
                             newItem.Amount = (byte)(newItem.Amount < 0 ? 0 : newItem.Amount);
                             slot.Amount = (byte)max;
                             invlist.Add(slot);
-                            Owner.Session.SendPacket(slot.GenerateInventoryAdd());
+                            Owner.Session?.SendPacket(slot.GenerateInventoryAdd());
                         }
                     }
                 }
@@ -230,10 +230,10 @@ namespace OpenNos.GameObject
         {
             if (Owner != null)
             {
-                Logger.Debug(Owner.Session.GenerateIdentity(), $"Slot: {slot} Type: {type} VNUM: {itemInstance.ItemVNum}");
+                Logger.Debug(Owner.GenerateIdentity(), $"Slot: {slot} Type: {type} VNUM: {itemInstance.ItemVNum}");
                 itemInstance.Slot = slot;
                 itemInstance.Type = type;
-                itemInstance.CharacterId = Owner.Session.Character.CharacterId;
+                itemInstance.CharacterId = Owner.CharacterId;
 
                 if (ContainsKey(itemInstance.Id))
                 {
@@ -244,7 +244,7 @@ namespace OpenNos.GameObject
                 string inventoryPacket = itemInstance.GenerateInventoryAdd();
                 if (!string.IsNullOrEmpty(inventoryPacket))
                 {
-                    Owner.Session.SendPacket(inventoryPacket);
+                    Owner.Session?.SendPacket(inventoryPacket);
                 }
 
                 if (GetAllItems().Any(s => s.Slot == slot && s.Type == type))

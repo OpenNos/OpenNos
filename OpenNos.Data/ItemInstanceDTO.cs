@@ -27,7 +27,7 @@ namespace OpenNos.Data
 
         public long CharacterId { get; set; }
 
-        public byte Design { get; set; }
+        public short Design { get; set; }
 
         public int DurabilityPoint { get; set; }
 

@@ -142,12 +142,10 @@ namespace OpenNos.GameObject
                     }
                     else if (mate != null)
                     {
-                        if ((EquipmentSlot != EquipmentType.MainWeapon
-                         && EquipmentSlot != EquipmentType.Armor
-                         && EquipmentSlot != EquipmentType.Sp
-                         && EquipmentSlot != EquipmentType.Gloves
-                         && EquipmentSlot != EquipmentType.Boots)
-                        || LevelMinimum > mate.Level)
+                       
+                        if (( EquipmentSlot != EquipmentType.Gloves
+                             && EquipmentSlot != EquipmentType.Boots)
+                            || LevelMinimum > mate.Level)
                         {
                             session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                             return;
@@ -170,7 +168,7 @@ namespace OpenNos.GameObject
                         session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment, itemToWearType, inv.Slot);
                         session.SendPacket(currentlyEquippedItem.GenerateInventoryAdd());
                     }
-                  
+
 
                     if (Option == 0)
                     {
@@ -191,7 +189,7 @@ namespace OpenNos.GameObject
                             inv.BoundCharacterId = session.Character.CharacterId;
                         }
                     }
-                    else if(mate != null)
+                    else if (mate != null)
                     {
                         session.SendPacket(mate.GenerateScPacket());
                     }

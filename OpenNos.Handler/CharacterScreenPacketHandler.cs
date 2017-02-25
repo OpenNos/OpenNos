@@ -132,57 +132,14 @@ namespace OpenNos.Handler
                             DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk2);
                             DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk3);
 
-                            IList<ItemInstanceDTO> startupInventory = new List<ItemInstanceDTO>();
-                            ItemInstance inventory = new WearableInstance // first weapon
-                            {
-                                CharacterId = newCharacter.CharacterId,
-                                Slot = (byte)EquipmentType.MainWeapon,
-                                Type = InventoryType.Wear,
-                                Amount = 1,
-                                ItemVNum = 1
-                            };
-                            startupInventory.Add(inventory);
+                            Inventory startupInventory = new Inventory((Character)newCharacter);
+                            startupInventory.AddNewToInventory(1, 1, InventoryType.Wear);
+                            startupInventory.AddNewToInventory(8, 1, InventoryType.Wear);
+                            startupInventory.AddNewToInventory(12, 1, InventoryType.Wear);
+                            startupInventory.AddNewToInventory(2024, 10, InventoryType.Etc);
+                            startupInventory.AddNewToInventory(2081, 1, InventoryType.Etc);
+                            startupInventory.GetAllItems().ForEach(i=>DAOFactory.IteminstanceDAO.InsertOrUpdate(i));
 
-                            inventory = new WearableInstance // second weapon
-                            {
-                                CharacterId = newCharacter.CharacterId,
-                                Slot = (byte)EquipmentType.SecondaryWeapon,
-                                Type = InventoryType.Wear,
-                                Amount = 1,
-                                ItemVNum = 8
-                            };
-                            startupInventory.Add(inventory);
-
-                            inventory = new WearableInstance // armor
-                            {
-                                CharacterId = newCharacter.CharacterId,
-                                Slot = (byte)EquipmentType.Armor,
-                                Type = InventoryType.Wear,
-                                Amount = 1,
-                                ItemVNum = 12
-                            };
-                            startupInventory.Add(inventory);
-
-                            inventory = new ItemInstance // snack
-                            {
-                                CharacterId = newCharacter.CharacterId,
-                                Type = InventoryType.Etc,
-                                Amount = 10,
-                                ItemVNum = 2024
-                            };
-                            startupInventory.Add(inventory);
-
-                            inventory = new ItemInstance // ammo
-                            {
-                                CharacterId = newCharacter.CharacterId,
-                                Slot = 1,
-                                Type = InventoryType.Etc,
-                                Amount = 1,
-                                ItemVNum = 2081
-                            };
-                            startupInventory.Add(inventory);
-
-                            DAOFactory.IteminstanceDAO.InsertOrUpdate(startupInventory);
                             LoadCharacters(packet);
                         }
                         else

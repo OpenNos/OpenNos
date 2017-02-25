@@ -25,6 +25,7 @@ namespace OpenNos.GameObject
         private Random _random;
         private Item item;
 
+
         #endregion
 
         #region Instantiation
