@@ -27,7 +27,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
             if (Effect == 0)
             {
@@ -54,7 +54,7 @@ namespace OpenNos.GameObject
                                 session.Character.IsSitting = false;
                                 session.SendPacket(session.Character.GenerateRest());
                             }
-                            if (delay)
+                            if (Option != 0)
                             {
                                 bool isUsed = false;
                                 switch (inv.ItemVNum)

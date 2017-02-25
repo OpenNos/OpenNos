@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
             switch (Effect)
             {
@@ -130,7 +130,7 @@ namespace OpenNos.GameObject
                     SpecialistInstance specialistInstance = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
                     if (session.Character.UseSp && specialistInstance != null)
                     {
-                        if (!delay)
+                        if (Option == 0)
                         {
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
                         }
@@ -154,7 +154,7 @@ namespace OpenNos.GameObject
                 case 203:
                     if (!session.Character.IsVehicled)
                     {
-                        if (!delay)
+                        if (Option == 0)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 2, session.Character.CharacterId, 1));
                         }
@@ -165,7 +165,7 @@ namespace OpenNos.GameObject
                 case 651:
                     if (session.Character.Inventory.GetAllItems().All(i => i.Type != InventoryType.Wear))
                     {
-                        if (!delay)
+                        if (Option == 0)
                         {
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
                         }
@@ -185,7 +185,7 @@ namespace OpenNos.GameObject
                 case 1000:
                     if (Morph > 0)
                     {
-                        if (!delay && !session.Character.IsVehicled)
+                        if (Option == 0 && !session.Character.IsVehicled)
                         {
                             if (session.Character.IsSitting)
                             {
@@ -196,7 +196,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            if (!session.Character.IsVehicled && delay)
+                            if (!session.Character.IsVehicled && Option != 0)
                             {
                                 session.Character.Speed = Speed;
                                 session.Character.IsVehicled = true;
@@ -302,7 +302,7 @@ namespace OpenNos.GameObject
                     }
                     break;
                 case 1006:
-                    if (!delay)
+                    if (Option == 0)
                     {
                         session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)inv.Type}^{inv.Slot}^2 {Language.Instance.GetMessageFromKey("ASK_PET_MAX")}");
                     }

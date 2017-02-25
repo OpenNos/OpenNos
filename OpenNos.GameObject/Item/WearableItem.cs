@@ -33,12 +33,26 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
             switch (Effect)
             {
                 default:
                     short slot = inv.Slot;
+                    InventoryType equipment = InventoryType.Wear;
+                    switch (Option)
+                    {
+                        case 1:
+                            equipment = InventoryType.FirstPartnerInventory;
+                            break;
+                        case 2:
+                            equipment = InventoryType.SecondPartnerInventory;
+                            break;
+                        case 3:
+                            equipment = InventoryType.ThirdPartnerInventory;
+                            break;
+                    }
+
                     InventoryType itemToWearType = inv.Type;
 
                     if (inv == null)
@@ -51,12 +65,12 @@ namespace OpenNos.GameObject
                     }
                     if (!inv.IsBound)
                     {
-                        if (!delay && (EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80) || EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit || EquipmentSlot == EquipmentType.WeaponSkin))
+                        if (Option == 0 && (EquipmentSlot == EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80) || EquipmentSlot == EquipmentType.CostumeHat || EquipmentSlot == EquipmentType.CostumeSuit || EquipmentSlot == EquipmentType.WeaponSkin))
                         {
                             session.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)itemToWearType}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                             return;
                         }
-                        if (delay)
+                        if (Option != 0)
                         {
                             inv.BoundCharacterId = session.Character.CharacterId;
                         }
@@ -89,7 +103,7 @@ namespace OpenNos.GameObject
 
                     if (session.Character.UseSp)
                     {
-                        SpecialistInstance sp = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
+                        SpecialistInstance sp = session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, equipment);
 
                         if (sp.Item.Element != 0 && EquipmentSlot == EquipmentType.Fairy && Element != sp.Item.Element && Element != sp.Item.SecondaryElement)
                         {
@@ -110,17 +124,17 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    ItemInstance currentlyEquippedItem = session.Character.Inventory.LoadBySlotAndType((short)EquipmentSlot, InventoryType.Wear);
+                    ItemInstance currentlyEquippedItem = session.Character.Inventory.LoadBySlotAndType((short)EquipmentSlot, equipment);
                     if (EquipmentSlot == EquipmentType.Amulet)
                     {
-                        session.SendPacket(session.Character.GenerateEff( 39));
+                        session.SendPacket(session.Character.GenerateEff(39));
                         inv.BoundCharacterId = session.Character.CharacterId;
                     }
 
                     if (currentlyEquippedItem == null)
                     {
                         // move from equipment to wear
-                        session.Character.Inventory.MoveInInventory(inv.Slot, itemToWearType, InventoryType.Wear);
+                        session.Character.Inventory.MoveInInventory(inv.Slot, itemToWearType, equipment);
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(itemToWearType, slot));
                         session.SendPacket(session.Character.GenerateStatChar());
                         session.CurrentMapInstance?.Broadcast(session.Character.GenerateEq());
@@ -130,7 +144,7 @@ namespace OpenNos.GameObject
                     else
                     {
                         // move from wear to equipment and back
-                        session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, InventoryType.Wear, itemToWearType, inv.Slot);
+                        session.Character.Inventory.MoveInInventory(currentlyEquippedItem.Slot, equipment, itemToWearType, inv.Slot);
 
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(itemToWearType, slot));
                         session.SendPacket(currentlyEquippedItem.GenerateInventoryAdd());
@@ -143,7 +157,7 @@ namespace OpenNos.GameObject
 
                     if (EquipmentSlot == EquipmentType.Fairy)
                     {
-                        WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, InventoryType.Wear);
+                        WearableInstance fairy = session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, equipment);
                         session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, CharacterHelper.LoadFairyXPData(fairy.ElementRate + fairy.Item.ElementRate)), 10));
                     }
                     break;

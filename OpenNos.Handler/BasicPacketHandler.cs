@@ -926,11 +926,11 @@ namespace OpenNos.Handler
                             {
                                 if (packetsplit.Length == 6)
                                 {
-                                    box.Item.Use(Session, ref box, true, new string[] { packetsplit[5] });
+                                    box.Item.Use(Session, ref box, 1, new string[] { packetsplit[5] });
                                 }
                                 else
                                 {
-                                    box.Item.Use(Session, ref box, true);
+                                    box.Item.Use(Session, ref box, 1);
                                 }
                             }
                         }

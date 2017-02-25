@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
             switch (Effect)
             {
@@ -66,7 +66,7 @@ namespace OpenNos.GameObject
                         switch (EffectValue)
                         {
                             case 0:
-                                if (!delay)
+                                if (Option == 0)
                                 {
                                     session.SendPacket(UserInterfaceHelper.Instance.GenerateDialog($"#u_i^{x1}^{x2}^{x3}^{x4}^1 #u_i^{x1}^{x2}^{x3}^{x4}^2 {Language.Instance.GetMessageFromKey("WANT_TO_SAVE_POSITION")}"));
                                 }
@@ -139,7 +139,7 @@ namespace OpenNos.GameObject
                                 break;
 
                             case 2:
-                                if (!delay)
+                                if (Option == 0)
                                 {
                                     session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(5000, 7, $"#u_i^{x1}^{x2}^{x3}^{x4}^1"));
                                 }
@@ -216,7 +216,7 @@ namespace OpenNos.GameObject
                 case 15:
                     if (!session.Character.IsVehicled)
                     {
-                        if (!delay)
+                        if (Option == 0)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 3,session.Character.CharacterId, 1));
                         }
@@ -227,7 +227,7 @@ namespace OpenNos.GameObject
                 case 16:
                     if (!session.Character.IsVehicled)
                     {
-                        if (!delay)
+                        if (Option == 0)
                         {
                             session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(10, 4,session.Character.CharacterId, 1));
                         }

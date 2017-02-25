@@ -34,12 +34,12 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public override void Use(ClientSession session, ref ItemInstance inv, bool delay = false, string[] packetsplit = null)
+        public override void Use(ClientSession session, ref ItemInstance inv, byte Option = 0, string[] packetsplit = null)
         {
             switch (Effect)
             {
                 case 0:
-                    if (!delay)
+                    if (Option == 0)
                     {
                         if (packetsplit.Length == 9)
                         {
@@ -100,7 +100,7 @@ namespace OpenNos.GameObject
                     }
                     break;
                 case 1:
-                    if (!delay)
+                    if (Option == 0)
                     {
                         session.SendPacket($"qna #guri^300^8023^{inv.Slot} {Language.Instance.GetMessageFromKey("ASK_RELEASE_PET")}");
                     }

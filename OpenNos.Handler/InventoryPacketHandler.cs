@@ -1620,7 +1620,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 5 && short.TryParse(packetsplit[5], out slot) && byte.TryParse(packetsplit[4], out type))
             {
                 ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(slot, (InventoryType)type);
-                inv?.Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#', packetsplit);
+                inv?.Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#'? (byte)1 : (byte)0, packetsplit);
             }
         }
         public void Wear(WearPacket packet)
@@ -1635,7 +1635,7 @@ namespace OpenNos.Handler
                 ItemInstance inv = Session.Character.Inventory.LoadBySlotAndType(packet.InventorySlot, InventoryType.Equipment);
                 if (inv?.Item != null)
                 {
-                    inv.Item.Use(Session, ref inv);
+                    inv.Item.Use(Session, ref inv, packet.Type);
                     Session.SendPacket(Session.Character.GenerateEff(123));
                 }
 
