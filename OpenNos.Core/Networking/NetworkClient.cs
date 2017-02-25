@@ -69,7 +69,7 @@ namespace OpenNos.Core
 
         public void SendPacket(string packet, byte priority = 10)
         {
-            if (!IsDisposing && packet != null)
+            if (!IsDisposing && packet != null && packet != string.Empty)
             {
                 ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
 
@@ -86,7 +86,7 @@ namespace OpenNos.Core
         public void SendPackets(IEnumerable<string> packets, byte priority = 10)
         {
             // TODO: maybe send at once with delimiter
-            foreach (string packet in packets.Where(p=>p!= string.Empty))
+            foreach (string packet in packets)
             {
                 SendPacket(packet, priority);
             }

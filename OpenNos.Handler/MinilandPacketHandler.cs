@@ -403,22 +403,7 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("#mg")]
-        public void SpecialUseItem(string packet)
-        {
-            string[] packetsplit = packet.Split(' ', '^');
-            byte Type;
-            int Point;
-            short MinigameVnum;
-            byte Id;
-            if (packetsplit.Length > 4
-                && byte.TryParse(packetsplit[2], out Id)
-                && short.TryParse(packetsplit[3], out MinigameVnum)
-                 && int.TryParse(packetsplit[4], out Point)
-                  && byte.TryParse(packetsplit[1], out Type)
-                  )
-                MinigamePlay(new MinigamePacket { Id = Id, MinigameVNum = MinigameVnum, Point = Point, Type = Type });
-        }
+  
 
         public void UseMinilandObject(UseobjPacket packet)
         {

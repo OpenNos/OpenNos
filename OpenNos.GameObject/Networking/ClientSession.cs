@@ -279,7 +279,7 @@ namespace OpenNos.GameObject
         // SendPacket instead. SendPacket with string parameter should only be used for debugging.")]
         public void SendPacket(string packet, byte priority = 10)
         {
-            if (!IsDisposing && packet != string.Empty)
+            if (!IsDisposing)
             {
                 _client.SendPacket(packet, priority);
             }
@@ -287,7 +287,7 @@ namespace OpenNos.GameObject
 
         public void SendPacket(PacketDefinition packet, byte priority = 10)
         {
-            if (!IsDisposing && packet != null)
+            if (!IsDisposing)
             {
                 _client.SendPacket(PacketFactory.Serialize(packet), priority);
             }
@@ -295,7 +295,7 @@ namespace OpenNos.GameObject
 
         public void SendPacketAfterWait(string packet, int Millisecond)
         {
-            if (!IsDisposing && packet != string.Empty)
+            if (!IsDisposing)
             {
                 Observable.Timer(TimeSpan.FromMilliseconds(Millisecond))
                 .Subscribe(
@@ -308,7 +308,7 @@ namespace OpenNos.GameObject
 
         public void SendPacketFormat(string packet, params object[] param)
         {
-            if (!IsDisposing && packet != string.Empty)
+            if (!IsDisposing)
             {
                 _client.SendPacketFormat(packet, param);
             }
@@ -432,8 +432,8 @@ namespace OpenNos.GameObject
 
                 foreach (string packet in packetConcatenated.Split(new[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    string[] packetsplit = packet.Split(' ', '^');
-                    string packetstring = packet;
+                    string packetstring = packet.Replace('^', ' ');
+                    string[] packetsplit = packetstring.Split(' ');
 
                     if (_encryptor.HasCustomParameter)
                     {
@@ -464,11 +464,11 @@ namespace OpenNos.GameObject
                         {
                             if (_waitForPacketList.Count != _waitForPacketsAmount - 1)
                             {
-                                _waitForPacketList.Add(packet);
+                                _waitForPacketList.Add(packetstring);
                             }
                             else
                             {
-                                _waitForPacketList.Add(packet);
+                                _waitForPacketList.Add(packetstring);
                                 _waitForPacketsAmount = null;
                                 string queuedPackets = string.Join(" ", _waitForPacketList.ToArray());
                                 string header = queuedPackets.Split(' ', '^')[1];
@@ -479,17 +479,16 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            string[] packetHeader = packet.Split(new[] { ' ', '^' }, StringSplitOptions.RemoveEmptyEntries);
-                            if (packetHeader.Length > 1)
+                            if (packetsplit.Length > 1)
                             {
-                                if (packetHeader[1][0] == '/' || packetHeader[1][0] == ':' || packetHeader[1][0] == ';')
+                                if (packetsplit[1][0] == '/' || packetsplit[1][0] == ':' || packetsplit[1][0] == ';')
                                 {
-                                    packetHeader[1] = packetHeader[1][0].ToString();
+                                    packetsplit[1] = packetsplit[1][0].ToString();
                                     packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
                                 }
-                                if (packetHeader[1] != "0")
+                                if (packetsplit[1] != "0")
                                 {
-                                    TriggerHandler(packetHeader[1], packetstring, false);
+                                    TriggerHandler(packetsplit[1].Replace("#", ""), packetstring, false);
                                 }
                             }
                         }
@@ -505,7 +504,7 @@ namespace OpenNos.GameObject
                             packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");
                         }
 
-                        TriggerHandler(packetHeader, packetstring, false);
+                        TriggerHandler(packetHeader.Replace("#", ""), packetstring, false);
                     }
                 }
             }

@@ -100,7 +100,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateGInfo());
         }
 
-        [Packet("#glmk")]
+        [Packet("glmk")]
         public void CreateFamily(string packet)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
@@ -269,7 +269,7 @@ namespace OpenNos.Handler
             Session.Character.Inventory.FDepositItem(packet.Inventory, packet.Slot, packet.Amount, packet.NewSlot, ref item, ref itemdest);
         }
 
-        [Packet("#glrm")]
+        [Packet("glrm")]
         public void FamilyDismiss(string packet)
         {
             if (Session.Character.Family == null || Session.Character.FamilyCharacter == null || Session.Character.FamilyCharacter.Authority != FamilyAuthority.Head)
@@ -764,7 +764,7 @@ namespace OpenNos.Handler
             Session.Character.FamilyInviteCharacters.Add(otherSession.Character.CharacterId);
         }
 
-        [Packet("#gjoin")]
+        [Packet("gjoin")]
         public void JoinFamily(string packet)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
