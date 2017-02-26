@@ -76,7 +76,7 @@ namespace OpenNos.Handler
             ItemInstance itemdest = Session.Character.Inventory.LoadBySlotAndType(packet.NewSlot, packet.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse);
 
             // check if the destination slot is out of range
-            if (packet.NewSlot >= (packet.PartnerBackpack ? Session.Character.WareHouseSize : (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)))
+            if (packet.NewSlot >= (packet.PartnerBackpack ? (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0) : Session.Character.WareHouseSize))
             {
                 return;
             }
@@ -825,7 +825,7 @@ namespace OpenNos.Handler
             ItemInstance newInventory;
 
             // check if the destination slot is out of range
-            if (packet.NewSlot >= (packet.PartnerBackpack ? Session.Character.WareHouseSize : (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)))
+            if (packet.NewSlot >= (packet.PartnerBackpack ? (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0) : Session.Character.WareHouseSize))
             {
                 return;
             }
