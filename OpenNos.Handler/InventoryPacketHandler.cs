@@ -266,13 +266,12 @@ namespace OpenNos.Handler
             Session.Character.ExchangeInfo.Validate = true;
         }
 
-        [Packet("req_exc")]
         public void ExchangeRequest(ExchangeRequestPacket packet)
         {
             Logger.Debug(Session.Character.GenerateIdentity(), packet.ToString());
             if (packet != null)
             {
-                if (Session.Character.MapInstanceId != ServerManager.Instance.GetProperty<Guid>(packet.CharacterId, nameof(Character.MapInstanceId)))
+                if (packet.CharacterId != 0 && Session.Character.MapInstanceId != ServerManager.Instance.GetProperty<Guid>(packet.CharacterId, nameof(Character.MapInstanceId)))
                 {
                     ServerManager.Instance.SetProperty(packet.CharacterId, nameof(Character.ExchangeInfo), null);
                     Session.Character.ExchangeInfo = null;
