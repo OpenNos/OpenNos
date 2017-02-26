@@ -1707,7 +1707,7 @@ namespace OpenNos.Handler
             foreach (ItemInstance item in sourceSession.Character.ExchangeInfo.ExchangeList)
             {
                 ItemInstance invtemp = sourceSession.Character.Inventory.GetItemInstanceById(item.Id);
-                if (invtemp != null)
+                if (invtemp != null && invtemp.Amount >= item.Amount)
                 {
                     sourceSession.Character.Inventory.RemoveItemAmountFromInventory(item.Amount, invtemp.Id);
                 }
