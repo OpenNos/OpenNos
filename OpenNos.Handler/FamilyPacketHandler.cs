@@ -119,7 +119,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                     return;
                 }
-                string name = packet.Split(' ')[1];
+                string name = packet.Split(' ')[2];
                 if (DAOFactory.FamilyDAO.LoadByName(name) != null)
                 {
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("FAMILY_NAME_ALREADY_USED")));
@@ -770,7 +770,7 @@ namespace OpenNos.Handler
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             string[] packetsplit = packet.Split(' ');
             long characterId;
-            if (packetsplit.Length == 3 && long.TryParse(packetsplit[2], out characterId) && packetsplit[1] == "1")
+            if (packetsplit.Length == 4 && long.TryParse(packetsplit[3], out characterId) && packetsplit[2] == "1")
             {
                 ClientSession inviteSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
                 if (inviteSession != null &&
