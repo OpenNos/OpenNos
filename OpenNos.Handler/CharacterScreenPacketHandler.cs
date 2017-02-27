@@ -1,4 +1,5 @@
 ﻿using OpenNos.Core;
+using OpenNos.Core.Handling;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
@@ -15,24 +16,18 @@ namespace OpenNos.Handler
 {
     public class CharacterScreenPacketHandler : IPacketHandler
     {
-        #region Members
-
-        private readonly ClientSession _session;
-
-        #endregion
-
         #region Instantiation
 
         public CharacterScreenPacketHandler(ClientSession session)
         {
-            _session = session;
+            Session = session;
         }
 
         #endregion
 
         #region Properties
 
-        private ClientSession Session => _session;
+        private ClientSession Session { get; }
 
         #endregion
 
@@ -138,7 +133,7 @@ namespace OpenNos.Handler
                             startupInventory.AddNewToInventory(12, 1, InventoryType.Wear);
                             startupInventory.AddNewToInventory(2024, 10, InventoryType.Etc);
                             startupInventory.AddNewToInventory(2081, 1, InventoryType.Etc);
-                            startupInventory.GetAllItems().ForEach(i=>DAOFactory.IteminstanceDAO.InsertOrUpdate(i));
+                            startupInventory.GetAllItems().ForEach(i => DAOFactory.IteminstanceDAO.InsertOrUpdate(i));
 
                             LoadCharacters(packet);
                         }
@@ -155,6 +150,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// Char_DEL packet
+        /// </summary>
+        /// <param name="characterDeletePacket"></param>
         public void DeleteCharacter(CharacterDeletePacket characterDeletePacket)
         {
             Logger.Debug(Session.GenerateIdentity(), characterDeletePacket.ToString());
@@ -278,16 +277,17 @@ namespace OpenNos.Handler
             Session.SendPacket("clist_end");
         }
 
-        [Packet("select")]
-        public void SelectCharacter(string packet)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="selectPacket"></param>
+        public void SelectCharacter(SelectPacket selectPacket)
         {
             try
             {
-                Logger.Debug(Session.GenerateIdentity(), packet);
                 if (Session?.Account != null && !Session.HasSelectedCharacter)
                 {
-                    string[] packetsplit = packet.Split(' ');
-                    Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2])) as Character;
+                    Character character = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, selectPacket.Slot) as Character;
                     if (character != null)
                     {
                         character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();

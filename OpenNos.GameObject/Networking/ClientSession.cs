@@ -23,6 +23,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using OpenNos.Core.Handling;
 
 namespace OpenNos.GameObject
 {
@@ -33,7 +34,6 @@ namespace OpenNos.GameObject
         public bool HealthStop = false;
 
         private static EncryptionBase _encryptor;
-        private Account _account;
         private Character _character;
         private INetworkClient _client;
         private IDictionary<string, HandlerMethodReference> _handlerMethods;
@@ -82,18 +82,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public Account Account
-        {
-            get
-            {
-                return _account;
-            }
-
-            set
-            {
-                _account = value;
-            }
-        }
+        public Account Account { get; private set; }
 
         public Character Character
         {
@@ -114,13 +103,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public long ClientId
-        {
-            get
-            {
-                return _client.ClientId;
-            }
-        }
+        public long ClientId => _client.ClientId;
 
         public MapInstance CurrentMapInstance { get; set; }
 
@@ -137,41 +120,17 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool HasCurrentMapInstance
-        {
-            get
-            {
-                return CurrentMapInstance != null;
-            }
-        }
+        public bool HasCurrentMapInstance => CurrentMapInstance != null;
 
         public bool HasSelectedCharacter { get; set; }
 
-        public bool HasSession
-        {
-            get
-            {
-                return _client != null;
-            }
-        }
+        public bool HasSession => _client != null;
 
-        public string IpAddress
-        {
-            get
-            {
-                return _client.IpAddress;
-            }
-        }
+        public string IpAddress => _client.IpAddress;
 
         public bool IsAuthenticated { get; set; }
 
-        public bool IsConnected
-        {
-            get
-            {
-                return _client.IsConnected;
-            }
-        }
+        public bool IsConnected => _client.IsConnected;
 
         public bool IsDisposing
         {
@@ -186,21 +145,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool IsLocalhost
-        {
-            get
-            {
-                return IpAddress.Contains("127.0.0.1");
-            }
-        }
+        public bool IsLocalhost => IpAddress.Contains("127.0.0.1");
 
-        public bool IsOnMap
-        {
-            get
-            {
-                return CurrentMapInstance != null;
-            }
-        }
+        public bool IsOnMap => CurrentMapInstance != null;
 
         public int LastKeepAliveIdentity { get; set; }
 
@@ -511,7 +458,7 @@ namespace OpenNos.GameObject
         }
 
         /// <summary>
-        /// This will be triggered when the underlying NetworkCleint receives a packet.
+        /// This will be triggered when the underlying NetworkClient receives a packet.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

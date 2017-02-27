@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using OpenNos.Core.Handling;
 
 namespace OpenNos.Handler
 {
@@ -2164,7 +2165,7 @@ namespace OpenNos.Handler
         /// $Upgrade Command
         /// </summary>
         /// <param name="upgradePacket"></param>
-        public void Upgrade(UpgradePacket upgradePacket)
+        public void Upgrade(UpgradeCommandPacket upgradePacket)
         {
             Logger.Debug("Upgrade Command", Session.Character.GenerateIdentity());
             if (upgradePacket != null)

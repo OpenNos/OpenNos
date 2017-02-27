@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using OpenNos.Core.Handling;
 
 namespace OpenNos.Handler
 {
@@ -45,6 +46,10 @@ namespace OpenNos.Handler
 
         #region Methods
 
+        /// <summary>
+        /// fauth packet
+        /// </summary>
+        /// <param name="packet"></param>
         public void ChangeAuthority(FauthPacket packet)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
@@ -180,7 +185,10 @@ namespace OpenNos.Handler
                 }
             }
         }
-
+        /// <summary>
+        /// today_cts packet
+        /// </summary>
+        /// <param name="todayPacket"></param>
         public void FamilyChangeMessage(TodayPacket todayPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
@@ -235,6 +243,10 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// f_deposit packet
+        /// </summary>
+        /// <param name="packet"></param>
         public void FamilyDeposit(FDepositPacket packet)
         {
             if (Session.Character.Family == null ||
@@ -567,22 +579,31 @@ namespace OpenNos.Handler
             }
         }
 
+        /// <summary>
+        /// frank_cts packet
+        /// </summary>
+        /// <param name="frankCtsPacket"></param>
         public void FamilyRank(FrankCtsPacket frankCtsPacket)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateFrank(frankCtsPacket.Type));
         }
 
+        /// <summary>
+        /// fhis_cts packet
+        /// </summary>
+        /// <param name="fhistCtsPacket"></param>
         public void FamilyRefreshHist(FhistCtsPacket fhistCtsPacket)
         {
             Session.SendPackets(Session.Character.GetFamilyHistory());
         }
 
-        public void FamilyRepos(FReposPacket packet)
+        /// <summary>
+        /// f_repos packet
+        /// </summary>
+        /// <param name="fReposPacket"></param>
+        public void FamilyRepos(FReposPacket fReposPacket)
         {
-            ItemInstance sourceInventory;
-            ItemInstance destinationInventory;
-
             if (Session.Character.Family == null ||
                 !
              (Session.Character.FamilyCharacter.Authority == FamilyAuthority.Head
@@ -597,26 +618,26 @@ namespace OpenNos.Handler
             }
 
             // check if the character is allowed to move the item
-            if (Session.Character.InExchangeOrTrade || packet.Amount <= 0)
+            if (Session.Character.InExchangeOrTrade || fReposPacket.Amount <= 0)
             {
                 return;
             }
-            if (packet.NewSlot > Session.Character.Family.WarehouseSize)
+            if (fReposPacket.NewSlot > Session.Character.Family.WarehouseSize)
             {
                 return;
             }
 
-            sourceInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.OldSlot, InventoryType.FamilyWareHouse);
-            destinationInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(packet.NewSlot, InventoryType.FamilyWareHouse);
+            var sourceInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(fReposPacket.OldSlot, InventoryType.FamilyWareHouse);
+            var destinationInventory = Session.Character.Family.Warehouse.LoadBySlotAndType(fReposPacket.NewSlot, InventoryType.FamilyWareHouse);
 
-            if (sourceInventory != null && packet.Amount <= sourceInventory.Amount)
+            if (sourceInventory != null && fReposPacket.Amount <= sourceInventory.Amount)
             {
                 if (destinationInventory == null)
                 {
                     destinationInventory = sourceInventory.DeepCopy();
-                    sourceInventory.Amount -= packet.Amount;
-                    destinationInventory.Amount = packet.Amount;
-                    destinationInventory.Slot = packet.NewSlot;
+                    sourceInventory.Amount -= fReposPacket.Amount;
+                    destinationInventory.Amount = fReposPacket.Amount;
+                    destinationInventory.Slot = fReposPacket.NewSlot;
                     if (sourceInventory.Amount > 0)
                     {
                         destinationInventory.Id = Guid.NewGuid();
@@ -630,7 +651,7 @@ namespace OpenNos.Handler
                 {
                     if (destinationInventory.ItemVNum == sourceInventory.ItemVNum && (byte)sourceInventory.Item.Type != 0)
                     {
-                        if (destinationInventory.Amount + packet.Amount > 99)
+                        if (destinationInventory.Amount + fReposPacket.Amount > 99)
                         {
                             int saveItemCount = destinationInventory.Amount;
                             destinationInventory.Amount = 99;
@@ -638,8 +659,8 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            destinationInventory.Amount += packet.Amount;
-                            sourceInventory.Amount -= packet.Amount;
+                            destinationInventory.Amount += fReposPacket.Amount;
+                            sourceInventory.Amount -= fReposPacket.Amount;
                             if (sourceInventory.Amount == 0)
                             {
                                 DAOFactory.IteminstanceDAO.Delete(sourceInventory.Id);
@@ -649,8 +670,8 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        destinationInventory.Slot = packet.OldSlot;
-                        sourceInventory.Slot = packet.NewSlot;
+                        destinationInventory.Slot = fReposPacket.OldSlot;
+                        sourceInventory.Slot = fReposPacket.NewSlot;
                     }
                 }
             }
@@ -662,11 +683,15 @@ namespace OpenNos.Handler
             {
                 DAOFactory.IteminstanceDAO.InsertOrUpdate(destinationInventory);
             }
-            Session.SendPacket((destinationInventory != null) ? destinationInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(packet.NewSlot));
-            Session.SendPacket((sourceInventory != null) ? sourceInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(packet.OldSlot));
+            Session.SendPacket((destinationInventory != null) ? destinationInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(fReposPacket.NewSlot));
+            Session.SendPacket((sourceInventory != null) ? sourceInventory.GenerateFStash() : UserInterfaceHelper.Instance.GenerateFStashRemove(fReposPacket.OldSlot));
             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
         }
 
+        /// <summary>
+        /// f_withdraw packet
+        /// </summary>
+        /// <param name="packet"></param>
         public void FamilyWithdraw(FWithdrawPacket packet)
         {
             if (Session.Character.Family == null ||

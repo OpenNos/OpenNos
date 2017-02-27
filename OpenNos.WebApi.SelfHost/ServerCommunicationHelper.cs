@@ -21,13 +21,7 @@ namespace OpenNos.WebApi.SelfHost
 
         #region Properties
 
-        public static ServerCommunicationHelper Instance
-        {
-            get
-            {
-                return _instance ?? (_instance = new ServerCommunicationHelper());
-            }
-        }
+        public static ServerCommunicationHelper Instance => _instance ?? (_instance = new ServerCommunicationHelper());
 
         public Dictionary<string, long> RegisteredAccountLogins
         {

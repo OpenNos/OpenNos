@@ -14,15 +14,12 @@
 
 using System;
 
-namespace OpenNos.Core
+namespace OpenNos.Core.Handling
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class PacketAttribute : Attribute
     {
         #region Members
-
-        private int _amount;
-        private string _header;
 
         #endregion
 
@@ -30,29 +27,17 @@ namespace OpenNos.Core
 
         public PacketAttribute(string header, int amount = 1)
         {
-            _header = header;
-            _amount = amount;
+            Header = header;
+            Amount = amount;
         }
 
         #endregion
 
         #region Properties
 
-        public int Amount
-        {
-            get
-            {
-                return _amount;
-            }
-        }
+        public int Amount { get; }
 
-        public string Header
-        {
-            get
-            {
-                return _header;
-            }
-        }
+        public string Header { get; }
 
         #endregion
     }

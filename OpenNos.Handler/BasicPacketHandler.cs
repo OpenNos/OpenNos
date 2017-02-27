@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using OpenNos.Core.Handling;
 using OpenNos.GameObject.Packets.ClientPackets;
 
 namespace OpenNos.Handler

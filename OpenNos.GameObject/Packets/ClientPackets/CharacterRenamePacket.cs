@@ -2,7 +2,7 @@
 
 using OpenNos.Core;
 
-namespace OpenNos.GameObject.Packets.ServerPackets
+namespace OpenNos.GameObject
 {
     [PacketHeader("Char_REN")]
     public class CharacterRenamePacket : PacketDefinition

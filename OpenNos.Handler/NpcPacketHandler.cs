@@ -20,6 +20,7 @@ using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenNos.Core.Handling;
 
 namespace OpenNos.Handler
 {
@@ -48,6 +49,10 @@ namespace OpenNos.Handler
 
         #region Methods
 
+        /// <summary>
+        /// buy packet
+        /// </summary>
+        /// <param name="buyPacket"></param>
         public void BuyShop(BuyPacket buyPacket)
         {
             if (Session.Character.InExchangeOrTrade)
@@ -79,13 +84,13 @@ namespace OpenNos.Handler
                         }
                         if (item.Price * amount + ServerManager.Instance.GetProperty<long>(shop.Value.OwnerId, nameof(Character.Gold)) > ServerManager.MaxGold)
                         {
-                            Session.SendPacket( UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("MAX_GOLD")));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("MAX_GOLD")));
                             return;
                         }
 
                         if (item.Price * amount >= Session.Character.Gold)
                         {
-                            Session.SendPacket( UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
+                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                             return;
                         }
 
@@ -268,7 +273,7 @@ namespace OpenNos.Handler
                                 {
                                     if (price < 0 || price * percent > Session.Character.Gold)
                                     {
-                                        Session.SendPacket( UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
+                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                                         return;
                                     }
                                 }
@@ -276,7 +281,7 @@ namespace OpenNos.Handler
                                 {
                                     if (Reputprice <= 0 || Reputprice > Session.Character.Reput)
                                     {
-                                        Session.SendPacket( UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_REPUT")));
+                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_REPUT")));
                                         return;
                                     }
                                     byte ra = (byte)ServerManager.RandomNumber();
@@ -297,7 +302,7 @@ namespace OpenNos.Handler
                                 List<ItemInstance> newItem = Session.Character.Inventory.AddNewToInventory(item.ItemVNum, amount, Rare: rare, Upgrade: item.Upgrade, Design: item.Color);
                                 if (!newItem.Any())
                                 {
-                                    Session.SendPacket( UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE")));
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE")));
                                     return;
                                 }
 
@@ -305,13 +310,13 @@ namespace OpenNos.Handler
                                 {
                                     if (iteminfo.ReputPrice == 0)
                                     {
-                                        Session.SendPacket( UserInterfaceHelper.Instance.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
+                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
                                         Session.Character.Gold -= (long)(price * percent);
                                         Session.SendPacket(Session.Character.GenerateGold());
                                     }
                                     else
                                     {
-                                        Session.SendPacket( UserInterfaceHelper.Instance.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
+                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
                                         Session.Character.Reput -= Reputprice;
                                         Session.SendPacket(Session.Character.GenerateFd());
                                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
@@ -470,6 +475,11 @@ namespace OpenNos.Handler
                 }
             }
         }
+
+        /// <summary>
+        /// n_run packet
+        /// </summary>
+        /// <param name="packet"></param>
         public void NpcRunFunction(NRunPacket packet)
         {
             Logger.Debug(Session.Character.GenerateIdentity(), packet.ToString());
@@ -479,15 +489,25 @@ namespace OpenNos.Handler
                 NRunHandler.NRun(Session, packet);
             }
         }
+
+        /// <summary>
+        /// say_p packet
+        /// </summary>
+        /// <param name="packet"></param>
         public void PetTalk(SayPPacket packet)
         {
-            Mate mate = Session.Character.Mates.FirstOrDefault(s=>s.MateTransportId == packet.PetId);
+            Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == packet.PetId);
             if (mate != null)
             {
-                Session.CurrentMapInstance.Broadcast(mate.GenerateSay(packet.Message,2));
+                Session.CurrentMapInstance.Broadcast(mate.GenerateSay(packet.Message, 2));
             }
-               
+
         }
+
+        /// <summary>
+        /// ptctl packet
+        /// </summary>
+        /// <param name="packet"></param>
         public void PetMove(PtCtlPacket packet)
         {
             string[] packetsplit = packet.PacketEnd.Split(' ');
@@ -599,7 +619,7 @@ namespace OpenNos.Handler
                                     Session.Character.Inventory.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
                                 Session.SendPacket($"pdti 11 {inv.First().ItemVNum} {rec.Amount} 29 {inv.First().Upgrade} 0");
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1,Session.Character.CharacterId, 1324));
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateGuri(19, 1, Session.Character.CharacterId, 1324));
 
                                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), inv.First().Item.Name, rec.Amount), 0));
                             }
@@ -638,7 +658,7 @@ namespace OpenNos.Handler
                 }
                 if (!inv.Item.IsSoldable)
                 {
-                    Session.SendPacket( UserInterfaceHelper.Instance.GenerateShopMemo(2, string.Format(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"))));
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(2, string.Format(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"))));
                     return;
                 }
                 long price = inv.Item.ItemType == ItemType.Sell ? inv.Item.Price : inv.Item.Price / 20;
@@ -650,7 +670,7 @@ namespace OpenNos.Handler
                     return;
                 }
                 Session.Character.Gold += price * amount;
-                Session.SendPacket( UserInterfaceHelper.Instance.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), inv.Item.Name, amount)));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), inv.Item.Name, amount)));
 
                 Session.Character.Inventory.RemoveItemAmountFromInventory(amount, inv.Id);
                 Session.SendPacket(Session.Character.GenerateGold());
@@ -906,7 +926,7 @@ namespace OpenNos.Handler
                 shopOwnerSession.Character.Inventory.Remove(shopitem.ItemInstance.Id);
 
                 // send empty slot to owners inventory
-                shopOwnerSession.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove( shopitem.ItemInstance.Type, shopitem.ItemInstance.Slot));
+                shopOwnerSession.SendPacket(UserInterfaceHelper.Instance.GenerateInventoryRemove(shopitem.ItemInstance.Type, shopitem.ItemInstance.Slot));
 
                 // remove the sell amount
                 shopitem.SellAmount = 0;

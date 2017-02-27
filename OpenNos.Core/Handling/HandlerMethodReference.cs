@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
 using System;
 using System.Linq;
+using OpenNos.Domain;
 
-namespace OpenNos.Core
+namespace OpenNos.Core.Handling
 {
     public class HandlerMethodReference
     {
@@ -47,22 +47,22 @@ namespace OpenNos.Core
 
         #region Properties
 
-        public AuthorityType Authority { get; set; }
+        public AuthorityType Authority { get; private set; }
 
-        public Action<object, object> HandlerMethod { get; set; }
+        public Action<object, object> HandlerMethod { get; private set; }
 
-        public PacketAttribute HandlerMethodAttribute { get; set; }
+        public PacketAttribute HandlerMethodAttribute { get; }
 
         /// <summary>
         /// Unique identification of the Packet by Header
         /// </summary>
-        public string Identification { get; set; }
+        public string Identification { get; private set; }
 
-        public Type PacketDefinitionParameterType { get; set; }
+        public Type PacketDefinitionParameterType { get; }
 
-        public IPacketHandler ParentHandler { get; set; }
+        public IPacketHandler ParentHandler { get; private set; }
 
-        public bool PassNonParseablePacket { get; set; }
+        public bool PassNonParseablePacket { get; private set; }
 
         #endregion
     }
