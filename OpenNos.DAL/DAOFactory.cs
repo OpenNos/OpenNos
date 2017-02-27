@@ -79,7 +79,7 @@ namespace OpenNos.DAL
 
                 if (!_useMock)
                 {
-                    MigrationHelper.GenerateSQLScript();
+                    //MigrationHelper.GenerateSQLScript();
                 }
             }
             catch (Exception ex)

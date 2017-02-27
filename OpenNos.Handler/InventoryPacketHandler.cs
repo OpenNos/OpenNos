@@ -82,7 +82,7 @@ namespace OpenNos.Handler
             ItemInstance itemdest = Session.Character.Inventory.LoadBySlotAndType(depositPacket.NewSlot, depositPacket.PartnerBackpack ? InventoryType.PetWarehouse : InventoryType.Warehouse);
 
             // check if the destination slot is out of range
-            if (depositPacket.NewSlot >= (depositPacket.PartnerBackpack ? Session.Character.WareHouseSize : (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)))
+            if (depositPacket.NewSlot >= (depositPacket.PartnerBackpack ? (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0) : Session.Character.WareHouseSize))
             {
                 return;
             }
@@ -836,7 +836,7 @@ namespace OpenNos.Handler
             ItemInstance newInventory;
 
             // check if the destination slot is out of range
-            if (reposPacket.NewSlot >= (reposPacket.PartnerBackpack ? Session.Character.WareHouseSize : (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)))
+            if (reposPacket.NewSlot >= (reposPacket.PartnerBackpack ? (Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0) : Session.Character.WareHouseSize))
             {
                 return;
             }
@@ -1725,7 +1725,7 @@ namespace OpenNos.Handler
             foreach (ItemInstance item in sourceSession.Character.ExchangeInfo.ExchangeList)
             {
                 ItemInstance invtemp = sourceSession.Character.Inventory.GetItemInstanceById(item.Id);
-                if (invtemp != null)
+                if (invtemp != null && invtemp.Amount >= item.Amount)
                 {
                     sourceSession.Character.Inventory.RemoveItemAmountFromInventory(item.Amount, invtemp.Id);
                 }

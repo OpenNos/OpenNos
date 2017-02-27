@@ -736,7 +736,7 @@ namespace OpenNos.Handler
                     Session.Character.IsWaitingForEvent = true;
                 }
             }
-            else if (guriPacket[2] == "199")
+            else if (guriPacket[2] == "199" && guriPacket[3] == "2")
             {
                 short[] listWingOfFriendship = { 2160, 2312, 10048 };
                 short vnumToUse = -1;
@@ -750,7 +750,7 @@ namespace OpenNos.Handler
                 if (vnumToUse != -1)
                 {
                     long charId;
-                    if (!long.TryParse(guriPacket[3], out charId))
+                    if (!long.TryParse(guriPacket[4], out charId))
                     {
                         return;
                     }
@@ -974,7 +974,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Language.Instance.GetMessageFromKey("CHARACTER_NOT_IN_FRIENDLIST"));
                     return;
                 }
-                Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 4, $"#guri^199^{charId}"));
+                Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(3000, 4, $"#guri^199^2^{charId}"));
             }
             else if (guriPacket[2] == "201")
             {
