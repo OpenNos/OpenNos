@@ -69,6 +69,9 @@ namespace OpenNos.Login
                         // register EF -> GO and GO -> EF mappings
                         RegisterMappings();
 
+                        // initialize PacketSerialization
+                        PacketFactory.Initialize<WalkPacket>();
+
                         NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>("127.0.0.1", port, typeof(LoginPacketHandler), typeof(LoginEncryption), false);
 
                         //cleanup api

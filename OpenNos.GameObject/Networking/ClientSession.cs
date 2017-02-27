@@ -538,9 +538,9 @@ namespace OpenNos.GameObject
                             if (methodReference.PacketDefinitionParameterType != null)
                             {
                                 //check for the correct authority
-                                if ((byte)methodReference.Authority <= (byte)Account.Authority)
+                                if (!IsAuthenticated || (byte)methodReference.Authority <= (byte)Account.Authority)
                                 {
-                                    object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, true);
+                                    object deserializedPacket = PacketFactory.Deserialize(packet, methodReference.PacketDefinitionParameterType, IsAuthenticated);
 
                                     if (deserializedPacket != null || methodReference.PassNonParseablePacket)
                                     {
