@@ -32,12 +32,12 @@ namespace OpenNos.Core
         /// Include the keep alive identity or exclude it
         /// </param>
         /// <returns>The deserialized packet.</returns>
-        public static object Deserialize(string packetContent, Type packetType, bool includesKeepAliveIdentity = false)
+        public static PacketDefinition Deserialize(string packetContent, Type packetType, bool includesKeepAliveIdentity = false)
         {
             try
             {
                 var serializationInformation = GetSerializationInformation(packetType);
-                object deserializedPacket = Activator.CreateInstance(packetType); // reflection is bad, improve?
+                PacketDefinition deserializedPacket = (PacketDefinition)Activator.CreateInstance(packetType); // reflection is bad, improve?
 
                 deserializedPacket = Deserialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
 
@@ -65,6 +65,7 @@ namespace OpenNos.Core
             {
                 var serializationInformation = GetSerializationInformation(typeof(TPacket));
                 TPacket deserializedPacket = Activator.CreateInstance<TPacket>(); // reflection is bad, improve?
+                SetDeserializationInformations(deserializedPacket, packetContent, serializationInformation.Key.Item2);
 
                 deserializedPacket = (TPacket)Deserialize(packetContent, deserializedPacket, serializationInformation, includesKeepAliveIdentity);
 
@@ -145,7 +146,7 @@ namespace OpenNos.Core
             }
         }
 
-        private static object Deserialize(string packetContent, object deserializedPacket, KeyValuePair<Tuple<Type, string>,
+        private static PacketDefinition Deserialize(string packetContent, PacketDefinition deserializedPacket, KeyValuePair<Tuple<Type, string>,
                                                                                     Dictionary<PacketIndexAttribute, PropertyInfo>> serializationInformation, bool includesKeepAliveIdentity)
         {
             MatchCollection matches = Regex.Matches(packetContent, @"([^\s]+[\.][^\s]+[\s]?)+((?=\s)|$)|([^\s]+)((?=\s)|$)");
@@ -484,6 +485,14 @@ namespace OpenNos.Core
             }
 
             return string.Empty;
+        }
+
+        private static PacketDefinition SetDeserializationInformations(PacketDefinition packetDefinition, string packetContent, string header)
+        {
+            packetDefinition.OriginalContent = packetContent;
+            packetDefinition.OriginalHeader = header;
+
+            return packetDefinition;
         }
 
         #endregion
