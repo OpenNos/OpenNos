@@ -1393,4 +1393,7 @@
   <data name="PET_SUMMONABLE" xml:space="preserve">
     <value>You can summon your NosMate right now at any time.</value>
   </data>
+  <data name="NEW_NAME_PET" xml:space="preserve">
+    <value>Your NosMate name's has been changed</value>
+  </data>
 </root>

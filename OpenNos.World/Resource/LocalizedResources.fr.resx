@@ -1366,4 +1366,7 @@ Veux-tu le porter ?</value>
   <data name="PET_SUMMONABLE" xml:space="preserve">
     <value>Tu peux désormais invoquer ton NosMate à tout moment !</value>
   </data>
+  <data name="NEW_NAME_PET" xml:space="preserve">
+    <value>Tu as changé le nom de ton NosMate !</value>
+  </data>
 </root>
