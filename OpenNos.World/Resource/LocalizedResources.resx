@@ -1357,4 +1357,40 @@
   <data name="SUPPORT" xml:space="preserve">
     <value>Support</value>
   </data>
+  <data name="ALREADY_PET_IN_TEAM" xml:space="preserve">
+    <value>Your NosMate is already on the team.</value>
+  </data>
+  <data name="ASK_KICK_PET" xml:space="preserve">
+    <value>Do you want to refer your NosMate to the Mini-Land?</value>
+  </data>
+  <data name="ASK_RELEASE_PET" xml:space="preserve">
+    <value>Do you want to take out your NosMate ?</value>
+  </data>
+  <data name="GET_PET_PLACES" xml:space="preserve">
+    <value>Right now, you can have more NosMate.</value>
+  </data>
+  <data name="PET_CAN_PICK_UP" xml:space="preserve">
+    <value>Now, your NosMate can drop items.</value>
+  </data>
+  <data name="PET_HIGHER_LEVEL" xml:space="preserve">
+    <value>Your NosMate level is too much high to be equiped.</value>
+  </data>
+  <data name="PET_IN_TEAM_UNRELEASABLE" xml:space="preserve">
+    <value>You can't release your NosMate if you already equipe him.</value>
+  </data>
+  <data name="PET_KICKED" xml:space="preserve">
+    <value>Your NosMate has been refer to your Mini-Land.</value>
+  </data>
+  <data name="PET_LEAVE_BEAD" xml:space="preserve">
+    <value>Your NosMate is out the bead!</value>
+  </data>
+  <data name="PET_RELEASED" xml:space="preserve">
+    <value>Your NosMate is now free.</value>
+  </data>
+  <data name="PET_STORED" xml:space="preserve">
+    <value>Your NosMate is now enclose into the bead.</value>
+  </data>
+  <data name="PET_SUMMONABLE" xml:space="preserve">
+    <value>You can summon your NosMate right now at any time.</value>
+  </data>
 </root>
