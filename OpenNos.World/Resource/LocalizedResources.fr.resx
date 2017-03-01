@@ -1330,4 +1330,40 @@ Veux-tu le porter ?</value>
   <data name="MINILAND_PUBLIC" xml:space="preserve">
     <value>Le Mini-pays est maintenant ouvert au public</value>
   </data>
+  <data name="ALREADY_PET_IN_TEAM" xml:space="preserve">
+    <value>Ton NosMate fait déjà partie de l'équipe.</value>
+  </data>
+  <data name="ASK_KICK_PET" xml:space="preserve">
+    <value>Voulez-vous renvoyez le NosMate au Mini-Pays ?</value>
+  </data>
+  <data name="ASK_RELEASE_PET" xml:space="preserve">
+    <value>Voulez-vous sortir le NosMate de la perle ?</value>
+  </data>
+  <data name="GET_PET_PLACES" xml:space="preserve">
+    <value>Désormais, tu peux stocker plus de NosMate !</value>
+  </data>
+  <data name="PET_CAN_PICK_UP" xml:space="preserve">
+    <value>À partir de maintenant, le familier peut ramasser des objets.</value>
+  </data>
+  <data name="PET_HIGHER_LEVEL" xml:space="preserve">
+    <value>Le niveau de ton NosMate est trop haut pour pouvoir être équipé.</value>
+  </data>
+  <data name="PET_IN_TEAM_UNRELEASABLE" xml:space="preserve">
+    <value>Tu ne peux pas libéré ton NosMate lorsqu'il t'accompagne.</value>
+  </data>
+  <data name="PET_KICKED" xml:space="preserve">
+    <value>Ton NosMate a été renvoyé au Mini-Pays.</value>
+  </data>
+  <data name="PET_LEAVE_BEAD" xml:space="preserve">
+    <value>Ton NosMate est sorti de sa perle.</value>
+  </data>
+  <data name="PET_RELEASED" xml:space="preserve">
+    <value>Ton NosMate est maintenant libre.</value>
+  </data>
+  <data name="PET_STORED" xml:space="preserve">
+    <value>Ton NosMate est maintenant enfermé dans la perle.</value>
+  </data>
+  <data name="PET_SUMMONABLE" xml:space="preserve">
+    <value>Tu peux désormais invoquer ton NosMate à tout moment !</value>
+  </data>
 </root>
