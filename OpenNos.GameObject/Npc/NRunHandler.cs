@@ -91,15 +91,23 @@ namespace OpenNos.GameObject
                         case 2:
                             if (mate != null)
                             {
-                                Mate teammate = Session.Character.Mates.Where(s => s.IsTeamMember).FirstOrDefault(s => s.MateType == mate.MateType);
-                                if (teammate != null)
-                                {
-                                    teammate.IsTeamMember = false;
-                                    teammate.MapX = teammate.PositionX;
-                                    teammate.MapY = teammate.PositionY;
-                                }
-                                mate.IsTeamMember = true;
 
+                                if (Session.Character.Level >= mate.Level)
+                                {
+                                    Mate teammate = Session.Character.Mates.Where(s => s.IsTeamMember).FirstOrDefault(s => s.MateType == mate.MateType);
+                                    if (teammate != null)
+                                    {
+                                        teammate.IsTeamMember = false;
+                                        teammate.MapX = teammate.PositionX;
+                                        teammate.MapY = teammate.PositionY;
+                                    }
+                                    mate.IsTeamMember = true;
+
+                                }
+                                else
+                                {
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PET_HIGHER_LEVEL"), 0));
+                                }
                             }
                             break;
                         case 3:
@@ -113,24 +121,18 @@ namespace OpenNos.GameObject
                         case 4:
                             if (mate != null)
                             {
-                                if (Session.Character.Level >= mate.Level)
+                                if (Session.Character.Miniland == Session.Character.MapInstance)
                                 {
-                                    if (Session.Character.Miniland == Session.Character.MapInstance)
-                                    {
-                                        mate.IsTeamMember = false;
-                                        mate.MapX = mate.PositionX;
-                                        mate.MapY = mate.PositionY;
-                                    }
-                                    else
-                                    {
-                                        Session.SendPacket($"qna #n_run^4^5^3^{mate.MateTransportId} {Language.Instance.GetMessageFromKey("ASK_KICK_PET")}");
-                                    }
-                                    break;
+                                    mate.IsTeamMember = false;
+                                    mate.MapX = mate.PositionX;
+                                    mate.MapY = mate.PositionY;
                                 }
                                 else
                                 {
-                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PET_HIGHER_LEVEL"), 0));
+                                    Session.SendPacket($"qna #n_run^4^5^3^{mate.MateTransportId} {Language.Instance.GetMessageFromKey("ASK_KICK_PET")}");
                                 }
+                                break;
+
                             }
                             break;
                         case 5:
@@ -168,11 +170,18 @@ namespace OpenNos.GameObject
                         case 9:
                             if (mate != null)
                             {
-                                mate.PositionX = (short)(Session.Character.PositionX + 1);
+                                if (Session.Character.Level >= mate.Level)
+                                    mate.PositionX = (short)(Session.Character.PositionX + 1);
                                 mate.PositionY = (short)(Session.Character.PositionY + 1);
                                 mate.IsTeamMember = true;
                                 Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
+
                             }
+                            else
+                            {
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("PET_HIGHER_LEVEL"), 0));
+                            }
+
                             break;
                     }
                     Session.SendPacket(Session.Character.GeneratePinit());
