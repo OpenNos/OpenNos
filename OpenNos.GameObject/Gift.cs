@@ -18,10 +18,10 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public Gift(short vnum, byte Amount)
+        public Gift(short vnum, byte amount)
         {
             VNum = vnum;
-            Amount = Amount;
+            Amount = amount;
         }
 
         #endregion
