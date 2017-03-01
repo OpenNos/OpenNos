@@ -126,7 +126,7 @@ namespace OpenNos.Handler
                             Gift obj = GetMinilandGift(packet.MinigameVNum, (int)packet.Point);
                             if (obj != null)
                             {
-                                Session.SendPacket($"mlo_rw {obj.VNum} {packet.Point}");
+                                Session.SendPacket($"mlo_rw {obj.VNum} {obj.Amount}");
                                 Session.SendPacket(Session.Character.GenerateMinilandPoint());
                                 List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(obj.VNum, obj.Amount);
                                 Session.Character.MinilandPoint -= 100;
