@@ -184,10 +184,10 @@
     <value>Vuoi sincronizzare i Tipi delle Mappe?</value>
   </data>
   <data name="PARSE_MONSTERS" xml:space="preserve">
-    <value>Vuoi sincronizzare i Nemici?</value>
+    <value>Vuoi sincronizzare le entità Mostri?</value>
   </data>
   <data name="PARSE_NPCMONSTERS" xml:space="preserve">
-    <value>Vuoi sincronizzare Npcs?</value>
+    <value>Vuoi sincronizzare le entità Npc?</value>
   </data>
   <data name="PARSE_PORTALS" xml:space="preserve">
     <value>Vuoi sincronizzare Portals?</value>
@@ -220,15 +220,24 @@
     <value>{0} Oggetti dei negozi sincronizzati !</value>
   </data>
   <data name="SHOPSKILLS_PARSED" xml:space="preserve">
-    <value>{0} Skill nei Negozi sincronizzati</value>
+    <value>{0} Abilità nei Negozi sincronizzati!</value>
   </data>
   <data name="SHOPS_PARSED" xml:space="preserve">
-    <value>{0} Shops sincronizzati</value>
+    <value>{0} Negozi sincronizzati!</value>
   </data>
   <data name="SKILLS_PARSED" xml:space="preserve">
-    <value>{0} Skill sincronizzate</value>
+    <value>{0} Abilità sincronizzate!</value>
   </data>
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
-    <value>{0} Portali Sincronizzati</value>
+    <value>{0} Portali sincronizzati!</value>
+  </data>
+  <data name="PARSE_MAPTYPEMAPS" xml:space="preserve">
+    <value>Vuoi sincronizzare i Tipi-Mappe delle Mappe?</value>
+  </data>
+  <data name="PARSE_NPCMONSTERDATA" xml:space="preserve">
+    <value>Vuoi sincronizzare i dati delle entità Npc-Mostri?</value>
+  </data>
+  <data name="RESPAWNTYPE_PARSED" xml:space="preserve">
+    <value>RespawnType sincronizzati</value>
   </data>
 </root>

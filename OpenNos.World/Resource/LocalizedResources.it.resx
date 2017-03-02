@@ -1111,18 +1111,162 @@
     <value>Sending message to  '{0}' on channel {1}.</value>
   </data>
   <data name="CREATE_FAMILY" xml:space="preserve">
-    <value />
+    <value>Vuoi creare la tua gild?</value>
   </data>
   <data name="DISMISS_FAMILY" xml:space="preserve">
-    <value />
+    <value>Vuoi abbandonare la gilda?</value>
   </data>
   <data name="FAMILY_INVITATION_NOT_ALLOWED" xml:space="preserve">
-    <value />
+    <value>Non hai il permesso di invitare giocatori!</value>
   </data>
   <data name="FAMILY_NAME_ALREADY_USED" xml:space="preserve">
-    <value />
+    <value>Il nome della gilda è già stato preso!</value>
   </data>
   <data name="NOT_ALLOWED_KICK" xml:space="preserve">
-    <value />
+    <value>Non hai il permesso di cacciare i giocatori!</value>
+  </data>
+  <data name="NO_WINGS" xml:space="preserve">
+    <value>Non possiedi ali dell'amicizia</value>
+  </data>
+  <data name="ANGEL" xml:space="preserve">
+    <value>Angelo</value>
+  </data>
+  <data name="DEMON" xml:space="preserve">
+    <value>Demone</value>
+  </data>
+  <data name="WANT_TO_SAVE_POSITION" xml:space="preserve">
+    <value>Vuoi salvare la tua posizione?</value>
+  </data>
+  <data name="GOLD_DROPRATE_NOW" xml:space="preserve">
+    <value>Tasso drop Oro</value>
+  </data>
+  <data name="BOT_MESSAGE_4" xml:space="preserve">
+    <value>Non aprite qualsiasi link sospetto!</value>
+  </data>
+  <data name="BOT_MESSAGE_5" xml:space="preserve">
+    <value>Non dare a nessuno il tuo Nome utente e la tua Password!</value>
+  </data>
+  <data name="ACCEPTED_SHARE" xml:space="preserve">
+    <value>Hai accettato il punto di condivisione di {0}!</value>
+  </data>
+  <data name="CANT_CHANGE_MESSAGE" xml:space="preserve">
+    <value>Hai già modificato il motto del giorno, riprova domani.</value>
+  </data>
+  <data name="PLAYER_OFFLINE" xml:space="preserve">
+    <value>Il giocatore non è online.</value>
+  </data>
+  <data name="HEAD" xml:space="preserve">
+    <value>Capo</value>
+  </data>
+  <data name="CHANNEL" xml:space="preserve">
+    <value>Canale</value>
+  </data>
+  <data name="ASSISTANT" xml:space="preserve">
+    <value>Vice</value>
+  </data>
+  <data name="BAZAR_LOADED" xml:space="preserve">
+    <value>NozBazar Inizializzato</value>
+  </data>
+  <data name="FAMILYCALL" xml:space="preserve">
+    <value>Grido</value>
+  </data>
+  <data name="MANAGER" xml:space="preserve">
+    <value>Guardiano</value>
+  </data>
+  <data name="MEMBER" xml:space="preserve">
+    <value>Membro</value>
+  </data>
+  <data name="ALREADY_TWO_ASSISTANT" xml:space="preserve">
+    <value>Hai già due vice!</value>
+  </data>
+  <data name="ASSISTANT_UNDEMOTABLE" xml:space="preserve">
+    <value>Non puoi retrocedere altri vice!</value>
+  </data>
+  <data name="HEAD_UNDEMOTABLE" xml:space="preserve">
+    <value>Non puoi retrocedere il Capo Famiglia!</value>
+  </data>
+  <data name="NOT_FAMILY_HEAD" xml:space="preserve">
+    <value>Non sei il capo famiglia!</value>
+  </data>
+  <data name="ONLY_PROMOTE_ASSISTANT" xml:space="preserve">
+    <value>Puoi soltanto promuovere un vice a capo famiglia!</value>
+  </data>
+  <data name="FAMILY_INVITED" xml:space="preserve">
+    <value>Giocatore {0} è stato invitato!</value>
+  </data>
+  <data name="FAMILY_GROUP_NOT_FULL" xml:space="preserve">
+    <value>Non puoi creare la famiglia se non siete almeno 3 in gruppo.</value>
+  </data>
+  <data name="FAMILY_FOUNDED" xml:space="preserve">
+    <value>La famiglia {0} è stata fondata!</value>
+  </data>
+  <data name="GROUP_MEMBER_ALREADY_IN_FAMILY" xml:space="preserve">
+    <value>Qualcuno nel gruppo ha già una gilda!</value>
+  </data>
+  <data name="CHARACTER_FAMILY_LOGGED_IN" xml:space="preserve">
+    <value>{0}({1}) si è connesso.</value>
+  </data>
+  <data name="LANGUAGE_REQUIRED" xml:space="preserve">
+    <value>Solo la lingua {0} è autorizzata !</value>
+  </data>
+  <data name="FAMILY_KICKED" xml:space="preserve">
+    <value>Il giocatore {0} è stato cacciato dalla gilda!</value>
+  </data>
+  <data name="FAMILY_JOINED" xml:space="preserve">
+    <value>Giocatore {0} si è unito alla gilda {1} !</value>
+  </data>
+  <data name="ASK_FAMILY_INVITED" xml:space="preserve">
+    <value>Sei stato invitato nella gilda {0}, accetti l'invito?</value>
+  </data>
+  <data name="ASK_REVIVE_PVP" xml:space="preserve">
+    <value>Vuoi rivivere? Ti costerà 100 ori.</value>
+  </data>
+  <data name="LOSE_REP" xml:space="preserve">
+    <value>Reputazione - {0}</value>
+  </data>
+  <data name="ACT4_PVP_DIE" xml:space="preserve">
+    <value>Sei stato ucciso da un nemico! A causa della maledizione del ghiaccio, potrai rivivere solo tra 30 secondi</value>
+  </data>
+  <data name="EFFECT_ACTIVATED" xml:space="preserve">
+    <value>L'effetto {0} si è attivato!</value>
+  </data>
+  <data name="INFO_BAZAAR" xml:space="preserve">
+    <value>Non puoi aprire il NosBazar perchè non possiedi l'oggetto richiesto !</value>
+  </data>
+  <data name="OBJECT_IN_BAZAAR" xml:space="preserve">
+    <value>Il tuo oggetto è stato aggiunto al NosBazar</value>
+  </data>
+  <data name="LOGIN_MEDAL" xml:space="preserve">
+    <value>La medaglia del NosBazar è adesso attiva!</value>
+  </data>
+  <data name="INVITED_YOU_SHARE" xml:space="preserve">
+    <value>Vuoi impostare il punto di ritorno: {0}?</value>
+  </data>
+  <data name="CHANGED_SHARE" xml:space="preserve">
+    <value>Hai cambiato il punto di ritorno comune dei membri del gruppo.</value>
+  </data>
+  <data name="PRICE_EXCEEDED" xml:space="preserve">
+    <value>Il prezzo massimo è stato superato!</value>
+  </data>
+  <data name="NOTICE_BAZAAR" xml:space="preserve">
+    <value>Attenzione, puoi essere attacato da un mostro quando usi il NosBazar!</value>
+  </data>
+  <data name="REMOVE_FROM_BAZAAR" xml:space="preserve">
+    <value>L'asta è finita, hai ricevuto: {0}.</value>
+  </data>
+  <data name="STATE_CHANGED" xml:space="preserve">
+    <value>L'asta è stata interrotta perché è finito il periodo di vendita stabilito.</value>
+  </data>
+  <data name="LIMIT_EXCEEDED" xml:space="preserve">
+    <value>Non puoi aggiungere altri oggetti al NosBazar perchè hai raggiunto il limite.</value>
+  </data>
+  <data name="REFUSED_SHARE" xml:space="preserve">
+    <value>Hai rifiutato di condividere il punto di ritorno con i membri del gruppo.</value>
+  </data>
+  <data name="GROUP_SHARE_INFO" xml:space="preserve">
+    <value>Hai mandato una richiesta per condividere il tuo punto di ritorno con i membri del gruppo.</value>
+  </data>
+  <data name="SP_POINTSADDEDBOTH" xml:space="preserve">
+    <value>Hai ricevuto {0} punti SP base e {1} punti SP addizionali!</value>
   </data>
 </root>
