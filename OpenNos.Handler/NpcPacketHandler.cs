@@ -347,7 +347,7 @@ namespace OpenNos.Handler
             {
                 short typePacket;
                 short.TryParse(packetsplit[2], out typePacket);
-                if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMapInstance)
+                if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMapInstance || Session.Character.IsExchanging)
                 {
                     return;
                 }
