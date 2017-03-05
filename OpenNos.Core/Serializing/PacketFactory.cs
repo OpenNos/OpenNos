@@ -332,6 +332,10 @@ namespace OpenNos.Core
             }
             if (Nullable.GetUnderlyingType(packetPropertyType) != null) // nullable value
             {
+                if (packetPropertyType.GenericTypeArguments[0]?.BaseType.Equals(typeof(Enum)) == true)
+                {
+                    return Enum.Parse(packetPropertyType.GenericTypeArguments[0], currentValue);
+                }
                 return Convert.ChangeType(currentValue, packetPropertyType.GenericTypeArguments[0]);
             }
             return Convert.ChangeType(currentValue, packetPropertyType); // cast to specified type
