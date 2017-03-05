@@ -408,62 +408,68 @@ namespace OpenNos.GameObject
             });
         }
 
+        internal void RunMapEvent(EventActionType eventaction, object param)
+        {
+            switch (eventaction)
+            {
+                case EventActionType.CLOCK:
+                    EndDate = DateTime.Now.AddSeconds(Convert.ToDouble(param));
+                    break;
+
+                case EventActionType.DROPRATE:
+                    DropRate = Convert.ToInt32(param);
+                    break;
+
+                case EventActionType.XPRATE:
+                    XpRate = (int)param;
+                    break;
+
+                case EventActionType.DISPOSE:
+                    Dispose();
+                    break;
+
+                case EventActionType.LOCK:
+                    Lock = Convert.ToBoolean(param);
+                    break;
+
+                case EventActionType.MESSAGE:
+                    Broadcast(Convert.ToString(param));
+                    break;
+
+                case EventActionType.UNSPAWN:
+                    UnspawnMonsters(Convert.ToInt32(param));
+                    break;
+
+                case EventActionType.SPAWN:
+                    SummonMonsters((List<MonsterToSummon>)param);
+                    break;
+
+                case EventActionType.DROPITEMS:
+                    DropItems((List<Tuple<short, int, short, short>>)param);
+                    break;
+
+                case EventActionType.SPAWNONLASTENTRY:
+
+                    //TODO REVIEW THIS CASE
+                    Character lastincharacter = Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
+                    List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
+                    MapCell hornSpawn = new MapCell
+                    {
+                        X = lastincharacter?.PositionX ?? 154,
+                        Y = lastincharacter?.PositionY ?? 140
+                    };
+                    long HornTarget = lastincharacter != null ? lastincharacter.CharacterId : -1;
+                    summonParameters.Add(new MonsterToSummon(Convert.ToInt16(param), hornSpawn, HornTarget, true));
+                    SummonMonsters(summonParameters);
+                    break;
+            }
+        }
+
         internal void StartMapEvent(TimeSpan timeSpan, EventActionType eventaction, object param)
         {
             Observable.Timer(timeSpan).Subscribe(x =>
             {
-                switch (eventaction)
-                {
-                    case EventActionType.CLOCK:
-                        EndDate = DateTime.Now.AddSeconds(Convert.ToDouble(param));
-                        break;
-
-                    case EventActionType.DROPRATE:
-                        DropRate = Convert.ToInt32(param);
-                        break;
-
-                    case EventActionType.XPRATE:
-                        XpRate = (int)param;
-                        break;
-
-                    case EventActionType.DISPOSE:
-                        Dispose();
-                        break;
-
-                    case EventActionType.LOCK:
-                        Lock = Convert.ToBoolean(param);
-                        break;
-
-                    case EventActionType.MESSAGE:
-                        Broadcast(Convert.ToString(param));
-                        break;
-
-                    case EventActionType.UNSPAWN:
-                        UnspawnMonsters(Convert.ToInt32(param));
-                        break;
-
-                    case EventActionType.SPAWN:
-                        SummonMonsters((List<MonsterToSummon>)param);
-                        break;
-
-                    case EventActionType.DROPITEMS:
-                        DropItems((List<Tuple<short, int, short, short>>)param);
-                        break;
-
-                    case EventActionType.SPAWNONLASTENTRY:
-
-                        //TODO REVIEW THIS CASE
-                        Character lastincharacter = Sessions.OrderByDescending(s => s.RegisterTime).FirstOrDefault()?.Character;
-                        List<MonsterToSummon> summonParameters = new List<MonsterToSummon>();
-                        MapCell hornSpawn = new MapCell
-                        {
-                            X = lastincharacter?.PositionX ?? 154,
-                            Y = lastincharacter?.PositionY ?? 140
-                        };
-                        long HornTarget = lastincharacter != null ? lastincharacter.CharacterId : -1;
-                        summonParameters.Add(new MonsterToSummon(Convert.ToInt16(param), hornSpawn, HornTarget, true));
-                        break;
-                }
+                RunMapEvent(eventaction, param);
             });
         }
 

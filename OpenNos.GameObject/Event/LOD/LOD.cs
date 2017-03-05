@@ -17,6 +17,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
 using System.Reactive.Linq;
+using System.Threading;
 
 namespace OpenNos.GameObject.Event
 {
@@ -30,35 +31,109 @@ namespace OpenNos.GameObject.Event
             const int HornRepawn = 4;
             const int HornStay = 1;
             ServerManager.Instance.EnableMapEffect(98, true);
-            foreach (Family fam in ServerManager.Instance.FamilyList)
+            LODThread lodThread = new LODThread();
+            Thread thread = new Thread(() => lodThread.Run(lodtime * 60, HornTime * 60, HornRepawn * 60, HornStay * 60));
+            thread.Start();
+        }
+        #endregion
+    }
+
+    public class LODThread
+    {
+        public void Run(int LODTime, int HornTime, int HornRespawn, int HornStay)
+        {
+            const int interval = 30;
+            int dhspawns = 0;
+
+            while (LODTime > 0)
             {
-                fam.LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance);
-                fam.LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.CLOCK, TimeSpan.FromMinutes(lodtime).TotalSeconds);
-                fam.LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(lodtime - HornTime), EventActionType.XPRATE, 3);
-                fam.LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(lodtime - HornTime), EventActionType.DROPRATE, 3);
-                fam.LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(lodtime), EventActionType.DISPOSE, null);
-                for (int i = 0; i < 8; i++)
+                RefreshLOD(LODTime);
+
+                if (LODTime == HornTime)
                 {
-                    Observable.Timer(TimeSpan.FromMinutes(lodtime - HornTime + HornRepawn * i)).Subscribe(
-                    x =>
+                    SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+                    foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
                     {
-                        SpawnDH(fam.LandOfDeath, HornStay);
-                    });
+                        if (fam.LandOfDeath != null)
+                        {
+                            fam.LandOfDeath.RunMapEvent(EventActionType.XPRATE, 3);
+                            fam.LandOfDeath.RunMapEvent(EventActionType.DROPRATE, 3);
+                            SpawnDH(fam.LandOfDeath);
+                        }
+                    }
+                }
+                else if (LODTime == HornTime - (HornRespawn * dhspawns))
+                {
+                    SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+                    foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+                    {
+                        if (fam.LandOfDeath != null)
+                        {
+                            fam.LandOfDeath.RunMapEvent(EventActionType.XPRATE, 3);
+                            fam.LandOfDeath.RunMapEvent(EventActionType.DROPRATE, 3);
+                            SpawnDH(fam.LandOfDeath);
+                        }
+                    }
+                }
+                else if (LODTime == HornTime - (HornRespawn * dhspawns) - HornStay)
+                {
+                    SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+                    foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+                    {
+                        if (fam.LandOfDeath != null)
+                        {
+                            DespawnDH(fam.LandOfDeath);
+                            dhspawns++;
+                        }
+                    }
+                }
+
+                LODTime -= interval;
+                Thread.Sleep(interval * 1000);
+            }
+            EndLOD();
+        }
+
+        private void RefreshLOD(double remaining)
+        {
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+            foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+            {
+                if (fam.LandOfDeath == null)
+                {
+                    fam.LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance);
+                }
+                fam.LandOfDeath.RunMapEvent(EventActionType.CLOCK, remaining);
+            }
+        }
+
+        private void EndLOD()
+        {
+            SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
+            foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
+            {
+                if (fam.LandOfDeath != null)
+                {
+                    fam.LandOfDeath.RunMapEvent(EventActionType.DISPOSE, null);
+                    fam.LandOfDeath = null;
                 }
             }
-            Observable.Timer(TimeSpan.FromMinutes(lodtime)).Subscribe(x => { ServerManager.Instance.StartedEvents.Remove(EventType.LOD); ServerManager.Instance.EnableMapEffect(98, false); });
+            ServerManager.Instance.StartedEvents.Remove(EventType.LOD);
+            ServerManager.Instance.StartedEvents.Remove(EventType.LODDH);
+            ServerManager.Instance.EnableMapEffect(98, false);
         }
 
-        private static void SpawnDH(MapInstance LandOfDeath, int HornStay)
+        private void SpawnDH(MapInstance LandOfDeath)
         {
-            LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.SPAWNONLASTENTRY, 443);
-            LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.MESSAGE, "df 2");
-            LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0));
-            LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(HornStay), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0));
-            LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(HornStay), EventActionType.LOCK, true);
-            LandOfDeath.StartMapEvent(TimeSpan.FromMinutes(HornStay), EventActionType.UNSPAWN, 443);
+            LandOfDeath.RunMapEvent(EventActionType.SPAWNONLASTENTRY, 443);
+            LandOfDeath.RunMapEvent(EventActionType.MESSAGE, "df 2");
+            LandOfDeath.RunMapEvent(EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0));
         }
-
-        #endregion
+        private void DespawnDH(MapInstance LandOfDeath)
+        {
+            LandOfDeath.RunMapEvent(EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0));
+            LandOfDeath.RunMapEvent(EventActionType.LOCK, true);
+            LandOfDeath.RunMapEvent(EventActionType.UNSPAWN, 443);
+        }
     }
 }
