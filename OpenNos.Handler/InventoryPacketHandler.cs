@@ -575,7 +575,7 @@ namespace OpenNos.Handler
                             {
                                 byte amount = mapItem.Amount;
                                 List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(mapItemInstance);
-                                if (newInv.Any())
+                                if (newInv.Any(s => s != null))
                                 {
                                     Session.CurrentMapInstance.DroppedList.Remove(getPacket.TransportId);
                                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
