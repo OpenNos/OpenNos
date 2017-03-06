@@ -28,7 +28,8 @@ namespace OpenNos.GameObject.Buff.Indicators.Item
             _level = Level;
             DirectBuffs.Add(new BCardEntry(Type.Experience, SubType.IncreasePercentage, 20, 0, false));
             DirectBuffs.Add(new BCardEntry(Type.JobExperience, SubType.IncreasePercentage, 20, 0, false));
-            DirectBuffs.Add(new BCardEntry(Type.SPExperience, SubType.IncreasePercentage, 20, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.SpExperience, SubType.IncreasePercentage, 20, 0, false));
+            DirectBuffs.Add(new BCardEntry(Type.HeroExperience, SubType.IncreasePercentage, 20, 0, false));
         }
 
         #endregion

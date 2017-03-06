@@ -242,6 +242,10 @@ namespace OpenNos.Handler
         {
             if (target.Character.Hp > 0 && hitRequest.Session.Character.Hp > 0)
             {
+                if (target.Character.IsSitting)
+                {
+                    target.Character.Rest();
+                }
                 int hitmode = 0;
 
                 // calculate damage
@@ -409,7 +413,10 @@ namespace OpenNos.Handler
             if (skills != null)
             {
                 CharacterSkill ski = skills.FirstOrDefault(s => s.Skill?.CastId == castingId && s.Skill?.UpgradeSkill == 0);
-                Session.SendPacket("ms_c 0");
+                if (castingId != 0)
+                {
+                    Session.SendPacket("ms_c 0");
+                }
                 if (ski != null && (!Session.Character.WeaponLoaded(ski) || !ski.CanBeUsed()))
                 {
                     Session.SendPacket($"cancel 2 {targetId}");

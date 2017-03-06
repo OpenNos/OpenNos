@@ -2079,22 +2079,6 @@ namespace OpenNos.GameObject
                         {
                             foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceId == MapInstanceId))
                             {
-                                // TODO: remove this part on release
-                                if (targetSession.Character.Level >= monsterToAttack.Monster.Level - 5 && targetSession.Character.Level <= monsterToAttack.Monster.Level + 5)
-                                {
-                                    if (!targetSession.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
-                                    {
-                                        targetSession.Character.GetReput(monsterToAttack.Monster.Level);
-                                    }
-                                }
-                                else if (Level >= 90 && monsterToAttack.Monster.Level >= 88)
-                                {
-                                    if (!Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
-                                    {
-                                        targetSession.Character.GetReput(monsterToAttack.Monster.Level);
-                                    }
-                                }
-
                                 // END PART
 
                                 if (grp.IsMemberOfGroup(monsterToAttack.DamageList.FirstOrDefault().Key))
@@ -2110,22 +2094,6 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            // TODO: Remove this part on Release
-                            if (Level >= monsterToAttack.Monster.Level - 5 && Level <= monsterToAttack.Monster.Level + 5)
-                            {
-                                if (!Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
-                                {
-                                    GetReput(monsterToAttack.Monster.Level);
-                                }
-                            }
-                            else if (Level >= 90 && monsterToAttack.Monster.Level >= 88)
-                            {
-                                if (!Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.BlockRep && s.DateEnd > DateTime.Now))
-                                {
-                                    GetReput(monsterToAttack.Monster.Level);
-                                }
-                            }
-
                             // END PART
 
                             if (monsterToAttack.DamageList.FirstOrDefault().Key == CharacterId)
@@ -4497,11 +4465,6 @@ namespace OpenNos.GameObject
             Session = clientSession;
         }
 
-        private static object HeroXPLoad()
-        {
-            return 949560;
-        }
-
         private void GenerateXp(MapMonster monster, bool isMonsterOwner)
         {
             NpcMonster monsterinfo = monster.Monster;
@@ -4552,7 +4515,13 @@ namespace OpenNos.GameObject
                 if (specialist != null && UseSp && specialist.SpLevel < ServerManager.MaxSPLevel)
                 {
                     int multiplier = specialist.SpLevel < 10 ? 10 : specialist.SpLevel < 19 ? 5 : 1;
-                    specialist.XP += (int)(GetJXP(monsterinfo, grp) * (multiplier + Buff.Get(Type.SPExperience, SubType.IncreasePercentage, false)[0] / 100D));
+                    specialist.XP += (int)(GetJXP(monsterinfo, grp) * (multiplier + Buff.Get(Type.SpExperience, SubType.IncreasePercentage, false)[0] / 100D));
+                }
+                if (HeroLevel > 0 && HeroLevel < ServerManager.MaxHeroLevel)
+                {
+                    HeroXp += (int)
+                        (GetHXP(monsterinfo, grp) *
+                         (1 + Buff.Get(Type.HeroExperience, SubType.IncreasePercentage, false)[0] / 100D));
                 }
                 double t = XPLoad();
                 while (LevelXp >= t)
@@ -4564,6 +4533,11 @@ namespace OpenNos.GameObject
                     {
                         Level = ServerManager.MaxLevel;
                         LevelXp = 0;
+                    }
+                    else if (Level == ServerManager.HeroicStartLevel)
+                    {
+                        HeroLevel = 1;
+                        HeroXp = 0;
                     }
                     Hp = (int)HPLoad();
                     Mp = (int)MPLoad();
@@ -4668,12 +4642,33 @@ namespace OpenNos.GameObject
                         Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
                     }
                 }
+                t = HeroXPLoad();
+                while (HeroXp >= t)
+                {
+                    HeroXp -= (long)t;
+                    HeroLevel++;
+                    t = HeroXPLoad();
+                    if (HeroLevel >= ServerManager.MaxHeroLevel)
+                    {
+                        HeroLevel = ServerManager.MaxHeroLevel;
+                        HeroXp = 0;
+                    }
+                    Hp = (int)HPLoad();
+                    Mp = (int)MPLoad();
+                    Session.SendPacket(GenerateStat());
+                    Session.SendPacket($"levelup {CharacterId}");
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_LEVELUP"), 0));
+                    Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
+                }
                 Session.SendPacket(GenerateLev());
             }
         }
 
         private int GetGold(MapMonster mapMonster)
         {
+            if (MapId == 2006 || MapId == 150)
+                return 0;
             int lowBaseGold = ServerManager.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
             int actMultiplier = Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
             if (Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) == true)
@@ -4705,6 +4700,29 @@ namespace OpenNos.GameObject
             }
 
             return jobxp;
+        }
+
+        private int GetHXP(NpcMonsterDTO monster, Group group)
+        {
+            int partySize = 1;
+            float partyPenalty = 1f;
+
+            if (group != null)
+            {
+                int levelSum = group.Characters.Sum(g => g.Character.HeroLevel);
+                partySize = group.CharacterCount;
+                partyPenalty = 12f / partySize / levelSum;
+            }
+
+            int heroXp = (int)Math.Round(monster.HeroXp * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.HeroXpRate * MapInstance.XpRate);
+
+            // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
+            if (partySize > 1 && group != null)
+            {
+                heroXp = (int)Math.Round(HeroLevel / (HeroLevel * partyPenalty));
+            }
+
+            return heroXp;
         }
 
         private long GetXP(NpcMonsterDTO monster, Group group)
@@ -4776,6 +4794,11 @@ namespace OpenNos.GameObject
         private double JobXPLoad()
         {
             return Class == (byte)ClassType.Adventurer ? CharacterHelper.FirstJobXPData[JobLevel - 1] : CharacterHelper.SecondJobXPData[JobLevel - 1];
+        }
+
+        private double HeroXPLoad()
+        {
+            return HeroLevel == 0 ? 1 : CharacterHelper.HeroXpData[HeroLevel - 1];
         }
 
         private double SPXPLoad()

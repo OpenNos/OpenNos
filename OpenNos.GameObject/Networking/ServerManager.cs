@@ -105,6 +105,10 @@ namespace OpenNos.GameObject
 
         public static int XPRate { get; set; }
 
+        public static int HeroXpRate { get; set; }
+
+        public static int HeroicStartLevel { get; set; }
+
         public List<BazaarItemLink> BazaarList { get; set; }
 
         public int ChannelId { get; set; }
@@ -138,7 +142,7 @@ namespace OpenNos.GameObject
         public List<CharacterDTO> TopReputation { get; set; }
 
         public Guid WorldId { get; private set; }
-
+        
         #endregion
 
         #region Methods
@@ -607,6 +611,7 @@ namespace OpenNos.GameObject
         {
             // parse rates
             XPRate = int.Parse(ConfigurationManager.AppSettings["RateXp"]);
+            HeroXpRate = int.Parse(ConfigurationManager.AppSettings["RateHeroicXp"]);
             DropRate = int.Parse(ConfigurationManager.AppSettings["RateDrop"]);
             MaxGold = long.Parse(ConfigurationManager.AppSettings["MaxGold"]);
             GoldDropRate = int.Parse(ConfigurationManager.AppSettings["GoldRateDrop"]);
@@ -616,6 +621,7 @@ namespace OpenNos.GameObject
             MaxJobLevel = byte.Parse(ConfigurationManager.AppSettings["MaxJobLevel"]);
             MaxSPLevel = byte.Parse(ConfigurationManager.AppSettings["MaxSPLevel"]);
             MaxHeroLevel = byte.Parse(ConfigurationManager.AppSettings["MaxHeroLevel"]);
+            HeroicStartLevel = byte.Parse(ConfigurationManager.AppSettings["HeroicStartLevel"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
 

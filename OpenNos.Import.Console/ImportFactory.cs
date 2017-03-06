@@ -996,6 +996,48 @@ namespace OpenNos.Import.Console
                     {
                         npc.XP = Math.Abs(Convert.ToInt32(currentLine[2]) + basicXp[npc.Level]);
                         npc.JobXP = Convert.ToInt32(currentLine[3]) + basicJXp[npc.Level];
+                        switch (npc.NpcMonsterVNum)
+                        {
+                            case 2500:
+                                npc.HeroXp = 533;
+                                break;
+                            case 2501:
+                                npc.HeroXp = 534;
+                                break;
+                            case 2502:
+                                npc.HeroXp = 535;
+                                break;
+                            case 2503:
+                                npc.HeroXp = 614;
+                                break;
+                            case 2510:
+                                npc.HeroXp = 534;
+                                break;
+                            case 2511:
+                                npc.HeroXp = 533;
+                                break;
+                            case 2512:
+                                npc.HeroXp = 535;
+                                break;
+                            case 2513:
+                                npc.HeroXp = 651;
+                                break;
+                            case 2521:
+                                npc.HeroXp = 170;
+                                break;
+                            case 2522:
+                                npc.HeroXp = 286;
+                                break;
+                            case 2523:
+                                npc.HeroXp = 328;
+                                break;
+                            case 2525:
+                                npc.HeroXp = 261;
+                                break;
+                            default:
+                                npc.HeroXp = 0;
+                                break;
+                        }
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "PREATT")
                     {

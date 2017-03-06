@@ -64,6 +64,8 @@ namespace OpenNos.Data
 
         public byte HeroLevel { get; set; }
 
+        public int HeroXp { get; set; }
+
         public bool IsHostile { get; set; }
 
         public int JobXP { get; set; }

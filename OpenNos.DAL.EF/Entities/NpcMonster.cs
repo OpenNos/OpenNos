@@ -84,6 +84,8 @@ namespace OpenNos.DAL.EF
 
         public byte HeroLevel { get; set; }
 
+        public int HeroXP { get; set; }
+
         public bool IsHostile { get; set; }
 
         public int JobXP { get; set; }

@@ -30,6 +30,7 @@ namespace OpenNos.GameObject.Buff.BCard
         Cooldown,
         Experience,
         JobExperience,
-        SPExperience
+        SpExperience,
+        HeroExperience
     }
 }

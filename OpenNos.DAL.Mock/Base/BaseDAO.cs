@@ -80,7 +80,7 @@ namespace OpenNos.DAL.Mock
                 _mappings.Add(gameObjectType, targetType);
                 return this;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

@@ -1054,6 +1054,31 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        /// $FairyXPRate Command
+        /// </summary>
+        /// <param name="heroXpRatePacket"></param>
+        public void HeroXpRate(HeroXpRate heroXpRatePacket)
+        {
+            Logger.Debug("Hero Xp Rate Changed", Session.Character.GenerateIdentity());
+            if (heroXpRatePacket != null)
+            {
+                if (heroXpRatePacket.Value <= 1000)
+                {
+                    ServerManager.HeroXpRate = heroXpRatePacket.Value;
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HEROXP_RATE_CHANGED"), 0));
+                }
+                else
+                {
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
+            }
+            else
+            {
+                Session.SendPacket(Session.Character.GenerateSay("$HeroXpRate VALUE", 10));
+            }
+        }
+
+        /// <summary>
         /// $Gift Command
         /// </summary>
         /// <param name="giftPacket"></param>
@@ -1814,6 +1839,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("DROP_RATE_NOW")}: {ServerManager.DropRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_RATE_NOW")}: {ServerManager.GoldRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_DROPRATE_NOW")}: {ServerManager.GoldDropRate} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("HERO_XPRATE_NOW")}: {ServerManager.HeroXpRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("FAIRYXP_RATE_NOW")}: {ServerManager.FairyXpRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("SERVER_WORKING_TIME")}: {(Process.GetCurrentProcess().StartTime - DateTime.Now).ToString(@"d\ hh\:mm\:ss")} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("MEMORY")}: {GC.GetTotalMemory(true) / (1024 * 1024)}MB ", 13));
