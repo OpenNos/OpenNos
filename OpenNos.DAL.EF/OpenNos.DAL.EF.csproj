@@ -159,6 +159,10 @@
     <Compile Include="Migrations\201702242159213_Aphrodite40.Designer.cs">
       <DependentUpon>201702242159213_Aphrodite40.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703060254179_Aphrodite41.cs" />
+    <Compile Include="Migrations\201703060254179_Aphrodite41.Designer.cs">
+      <DependentUpon>201703060254179_Aphrodite41.cs</DependentUpon>
+    </Compile>
     <Compile Include="MinilandObjectDAO.cs" />
     <Compile Include="CharacterRelationDAO.cs" />
     <Compile Include="Entities\Account.cs" />
@@ -490,6 +494,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702242159213_Aphrodite40.resx">
       <DependentUpon>201702242159213_Aphrodite40.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703060254179_Aphrodite41.resx">
+      <DependentUpon>201703060254179_Aphrodite41.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
