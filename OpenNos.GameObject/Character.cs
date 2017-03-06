@@ -3475,7 +3475,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStatInfo()
         {
-            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}";
+            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}{Buff.GetAllActiveBuffs()}";
         }
 
         public string GenerateTit()
