@@ -311,6 +311,16 @@ namespace OpenNos.Handler
                         }
                     }
                 }
+                foreach (var player in Session.CurrentMapInstance.Sessions)
+                {
+                    int mateId;
+                    if (!int.TryParse(characterInformationPacket[3], out mateId)) continue;
+                    Mate mate = player.Character.Mates.FirstOrDefault(s => s.MateTransportId == mateId);
+                    if (mate != null)
+                    {
+                        Session.SendPacket(mate.GenerateStatInfo());
+                    }
+                }
             }
             if (characterInformationPacket[2] == "3" && Session.HasCurrentMapInstance)
             {
@@ -907,6 +917,7 @@ namespace OpenNos.Handler
                         Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_NAME_PET")));
                         Session.SendPacket(Session.Character.GeneratePinit());
+                        Session.Character.SendPst();
                         Session.SendPackets(Session.Character.GenerateScP());
                         Session.Character.Inventory.RemoveItemAmount(petnameVNum);
                     }
@@ -1623,6 +1634,7 @@ namespace OpenNos.Handler
             Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
 
             Session.SendPacket(Session.Character.GeneratePinit());
+            Session.Character.SendPst();
 
             Session.SendPacket("zzim");
             Session.SendPacket($"twk 2 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");

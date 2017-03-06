@@ -399,6 +399,7 @@ namespace OpenNos.GameObject
                         session.CurrentMapInstance.Broadcast(s.GenerateIn());
                     });
                     session.SendPacket(session.Character.GeneratePinit()); // clear party list
+                    session.Character.SendPst();
                     session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
                     session.SendPacket(session.Character.GenerateScpStc());
                     Sessions.Where(s => s.Character != null && s.Character.MapInstanceId.Equals(session.Character.MapInstanceId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s =>
@@ -452,10 +453,9 @@ namespace OpenNos.GameObject
                             foreach (ClientSession groupSession in g.Characters)
                             {
                                 ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMapInstance == groupSession.CurrentMapInstance);
-                                if (chara != null)
-                                {
-                                    groupSession.SendPacket(groupSession.Character.GeneratePinit());
-                                }
+                                if (chara == null) continue;
+                                groupSession.SendPacket(groupSession.Character.GeneratePinit());
+                                groupSession.Character.SendPst();
                             }
                         }
                     }
@@ -580,9 +580,11 @@ namespace OpenNos.GameObject
                         foreach (ClientSession groupSession in grp.Characters)
                         {
                             groupSession.SendPacket(groupSession.Character.GeneratePinit());
+                            groupSession.Character.SendPst();
                             groupSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
                         session.SendPacket(session.Character.GeneratePinit());
+                        session.Character.SendPst();
                         Broadcast(session.Character.GeneratePidx(true));
                         session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                     }
@@ -594,10 +596,11 @@ namespace OpenNos.GameObject
                         {
                             if (targetSession != null)
                             {
-                                targetSession.SendPacket(targetSession.Character.GeneratePinit());
                                 targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
                                 Broadcast(targetSession.Character.GeneratePidx(true));
                                 grp.LeaveGroup(targetSession);
+                                targetSession.SendPacket(targetSession.Character.GeneratePinit());
+                                targetSession.Character.SendPst();
                             }
                         }
                         RemoveGroup(grp);
@@ -1019,21 +1022,14 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    string str = $"pinit {myGroup.Characters.Count}";
-                    int i = 0;
                     ThreadSafeGenericList<ClientSession> groupMembers = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters;
                     if (groupMembers != null)
                     {
                         foreach (ClientSession session in groupMembers)
                         {
-                            i++;
-                            str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{(byte)session.Character.Gender}|{(byte)session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{(session.Character.IsVehicled ? 1 : 0)}|{session.Character.HeroLevel}";
+                            session.SendPacket(session.Character.GeneratePinit());
+                            session.Character.SendPst();
                         }
-                    }
-
-                    foreach (ClientSession session in myGroup.Characters)
-                    {
-                        session.SendPacket(str);
                     }
                 }
             }
@@ -1137,7 +1133,7 @@ namespace OpenNos.GameObject
                     {
                         foreach (ClientSession session in grp.Characters)
                         {
-                            foreach (string str in grp.GeneratePst())
+                            foreach (string str in grp.GeneratePst(session))
                             {
                                 session.SendPacket(str);
                             }

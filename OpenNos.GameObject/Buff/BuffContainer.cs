@@ -204,6 +204,18 @@ namespace OpenNos.GameObject.Buff
             return new[] { value1, value2 };
         }
 
+        public string GetAllActiveBuffs()
+        {
+            var str = string.Empty;
+            lock (Indicators)
+            {
+                IndicatorBase[] items = new IndicatorBase[Indicators.Count + 5];
+                Indicators.CopyTo(items);
+                str = items.Where(s => s != null && s.Start.AddMilliseconds(s.Duration * 100) > DateTime.Now && !s.Disabled).Aggregate(str, (current, buff) => current + $" {buff.Id}");
+            }
+            return str;
+        }
+
         #endregion
     }
 }

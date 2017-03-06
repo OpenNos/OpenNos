@@ -56,7 +56,7 @@ namespace OpenNos.GameObject
 
         public bool AddPet(Mate mate)
         {
-            if (mate.MateType == MateType.Pet? MaxMateCount > Mates.Count(): 3 > Mates.Where(s=>s.MateType == MateType.Partner).Count())
+            if (mate.MateType == MateType.Pet? MaxMateCount > Mates.Count(): 3 > Mates.Count(s => s.MateType == MateType.Partner))
             {
                 Mates.Add(mate);
                 MapInstance.Broadcast(mate.GenerateIn());
@@ -65,7 +65,6 @@ namespace OpenNos.GameObject
                 Session.SendPackets(Session.Character.GenerateScP());
                 Session.SendPackets(Session.Character.GenerateScN());
                 return true;
-
             }
             return false;
         }
@@ -2251,11 +2250,22 @@ namespace OpenNos.GameObject
             }
             return $"pidx -1 1.{CharacterId}";
         }
+
         public string GeneratePinit()
         {
             Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId));
+            var mates = Mates;
             int i = 0;
-            string str = String.Empty;
+            string str = string.Empty;
+            if (mates != null)
+            {
+                foreach (Mate mate in mates.Where(s => s.IsTeamMember).OrderByDescending(s => s.MateType))
+                {
+                    i++;
+                    str +=
+                        $" 2|{mate.MateTransportId}|{(mate.MateType == MateType.Partner ? "0" : "1")}|{mate.Level}|{mate.Name.Replace(' ', '^')}|0|{mate.Monster.NpcMonsterVNum}|0";
+                }
+            }
             if (grp != null)
             {
                 foreach (ClientSession groupSessionForId in grp.Characters)
@@ -2264,12 +2274,27 @@ namespace OpenNos.GameObject
                     str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{(byte)groupSessionForId.Character.Gender}|{(byte)groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
                 }
             }
-            foreach (Mate mate in Mates.Where(s => s.IsTeamMember))
-            {
-                i++;
-                str += $" 2|{mate.MateTransportId}|1|{mate.Level}|{mate.Name.Replace(' ', '^')}|-1|319|1";
-            }
             return $"pinit {i}{str}";
+        }
+
+        public List<string> GeneratePst()
+        {
+            var str = new List<string>();
+            str.AddRange(Mates.Where(s => s.IsTeamMember)
+                .OrderByDescending(s => s.MateType)
+                .Select(
+                    mate =>
+                        $"pst 2 {mate.MateTransportId} {(mate.MateType == MateType.Partner ? "0" : "1")} {mate.Hp / mate.MaxHp * 100} {mate.Mp / mate.MaxMp * 100} {mate.Hp} {mate.Mp} 0 0 0"));
+            return str;
+        }
+
+        public void SendPst()
+        {
+            var pstList = GeneratePst();
+            foreach (var packet in pstList)
+            {
+                Session.SendPacket(packet);
+            }
         }
 
         public string GeneratePlayerFlag(long pflag)
@@ -4816,6 +4841,5 @@ namespace OpenNos.GameObject
             return CharacterHelper.XPData[Level - 1];
         }
         #endregion
-
     }
 }
