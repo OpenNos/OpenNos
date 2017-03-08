@@ -139,7 +139,7 @@
     <value>L'objet va être détruit.</value>
   </data>
   <data name="BAD_DROP_AMOUNT" xml:space="preserve">
-    <value>Mauvaise quantité d'objet.</value>
+    <value>Valeur incorrecte d'objets</value>
   </data>
   <data name="BAD_EQUIPMENT" xml:space="preserve">
     <value>Ton personnage ne remplis pas les conditions pour s'équiper de cet objet.</value>
@@ -544,7 +544,7 @@
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>Utilisateurs connectés</value>
+    <value>[Utilisateurs connectés] : </value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>L'utilisateur a bloqué les demandes d'échanges.</value>
@@ -586,7 +586,7 @@
     <value>À partir de maintenant, tu débloques les chuchotements.</value>
   </data>
   <data name="WRONG_VALUE" xml:space="preserve">
-    <value>Mauvaise valeur.</value>
+    <value>La valeur est incorrecte.</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Tu as fait une demande d'échange avec {0}</value>
@@ -703,13 +703,13 @@
     <value>Bienvenue.</value>
   </data>
   <data name="DROP_RATE_NOW" xml:space="preserve">
-    <value>Taux de drop </value>
+    <value>[Taux de drop] :  </value>
   </data>
   <data name="GOLD_RATE_NOW" xml:space="preserve">
-    <value>Taux d'or </value>
+    <value>[Taux d'or] : </value>
   </data>
   <data name="XP_RATE_NOW" xml:space="preserve">
-    <value>Taux d'expérience </value>
+    <value>[Taux d'expérience]  :</value>
   </data>
   <data name="SP_LEVELUP" xml:space="preserve">
     <value>Le niveau spécialiste est augmenté.</value>
@@ -724,7 +724,7 @@
     <value>Le taux d'expérience des fées a bien été modifié.</value>
   </data>
   <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
-    <value>Taux d'expérience des fées </value>
+    <value>[Taux d'expérience des fées] : </value>
   </data>
   <data name="FAIRYMAX" xml:space="preserve">
     <value>Ta fée a atteint le niveau maximum !</value>
@@ -799,7 +799,7 @@
     <value>Ne^donnez^JAMAIS^vos^identifiants^de^connexion^!</value>
   </data>
   <data name="BN9" xml:space="preserve">
-    <value>OpenNos^version^1.0.4^!</value>
+    <value>OpenNos^version^1.0.6^!</value>
   </data>
   <data name="RECEIVED_ITEM" xml:space="preserve">
     <value>Tu as obtenu cet objet : {0} x 1</value>
@@ -890,7 +890,7 @@ Veux-tu le porter ?</value>
     <value>Tu ne peux pas apprendre cette compétence.</value>
   </data>
   <data name="MEMORY" xml:space="preserve">
-    <value>Mémoire utilisée </value>
+    <value>[Mémoire utilisée] : </value>
   </data>
   <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
     <value>Tu ne peux pas ouvrir de magasin dans cette zone.</value>
@@ -965,7 +965,7 @@ Veux-tu le porter ?</value>
     <value>Astuce : Une arnaque ou un abus? Contactez le support !</value>
   </data>
   <data name="BOT_MESSAGE_4" xml:space="preserve">
-    <value>Astuce : Qu'il soit grand ou petit, un seul cheat et c'est le pilori !</value>
+    <value>Astuce : L'utilisation de la langue Française est obligatoire sur les canaux généraux.</value>
   </data>
   <data name="BOT_MESSAGE_5" xml:space="preserve">
     <value>Astuce : Un problème ? reportez le sur notre page github !</value>
@@ -1019,7 +1019,7 @@ Veux-tu le porter ?</value>
     <value>Tu ne peux pas enlever le pouvoir de cet assistant.</value>
   </data>
   <data name="BAD_DIGNITY" xml:space="preserve">
-    <value>Mauvaise quantitée de dignité.</value>
+    <value>Valeur incorrecte de dignité.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
     <value>Échec : Votre compte a été banni. Veuillez contactez l'équipe du jeu.  Raison : {0} Jusqu'au : {1}.</value>
@@ -1046,7 +1046,7 @@ Veux-tu le porter ?</value>
     <value>Canal</value>
   </data>
   <data name="CHARACTER_FAMILY_LOGGED_IN" xml:space="preserve">
-    <value>{0}({1})s'est connecté.</value>
+    <value>{0}({1}) s'est connecté.</value>
   </data>
   <data name="CHARACTER_NOT_IN_FRIENDLIST" xml:space="preserve">
     <value>Tu n'es pas amis avec ce joueur.</value>
@@ -1067,7 +1067,7 @@ Veux-tu le porter ?</value>
     <value>{0} Drop chargés.</value>
   </data>
   <data name="DROP_MAP_FULL" xml:space="preserve">
-    <value>Il y a trop d'objets au sol, réssaye plus tard !</value>
+    <value>Il y a trop d'objets au sol pour le moment, réssayez plus tard !</value>
   </data>
   <data name="EFFECT_ACTIVATED" xml:space="preserve">
     <value>L'effet {0} a été activé.</value>
@@ -1115,7 +1115,7 @@ Veux-tu le porter ?</value>
     <value>Demande d'amis déclinée.</value>
   </data>
   <data name="GOLD_DROPRATE_NOW" xml:space="preserve">
-    <value>Gold Drop Rate</value>
+    <value>[Taux de chance d'apparition d'or] : </value>
   </data>
   <data name="GOLD_DROP_RATE_CHANGED" xml:space="preserve">
     <value>Gold drop rate changed!</value>
@@ -1304,7 +1304,7 @@ Veux-tu le porter ?</value>
     <value>La bataille se termine dans {0} minutes.</value>
   </data>
   <data name="INSTANTBATTLE_MONSTERS_APPEAR" xml:space="preserve">
-    <value>Ouaaah ! Les monstres sont apparus !</value>
+    <value>Ouaaah ! Les monstres sont en train d'arriver !</value>
   </data>
   <data name="INSTANTBATTLE_MONSTERS_HERE" xml:space="preserve">
     <value>Les monstres sont apparus !</value>
@@ -1368,5 +1368,23 @@ Veux-tu le porter ?</value>
   </data>
   <data name="NEW_NAME_PET" xml:space="preserve">
     <value>Tu as changé le nom de ton NosMate !</value>
+  </data>
+  <data name="HEROXP_RATE_CHANGED" xml:space="preserve">
+    <value>Le taux d'expérience héroïque a été modifié.</value>
+  </data>
+  <data name="HERO_LEVELUP" xml:space="preserve">
+    <value>Ton niveau héroïque a augmenté !</value>
+  </data>
+  <data name="HERO_XPRATE_NOW" xml:space="preserve">
+    <value>[Rate exp héroîque] : </value>
+  </data>
+  <data name="NO_FAMILY_RIGHT" xml:space="preserve">
+    <value>Tu ne disposes pas des droits nécessaires.</value>
+  </data>
+  <data name="NO_FAMILY_WAREHOUSE" xml:space="preserve">
+    <value>Aucun entrepôt de famille n'a été trouvé.</value>
+  </data>
+  <data name="YOU_GET_PET" xml:space="preserve">
+    <value>Tu as obtenu un NosMate.</value>
   </data>
 </root>

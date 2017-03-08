@@ -285,6 +285,10 @@ namespace OpenNos.Handler
         public void GetNamedCharacterInformation(string packet)
         {
             string[] characterInformationPacket = packet.Split(' ');
+            if(characterInformationPacket.Length != 4)
+            {
+                return;
+            }
             if (characterInformationPacket[2] == "1")
             {
                 long charId;
@@ -309,6 +313,16 @@ namespace OpenNos.Handler
                             }
                             Session.SendPacket($"st 2 {characterInformationPacket[3]} {npcinfo.Level} {npcinfo.HeroLevel} 100 100 50000 50000");
                         }
+                    }
+                }
+                foreach (var player in Session.CurrentMapInstance.Sessions)
+                {
+                    int mateId;
+                    if (!int.TryParse(characterInformationPacket[3], out mateId)) continue;
+                    Mate mate = player.Character.Mates.FirstOrDefault(s => s.MateTransportId == mateId);
+                    if (mate != null)
+                    {
+                        Session.SendPacket(mate.GenerateStatInfo());
                     }
                 }
             }
@@ -912,6 +926,7 @@ namespace OpenNos.Handler
                         Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_NAME_PET")));
                         Session.SendPacket(Session.Character.GeneratePinit());
+                        Session.Character.SendPst();
                         Session.SendPackets(Session.Character.GenerateScP());
                         Session.Character.Inventory.RemoveItemAmount(petnameVNum);
                     }
@@ -1384,7 +1399,7 @@ namespace OpenNos.Handler
                     if (Receiver != null)
                     {
                         WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
-                        short color = headWearable != null && headWearable.Item.IsColored ? headWearable.Design : (byte)Session.Character.HairColor;
+                        byte color = headWearable != null && headWearable.Item.IsColored ? headWearable.Design : (byte)Session.Character.HairColor;
                         MailDTO mailcopy = new MailDTO
                         {
                             AttachmentAmount = 0,
@@ -1628,6 +1643,7 @@ namespace OpenNos.Handler
             Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
 
             Session.SendPacket(Session.Character.GeneratePinit());
+            Session.Character.SendPst();
 
             Session.SendPacket("zzim");
             Session.SendPacket($"twk 2 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
@@ -1695,7 +1711,7 @@ namespace OpenNos.Handler
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
 
-            if (!Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) && !Session.Character.IsChangingMapInstance && !Session.Character.HasShopOpened)
+            if (Session.HasCurrentMapInstance && !Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) && !Session.Character.IsChangingMapInstance && !Session.Character.HasShopOpened)
             {
                 if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(1) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
                 {

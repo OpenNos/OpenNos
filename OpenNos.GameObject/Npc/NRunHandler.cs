@@ -185,6 +185,7 @@ namespace OpenNos.GameObject
                             break;
                     }
                     Session.SendPacket(Session.Character.GeneratePinit());
+                    Session.Character.SendPst();
                     break;
                 case 10:
                     Session.SendPacket("wopen 3 0");

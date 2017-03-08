@@ -48,7 +48,7 @@ namespace OpenNos.DAL.EF
         [Index("IX_SlotAndType", 1, IsUnique = false, Order = 0)]
         public long CharacterId { get; set; }
 
-        public short Design { get; set; }
+        public byte Design { get; set; }
 
         public int DurabilityPoint { get; set; }
 

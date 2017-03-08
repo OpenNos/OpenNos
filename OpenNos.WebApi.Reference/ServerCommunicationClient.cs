@@ -75,6 +75,7 @@ namespace OpenNos.WebApi.Reference
                 {
                     InitializeAndRegisterCallbacks();
                 }
+                while (!IsConnected) { }
 
                 return _hubProxy;
             }
@@ -100,14 +101,34 @@ namespace OpenNos.WebApi.Reference
             _hubconnection.Closed += () =>
             {
                 IsConnected = false;
-                while (!IsConnected)
-                {
-                    _hubconnection = new HubConnection(remoteUrl);
-                    _hubProxy = _hubconnection.CreateHubProxy("servercommunicationhub");
-                    _hubconnection.Start().Wait();
-                    IsConnected = true;
-                }
+                _hubconnection = new HubConnection(remoteUrl);
+                _hubProxy = _hubconnection.CreateHubProxy("servercommunicationhub");
+
+
+                _hubProxy.On<string, long>("accountConnected", OnAccountConnected);
+
+                _hubProxy.On<string>("accountDisconnected", OnAccountDisconnected);
+
+                _hubProxy.On<string, string, long>("characterConnected", OnCharacterConnected);
+
+                _hubProxy.On<string, string, long>("characterDisconnected", OnCharacterDisconnected);
+
+                _hubProxy.On<long?, string>("kickSession", OnSessionKicked);
+
+                _hubProxy.On<string, long>("refreshFamily", OnFamilyRefresh);
+
+                _hubProxy.On<string, long>("refreshRelation", OnRelationRefresh);
+
+                _hubProxy.On<int>("refreshPenaltyLog", OnPenaltyLogRefresh);
+
+                _hubProxy.On<string, long>("refreshBazaar", OnBazaarRefresh);
+
+                _hubProxy.On<string, string, string, string, int, MessageType>("sendMessageToCharacter", OnMessageSentToCharacter);
+
+                _hubconnection.Start().Wait();
+                IsConnected = true;
             };
+
 
             _hubProxy = _hubconnection.CreateHubProxy("servercommunicationhub");
 
@@ -133,6 +154,7 @@ namespace OpenNos.WebApi.Reference
             _hubProxy.On<string, string, string, string, int, MessageType>("sendMessageToCharacter", OnMessageSentToCharacter);
 
             _hubconnection.Start().Wait();
+            IsConnected = true;
         }
 
         protected virtual void Dispose(bool disposing)
