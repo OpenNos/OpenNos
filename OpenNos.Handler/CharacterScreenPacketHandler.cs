@@ -206,6 +206,8 @@ namespace OpenNos.Handler
                 catch (Exception ex)
                 {
                     Logger.Log.Error("WCF Communication Failed.", ex);
+                    Session.Disconnect();
+                    return;
                 }
                 if (loginPacketParts.Length > 4 && hasRegisteredAccountLogin)
                 {
