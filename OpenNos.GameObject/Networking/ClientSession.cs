@@ -428,7 +428,7 @@ namespace OpenNos.GameObject
                         {
                             if (packetsplit.Length > 1)
                             {
-                                if (packetsplit[1][0] == '/' || packetsplit[1][0] == ':' || packetsplit[1][0] == ';')
+                                if (packetsplit[1].Length >= 1 && (packetsplit[1][0] == '/' || packetsplit[1][0] == ':' || packetsplit[1][0] == ';'))
                                 {
                                     packetsplit[1] = packetsplit[1][0].ToString();
                                     packetstring = packet.Insert(packet.IndexOf(' ') + 2, " ");

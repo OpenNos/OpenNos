@@ -359,6 +359,11 @@ namespace OpenNos.Handler
             bool createNewGroup = true;
             ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterId(pjoinPacket.CharacterId);
 
+            if (targetSession == null)
+            {
+                return;
+            }
+
             if (pjoinPacket.RequestType.Equals(GroupRequestType.Requested) || pjoinPacket.RequestType.Equals(GroupRequestType.Invited))
             {
                 if (pjoinPacket.CharacterId == 0)
