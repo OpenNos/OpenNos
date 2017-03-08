@@ -204,6 +204,14 @@ namespace OpenNos.GameObject.Buff
             return new[] { value1, value2 };
         }
 
+        public string GetAllActiveBuffs()
+        {
+            lock (Indicators)
+            {
+                return Indicators != null ? Indicators.Aggregate(string.Empty, (current, indicator) => current + $" {indicator.Id}") : "";
+            }
+        }
+
         #endregion
     }
 }
