@@ -153,7 +153,7 @@ namespace OpenNos.GameObject.Event
                     mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(10 + wave * 160), EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, wave));
                     mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(140 + wave * 160), EventActionType.DROPITEMS, GetInstantBattleDrop(mapinstance.Item1.Map, mapinstance.Item2, wave));
                 }
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(13.5), EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, 4));
+                mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(650), EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, 4));
             }
         }
 
