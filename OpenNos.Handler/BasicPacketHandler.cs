@@ -285,6 +285,10 @@ namespace OpenNos.Handler
         public void GetNamedCharacterInformation(string packet)
         {
             string[] characterInformationPacket = packet.Split(' ');
+            if(characterInformationPacket.Length != 4)
+            {
+                return;
+            }
             if (characterInformationPacket[2] == "1")
             {
                 long charId;
