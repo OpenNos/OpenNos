@@ -4146,7 +4146,15 @@ namespace OpenNos.GameObject
                         // remove all which are saved but not in our current enumerable
                         foreach (var inventoryToDeleteId in currentlySavedInventoryIds.Except(inventories.Select(i => i.Id)))
                         {
-                            DAOFactory.IteminstanceDAO.Delete(inventoryToDeleteId);
+                            try
+                            {
+                                DAOFactory.IteminstanceDAO.Delete(inventoryToDeleteId);
+                            }
+                            catch (Exception err)
+                            {
+                                Logger.Error(err);
+                                Logger.Debug(Name, $"Detailed Item Information: Item ID = {inventoryToDeleteId}");
+                            }
                         }
 
                         // create or update all which are new or do still exist
