@@ -58,7 +58,7 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (StaticBonus entity in context.StaticBonus.Where(i => i.CharacterId == characterId))
+                foreach (StaticBonus entity in context.StaticBonus.Where(i => i.CharacterId == characterId && i.DateEnd > DateTime.Now))
                 {
                     yield return _mapper.Map<StaticBonusDTO>(entity);
                 }

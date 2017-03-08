@@ -4213,12 +4213,12 @@ namespace OpenNos.GameObject
                     DAOFactory.MinilandObjectDAO.InsertOrUpdate(ref mobj);
                 }
 
-                foreach (StaticBonusDTO bonus in StaticBonusList)
+                foreach (StaticBonusDTO bonus in StaticBonusList.ToArray())
                 {
                     StaticBonusDTO bonus2 = bonus;
                     DAOFactory.StaticBonusDAO.InsertOrUpdate(ref bonus2);
                 }
-                DAOFactory.StaticBonusDAO.RemoveOutDated();
+                //DAOFactory.StaticBonusDAO.RemoveOutDated();
 
                 foreach (GeneralLogDTO general in GeneralLogs)
                 {
