@@ -89,8 +89,8 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-        public short MaxHp { get { return 200; } }
-        public short MaxMp { get { return 200; } }
+        public int MaxHp => Monster.MaxHP;
+        public int MaxMp => Monster.MaxMP;
         public byte PetId { get; set; }
         public List<ItemInstance> GetInventory()
         {
@@ -127,11 +127,10 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
-        public string GenerateCMode(short MorphId)
+        public string GenerateCMode(short morphId)
         {
-            return $"c_mode 2 {MateTransportId} {MorphId} 0 0";
+            return $"c_mode 2 {MateTransportId} {morphId} 0 0";
         }
-
 
         /// <summary>
         /// Checks if the current character is in range of the given position
@@ -168,6 +167,12 @@ namespace OpenNos.GameObject
         {
             return $"in 2 {NpcMonsterVNum} {MateTransportId} {(IsTeamMember ? PositionX : MapX)} {(IsTeamMember ? PositionY : MapY)} {Direction} {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} 0 0 3 {CharacterId} 1 0 {(Skin != 0 ? Skin : -1)} {Name.Replace(' ', '^')} 0 -1 0 0 0 0 0 0 0 0";
         }
+
+        public string GenerateStatInfo()
+        {
+            return $"st 2 {MateTransportId} {Level} 0 {(int)(Hp / (float)MaxHp * 100)} {(int)(Mp / (float)MaxMp * 100)} {Hp} {Mp}";
+        }
+
         public EffectPacket GenerateEff(int effectid)
         {
             return new EffectPacket
