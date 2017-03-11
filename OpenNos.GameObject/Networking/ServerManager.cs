@@ -52,6 +52,7 @@ namespace OpenNos.GameObject
 
         private List<DropDTO> _generalDrops;
         private ThreadSafeSortedList<long, Group> _groups;
+        private ThreadSafeSortedList<long, Raid> _raids;
         private ThreadSafeSortedList<short, List<MapNpc>> _mapNpcs;
         private ThreadSafeSortedList<short, List<DropDTO>> _monsterDrops;
         private ThreadSafeSortedList<short, List<NpcMonsterSkill>> _monsterSkills;
@@ -64,7 +65,8 @@ namespace OpenNos.GameObject
         private ThreadSafeSortedList<int, List<ShopSkillDTO>> _shopSkills;
         private ThreadSafeSortedList<int, List<TeleporterDTO>> _teleporters;
         private bool inRelationRefreshMode;
-        private long lastGroupId;
+        private long _lastGroupId;
+        private long _lastRaidId;
 
         #endregion
 
@@ -120,6 +122,8 @@ namespace OpenNos.GameObject
         public List<Family> FamilyList { get; set; }
 
         public List<Group> Groups => _groups.GetAllItems();
+
+        public List<Raid> Raids => _raids.GetAllItems();
 
         public bool inBazaarRefreshMode { get; set; }
 
@@ -204,6 +208,11 @@ namespace OpenNos.GameObject
         public void AddGroup(Group group)
         {
             _groups[group.GroupId] = group;
+        }
+
+        public void AddRaid(Raid raid)
+        {
+            _raids[raid.RaidId] = raid;
         }
 
         public void AskPVPRevive(long characterId)
@@ -517,8 +526,14 @@ namespace OpenNos.GameObject
 
         public long GetNextGroupId()
         {
-            lastGroupId++;
-            return lastGroupId;
+            _lastGroupId++;
+            return _lastGroupId;
+        }
+
+        public long GetNextRaidId()
+        {
+            _lastRaidId++;
+            return _lastRaidId;
         }
 
         public T GetProperty<T>(string charName, string property)
@@ -607,6 +622,37 @@ namespace OpenNos.GameObject
                     }
                     session.Character.Group = null;
                 }
+            }
+        }
+        public void RaidLeave(ClientSession session)
+        {
+            if (session == null) return;
+            if (Raids == null) return;
+            Raid raid = Instance.Raids.FirstOrDefault(s => s.IsMemberOfRaid(session.Character.CharacterId));
+            if (raid == null) return;
+            if (raid.CharacterCount > 1)
+            {
+                if (raid.Leader != session)
+                {
+                    raid.LeaveRaid(session);
+                }
+                else
+                {
+                    raid.LeaveRaid(raid.Leader);
+                    raid.Leader.SendPacket(
+                        $"say 1 {raid.Leader.Character.CharacterId} 10 {Language.Instance.GetMessageFromKey("RAID_NEW_LEADER")}");
+                    raid.Leader.SendPacket(
+                        UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_NEW_LEADER"),
+                            0));
+                    raid.Leader.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(
+                        string.Format(Language.Instance.GetMessageFromKey("LEAVE_RAID"), session.Character.Name), 0));
+                }
+                session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_LEFT"), 0));
+                raid.UpdateVisual();
+            }
+            else
+            {
+                RaidDisolve(session, raid);
             }
         }
 
@@ -1100,6 +1146,7 @@ namespace OpenNos.GameObject
             {
                 _monsterDrops.Dispose();
                 _groups.Dispose();
+                _raids.Dispose();
                 _monsterSkills.Dispose();
                 _shopSkills.Dispose();
                 _shopItems.Dispose();
@@ -1150,6 +1197,7 @@ namespace OpenNos.GameObject
         private void LaunchEvents()
         {
             _groups = new ThreadSafeSortedList<long, Group>();
+            _raids = new ThreadSafeSortedList<long, Raid>();
 
             Observable.Interval(TimeSpan.FromMinutes(5)).Subscribe(x =>
             {
@@ -1211,7 +1259,8 @@ namespace OpenNos.GameObject
             ServerCommunicationClient.Instance.RelationRefresh += OnRelationRefresh;
             ServerCommunicationClient.Instance.BazaarRefresh += OnBazaarRefresh;
             ServerCommunicationClient.Instance.PenaltyLogRefresh += OnPenaltyLogRefresh;
-            lastGroupId = 1;
+            _lastGroupId = 1;
+            _lastRaidId = 1;
         }
 
         private void LoadBazaar()
@@ -1538,6 +1587,11 @@ namespace OpenNos.GameObject
         private void RemoveGroup(Group grp)
         {
             _groups.Remove(grp.GroupId);
+        }
+
+        public void RemoveRaid(Raid raid)
+        {
+            _raids.Remove(raid.RaidId);
         }
 
         private void RemoveItemProcess()

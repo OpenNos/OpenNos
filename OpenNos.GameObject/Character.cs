@@ -264,6 +264,8 @@ namespace OpenNos.GameObject
 
         public List<QuicklistEntryDTO> QuicklistEntries { get; private set; }
 
+        public Raid Raid { get; set; }
+
         public RespawnMapTypeDTO Respawn
         {
             get
