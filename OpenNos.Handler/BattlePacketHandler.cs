@@ -707,7 +707,7 @@ namespace OpenNos.Handler
                             ClientSession playerToAttack = ServerManager.Instance.GetSessionByCharacterId(targetId);
                             if (playerToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
                             {
-                                if (Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = playerToAttack.Character.PositionX, Y = playerToAttack.Character.PositionY }) <= ski.Skill.Range)
+                                if (Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = playerToAttack.Character.PositionX, Y = playerToAttack.Character.PositionY }) <= ski.Skill.Range + 1)
                                 {
                                     Session.Character.LastSkillUse = DateTime.Now;
                                     ski.LastUse = DateTime.Now;
@@ -989,7 +989,7 @@ namespace OpenNos.Handler
                             if (monsterToAttack != null && Session.Character.Mp >= ski.Skill.MpCost)
                             {
                                 if (Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY },
-                                                    new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + monsterToAttack.Monster.BasicArea)
+                                                    new MapCell { X = monsterToAttack.MapX, Y = monsterToAttack.MapY }) <= ski.Skill.Range + 1 + monsterToAttack.Monster.BasicArea)
                                 {
                                     Session.Character.LastSkillUse = DateTime.Now;
                                     ski.LastUse = DateTime.Now;
