@@ -630,7 +630,7 @@ namespace OpenNos.GameObject
             if (Raids == null) return;
             Raid raid = Instance.Raids.FirstOrDefault(s => s.IsMemberOfRaid(session.Character.CharacterId));
             if (raid == null) return;
-            if (raid.CharacterCount > 1)
+            if (raid.Characters.Count > 1)
             {
                 if (raid.Leader != session)
                 {
@@ -654,6 +654,19 @@ namespace OpenNos.GameObject
             {
                 RaidDisolve(session, raid);
             }
+        }
+
+        public void RaidDisolve(ClientSession session, Raid raid = null)
+        {
+            if (raid == null)
+                raid = Instance.Raids.FirstOrDefault(s => s.IsMemberOfRaid(session.Character.CharacterId));
+            if (raid == null) return;
+            foreach (ClientSession targetSession in raid.Characters)
+            {
+                targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_CLOSED"), 0));
+                raid.LeaveRaid(targetSession);
+            }
+            raid.DestroyRaid();
         }
 
         public void Initialize()

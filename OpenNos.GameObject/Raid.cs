@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
         {
             RaidId = ServerManager.Instance.GetNextRaidId();
             RaidDesign = seal.EffectValue;
-            Characters = new List<ClientSession>(RaidDesign == 23 ? 1 : RaidDesign == 20 ? 1 : 0);
+            Characters = new List<ClientSession>(RaidDesign == 23 ? 20 : RaidDesign == 20 ? 40 : 15);
             Listed = false;
             Finished = false;
             Launched = false;
