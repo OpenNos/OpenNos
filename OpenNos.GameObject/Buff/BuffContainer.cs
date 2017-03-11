@@ -206,10 +206,19 @@ namespace OpenNos.GameObject.Buff
 
         public string GetAllActiveBuffs()
         {
+            var buffList = new List<IndicatorBase>();
+
             lock (Indicators)
             {
-                return Indicators != null ? Indicators.Aggregate(string.Empty, (current, indicator) => current + $" {indicator.Id}") : "";
+                foreach (var buff in Indicators)
+                {
+                    if (buffList.All(s => s.Id != buff.Id))
+                    {
+                        buffList.Add(buff);
+                    }
+                }
             }
+            return buffList.Aggregate(string.Empty, (current, buff) => current + $" {buff.Id}");
         }
 
         #endregion

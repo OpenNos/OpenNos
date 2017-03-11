@@ -13,6 +13,10 @@ namespace OpenNos.GameObject
         [PacketIndex(0)]
         public byte JobLevel { get; set; }
 
+        [PacketIndex(1)]
+
+        public string Name { get; set; }
+
         #endregion
     }
 }
