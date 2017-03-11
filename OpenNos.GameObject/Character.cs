@@ -844,7 +844,10 @@ namespace OpenNos.GameObject
         /// </summary>
         public void Dispose()
         {
-            ServerManager.Instance.RemoveMapInstance(Miniland.MapInstanceId);
+            if (Miniland != null)
+            {
+                ServerManager.Instance.RemoveMapInstance(Miniland.MapInstanceId);
+            }
             CloseShop();
             CloseExchangeOrTrade();
             GroupSentRequestCharacterIds.Clear();
