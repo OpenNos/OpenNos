@@ -45,10 +45,13 @@ namespace OpenNos.Handler
             // TODO: Hold Account Information in Authorized object
             long accountId = Session.Account.AccountId;
             string[] packetsplit = packet.Split(' ');
-
-            byte slot = Convert.ToByte(packetsplit[3]);
+            if(packetsplit.Length != 7)
+            {
+                return;
+            }
+            byte slot;
             string characterName = packetsplit[2];
-            if (slot <= 2 && DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) == null)
+            if (byte.TryParse(packetsplit[3], out slot) && slot <= 2 && DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) == null)
             {
                 if (characterName.Length > 3 && characterName.Length < 15)
                 {
