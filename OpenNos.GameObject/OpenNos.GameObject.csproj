@@ -126,6 +126,7 @@
     <Compile Include="Packets\CommandPackets\BlockFExpPacket.cs" />
     <Compile Include="Packets\CommandPackets\BlockRepPacket.cs" />
     <Compile Include="Packets\CommandPackets\HeroXpRatePacket.cs" />
+    <Compile Include="Packets\CommandPackets\InventoryPreviewPacket.cs" />
     <Compile Include="Packets\CommandPackets\MutePacket.cs" />
     <Compile Include="Packets\CommandPackets\ArenaWinnerPacket.cs" />
     <Compile Include="Packets\CommandPackets\BackpackPacket.cs" />
