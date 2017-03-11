@@ -5,15 +5,12 @@ using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
-    [PacketHeader("$SPLvl", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
-    public class ChangeSpecialistLevelPacket : PacketDefinition
+    [PacketHeader("$Inventory", PassNonParseablePacket = true, Authority = AuthorityType.GameMaster)]
+    public class InventoryPreviewPacket : PacketDefinition
     {
         #region Properties
-
+        
         [PacketIndex(0)]
-        public byte SpecialistLevel { get; set; }
-
-        [PacketIndex(1)]
         public string Name { get; set; }
 
         #endregion

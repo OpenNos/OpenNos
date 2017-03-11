@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Media;
 using System.Threading.Tasks;
 using OpenNos.Core.Handling;
 
@@ -476,16 +477,21 @@ namespace OpenNos.Handler
             {
                 if (changeHeroLevelPacket.HeroLevel <= 255)
                 {
-                    Session.Character.HeroLevel = changeHeroLevelPacket.HeroLevel;
-                    Session.Character.HeroXp = 0;
+                    var player = Session;
+                    if (ServerManager.Instance.GetSessionByCharacterName(changeHeroLevelPacket.Name) != null)
+                    {
+                        player = ServerManager.Instance.GetSessionByCharacterName(changeHeroLevelPacket.Name);
+                    }
+                    player.Character.HeroLevel = changeHeroLevelPacket.HeroLevel;
+                    player.Character.HeroXp = 0;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
-                    Session.SendPacket(Session.Character.GenerateLev());
-                    Session.SendPacket(Session.Character.GenerateStatInfo());
-                    Session.SendPacket(Session.Character.GenerateStatChar());
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 6), Session.Character.PositionX, Session.Character.PositionY);
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 198), Session.Character.PositionX, Session.Character.PositionY);
+                    player.SendPacket(player.Character.GenerateLev());
+                    player.SendPacket(player.Character.GenerateStatInfo());
+                    player.SendPacket(player.Character.GenerateStatChar());
+                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX, Session.Character.PositionY);
+                    player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), Session.Character.PositionX, Session.Character.PositionY);
                 }
                 else
                 {
@@ -507,25 +513,30 @@ namespace OpenNos.Handler
             Logger.Debug("Change JobLevel Command", Session.Character.GenerateIdentity());
             if (changeJobLevelPacket != null)
             {
-                if ((Session.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20 || Session.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 255) && changeJobLevelPacket.JobLevel > 0)
+                var player = Session;
+                if (ServerManager.Instance.GetSessionByCharacterName(changeJobLevelPacket.Name) != null)
                 {
-                    Session.Character.JobLevel = changeJobLevelPacket.JobLevel;
-                    Session.Character.JobLevelXp = 0;
-                    Session.Character.Skills.ClearAll();
-                    Session.SendPacket(Session.Character.GenerateLev());
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 8), Session.Character.PositionX, Session.Character.PositionY);
+                    player = ServerManager.Instance.GetSessionByCharacterName(changeJobLevelPacket.Name);
+                }
+                if ((player.Character.Class == 0 && changeJobLevelPacket.JobLevel <= 20 || player.Character.Class != 0 && changeJobLevelPacket.JobLevel <= 255) && changeJobLevelPacket.JobLevel > 0)
+                {
+                    player.Character.JobLevel = changeJobLevelPacket.JobLevel;
+                    player.Character.JobLevelXp = 0;
+                    player.Character.Skills.ClearAll();
+                    player.SendPacket(Session.Character.GenerateLev());
+                    player.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
+                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff( 8), player.Character.PositionX, player.Character.PositionY);
 
-                    Session.Character.Skills[(short)(200 + 20 * (byte)Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)Session.Character.Class), CharacterId = Session.Character.CharacterId };
-                    Session.Character.Skills[(short)(201 + 20 * (byte)Session.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)Session.Character.Class), CharacterId = Session.Character.CharacterId };
-                    Session.Character.Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = Session.Character.CharacterId };
-                    if (!Session.Character.UseSp)
+                    player.Character.Skills[(short)(200 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
+                    player.Character.Skills[(short)(201 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
+                    player.Character.Skills[236] = new CharacterSkill { SkillVNum = 236, CharacterId = player.Character.CharacterId };
+                    if (!player.Character.UseSp)
                     {
-                        Session.SendPacket(Session.Character.GenerateSki());
+                        player.SendPacket(player.Character.GenerateSki());
                     }
-                    Session.Character.LearnAdventurerSkill();
+                    player.Character.LearnAdventurerSkill();
                 }
                 else
                 {
@@ -549,24 +560,29 @@ namespace OpenNos.Handler
             {
                 if (changeLevelPacket.Level > 0)
                 {
-                    Session.Character.Level = changeLevelPacket.Level;
-                    Session.Character.LevelXp = 0;
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                    Session.Character.Mp = (int)Session.Character.MPLoad();
-                    Session.SendPacket(Session.Character.GenerateStat());
-                    Session.SendPacket(Session.Character.GenerateStatInfo());
-                    Session.SendPacket(Session.Character.GenerateStatChar());
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
-                    Session.SendPacket(Session.Character.GenerateLev());
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 6), Session.Character.PositionX, Session.Character.PositionY);
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 198), Session.Character.PositionX, Session.Character.PositionY);
-                    ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
-                    if (Session.Character.Family != null)
+                    var player = Session;
+                    if (ServerManager.Instance.GetSessionByCharacterName(changeLevelPacket.Name) != null)
                     {
-                        ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-                        int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                        player = ServerManager.Instance.GetSessionByCharacterName(changeLevelPacket.Name);
+                    }
+                    player.Character.Level = changeLevelPacket.Level;
+                    player.Character.LevelXp = 0;
+                    player.Character.Hp = (int)player.Character.HPLoad();
+                    player.Character.Mp = (int)player.Character.MPLoad();
+                    player.SendPacket(player.Character.GenerateStat());
+                    player.SendPacket(player.Character.GenerateStatInfo());
+                    player.SendPacket(player.Character.GenerateStatChar());
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
+                    player.SendPacket(player.Character.GenerateLev());
+                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(6), player.Character.PositionX, player.Character.PositionY);
+                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(198), player.Character.PositionX, player.Character.PositionY);
+                    ServerManager.Instance.UpdateGroup(player.Character.CharacterId);
+                    if (player.Character.Family != null)
+                    {
+                        ServerManager.Instance.FamilyRefresh(player.Character.Family.FamilyId);
+                        int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, player.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     }
                 }
                 else
@@ -591,11 +607,16 @@ namespace OpenNos.Handler
             {
                 if (changeReputationPacket.Reputation > 0)
                 {
-                    Session.Character.Reput = changeReputationPacket.Reputation;
-                    Session.SendPacket(Session.Character.GenerateFd());
+                    var player = Session;
+                    if (ServerManager.Instance.GetSessionByCharacterName(changeReputationPacket.Name) != null)
+                    {
+                        player = ServerManager.Instance.GetSessionByCharacterName(changeReputationPacket.Name);
+                    }
+                    player.Character.Reput = changeReputationPacket.Reputation;
+                    player.SendPacket(Session.Character.GenerateFd());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"), 0));
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                 }
                 else
                 {
@@ -615,32 +636,48 @@ namespace OpenNos.Handler
         public void ChangeSpecialistLevel(ChangeSpecialistLevelPacket changeSpecialistLevelPacket)
         {
             Logger.Debug("Change SpecialistLevel Command", Session.Character.GenerateIdentity());
-            SpecialistInstance sp = Session.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Wear);
-
             if (changeSpecialistLevelPacket != null)
             {
+                var player = Session;
+                if (ServerManager.Instance.GetSessionByCharacterName(changeSpecialistLevelPacket.Name) != null)
+                {
+                    player = ServerManager.Instance.GetSessionByCharacterName(changeSpecialistLevelPacket.Name);
+                }
+                SpecialistInstance sp =
+                    player.Character.Inventory.LoadBySlotAndType<SpecialistInstance>((byte) EquipmentType.Sp,
+                        InventoryType.Wear);
+
                 if (sp != null && Session.Character.UseSp)
                 {
-                    if (changeSpecialistLevelPacket.SpecialistLevel <= 255 && changeSpecialistLevelPacket.SpecialistLevel > 0)
+                    if (changeSpecialistLevelPacket.SpecialistLevel <= 255 &&
+                        changeSpecialistLevelPacket.SpecialistLevel > 0)
                     {
                         sp.SpLevel = changeSpecialistLevelPacket.SpecialistLevel;
                         sp.XP = 0;
-                        Session.SendPacket(Session.Character.GenerateLev());
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
-                        Session.SendPacket(Session.Character.GenerateSki());
-                        Session.Character.LearnSPSkill();
-                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                        Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( 8), Session.Character.PositionX, Session.Character.PositionY);
+                        player.SendPacket(Session.Character.GenerateLev());
+                        Session.SendPacket(
+                            UserInterfaceHelper.Instance.GenerateMsg(
+                                Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
+                        player.SendPacket(Session.Character.GenerateSki());
+                        player.Character.LearnSPSkill();
+                        player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
+                            ReceiverType.AllExceptMe);
+                        player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
+                            ReceiverType.AllExceptMe);
+                        player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8),
+                            Session.Character.PositionX, Session.Character.PositionY);
                     }
                     else
                     {
-                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                        Session.SendPacket(
+                            UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"),
+                                0));
                     }
                 }
                 else
                 {
-                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                    Session.SendPacket(
+                        UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                 }
             }
             else
@@ -683,8 +720,8 @@ namespace OpenNos.Handler
                     }
                     else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
                     {
-                        CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadByName(name);
-                        SendStats(characterDTO);
+                        CharacterDTO characterDto = DAOFactory.CharacterDAO.LoadByName(name);
+                        SendStats(characterDto);
                     }
                     else
                     {
@@ -839,7 +876,7 @@ namespace OpenNos.Handler
                     Item iteminfo = ServerManager.GetItem(vnum);
                     if (iteminfo != null)
                     {
-                        if (iteminfo.IsColored)
+                        if (iteminfo.IsColored || iteminfo.VNum == 302)
                         {
                             if (packetsplit.Length > 3)
                             {
@@ -891,9 +928,24 @@ namespace OpenNos.Handler
                         {
                             WearableInstance wearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>(inv.First().Slot, inv.First().Type);
 
-                            if (wearable != null && (wearable.Item.EquipmentSlot == EquipmentType.Armor || wearable.Item.EquipmentSlot == EquipmentType.MainWeapon || wearable.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
+
+                            if (wearable != null)
                             {
-                                wearable.SetRarityPoint();
+                                switch (wearable.Item.EquipmentSlot)
+                                {
+                                    case EquipmentType.Armor:
+                                    case EquipmentType.MainWeapon:
+                                    case EquipmentType.SecondaryWeapon:
+                                        wearable.SetRarityPoint();
+                                        break;
+                                    case EquipmentType.Boots:
+                                    case EquipmentType.Gloves:
+                                        wearable.FireResistance = (short)(wearable.Item.FireResistance * upgrade);
+                                        wearable.DarkResistance = (short)(wearable.Item.DarkResistance * upgrade);
+                                        wearable.LightResistance = (short)(wearable.Item.LightResistance * upgrade);
+                                        wearable.WaterResistance = (short)(wearable.Item.WaterResistance * upgrade);
+                                        break;
+                                }
                             }
                             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
                         }
@@ -1282,6 +1334,94 @@ namespace OpenNos.Handler
                 Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
             }
         }
+
+        /// <summary>
+        /// $Inventory Command
+        /// </summary>
+        /// <param name="inventoryPreviewPacket"></param>
+        public void ViewInventory(InventoryPreviewPacket inventoryPreviewPacket)
+        {
+            var player = Session;
+            if (inventoryPreviewPacket != null)
+            {
+                if (ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name) != null)
+                {
+                    player = ServerManager.Instance.GetSessionByCharacterName(inventoryPreviewPacket.Name);
+                }
+            }
+            string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv3 = "inv 3", inv6 = "inv 6", inv7 = "inv 7";
+            // inv 3 used for miniland objects
+            if (player.Character.Inventory == null) return;
+            var listItems = player.Character.Inventory.GetAllItems();
+            foreach (ItemInstance inv in listItems)
+            {
+                switch (inv.Type)
+                {
+                    case InventoryType.Equipment:
+                        if (inv.Item.EquipmentSlot == EquipmentType.Sp)
+                        {
+                            SpecialistInstance specialistInstance = inv as SpecialistInstance;
+                            if (specialistInstance != null)
+                            {
+                                inv0 +=
+                                    $" {inv.Slot}.{inv.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
+                            }
+                        }
+                        else
+                        {
+                            WearableInstance wearableInstance = inv as WearableInstance;
+                            if (wearableInstance != null)
+                            {
+                                inv0 +=
+                                    $" {inv.Slot}.{inv.ItemVNum}.{wearableInstance.Rare}.{(inv.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
+                            }
+                        }
+                        break;
+
+                    case InventoryType.Main:
+                        inv1 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
+                        break;
+
+                    case InventoryType.Etc:
+                        inv2 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}.0";
+                        break;
+
+                    case InventoryType.Miniland:
+                        inv3 += $" {inv.Slot}.{inv.ItemVNum}.{inv.Amount}";
+                        break;
+
+                    case InventoryType.Specialist:
+                        SpecialistInstance specialist = inv as SpecialistInstance;
+                        if (specialist != null)
+                        {
+                            inv6 +=
+                                $" {inv.Slot}.{inv.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
+                        }
+                        break;
+
+                    case InventoryType.Costume:
+                        WearableInstance costumeInstance = inv as WearableInstance;
+                        if (costumeInstance != null)
+                        {
+                            inv7 +=
+                                $" {inv.Slot}.{inv.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
+                        }
+                        break;
+                    case InventoryType.Wear:
+                        break;
+                    case InventoryType.Bazaar:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            Session.SendPacket(inv0);
+            Session.SendPacket(inv1);
+            Session.SendPacket(inv2);
+            Session.SendPacket(inv6);
+            Session.SendPacket(inv7);
+        }
+
 
         /// <summary>
         /// $Kick Command
@@ -2326,6 +2466,11 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay("----- ------- -----", 13));
                 }
             }
+            var playerSession = ServerManager.Instance.GetSessionByCharacterName(character.Name);
+            if (playerSession == null) return;
+            Session.SendPacket(Session.Character.GenerateSay("----- INFORMATIONS -----", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"ACTUAL IP : {playerSession.IpAddress}", 13));
+            Session.SendPacket(Session.Character.GenerateSay("-------------------", 13));
         }
 
         private async void ShutdownTask()

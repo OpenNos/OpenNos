@@ -13,6 +13,9 @@ namespace OpenNos.GameObject
         [PacketIndex(0)]
         public ClassType ClassType { get; set; }
 
+        [PacketIndex(1)]
+        public string Name { get; set; }
+
         #endregion
     }
 }
