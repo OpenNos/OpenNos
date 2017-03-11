@@ -799,7 +799,7 @@ namespace OpenNos.Handler
             {
                 ClientSession inviteSession = ServerManager.Instance.GetSessionByCharacterId(characterId);
                 if (inviteSession != null &&
-                    inviteSession.Character.FamilyInviteCharacters.Contains(Session.Character.CharacterId))
+                    inviteSession.Character.FamilyInviteCharacters.Contains(Session.Character.CharacterId) && inviteSession.Character.Family != null && inviteSession.Character.Family.FamilyCharacters != null)
                 {
                     if (inviteSession.Character.Family.FamilyCharacters.Count() + 1 > inviteSession.Character.Family.MaxSize)
                     {
