@@ -21,6 +21,23 @@ namespace OpenNos.GameObject
     public class MapInstancePortalHandler
     {
         #region Methods
+        public static List<TimeSpacePortal> GenerateTimespace(short entryMap)
+        {
+            List<TimeSpacePortal> list = new List<TimeSpacePortal>();
+
+            switch (entryMap)
+            {
+                case 1:
+                    list.Add(new TimeSpacePortal
+                    {
+                        SourceX = 134,
+                        SourceY = 33,
+                        SourceMapId = 1,
+                    });
+                    break;
+            }
+            return list;
+        }
 
         public static List<Portal> GenerateMinilandEntryPortals(short entryMap, Guid exitMapinstanceId)
         {

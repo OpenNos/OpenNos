@@ -93,6 +93,7 @@
     <Compile Include="Helpers\UserInterfaceHelper.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="Map\MonsterToSummon.cs" />
+    <Compile Include="Map\TimeSpacePortal.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />
     <Compile Include="Packets\ClientPackets\EquipmentInfoPacket.cs" />
