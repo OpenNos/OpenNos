@@ -55,7 +55,7 @@ namespace OpenNos.Handler
             {
                 if (characterName.Length > 3 && characterName.Length < 15)
                 {
-                    Regex rg = new Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B]*$");
+                    Regex rg = new Regex(@"^[\u0021-\u007E\u00A1-\u00AC\u00AE-\u00FF\u4E00-\u9FA5\u0E01-\u0E3A\u0E3F-\u0E5B\u002E]*$");
                     int isIllegalCharacter = rg.Matches(characterName).Count;
 
                     if (isIllegalCharacter == 1)
