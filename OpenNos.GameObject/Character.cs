@@ -3604,12 +3604,7 @@ namespace OpenNos.GameObject
 
         public IEnumerable<string> GetMinilandEffects()
         {
-            List<string> str = new List<string>();
-            foreach (MinilandObject mp in MinilandObjects)
-            {
-                str.Add(mp.GenerateMinilandEffect(false));
-            }
-            return str;
+            return MinilandObjects.Select(mp => mp.GenerateMinilandEffect(false)).ToList();
         }
 
         public string GetMinilandObjectList()
