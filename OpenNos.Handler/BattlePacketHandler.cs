@@ -917,9 +917,8 @@ namespace OpenNos.Handler
                                                         !Session.Character.Group.IsMemberOfGroup(
                                                             playerToAttack.Character.CharacterId))
                                                     {
-                                                        PVPHit(
-                                                            new HitRequest(TargetHitType.SingleTargetHit, Session,
-                                                                ski.Skill), playerToAttack);
+                                                        PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session,
+                                                            ski.Skill), playerToAttack);
                                                     }
                                                     else
                                                     {
@@ -928,7 +927,10 @@ namespace OpenNos.Handler
                                                 }
                                                 else
                                                 {
-                                                    if (Session.Character.Family == null || Session.Character.Family.FamilyCharacters.Any(s => s.Character.CharacterId != playerToAttack.Character.CharacterId))
+                                                    if (Session.Character.Family == null ||
+                                                        Session.Character.Family.FamilyCharacters.Any(
+                                                            s => s.Character.CharacterId != playerToAttack.Character
+                                                                     .CharacterId))
                                                     {
                                                         PVPHit(
                                                             new HitRequest(TargetHitType.SingleTargetHit, Session,
