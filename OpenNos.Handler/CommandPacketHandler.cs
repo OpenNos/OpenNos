@@ -390,7 +390,12 @@ namespace OpenNos.Handler
             Logger.Debug("Change Class Command", Session.Character.GenerateIdentity());
             if (changeClassPacket != null)
             {
-                Session.Character.ChangeClass(changeClassPacket.ClassType);
+                var player = Session;
+                if (ServerManager.Instance.GetSessionByCharacterName(changeClassPacket.Name) != null)
+                {
+                    player = ServerManager.Instance.GetSessionByCharacterName(changeClassPacket.Name);
+                }
+                player.Character.ChangeClass(changeClassPacket.ClassType);
             }
             else
             {
