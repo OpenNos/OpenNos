@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
@@ -20,19 +21,27 @@ namespace OpenNos.GameObject
 {
     public class MapInstancePortalHandler
     {
+        public static int SourceX { get; private set; }
         #region Methods
-        public static List<TimeSpacePortal> GenerateTimespace(short entryMap)
+        public static List<MapInstanceTree> GenerateMapInstanceTree(short entryMap)
         {
-            List<TimeSpacePortal> list = new List<TimeSpacePortal>();
+            List<MapInstanceTree> list = new List<MapInstanceTree>();
 
             switch (entryMap)
             {
                 case 1:
-                    list.Add(new TimeSpacePortal
+                    list.Add(new MapInstanceTree
                     {
-                        SourceX = 134,
-                        SourceY = 33,
-                        SourceMapId = 1,
+                        MapInstanceTreeType = MapInstanceTreeType.TimeSpace,
+                        Portal = new PortalDTO()
+                        {
+                            SourceX = 134,
+                            SourceY = 33,
+                            SourceMapId = 1
+                        },
+                        LevelMaximum = 99,
+                        LevelMinimum = 1
+                        
                     });
                     break;
             }

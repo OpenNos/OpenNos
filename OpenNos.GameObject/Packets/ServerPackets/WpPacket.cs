@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
         public short LevelMinimum { get; set; }
         
         [PacketIndex(5)]
-        public short LevelMax { get; set; }
+        public short LevelMaximum { get; set; }
 
         #endregion
     }

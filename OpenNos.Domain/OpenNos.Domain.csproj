@@ -64,6 +64,7 @@
     <Compile Include="MapTypeEnum.cs" />
     <Compile Include="GroupSharingType.cs" />
     <Compile Include="JewelOptionType.cs" />
+    <Compile Include="MapInstanceTreeType.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="MinilandState.cs" />
     <Compile Include="MonsterType.cs" />

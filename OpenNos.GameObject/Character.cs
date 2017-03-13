@@ -1889,14 +1889,22 @@ namespace OpenNos.GameObject
 
         public IEnumerable<string> GenerateWp()
         {
-            List<string> gpList = new List<string>();
-            int i = 0;
-            foreach (TimeSpacePortal portal in GetTimeSpacePortal())
+            List<string> wpList = new List<string>();
+            short i = 0;
+            foreach (MapInstanceTree mapinstancetree in GetMapInstanceTreePortal())
             {
+                new WpPacket()
+                {
+                    Id = i,
+                    LevelMaximum = mapinstancetree.LevelMaximum,
+                    LevelMinimum = mapinstancetree.LevelMinimum,
+                    X = mapinstancetree.Portal.SourceX,
+                    Y = mapinstancetree.Portal.SourceY,
+                };
                 i++;
             }
 
-            return gpList;
+            return wpList;
         }
 
         public string GenerateIdentity()
@@ -3567,9 +3575,9 @@ namespace OpenNos.GameObject
             return MapInstancePortalHandler.GenerateMinilandEntryPortals(MapInstance.Map.MapId, Miniland.MapInstanceId);
         }
 
-        public List<TimeSpacePortal> GetTimeSpacePortal()
+        public List<MapInstanceTree> GetMapInstanceTreePortal()
         {
-            return MapInstancePortalHandler.GenerateTimespace(MapInstance.Map.MapId);
+            return MapInstancePortalHandler.GenerateMapInstanceTree(MapInstance.Map.MapId);
         }
         
         public List<string> GetFamilyHistory()
