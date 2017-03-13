@@ -33,12 +33,9 @@ namespace OpenNos.GameObject
                     list.Add(new TimeSpace
                     {
                         Type = TimeSpaceType.Normal,
-                        Portal = new PortalDTO()
-                        {
-                            SourceX = 134,
-                            SourceY = 36,
-                            SourceMapId = 1
-                        },
+                        SourceX = 134,
+                        SourceY = 36,
+                        SourceMapId = 1,
                         LevelMaximum = 99,
                         LevelMinimum = 1
                     });

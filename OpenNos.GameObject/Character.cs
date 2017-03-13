@@ -1896,8 +1896,8 @@ namespace OpenNos.GameObject
                     Id = i,
                     LevelMaximum = mapinstancetree.LevelMaximum,
                     LevelMinimum = mapinstancetree.LevelMinimum,
-                    X = mapinstancetree.Portal.SourceX,
-                    Y = mapinstancetree.Portal.SourceY,
+                    X = mapinstancetree.SourceX,
+                    Y = mapinstancetree.SourceY,
                 });
                 i++;
             }

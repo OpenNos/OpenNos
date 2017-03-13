@@ -12,7 +12,11 @@ namespace OpenNos.GameObject
 
         public TimeSpaceType Type { get; set; }
 
-        public PortalDTO Portal { get; set; }
+        public short SourceMapId { get; set; }
+
+        public short SourceX { get; set; }
+
+        public short SourceY { get; set; }
 
         public List<Gift> BonusItemGift { get; set; }
 
