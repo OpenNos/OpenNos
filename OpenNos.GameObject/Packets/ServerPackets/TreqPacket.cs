@@ -7,6 +7,7 @@ using OpenNos.Core;
 
 namespace OpenNos.GameObject.Packets.ServerPackets
 {
+    [PacketHeader("treq")]
     public class TreqPacket : PacketDefinition
     {
         #region Properties
