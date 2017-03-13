@@ -338,6 +338,7 @@
     <Compile Include="Packets\ServerPackets\SayPacket.cs" />
     <Compile Include="Packets\ServerPackets\SelectPacket.cs" />
     <Compile Include="Packets\ServerPackets\StatPacket.cs" />
+    <Compile Include="Packets\ServerPackets\TreqPacket.cs" />
     <Compile Include="Packets\ServerPackets\UseItemPacket.cs" />
     <Compile Include="Packets\ServerPackets\UseObjPacket.cs" />
     <Compile Include="Packets\ServerPackets\VbPacket.cs" />
