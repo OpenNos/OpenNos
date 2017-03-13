@@ -146,11 +146,15 @@ namespace OpenNos.GameObject
         public List<CharacterDTO> TopReputation { get; set; }
 
         public Guid WorldId { get; private set; }
-        
+
+        public static MapInstance ArenaInstance { get; private set; }
+
+        public static MapInstance FamilyArenaInstance { get; private set; }
+
         #endregion
 
         #region Methods
-      
+
         public static MapInstance GenerateMapInstance(short MapId, MapInstanceType type)
         {
             Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
@@ -934,6 +938,10 @@ namespace OpenNos.GameObject
                 RefreshRanking();
                 CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
                 PenaltyLogs = DAOFactory.PenaltyLogDAO.LoadAll().ToList();
+                ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance);
+                ArenaInstance.IsPVP = true;
+                FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance);
+                FamilyArenaInstance.IsPVP = true;
             }
             catch (Exception ex)
             {
