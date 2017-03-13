@@ -423,8 +423,8 @@ namespace OpenNos.GameObject
                     });
 
                     session.SendPackets(session.Character.GenerateGp());
+                    session.SendPackets(session.Character.GenerateWp());
 
-                    // wp 23 124 4 4 12 99
                     session.SendPackets(session.Character.MapInstance.Monsters.Select(monster => monster.GenerateIn()).ToList());
                     session.SendPackets(session.Character.MapInstance.Npcs.Select(npc => npc.GenerateIn()).ToList());
                     session.SendPackets(session.Character.GenerateNPCShopOnMap());
