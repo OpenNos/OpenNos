@@ -93,7 +93,6 @@
     <Compile Include="Helpers\UserInterfaceHelper.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="Map\MonsterToSummon.cs" />
-    <Compile Include="Map\TimeSpacePortal.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />
     <Compile Include="Packets\ClientPackets\EquipmentInfoPacket.cs" />
@@ -157,6 +156,8 @@
     <Compile Include="Packets\CommandPackets\SummonNPCPacket.cs" />
     <Compile Include="Packets\CommandPackets\TeleportPacket.cs" />
     <Compile Include="Packets\CommandPackets\UndercoverPacket.cs" />
+    <Compile Include="Packets\ServerPackets\RaidListPacket.cs" />
+    <Compile Include="Packets\ServerPackets\WpPacket.cs" />
     <Compile Include="Portal.cs" />
     <Compile Include="BazaarItemLink.cs" />
     <Compile Include="Account.cs" />
@@ -341,8 +342,6 @@
     <Compile Include="Packets\ServerPackets\VbPacket.cs" />
     <Compile Include="Packets\ClientPackets\WearPacket.cs" />
     <Compile Include="Packets\ServerPackets\WithDrawPacket.cs" />
-	<Compile Include="Packets\ServerPackets\RaidListPacket.cs" />
-	<Compile Include="Packets\ServerPackets\WpPacket.cs" />
     <Compile Include="Gift.cs" />
     <Compile Include="Mate.cs" />
     <Compile Include="Recipe.cs" />
