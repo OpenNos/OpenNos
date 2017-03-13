@@ -1887,9 +1887,9 @@ namespace OpenNos.GameObject
             return gpList;
         }
 
-        public IEnumerable<string> GenerateWp()
+        public IEnumerable<WpPacket> GenerateWp()
         {
-            List<string> wpList = new List<string>();
+            List<WpPacket> wpList = new List<WpPacket>();
             short i = 0;
             foreach (MapInstanceTree mapinstancetree in GetMapInstanceTreePortal())
             {
