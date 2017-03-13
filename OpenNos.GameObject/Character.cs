@@ -1889,7 +1889,7 @@ namespace OpenNos.GameObject
         {
             List<WpPacket> wpList = new List<WpPacket>();
             short i = 0;
-            foreach (MapInstanceTree mapinstancetree in GetMapInstanceTreePortal())
+            foreach (TimeSpace mapinstancetree in GetMapInstanceTreePortal())
             {
                 wpList.Add(new WpPacket()
                 {
@@ -1905,7 +1905,7 @@ namespace OpenNos.GameObject
             return wpList;
         }
 
-        public string GenerateRbr(MapInstanceTree timeSpace)
+        public string GenerateRbr(TimeSpace timeSpace)
         {
             var str = "rbr 0.0.0 4 15 1.99 0 2023.1 2024.1 2025.1 2026.1 2027.1 2016.2 - 1.0 13.1 - 1.0 - 1.0 1153.rweis - 0 0 Tutoriel de l'espace-temps Bienvenue dans le tutoriel de l'espace-temps de NosTale. Mimi Mentor va t'accompagner pour ta première mission d'espace-temps et te montrer comment fonctionnent ces aventures. Clique sur le bouton « Démarrer » et c'est parti !";
 
@@ -3588,7 +3588,7 @@ namespace OpenNos.GameObject
             return MapInstancePortalHandler.GenerateMinilandEntryPortals(MapInstance.Map.MapId, Miniland.MapInstanceId);
         }
 
-        public List<MapInstanceTree> GetMapInstanceTreePortal()
+        public List<TimeSpace> GetMapInstanceTreePortal()
         {
             return MapInstancePortalHandler.GenerateMapInstanceTree(MapInstance.Map.MapId);
         }

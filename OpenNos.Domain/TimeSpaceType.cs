@@ -14,8 +14,8 @@
 
 namespace OpenNos.Domain
 {
-    public enum MapInstanceTreeType : byte
+    public enum TimeSpaceType : byte
     {
-        TimeSpace = 0
+        Normal = 0
     }
 }

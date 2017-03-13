@@ -64,7 +64,6 @@
     <Compile Include="MapTypeEnum.cs" />
     <Compile Include="GroupSharingType.cs" />
     <Compile Include="JewelOptionType.cs" />
-    <Compile Include="MapInstanceTreeType.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="MinilandState.cs" />
     <Compile Include="MonsterType.cs" />
@@ -74,6 +73,7 @@
     <Compile Include="Schedule.cs" />
     <Compile Include="StaticBonusType.cs" />
     <Compile Include="TargetHitType.cs" />
+    <Compile Include="TimeSpaceType.cs" />
     <Compile Include="UpgradeProtection.cs" />
     <Compile Include="RarifyProtection.cs" />
     <Compile Include="RarifyMode.cs" />

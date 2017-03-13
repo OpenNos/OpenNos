@@ -23,16 +23,16 @@ namespace OpenNos.GameObject
     {
         public static int SourceX { get; private set; }
         #region Methods
-        public static List<MapInstanceTree> GenerateMapInstanceTree(short entryMap)
+        public static List<TimeSpace> GenerateMapInstanceTree(short entryMap)
         {
-            List<MapInstanceTree> list = new List<MapInstanceTree>();
+            List<TimeSpace> list = new List<TimeSpace>();
 
             switch (entryMap)
             {
                 case 1:
-                    list.Add(new MapInstanceTree
+                    list.Add(new TimeSpace
                     {
-                        MapInstanceTreeType = MapInstanceTreeType.TimeSpace,
+                        Type = TimeSpaceType.Normal,
                         Portal = new PortalDTO()
                         {
                             SourceX = 134,
@@ -41,7 +41,6 @@ namespace OpenNos.GameObject
                         },
                         LevelMaximum = 99,
                         LevelMinimum = 1
-                        
                     });
                     break;
             }
