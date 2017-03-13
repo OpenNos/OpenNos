@@ -92,6 +92,7 @@
     <Compile Include="Event\MINILANDREFRESH\MinilandRefresh.cs" />
     <Compile Include="Helpers\UserInterfaceHelper.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
+    <Compile Include="Map\MapInstanceTree.cs" />
     <Compile Include="Map\MonsterToSummon.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />
