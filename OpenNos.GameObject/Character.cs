@@ -1893,14 +1893,14 @@ namespace OpenNos.GameObject
             short i = 0;
             foreach (MapInstanceTree mapinstancetree in GetMapInstanceTreePortal())
             {
-                new WpPacket()
+                wpList.Add(new WpPacket()
                 {
                     Id = i,
                     LevelMaximum = mapinstancetree.LevelMaximum,
                     LevelMinimum = mapinstancetree.LevelMinimum,
                     X = mapinstancetree.Portal.SourceX,
                     Y = mapinstancetree.Portal.SourceY,
-                };
+                });
                 i++;
             }
 
