@@ -12,29 +12,20 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL.EF.Helpers;
-using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace OpenNos.DAL.EF
+namespace OpenNos.DAL.Interface
 {
-    public class CellonOptionDAO : SynchronizableBaseDAO<CellonOption, CellonOptionDTO>, ICellonOptionDAO
+    public interface ITimeSpaceDAO : IMappingBaseDAO
     {
         #region Methods
 
-        public IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(Guid wearableInstanceId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (CellonOption cellonOptionobject in context.CellonOption.Where(i => i.WearableInstanceId.Equals(wearableInstanceId)))
-                {
-                    yield return _mapper.Map<CellonOptionDTO>(cellonOptionobject);
-                }
-            }
-        }
+        TimeSpaceDTO Insert(TimeSpaceDTO portal);
+
+        void Insert(List<TimeSpaceDTO> portals);
+
+        IEnumerable<TimeSpaceDTO> LoadByMap(short mapId);
 
         #endregion
     }

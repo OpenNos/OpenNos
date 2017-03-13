@@ -15,6 +15,7 @@
 using OpenNos.DAL.EF.Entities;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.EF.DB
 {
@@ -114,6 +115,8 @@ namespace OpenNos.DAL.EF.DB
         public virtual DbSet<StaticBonus> StaticBonus { get; set; }
 
         public virtual DbSet<Teleporter> Teleporter { get; set; }
+
+        public virtual DbSet<TimeSpace> TimeSpace { get; set; }
 
         #endregion
 

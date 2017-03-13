@@ -81,6 +81,7 @@
     <Compile Include="CardDAO.cs" />
     <Compile Include="Entities\ItemCard.cs" />
     <Compile Include="Entities\Mate.cs" />
+    <Compile Include="Entities\TimeSpaces.cs" />
     <Compile Include="MateDAO.cs" />
     <Compile Include="ItemCardDAO.cs" />
     <Compile Include="Migrations\201702072152008_Aphrodite22.cs" />
