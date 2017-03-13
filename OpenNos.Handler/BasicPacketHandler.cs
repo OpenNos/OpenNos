@@ -1201,10 +1201,9 @@ namespace OpenNos.Handler
             if (packetsplit[2] == "6")
             {
                 int mateVnum;
-                Mate mate = null;
                 if (int.TryParse(packetsplit[4], out mateVnum))
                 {
-                    mate = Session.CurrentMapInstance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.Mates != null && s.Character.Mates.Any(o => o.MateTransportId == mateVnum))?.Character.Mates.First(o => o.MateTransportId == mateVnum);
+                    var mate = Session.CurrentMapInstance.Sessions.FirstOrDefault(s => s.Character?.Mates != null && s.Character.Mates.Any(o => o.MateTransportId == mateVnum))?.Character.Mates.First(o => o.MateTransportId == mateVnum);
                     Session.SendPacket(mate?.GenerateEInfo());
                 }
             }
