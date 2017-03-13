@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Character character = context.Character.FirstOrDefault(c => c.Name.Equals(characterName));
+                    Character character = context.Character.FirstOrDefault(c => c.Name.Equals(characterName) && c.State == 1);
                     FamilyCharacter familyCharacter = context.FamilyCharacter.FirstOrDefault(c => c.CharacterId.Equals(character.CharacterId));
                     if (character != null && familyCharacter != null)
                     {
