@@ -103,6 +103,7 @@ namespace OpenNos.Import.Console
                     factory.ImportMapTypeMap();
                     ImportFactory.ImportAccounts();
                     factory.ImportPortals();
+                    factory.ImportTimeSpaces();
                     factory.ImportItems();
                     factory.ImportSkills();
                     factory.ImportCards();
@@ -150,6 +151,13 @@ namespace OpenNos.Import.Console
                         factory.ImportPortals();
                     }
 
+                    System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_TIMESPACES")} [Y/n]");
+                    key = System.Console.ReadKey(true);
+                    if (key.KeyChar != 'n')
+                    {
+                        factory.ImportTimeSpaces();
+                    }
+                    
                     System.Console.WriteLine($@"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
@@ -293,6 +301,7 @@ namespace OpenNos.Import.Console
             DAOFactory.MateDAO.RegisterMapping(typeof(MateDTO)).InitializeMapper();
             DAOFactory.SkillDAO.RegisterMapping(typeof(SkillDTO)).InitializeMapper();
             DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
+            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(TimeSpaceDTO)).InitializeMapper();
         }
 
         #endregion

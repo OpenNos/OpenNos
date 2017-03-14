@@ -66,6 +66,7 @@ namespace OpenNos.GameObject
             _portals = new List<Portal>();
             UserShops = new Dictionary<long, MapShop>();
             _npcs = new List<MapNpc>();
+            TimeSpaces = new List<TimeSpace>();
             _npcs.AddRange(ServerManager.Instance.GetMapNpcsByMapId(Map.MapId).AsEnumerable());
             StartLife();
         }
@@ -136,6 +137,9 @@ namespace OpenNos.GameObject
 
         public int XpRate { get; set; }
 
+        public byte MapIndexX { get; set; }
+
+        public byte MapIndexY { get; set; }
         #endregion
 
         #region Methods
@@ -254,15 +258,6 @@ namespace OpenNos.GameObject
                 _portals.Add(portal2);
             }
         }
-        public void LoadTimeSpaces()
-        {
-            foreach (TimeSpace timespace in DAOFactory.TimeSpaceDAO.LoadByMap(Map.MapId).ToList())
-            {
-                TimeSpace timespace2 = (TimeSpace)timespace;
-                timespace2.MapInstanceId = MapInstanceId;
-                TimeSpaces.Add(timespace2);
-            }
-        }
 
         public MapItem PutItem(InventoryType type, short slot, byte amount, ref ItemInstance inv, ClientSession session)
         {
@@ -371,6 +366,15 @@ namespace OpenNos.GameObject
              });
         }
 
+        public string GenerateRsfn(bool isInit = false)
+        {
+            if(MapInstanceType == MapInstanceType.TimeSpaceInstance)
+            {
+                 return $"rsfn {MapIndexX} {MapIndexY} {(isInit?1:(Monsters?.Count == 0 ? 0 : 1))}";
+            }
+            return string.Empty;
+        }
+
         internal void CreatePortal(Portal portal)
         {
             portal.SourceMapInstanceId = MapInstanceId;
@@ -476,6 +480,8 @@ namespace OpenNos.GameObject
             }
         }
 
+
+
         internal void StartMapEvent(TimeSpan timeSpan, EventActionType eventaction, object param)
         {
             Observable.Timer(timeSpan).Subscribe(x =>
@@ -513,7 +519,7 @@ namespace OpenNos.GameObject
         }
 
         public string GenerateGp(Portal portal)
-        { 
+        {
             return $"gp {portal.SourceX} {portal.SourceY} {ServerManager.GetMapInstance(portal.DestinationMapInstanceId)?.Map.MapId} {portal.Type} {Portals.Count} {(Portals.Contains(portal) ? (portal.IsDisabled ? 1 : 0) : 1)}";
         }
 

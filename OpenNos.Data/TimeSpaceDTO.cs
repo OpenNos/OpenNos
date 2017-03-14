@@ -26,21 +26,11 @@ namespace OpenNos.Data
 
         public short PositionY { get; set; }
 
-        public byte LevelMinimum { get; set; }
-
-        public byte LevelMaximum { get; set; }
-
         public string Winner { get; set; }
 
+        public string Script { get; set; }
+
         public int WinnerScore { get; set; }
-
-        public string DrawItemGift { get; set; }
-
-        public string BonusItemGift { get; set; }
-
-        public string SpecialItemGift { get; set; }
-
-        public string Label { get; set; }
 
 
         #endregion

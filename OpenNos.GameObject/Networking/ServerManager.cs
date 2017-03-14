@@ -40,6 +40,12 @@ namespace OpenNos.GameObject
 
         private static readonly List<Item> _items = new List<Item>();
         private static readonly ConcurrentDictionary<Guid, MapInstance> _mapinstances = new ConcurrentDictionary<Guid, MapInstance>();
+
+        public void ChangeMapInstance(long characterId, Guid mapInstanceId, object startX, object startY)
+        {
+            throw new NotImplementedException();
+        }
+
         private static readonly List<Map> _maps = new List<Map>();
         private static readonly List<NpcMonster> _npcs = new List<NpcMonster>();
         private static readonly List<Skill> _skills = new List<Skill>();
@@ -164,7 +170,6 @@ namespace OpenNos.GameObject
                 MapInstance mapInstance = new MapInstance(map, guid, false, type);
                 mapInstance.LoadMonsters();
                 mapInstance.LoadPortals();
-                mapInstance.LoadTimeSpaces();
                 foreach (MapMonster mapMonster in mapInstance.Monsters)
                 {
                     mapMonster.MapInstance = mapInstance;
@@ -179,7 +184,7 @@ namespace OpenNos.GameObject
             }
             return null;
         }
-        
+
         public static IEnumerable<Skill> GetAllSkill()
         {
             return _skills;
@@ -387,6 +392,7 @@ namespace OpenNos.GameObject
                         session.Character.PositionY = (short)mapY;
                     }
 
+                    
                     // avoid cleaning new portals
 
                     session.CurrentMapInstance = session.Character.MapInstance;
@@ -402,13 +408,13 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateCond());
                     session.SendPacket(session.Character.GenerateCMap());
                     session.SendPacket(session.Character.GenerateStatChar());
-                    session.SendPacket("rsfp 0 -1");
+                    
 
                     // in 2 // send only when partner present cond 2 // send only when partner present
                     session.SendPacket(session.Character.GeneratePairy());
                     session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
                     {
-                        s.PositionX = (short)(session.Character.PositionX + (s.MateType == MateType.Partner?-1:1));
+                        s.PositionX = (short)(session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
                         s.PositionY = (short)(session.Character.PositionY + 1);
                         session.CurrentMapInstance.Broadcast(s.GenerateIn());
                     });
@@ -479,6 +485,8 @@ namespace OpenNos.GameObject
                         session.CurrentMapInstance?.Broadcast(session, session.Character.GeneratePidx(), ReceiverType.AllExceptMe);
                     }
                     session.Character.IsChangingMapInstance = false;
+                    session.SendPacket(session.Character.GenerateMinimapPosition());
+                    
                 }
                 catch (Exception)
                 {
@@ -916,7 +924,6 @@ namespace OpenNos.GameObject
 
                     newMap.LoadMonsters();
                     newMap.LoadPortals();
-                    newMap.LoadTimeSpaces();
 
                     foreach (MapMonster mapMonster in newMap.Monsters)
                     {
@@ -945,6 +952,7 @@ namespace OpenNos.GameObject
                 ArenaInstance.IsPVP = true;
                 FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance);
                 FamilyArenaInstance.IsPVP = true;
+                LoadTimeSpaces();
             }
             catch (Exception ex)
             {
@@ -954,6 +962,20 @@ namespace OpenNos.GameObject
             //Register the new created TCPIP server to the api
             Guid serverIdentification = Guid.NewGuid();
             WorldId = serverIdentification;
+        }
+
+        private void LoadTimeSpaces()
+        {
+            foreach (var map in _mapinstances)
+            {
+                map.Value.TimeSpaces = new List<TimeSpace>();
+                foreach (TimeSpace timespace in DAOFactory.TimeSpaceDAO.LoadByMap(map.Value.Map.MapId).ToList())
+                {
+                    timespace.MapInstanceId = map.Value.MapInstanceId;
+                    timespace.LoadXml();
+                    map.Value.TimeSpaces.Add(timespace);
+                }
+            }
         }
 
         public bool IsCharacterMemberOfGroup(long characterId)
@@ -1003,7 +1025,7 @@ namespace OpenNos.GameObject
                 return;
             }
             session.SendPacket(UserInterfaceHelper.Instance.GenerateMapOut());
-            session.Character.Mates.Where(s=>s.IsTeamMember).ToList().ForEach(s=>session.CurrentMapInstance?.Broadcast(session, s.GenerateOut(), ReceiverType.AllExceptMe)); 
+            session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => session.CurrentMapInstance?.Broadcast(session, s.GenerateOut(), ReceiverType.AllExceptMe));
             session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
         }
 

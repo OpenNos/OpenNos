@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace OpenNos.DAL.EF
 {
     public class TimeSpace
@@ -28,20 +30,12 @@ namespace OpenNos.DAL.EF
 
         public short PositionY { get; set; }
 
-        public int LevelMinimum { get; set; }
-
-        public int LevelMaximum { get; set; }
-
+        [MaxLength(255)]
         public string Winner { get; set; }
 
-        public string DrawItemGift { get; set; }
+        [MaxLength(int.MaxValue)]
+        public string Script { get; set; }
 
-        public string BonusItemGift { get; set; }
-
-        public string SpecialItemGift { get; set; }
-
-        public string Label { get; set; }
-    
         public int WinnerScore { get; set; }
 
         #endregion

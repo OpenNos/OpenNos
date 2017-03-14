@@ -1979,7 +1979,42 @@ namespace OpenNos.Import.Console
                 skillIdStream.Close();
             }
         }
+        public void ImportTimeSpaces()
+        {
+            short map = 0;
+            List<TimeSpaceDTO> listtimespace = new List<TimeSpaceDTO>();
+            List<TimeSpaceDTO> bddlist = new List<TimeSpaceDTO>(); ;
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("wp")))
+            {
+                if (currentPacket.Length > 5 && currentPacket[0] == "at")
+                {
+                    map = short.Parse(currentPacket[2]);
+                    bddlist = DAOFactory.TimeSpaceDAO.LoadByMap(map).ToList();
+                    continue;
+                }
+                else if (currentPacket.Length > 6 && currentPacket[0] == "wp")
+                {
+                    TimeSpaceDTO ts = new TimeSpaceDTO()
+                    {
+                        PositionX = short.Parse(currentPacket[1]),
+                        PositionY = short.Parse(currentPacket[2]),
+                        MapId = map,
+                        WinnerScore = 0,
+                    };
 
+                    if (!bddlist.Concat(listtimespace).Any(s => s.MapId == ts.MapId && s.PositionX == ts.PositionX && s.PositionY == ts.PositionY))
+                    {
+                        listtimespace.Add(ts);
+                    }
+                }
+                else if (currentPacket[0] == "rbr")
+                {
+                    //someinfo
+                }
+            }
+            DAOFactory.TimeSpaceDAO.Insert(listtimespace);
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TIMESPACES_PARSED"), listtimespace.Count));
+        }
         public void ImportSkills()
         {
             string fileSkillId = $"{_folder}\\Skill.dat";
@@ -3104,7 +3139,7 @@ namespace OpenNos.Import.Console
                             case ItemType.Special:
                                 switch (item.VNum)
                                 {
-                                   
+
                                     case 1246:
                                     case 9020:
                                         item.Effect = 6600;

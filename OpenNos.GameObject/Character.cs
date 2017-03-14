@@ -56,7 +56,7 @@ namespace OpenNos.GameObject
 
         public bool AddPet(Mate mate)
         {
-            if (mate.MateType == MateType.Pet? MaxMateCount > Mates.Count(): 3 > Mates.Count(s => s.MateType == MateType.Partner))
+            if (mate.MateType == MateType.Pet ? MaxMateCount > Mates.Count() : 3 > Mates.Count(s => s.MateType == MateType.Partner))
             {
                 Mates.Add(mate);
                 MapInstance.Broadcast(mate.GenerateIn());
@@ -398,11 +398,12 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; private set; }
         public int ScPage { get; set; }
+        public TimeSpace LastTimeSpace { get; set; }
 
         #endregion
 
         #region Methods
-        
+
         public void AddRelation(long characterId, CharacterRelationType Relation)
         {
             CharacterRelationDTO addRelation = new CharacterRelationDTO
@@ -488,6 +489,17 @@ namespace OpenNos.GameObject
             if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session)))
             {
                 Session.CurrentMapInstance?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
+            }
+        }
+        public string GenerateMinimapPosition()
+        {
+            if (MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
+            {
+                return $"rsfp {MapInstance.MapIndexX} {MapInstance.MapIndexY}";
+            }
+            else
+            {
+                return $"rsfp 0 -1";
             }
         }
 
@@ -1519,7 +1531,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePStashAll()
         {
-            string stash = $"pstash_all {(Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack)?50:0)}";
+            string stash = $"pstash_all {(Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)}";
             foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.PetWarehouse))
             {
                 stash += $" {item.GenerateStashPacket()}";
@@ -1905,10 +1917,7 @@ namespace OpenNos.GameObject
             return wpList;
         }
 
-        public string GenerateRbr(TimeSpace timeSpace)
-        {
-            return $"rbr 0.0.0 4 15 {timeSpace.LevelMinimum}.{timeSpace.LevelMaximum} 0 2023.1 2024.1 2025.1 2026.1 2027.1 2016.2 -1.0 13.1 -1.0 -1.0 {timeSpace.WinnerScore}.{timeSpace.Winner} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{timeSpace.Label}";
-        }
+
 
         public string GenerateIdentity()
         {
@@ -3577,7 +3586,7 @@ namespace OpenNos.GameObject
         {
             return MapInstancePortalHandler.GenerateMinilandEntryPortals(MapInstance.Map.MapId, Miniland.MapInstanceId);
         }
-        
+
         public List<string> GetFamilyHistory()
         {
             if (Family != null)

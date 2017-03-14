@@ -34,10 +34,28 @@ namespace OpenNos.Handler
 
             if (timespace != null)
             {
-                Session.SendPacket(Session.Character.GenerateRbr(timespace));
+                Session.Character.LastTimeSpace = timespace;
+                Session.SendPacket(timespace.GenerateRbr());
             }
 
         }
+
+        /// <summary>
+        /// wreq packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void GetWreq(WreqPacket packet)
+        {
+            TimeSpace timespace = Session.Character.LastTimeSpace;
+
+            if (timespace != null && timespace.MapTree !=null)
+            {
+                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, timespace.MapTree.Data.MapInstanceId, timespace.StartX, timespace.StartY);
+                Session.SendPackets(Session.Character.LastTimeSpace.GetMinimap());
+            }
+
+        }
+        
 
         #endregion
     }

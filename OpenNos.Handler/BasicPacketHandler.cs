@@ -1158,6 +1158,8 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                     }
+
+                    Session.SendPacket(Session.CurrentMapInstance.GenerateRsfn());
                     ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                     Session.Character.LastPortal = currentRunningSeconds;
 
