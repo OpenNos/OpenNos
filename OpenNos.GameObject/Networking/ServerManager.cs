@@ -164,6 +164,7 @@ namespace OpenNos.GameObject
                 MapInstance mapInstance = new MapInstance(map, guid, false, type);
                 mapInstance.LoadMonsters();
                 mapInstance.LoadPortals();
+                mapInstance.LoadTimeSpaces();
                 foreach (MapMonster mapMonster in mapInstance.Monsters)
                 {
                     mapMonster.MapInstance = mapInstance;
@@ -915,6 +916,8 @@ namespace OpenNos.GameObject
 
                     newMap.LoadMonsters();
                     newMap.LoadPortals();
+                    newMap.LoadTimeSpaces();
+
                     foreach (MapMonster mapMonster in newMap.Monsters)
                     {
                         mapMonster.MapInstance = newMap;
