@@ -355,7 +355,7 @@ namespace OpenNos.Handler
                                     return;
                                 }
 
-                                if (Session.IsDisposing || targetSession.IsDisposing || !Session.Character.IsExchanging || !targetSession.Character.IsExchanging)
+                                if (Session.IsDisposing || targetSession.IsDisposing)
                                 {
                                     CloseExchange(Session, targetSession);
                                     return;
@@ -378,7 +378,6 @@ namespace OpenNos.Handler
                                         }
                                         if (Session.Character.ExchangeInfo.Validate && targetExchange.Validate)
                                         {
-                                            Session.Character.ExchangeInfo.Confirm = true;
                                             if (targetExchange.Confirm && Session.Character.ExchangeInfo.Confirm)
                                             {
                                                 Session.SendPacket("exc_close 1");
