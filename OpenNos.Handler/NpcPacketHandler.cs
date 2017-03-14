@@ -336,8 +336,6 @@ namespace OpenNos.Handler
         [Packet("m_shop")]
         public void CreateShop(string packet)
         {
-            if (Session.Character.IsExchanging)
-                return;
             Logger.Debug(Session.Character.GenerateIdentity(), packet);
             string[] packetsplit = packet.Split(' ');
             InventoryType[] type = new InventoryType[20];
@@ -349,7 +347,7 @@ namespace OpenNos.Handler
             {
                 short typePacket;
                 short.TryParse(packetsplit[2], out typePacket);
-                if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMapInstance || Session.Character.IsExchanging)
+                if (Session.Character.HasShopOpened && typePacket != 1 || !Session.HasCurrentMapInstance || Session.Character.IsExchanging || Session.Character.ExchangeInfo != null)
                 {
                     return;
                 }
