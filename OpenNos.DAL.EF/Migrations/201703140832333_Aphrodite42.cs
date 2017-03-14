@@ -22,6 +22,7 @@ namespace OpenNos.DAL.EF.Migrations
                         BonusItemGift = c.String(),
                         SpecialItemGift = c.String(),
                         Label = c.String(),
+                        WinnerScore = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.TimespaceId)
                 .ForeignKey("dbo.Map", t => t.MapId)

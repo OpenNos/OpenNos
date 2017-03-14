@@ -23,27 +23,6 @@ namespace OpenNos.GameObject
     {
         public static int SourceX { get; private set; }
         #region Methods
-        public static List<TimeSpace> GenerateTimeSpace(short entryMap)
-        {
-            List<TimeSpace> list = new List<TimeSpace>();
-
-            switch (entryMap)
-            {
-                case 1:
-                    list.Add(new TimeSpace
-                    {
-                        Type = TimeSpaceType.Normal,
-                        PositionX = 134,
-                        PositionY = 36,
-                        MapId = 1,
-                        LevelMaximum = 99,
-                        LevelMinimum = 1
-                    });
-                    break;
-            }
-            return list;
-        }
-
         public static List<Portal> GenerateMinilandEntryPortals(short entryMap, Guid exitMapinstanceId)
         {
             List<Portal> list = new List<Portal>();

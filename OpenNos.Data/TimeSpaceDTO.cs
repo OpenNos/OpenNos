@@ -32,6 +32,8 @@ namespace OpenNos.Data
 
         public string Winner { get; set; }
 
+        public int WinnerScore { get; set; }
+
         public string DrawItemGift { get; set; }
 
         public string BonusItemGift { get; set; }

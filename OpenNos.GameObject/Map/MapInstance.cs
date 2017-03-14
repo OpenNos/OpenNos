@@ -128,6 +128,8 @@ namespace OpenNos.GameObject
 
         public List<Portal> Portals => _portals;
 
+        public List<TimeSpace> TimeSpaces { get; set; }
+
         public bool ShopAllowed { get; set; }
 
         public Dictionary<long, MapShop> UserShops { get; }
@@ -250,6 +252,15 @@ namespace OpenNos.GameObject
                 Portal portal2 = (Portal)portal;
                 portal2.SourceMapInstanceId = MapInstanceId;
                 _portals.Add(portal2);
+            }
+        }
+        public void LoadTimeSpaces()
+        {
+            foreach (TimeSpace timespace in DAOFactory.TimeSpaceDAO.LoadByMap(Map.MapId).ToList())
+            {
+                TimeSpace timespace2 = (TimeSpace)timespace;
+                timespace2.MapInstanceId = MapInstanceId;
+                TimeSpaces.Add(timespace2);
             }
         }
 

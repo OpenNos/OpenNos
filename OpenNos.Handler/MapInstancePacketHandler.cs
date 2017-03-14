@@ -30,13 +30,13 @@ namespace OpenNos.Handler
         /// <param name="treqPacket"></param>
         public void GetTreq(TreqPacket treqPacket)
         {
-            foreach (TimeSpace mapInstanceTree in Session.Character.GetTimeSpacePortal())
+            TimeSpace timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY);
+
+            if (timespace != null)
             {
-                if (treqPacket.X == mapInstanceTree.PositionX && treqPacket.Y == mapInstanceTree.PositionY)
-                {
-                    Session.SendPacket(Session.Character.GenerateRbr(mapInstanceTree));
-                }
+                Session.SendPacket(Session.Character.GenerateRbr(timespace));
             }
+
         }
 
         #endregion

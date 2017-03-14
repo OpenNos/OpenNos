@@ -58,6 +58,7 @@
     <Compile Include="CharacterSkillDAO.cs" />
     <Compile Include="ComboDAO.cs" />
     <Compile Include="DropDAO.cs" />
+    <Compile Include="TimeSpaceDAO.cs" />
     <Compile Include="MateDAO.cs" />
     <Compile Include="FamilyCharacterDAO.cs" />
     <Compile Include="FamilyDAO.cs" />

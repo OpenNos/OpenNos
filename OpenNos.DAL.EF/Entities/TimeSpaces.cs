@@ -41,7 +41,9 @@ namespace OpenNos.DAL.EF
         public string SpecialItemGift { get; set; }
 
         public string Label { get; set; }
-        
+    
+        public int WinnerScore { get; set; }
+
         #endregion
     }
 }
