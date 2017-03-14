@@ -61,6 +61,7 @@ namespace OpenNos.GameObject
             Map = map;
             MapInstanceId = guid;
             TimeSpaces = new List<TimeSpace>();
+            EntryEvents = new List<Tuple<EventActionType, object>>();
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
@@ -132,6 +133,7 @@ namespace OpenNos.GameObject
 
         public List<TimeSpace> TimeSpaces { get; set; }
 
+        public List<Tuple<EventActionType, object>> EntryEvents { get; set; }
         public bool ShopAllowed { get; set; }
 
         public Dictionary<long, MapShop> UserShops { get; }
@@ -369,9 +371,9 @@ namespace OpenNos.GameObject
 
         public string GenerateRsfn(bool isInit = false)
         {
-            if(MapInstanceType == MapInstanceType.TimeSpaceInstance)
+            if (MapInstanceType == MapInstanceType.TimeSpaceInstance)
             {
-                 return $"rsfn {MapIndexX} {MapIndexY} {(isInit?1:(Monsters?.Count == 0 ? 0 : 1))}";
+                return $"rsfn {MapIndexX} {MapIndexY} {(isInit ? 1 : (Monsters?.Count == 0 ? 0 : 1))}";
             }
             return string.Empty;
         }
@@ -424,7 +426,7 @@ namespace OpenNos.GameObject
             });
         }
 
-        internal void RunMapEvent(EventActionType eventaction, object param)
+        internal string RunMapEvent(EventActionType eventaction, object param)
         {
             switch (eventaction)
             {
@@ -451,6 +453,9 @@ namespace OpenNos.GameObject
                 case EventActionType.MESSAGE:
                     Broadcast(Convert.ToString(param));
                     break;
+
+                case EventActionType.SENDPACKET:
+                    return Convert.ToString(param);
 
                 case EventActionType.UNSPAWN:
                     UnspawnMonsters(Convert.ToInt32(param));
@@ -479,6 +484,7 @@ namespace OpenNos.GameObject
                     SummonMonsters(summonParameters);
                     break;
             }
+            return string.Empty;
         }
 
 

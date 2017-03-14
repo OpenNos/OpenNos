@@ -58,6 +58,18 @@ namespace OpenNos.GameObject
             {
                 switch (variable.Name)
                 {
+                    case "SendPacket":
+                        Node.Data.EntryEvents.Add(new Tuple<EventActionType, Object>(EventActionType.SENDPACKET, variable.Attributes["Value"].Value));
+                        break;
+                    case "SummonMonsters":
+                        foreach (XmlNode monster in variable.ChildNodes)
+                        {
+                            if (monster.Name == "Monster")
+                            {
+                                Node.Data.EntryEvents.Add(new Tuple<EventActionType, Object>(EventActionType.SPAWN, Node.Data.Map.GenerateMonsters(short.Parse(monster.Attributes["VNum"].Value), short.Parse(monster.Attributes["Amount"].Value), true)));
+                            }
+                        }
+                        break;
                     case "Portal":
 
                         Portal ParentPortal = new Portal()

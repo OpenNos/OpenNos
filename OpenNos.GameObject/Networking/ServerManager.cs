@@ -487,6 +487,8 @@ namespace OpenNos.GameObject
                     session.Character.IsChangingMapInstance = false;
                     session.SendPacket(session.Character.GenerateMinimapPosition());
 
+                    session.CurrentMapInstance.EntryEvents.ForEach(e => session.SendPacket(session.CurrentMapInstance.RunMapEvent(e.Item1, e.Item2)));
+                    session.CurrentMapInstance.EntryEvents.RemoveAll(s => s != null);
                 }
                 catch (Exception)
                 {

@@ -25,6 +25,7 @@ namespace OpenNos.Domain
         SPAWNONLASTENTRY,
         CLOCK,
         SPAWN,
-        DROPITEMS
+        DROPITEMS,
+        SENDPACKET
     }
 }
