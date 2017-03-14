@@ -392,7 +392,7 @@ namespace OpenNos.GameObject
                         session.Character.PositionY = (short)mapY;
                     }
 
-                    
+
                     // avoid cleaning new portals
 
                     session.CurrentMapInstance = session.Character.MapInstance;
@@ -408,7 +408,7 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateCond());
                     session.SendPacket(session.Character.GenerateCMap());
                     session.SendPacket(session.Character.GenerateStatChar());
-                    
+
 
                     // in 2 // send only when partner present cond 2 // send only when partner present
                     session.SendPacket(session.Character.GeneratePairy());
@@ -486,7 +486,7 @@ namespace OpenNos.GameObject
                     }
                     session.Character.IsChangingMapInstance = false;
                     session.SendPacket(session.Character.GenerateMinimapPosition());
-                    
+
                 }
                 catch (Exception)
                 {
@@ -699,7 +699,6 @@ namespace OpenNos.GameObject
             HeroicStartLevel = byte.Parse(ConfigurationManager.AppSettings["HeroicStartLevel"]);
             Schedules = ConfigurationManager.GetSection("eventScheduler") as List<Schedule>;
             Mails = DAOFactory.MailDAO.LoadAll().ToList();
-
             // load explicite type of ItemDTO
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
@@ -968,11 +967,9 @@ namespace OpenNos.GameObject
         {
             foreach (var map in _mapinstances)
             {
-                map.Value.TimeSpaces = new List<TimeSpace>();
                 foreach (TimeSpace timespace in DAOFactory.TimeSpaceDAO.LoadByMap(map.Value.Map.MapId).ToList())
                 {
-                    timespace.MapInstanceId = map.Value.MapInstanceId;
-                    timespace.LoadXml();
+                    timespace.LoadGlobals();
                     map.Value.TimeSpaces.Add(timespace);
                 }
             }

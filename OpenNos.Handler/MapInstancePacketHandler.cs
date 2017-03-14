@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OpenNos.Core;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Packets.ServerPackets;
+using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.Handler
 {
@@ -34,7 +35,9 @@ namespace OpenNos.Handler
 
             if (timespace != null)
             {
-                Session.Character.LastTimeSpace = timespace;
+                TimeSpace ts = timespace.DeepCopy();
+                ts.LoadContent();
+                Session.Character.LastTimeSpace = ts;
                 Session.SendPacket(timespace.GenerateRbr());
             }
 
@@ -48,14 +51,14 @@ namespace OpenNos.Handler
         {
             TimeSpace timespace = Session.Character.LastTimeSpace;
 
-            if (timespace != null && timespace.MapTree !=null)
+            if (timespace != null && timespace.MapTree != null)
             {
                 ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, timespace.MapTree.Data.MapInstanceId, timespace.StartX, timespace.StartY);
                 Session.SendPackets(Session.Character.LastTimeSpace.GetMinimap());
             }
 
         }
-        
+
 
         #endregion
     }

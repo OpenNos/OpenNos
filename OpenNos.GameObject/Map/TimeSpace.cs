@@ -16,7 +16,6 @@ namespace OpenNos.GameObject
 {
     public class TimeSpace : TimeSpaceDTO
     {
-        public Guid MapInstanceId { get; set; }
         public TimeSpaceType Type { get; set; }
         public byte LevelMinimum { get; set; }
         public byte LevelMaximum { get; set; }
@@ -31,33 +30,20 @@ namespace OpenNos.GameObject
             return $"rbr 0.0.0 4 15 {LevelMinimum}.{LevelMaximum} 0 -1.0 -1.0 -1.0 -1.0 -1.0 -1.0 -1.0 -1.0 -1.0 -1.0 {WinnerScore}.{(WinnerScore > 0 ? Winner : "")} 0 0 {Language.Instance.GetMessageFromKey("TS_TUTORIAL")}\n{Label}";
         }
 
-        public Guid SourceMapInstanceId
+
+        public TimeSpace DeepCopy()
         {
-            get
-            {
-                if (MapInstanceId == default(Guid))
-                {
-                    MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(MapId);
-                }
-                return MapInstanceId;
-            }
-            set { MapInstanceId = value; }
+            return (TimeSpace)MemberwiseClone();
         }
 
 
-        public void LoadXml()
+        public void LoadContent()
         {
             XmlDocument doc = new XmlDocument();
             if (Script != null)
             {
                 doc.LoadXml(Script);
-                XmlNode def = doc.SelectSingleNode("Definition");
-                LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum").Attributes["Value"].Value);
-                LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum").Attributes["Value"].Value);
-                Label = def.SelectSingleNode("Label").Attributes["Value"].Value;
-                StartX = short.Parse(def.SelectSingleNode("StartX").Attributes["Value"].Value);
-                StartY = short.Parse(def.SelectSingleNode("StartY").Attributes["Value"].Value);
-                XmlNode firstMap = def.SelectSingleNode("MapTree").SelectSingleNode("Map");
+                XmlNode firstMap = doc.SelectSingleNode("Definition").SelectSingleNode("MapTree").SelectSingleNode("Map");
                 Node<MapInstance> basemap = new Node<MapInstance>(ServerManager.GenerateMapInstance(short.Parse(firstMap.Attributes["VNum"].Value), MapInstanceType.TimeSpaceInstance));
                 LoadMapInstanceTree(firstMap, ref basemap);
                 basemap.Data.MapIndexX = byte.Parse(firstMap.Attributes["IndexX"].Value);
@@ -126,5 +112,19 @@ namespace OpenNos.GameObject
             return lst;
         }
 
+        public void LoadGlobals()
+        {
+            XmlDocument doc = new XmlDocument();
+            if (Script != null)
+            {
+                doc.LoadXml(Script);
+                XmlNode def = doc.SelectSingleNode("Definition");
+                LevelMinimum = byte.Parse(def.SelectSingleNode("LevelMinimum").Attributes["Value"].Value);
+                LevelMaximum = byte.Parse(def.SelectSingleNode("LevelMaximum").Attributes["Value"].Value);
+                Label = def.SelectSingleNode("Label").Attributes["Value"].Value;
+                StartX = short.Parse(def.SelectSingleNode("StartX").Attributes["Value"].Value);
+                StartY = short.Parse(def.SelectSingleNode("StartY").Attributes["Value"].Value);
+            }
+        }
     }
 }
