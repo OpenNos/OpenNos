@@ -355,7 +355,7 @@ namespace OpenNos.Handler
                                     return;
                                 }
 
-                                if (Session.IsDisposing || targetSession.IsDisposing || !Session.Character.IsExchanging || targetSession.Character.IsExchanging)
+                                if (Session.IsDisposing || targetSession.IsDisposing || !Session.Character.IsExchanging || !targetSession.Character.IsExchanging)
                                 {
                                     CloseExchange(Session, targetSession);
                                     return;
