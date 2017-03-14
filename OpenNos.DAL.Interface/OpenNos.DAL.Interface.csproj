@@ -94,6 +94,7 @@
     <Compile Include="IStaticBonusDAO.cs" />
     <Compile Include="ISynchronizableBaseDAO.cs" />
     <Compile Include="ITeleporterDAO.cs" />
+    <Compile Include="ITimeSpaceDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

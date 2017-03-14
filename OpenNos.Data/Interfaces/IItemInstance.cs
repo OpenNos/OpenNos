@@ -24,7 +24,7 @@ namespace OpenNos.Data
 
         long? BoundCharacterId { get; set; }
 
-        byte Design { get; set; }
+        short Design { get; set; }
 
         Guid Id { get; set; }
 

@@ -349,6 +349,12 @@ namespace OpenNos.DAL.EF.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Map>()
+               .HasMany(e => e.TimeSpace)
+               .WithRequired(e => e.Map)
+               .HasForeignKey(e => e.MapId)
+               .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Map>()
                 .HasMany(e => e.Teleporter)
                 .WithRequired(e => e.Map)
                 .WillCascadeOnDelete(false);

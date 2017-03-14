@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
     {
         public static int SourceX { get; private set; }
         #region Methods
-        public static List<TimeSpace> GenerateMapInstanceTree(short entryMap)
+        public static List<TimeSpace> GenerateTimeSpace(short entryMap)
         {
             List<TimeSpace> list = new List<TimeSpace>();
 
@@ -33,9 +33,9 @@ namespace OpenNos.GameObject
                     list.Add(new TimeSpace
                     {
                         Type = TimeSpaceType.Normal,
-                        SourceX = 134,
-                        SourceY = 36,
-                        SourceMapId = 1,
+                        PositionX = 134,
+                        PositionY = 36,
+                        MapId = 1,
                         LevelMaximum = 99,
                         LevelMinimum = 1
                     });

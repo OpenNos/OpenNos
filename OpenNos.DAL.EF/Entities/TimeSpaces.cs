@@ -18,6 +18,8 @@ namespace OpenNos.DAL.EF
     {
         #region Properties
 
+        public virtual Map Map { get; set; }
+
         public short TimespaceId { get; set; }
 
         public short MapId { get; set; }

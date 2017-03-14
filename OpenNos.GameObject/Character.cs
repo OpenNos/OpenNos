@@ -1889,15 +1889,15 @@ namespace OpenNos.GameObject
         {
             List<WpPacket> wpList = new List<WpPacket>();
             short i = 0;
-            foreach (TimeSpace mapinstancetree in GetMapInstanceTreePortal())
+            foreach (TimeSpace mapinstancetree in GetTimeSpacePortal())
             {
                 wpList.Add(new WpPacket()
                 {
                     Id = i,
                     LevelMaximum = mapinstancetree.LevelMaximum,
                     LevelMinimum = mapinstancetree.LevelMinimum,
-                    X = mapinstancetree.SourceX,
-                    Y = mapinstancetree.SourceY,
+                    X = mapinstancetree.PositionX,
+                    Y = mapinstancetree.PositionY,
                 });
                 i++;
             }
@@ -3588,9 +3588,9 @@ namespace OpenNos.GameObject
             return MapInstancePortalHandler.GenerateMinilandEntryPortals(MapInstance.Map.MapId, Miniland.MapInstanceId);
         }
 
-        public List<TimeSpace> GetMapInstanceTreePortal()
+        public List<TimeSpace> GetTimeSpacePortal()
         {
-            return MapInstancePortalHandler.GenerateMapInstanceTree(MapInstance.Map.MapId);
+            return MapInstancePortalHandler.GenerateTimeSpace(MapInstance.Map.MapId);
         }
         
         public List<string> GetFamilyHistory()
