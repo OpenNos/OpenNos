@@ -86,7 +86,7 @@ namespace OpenNos.GameObject
         public bool IsDancing { get; set; }
 
         public bool IsPVP { get; set; }
-
+        
         public bool IsSleeping
         {
             get
@@ -143,6 +143,7 @@ namespace OpenNos.GameObject
         public byte MapIndexX { get; set; }
 
         public byte MapIndexY { get; set; }
+
         #endregion
 
         #region Methods
@@ -373,7 +374,7 @@ namespace OpenNos.GameObject
         {
             if (MapInstanceType == MapInstanceType.TimeSpaceInstance)
             {
-                return $"rsfn {MapIndexX} {MapIndexY} {(isInit ? 1 : (Monsters?.Count == 0 ? 0 : 1))}";
+                return $"rsfn {MapIndexX} {MapIndexY} {(isInit ? 1 : (Monsters.Where(s=>s.IsAlive).ToList().Count == 0 ? 0 : 1))}";
             }
             return string.Empty;
         }

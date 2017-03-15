@@ -1175,7 +1175,7 @@ namespace OpenNos.GameObject
             return new List<TeleporterDTO>();
         }
 
-        internal void TeleportOnRandomPlaceInMap(ClientSession Session, Guid guid)
+        public void TeleportOnRandomPlaceInMap(ClientSession Session, Guid guid)
         {
             MapInstance map = GetMapInstance(guid);
             if (guid != default(Guid))
