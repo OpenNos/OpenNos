@@ -173,9 +173,9 @@ namespace OpenNos.GameObject
                     if (Option == 0)
                     {
                         session.SendPacket(session.Character.GenerateStatChar());
-                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateEq());
+                        session.CurrentMapInstanceNode?.Data.Broadcast(session.Character.GenerateEq());
                         session.SendPacket(session.Character.GenerateEquipment());
-                        session.CurrentMapInstance?.Broadcast(session.Character.GeneratePairy());
+                        session.CurrentMapInstanceNode?.Data.Broadcast(session.Character.GeneratePairy());
 
                         if (EquipmentSlot == EquipmentType.Fairy)
                         {

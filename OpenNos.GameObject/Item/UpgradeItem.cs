@@ -78,7 +78,7 @@ namespace OpenNos.GameObject
                                         {
                                             specialist.Rare = 0;
                                             session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_RESURRECTED"), 0));
-                                            session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(13, 1, session.Character.CharacterId,1), session.Character.MapX, session.Character.MapY);
+                                            session.CurrentMapInstanceNode?.Data.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(13, 1, session.Character.CharacterId,1), session.Character.MapX, session.Character.MapY);
                                             session.Character.SpPoint = 10000;
                                             if (session.Character.SpPoint > 10000)
                                             {

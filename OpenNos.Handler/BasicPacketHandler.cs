@@ -136,7 +136,7 @@ namespace OpenNos.Handler
                         {
                             group.SharingMode = 1;
                         }
-                        Session.CurrentMapInstance?.Broadcast(Session, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0), ReceiverType.Group);
+                        Session.CurrentMapInstanceNode?.Data.Broadcast(Session, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0), ReceiverType.Group);
                     }
                     else
                     {
@@ -145,7 +145,7 @@ namespace OpenNos.Handler
                         {
                             group.SharingMode = 0;
                         }
-                        Session.CurrentMapInstance?.Broadcast(Session, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_BY_ORDER"), 0), ReceiverType.Group);
+                        Session.CurrentMapInstanceNode?.Data.Broadcast(Session, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_BY_ORDER"), 0), ReceiverType.Group);
                     }
                     break;
             }
@@ -184,7 +184,7 @@ namespace OpenNos.Handler
                                 Timestamp = DateTime.Now
                             });
 
-                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, characterId: complimentedCharacterId);
+                            Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, characterId: complimentedCharacterId);
                         }
                         else
                         {
@@ -215,7 +215,7 @@ namespace OpenNos.Handler
             if (directionPacket.CharacterId == Session.Character.CharacterId)
             {
                 Session.Character.Direction = directionPacket.Direction;
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateDir());
+                Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateDir());
             }
         }
 
@@ -297,9 +297,9 @@ namespace OpenNos.Handler
                     Session.SendPacket(ServerManager.Instance.GetSessionByCharacterId(charId)?.Character?.GenerateStatInfo());
                 }
             }
-            if (characterInformationPacket[2] == "2" && Session.HasCurrentMapInstance)
+            if (characterInformationPacket[2] == "2" && Session.HasCurrentMapInstanceNode)
             {
-                foreach (MapNpc npc in Session.CurrentMapInstance.Npcs)
+                foreach (MapNpc npc in Session.CurrentMapInstanceNode.Data.Npcs)
                 {
                     int mapMonsterId;
                     if (int.TryParse(characterInformationPacket[3], out mapMonsterId))
@@ -315,7 +315,7 @@ namespace OpenNos.Handler
                         }
                     }
                 }
-                foreach (var player in Session.CurrentMapInstance.Sessions)
+                foreach (var player in Session.CurrentMapInstanceNode.Data.Sessions)
                 {
                     int mateId;
                     if (!int.TryParse(characterInformationPacket[3], out mateId)) continue;
@@ -326,9 +326,9 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            if (characterInformationPacket[2] == "3" && Session.HasCurrentMapInstance)
+            if (characterInformationPacket[2] == "3" && Session.HasCurrentMapInstanceNode)
             {
-                foreach (MapMonster monster in Session.CurrentMapInstance.Monsters)
+                foreach (MapMonster monster in Session.CurrentMapInstanceNode.Data.Monsters)
                 {
                     int mapMonsterId;
                     if (int.TryParse(characterInformationPacket[3], out mapMonsterId))
@@ -494,7 +494,7 @@ namespace OpenNos.Handler
 
                 // player join group
                 ServerManager.Instance.UpdateGroup(pjoinPacket.CharacterId);
-                Session.CurrentMapInstance?.Broadcast(Session.Character.GeneratePidx());
+                Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GeneratePidx());
             }
             else if (pjoinPacket.RequestType == GroupRequestType.Declined)
             {
@@ -517,7 +517,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("ACCEPTED_SHARE"), 0));
                 if (Session.Character.Group.IsMemberOfGroup(pjoinPacket.CharacterId))
                 {
-                    Session.Character.SetReturnPoint(Session.Character.MapInstance.Map.MapId, targetSession.Character.PositionX, targetSession.Character.PositionY);
+                    Session.Character.SetReturnPoint(Session.Character.MapInstanceNode.Data.Map.MapId, targetSession.Character.PositionX, targetSession.Character.PositionY);
                     targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("CHANGED_SHARE"), targetSession.Character.Name), 0));
                 }
             }
@@ -715,14 +715,14 @@ namespace OpenNos.Handler
             {
                 if (Convert.ToInt64(guriPacket[4]) == Session.Character.CharacterId)
                 {
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
+                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
                 }
                 else
                 {
                     Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == Convert.ToInt32(guriPacket[4]));
                     if (mate != null)
                     {
-                        Session.CurrentMapInstance?.Broadcast(Session, mate.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
+                        Session.CurrentMapInstanceNode?.Data.Broadcast(Session, mate.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
                     }
                 }
             }
@@ -778,16 +778,16 @@ namespace OpenNos.Handler
                     {
                         if (Session.Character.IsFriendOfCharacter(charId))
                         {
-                            if (session.CurrentMapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                            if (session.CurrentMapInstanceNode.Data.MapInstanceType == MapInstanceType.BaseMapInstanceNode)
                             {
-                                if (Session.Character.MapInstance.MapInstanceType != MapInstanceType.BaseMapInstance)
+                                if (Session.Character.MapInstanceNode.Data.MapInstanceType != MapInstanceType.BaseMapInstanceNode)
                                 {
                                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_USE_THAT"), 10));
                                     return;
                                 }
                                 short mapy = session.Character.PositionY;
                                 short mapx = session.Character.PositionX;
-                                short mapId = session.Character.MapInstance.Map.MapId;
+                                short mapId = session.Character.MapInstanceNode.Data.Map.MapId;
 
                                 ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId, mapId, mapx, mapy);
@@ -818,11 +818,11 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    if (!Session.HasCurrentMapInstance)
+                    if (!Session.HasCurrentMapInstanceNode)
                     {
                         return;
                     }
-                    MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
+                    MapNpc npc = Session.CurrentMapInstanceNode.Data.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
                     if (npc != null)
                     {
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
@@ -883,7 +883,7 @@ namespace OpenNos.Handler
             {
                 if (guriPacket.Length > 5)
                 {
-                    // MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n =>
+                    // MapNpc npc = Session.CurrentMapInstanceNode.Data.Npcs.FirstOrDefault(n =>
                     // n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5]))); NpcMonster mapObject
                     // = ServerManager.GetNpc(npc.NpcVNum); teleport free
                 }
@@ -910,7 +910,7 @@ namespace OpenNos.Handler
             }
             else if (guriPacket[2] == "2")
             {
-                Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstanceNode?.Data.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(2, 1, Session.Character.CharacterId), Session.Character.PositionX, Session.Character.PositionY);
             }
             else if (guriPacket[2] == "4")
             {
@@ -922,8 +922,8 @@ namespace OpenNos.Handler
                     if (mate != null)
                     {
                         mate.Name = guriPacket[6];
-                        Session.CurrentMapInstance.Broadcast(mate.GenerateOut());
-                        Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
+                        Session.CurrentMapInstanceNode.Data.Broadcast(mate.GenerateOut());
+                        Session.CurrentMapInstanceNode.Data.Broadcast(mate.GenerateIn());
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_NAME_PET")));
                         Session.SendPacket(Session.Character.GeneratePinit());
                         Session.Character.SendPst();
@@ -1132,12 +1132,12 @@ namespace OpenNos.Handler
             Logger.Debug(Session.Character.GenerateIdentity(), packet);
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstance)
+            if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstanceNode)
             {
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
             }
-            foreach (Portal portal in Session.CurrentMapInstance.Portals.Concat(Session.Character.GetExtraPortal()))
+            foreach (Portal portal in Session.CurrentMapInstanceNode.Data.Portals.Concat(Session.Character.GetExtraPortal()))
             {
                 if (Session.Character.PositionY >= portal.SourceY - 1 && Session.Character.PositionY <= portal.SourceY + 1
                     && Session.Character.PositionX >= portal.SourceX - 1 && Session.Character.PositionX <= portal.SourceX + 1)
@@ -1159,21 +1159,21 @@ namespace OpenNos.Handler
                             return;
                     }
 
-                    Session.SendPacket(Session.CurrentMapInstance.GenerateRsfn());
+                    Session.SendPacket(Session.CurrentMapInstanceNode.Data.GenerateRsfn());
                     ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                     Session.Character.LastPortal = currentRunningSeconds;
 
-                    if (ServerManager.GetMapInstance(portal.SourceMapInstanceId).MapInstanceType != MapInstanceType.BaseMapInstance && ServerManager.GetMapInstance(portal.DestinationMapInstanceId).MapInstanceType == MapInstanceType.BaseMapInstance)
+                    if (ServerManager.GetMapInstanceNode(portal.SourceMapInstanceNodeId).Data.MapInstanceType != MapInstanceType.BaseMapInstanceNode && ServerManager.GetMapInstanceNode(portal.DestinationMapInstanceNodeId).Data.MapInstanceType == MapInstanceType.BaseMapInstanceNode)
                     {
                         ServerManager.Instance.ChangeMap(Session.Character.CharacterId, Session.Character.MapId, Session.Character.MapX, Session.Character.MapY);
                     }
-                    else if (portal.DestinationMapInstanceId == Session.Character.Miniland.MapInstanceId)
+                    else if (portal.DestinationMapInstanceNodeId == Session.Character.Miniland.Data.MapInstanceNodeId)
                     {
                         ServerManager.Instance.JoinMiniland(Session, Session);
                     }
                     else
                     {
-                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, portal.DestinationMapInstanceId, portal.DestinationX, portal.DestinationY);
+                        ServerManager.Instance.ChangeMapInstanceNode(Session.Character.CharacterId, portal.DestinationMapInstanceNodeId, portal.DestinationX, portal.DestinationY);
                     }
 
                     break;
@@ -1205,7 +1205,7 @@ namespace OpenNos.Handler
                 int mateVnum;
                 if (int.TryParse(packetsplit[4], out mateVnum))
                 {
-                    var mate = Session.CurrentMapInstance.Sessions.FirstOrDefault(s => s.Character?.Mates != null && s.Character.Mates.Any(o => o.MateTransportId == mateVnum))?.Character.Mates.First(o => o.MateTransportId == mateVnum);
+                    var mate = Session.CurrentMapInstanceNode.Data.Sessions.FirstOrDefault(s => s.Character?.Mates != null && s.Character.Mates.Any(o => o.MateTransportId == mateVnum))?.Character.Mates.First(o => o.MateTransportId == mateVnum);
                     Session.SendPacket(mate?.GenerateEInfo());
                 }
             }
@@ -1241,7 +1241,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.CurrentMapInstance.Broadcast(Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId)?.GenerateRest());
+                    Session.CurrentMapInstanceNode.Data.Broadcast(Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == u.UserId)?.GenerateRest());
                 }
             });
         }
@@ -1265,7 +1265,7 @@ namespace OpenNos.Handler
                 switch (type)
                 {
                     case 0:
-                        switch (Session.CurrentMapInstance.MapInstanceType)
+                        switch (Session.CurrentMapInstanceNode.Data.MapInstanceType)
                         {
                             case MapInstanceType.LodInstance:
                                 const int saver = 1211;
@@ -1279,7 +1279,7 @@ namespace OpenNos.Handler
                                     Session.Character.Inventory.RemoveItemAmount(saver);
                                     Session.Character.Hp = (int)Session.Character.HPLoad();
                                     Session.Character.Mp = (int)Session.Character.MPLoad();
-                                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateRevive());
+                                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateRevive());
                                     Session.SendPacket(Session.Character.GenerateStat());
                                 }
                                 break;
@@ -1306,8 +1306,8 @@ namespace OpenNos.Handler
                                         Session.Character.Hp = (int)Session.Character.HPLoad();
                                         Session.Character.Mp = (int)Session.Character.MPLoad();
                                     }
-                                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateTp());
-                                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateRevive());
+                                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateTp());
+                                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateRevive());
                                     Session.SendPacket(Session.Character.GenerateStat());
                                 }
                                 break;
@@ -1323,8 +1323,8 @@ namespace OpenNos.Handler
                         {
                             Session.Character.Hp = (int)Session.Character.HPLoad();
                             Session.Character.Mp = (int)Session.Character.MPLoad();
-                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateTp());
-                            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateRevive());
+                            Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateTp());
+                            Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateRevive());
                             Session.SendPacket(Session.Character.GenerateStat());
                             Session.Character.Gold -= 100;
                             Session.SendPacket(Session.Character.GenerateGold());
@@ -1352,13 +1352,13 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Gender == GenderType.Female)
                 {
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
+                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString(@"hh\:mm\:ss")), 11));
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString(@"hh\:mm\:ss")), 12));
                 }
                 else
                 {
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString(@"hh\:mm\:ss")), 11));
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString(@"hh\:mm\:ss")), 12));
                 }
@@ -1383,7 +1383,7 @@ namespace OpenNos.Handler
                         type = 12;
                         message = $"[{Language.Instance.GetMessageFromKey("SUPPORT")} {Session.Character.Name}]: " + message;
                     }
-                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), type), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), type), ReceiverType.AllExceptMe);
                 }
             }
         }
@@ -1583,7 +1583,7 @@ namespace OpenNos.Handler
                 // character should have been selected in SelectCharacter
                 return;
             }
-            Session.CurrentMapInstance = Session.Character.MapInstance;
+            Session.CurrentMapInstanceNode = Session.Character.MapInstanceNode;
             if (ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & Session.Character.GeneralLogs.Count(s => s.LogType != "Connection") < 2)
             {
                 Session.SendPacket("scene 40");
@@ -1626,7 +1626,7 @@ namespace OpenNos.Handler
                 Session.SendPacket("ib 1278 1");
             }
 
-            if (Session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.CleftOfDarkness))
+            if (Session.Character.MapInstanceNode.Data.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.CleftOfDarkness))
             {
                 Session.SendPacket("bc 0 0 0");
             }
@@ -1677,7 +1677,7 @@ namespace OpenNos.Handler
                 kdlinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Act4Points}|{character.Name}";
             }
 
-            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
+            Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateGidx());
 
             Session.SendPacket(Session.Character.GenerateFinit());
             Session.SendPacket(Session.Character.GenerateBlinit());
@@ -1712,11 +1712,11 @@ namespace OpenNos.Handler
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             int distance = Map.GetDistance(new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }, new MapCell { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
 
-            if (Session.HasCurrentMapInstance && !Session.CurrentMapInstance.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) && !Session.Character.IsChangingMapInstance && !Session.Character.HasShopOpened)
+            if (Session.HasCurrentMapInstanceNode && !Session.CurrentMapInstanceNode.Data.Map.IsBlockedZone(walkPacket.XCoordinate, walkPacket.YCoordinate) && !Session.Character.IsChangingMapInstanceNode && !Session.Character.HasShopOpened)
             {
                 if ((Session.Character.Speed >= walkPacket.Speed || Session.Character.LastSpeedChange.AddSeconds(1) > DateTime.Now) && !(distance > 60 && timeSpanSinceLastPortal > 10))
                 {
-                    if (Session.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance)
+                    if (Session.Character.MapInstanceNode.Data.MapInstanceType == MapInstanceType.BaseMapInstanceNode)
                     {
                         Session.Character.MapX = walkPacket.XCoordinate;
                         Session.Character.MapY = walkPacket.YCoordinate;
@@ -1724,7 +1724,7 @@ namespace OpenNos.Handler
                     Session.Character.PositionX = walkPacket.XCoordinate;
                     Session.Character.PositionY = walkPacket.YCoordinate;
 
-                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
+                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateMv());
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;
                 }

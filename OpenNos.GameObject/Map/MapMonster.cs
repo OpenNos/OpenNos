@@ -201,7 +201,7 @@ namespace OpenNos.GameObject
         {
             if (Monster.IsHostile && Target == -1)
             {
-                Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s?.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapInstance == MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY }) < Monster.NoticeRange)?.Character;
+                Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s?.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapInstanceNode.Data == MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY }) < Monster.NoticeRange)?.Character;
                 if (character != null)
                 {
                     Target = character.CharacterId;
@@ -294,7 +294,7 @@ namespace OpenNos.GameObject
                     }
                 }
 
-                if (targetSession == null || MapId != targetSession.Character.MapInstance.Map.MapId || distance > maxDistance)
+                if (targetSession == null || MapId != targetSession.Character.MapInstanceNode.Data.Map.MapId || distance > maxDistance)
                 {
                     RemoveTarget();
                 }

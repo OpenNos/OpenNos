@@ -30,11 +30,11 @@ namespace OpenNos.GameObject
 
         public static void NRun(ClientSession Session, NRunPacket packet)
         {
-            if (!Session.HasCurrentMapInstance)
+            if (!Session.HasCurrentMapInstanceNode)
             {
                 return;
             }
-            MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == packet.NpcId);
+            MapNpc npc = Session.CurrentMapInstanceNode.Data.Npcs.FirstOrDefault(s => s.MapNpcId == packet.NpcId);
             switch (packet.Runner)
             {
                 case 1:
@@ -72,7 +72,7 @@ namespace OpenNos.GameObject
                                 Session.Character.Inventory.AddNewToInventory(86, type: InventoryType.Wear);
                                 break;
                         }
-                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEq());
+                        Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEq());
                         Session.SendPacket(Session.Character.GenerateEquipment());
                         Session.Character.ChangeClass((ClassType)packet.Type);
                     }
@@ -112,7 +112,7 @@ namespace OpenNos.GameObject
                             }
                             break;
                         case 3:
-                            if (mate != null && Session.Character.Miniland == Session.Character.MapInstance)
+                            if (mate != null && Session.Character.Miniland == Session.Character.MapInstanceNode)
                             {
                                 mate.IsTeamMember = false;
                                 mate.MapX = mate.PositionX;
@@ -122,7 +122,7 @@ namespace OpenNos.GameObject
                         case 4:
                             if (mate != null)
                             {
-                                if (Session.Character.Miniland == Session.Character.MapInstance)
+                                if (Session.Character.Miniland == Session.Character.MapInstanceNode)
                                 {
                                     mate.IsTeamMember = false;
                                     mate.MapX = mate.PositionX;
@@ -145,10 +145,10 @@ namespace OpenNos.GameObject
                         case 6:
                             if (mate != null)
                             {
-                                if (Session.Character.Miniland != Session.Character.MapInstance)
+                                if (Session.Character.Miniland != Session.Character.MapInstanceNode)
                                 {
                                     mate.IsTeamMember = false;
-                                    Session.CurrentMapInstance.Broadcast(mate.GenerateOut());
+                                    Session.CurrentMapInstanceNode.Data.Broadcast(mate.GenerateOut());
                                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("PET_KICKED"), mate.Name), 11));
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("PET_KICKED"), mate.Name), 0));
                                 }
@@ -175,7 +175,7 @@ namespace OpenNos.GameObject
                                     mate.PositionX = (short)(Session.Character.PositionX + 1);
                                 mate.PositionY = (short)(Session.Character.PositionY + 1);
                                 mate.IsTeamMember = true;
-                                Session.CurrentMapInstance.Broadcast(mate.GenerateIn());
+                                Session.CurrentMapInstanceNode.Data.Broadcast(mate.GenerateIn());
 
                             }
                             else
@@ -236,7 +236,7 @@ namespace OpenNos.GameObject
                 case 17:
                     double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
                     double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-                    if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstance)
+                    if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstanceNode)
                     {
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                         return;
@@ -254,7 +254,7 @@ namespace OpenNos.GameObject
                         Session.Character.LastPortal = currentRunningSeconds;
                         Session.Character.Gold -= 500 * (1 + packet.Type);
                         Session.SendPacket(Session.Character.GenerateGold());
-                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, packet.Type == 0 ? ServerManager.ArenaInstance.MapInstanceId : ServerManager.FamilyArenaInstance.MapInstanceId, packet.Type == 0 ? ServerManager.ArenaInstance.Map.GetRandomPosition().X : ServerManager.FamilyArenaInstance.Map.GetRandomPosition().X, packet.Type == 0 ? ServerManager.ArenaInstance.Map.GetRandomPosition().Y : ServerManager.FamilyArenaInstance.Map.GetRandomPosition().Y);
+                        ServerManager.Instance.ChangeMapInstanceNode(Session.Character.CharacterId, packet.Type == 0 ? ServerManager.ArenaInstance.Data.MapInstanceNodeId : ServerManager.FamilyArenaInstance.Data.MapInstanceNodeId, packet.Type == 0 ? ServerManager.ArenaInstance.Data.Map.GetRandomPosition().X : ServerManager.FamilyArenaInstance.Data.Map.GetRandomPosition().X, packet.Type == 0 ? ServerManager.ArenaInstance.Data.Map.GetRandomPosition().Y : ServerManager.FamilyArenaInstance.Data.Map.GetRandomPosition().Y);
                     }
                     else
                     {
@@ -323,12 +323,12 @@ namespace OpenNos.GameObject
                     {
                         if (Session.Character.Family != null)
                         {
-                            if (Session.Character.Family.LandOfDeath != null && !Session.Character.Family.LandOfDeath.Lock)
+                            if (Session.Character.Family.LandOfDeath != null && !Session.Character.Family.LandOfDeath.Data.Lock)
                             {
                                 if (Session.Character.Level >= 55)
                                 {
                                     ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
-                                    ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, Session.Character.Family.LandOfDeath.MapInstanceId, 153, 145);
+                                    ServerManager.Instance.ChangeMapInstanceNode(Session.Character.CharacterId, Session.Character.Family.LandOfDeath.Data.MapInstanceNodeId, 153, 145);
                                 }
                                 else
                                 {

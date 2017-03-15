@@ -41,7 +41,7 @@
                 session.Character.Mp = (int)session.Character.MPLoad();
             }
             session.Character.Buff.DisableEffects(false, true, 4);
-            session.CurrentMapInstance?.Broadcast(session, session.Character.GenerateRc(hpbonus));
+            session.CurrentMapInstanceNode?.Data.Broadcast(session, session.Character.GenerateRc(hpbonus));
             session.SendPacket(session.Character.GenerateStat());
             Disable(session);
         }

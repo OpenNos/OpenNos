@@ -37,7 +37,7 @@ namespace OpenNos.Handler
         public void CreateCharacter(string packet)
         {
             Logger.Debug(Session.GenerateIdentity(), packet);
-            if (Session.HasCurrentMapInstance)
+            if (Session.HasCurrentMapInstanceNode)
             {
                 return;
             }
@@ -161,7 +161,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(Session.GenerateIdentity(), characterDeletePacket.ToString());
 
-            if (Session.HasCurrentMapInstance)
+            if (Session.HasCurrentMapInstanceNode)
             {
                 return;
             }
@@ -296,7 +296,7 @@ namespace OpenNos.Handler
                     if (character != null)
                     {
                         character.GeneralLogs = DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Where(s => s.CharacterId == character.CharacterId).ToList();
-                        character.MapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(character.MapId);
+                        character.MapInstanceNodeId = ServerManager.Instance.GetBaseMapInstanceNodeIdByMapId(character.MapId);
                         character.PositionX = character.MapX;
                         character.PositionY = character.MapY;
                         character.Authority = Session.Account.Authority;

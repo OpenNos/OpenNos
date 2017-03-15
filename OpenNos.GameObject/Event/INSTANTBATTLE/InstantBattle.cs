@@ -48,9 +48,9 @@ namespace OpenNos.GameObject.Event
             ServerManager.Instance.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_STARTED"), 1));
             ServerManager.Instance.Sessions.Where(s => s.Character != null && !s.Character.IsWaitingForEvent).ToList().ForEach(s => s.SendPacket("esf"));
             ServerManager.Instance.EventInWaiting = false;
-            IEnumerable<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.IsWaitingForEvent && s.Character.MapInstance.MapInstanceType == MapInstanceType.BaseMapInstance);
-            List<Tuple<MapInstance, byte>> maps = new List<Tuple<MapInstance, byte>>();
-            MapInstance map = null;
+            IEnumerable<ClientSession> sessions = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.IsWaitingForEvent && s.Character.MapInstanceNode.Data.MapInstanceType == MapInstanceType.BaseMapInstanceNode);
+            List<Tuple<MapInstanceNode, byte>> maps = new List<Tuple<MapInstanceNode, byte>>();
+            MapInstanceNode map = null;
             int i = -1;
             int level = 0;
             byte instancelevel = 1;
@@ -84,35 +84,35 @@ namespace OpenNos.GameObject.Event
                 }
                 if (i % 50 == 0)
                 {
-                    map = ServerManager.GenerateMapInstance(2004, MapInstanceType.NormalInstance);
-                    maps.Add(new Tuple<MapInstance, byte>(map, instancelevel));
+                    map = ServerManager.GenerateMapInstanceNode(2004, MapInstanceType.NormalInstance);
+                    maps.Add(new Tuple<MapInstanceNode, byte>(map, instancelevel));
                 }
                 if (map != null)
                 {
-                    ServerManager.Instance.TeleportOnRandomPlaceInMap(s, map.MapInstanceId);
+                    ServerManager.Instance.TeleportOnRandomPlaceInMap(s, map.Data.MapInstanceNodeId);
                 }
 
                 level = s.Character.Level;
             }
             ServerManager.Instance.Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.Character.IsWaitingForEvent = false);
             long maxGold = ServerManager.MaxGold;
-            foreach (Tuple<MapInstance, byte> mapinstance in maps)
+            foreach (Tuple<MapInstanceNode, byte> MapInstanceNode in maps)
             {
                 ServerManager.Instance.StartedEvents.Remove(EventType.INSTANTBATTLE);
                 Thread.Sleep(10 * 1000);
-                if (mapinstance.Item1.Sessions.Count() < 3)
+                if (MapInstanceNode.Item1.Data.Sessions.Count() < 3)
                 {
-                    mapinstance.Item1.Sessions.Where(s => s.Character != null).ToList().ForEach(s => ServerManager.Instance.ChangeMap(s.Character.CharacterId, s.Character.MapId, s.Character.MapX, s.Character.MapY));
+                    MapInstanceNode.Item1.Data.Sessions.Where(s => s.Character != null).ToList().ForEach(s => ServerManager.Instance.ChangeMap(s.Character.CharacterId, s.Character.MapId, s.Character.MapX, s.Character.MapY));
                 }
                 Observable.Timer(TimeSpan.FromMinutes(12)).Subscribe(X =>
                 {
                     for (int d = 0; d < 180; d++)
                     {
-                        if (!mapinstance.Item1.Monsters.Any(s => s.CurrentHp > 0))
+                        if (!MapInstanceNode.Item1.Data.Monsters.Any(s => s.CurrentHp > 0))
                         {
-                            mapinstance.Item1.CreatePortal(new Portal { SourceX = 47, SourceY = 33, DestinationMapId = 1 });
-                            mapinstance.Item1.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
-                            foreach (ClientSession cli in mapinstance.Item1.Sessions.Where(s => s.Character != null).ToList())
+                            MapInstanceNode.Item1.Data.CreatePortal(new Portal { SourceX = 47, SourceY = 33, DestinationMapId = 1 });
+                            MapInstanceNode.Item1.Data.Broadcast(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SUCCEEDED"), 0));
+                            foreach (ClientSession cli in MapInstanceNode.Item1.Data.Sessions.Where(s => s.Character != null).ToList())
                             {
                                 cli.Character.GetReput(cli.Character.Level * 50);
                                 cli.Character.Gold += cli.Character.Level * 1000;
@@ -131,29 +131,29 @@ namespace OpenNos.GameObject.Event
                     }
                 });
 
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(15), EventActionType.DISPOSE, null);
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(3), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 12), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(5), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 10), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(10), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 5), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(11), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 4), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(12), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 3), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(13), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 2), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 1), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_INCOMING"), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(7), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_APPEAR"), 0));
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(3), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromMinutes(15), EventActionType.DISPOSE, null);
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromMinutes(3), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 12), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromMinutes(5), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 10), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromMinutes(10), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 5), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromMinutes(11), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 4), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromMinutes(12), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 3), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromMinutes(13), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 2), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromMinutes(14), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 1), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromMinutes(14.5), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_SECONDS_REMAINING"), 30), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromMinutes(0), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_INCOMING"), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromSeconds(7), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_APPEAR"), 0));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromSeconds(3), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
 
                 for (int wave = 0; wave < 4; wave++)
                 {
-                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(130 + wave * 160), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WAVE"), 0));
-                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(160 + wave * 160), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_INCOMING"), 0));
-                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(170 + wave * 160), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
-                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(10 + wave * 160), EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, wave));
-                    mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(140 + wave * 160), EventActionType.DROPITEMS, GetInstantBattleDrop(mapinstance.Item1.Map, mapinstance.Item2, wave));
+                    MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromSeconds(130 + wave * 160), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WAVE"), 0));
+                    MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromSeconds(160 + wave * 160), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_INCOMING"), 0));
+                    MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromSeconds(170 + wave * 160), EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0));
+                    MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromSeconds(10 + wave * 160), EventActionType.SPAWN, GetInstantBattleMonster(MapInstanceNode.Item1.Data.Map, MapInstanceNode.Item2, wave));
+                    MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromSeconds(140 + wave * 160), EventActionType.DROPITEMS, GetInstantBattleDrop(MapInstanceNode.Item1.Data.Map, MapInstanceNode.Item2, wave));
                 }
-                mapinstance.Item1.StartMapEvent(TimeSpan.FromSeconds(650), EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, 4));
+                MapInstanceNode.Item1.Data.StartMapEvent(TimeSpan.FromSeconds(650), EventActionType.SPAWN, GetInstantBattleMonster(MapInstanceNode.Item1.Data.Map, MapInstanceNode.Item2, 4));
             }
         }
 
