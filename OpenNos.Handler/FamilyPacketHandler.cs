@@ -158,7 +158,7 @@ namespace OpenNos.Handler
                 }
                 ServerManager.Instance.FamilyRefresh(family.FamilyId);
                 int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
-                Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstanceNode.Data.Broadcast(s.Character.GenerateGidx()));
+                Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
             }
         }
 
@@ -224,7 +224,7 @@ namespace OpenNos.Handler
                 {
                     if (s.HasSelectedCharacter && s.Character.Family != null && Session.Character.Family != null && s.Character.Family?.FamilyId == Session.Character.Family?.FamilyId)
                     {
-                        if (Session.HasCurrentMapInstanceNode && s.HasCurrentMapInstanceNode && Session.CurrentMapInstanceNode == s.CurrentMapInstanceNode && !Session.Character.InvisibleGm)
+                        if (Session.HasCurrentMapInstance && s.HasCurrentMapInstance && Session.CurrentMapInstance == s.CurrentMapInstance && !Session.Character.InvisibleGm)
                         {
                             s.SendPacket(Session.Character.GenerateSay(msg, 6));
                         }
@@ -299,7 +299,7 @@ namespace OpenNos.Handler
             ServerManager.Instance.FamilyRefresh(fam.FamilyId);
             int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, fam.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
 
-            sessions.ForEach(s => s.CurrentMapInstanceNode.Data.Broadcast(s.Character.GenerateGidx()));
+            sessions.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
         }
 
         [Packet("%FamilyKick")]
@@ -334,7 +334,7 @@ namespace OpenNos.Handler
                     DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
                     Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManage, kickSession.Character.Name);
 
-                    kickSession.CurrentMapInstanceNode?.Data.Broadcast(kickSession.Character.GenerateGidx());
+                    kickSession.CurrentMapInstance?.Broadcast(kickSession.Character.GenerateGidx());
                 }
                 else
                 {
@@ -379,7 +379,7 @@ namespace OpenNos.Handler
 
                 ServerManager.Instance.FamilyRefresh(FamilyId);
                 int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
-                Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateGidx());
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
             }
         }
 
@@ -539,10 +539,10 @@ namespace OpenNos.Handler
                 }
                 Session.Character.Family.InsertFamilyLog(FamilyLogType.AuthorityChange, Session.Character.Name, targetSession.Character.Name, right: auth);
 
-                targetSession.CurrentMapInstanceNode?.Data.Broadcast(targetSession.Character.GenerateGidx());
+                targetSession.CurrentMapInstance?.Broadcast(targetSession.Character.GenerateGidx());
                 if (auth == 0)
                 {
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateGidx());
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
                 }
             }
         }
@@ -825,7 +825,7 @@ namespace OpenNos.Handler
                                     Session.Character.Name, inviteSession.Character.Family.Name), 0),
                             ServerManager.Instance.ChannelId, MessageType.Family).Result;
 
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateGidx());
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
                     Session.SendPacket(Session.Character.GenerateFamilyMember());
                     Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                     Session.SendPacket(Session.Character.GenerateFamilyMemberExp());

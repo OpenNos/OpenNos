@@ -12,9 +12,7 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using log4net;
-using NetHierarchy;
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.DAL;
@@ -157,10 +155,6 @@ namespace OpenNos.World
 
         private static void RegisterMappings()
         {
-            Mapper.Initialize(cfg => {
-                cfg.CreateMap<Node<MapInstance>, MapInstanceNode>();
-            });
-
             // register mappings for items
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(BoxInstance));
             DAOFactory.IteminstanceDAO.RegisterMapping(typeof(SpecialistInstance));

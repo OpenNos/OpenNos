@@ -58,7 +58,7 @@ namespace OpenNos.Handler
             Logger.Debug("Add Monster Command", Session.Character.GenerateIdentity());
             if (addMonsterPacket != null)
             {
-                if (!Session.HasCurrentMapInstanceNode)
+                if (!Session.HasCurrentMapInstance)
                 {
                     return;
                 }
@@ -72,10 +72,10 @@ namespace OpenNos.Handler
                     MonsterVNum = addMonsterPacket.MonsterVNum,
                     MapY = Session.Character.PositionY,
                     MapX = Session.Character.PositionX,
-                    MapId = Session.Character.MapInstanceNode.Data.Map.MapId,
+                    MapId = Session.Character.MapInstance.Map.MapId,
                     Position = (byte)Session.Character.Direction,
                     IsMoving = addMonsterPacket.IsMoving,
-                    MapMonsterId = Session.CurrentMapInstanceNode.Data.GetNextMonsterId()
+                    MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId()
                 };
                 if (!DAOFactory.MapMonsterDAO.DoesMonsterExist(monst.MapMonsterId))
                 {
@@ -83,10 +83,10 @@ namespace OpenNos.Handler
                     MapMonster monster = DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) as MapMonster;
                     if (monster != null)
                     {
-                        monster.Initialize(Session.CurrentMapInstanceNode.Data);
+                        monster.Initialize(Session.CurrentMapInstance);
                         monster.StartLife();
-                        Session.CurrentMapInstanceNode.Data.AddMonster(monster);
-                        Session.CurrentMapInstanceNode?.Data.Broadcast(monster.GenerateIn());
+                        Session.CurrentMapInstance.AddMonster(monster);
+                        Session.CurrentMapInstance?.Broadcast(monster.GenerateIn());
                     }
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
@@ -105,7 +105,7 @@ namespace OpenNos.Handler
         {
             if (addPetPacket != null)
             {
-                if (Session.CurrentMapInstanceNode == Session.Character.Miniland)
+                if (Session.CurrentMapInstance == Session.Character.Miniland)
                 {
                     if (addPetPacket.Level == 0)
                     {
@@ -191,7 +191,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug("Arena Winner Command", Session.Character.GenerateIdentity());
             Session.Character.ArenaWinner = Session.Character.ArenaWinner == 0 ? 1 : 0;
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateCMode());
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
@@ -417,8 +417,8 @@ namespace OpenNos.Handler
                     Session.Character.Dignity = changeDignityPacket.Dignity;
                     Session.SendPacket(Session.Character.GenerateFd());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("DIGNITY_CHANGED"), 12));
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                 }
                 else
                 {
@@ -493,10 +493,10 @@ namespace OpenNos.Handler
                     player.SendPacket(player.Character.GenerateLev());
                     player.SendPacket(player.Character.GenerateStatInfo());
                     player.SendPacket(player.Character.GenerateStatChar());
-                    player.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX, Session.Character.PositionY);
-                    player.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(198), Session.Character.PositionX, Session.Character.PositionY);
+                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), Session.Character.PositionX, Session.Character.PositionY);
+                    player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), Session.Character.PositionX, Session.Character.PositionY);
                 }
                 else
                 {
@@ -530,9 +530,9 @@ namespace OpenNos.Handler
                     player.Character.Skills.ClearAll();
                     player.SendPacket(Session.Character.GenerateLev());
                     player.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
-                    player.CurrentMapInstanceNode?.Data.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstanceNode?.Data.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstanceNode?.Data.Broadcast(player.Character.GenerateEff( 8), player.Character.PositionX, player.Character.PositionY);
+                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff( 8), player.Character.PositionX, player.Character.PositionY);
 
                     player.Character.Skills[(short)(200 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(200 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
                     player.Character.Skills[(short)(201 + 20 * (byte)player.Character.Class)] = new CharacterSkill { SkillVNum = (short)(201 + 20 * (byte)player.Character.Class), CharacterId = player.Character.CharacterId };
@@ -579,10 +579,10 @@ namespace OpenNos.Handler
                     player.SendPacket(player.Character.GenerateStatChar());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
                     player.SendPacket(player.Character.GenerateLev());
-                    player.CurrentMapInstanceNode?.Data.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstanceNode?.Data.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstanceNode?.Data.Broadcast(player.Character.GenerateEff(6), player.Character.PositionX, player.Character.PositionY);
-                    player.CurrentMapInstanceNode?.Data.Broadcast(player.Character.GenerateEff(198), player.Character.PositionX, player.Character.PositionY);
+                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(player, player.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(6), player.Character.PositionX, player.Character.PositionY);
+                    player.CurrentMapInstance?.Broadcast(player.Character.GenerateEff(198), player.Character.PositionX, player.Character.PositionY);
                     ServerManager.Instance.UpdateGroup(player.Character.CharacterId);
                     if (player.Character.Family != null)
                     {
@@ -620,8 +620,8 @@ namespace OpenNos.Handler
                     player.Character.Reput = changeReputationPacket.Reputation;
                     player.SendPacket(Session.Character.GenerateFd());
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"), 0));
-                    player.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    player.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
                 }
                 else
                 {
@@ -665,11 +665,11 @@ namespace OpenNos.Handler
                                 Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
                         player.SendPacket(Session.Character.GenerateSki());
                         player.Character.LearnSPSkill();
-                        player.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateIn(),
+                        player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(),
                             ReceiverType.AllExceptMe);
-                        player.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateGidx(),
+                        player.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(),
                             ReceiverType.AllExceptMe);
-                        player.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(8),
+                        player.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8),
                             Session.Character.PositionX, Session.Character.PositionY);
                     }
                     else
@@ -976,7 +976,7 @@ namespace OpenNos.Handler
             Logger.Debug("PortalTo Command", Session.Character.GenerateIdentity());
             if (portalToPacket != null)
             {
-                if (!Session.HasCurrentMapInstanceNode)
+                if (!Session.HasCurrentMapInstance)
                 {
                     return;
                 }
@@ -993,8 +993,8 @@ namespace OpenNos.Handler
                     DestinationY = portalToPacket.DestinationY,
                     Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
                 };
-                Session.CurrentMapInstanceNode.Data.Portals.Add(portal);
-                Session.CurrentMapInstanceNode?.Data.Broadcast(Session.CurrentMapInstanceNode.Data.GenerateGp(portal));
+                Session.CurrentMapInstance.Portals.Add(portal);
+                Session.CurrentMapInstance?.Broadcast(Session.CurrentMapInstance.GenerateGp(portal));
             }
             else
             {
@@ -1077,7 +1077,7 @@ namespace OpenNos.Handler
             Logger.Debug("Effect Command", Session.Character.GenerateIdentity());
             if (effectCommandpacket != null)
             {
-                Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff( effectCommandpacket.EffectId), Session.Character.PositionX, Session.Character.PositionY);
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff( effectCommandpacket.EffectId), Session.Character.PositionX, Session.Character.PositionY);
             }
             else
             {
@@ -1146,9 +1146,9 @@ namespace OpenNos.Handler
             {
                 if (giftPacket.Name == "*")
                 {
-                    if (Session.HasCurrentMapInstanceNode)
+                    if (Session.HasCurrentMapInstance)
                     {
-                        foreach (ClientSession session in Session.CurrentMapInstanceNode.Data.Sessions)
+                        foreach (ClientSession session in Session.CurrentMapInstance.Sessions)
                         {
                             Session.Character.SendGift(session.Character.CharacterId, giftPacket.VNum, giftPacket.Amount, giftPacket.Rare, giftPacket.Upgrade, false);
                         }
@@ -1287,8 +1287,8 @@ namespace OpenNos.Handler
             {
                 Session.Character.HairColor = hairColorPacket.HairColor;
                 Session.SendPacket(Session.Character.GenerateEq());
-                Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateIn());
-                Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateGidx());
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateIn());
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
             }
             else
             {
@@ -1307,8 +1307,8 @@ namespace OpenNos.Handler
             {
                 Session.Character.HairStyle = hairStylePacket.HairStyle;
                 Session.SendPacket(Session.Character.GenerateEq());
-                Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateIn());
-                Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateGidx());
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateIn());
+                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
             }
             else
             {
@@ -1325,18 +1325,18 @@ namespace OpenNos.Handler
             Logger.Debug("Invisible Command", Session.Character.GenerateIdentity());
             Session.Character.Invisible = !Session.Character.Invisible;
             Session.Character.InvisibleGm = !Session.Character.InvisibleGm;
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateInvisible());
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateInvisible());
 
             Session.SendPacket(Session.Character.GenerateEq());
             if (Session.Character.InvisibleGm)
             {
-                Session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => Session.CurrentMapInstanceNode?.Data.Broadcast(Session, s.GenerateOut(), ReceiverType.AllExceptMe));
-                Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                Session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(Session, s.GenerateOut(), ReceiverType.AllExceptMe));
+                Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
             else
             {
-                Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+                Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
             }
         }
 
@@ -1500,8 +1500,8 @@ namespace OpenNos.Handler
                     }
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.Hp), 0);
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.LastDefence), DateTime.Now);
-                    Session.CurrentMapInstanceNode?.Data.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 60000 3 0");
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, string.Empty, (long)id);
+                    Session.CurrentMapInstance?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 60000 3 0");
+                    Session.CurrentMapInstance?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, string.Empty, (long)id);
                     ServerManager.Instance.AskRevive((long)id);
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                 }
@@ -1523,18 +1523,18 @@ namespace OpenNos.Handler
         public void MapDance(MapDancePacket mapDancePacket)
         {
             Logger.Debug("MapDance Command", Session.Character.GenerateIdentity());
-            if (Session.HasCurrentMapInstanceNode)
+            if (Session.HasCurrentMapInstance)
             {
-                Session.CurrentMapInstanceNode.Data.IsDancing = !Session.CurrentMapInstanceNode.Data.IsDancing;
-                if (Session.CurrentMapInstanceNode.Data.IsDancing)
+                Session.CurrentMapInstance.IsDancing = !Session.CurrentMapInstance.IsDancing;
+                if (Session.CurrentMapInstance.IsDancing)
                 {
                     Session.Character.Dance();
-                    Session.CurrentMapInstanceNode?.Data.Broadcast("dance 2");
+                    Session.CurrentMapInstance?.Broadcast("dance 2");
                 }
                 else
                 {
                     Session.Character.Dance();
-                    Session.CurrentMapInstanceNode?.Data.Broadcast("dance");
+                    Session.CurrentMapInstance?.Broadcast("dance");
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
@@ -1547,7 +1547,7 @@ namespace OpenNos.Handler
         public void MapPVP(MapPVPPacket mapPVPPacket)
         {
             Logger.Debug("MapPVP Command", Session.Character.GenerateIdentity());
-            Session.CurrentMapInstanceNode.Data.IsPVP = !Session.CurrentMapInstanceNode.Data.IsPVP;
+            Session.CurrentMapInstance.IsPVP = !Session.CurrentMapInstance.IsPVP;
             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
 
@@ -1567,14 +1567,14 @@ namespace OpenNos.Handler
                     Session.Character.MorphUpgrade = morphPacket.Upgrade;
                     Session.Character.MorphUpgrade2 = morphPacket.MorphDesign;
                     Session.Character.ArenaWinner = morphPacket.ArenaWinner;
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateCMode());
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
                 }
                 else if (morphPacket.MorphId > 30)
                 {
                     Session.Character.IsVehicled = true;
                     Session.Character.Morph = morphPacket.MorphId;
                     Session.Character.ArenaWinner = morphPacket.ArenaWinner;
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateCMode());
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
                 }
                 else
                 {
@@ -1583,7 +1583,7 @@ namespace OpenNos.Handler
                     Session.Character.ArenaWinner = 0;
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.SendPacket(Session.Character.GenerateLev());
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateCMode());
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateCMode());
                 }
             }
             else
@@ -1603,7 +1603,7 @@ namespace OpenNos.Handler
             {
                 if (musicPacket.Music > -1)
                 {
-                    Session.CurrentMapInstanceNode?.Data.Broadcast($"bgm {musicPacket.Music}");
+                    Session.CurrentMapInstance?.Broadcast($"bgm {musicPacket.Music}");
                 }
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
@@ -1682,7 +1682,7 @@ namespace OpenNos.Handler
         public void Position(PositionPacket positionPacket)
         {
             Logger.Debug("Position Command", Session.Character.GenerateIdentity());
-            Session.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapInstanceNode.Data.Map.MapId} - X:{Session.Character.PositionX} - Y:{Session.Character.PositionY} - Dir:{Session.Character.Direction}", 12));
+            Session.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapInstance.Map.MapId} - X:{Session.Character.PositionX} - Y:{Session.Character.PositionY} - Dir:{Session.Character.Direction}", 12));
         }
 
         /// <summary>
@@ -1753,16 +1753,16 @@ namespace OpenNos.Handler
         public void RemoveMob(RemoveMobPacket removeMobPacket)
         {
             Logger.Debug("RemoveMob Command", Session.Character.GenerateIdentity());
-            if (Session.HasCurrentMapInstanceNode)
+            if (Session.HasCurrentMapInstance)
             {
-                MapMonster monst = Session.CurrentMapInstanceNode.Data.GetMonster(Session.Character.LastMonsterId);
+                MapMonster monst = Session.CurrentMapInstance.GetMonster(Session.Character.LastMonsterId);
                 if (monst != null)
                 {
                     if (monst.IsAlive)
                     {
-                        Session.CurrentMapInstanceNode.Data.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {6000} 3 0");
+                        Session.CurrentMapInstance.Broadcast($"su 1 {Session.Character.CharacterId} 3 {monst.MapMonsterId} 1114 4 11 4260 0 0 0 0 {6000} 3 0");
                         Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("MONSTER_REMOVED"), monst.MapMonsterId, monst.Monster.Name, monst.MapId, monst.MapX, monst.MapY), 12));
-                        Session.CurrentMapInstanceNode.Data.RemoveMonster(monst);
+                        Session.CurrentMapInstance.RemoveMonster(monst);
                         if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) != null)
                         {
                             DAOFactory.MapMonsterDAO.DeleteById(monst.MapMonsterId);
@@ -1787,14 +1787,14 @@ namespace OpenNos.Handler
         public void RemovePortal(RemovePortalPacket removePortalPacket)
         {
             Logger.Debug("RemovePortal Command", Session.Character.GenerateIdentity());
-            if (Session.HasCurrentMapInstanceNode)
+            if (Session.HasCurrentMapInstance)
             {
-                Portal pt = Session.CurrentMapInstanceNode.Data.Portals.FirstOrDefault(s => s.SourceMapInstanceNodeId == Session.Character.MapInstanceNodeId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
+                Portal pt = Session.CurrentMapInstance.Portals.FirstOrDefault(s => s.SourceMapInstanceId == Session.Character.MapInstanceId && Map.GetDistance(new MapCell { X = s.SourceX, Y = s.SourceY }, new MapCell { X = Session.Character.PositionX, Y = Session.Character.PositionY }) < 10);
                 if (pt != null)
                 {
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
-                    Session.CurrentMapInstanceNode.Data.Portals.Remove(pt);
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.CurrentMapInstanceNode.Data.GenerateGp(pt));
+                    Session.CurrentMapInstance.Portals.Remove(pt);
+                    Session.CurrentMapInstance?.Broadcast(Session.CurrentMapInstance.GenerateGp(pt));
                 }
                 else
                 {
@@ -1815,7 +1815,7 @@ namespace OpenNos.Handler
                 if (resizePacket.Value > -1)
                 {
                     Session.Character.Size = resizePacket.Value;
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateScal());
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateScal());
                 }
             }
             else
@@ -2004,7 +2004,7 @@ namespace OpenNos.Handler
             Logger.Debug("Summon Command", Session.Character.GenerateIdentity());
             if (summonPacket != null)
             {
-                if (Session.IsOnMap && Session.HasCurrentMapInstanceNode)
+                if (Session.IsOnMap && Session.HasCurrentMapInstance)
                 {
                     Random random = new Random();
 
@@ -2031,19 +2031,19 @@ namespace OpenNos.Handler
                         {
                             short mapx = (short)(Session.Character.PositionX + possibilitie.X);
                             short mapy = (short)(Session.Character.PositionY + possibilitie.Y);
-                            if (!Session.CurrentMapInstanceNode?.Data.Map.IsBlockedZone(mapx, mapy) ?? false)
+                            if (!Session.CurrentMapInstance?.Map.IsBlockedZone(mapx, mapy) ?? false)
                             {
                                 break;
                             }
                         }
 
-                        if (Session.HasCurrentMapInstanceNode)
+                        if (Session.HasCurrentMapInstance)
                         {
-                            MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstanceNode.Data.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapMonsterId = Session.CurrentMapInstanceNode.Data.GetNextMonsterId(), ShouldRespawn = false };
-                            monster.Initialize(Session.CurrentMapInstanceNode.Data);
+                            MapMonster monster = new MapMonster { MonsterVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstance.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapMonsterId = Session.CurrentMapInstance.GetNextMonsterId(), ShouldRespawn = false };
+                            monster.Initialize(Session.CurrentMapInstance);
                             monster.StartLife();
-                            Session.CurrentMapInstanceNode.Data.AddMonster(monster);
-                            Session.CurrentMapInstanceNode.Data.Broadcast(monster.GenerateIn());
+                            Session.CurrentMapInstance.AddMonster(monster);
+                            Session.CurrentMapInstance.Broadcast(monster.GenerateIn());
                         }
                     }
                 }
@@ -2063,7 +2063,7 @@ namespace OpenNos.Handler
             Logger.Debug("SummonNPC Command", Session.GenerateIdentity());
             if (summonPacket != null)
             {
-                if (Session.IsOnMap && Session.HasCurrentMapInstanceNode)
+                if (Session.IsOnMap && Session.HasCurrentMapInstance)
                 {
                     Random random = new Random();
 
@@ -2090,18 +2090,18 @@ namespace OpenNos.Handler
                         {
                             short mapx = (short)(Session.Character.PositionX + possibilitie.X);
                             short mapy = (short)(Session.Character.PositionY + possibilitie.Y);
-                            if (!Session.CurrentMapInstanceNode?.Data.Map.IsBlockedZone(mapx, mapy) ?? false)
+                            if (!Session.CurrentMapInstance?.Map.IsBlockedZone(mapx, mapy) ?? false)
                             {
                                 break;
                             }
                         }
 
-                        if (Session.HasCurrentMapInstanceNode)
+                        if (Session.HasCurrentMapInstance)
                         {
-                            MapNpc monster = new MapNpc { NpcVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstanceNode.Data.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapNpcId = Session.CurrentMapInstanceNode.Data.GetNextMonsterId() };
+                            MapNpc monster = new MapNpc { NpcVNum = vnum, MapY = Session.Character.PositionY, MapX = Session.Character.PositionX, MapId = Session.Character.MapInstance.Map.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving, MapNpcId = Session.CurrentMapInstance.GetNextMonsterId() };
                             monster.Initialize();
-                            Session.CurrentMapInstanceNode.Data.AddNPC(monster);
-                            Session.CurrentMapInstanceNode.Data.Broadcast(monster.GenerateIn());
+                            Session.CurrentMapInstance.AddNPC(monster);
+                            Session.CurrentMapInstance.Broadcast(monster.GenerateIn());
                         }
                     }
                 }
@@ -2125,7 +2125,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.Dispose();
                 }
-                if (Session.Character.IsChangingMapInstanceNode)
+                if (Session.Character.IsChangingMapInstance)
                 {
                     return;
                 }
@@ -2143,13 +2143,13 @@ namespace OpenNos.Handler
                         ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                         short mapX = session.Character.PositionX;
                         short mapY = session.Character.PositionY;
-                        if (session.Character.Miniland == session.Character.MapInstanceNode)
+                        if (session.Character.Miniland == session.Character.MapInstance)
                         {
                             ServerManager.Instance.JoinMiniland(Session, session);
                         }
                         else
                         {
-                            ServerManager.Instance.ChangeMapInstanceNode(Session.Character.CharacterId, session.Character.MapInstanceNodeId, mapX, mapY);
+                            ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, session.Character.MapInstanceId, mapX, mapY);
                         }
                     }
                     else
@@ -2184,7 +2184,7 @@ namespace OpenNos.Handler
                         // clear any shop or trade on target character
                         session.Character.Dispose();
 
-                        if (!session.Character.IsChangingMapInstanceNode && Session.HasCurrentMapInstanceNode)
+                        if (!session.Character.IsChangingMapInstance && Session.HasCurrentMapInstance)
                         {
                             ServerManager.Instance.LeaveMap(session.Character.CharacterId);
 
@@ -2203,18 +2203,18 @@ namespace OpenNos.Handler
                             {
                                 mapXPossibility = (short)(Session.Character.PositionX + possibility.X);
                                 mapYPossibility = (short)(Session.Character.PositionY + possibility.Y);
-                                if (!Session.CurrentMapInstanceNode.Data.Map.IsBlockedZone(mapXPossibility, mapYPossibility))
+                                if (!Session.CurrentMapInstance.Map.IsBlockedZone(mapXPossibility, mapYPossibility))
                                 {
                                     break;
                                 }
                             }
-                            if (Session.Character.Miniland == Session.Character.MapInstanceNode)
+                            if (Session.Character.Miniland == Session.Character.MapInstance)
                             {
                                 ServerManager.Instance.JoinMiniland(session, Session);
                             }
                             else
                             {
-                                ServerManager.Instance.ChangeMapInstanceNode(session.Character.CharacterId, Session.Character.MapInstanceNodeId, mapXPossibility, mapYPossibility);
+                                ServerManager.Instance.ChangeMapInstance(session.Character.CharacterId, Session.Character.MapInstanceId, mapXPossibility, mapYPossibility);
                             }
                         }
                     }
@@ -2223,14 +2223,14 @@ namespace OpenNos.Handler
                 {
                     ClientSession targetSession = ServerManager.Instance.GetSessionByCharacterName(name);
 
-                    if (targetSession != null && !targetSession.Character.IsChangingMapInstanceNode)
+                    if (targetSession != null && !targetSession.Character.IsChangingMapInstance)
                     {
                         // clear any shop or trade on target character
                         targetSession.Character.Dispose();
 
                         ServerManager.Instance.LeaveMap(targetSession.Character.CharacterId);
                         targetSession.Character.IsSitting = false;
-                        ServerManager.Instance.ChangeMapInstanceNode(targetSession.Character.CharacterId, Session.Character.MapInstanceNodeId, (short)(Session.Character.PositionX + 1), (short)(Session.Character.PositionY + 1));
+                        ServerManager.Instance.ChangeMapInstance(targetSession.Character.CharacterId, Session.Character.MapInstanceId, (short)(Session.Character.PositionX + 1), (short)(Session.Character.PositionY + 1));
                     }
                     else
                     {
@@ -2289,8 +2289,8 @@ namespace OpenNos.Handler
             Logger.Debug("Undercover Command", Session.Character.GenerateIdentity());
             Session.Character.Undercover = !Session.Character.Undercover;
             Session.SendPacket(Session.Character.GenerateEq());
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
+            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+            Session.CurrentMapInstance?.Broadcast(Session, Session.Character.GenerateGidx(), ReceiverType.AllExceptMe);
         }
 
         /// <summary>
@@ -2368,8 +2368,8 @@ namespace OpenNos.Handler
                     wig.Design = wigColorPacket.Color;
                     Session.SendPacket(Session.Character.GenerateEq());
                     Session.SendPacket(Session.Character.GenerateEquipment());
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateIn());
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateGidx());
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateIn());
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
                 }
                 else
                 {
@@ -2437,7 +2437,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay($"HeroLevel: {character.HeroLevel}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Gold: {character.Gold}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Bio: {character.Biography}", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"MapId: {Session.CurrentMapInstanceNode.Data.Map.MapId}", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"MapId: {Session.CurrentMapInstance.Map.MapId}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"MapX: {Session.Character.PositionX}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"MapY: {Session.Character.PositionY}", 13));
             Session.SendPacket(Session.Character.GenerateSay($"Reputation: {character.Reput}", 13));

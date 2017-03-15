@@ -50,11 +50,11 @@ namespace OpenNos.GameObject
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     if ((int)session.Character.HPLoad() - session.Character.Hp < Hp)
                     {
-                        session.CurrentMapInstanceNode?.Data.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
                     }
                     else if ((int)session.Character.HPLoad() - session.Character.Hp > Hp)
                     {
-                        session.CurrentMapInstanceNode?.Data.Broadcast(session.Character.GenerateRc(Hp));
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc(Hp));
                     }
                     session.Character.Mp += Mp;
                     session.Character.Hp += Hp;
@@ -68,7 +68,7 @@ namespace OpenNos.GameObject
                     }
                     if (inv.ItemVNum == 1242 || inv.ItemVNum == 5582)
                     {
-                        session.CurrentMapInstanceNode?.Data.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
                         session.Character.Hp = (int)session.Character.HPLoad();
                     }
                     else if (inv.ItemVNum == 1243 || inv.ItemVNum == 5583)
@@ -77,7 +77,7 @@ namespace OpenNos.GameObject
                     }
                     else if (inv.ItemVNum == 1244 || inv.ItemVNum == 5584)
                     {
-                        session.CurrentMapInstanceNode?.Data.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
+                        session.CurrentMapInstance?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
                         session.Character.Hp = (int)session.Character.HPLoad();
                         session.Character.Mp = (int)session.Character.MPLoad();
                     }

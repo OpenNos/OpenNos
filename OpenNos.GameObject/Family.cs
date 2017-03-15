@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
 
         public List<FamilyLogDTO> FamilyLogs { get; set; }
 
-        public MapInstanceNode LandOfDeath { get; set; }
+        public MapInstance LandOfDeath { get; set; }
 
         public Inventory Warehouse { get; set; }
 

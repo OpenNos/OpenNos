@@ -21,37 +21,37 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private Guid destinationMapInstanceNodeId;
-        private Guid sourceMapInstanceNodeId;
+        private Guid destinationMapInstanceId;
+        private Guid sourceMapInstanceId;
 
         #endregion
 
         #region Properties
 
-        public Guid DestinationMapInstanceNodeId
+        public Guid DestinationMapInstanceId
         {
             get
             {
-                if (destinationMapInstanceNodeId == default(Guid))
+                if (destinationMapInstanceId == default(Guid))
                 {
-                    destinationMapInstanceNodeId = ServerManager.Instance.GetBaseMapInstanceNodeIdByMapId(DestinationMapId);
+                    destinationMapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(DestinationMapId);
                 }
-                return destinationMapInstanceNodeId;
+                return destinationMapInstanceId;
             }
-            set { destinationMapInstanceNodeId = value; }
+            set { destinationMapInstanceId = value; }
         }
 
-        public Guid SourceMapInstanceNodeId
+        public Guid SourceMapInstanceId
         {
             get
             {
-                if (sourceMapInstanceNodeId == default(Guid))
+                if (sourceMapInstanceId == default(Guid))
                 {
-                    sourceMapInstanceNodeId = ServerManager.Instance.GetBaseMapInstanceNodeIdByMapId(SourceMapId);
+                    sourceMapInstanceId = ServerManager.Instance.GetBaseMapInstanceIdByMapId(SourceMapId);
                 }
-                return sourceMapInstanceNodeId;
+                return sourceMapInstanceId;
             }
-            set { sourceMapInstanceNodeId = value; }
+            set { sourceMapInstanceId = value; }
         }
 
         #endregion

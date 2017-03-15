@@ -59,7 +59,7 @@ namespace OpenNos.GameObject
             LastUserShopId = 0;
             _random = new Random();
             Map = map;
-            MapInstanceNodeId = guid;
+            MapInstanceId = guid;
             TimeSpaces = new List<TimeSpace>();
             EntryEvents = new List<Tuple<EventActionType, object>>();
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
@@ -80,6 +80,8 @@ namespace OpenNos.GameObject
         public ThreadSafeSortedList<long, MapItem> DroppedList { get; }
 
         public int DropRate { get; set; }
+
+        public DateTime EndDate { get; set; }
 
         public bool IsDancing { get; set; }
 
@@ -117,7 +119,7 @@ namespace OpenNos.GameObject
 
         public Map Map { get; set; }
 
-        public Guid MapInstanceNodeId { get; set; }
+        public Guid MapInstanceId { get; set; }
 
         public MapInstanceType MapInstanceType { get; set; }
 
@@ -159,7 +161,7 @@ namespace OpenNos.GameObject
         {
             if (!_disposed)
             {
-                foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapInstanceNodeId == MapInstanceNodeId))
+                foreach (ClientSession session in ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapInstanceId == MapInstanceId))
                 {
                     ServerManager.Instance.ChangeMap(session.Character.CharacterId, session.Character.MapId, session.Character.MapX, session.Character.MapY);
                 }
@@ -255,7 +257,7 @@ namespace OpenNos.GameObject
             foreach (PortalDTO portal in DAOFactory.PortalDAO.LoadByMap(Map.MapId).ToList())
             {
                 Portal portal2 = (Portal)portal;
-                portal2.SourceMapInstanceNodeId = MapInstanceNodeId;
+                portal2.SourceMapInstanceId = MapInstanceId;
                 _portals.Add(portal2);
             }
         }
@@ -304,7 +306,10 @@ namespace OpenNos.GameObject
             }
             return droppedItem;
         }
-
+        public string GetClock()
+        {
+            return $"evnt 1 0 {(int)((EndDate - DateTime.Now).TotalSeconds * 10)} 1";
+        }
         public IEnumerable<string> GeneratePlayerShopOnMap()
         {
             return UserShops.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
@@ -375,9 +380,9 @@ namespace OpenNos.GameObject
 
         internal void CreatePortal(Portal portal)
         {
-            portal.SourceMapInstanceNodeId = MapInstanceNodeId;
+            portal.SourceMapInstanceId = MapInstanceId;
             _portals.Add(portal);
-            Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.SendPacket(s.CurrentMapInstanceNode.Data.GenerateGp(portal)));
+            Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.SendPacket(s.CurrentMapInstance.GenerateGp(portal)));
         }
 
         internal IEnumerable<Character> GetCharactersInRange(short mapX, short mapY, byte distance)
@@ -425,6 +430,10 @@ namespace OpenNos.GameObject
         {
             switch (eventaction)
             {
+                case EventActionType.CLOCK:
+                    EndDate = DateTime.Now.AddSeconds(Convert.ToDouble(param));
+                    break;
+
                 case EventActionType.DROPRATE:
                     DropRate = Convert.ToInt32(param);
                     break;
@@ -518,7 +527,7 @@ namespace OpenNos.GameObject
 
         public string GenerateGp(Portal portal)
         {
-            return $"gp {portal.SourceX} {portal.SourceY} {ServerManager.GetMapInstanceNode(portal.DestinationMapInstanceNodeId)?.Data.Map.MapId} {portal.Type} {Portals.Count} {(Portals.Contains(portal) ? (portal.IsDisabled ? 1 : 0) : 1)}";
+            return $"gp {portal.SourceX} {portal.SourceY} {ServerManager.GetMapInstance(portal.DestinationMapInstanceId)?.Map.MapId} {portal.Type} {Portals.Count} {(Portals.Contains(portal) ? (portal.IsDisabled ? 1 : 0) : 1)}";
         }
 
         #endregion

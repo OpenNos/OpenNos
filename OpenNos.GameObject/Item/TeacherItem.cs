@@ -56,8 +56,8 @@ namespace OpenNos.GameObject
                             if (!mate.CanPickUp)
                             {
                                 session.Character.Inventory.RemoveItemAmount(inv.ItemVNum, 1);
-                                session.CurrentMapInstanceNode.Data.Broadcast(mate.GenerateEff(5));
-                                session.CurrentMapInstanceNode.Data.Broadcast(mate.GenerateEff(5002));
+                                session.CurrentMapInstance.Broadcast(mate.GenerateEff(5));
+                                session.CurrentMapInstance.Broadcast(mate.GenerateEff(5002));
                                 mate.CanPickUp = true;
                                 session.SendPackets(session.Character.GenerateScP());
                                 session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PET_CAN_PICK_UP"), 10));
@@ -96,7 +96,7 @@ namespace OpenNos.GameObject
                                 session.SendPackets(session.Character.GenerateScP());
                                 session.SendPackets(session.Character.GenerateScN());
                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                                session.CurrentMapInstanceNode?.Data.Broadcast(mate.GenerateOut());
+                                session.CurrentMapInstance?.Broadcast(mate.GenerateOut());
                             }
                             else
                             {
@@ -119,7 +119,7 @@ namespace OpenNos.GameObject
                                 session.SendPackets(session.Character.GenerateScP());
                                 session.SendPackets(session.Character.GenerateScN());
                                 session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
-                                session.CurrentMapInstanceNode?.Data.Broadcast(mate.GenerateOut());
+                                session.CurrentMapInstance?.Broadcast(mate.GenerateOut());
                             }
                             else
                             {

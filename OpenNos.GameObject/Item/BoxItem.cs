@@ -80,7 +80,7 @@ namespace OpenNos.GameObject
                                         session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                                         session.SendPackets(session.Character.GenerateScP());
                                         session.SendPackets(session.Character.GenerateScN());
-                                        session.CurrentMapInstanceNode?.Data.Broadcast(mate.GenerateOut());
+                                        session.CurrentMapInstance?.Broadcast(mate.GenerateOut());
                                     }
                                 }
 
@@ -106,7 +106,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        if (session.CurrentMapInstanceNode == session.Character.Miniland)
+                        if (session.CurrentMapInstance == session.Character.Miniland)
                         {
                             Mate mate = new Mate(session.Character, (short)EffectValue, LevelMinimum, ItemSubType == 1 ? MateType.Partner : MateType.Pet);
                             if (session.Character.AddPet(mate))

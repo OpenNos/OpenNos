@@ -59,7 +59,7 @@ namespace OpenNos.GameObject
             if (mate.MateType == MateType.Pet ? MaxMateCount > Mates.Count() : 3 > Mates.Count(s => s.MateType == MateType.Partner))
             {
                 Mates.Add(mate);
-                MapInstanceNode.Data.Broadcast(mate.GenerateIn());
+                MapInstance.Broadcast(mate.GenerateIn());
                 Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("YOU_GET_PET"), mate.Name), 1));
                 Session.SendPacket(UserInterfaceHelper.Instance.GeneratePClear());
                 Session.SendPackets(Session.Character.GenerateScP());
@@ -171,7 +171,7 @@ namespace OpenNos.GameObject
 
         public bool InvisibleGm { get; set; }
 
-        public bool IsChangingMapInstanceNode { get; set; }
+        public bool IsChangingMapInstance { get; set; }
 
         public bool IsCustomSpeed { get; set; }
 
@@ -230,9 +230,9 @@ namespace OpenNos.GameObject
 
         public IDictionary<int, MailDTO> MailList { get; set; }
 
-        public MapInstanceNode MapInstanceNode => ServerManager.GetMapInstanceNode(MapInstanceNodeId);
+        public MapInstance MapInstance => ServerManager.GetMapInstance(MapInstanceId);
 
-        public Guid MapInstanceNodeId { get; set; }
+        public Guid MapInstanceId { get; set; }
 
         public List<Mate> Mates { get; set; }
 
@@ -248,7 +248,7 @@ namespace OpenNos.GameObject
 
         public int MinHit { get; set; }
 
-        public MapInstanceNode Miniland { get; private set; }
+        public MapInstance Miniland { get; private set; }
 
         public List<MinilandObject> MinilandObjects { get; set; }
 
@@ -278,15 +278,15 @@ namespace OpenNos.GameObject
                     RespawnMapTypeId = -1
                 };
 
-                if (Session.HasCurrentMapInstanceNode && Session.CurrentMapInstanceNode.Data.Map.MapTypes.Any())
+                if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.Map.MapTypes.Any())
                 {
-                    long? respawnmaptype = Session.CurrentMapInstanceNode.Data.Map.MapTypes.ElementAt(0).RespawnMapTypeId;
+                    long? respawnmaptype = Session.CurrentMapInstance.Map.MapTypes.ElementAt(0).RespawnMapTypeId;
                     if (respawnmaptype != null)
                     {
                         RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
                         if (resp == null)
                         {
-                            RespawnMapTypeDTO defaultresp = Session.CurrentMapInstanceNode.Data.Map.DefaultRespawn;
+                            RespawnMapTypeDTO defaultresp = Session.CurrentMapInstance.Map.DefaultRespawn;
                             if (defaultresp != null)
                             {
                                 respawn.DefaultX = defaultresp.DefaultX;
@@ -315,15 +315,15 @@ namespace OpenNos.GameObject
             get
             {
                 RespawnMapTypeDTO respawn = new RespawnMapTypeDTO();
-                if (Session.HasCurrentMapInstanceNode && Session.CurrentMapInstanceNode.Data.Map.MapTypes.Any())
+                if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.Map.MapTypes.Any())
                 {
-                    long? respawnmaptype = Session.CurrentMapInstanceNode.Data.Map.MapTypes.ElementAt(0).ReturnMapTypeId;
+                    long? respawnmaptype = Session.CurrentMapInstance.Map.MapTypes.ElementAt(0).ReturnMapTypeId;
                     if (respawnmaptype != null)
                     {
                         RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
                         if (resp == null)
                         {
-                            RespawnMapTypeDTO defaultresp = Session.CurrentMapInstanceNode.Data.Map.DefaultReturn;
+                            RespawnMapTypeDTO defaultresp = Session.CurrentMapInstance.Map.DefaultReturn;
                             if (defaultresp != null)
                             {
                                 respawn.DefaultX = defaultresp.DefaultX;
@@ -437,10 +437,10 @@ namespace OpenNos.GameObject
             Mp = (int)MPLoad();
             Session.SendPacket(GenerateTit());
             Session.SendPacket(GenerateStat());
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session, GenerateEq());
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);
+            Session.CurrentMapInstance?.Broadcast(Session, GenerateEq());
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(196), PositionX, PositionY);
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), PositionX, PositionY);
             int faction = 1 + ServerManager.RandomNumber(0, 2);
             Faction = faction;
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
@@ -450,11 +450,11 @@ namespace OpenNos.GameObject
             Session.SendPacket(Session.Character.GenerateEff(4799 + faction));
             Session.SendPacket(GenerateCond());
             Session.SendPacket(GenerateLev());
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session, GenerateCMode());
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(6), PositionX, PositionY);
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
+            Session.CurrentMapInstance?.Broadcast(Session, GenerateCMode());
+            Session.CurrentMapInstance?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+            Session.CurrentMapInstance?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), PositionX, PositionY);
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
             foreach (CharacterSkill skill in Skills.GetAllItems())
             {
                 if (skill.SkillVNum >= 200)
@@ -488,14 +488,14 @@ namespace OpenNos.GameObject
                 };
             if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session)))
             {
-                Session.CurrentMapInstanceNode?.Data.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
+                Session.CurrentMapInstance?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
             }
         }
         public string GenerateMinimapPosition()
         {
-            if (MapInstanceNode.Data.MapInstanceType == MapInstanceType.TimeSpaceInstance)
+            if (MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
             {
-                return $"rsfp {MapInstanceNode.Data.MapIndexX} {MapInstanceNode.Data.MapIndexY}";
+                return $"rsfp {MapInstance.MapIndexX} {MapInstance.MapIndexY}";
             }
             else
             {
@@ -518,10 +518,10 @@ namespace OpenNos.GameObject
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
             Session.SendPacket(GenerateEq());
             Session.SendPacket(GenerateGender());
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
-            Session.CurrentMapInstanceNode?.Data.Broadcast(GenerateCMode());
-            Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(196), PositionX, PositionY);
+            Session.CurrentMapInstance?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+            Session.CurrentMapInstance?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
+            Session.CurrentMapInstance?.Broadcast(GenerateCMode());
+            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(196), PositionX, PositionY);
         }
 
         public void CharacterLife()
@@ -539,7 +539,7 @@ namespace OpenNos.GameObject
                 WearableInstance amulet = Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Amulet, InventoryType.Wear);
                 if (CurrentMinigame != 0 && LastEffect.AddSeconds(3) <= DateTime.Now)
                 {
-                    MapInstanceNode.Data.Broadcast(Session.Character.GenerateEff(CurrentMinigame));
+                    MapInstance.Broadcast(Session.Character.GenerateEff(CurrentMinigame));
                     LastEffect = DateTime.Now;
                 }
 
@@ -549,14 +549,14 @@ namespace OpenNos.GameObject
                     {
                         if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
                         {
-                            Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue + (Class == ClassType.Adventurer ? 0 : (byte)Class - 1)), PositionX, PositionY);
+                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue + (Class == ClassType.Adventurer ? 0 : (byte)Class - 1)), PositionX, PositionY);
                         }
                         else
                         {
-                            Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue), PositionX, PositionY);
+                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(amulet.Item.EffectValue), PositionX, PositionY);
                         }
                     }
-                    Session.Character.Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstanceNode?.Data.Broadcast(s.GenerateEff(3007)));
+                    Session.Character.Mates.Where(s => s.CanPickUp).ToList().ForEach(s => Session.CurrentMapInstance?.Broadcast(s.GenerateEff(3007)));
                     LastEffect = DateTime.Now;
                 }
 
@@ -680,8 +680,8 @@ namespace OpenNos.GameObject
                                     }
                                     Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), SpCooldown), 11));
                                     Session.SendPacket($"sd {SpCooldown}");
-                                    Session.CurrentMapInstanceNode?.Data.Broadcast(GenerateCMode());
-                                    Session.CurrentMapInstanceNode?.Data.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, Session.Character.CharacterId), PositionX, PositionY);
+                                    Session.CurrentMapInstance?.Broadcast(GenerateCMode());
+                                    Session.CurrentMapInstance?.Broadcast(UserInterfaceHelper.Instance.GenerateGuri(6, 1, Session.Character.CharacterId), PositionX, PositionY);
 
                                     // ms_c
                                     Session.SendPacket(GenerateSki());
@@ -711,9 +711,9 @@ namespace OpenNos.GameObject
             {
                 long? targetSessionId = ExchangeInfo?.TargetCharacterId;
 
-                if (targetSessionId.HasValue && Session.HasCurrentMapInstanceNode)
+                if (targetSessionId.HasValue && Session.HasCurrentMapInstance)
                 {
-                    ClientSession targetSession = Session.CurrentMapInstanceNode.Data.GetSessionByCharacterId(targetSessionId.Value);
+                    ClientSession targetSession = Session.CurrentMapInstance.GetSessionByCharacterId(targetSessionId.Value);
 
                     if (targetSession == null)
                     {
@@ -730,24 +730,24 @@ namespace OpenNos.GameObject
 
         public void CloseShop()
         {
-            if (HasShopOpened && Session.HasCurrentMapInstanceNode)
+            if (HasShopOpened && Session.HasCurrentMapInstance)
             {
-                KeyValuePair<long, MapShop> shop = Session.CurrentMapInstanceNode.Data.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(CharacterId));
+                KeyValuePair<long, MapShop> shop = Session.CurrentMapInstance.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(CharacterId));
                 if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
                 {
-                    Session.CurrentMapInstanceNode.Data.UserShops.Remove(shop.Key);
+                    Session.CurrentMapInstance.UserShops.Remove(shop.Key);
 
                     // declare that the shop cannot be closed
                     HasShopOpened = false;
 
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(GenerateShopEnd());
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(GenerateShopEnd());
+                    Session.CurrentMapInstance?.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     IsSitting = false;
                     IsShopping = false; // close shop by character will always completely close the shop
 
                     LoadSpeed();
                     Session.SendPacket(GenerateCond());
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(GenerateRest());
+                    Session.CurrentMapInstance?.Broadcast(GenerateRest());
                 }
             }
         }
@@ -858,7 +858,7 @@ namespace OpenNos.GameObject
         {
             if (Miniland != null)
             {
-                ServerManager.Instance.RemoveMapInstanceNode(Miniland.Data.MapInstanceNodeId);
+                ServerManager.Instance.RemoveMapInstance(Miniland.MapInstanceId);
             }
             CloseShop();
             CloseExchangeOrTrade();
@@ -869,8 +869,8 @@ namespace OpenNos.GameObject
 
         public string GenerateAt()
         {
-            MapInstanceNode mapForMusic = MapInstanceNode;
-            return $"at {CharacterId} {MapInstanceNode.Data.Map.MapId} {PositionX} {PositionY} 2 0 {mapForMusic?.Data.Map.Music ?? 0} -1";
+            MapInstance mapForMusic = MapInstance;
+            return $"at {CharacterId} {MapInstance.Map.MapId} {PositionX} {PositionY} 2 0 {mapForMusic?.Map.Music ?? 0} -1";
         }
 
         public string GenerateBlinit()
@@ -891,7 +891,7 @@ namespace OpenNos.GameObject
         public string GenerateCMap()
         {
             _cmapcount = _cmapcount == 1 ? (byte)0 : (byte)1;
-            return $"c_map 0 {MapInstanceNode.Data.Map.MapId} {_cmapcount}";
+            return $"c_map 0 {MapInstance.Map.MapId} {_cmapcount}";
         }
 
         public string GenerateCMode()
@@ -1547,8 +1547,8 @@ namespace OpenNos.GameObject
                 if (Dignity == (int)Dignity)
                 {
                     Session.SendPacket(GenerateFd());
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMapInstance?.Broadcast(Session, GenerateGidx(), ReceiverType.AllExceptMe);
                     Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
                 }
             }
@@ -1561,7 +1561,7 @@ namespace OpenNos.GameObject
 
         public IEnumerable<string> GenerateDroppedItem()
         {
-            return MapInstanceNode.Data.DroppedList.GetAllItems().Select(item => $"in 9 {item.ItemVNum} {item.TransportId} {item.PositionX} {item.PositionY} {(item is MonsterMapItem && ((MonsterMapItem)item).GoldAmount > 1 ? ((MonsterMapItem)item).GoldAmount : item.Amount)} 0 0 -1").ToList();
+            return MapInstance.DroppedList.GetAllItems().Select(item => $"in 9 {item.ItemVNum} {item.TransportId} {item.PositionX} {item.PositionY} {(item is MonsterMapItem && ((MonsterMapItem)item).GoldAmount > 1 ? ((MonsterMapItem)item).GoldAmount : item.Amount)} 0 0 -1").ToList();
         }
 
 
@@ -1888,9 +1888,9 @@ namespace OpenNos.GameObject
         {
             List<string> gpList = new List<string>();
             int i = 0;
-            foreach (Portal portal in MapInstanceNode.Data.Portals.Concat(GetExtraPortal()))
+            foreach (Portal portal in MapInstance.Portals.Concat(GetExtraPortal()))
             {
-                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {ServerManager.GetMapInstanceNode(portal.DestinationMapInstanceNodeId)?.Data.Map.MapId} {portal.Type} {i} {(portal.IsDisabled ? 1 : 0)}");
+                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {ServerManager.GetMapInstance(portal.DestinationMapInstanceId)?.Map.MapId} {portal.Type} {i} {(portal.IsDisabled ? 1 : 0)}");
                 i++;
             }
 
@@ -1901,7 +1901,7 @@ namespace OpenNos.GameObject
         {
             List<WpPacket> wpList = new List<WpPacket>();
             short i = 0;
-            foreach (TimeSpace mapinstancetree in MapInstanceNode.Data.TimeSpaces)
+            foreach (TimeSpace mapinstancetree in MapInstance.TimeSpaces)
             {
                 wpList.Add(new WpPacket()
                 {
@@ -1964,14 +1964,14 @@ namespace OpenNos.GameObject
             }
 
             // end owner set
-            if (Session.HasCurrentMapInstanceNode)
+            if (Session.HasCurrentMapInstance)
             {
-                List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMapInstanceNode.Data.Map.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || s.MapTypeId == null).ToList();
+                List<DropDTO> droplist = monsterToAttack.Monster.Drops.Where(s => Session.CurrentMapInstance.Map.MapTypes.Any(m => m.MapTypeId == s.MapTypeId) || s.MapTypeId == null).ToList();
                 if (monsterToAttack.Monster.MonsterType != MonsterType.Special)
                 {
                     #region item drop
 
-                    int dropRate = ServerManager.DropRate * MapInstanceNode.Data.DropRate;
+                    int dropRate = ServerManager.DropRate * MapInstance.DropRate;
                     int x = 0;
                     foreach (DropDTO drop in droplist.OrderBy(s => random.Next()))
                     {
@@ -1981,9 +1981,9 @@ namespace OpenNos.GameObject
                             if (rndamount <= (double)drop.DropChance * dropRate / 5000.000)
                             {
                                 x++;
-                                if (Session.CurrentMapInstanceNode != null)
+                                if (Session.CurrentMapInstance != null)
                                 {
-                                    if (Session.CurrentMapInstanceNode.Data.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                                    if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                                     {
                                         List<long> alreadyGifted = new List<long>();
                                         foreach (long charId in monsterToAttack.DamageList.Keys)
@@ -2018,9 +2018,9 @@ namespace OpenNos.GameObject
                                         Observable.Timer(TimeSpan.FromMilliseconds(500))
                                        .Subscribe(o =>
                                        {
-                                           if (Session.HasCurrentMapInstanceNode)
+                                           if (Session.HasCurrentMapInstance)
                                            {
-                                               Session.CurrentMapInstanceNode.Data.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
+                                               Session.CurrentMapInstance.DropItemByMonster(owner, drop, monsterToAttack.MapX, monsterToAttack.MapY);
                                            }
                                        });
                                     }
@@ -2046,9 +2046,9 @@ namespace OpenNos.GameObject
                             Amount = gold,
                             ItemVNum = 1046
                         };
-                        if (Session.CurrentMapInstanceNode != null)
+                        if (Session.CurrentMapInstance != null)
                         {
-                            if (Session.CurrentMapInstanceNode.Data.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
+                            if (Session.CurrentMapInstance.Map.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterToAttack.Monster.MonsterType == MonsterType.Elite)
                             {
                                 List<long> alreadyGifted = new List<long>();
                                 foreach (long charId in monsterToAttack.DamageList.Keys)
@@ -2073,7 +2073,7 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                if (group != null && MapInstanceNode.Data.MapInstanceType != MapInstanceType.LodInstance)
+                                if (group != null && MapInstance.MapInstanceType != MapInstanceType.LodInstance)
                                 {
                                     if (group.SharingMode == (byte)GroupSharingType.ByOrder)
                                     {
@@ -2095,9 +2095,9 @@ namespace OpenNos.GameObject
                                       .Subscribe(
                                       o =>
                                       {
-                                          if (Session.HasCurrentMapInstanceNode)
+                                          if (Session.HasCurrentMapInstance)
                                           {
-                                              Session.CurrentMapInstanceNode.Data.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
+                                              Session.CurrentMapInstance.DropItemByMonster(dropOwner, drop2, monsterToAttack.MapX, monsterToAttack.MapY);
                                           }
                                       });
                             }
@@ -2113,7 +2113,7 @@ namespace OpenNos.GameObject
                         Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
                         if (grp != null)
                         {
-                            foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceNodeId == MapInstanceNodeId))
+                            foreach (ClientSession targetSession in grp.Characters.Where(g => g.Character.MapInstanceId == MapInstanceId))
                             {
                                 // END PART
 
@@ -2164,7 +2164,7 @@ namespace OpenNos.GameObject
         {
             if (Miniland == null)
             {
-                Miniland = ServerManager.GenerateMapInstanceNode(20001, MapInstanceType.NormalInstance);
+                Miniland = ServerManager.GenerateMapInstance(20001, MapInstanceType.NormalInstance);
                 foreach (MinilandObjectDTO obj in DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId))
                 {
                     MinilandObject mapobj = (MinilandObject)obj;
@@ -2228,7 +2228,7 @@ namespace OpenNos.GameObject
 
         public IEnumerable<string> GenerateNPCShopOnMap()
         {
-            return (from npc in MapInstanceNode.Data.Npcs where npc.Shop != null select $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}").ToList();
+            return (from npc in MapInstance.Npcs where npc.Shop != null select $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}").ToList();
         }
 
         public string GenerateOut()
@@ -3584,7 +3584,7 @@ namespace OpenNos.GameObject
 
         public List<Portal> GetExtraPortal()
         {
-            return MapInstanceNodePortalHandler.GenerateMinilandEntryPortals(MapInstanceNode.Data.Map.MapId, Miniland.Data.MapInstanceNodeId);
+            return MapInstancePortalHandler.GenerateMinilandEntryPortals(MapInstance.Map.MapId, Miniland.MapInstanceId);
         }
 
         public List<string> GetFamilyHistory()
@@ -4028,7 +4028,7 @@ namespace OpenNos.GameObject
         {
             Session.SendPacket(GenerateSay(string.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
             Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
-            MapInstanceNode.Data.Broadcast(Session.Character.GenerateEff(3005), PositionX, PositionY);
+            MapInstance.Broadcast(Session.Character.GenerateEff(3005), PositionX, PositionY);
             Session.SendPacket("shop_end 1");
         }
 
@@ -4121,7 +4121,7 @@ namespace OpenNos.GameObject
             {
                 Morph = 0;
             }
-            Session.CurrentMapInstanceNode?.Data.Broadcast(GenerateCMode());
+            Session.CurrentMapInstance?.Broadcast(GenerateCMode());
             Session.SendPacket(GenerateCond());
             LastSpeedChange = DateTime.Now;
         }
@@ -4135,7 +4135,7 @@ namespace OpenNos.GameObject
             if (!IsVehicled)
             {
                 IsSitting = !IsSitting;
-                Session.CurrentMapInstanceNode?.Data.Broadcast(GenerateRest());
+                Session.CurrentMapInstance?.Broadcast(GenerateRest());
             }
             else
             {
@@ -4338,9 +4338,9 @@ namespace OpenNos.GameObject
 
         public void SetRespawnPoint(short mapId, short mapX, short mapY)
         {
-            if (Session.HasCurrentMapInstanceNode && Session.CurrentMapInstanceNode.Data.Map.MapTypes.Any())
+            if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.Map.MapTypes.Any())
             {
-                long? respawnmaptype = Session.CurrentMapInstanceNode.Data.Map.MapTypes.ElementAt(0).RespawnMapTypeId;
+                long? respawnmaptype = Session.CurrentMapInstance.Map.MapTypes.ElementAt(0).RespawnMapTypeId;
                 if (respawnmaptype != null)
                 {
                     RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
@@ -4361,9 +4361,9 @@ namespace OpenNos.GameObject
 
         public void SetReturnPoint(short mapId, short mapX, short mapY)
         {
-            if (Session.HasCurrentMapInstanceNode && Session.CurrentMapInstanceNode.Data.Map.MapTypes.Any())
+            if (Session.HasCurrentMapInstance && Session.CurrentMapInstance.Map.MapTypes.Any())
             {
-                long? respawnmaptype = Session.CurrentMapInstanceNode.Data.Map.MapTypes.ElementAt(0).ReturnMapTypeId;
+                long? respawnmaptype = Session.CurrentMapInstance.Map.MapTypes.ElementAt(0).ReturnMapTypeId;
                 if (respawnmaptype != null)
                 {
                     RespawnDTO resp = Respawns.FirstOrDefault(s => s.RespawnMapTypeId == respawnmaptype);
@@ -4376,7 +4376,7 @@ namespace OpenNos.GameObject
                     {
                         resp.X = PositionX;
                         resp.Y = PositionY;
-                        resp.MapId = MapInstanceNode.Data.Map.MapId;
+                        resp.MapId = MapInstance.Map.MapId;
                     }
                 }
             }
@@ -4516,7 +4516,7 @@ namespace OpenNos.GameObject
                         {
                             Inventory.DeleteById(item.Id);
                             Session.SendPacket(GenerateStatChar());
-                            Session.CurrentMapInstanceNode?.Data.Broadcast(GenerateEq());
+                            Session.CurrentMapInstance?.Broadcast(GenerateEq());
                             Session.SendPacket(GenerateEquipment());
                             Session.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                         }
@@ -4628,8 +4628,8 @@ namespace OpenNos.GameObject
 
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(6), PositionX, PositionY);
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(6), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
                     ServerManager.Instance.UpdateGroup(CharacterId);
                 }
 
@@ -4681,8 +4681,8 @@ namespace OpenNos.GameObject
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
                     LearnAdventurerSkill();
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
                 }
                 if (specialist != null)
                 {
@@ -4703,8 +4703,8 @@ namespace OpenNos.GameObject
                         LearnSPSkill();
 
                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
-                        Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);
-                        Session.CurrentMapInstanceNode?.Data.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(8), PositionX, PositionY);
+                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateEff(198), PositionX, PositionY);
                     }
                 }
                 t = HeroXPLoad();
@@ -4723,8 +4723,8 @@ namespace OpenNos.GameObject
                     Session.SendPacket(GenerateStat());
                     Session.SendPacket($"levelup {CharacterId}");
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_LEVELUP"), 0));
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(GenerateEff(8), PositionX, PositionY);
-                    Session.CurrentMapInstanceNode?.Data.Broadcast(GenerateEff(198), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(GenerateEff(8), PositionX, PositionY);
+                    Session.CurrentMapInstance?.Broadcast(GenerateEff(198), PositionX, PositionY);
                 }
                 Session.SendPacket(GenerateLev());
             }
@@ -4735,8 +4735,8 @@ namespace OpenNos.GameObject
             if (MapId == 2006 || MapId == 150)
                 return 0;
             int lowBaseGold = ServerManager.RandomNumber(6 * mapMonster.Monster?.Level ?? 1, 12 * mapMonster.Monster?.Level ?? 1);
-            int actMultiplier = Session?.CurrentMapInstanceNode?.Data.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
-            if (Session?.CurrentMapInstanceNode?.Data.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) == true)
+            int actMultiplier = Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ?? false ? 10 : 1;
+            if (Session?.CurrentMapInstance?.Map.MapTypes?.Any(s => s.MapTypeId == (short)MapTypeEnum.Act61 || s.MapTypeId == (short)MapTypeEnum.Act61a || s.MapTypeId == (short)MapTypeEnum.Act61d) == true)
             {
                 actMultiplier = 5;
             }
@@ -4756,7 +4756,7 @@ namespace OpenNos.GameObject
                 partyPenalty = 12f / partySize / levelSum;
             }
 
-            int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(JobLevel, monster.Level) * ServerManager.XPRate * MapInstanceNode.Data.XpRate);
+            int jobxp = (int)Math.Round(monster.JobXP * CharacterHelper.ExperiencePenalty(JobLevel, monster.Level) * ServerManager.XPRate * MapInstance.XpRate);
 
             // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
             if (partySize > 1 && group != null)
@@ -4779,7 +4779,7 @@ namespace OpenNos.GameObject
                 partyPenalty = 12f / partySize / levelSum;
             }
 
-            int heroXp = (int)Math.Round(monster.HeroXp * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.HeroXpRate * MapInstanceNode.Data.XpRate);
+            int heroXp = (int)Math.Round(monster.HeroXp * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.HeroXpRate * MapInstance.XpRate);
 
             // divide jobexp by multiplication of partyPenalty with level e.g. 57 * 0,014...
             if (partySize > 1 && group != null)
@@ -4805,7 +4805,7 @@ namespace OpenNos.GameObject
 
             long xpcalculation = levelDifference < 5 ? monster.XP : monster.XP / 3 * 2;
 
-            long xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.XPRate * MapInstanceNode.Data.XpRate);
+            long xp = (long)Math.Round(xpcalculation * CharacterHelper.ExperiencePenalty(Level, monster.Level) * ServerManager.XPRate * MapInstance.XpRate);
 
             // bonus percentage calculation for level 1 - 5 and difference of levels bigger or equal
             // to 4

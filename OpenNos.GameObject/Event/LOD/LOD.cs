@@ -56,8 +56,8 @@ namespace OpenNos.GameObject.Event
                     {
                         if (fam.LandOfDeath != null)
                         {
-                            fam.LandOfDeath.Data.RunMapEvent(EventActionType.XPRATE, 3);
-                            fam.LandOfDeath.Data.RunMapEvent(EventActionType.DROPRATE, 3);
+                            fam.LandOfDeath.RunMapEvent(EventActionType.XPRATE, 3);
+                            fam.LandOfDeath.RunMapEvent(EventActionType.DROPRATE, 3);
                             SpawnDH(fam.LandOfDeath);
                         }
                     }
@@ -69,8 +69,8 @@ namespace OpenNos.GameObject.Event
                     {
                         if (fam.LandOfDeath != null)
                         {
-                            fam.LandOfDeath.Data.RunMapEvent(EventActionType.XPRATE, 3);
-                            fam.LandOfDeath.Data.RunMapEvent(EventActionType.DROPRATE, 3);
+                            fam.LandOfDeath.RunMapEvent(EventActionType.XPRATE, 3);
+                            fam.LandOfDeath.RunMapEvent(EventActionType.DROPRATE, 3);
                             SpawnDH(fam.LandOfDeath);
                         }
                     }
@@ -101,9 +101,9 @@ namespace OpenNos.GameObject.Event
             {
                 if (fam.LandOfDeath == null)
                 {
-                    fam.LandOfDeath = ServerManager.GenerateMapInstanceNode(150, MapInstanceType.LodInstance);
+                    fam.LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance);
                 }
-                fam.LandOfDeath.RunMapTreeEvent(EventActionType.CLOCK, remaining);
+                fam.LandOfDeath.RunMapEvent(EventActionType.CLOCK, remaining);
             }
         }
 
@@ -114,7 +114,7 @@ namespace OpenNos.GameObject.Event
             {
                 if (fam.LandOfDeath != null)
                 {
-                    fam.LandOfDeath.Data.RunMapEvent(EventActionType.DISPOSE, null);
+                    fam.LandOfDeath.RunMapEvent(EventActionType.DISPOSE, null);
                     fam.LandOfDeath = null;
                 }
             }
@@ -123,17 +123,17 @@ namespace OpenNos.GameObject.Event
             ServerManager.Instance.EnableMapEffect(98, false);
         }
 
-        private void SpawnDH(MapInstanceNode LandOfDeath)
+        private void SpawnDH(MapInstance LandOfDeath)
         {
-            LandOfDeath.Data.RunMapEvent(EventActionType.SPAWNONLASTENTRY, 443);
-            LandOfDeath.Data.RunMapEvent(EventActionType.MESSAGE, "df 2");
-            LandOfDeath.Data.RunMapEvent(EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0));
+            LandOfDeath.RunMapEvent(EventActionType.SPAWNONLASTENTRY, 443);
+            LandOfDeath.RunMapEvent(EventActionType.MESSAGE, "df 2");
+            LandOfDeath.RunMapEvent(EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0));
         }
-        private void DespawnDH(MapInstanceNode LandOfDeath)
+        private void DespawnDH(MapInstance LandOfDeath)
         {
-            LandOfDeath.Data.RunMapEvent(EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0));
-            LandOfDeath.Data.RunMapEvent(EventActionType.LOCK, true);
-            LandOfDeath.Data.RunMapEvent(EventActionType.UNSPAWN, 443);
+            LandOfDeath.RunMapEvent(EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0));
+            LandOfDeath.RunMapEvent(EventActionType.LOCK, true);
+            LandOfDeath.RunMapEvent(EventActionType.UNSPAWN, 443);
         }
     }
 }

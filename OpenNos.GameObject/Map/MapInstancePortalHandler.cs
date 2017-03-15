@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
-    public class MapInstanceNodePortalHandler
+    public class MapInstancePortalHandler
     {
         public static int SourceX { get; private set; }
         #region Methods
@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
                         DestinationY = 8,
                         Type = (short)PortalType.Miniland,
                         SourceMapId = 1,
-                        DestinationMapInstanceNodeId = exitMapinstanceId
+                        DestinationMapInstanceId = exitMapinstanceId
                     });
                     break;
 
@@ -51,7 +51,7 @@ namespace OpenNos.GameObject
                         DestinationY = 8,
                         Type = (short)PortalType.Miniland,
                         SourceMapId = 145,
-                        DestinationMapInstanceNodeId = exitMapinstanceId
+                        DestinationMapInstanceId = exitMapinstanceId
                     });
                     break;
             }

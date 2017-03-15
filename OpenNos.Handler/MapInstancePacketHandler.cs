@@ -10,11 +10,11 @@ using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.Handler
 {
-    class MapInstanceNodePacketHandler : IPacketHandler
+    class MapInstancePacketHandler : IPacketHandler
     {
         #region Instantiation
 
-        public MapInstanceNodePacketHandler(ClientSession session)
+        public MapInstancePacketHandler(ClientSession session)
         {
             Session = session;
         }
@@ -31,7 +31,7 @@ namespace OpenNos.Handler
         /// <param name="treqPacket"></param>
         public void GetTreq(TreqPacket treqPacket)
         {
-            TimeSpace timespace = Session.CurrentMapInstanceNode.Data.TimeSpaces.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY);
+            TimeSpace timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY);
 
             if (timespace != null)
             {
@@ -51,10 +51,10 @@ namespace OpenNos.Handler
         {
             TimeSpace timespace = Session.Character.LastTimeSpace;
 
-            if (timespace != null && timespace.FirstNode != null)
+            if (timespace != null && timespace.MapTree != null)
             {
-                ServerManager.Instance.ChangeMapInstanceNode(Session.Character.CharacterId, timespace.FirstNode.Data.MapInstanceNodeId, timespace.StartX, timespace.StartY);
-                Session.SendPackets(Session.Character.LastTimeSpace.FirstNode.GetMinimap());
+                ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, timespace.MapTree.Data.MapInstanceId, timespace.StartX, timespace.StartY);
+                Session.SendPackets(Session.Character.LastTimeSpace.GetMinimap());
             }
 
         }

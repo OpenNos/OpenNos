@@ -16,7 +16,7 @@ namespace OpenNos.Domain
 {
     public enum MapInstanceType
     {
-        BaseMapInstanceNode,
+        BaseMapInstance,
         NormalInstance,
         LodInstance,
         TimeSpaceInstance,
