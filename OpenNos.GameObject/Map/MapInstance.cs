@@ -48,7 +48,7 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public MapInstance(Map map, Guid guid, bool shopAllowed, MapInstanceType type)
+        public MapInstance(Map map, Guid guid, bool shopAllowed, MapInstanceType type, MapClock Clock)
         {
             XpRate = 1;
             DropRate = 1;
@@ -57,11 +57,13 @@ namespace OpenNos.GameObject
             MapInstanceType = type;
             _isSleeping = true;
             LastUserShopId = 0;
+            MapClock = Clock;
             _random = new Random();
             Map = map;
             MapInstanceId = guid;
             TimeSpaces = new List<TimeSpace>();
-            EntryEvents = new List<Tuple<EventActionType, object>>();
+            FirstEntryEvents = new List<Tuple<Tuple<EventActionType, object>, List<long>>>();
+            MoveEvents = new List<Tuple<EventActionType, object>>();
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
@@ -81,7 +83,7 @@ namespace OpenNos.GameObject
 
         public int DropRate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public MapClock MapClock { get; set; }
 
         public bool IsDancing { get; set; }
 
@@ -133,7 +135,11 @@ namespace OpenNos.GameObject
 
         public List<TimeSpace> TimeSpaces { get; set; }
 
-        public List<Tuple<EventActionType, object>> EntryEvents { get; set; }
+        public List<Tuple<Tuple<EventActionType, object>, List<long>>> FirstEntryEvents { get; set; }
+
+       
+        public List<Tuple<EventActionType, object>> MoveEvents { get; set; }
+
         public bool ShopAllowed { get; set; }
 
         public Dictionary<long, MapShop> UserShops { get; }
@@ -307,10 +313,7 @@ namespace OpenNos.GameObject
             }
             return droppedItem;
         }
-        public string GetClock()
-        {
-            return $"evnt 1 0 {(int)((EndDate - DateTime.Now).TotalSeconds * 10)} 1";
-        }
+
         public IEnumerable<string> GeneratePlayerShopOnMap()
         {
             return UserShops.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
@@ -427,14 +430,16 @@ namespace OpenNos.GameObject
             });
         }
 
-        internal string RunMapEvent(EventActionType eventaction, object param)
+        public string RunMapEvent(EventActionType eventaction, object param, long Id = 0)
         {
             switch (eventaction)
             {
                 case EventActionType.CLOCK:
-                    EndDate = DateTime.Now.AddSeconds(Convert.ToDouble(param));
+                    MapClock.DeciSecondRemaining = Convert.ToInt32(param);
                     break;
-
+                case EventActionType.STARTCLOCK:
+                    MapClock.Enabled = true;
+                    return MapClock.GetClock();
                 case EventActionType.DROPRATE:
                     DropRate = Convert.ToInt32(param);
                     break;
@@ -454,6 +459,9 @@ namespace OpenNos.GameObject
                 case EventActionType.MESSAGE:
                     Broadcast(Convert.ToString(param));
                     break;
+
+                case EventActionType.NPCDIALOG:
+                  return $"npc_req 1 {Id} {param}";
 
                 case EventActionType.SENDPACKET:
                     return Convert.ToString(param);

@@ -161,13 +161,13 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static MapInstance GenerateMapInstance(short MapId, MapInstanceType type)
+        public static MapInstance GenerateMapInstance(short MapId, MapInstanceType type, MapClock mapclock)
         {
             Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
             if (map != null)
             {
                 Guid guid = Guid.NewGuid();
-                MapInstance mapInstance = new MapInstance(map, guid, false, type);
+                MapInstance mapInstance = new MapInstance(map, guid, false, type, mapclock);
                 mapInstance.LoadMonsters();
                 mapInstance.LoadPortals();
                 foreach (MapMonster mapMonster in mapInstance.Monsters)
@@ -438,9 +438,9 @@ namespace OpenNos.GameObject
                     session.SendPackets(session.Character.GenerateDroppedItem());
                     session.SendPackets(session.Character.MapInstance.GenerateUserShops());
                     session.SendPackets(session.CurrentMapInstance.GeneratePlayerShopOnMap());
-                    if (session.CurrentMapInstance.EndDate != default(DateTime))
+                    if (session.CurrentMapInstance.MapClock.Enabled)
                     {
-                        session.SendPacket(session.CurrentMapInstance.GetClock());
+                        session.SendPacket(session.CurrentMapInstance.MapClock.GetClock());
                     }
 
                     // TODO: fix this
@@ -487,8 +487,16 @@ namespace OpenNos.GameObject
                     session.Character.IsChangingMapInstance = false;
                     session.SendPacket(session.Character.GenerateMinimapPosition());
 
-                    session.CurrentMapInstance.EntryEvents.ForEach(e => session.SendPacket(session.CurrentMapInstance.RunMapEvent(e.Item1, e.Item2)));
-                    session.CurrentMapInstance.EntryEvents.RemoveAll(s => s != null);
+                    session.CurrentMapInstance.FirstEntryEvents.ForEach(
+                        e =>
+                        {
+                            if (!e.Item2.Contains(session.Character.CharacterId))
+                            {
+                                e.Item2.Add(session.Character.CharacterId);
+                                session.SendPacket(session.CurrentMapInstance.RunMapEvent(e.Item1.Item1, e.Item1.Item2, session.Character.CharacterId));
+                            }
+                        }
+                    );
                 }
                 catch (Exception)
                 {
@@ -915,7 +923,7 @@ namespace OpenNos.GameObject
                     };
                     _maps.Add(mapinfo);
 
-                    MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance);
+                    MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance, new MapClock());
 
                     // register for broadcast
                     _mapinstances.TryAdd(guid, newMap);
@@ -949,9 +957,9 @@ namespace OpenNos.GameObject
                 RefreshRanking();
                 CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
                 PenaltyLogs = DAOFactory.PenaltyLogDAO.LoadAll().ToList();
-                ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance);
+                ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance, new MapClock());
                 ArenaInstance.IsPVP = true;
-                FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance);
+                FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance, new MapClock());
                 FamilyArenaInstance.IsPVP = true;
                 LoadTimeSpaces();
             }

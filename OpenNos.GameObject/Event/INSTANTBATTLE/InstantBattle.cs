@@ -84,7 +84,7 @@ namespace OpenNos.GameObject.Event
                 }
                 if (i % 50 == 0)
                 {
-                    map = ServerManager.GenerateMapInstance(2004, MapInstanceType.NormalInstance);
+                    map = ServerManager.GenerateMapInstance(2004, MapInstanceType.NormalInstance, new MapClock());
                     maps.Add(new Tuple<MapInstance, byte>(map, instancelevel));
                 }
                 if (map != null)

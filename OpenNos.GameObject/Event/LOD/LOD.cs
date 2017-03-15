@@ -94,16 +94,17 @@ namespace OpenNos.GameObject.Event
             EndLOD();
         }
 
-        private void RefreshLOD(double remaining)
+        private void RefreshLOD(int remaining)
         {
             SpinWait.SpinUntil(() => !ServerManager.Instance.inFamilyRefreshMode);
             foreach (Family fam in ServerManager.Instance.FamilyList.ToArray())
             {
                 if (fam.LandOfDeath == null)
                 {
-                    fam.LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance);
+                    fam.LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance, new MapClock());
                 }
-                fam.LandOfDeath.RunMapEvent(EventActionType.CLOCK, remaining);
+                fam.LandOfDeath.RunMapEvent(EventActionType.CLOCK, remaining*10);
+                fam.LandOfDeath.RunMapEvent(EventActionType.STARTCLOCK, null);
             }
         }
 

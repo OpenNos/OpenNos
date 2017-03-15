@@ -35,7 +35,7 @@ namespace OpenNos.Handler
 
             if (timespace != null)
             {
-                Session.Character.LastTimeSpace = timespace.DeepCopy();
+                Session.Character.LastTimeSpace = timespace;
                 Session.SendPacket(timespace.GenerateRbr());
             }
 
@@ -47,17 +47,16 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void GetWreq(WreqPacket packet)
         {
-            TimeSpace timespace = Session.Character.LastTimeSpace;
-
-            if (timespace != null)
+            Session.Character.LastTimeSpace = Session.Character.LastTimeSpace?.DeepCopy();
+            if (Session.Character.LastTimeSpace != null)
             {
-                if (timespace.FirstMap == null)
+                if (Session.Character.LastTimeSpace.FirstMap == null)
                 {
-                    timespace.LoadScript();
+                    Session.Character.LastTimeSpace.LoadScript();
                 }
-                if (timespace.FirstMap != null)
+                if (Session.Character.LastTimeSpace.FirstMap != null)
                 {
-                    ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, timespace.FirstMap.MapInstanceId);
+                    ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, Session.Character.LastTimeSpace.FirstMap.MapInstanceId);
                     Session.SendPackets(Session.Character.LastTimeSpace.GenerateMinimap());
                 }
             }

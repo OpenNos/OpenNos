@@ -2164,7 +2164,7 @@ namespace OpenNos.GameObject
         {
             if (Miniland == null)
             {
-                Miniland = ServerManager.GenerateMapInstance(20001, MapInstanceType.NormalInstance);
+                Miniland = ServerManager.GenerateMapInstance(20001, MapInstanceType.NormalInstance, new MapClock());
                 foreach (MinilandObjectDTO obj in DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId))
                 {
                     MinilandObject mapobj = (MinilandObject)obj;

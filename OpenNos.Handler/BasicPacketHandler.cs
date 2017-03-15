@@ -1727,6 +1727,9 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;
+
+                    Session.CurrentMapInstance.MoveEvents.ForEach(e => Session.SendPacket(Session.CurrentMapInstance.RunMapEvent(e.Item1, e.Item2, Session.Character.CharacterId)));
+                    Session.CurrentMapInstance.MoveEvents.RemoveAll(s => s != null);
                 }
                 else
                 {
