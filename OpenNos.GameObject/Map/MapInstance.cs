@@ -506,7 +506,7 @@ namespace OpenNos.GameObject
 
 
 
-        internal void StartMapEvent(TimeSpan timeSpan, EventActionType eventaction, object param)
+        public void StartMapEvent(TimeSpan timeSpan, EventActionType eventaction, object param)
         {
             Observable.Timer(timeSpan).Subscribe(x =>
             {

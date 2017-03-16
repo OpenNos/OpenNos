@@ -1890,7 +1890,7 @@ namespace OpenNos.GameObject
             int i = 0;
             foreach (Portal portal in MapInstance.Portals.Concat(GetExtraPortal()))
             {
-                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {ServerManager.GetMapInstance(portal.DestinationMapInstanceId)?.Map.MapId} {portal.Type} {i} {(portal.IsDisabled ? 1 : 0)}");
+                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {ServerManager.GetMapInstance(portal.DestinationMapInstanceId)?.Map.MapId} {portal.Type} {(portal.Position!=-1? portal.Position :i)} {(portal.IsDisabled ? 1 : 0)}");
                 i++;
             }
 
