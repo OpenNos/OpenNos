@@ -67,6 +67,18 @@ namespace OpenNos.GameObject
                     session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);
                     session.SendPacket(session.Character.GenerateSpPoint());
                     break;
+                case 301:
+                    if (session.Character.Raid != null) return;
+                    var raidSeal = session.Character.Inventory.LoadBySlotAndType<ItemInstance>(inv.Slot, InventoryType.Main);
+                    var raid = new Raid(raidSeal.Item);
+                    raid.Join(session);
+                    if (session.Character.Raid == null) return;
+                    session.Character.Inventory.RemoveItemAmountFromInventory(1, raidSeal.Id);
+                    raid.SendCreationPacket(session);
+                    session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("YOU_ARE_RAID_CHIEF"), session.Character.Name), 0));
+                    ServerManager.Instance.AddRaid(raid);
+                    break;
+
                 case 305:
                     Mate mate = session.Character.Mates.FirstOrDefault(s => s.MateTransportId == int.Parse(packetsplit[3]));
                     if(mate !=null && EffectValue == mate.NpcMonsterVNum && mate.Skin == 0)
