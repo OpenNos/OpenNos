@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-using CloneExtensions;
+ 
 using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.Domain;
@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using CloneExtensions;
 
 namespace OpenNos.Handler
 {
@@ -379,6 +380,7 @@ namespace OpenNos.Handler
                                         }
                                         if (Session.Character.ExchangeInfo.Validate && targetExchange.Validate)
                                         {
+                                            Session.Character.ExchangeInfo.Confirm = true;
                                             if (targetExchange.Confirm && Session.Character.ExchangeInfo.Confirm)
                                             {
                                                 Session.SendPacket("exc_close 1");
