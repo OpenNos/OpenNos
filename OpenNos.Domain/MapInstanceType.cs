@@ -19,7 +19,7 @@ namespace OpenNos.Domain
         BaseMapInstance,
         NormalInstance,
         LodInstance,
-        GroupInstance,
-        Act4Instance
+        TimeSpaceInstance,
+        RaidInstance,
     }
 }

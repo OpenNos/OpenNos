@@ -12,29 +12,26 @@
  * GNU General Public License for more details.
  */
 
-using System;
-
 namespace OpenNos.Data
 {
-    public interface IItemInstance
+    public class TimeSpaceDTO : MappingBaseDTO
     {
         #region Properties
 
-        byte Amount { get; set; }
+        public short TimespaceId { get; set; }
 
-        long? BoundCharacterId { get; set; }
+        public short MapId { get; set; }
 
-        short Design { get; set; }
+        public short PositionX { get; set; }
 
-        Guid Id { get; set; }
+        public short PositionY { get; set; }
 
-        DateTime? ItemDeleteTime { get; set; }
+        public string Winner { get; set; }
 
-        short ItemVNum { get; set; }
+        public string Script { get; set; }
 
-        sbyte Rare { get; set; }
+        public int WinnerScore { get; set; }
 
-        byte Upgrade { get; set; }
 
         #endregion
     }

@@ -12,29 +12,20 @@
  * GNU General Public License for more details.
  */
 
-using System;
+using OpenNos.Data;
+using System.Collections.Generic;
 
-namespace OpenNos.Data
+namespace OpenNos.DAL.Interface
 {
-    public interface IItemInstance
+    public interface ITimeSpaceDAO : IMappingBaseDAO
     {
-        #region Properties
+        #region Methods
 
-        byte Amount { get; set; }
+        TimeSpaceDTO Insert(TimeSpaceDTO portal);
 
-        long? BoundCharacterId { get; set; }
+        void Insert(List<TimeSpaceDTO> portals);
 
-        short Design { get; set; }
-
-        Guid Id { get; set; }
-
-        DateTime? ItemDeleteTime { get; set; }
-
-        short ItemVNum { get; set; }
-
-        sbyte Rare { get; set; }
-
-        byte Upgrade { get; set; }
+        IEnumerable<TimeSpaceDTO> LoadByMap(short mapId);
 
         #endregion
     }

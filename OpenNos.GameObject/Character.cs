@@ -56,7 +56,7 @@ namespace OpenNos.GameObject
 
         public bool AddPet(Mate mate)
         {
-            if (mate.MateType == MateType.Pet? MaxMateCount > Mates.Count(): 3 > Mates.Count(s => s.MateType == MateType.Partner))
+            if (mate.MateType == MateType.Pet ? MaxMateCount > Mates.Count() : 3 > Mates.Count(s => s.MateType == MateType.Partner))
             {
                 Mates.Add(mate);
                 MapInstance.Broadcast(mate.GenerateIn());
@@ -264,6 +264,8 @@ namespace OpenNos.GameObject
 
         public List<QuicklistEntryDTO> QuicklistEntries { get; private set; }
 
+        public Raid Raid { get; set; }
+
         public RespawnMapTypeDTO Respawn
         {
             get
@@ -396,12 +398,11 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; private set; }
         public int ScPage { get; set; }
+        public TimeSpace LastTimeSpace { get; set; }
 
         #endregion
 
         #region Methods
-
-
 
         public void AddRelation(long characterId, CharacterRelationType Relation)
         {
@@ -488,6 +489,17 @@ namespace OpenNos.GameObject
             if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session)))
             {
                 Session.CurrentMapInstance?.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
+            }
+        }
+        public string GenerateMinimapPosition()
+        {
+            if (MapInstance.MapInstanceType == MapInstanceType.TimeSpaceInstance)
+            {
+                return $"rsfp {MapInstance.MapIndexX} {MapInstance.MapIndexY}";
+            }
+            else
+            {
+                return $"rsfp 0 -1";
             }
         }
 
@@ -1519,7 +1531,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePStashAll()
         {
-            string stash = $"pstash_all {(Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack)?50:0)}";
+            string stash = $"pstash_all {(Session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBackPack) ? 50 : 0)}";
             foreach (ItemInstance item in Inventory.GetAllItems().Where(s => s.Type == InventoryType.PetWarehouse))
             {
                 stash += $" {item.GenerateStashPacket()}";
@@ -1885,6 +1897,28 @@ namespace OpenNos.GameObject
             return gpList;
         }
 
+        public IEnumerable<WpPacket> GenerateWp()
+        {
+            List<WpPacket> wpList = new List<WpPacket>();
+            short i = 0;
+            foreach (TimeSpace mapinstancetree in MapInstance.TimeSpaces)
+            {
+                wpList.Add(new WpPacket()
+                {
+                    Id = i,
+                    LevelMaximum = mapinstancetree.LevelMaximum,
+                    LevelMinimum = mapinstancetree.LevelMinimum,
+                    X = mapinstancetree.PositionX,
+                    Y = mapinstancetree.PositionY,
+                });
+                i++;
+            }
+
+            return wpList;
+        }
+
+
+
         public string GenerateIdentity()
         {
             return $"Character: {Name}";
@@ -2130,7 +2164,7 @@ namespace OpenNos.GameObject
         {
             if (Miniland == null)
             {
-                Miniland = ServerManager.GenerateMapInstance(20001, MapInstanceType.NormalInstance);
+                Miniland = ServerManager.GenerateMapInstance(20001, MapInstanceType.NormalInstance, new MapClock());
                 foreach (MinilandObjectDTO obj in DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId))
                 {
                     MinilandObject mapobj = (MinilandObject)obj;
@@ -3585,12 +3619,7 @@ namespace OpenNos.GameObject
 
         public IEnumerable<string> GetMinilandEffects()
         {
-            List<string> str = new List<string>();
-            foreach (MinilandObject mp in MinilandObjects)
-            {
-                str.Add(mp.GenerateMinilandEffect(false));
-            }
-            return str;
+            return MinilandObjects.Select(mp => mp.GenerateMinilandEffect(false)).ToList();
         }
 
         public string GetMinilandObjectList()

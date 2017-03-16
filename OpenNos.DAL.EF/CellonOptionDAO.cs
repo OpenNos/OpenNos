@@ -29,9 +29,9 @@ namespace OpenNos.DAL.EF
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (CellonOption CellonOptionobject in context.CellonOption.Where(i => i.WearableInstanceId.Equals(wearableInstanceId)))
+                foreach (CellonOption cellonOptionobject in context.CellonOption.Where(i => i.WearableInstanceId.Equals(wearableInstanceId)))
                 {
-                    yield return _mapper.Map<CellonOptionDTO>(CellonOptionobject);
+                    yield return _mapper.Map<CellonOptionDTO>(cellonOptionobject);
                 }
             }
         }

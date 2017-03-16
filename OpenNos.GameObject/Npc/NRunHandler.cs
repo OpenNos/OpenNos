@@ -19,6 +19,7 @@ using OpenNos.Domain;
 using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace OpenNos.GameObject
@@ -232,6 +233,38 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                case 17:
+                    double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+                    double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
+                    if (!(timeSpanSinceLastPortal >= 4) || !Session.HasCurrentMapInstance)
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
+                        return;
+                    }
+                    if (Session.Character.Raid != null && Session.Character.Raid.Launched)
+                    {
+                        Session.SendPacket(
+                            Session.Character.GenerateSay("Vous n'avez pas le droit d'aller à l'arène une fois en raid",
+                                10));
+                        break;
+                    }
+                    if (Session.Character.Gold >= 500 * (1 + packet.Type))
+                    {
+                        ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
+                        Session.Character.LastPortal = currentRunningSeconds;
+                        Session.Character.Gold -= 500 * (1 + packet.Type);
+                        Session.SendPacket(Session.Character.GenerateGold());
+                        ServerManager.Instance.ChangeMapInstance(Session.Character.CharacterId, packet.Type == 0 ? ServerManager.ArenaInstance.MapInstanceId : ServerManager.FamilyArenaInstance.MapInstanceId, packet.Type == 0 ? ServerManager.ArenaInstance.Map.GetRandomPosition().X : ServerManager.FamilyArenaInstance.Map.GetRandomPosition().X, packet.Type == 0 ? ServerManager.ArenaInstance.Map.GetRandomPosition().Y : ServerManager.FamilyArenaInstance.Map.GetRandomPosition().Y);
+                    }
+                    else
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                    }
+                    break;
+
+                case 18:
+                    Session.SendPacket($"npc_req 1 {Session.Character.CharacterId} 17");
+                    break;
                 case 26:
                     if (npc != null)
                     {

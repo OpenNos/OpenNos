@@ -910,13 +910,36 @@ namespace OpenNos.Handler
                                             }
                                             else if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
                                             {
-                                                if (Session.Character.Group == null || !Session.Character.Group.IsMemberOfGroup(playerToAttack.Character.CharacterId))
+                                                if (Session.CurrentMapInstance.MapInstanceId !=
+                                                    ServerManager.FamilyArenaInstance.MapInstanceId)
                                                 {
-                                                    PVPHit(new HitRequest(TargetHitType.SingleTargetHitCombo, Session, ski.Skill, skillCombo: skillCombo), playerToAttack);
+                                                    if (Session.Character.Group == null ||
+                                                        !Session.Character.Group.IsMemberOfGroup(
+                                                            playerToAttack.Character.CharacterId))
+                                                    {
+                                                        PVPHit(new HitRequest(TargetHitType.SingleTargetHit, Session,
+                                                            ski.Skill), playerToAttack);
+                                                    }
+                                                    else
+                                                    {
+                                                        Session.SendPacket($"cancel 2 {targetId}");
+                                                    }
                                                 }
                                                 else
                                                 {
-                                                    Session.SendPacket($"cancel 2 {targetId}");
+                                                    if (Session.Character.Family == null ||
+                                                        Session.Character.Family.FamilyCharacters.Any(
+                                                            s => s.Character.CharacterId != playerToAttack.Character
+                                                                     .CharacterId))
+                                                    {
+                                                        PVPHit(
+                                                            new HitRequest(TargetHitType.SingleTargetHit, Session,
+                                                                ski.Skill), playerToAttack);
+                                                    }
+                                                    else
+                                                    {
+                                                        Session.SendPacket($"cancel 2 {targetId}");
+                                                    }
                                                 }
                                             }
                                             else

@@ -269,6 +269,15 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void SendPackets(IEnumerable<PacketDefinition> packets, byte priority = 10)
+        {
+            if (!IsDisposing)
+            {
+                packets.ToList().ForEach(s=> _client.SendPacket(PacketFactory.Serialize(s), priority));
+            }
+        }
+
+
         public void SetCharacter(Character character)
         {
             Character = character;

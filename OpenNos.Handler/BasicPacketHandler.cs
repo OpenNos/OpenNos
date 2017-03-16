@@ -1158,6 +1158,8 @@ namespace OpenNos.Handler
                             Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                     }
+
+                    Session.SendPacket(Session.CurrentMapInstance.GenerateRsfn());
                     ServerManager.Instance.LeaveMap(Session.Character.CharacterId);
                     Session.Character.LastPortal = currentRunningSeconds;
 
@@ -1201,10 +1203,9 @@ namespace OpenNos.Handler
             if (packetsplit[2] == "6")
             {
                 int mateVnum;
-                Mate mate = null;
                 if (int.TryParse(packetsplit[4], out mateVnum))
                 {
-                    mate = Session.CurrentMapInstance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.Mates != null && s.Character.Mates.Any(o => o.MateTransportId == mateVnum))?.Character.Mates.First(o => o.MateTransportId == mateVnum);
+                    var mate = Session.CurrentMapInstance.Sessions.FirstOrDefault(s => s.Character?.Mates != null && s.Character.Mates.Any(o => o.MateTransportId == mateVnum))?.Character.Mates.First(o => o.MateTransportId == mateVnum);
                     Session.SendPacket(mate?.GenerateEInfo());
                 }
             }
@@ -1399,7 +1400,7 @@ namespace OpenNos.Handler
                     if (Receiver != null)
                     {
                         WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
-                        byte color = headWearable != null && headWearable.Item.IsColored ? headWearable.Design : (byte)Session.Character.HairColor;
+                        short color = headWearable != null && headWearable.Item.IsColored ? headWearable.Design : (byte)Session.Character.HairColor;
                         MailDTO mailcopy = new MailDTO
                         {
                             AttachmentAmount = 0,
@@ -1726,6 +1727,9 @@ namespace OpenNos.Handler
                     Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateMv());
                     Session.SendPacket(Session.Character.GenerateCond());
                     Session.Character.LastMove = DateTime.Now;
+
+                    Session.CurrentMapInstance.MoveEvents.ForEach(e => Session.SendPacket(Session.CurrentMapInstance.RunMapEvent(e.Item1, e.Item2, Session.Character.CharacterId)));
+                    Session.CurrentMapInstance.MoveEvents.RemoveAll(s => s != null);
                 }
                 else
                 {

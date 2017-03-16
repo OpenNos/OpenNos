@@ -12,29 +12,31 @@
  * GNU General Public License for more details.
  */
 
-using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace OpenNos.Data
+namespace OpenNos.DAL.EF
 {
-    public interface IItemInstance
+    public class TimeSpace
     {
         #region Properties
 
-        byte Amount { get; set; }
+        public virtual Map Map { get; set; }
 
-        long? BoundCharacterId { get; set; }
+        public short TimespaceId { get; set; }
 
-        short Design { get; set; }
+        public short MapId { get; set; }
 
-        Guid Id { get; set; }
+        public short PositionX { get; set; }
 
-        DateTime? ItemDeleteTime { get; set; }
+        public short PositionY { get; set; }
 
-        short ItemVNum { get; set; }
+        [MaxLength(255)]
+        public string Winner { get; set; }
 
-        sbyte Rare { get; set; }
+        [MaxLength(int.MaxValue)]
+        public string Script { get; set; }
 
-        byte Upgrade { get; set; }
+        public int WinnerScore { get; set; }
 
         #endregion
     }

@@ -29,6 +29,7 @@ namespace OpenNos.DAL.EF
             MapNpc = new HashSet<MapNpc>();
             Portal = new HashSet<Portal>();
             Portal1 = new HashSet<Portal>();
+            TimeSpace = new HashSet<TimeSpace>();
             Teleporter = new HashSet<Teleporter>();
             MapTypeMap = new HashSet<MapTypeMap>();
             Respawn = new HashSet<Respawn>();
@@ -60,6 +61,8 @@ namespace OpenNos.DAL.EF
         public virtual ICollection<Portal> Portal { get; set; }
 
         public virtual ICollection<Portal> Portal1 { get; set; }
+
+        public virtual ICollection<TimeSpace> TimeSpace { get; set; }
 
         public virtual ICollection<Respawn> Respawn { get; set; }
 

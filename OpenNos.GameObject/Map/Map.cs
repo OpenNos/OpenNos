@@ -106,7 +106,16 @@ namespace OpenNos.GameObject
         {
             return Math.Max(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
-
+        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move)
+        {
+            List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
+            for (int i = 0; i < amount; i++)
+            {
+                MapCell cell = GetRandomPosition();
+                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move));
+            }
+            return SummonParameters;
+        }
         public static List<GridPos> JPSPlus(JumpPointParam JumpPointParameters, GridPos cell1, GridPos cell2)
         {
             if (JumpPointParameters != null)

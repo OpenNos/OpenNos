@@ -91,8 +91,10 @@
     <Compile Include="Event\LOD\LOD.cs" />
     <Compile Include="Event\MINILANDREFRESH\MinilandRefresh.cs" />
     <Compile Include="Helpers\UserInterfaceHelper.cs" />
+    <Compile Include="Map\MapClock.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="Map\MonsterToSummon.cs" />
+    <Compile Include="Map\TimeSpace.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />
     <Compile Include="Packets\ClientPackets\EquipmentInfoPacket.cs" />
@@ -156,6 +158,10 @@
     <Compile Include="Packets\CommandPackets\SummonNPCPacket.cs" />
     <Compile Include="Packets\CommandPackets\TeleportPacket.cs" />
     <Compile Include="Packets\CommandPackets\UndercoverPacket.cs" />
+    <Compile Include="Packets\ServerPackets\RaidListPacket.cs" />
+    <Compile Include="Packets\ServerPackets\WreqPacket.cs" />
+    <Compile Include="Packets\ServerPackets\TreqPacket.cs" />
+    <Compile Include="Packets\ServerPackets\WpPacket.cs" />
     <Compile Include="Portal.cs" />
     <Compile Include="BazaarItemLink.cs" />
     <Compile Include="Account.cs" />
@@ -360,6 +366,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\CharacterHelper.cs" />
     <Compile Include="Family.cs" />
+    <Compile Include="Raid.cs" />
     <Compile Include="Skill.cs" />
     <Compile Include="CharacterSkill.cs" />
     <Compile Include="Item\Instance\SpecialistInstance.cs" />

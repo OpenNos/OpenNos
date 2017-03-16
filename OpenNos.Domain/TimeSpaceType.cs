@@ -12,30 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using System;
-
-namespace OpenNos.Data
+namespace OpenNos.Domain
 {
-    public interface IItemInstance
+    public enum TimeSpaceType : byte
     {
-        #region Properties
-
-        byte Amount { get; set; }
-
-        long? BoundCharacterId { get; set; }
-
-        short Design { get; set; }
-
-        Guid Id { get; set; }
-
-        DateTime? ItemDeleteTime { get; set; }
-
-        short ItemVNum { get; set; }
-
-        sbyte Rare { get; set; }
-
-        byte Upgrade { get; set; }
-
-        #endregion
+        Normal = 0
     }
 }

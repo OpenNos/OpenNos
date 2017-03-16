@@ -317,7 +317,7 @@ namespace OpenNos.GameObject
                     }
                     break;
                 case 1007:
-                    if (!session.Character.StaticBonusList.Any(s => s.StaticBonusType == StaticBonusType.PetBasket))
+                    if (session.Character.StaticBonusList.All(s => s.StaticBonusType != StaticBonusType.PetBasket))
                     {
                         session.Character.StaticBonusList.Add(new StaticBonusDTO { CharacterId = session.Character.CharacterId, DateEnd = DateTime.Now.AddDays(EffectValue), StaticBonusType = StaticBonusType.PetBasket });
                         session.Character.Inventory.RemoveItemAmountFromInventory(1, inv.Id);

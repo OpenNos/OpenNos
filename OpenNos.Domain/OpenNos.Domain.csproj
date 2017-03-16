@@ -73,6 +73,7 @@
     <Compile Include="Schedule.cs" />
     <Compile Include="StaticBonusType.cs" />
     <Compile Include="TargetHitType.cs" />
+    <Compile Include="TimeSpaceType.cs" />
     <Compile Include="UpgradeProtection.cs" />
     <Compile Include="RarifyProtection.cs" />
     <Compile Include="RarifyMode.cs" />

@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,8 @@ namespace OpenNos.GameObject
 {
     public class MapInstancePortalHandler
     {
+        public static int SourceX { get; private set; }
         #region Methods
-
         public static List<Portal> GenerateMinilandEntryPortals(short entryMap, Guid exitMapinstanceId)
         {
             List<Portal> list = new List<Portal>();
