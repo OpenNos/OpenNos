@@ -122,14 +122,11 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
-        public ItemInstance DeepCopy()
-        {
-            return (ItemInstance)MemberwiseClone();
-        }
 
         public void Save()
         {
         }
+        
 
         #endregion
     }

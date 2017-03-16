@@ -7,6 +7,7 @@ using OpenNos.Core;
 using OpenNos.GameObject;
 using OpenNos.GameObject.Packets.ServerPackets;
 using OpenNos.GameObject.Helpers;
+using CloneExtensions;
 
 namespace OpenNos.Handler
 {
@@ -47,7 +48,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void GetWreq(WreqPacket packet)
         {
-            Session.Character.LastTimeSpace = Session.Character.LastTimeSpace?.DeepCopy();
+            Session.Character.LastTimeSpace = Session.Character.LastTimeSpace.GetClone();
             if (Session.Character.LastTimeSpace != null)
             {
                 if (Session.Character.LastTimeSpace.FirstMap == null)

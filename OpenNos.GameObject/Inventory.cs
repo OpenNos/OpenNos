@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using CloneExtensions;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -97,7 +98,7 @@ namespace OpenNos.GameObject
             if (inv == null || amount > inv.Amount)
                 return null;
 
-            ItemInstance invcopy = inv.DeepCopy();
+            ItemInstance invcopy = inv.GetClone();
             invcopy.Id = Guid.NewGuid();
 
             if (inv.Item.Type == InventoryType.Equipment)
@@ -546,7 +547,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        ItemInstance itemDest = sourceInventory.DeepCopy();
+                        ItemInstance itemDest = sourceInventory.GetClone();
                         sourceInventory.Amount -= amount;
                         itemDest.Amount = amount;
                         itemDest.Type = desttype;

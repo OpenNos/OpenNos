@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using CloneExtensions;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -88,7 +89,7 @@ namespace OpenNos.Handler
                             DAOFactory.IteminstanceDAO.InsertOrUpdate(bzitemdto);
                             ServerManager.Instance.BazaarRefresh(bzcree.BazaarItem.BazaarItemId);
                             Session.SendPacket($"rc_buy 1 {bzcree.Item.Item.VNum} {bzcree.Owner} {cBuyPacket.Amount} {cBuyPacket.Price} 0 0 0");
-                            ItemInstance newBz = bzcree.Item.DeepCopy();
+                            ItemInstance newBz = bzcree.Item.GetClone();
                             newBz.Id = Guid.NewGuid();
                             newBz.Amount = cBuyPacket.Amount;
                             newBz.Type = newBz.Item.Type;
@@ -140,7 +141,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("REMOVE_FROM_BAZAAR"), price), 10));
                     if (Item.Amount != 0)
                     {
-                        ItemInstance newBz = Item.DeepCopy();
+                        ItemInstance newBz = Item.GetClone();
                         newBz.Id = Guid.NewGuid();
                         newBz.Type = newBz.Item.Type;
 

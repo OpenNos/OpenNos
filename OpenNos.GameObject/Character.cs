@@ -1948,10 +1948,12 @@ namespace OpenNos.GameObject
 
         public void GenerateKillBonus(MapMonster monsterToAttack)
         {
+         
             if (monsterToAttack == null || monsterToAttack.IsAlive)
             {
                 return;
             }
+            monsterToAttack.RunDeathEvent();
 
             Random random = new Random(DateTime.Now.Millisecond & monsterToAttack.MapMonsterId);
 

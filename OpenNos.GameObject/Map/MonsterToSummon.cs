@@ -12,18 +12,23 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
+using System;
+using System.Collections.Generic;
+
 namespace OpenNos.GameObject
 {
     public class MonsterToSummon
     {
         #region Instantiation
 
-        public MonsterToSummon(short vnum, MapCell spawnCell, long target, bool move)
+        public MonsterToSummon(short vnum, MapCell spawnCell, long target, bool move, List<Tuple<EventActionType, object>> deathEvents)
         {
             VNum = vnum;
             SpawnCell = spawnCell;
             Target = target;
             IsMoving = move;
+            DeathEvents = deathEvents;
         }
 
         #endregion
@@ -38,6 +43,7 @@ namespace OpenNos.GameObject
 
         public short VNum { get; set; }
 
+        public List<Tuple<EventActionType, object>> DeathEvents { get; set; }
         #endregion
     }
 }

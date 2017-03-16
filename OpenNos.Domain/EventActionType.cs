@@ -28,6 +28,7 @@ namespace OpenNos.Domain
         DROPITEMS,
         SENDPACKET,
         NPCDIALOG,
-        STARTCLOCK
+        STARTCLOCK,
+        SPAWNPORTAL
     }
 }

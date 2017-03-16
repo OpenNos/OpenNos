@@ -12,11 +12,13 @@
  * GNU General Public License for more details.
  */
 
+using CloneExtensions;
 using EpPathFinding;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
+using OpenNos.GameObject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +90,7 @@ namespace OpenNos.GameObject
         public bool IsDancing { get; set; }
 
         public bool IsPVP { get; set; }
-        
+
         public bool IsSleeping
         {
             get
@@ -137,7 +139,7 @@ namespace OpenNos.GameObject
 
         public List<Tuple<Tuple<EventActionType, object>, List<long>>> FirstEntryEvents { get; set; }
 
-       
+
         public List<Tuple<EventActionType, object>> MoveEvents { get; set; }
 
         public bool ShopAllowed { get; set; }
@@ -302,7 +304,7 @@ namespace OpenNos.GameObject
             {
                 if (amount > 0 && amount <= inv.Amount)
                 {
-                    ItemInstance newItemInstance = inv.DeepCopy();
+                    ItemInstance newItemInstance = inv.GetClone();
                     newItemInstance.Id = random2;
                     newItemInstance.Amount = amount;
                     droppedItem = new CharacterMapItem(mapX, mapY, newItemInstance);
@@ -377,7 +379,7 @@ namespace OpenNos.GameObject
         {
             if (MapInstanceType == MapInstanceType.TimeSpaceInstance)
             {
-                return $"rsfn {MapIndexX} {MapIndexY} {(isInit ? 1 : (Monsters.Where(s=>s.IsAlive).ToList().Count == 0 ? 0 : 1))}";
+                return $"rsfn {MapIndexX} {MapIndexY} {(isInit ? 1 : (Monsters.Where(s => s.IsAlive).ToList().Count == 0 ? 0 : 1))}";
             }
             return string.Empty;
         }
@@ -386,7 +388,7 @@ namespace OpenNos.GameObject
         {
             portal.SourceMapInstanceId = MapInstanceId;
             _portals.Add(portal);
-            Sessions.Where(s => s.Character != null).ToList().ForEach(s => s.SendPacket(s.CurrentMapInstance.GenerateGp(portal)));
+            Broadcast(GenerateGp(portal));
         }
 
         internal IEnumerable<Character> GetCharactersInRange(short mapX, short mapY, byte distance)
@@ -437,9 +439,15 @@ namespace OpenNos.GameObject
                 case EventActionType.CLOCK:
                     MapClock.DeciSecondRemaining = Convert.ToInt32(param);
                     break;
+
                 case EventActionType.STARTCLOCK:
                     MapClock.Enabled = true;
                     return MapClock.GetClock();
+
+                case EventActionType.SPAWNPORTAL:
+                    Portal port = (Portal)param;
+                    ServerManager.GetMapInstance(port.SourceMapInstanceId).CreatePortal(port);
+                    break;
                 case EventActionType.DROPRATE:
                     DropRate = Convert.ToInt32(param);
                     break;
@@ -461,7 +469,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case EventActionType.NPCDIALOG:
-                  return $"npc_req 1 {Id} {param}";
+                    return $"npc_req 1 {Id} {param}";
 
                 case EventActionType.SENDPACKET:
                     return Convert.ToString(param);
@@ -489,7 +497,7 @@ namespace OpenNos.GameObject
                         Y = lastincharacter?.PositionY ?? 140
                     };
                     long HornTarget = lastincharacter != null ? lastincharacter.CharacterId : -1;
-                    summonParameters.Add(new MonsterToSummon(Convert.ToInt16(param), hornSpawn, HornTarget, true));
+                    summonParameters.Add(new MonsterToSummon(Convert.ToInt16(param), hornSpawn, HornTarget, true, new List<Tuple<EventActionType, object>>()));
                     SummonMonsters(summonParameters);
                     break;
             }
@@ -514,7 +522,7 @@ namespace OpenNos.GameObject
                 NpcMonster npcmonster = ServerManager.GetNpc(mon.VNum);
                 if (npcmonster != null)
                 {
-                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.X, MapX = mon.SpawnCell.Y, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target };
+                    MapMonster monster = new MapMonster { MonsterVNum = npcmonster.NpcMonsterVNum, MapY = mon.SpawnCell.X, MapX = mon.SpawnCell.Y, MapId = Map.MapId, IsMoving = mon.IsMoving, MapMonsterId = GetNextMonsterId(), ShouldRespawn = false, Target = mon.Target, DeathEvents = mon.DeathEvents };
                     monster.Initialize(this);
                     monster.StartLife();
                     AddMonster(monster);

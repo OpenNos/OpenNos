@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -106,13 +107,13 @@ namespace OpenNos.GameObject
         {
             return Math.Max(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
-        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move)
+        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<Tuple<EventActionType, object>> deathEvents)
         {
             List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
-                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move));
+                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, deathEvents));
             }
             return SummonParameters;
         }
@@ -237,6 +238,7 @@ namespace OpenNos.GameObject
             }
             return Path;
         }
+
 
         private bool IsBlockedZone(int firstX, int firstY, int mapX, int mapY)
         {

@@ -84,6 +84,7 @@ namespace OpenNos.GameObject
         private short FirstX { get; set; }
 
         private short FirstY { get; set; }
+        public List<Tuple<EventActionType, object>> DeathEvents { get; set; }
 
         #endregion
 
@@ -96,6 +97,12 @@ namespace OpenNos.GameObject
                 return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)((float)CurrentHp / (float)Monster.MaxHP * 100)} {(int)((float)CurrentMp / (float)Monster.MaxMP * 100)} 0 0 0 -1 {(byte)InRespawnType.TeleportationEffect} 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
             }
             return string.Empty;
+        }
+
+        public void RunDeathEvent()
+        {
+            DeathEvents.ForEach(e => MapInstance.Broadcast(MapInstance.RunMapEvent(e.Item1, e.Item2)));
+            DeathEvents.RemoveAll(s => s != null);
         }
 
         public string GenerateOut()
