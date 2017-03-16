@@ -647,6 +647,7 @@ namespace OpenNos.GameObject
                 }
             }
         }
+
         public void RaidLeave(ClientSession session)
         {
             if (session == null) return;
@@ -657,11 +658,11 @@ namespace OpenNos.GameObject
             {
                 if (raid.Leader != session)
                 {
-                    raid.LeaveRaid(session);
+                    raid.Leave(session);
                 }
                 else
                 {
-                    raid.LeaveRaid(raid.Leader);
+                    raid.Leave(raid.Leader);
                     raid.Leader.SendPacket(
                         $"say 1 {raid.Leader.Character.CharacterId} 10 {Language.Instance.GetMessageFromKey("RAID_NEW_LEADER")}");
                     raid.Leader.SendPacket(
@@ -687,7 +688,7 @@ namespace OpenNos.GameObject
             foreach (ClientSession targetSession in raid.Characters)
             {
                 targetSession.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("RAID_CLOSED"), 0));
-                raid.LeaveRaid(targetSession);
+                raid.Leave(targetSession);
             }
             raid.DestroyRaid();
         }
