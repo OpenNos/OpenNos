@@ -1982,8 +1982,8 @@ namespace OpenNos.Import.Console
         public void ImportTimeSpaces()
         {
             short map = 0;
-            List<TimeSpaceDTO> listtimespace = new List<TimeSpaceDTO>();
-            List<TimeSpaceDTO> bddlist = new List<TimeSpaceDTO>(); ;
+            List<ScriptedInstanceDTO> listtimespace = new List<ScriptedInstanceDTO>();
+            List<ScriptedInstanceDTO> bddlist = new List<ScriptedInstanceDTO>(); ;
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("wp")))
             {
                 if (currentPacket.Length > 5 && currentPacket[0] == "at")
@@ -1994,7 +1994,7 @@ namespace OpenNos.Import.Console
                 }
                 else if (currentPacket.Length > 6 && currentPacket[0] == "wp")
                 {
-                    TimeSpaceDTO ts = new TimeSpaceDTO()
+                    ScriptedInstanceDTO ts = new ScriptedInstanceDTO()
                     {
                         PositionX = short.Parse(currentPacket[1]),
                         PositionY = short.Parse(currentPacket[2]),

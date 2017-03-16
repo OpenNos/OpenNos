@@ -14,7 +14,7 @@
 
 namespace OpenNos.Domain
 {
-    public enum TimeSpaceType : byte
+    public enum ScriptedInstanceType : byte
     {
         Normal = 0
     }

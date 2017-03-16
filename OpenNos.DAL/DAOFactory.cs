@@ -35,7 +35,7 @@ namespace OpenNos.DAL
         private static ICharacterSkillDAO _characterskillDAO;
         private static IComboDAO _comboDAO;
         private static IDropDAO _dropDAO;
-        private static ITimeSpaceDAO _timeSpaceDAO;
+        private static IScriptedInstanceDAO _scriptedinstanceDAO;
         private static IFamilyCharacterDAO _familycharacterDAO;
         private static IFamilyDAO _familyDAO;
         private static IFamilyLogDAO _familylogDAO;
@@ -132,23 +132,23 @@ namespace OpenNos.DAL
                 return _bazaarItemDAO;
             }
         }
-        public static ITimeSpaceDAO TimeSpaceDAO
+        public static IScriptedInstanceDAO TimeSpaceDAO
         {
             get
             {
-                if (_timeSpaceDAO == null)
+                if (_scriptedinstanceDAO == null)
                 {
                     if (_useMock)
                     {
-                        _timeSpaceDAO = new TimeSpaceDAO();
+                        _scriptedinstanceDAO = new ScriptedInstanceDAO();
                     }
                     else
                     {
-                        _timeSpaceDAO = new EF.TimeSpaceDAO();
+                        _scriptedinstanceDAO = new EF.ScriptedInstanceDAO();
                     }
                 }
 
-                return _timeSpaceDAO;
+                return _scriptedinstanceDAO;
             }
         }
         public static ICardDAO CardDAO

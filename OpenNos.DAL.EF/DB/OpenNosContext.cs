@@ -116,7 +116,7 @@ namespace OpenNos.DAL.EF.DB
 
         public virtual DbSet<Teleporter> Teleporter { get; set; }
 
-        public virtual DbSet<TimeSpace> TimeSpace { get; set; }
+        public virtual DbSet<ScriptedInstance> ScriptedInstance { get; set; }
 
         #endregion
 
@@ -349,7 +349,7 @@ namespace OpenNos.DAL.EF.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Map>()
-               .HasMany(e => e.TimeSpace)
+               .HasMany(e => e.ScriptedInstance)
                .WithRequired(e => e.Map)
                .HasForeignKey(e => e.MapId)
                .WillCascadeOnDelete(false);

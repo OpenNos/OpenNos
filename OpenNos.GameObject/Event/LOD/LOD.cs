@@ -101,7 +101,7 @@ namespace OpenNos.GameObject.Event
             {
                 if (fam.LandOfDeath == null)
                 {
-                    fam.LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance, new MapClock());
+                    fam.LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
                 }
                 fam.LandOfDeath.RunMapEvent(EventActionType.CLOCK, remaining*10);
                 fam.LandOfDeath.RunMapEvent(EventActionType.STARTCLOCK, null);

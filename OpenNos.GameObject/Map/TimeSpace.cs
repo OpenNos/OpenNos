@@ -9,15 +9,15 @@ using OpenNos.GameObject.Helpers;
 
 namespace OpenNos.GameObject
 {
-    public class TimeSpace : TimeSpaceDTO
+    public class ScriptedInstance : ScriptedInstanceDTO
     {
-        public TimeSpaceType Type { get; set; }
+        public ScriptedInstanceType Type { get; set; }
         public byte LevelMinimum { get; set; }
         public byte LevelMaximum { get; set; }
         public string Label { get; set; }
         public MapInstance FirstMap { get; set; }
 
-        MapClock _mapclock = new MapClock();
+        InstanceBag _instancebag = new InstanceBag();
 
         Dictionary<int, MapInstance> _mapinstancedictionary = new Dictionary<int, MapInstance>();
 
@@ -43,7 +43,7 @@ namespace OpenNos.GameObject
                 {
                     if (variable.Name == "CreateMap")
                     {
-                        MapInstance newmap = ServerManager.GenerateMapInstance(short.Parse(variable.Attributes["VNum"].Value), MapInstanceType.TimeSpaceInstance, _mapclock);
+                        MapInstance newmap = ServerManager.GenerateMapInstance(short.Parse(variable.Attributes["VNum"].Value), MapInstanceType.TimeSpaceInstance, _instancebag);
                         newmap.MapIndexX = byte.Parse(variable.Attributes["IndexX"].Value);
                         newmap.MapIndexY = byte.Parse(variable.Attributes["IndexY"].Value);
                         if (!_mapinstancedictionary.ContainsKey(int.Parse(variable.Attributes["Map"].Value)))

@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public MapInstance(Map map, Guid guid, bool shopAllowed, MapInstanceType type, MapClock Clock)
+        public MapInstance(Map map, Guid guid, bool shopAllowed, MapInstanceType type, InstanceBag Clock)
         {
             XpRate = 1;
             DropRate = 1;
@@ -63,7 +63,7 @@ namespace OpenNos.GameObject
             _random = new Random();
             Map = map;
             MapInstanceId = guid;
-            TimeSpaces = new List<TimeSpace>();
+            TimeSpaces = new List<ScriptedInstance>();
             FirstEntryEvents = new List<Tuple<Tuple<EventActionType, object>, List<long>>>();
             MoveEvents = new List<Tuple<EventActionType, object>>();
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
@@ -72,7 +72,7 @@ namespace OpenNos.GameObject
             _portals = new List<Portal>();
             UserShops = new Dictionary<long, MapShop>();
             _npcs = new List<MapNpc>();
-            TimeSpaces = new List<TimeSpace>();
+            TimeSpaces = new List<ScriptedInstance>();
             _npcs.AddRange(ServerManager.Instance.GetMapNpcsByMapId(Map.MapId).AsEnumerable());
             StartLife();
         }
@@ -85,7 +85,7 @@ namespace OpenNos.GameObject
 
         public int DropRate { get; set; }
 
-        public MapClock MapClock { get; set; }
+        public InstanceBag MapClock { get; set; }
 
         public bool IsDancing { get; set; }
 
@@ -135,7 +135,7 @@ namespace OpenNos.GameObject
 
         public List<Portal> Portals => _portals;
 
-        public List<TimeSpace> TimeSpaces { get; set; }
+        public List<ScriptedInstance> TimeSpaces { get; set; }
 
         public List<Tuple<Tuple<EventActionType, object>, List<long>>> FirstEntryEvents { get; set; }
 

@@ -161,7 +161,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static MapInstance GenerateMapInstance(short MapId, MapInstanceType type, MapClock mapclock)
+        public static MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
         {
             Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
             if (map != null)
@@ -924,7 +924,7 @@ namespace OpenNos.GameObject
                     };
                     _maps.Add(mapinfo);
 
-                    MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance, new MapClock());
+                    MapInstance newMap = new MapInstance(mapinfo, guid, map.ShopAllowed, MapInstanceType.BaseMapInstance, new InstanceBag());
 
                     // register for broadcast
                     _mapinstances.TryAdd(guid, newMap);
@@ -958,9 +958,9 @@ namespace OpenNos.GameObject
                 RefreshRanking();
                 CharacterRelations = DAOFactory.CharacterRelationDAO.LoadAll().ToList();
                 PenaltyLogs = DAOFactory.PenaltyLogDAO.LoadAll().ToList();
-                ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance, new MapClock());
+                ArenaInstance = GenerateMapInstance(2006, MapInstanceType.NormalInstance, new InstanceBag());
                 ArenaInstance.IsPVP = true;
-                FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance, new MapClock());
+                FamilyArenaInstance = GenerateMapInstance(2106, MapInstanceType.NormalInstance, new InstanceBag());
                 FamilyArenaInstance.IsPVP = true;
                 LoadTimeSpaces();
             }
@@ -978,7 +978,7 @@ namespace OpenNos.GameObject
         {
             foreach (var map in _mapinstances)
             {
-                foreach (TimeSpace timespace in DAOFactory.TimeSpaceDAO.LoadByMap(map.Value.Map.MapId).ToList())
+                foreach (ScriptedInstance timespace in DAOFactory.TimeSpaceDAO.LoadByMap(map.Value.Map.MapId).ToList())
                 {
                     timespace.LoadGlobals();
                     map.Value.TimeSpaces.Add(timespace);

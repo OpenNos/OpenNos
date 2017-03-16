@@ -17,15 +17,15 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface ITimeSpaceDAO : IMappingBaseDAO
+    public interface IScriptedInstanceDAO : IMappingBaseDAO
     {
         #region Methods
 
-        TimeSpaceDTO Insert(TimeSpaceDTO portal);
+        ScriptedInstanceDTO Insert(ScriptedInstanceDTO portal);
 
-        void Insert(List<TimeSpaceDTO> portals);
+        void Insert(List<ScriptedInstanceDTO> portals);
 
-        IEnumerable<TimeSpaceDTO> LoadByMap(short mapId);
+        IEnumerable<ScriptedInstanceDTO> LoadByMap(short mapId);
 
         #endregion
     }

@@ -2,7 +2,7 @@
 
 namespace OpenNos.GameObject
 {
-    public class MapClock
+    public class InstanceBag
     {
         Timer timer; 
         public bool Enabled { get; set; }
@@ -12,7 +12,7 @@ namespace OpenNos.GameObject
         {
             return $"evnt {(Enabled?1:-1)} 0 {(int)(DeciSecondRemaining)} 1";
         }
-        public MapClock()
+        public InstanceBag()
         {
             timer = new Timer(100);
             timer.Elapsed += this.OnTimerElapsed;

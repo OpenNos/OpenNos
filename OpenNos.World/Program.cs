@@ -206,8 +206,8 @@ namespace OpenNos.World
             DAOFactory.StaticBonusDAO.RegisterMapping(typeof(StaticBonusDTO)).InitializeMapper();
             DAOFactory.FamilyDAO.RegisterMapping(typeof(Family)).InitializeMapper(); 
             DAOFactory.FamilyCharacterDAO.RegisterMapping(typeof(FamilyCharacter)).InitializeMapper();
-            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(TimeSpaceDTO)).InitializeMapper();
-            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(TimeSpace)).InitializeMapper();
+            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
+            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstance)).InitializeMapper();
         }
 
         [DllImport("Kernel32")]

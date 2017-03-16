@@ -12,29 +12,27 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL.Interface;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace OpenNos.DAL.Mock
+namespace OpenNos.Data
 {
-    public class TimeSpaceDAO : BaseDAO<TimeSpaceDTO>, ITimeSpaceDAO
+    public class ScriptedInstanceDTO : MappingBaseDTO
     {
-        #region Methods
+        #region Properties
+
+        public short TimespaceId { get; set; }
+
+        public short MapId { get; set; }
+
+        public short PositionX { get; set; }
+
+        public short PositionY { get; set; }
+
+        public string Winner { get; set; }
+
+        public string Script { get; set; }
+
+        public int WinnerScore { get; set; }
 
 
         #endregion
-        public void Insert(List<TimeSpaceDTO> portals)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<TimeSpaceDTO> LoadByMap(short mapId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

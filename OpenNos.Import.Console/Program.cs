@@ -301,7 +301,7 @@ namespace OpenNos.Import.Console
             DAOFactory.MateDAO.RegisterMapping(typeof(MateDTO)).InitializeMapper();
             DAOFactory.SkillDAO.RegisterMapping(typeof(SkillDTO)).InitializeMapper();
             DAOFactory.TeleporterDAO.RegisterMapping(typeof(TeleporterDTO)).InitializeMapper();
-            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(TimeSpaceDTO)).InitializeMapper();
+            DAOFactory.TimeSpaceDAO.RegisterMapping(typeof(ScriptedInstanceDTO)).InitializeMapper();
         }
 
         #endregion

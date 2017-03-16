@@ -32,7 +32,7 @@ namespace OpenNos.Handler
         /// <param name="treqPacket"></param>
         public void GetTreq(TreqPacket treqPacket)
         {
-            TimeSpace timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY);
+            ScriptedInstance timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s => treqPacket.X == s.PositionX && treqPacket.Y == s.PositionY);
 
             if (timespace != null)
             {

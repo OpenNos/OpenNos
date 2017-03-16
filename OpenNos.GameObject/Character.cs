@@ -398,7 +398,7 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; private set; }
         public int ScPage { get; set; }
-        public TimeSpace LastTimeSpace { get; set; }
+        public ScriptedInstance LastTimeSpace { get; set; }
 
         #endregion
 
@@ -1901,7 +1901,7 @@ namespace OpenNos.GameObject
         {
             List<WpPacket> wpList = new List<WpPacket>();
             short i = 0;
-            foreach (TimeSpace mapinstancetree in MapInstance.TimeSpaces)
+            foreach (ScriptedInstance mapinstancetree in MapInstance.TimeSpaces)
             {
                 wpList.Add(new WpPacket()
                 {
@@ -2166,7 +2166,7 @@ namespace OpenNos.GameObject
         {
             if (Miniland == null)
             {
-                Miniland = ServerManager.GenerateMapInstance(20001, MapInstanceType.NormalInstance, new MapClock());
+                Miniland = ServerManager.GenerateMapInstance(20001, MapInstanceType.NormalInstance, new InstanceBag());
                 foreach (MinilandObjectDTO obj in DAOFactory.MinilandObjectDAO.LoadByCharacterId(CharacterId))
                 {
                     MinilandObject mapobj = (MinilandObject)obj;

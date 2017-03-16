@@ -22,21 +22,21 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF
 {
-    public class TimeSpaceDAO : MappingBaseDAO<TimeSpace, TimeSpaceDTO>, ITimeSpaceDAO
+    public class ScriptedInstanceDAO : MappingBaseDAO<ScriptedInstance, ScriptedInstanceDTO>, IScriptedInstanceDAO
     {
         #region Methods
 
-        public void Insert(List<TimeSpaceDTO> portals)
+        public void Insert(List<ScriptedInstanceDTO> portals)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (TimeSpaceDTO Item in portals)
+                    foreach (ScriptedInstanceDTO Item in portals)
                     {
-                        TimeSpace entity = _mapper.Map<TimeSpace>(Item);
-                        context.TimeSpace.Add(entity);
+                        ScriptedInstance entity = _mapper.Map<ScriptedInstance>(Item);
+                        context.ScriptedInstance.Add(entity);
                     }
                     context.Configuration.AutoDetectChangesEnabled = true;
                     context.SaveChanges();
@@ -48,16 +48,16 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public TimeSpaceDTO Insert(TimeSpaceDTO timespace)
+        public ScriptedInstanceDTO Insert(ScriptedInstanceDTO timespace)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    TimeSpace entity = _mapper.Map<TimeSpace>(timespace);
-                    context.TimeSpace.Add(entity);
+                    ScriptedInstance entity = _mapper.Map<ScriptedInstance>(timespace);
+                    context.ScriptedInstance.Add(entity);
                     context.SaveChanges();
-                    return _mapper.Map<TimeSpaceDTO>(entity);
+                    return _mapper.Map<ScriptedInstanceDTO>(entity);
                 }
             }
             catch (Exception e)
@@ -67,13 +67,13 @@ namespace OpenNos.DAL.EF
             }
         }
 
-        public IEnumerable<TimeSpaceDTO> LoadByMap(short mapId)
+        public IEnumerable<ScriptedInstanceDTO> LoadByMap(short mapId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (TimeSpace timespaceObject in context.TimeSpace.Where(c => c.MapId.Equals(mapId)))
+                foreach (ScriptedInstance timespaceObject in context.ScriptedInstance.Where(c => c.MapId.Equals(mapId)))
                 {
-                    yield return _mapper.Map<TimeSpaceDTO>(timespaceObject);
+                    yield return _mapper.Map<ScriptedInstanceDTO>(timespaceObject);
                 }
             }
         }
