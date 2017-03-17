@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
         public void RunAction()
         {
             MapInstance.Broadcast(GenerateOut());
-            MapInstance.Broadcast(GenerateIn());
+            State = !State;
             if (State)
             {
                 EnableEvents.ForEach(e => EventHelper.Instance.RunEvent(e));
@@ -47,6 +47,8 @@ namespace OpenNos.GameObject
             {
                 DisableEvents.ForEach(e => EventHelper.Instance.RunEvent(e));
             }
+
+            MapInstance.Broadcast(GenerateIn());
         }
         public string GenerateOut()
         {
@@ -54,7 +56,7 @@ namespace OpenNos.GameObject
         }
         public string GenerateIn()
         {
-            return $"in 9 {(State ? DisabledVNum : EnabledVNum)} {MapButtonId} {PositionX} {PositionY} 1 0 0 0";
+            return $"in 9 {(State ? EnabledVNum: DisabledVNum)} {MapButtonId} {PositionX} {PositionY} 1 0 0 0";
         }
     }
 }
