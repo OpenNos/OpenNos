@@ -58,7 +58,7 @@ namespace OpenNos.Handler
             {
                 return;
             }
-            Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChange, Session.Character.Name, right: (byte)packet.MemberType, righttype: packet.AuthorityId + 1, rightvalue: packet.Value);
+            Session.Character.Family.InsertFamilyLog(FamilyLogType.RightChanged, Session.Character.Name, right: (byte)packet.MemberType, righttype: packet.AuthorityId + 1, rightvalue: packet.Value);
             switch (packet.MemberType)
             {
                 case FamilyAuthority.Manager:
@@ -333,7 +333,7 @@ namespace OpenNos.Handler
                         return;
                     }
                     DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
-                    Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManage, kickSession.Character.Name);
+                    Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManaged, kickSession.Character.Name);
 
                     kickSession.CurrentMapInstance?.Broadcast(kickSession.Character.GenerateGidx());
                 }
@@ -351,7 +351,7 @@ namespace OpenNos.Handler
                                 return;
                             }
                             DAOFactory.FamilyCharacterDAO.Delete(packetsplit[2]);
-                            Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManage, dbCharacter.Name);
+                            Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManaged, dbCharacter.Name);
                         }
                     }
                 }
@@ -374,7 +374,7 @@ namespace OpenNos.Handler
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateInfo(Language.Instance.GetMessageFromKey("CANNOT_LEAVE_FAMILY")));
                     return;
                 }
-                Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManage, Session.Character.Name);
+                Session.Character.Family.InsertFamilyLog(FamilyLogType.FamilyManaged, Session.Character.Name);
                 long FamilyId = Session.Character.Family.FamilyId;
                 DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
 
@@ -538,7 +538,7 @@ namespace OpenNos.Handler
                         DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref chara);
                         break;
                 }
-                Session.Character.Family.InsertFamilyLog(FamilyLogType.AuthorityChange, Session.Character.Name, targetSession.Character.Name, right: auth);
+                Session.Character.Family.InsertFamilyLog(FamilyLogType.AuthorityChanged, Session.Character.Name, targetSession.Character.Name, right: auth);
 
                 targetSession.CurrentMapInstance?.Broadcast(targetSession.Character.GenerateGidx());
                 if (auth == 0)
@@ -735,7 +735,7 @@ namespace OpenNos.Handler
                     return;
                 DAOFactory.IteminstanceDAO.DeleteFromSlotAndType(fhead.CharacterId, packet.Slot, InventoryType.FamilyWareHouse);
             }
-            Session.Character.Family.InsertFamilyLog(FamilyLogType.WareHouseRemove, Session.Character.Name, message: $"{item2.ItemVNum}|{packet.Amount}");
+            Session.Character.Family.InsertFamilyLog(FamilyLogType.WareHouseRemoved, Session.Character.Name, message: $"{item2.ItemVNum}|{packet.Amount}");
         }
 
         [Packet("%FamilyInvite")]
@@ -816,7 +816,7 @@ namespace OpenNos.Handler
                         Rank = 0
                     };
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
-                    inviteSession.Character.Family.InsertFamilyLog(FamilyLogType.UserManage,
+                    inviteSession.Character.Family.InsertFamilyLog(FamilyLogType.UserManaged,
                         inviteSession.Character.Name, Session.Character.Name);
                     int? sentChannelId =
                         ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name,

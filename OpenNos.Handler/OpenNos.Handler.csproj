@@ -95,11 +95,10 @@
     <Compile Include="BazaarPacketHandler.cs" />
     <Compile Include="CharacterScreenPacketHandler.cs" />
     <Compile Include="FamilyPacketHandler.cs" />
-    <Compile Include="MapInstancePacketHandler.cs" />
+    <Compile Include="ScriptedInstancePacketHandler.cs" />
     <Compile Include="MinilandPacketHandler.cs" />
     <Compile Include="NpcPacketHandler.cs" />
     <Compile Include="BattlePacketHandler.cs" />
-    <Compile Include="RaidPacketHandler.cs" />
     <Compile Include="UselessPacketHandler.cs" />
     <Compile Include="InventoryPacketHandler.cs" />
     <Compile Include="CommandPacketHandler.cs" />

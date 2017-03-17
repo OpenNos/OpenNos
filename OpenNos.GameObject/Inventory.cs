@@ -379,7 +379,7 @@ namespace OpenNos.GameObject
                 if (itemdest != null)
                 {
                     Owner.Session.SendPacket(itemdest.GenerateFStash());
-                    Owner.Family?.InsertFamilyLog(FamilyLogType.WareHouseAdd, Owner.Name, message: $"{itemdest.ItemVNum}|{amount}");
+                    Owner.Family?.InsertFamilyLog(FamilyLogType.WareHouseAdded, Owner.Name, message: $"{itemdest.ItemVNum}|{amount}");
                     DeleteById(itemdest.Id);
                 }
             }

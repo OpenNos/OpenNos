@@ -1744,9 +1744,9 @@ namespace OpenNos.GameObject
                 string packet = string.Empty;
                 int i = 0;
                 int amount = -1;
-                foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s => s.FamilyLogType == FamilyLogType.WareHouseAdd || s.FamilyLogType == FamilyLogType.WareHouseRemove).OrderByDescending(s => s.Timestamp).Take(100))
+                foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s => s.FamilyLogType == FamilyLogType.WareHouseAdded || s.FamilyLogType == FamilyLogType.WareHouseRemoved).OrderByDescending(s => s.Timestamp).Take(100))
                 {
-                    packet += $" {(log.FamilyLogType == FamilyLogType.WareHouseAdd ? 0 : 1)}|{log.FamilyLogData}|{(int)(DateTime.Now - log.Timestamp).TotalHours}";
+                    packet += $" {(log.FamilyLogType == FamilyLogType.WareHouseAdded ? 0 : 1)}|{log.FamilyLogData}|{(int)(DateTime.Now - log.Timestamp).TotalHours}";
                     i++;
                     if (i == 50)
                     {
@@ -1779,7 +1779,7 @@ namespace OpenNos.GameObject
                     {
                         fam.FamilyExperience -= CharacterHelper.LoadFamilyXPData(Family.FamilyLevel);
                         fam.FamilyLevel++;
-                        Family.InsertFamilyLog(FamilyLogType.FamilyLevel, level: fam.FamilyLevel);
+                        Family.InsertFamilyLog(FamilyLogType.FamilyLevelUp, level: fam.FamilyLevel);
                         int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Name, Family.FamilyId.ToString(), UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_UP")), 0), ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     }
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref famchar);
@@ -3583,7 +3583,7 @@ namespace OpenNos.GameObject
                 string packet = string.Empty;
                 int i = 0;
                 int amount = 0;
-                foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s => s.FamilyLogType != FamilyLogType.WareHouseAdd && s.FamilyLogType != FamilyLogType.WareHouseRemove).OrderByDescending(s => s.Timestamp).Take(100))
+                foreach (FamilyLogDTO log in Family.FamilyLogs.Where(s => s.FamilyLogType != FamilyLogType.WareHouseAdded && s.FamilyLogType != FamilyLogType.WareHouseRemoved).OrderByDescending(s => s.Timestamp).Take(100))
                 {
                     packet += $" {(byte)log.FamilyLogType}|{log.FamilyLogData}|{(int)(DateTime.Now - log.Timestamp).TotalHours}";
                     i++;
@@ -4598,13 +4598,13 @@ namespace OpenNos.GameObject
                     {
                         if (Level > 20 && Level % 10 == 0)
                         {
-                            Family.InsertFamilyLog(FamilyLogType.Level, Name, level: Level);
+                            Family.InsertFamilyLog(FamilyLogType.LevelUp, Name, level: Level);
                             Family.InsertFamilyLog(FamilyLogType.FamilyXP, Name, experience: 20 * Level);
                             GenerateFamilyXp(20 * Level);
                         }
                         else if (Level > 80)
                         {
-                            Family.InsertFamilyLog(FamilyLogType.Level, Name, level: Level);
+                            Family.InsertFamilyLog(FamilyLogType.LevelUp, Name, level: Level);
                         }
                         else
                         {

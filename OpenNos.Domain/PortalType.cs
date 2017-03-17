@@ -23,12 +23,12 @@ namespace OpenNos.Domain
         Miniland = 3,
         TSEnd = 4,
         TSEndClosed = 5,
-        End = 6,
-        EndClosed = 7,
+        Exit = 6,
+        ExitClosed = 7,
         Raid = 8,
         Effect = 9, // same as 13 - 19 and 20 - 126
-        BlueRaidPortal = 10,
-        DarkRaidPortal = 11,
+        BlueRaid = 10,
+        DarkRaid = 11,
         TimeSpace = 12,
         ShopTeleport = 20
     }

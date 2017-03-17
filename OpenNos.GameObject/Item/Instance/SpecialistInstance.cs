@@ -619,7 +619,7 @@ namespace OpenNos.GameObject
                 Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
                 Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
                 wearable.Upgrade++;
-                Session.Character.Family?.InsertFamilyLog(FamilyLogType.Upgrade, Session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
+                Session.Character.Family?.InsertFamilyLog(FamilyLogType.ItemUpgraded, Session.Character.Name, itemVNum: wearable.ItemVNum, upgrade: wearable.Upgrade);
                 Session.SendPacket(wearable.GenerateInventoryAdd());
             }
             Session.SendPacket(Session.Character.GenerateGold());

@@ -63,31 +63,31 @@ namespace OpenNos.GameObject
                     value = $"{characterName}|{experience}";
                     break;
 
-                case FamilyLogType.Level:
+                case FamilyLogType.LevelUp:
                     value = $"{characterName}|{level}";
                     break;
 
-                case FamilyLogType.Raid:
+                case FamilyLogType.RaidWon:
                     value = raidType.ToString();
                     break;
 
-                case FamilyLogType.Upgrade:
+                case FamilyLogType.ItemUpgraded:
                     value = $"{characterName}|{itemVNum}|{upgrade}";
                     break;
 
-                case FamilyLogType.UserManage:
+                case FamilyLogType.UserManaged:
                     value = $"{characterName}|{characterName2}";
                     break;
 
-                case FamilyLogType.FamilyLevel:
+                case FamilyLogType.FamilyLevelUp:
                     value = level.ToString();
                     break;
 
-                case FamilyLogType.AuthorityChange:
+                case FamilyLogType.AuthorityChanged:
                     value = $"{characterName}|{right}|{characterName2}";
                     break;
 
-                case FamilyLogType.FamilyManage:
+                case FamilyLogType.FamilyManaged:
                     value = characterName;
                     break;
 
@@ -95,12 +95,12 @@ namespace OpenNos.GameObject
                     value = rainBowFamily;
                     break;
 
-                case FamilyLogType.RightChange:
+                case FamilyLogType.RightChanged:
                     value = $"{characterName}|{right}|{righttype}|{rightvalue}";
                     break;
 
-                case FamilyLogType.WareHouseAdd:
-                case FamilyLogType.WareHouseRemove:
+                case FamilyLogType.WareHouseAdded:
+                case FamilyLogType.WareHouseRemoved:
                     value = $"{characterName}|{message}";
                     break;
             }

@@ -11,11 +11,11 @@ using CloneExtensions;
 
 namespace OpenNos.Handler
 {
-    class MapInstancePacketHandler : IPacketHandler
+    class ScriptedInstancePacketHandler : IPacketHandler
     {
         #region Instantiation
 
-        public MapInstancePacketHandler(ClientSession session)
+        public ScriptedInstancePacketHandler(ClientSession session)
         {
             Session = session;
         }
