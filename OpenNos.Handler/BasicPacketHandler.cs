@@ -1149,7 +1149,7 @@ namespace OpenNos.Handler
                         case (sbyte)PortalType.Open:
                         case (sbyte)PortalType.Miniland:
                         case (sbyte)PortalType.TSEnd:
-                        case (sbyte)PortalType.End:
+                        case (sbyte)PortalType.Exit:
                         case (sbyte)PortalType.Effect:
                         case (sbyte)PortalType.ShopTeleport:
                             break;

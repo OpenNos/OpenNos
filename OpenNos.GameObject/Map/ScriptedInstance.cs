@@ -54,50 +54,58 @@ namespace OpenNos.GameObject
                 }
 
                 FirstMap = _mapinstancedictionary.Values.FirstOrDefault();
-                GenerateEvent(InstanceEvents);
+                GenerateEvent(InstanceEvents, FirstMap);
 
             }
         }
 
-        private List<EventContainer> GenerateEvent(XmlNode node)
+        private List<EventContainer> GenerateEvent(XmlNode node, MapInstance parentmapinstance)
         {
             List<EventContainer> evts = new List<EventContainer>();
 
+
             foreach (XmlNode mapevent in node.ChildNodes)
             {
+                int mapid;
+                if(mapevent.Attributes["Map"] == null || !int.TryParse(mapevent.Attributes["Map"].Value, out mapid))
+                {
+                    mapid = -1;
+                }
+                MapInstance mapinstance = _mapinstancedictionary.FirstOrDefault(s => s.Key == mapid).Value;
+                if (mapinstance == null)
+                {
+                    mapinstance = parentmapinstance;
+                }
                 switch (mapevent.Name)
                 {
-                    case "InstanceEvents":
-                        GenerateEvent(mapevent).ForEach(e => EventHelper.Instance.RunEvent(e));
-                        break;
-
                     case "CreateMap":
-                        GenerateEvent(mapevent).ForEach(e => EventHelper.Instance.RunEvent(e));
+                    case "InstanceEvents":
+                        GenerateEvent(mapevent, mapinstance).ForEach(e => EventHelper.Instance.RunEvent(e));
                         break;
 
                     case "OnMoveOnMap":
-                        _mapinstancedictionary.First(s => s.Key == int.Parse(node.Attributes["Map"].Value)).Value.OnMoveOnMapEvents.AddRange(GenerateEvent(mapevent));
+                        mapinstance.OnMoveOnMapEvents.AddRange(GenerateEvent(mapevent, mapinstance));
                         break;
 
                     case "OnCharacterDiscoveringMap":
-                        GenerateEvent(mapevent).ForEach(evt => _mapinstancedictionary.First(s => s.Key == int.Parse(node.Attributes["Map"].Value)).Value.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer, List<long>>(evt, new List<long>())));
+                        GenerateEvent(mapevent, mapinstance).ForEach(evt => mapinstance.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer, List<long>>(evt, new List<long>())));
                         break;
 
                     case "OnDeath":
-                        evts.AddRange(GenerateEvent(mapevent));
+                        evts.AddRange(GenerateEvent(mapevent, mapinstance));
                         break;
 
                     case "SummonMonsters":
-                        evts.Add(new EventContainer(null, EventActionType.SPAWNMONSTERS, _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), short.Parse(mapevent.Attributes["Amount"].Value), true, new List<EventContainer>())));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), short.Parse(mapevent.Attributes["Amount"].Value), true, new List<EventContainer>())));
                         break;
 
                     case "SummonMonster":
-                        evts.Add(new EventContainer(_mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value, EventActionType.SPAWNMONSTERS, _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), 1, true, GenerateEvent(mapevent))));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), 1, true, GenerateEvent(mapevent, mapinstance))));
                         break;
 
                     case "SpawnButton":
                         MapButton button = new MapButton(
-                            _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value,
+                            mapinstance,
                             int.Parse(mapevent.Attributes["Id"].Value),
                             short.Parse(mapevent.Attributes["PositionX"].Value),
                             short.Parse(mapevent.Attributes["PositionY"].Value),
@@ -112,54 +120,52 @@ namespace OpenNos.GameObject
                             switch (var.Name)
                             {
                                 case "OnFirstEnable":
-                                    button.FirstEnableEvents.AddRange(GenerateEvent(var));
+                                    button.FirstEnableEvents.AddRange(GenerateEvent(var, mapinstance));
                                     break;
                                 case "OnEnable":
-                                    button.EnableEvents.AddRange(GenerateEvent(var));
+                                    button.EnableEvents.AddRange(GenerateEvent(var, mapinstance));
                                     break;
                                 case "OnDisable":
-                                    button.DisableEvents.AddRange(GenerateEvent(var));
+                                    button.DisableEvents.AddRange(GenerateEvent(var, mapinstance));
                                     break;
                             }
                         }
-                        evts.Add(new EventContainer(_mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value, EventActionType.SPAWNBUTTON, button));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNBUTTON, button));
                         break;
 
                     case "CleanMap":
-                        evts.Add(new EventContainer(_mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value, EventActionType.CLEANMAP, null));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.CLEANMAP, null));
                         break;
 
                     case "ShowPortals":
-                        evts.Add(new EventContainer(_mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value, EventActionType.SHOWPORTALS, null));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SHOWPORTALS, null));
                         break;
 
                     case "ChangePortalType":
-                        evts.Add(new EventContainer(_mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value, EventActionType.CHANGEPORTALTYPE, new Tuple<int, PortalType>(int.Parse(mapevent.Attributes["IdOnMap"].Value), (PortalType)sbyte.Parse(mapevent.Attributes["Type"].Value))));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.CHANGEPORTALTYPE, new Tuple<int, PortalType>(int.Parse(mapevent.Attributes["IdOnMap"].Value), (PortalType)sbyte.Parse(mapevent.Attributes["Type"].Value))));
                         break;
 
                     case "SendPacket":
-                        evts.Add(new EventContainer(null, EventActionType.SENDPACKET, mapevent.Attributes["Value"].Value));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SENDPACKET, mapevent.Attributes["Value"].Value));
                         break;
 
                     case "NpcDialog":
-                        evts.Add(new EventContainer(null, EventActionType.NPCDIALOG, int.Parse(mapevent.Attributes["Value"].Value)));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.NPCDIALOG, int.Parse(mapevent.Attributes["Value"].Value)));
                         break;
 
                     case "SendMessage":
-                        evts.Add(new EventContainer(null, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(mapevent.Attributes["Value"].Value, byte.Parse(mapevent.Attributes["Type"].Value))));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(mapevent.Attributes["Value"].Value, byte.Parse(mapevent.Attributes["Type"].Value))));
                         break;
 
                     case "GenerateClock":
-                        evts.Add(new EventContainer(null, EventActionType.CLOCK, int.Parse(mapevent.Attributes["Value"].Value)));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.CLOCK, int.Parse(mapevent.Attributes["Value"].Value)));
                         break;
 
                     case "StartClock":
-                        evts.Add(new EventContainer(null, EventActionType.STARTCLOCK, null));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.STARTCLOCK, null));
                         break;
 
-
                     case "SpawnPortal":
-                        MapInstance map = _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value;
                         MapInstance destmap = _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["MapTo"].Value)).Value;
                         Portal portal = new Portal()
                         {
@@ -169,10 +175,10 @@ namespace OpenNos.GameObject
                             Type = short.Parse(mapevent.Attributes["Type"].Value),
                             DestinationX = short.Parse(mapevent.Attributes["ToX"].Value),
                             DestinationY = short.Parse(mapevent.Attributes["ToY"].Value),
-                            SourceMapInstanceId = map.MapInstanceId,
+                            SourceMapInstanceId = mapinstance.MapInstanceId,
                             DestinationMapInstanceId = destmap.MapInstanceId,
                         };
-                        evts.Add(new EventContainer(map, EventActionType.SPAWNPORTAL, portal));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNPORTAL, portal));
                         break;
                 }
 
