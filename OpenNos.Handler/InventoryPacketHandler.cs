@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
- 
+
 using OpenNos.Core;
 using OpenNos.Core.Handling;
 using OpenNos.Domain;
@@ -505,121 +505,133 @@ namespace OpenNos.Handler
         public void GetItem(GetPacket getPacket)
         {
             Logger.Debug(Session.Character.GenerateIdentity(), getPacket.ToString());
-
-            if (!Session.HasCurrentMapInstance || !Session.CurrentMapInstance.DroppedList.ContainsKey(getPacket.TransportId))
+            if (Session.Character.LastSkillUse.AddSeconds(1) > DateTime.Now || Session.Character.IsVehicled || !Session.HasCurrentMapInstance)
             {
                 return;
             }
 
-            MapItem mapItem = Session.CurrentMapInstance.DroppedList[getPacket.TransportId];
-            if (Session.Character.LastSkillUse.AddSeconds(1) > DateTime.Now || Session.Character.IsVehicled)
+            if (getPacket.TransportId < 100000)
             {
-                return;
-            }
-            if (mapItem != null)
-            {
-                bool canpick = false;
-                switch (getPacket.PickerType)
+                MapButton button = Session.CurrentMapInstance.Buttons.FirstOrDefault(s => s.MapButtonId == getPacket.TransportId);
+                if (button != null)
                 {
-                    case 1:
-                        canpick = Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
-                        break;
-
-                    case 2:
-                        Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == getPacket.PickerId && s.CanPickUp);
-                        if (mate != null)
-                        {
-                            canpick = mate.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
-                        }
-                        break;
+                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateDelay(2000,1,$"#git^{button.MapButtonId}"));
                 }
-                if (canpick && Session.HasCurrentMapInstance)
+            }
+            else
+            {
+                if (!Session.CurrentMapInstance.DroppedList.ContainsKey(getPacket.TransportId))
                 {
-                    MonsterMapItem item = mapItem as MonsterMapItem;
-                    if (item != null)
+                    return;
+                }
+
+                MapItem mapItem = Session.CurrentMapInstance.DroppedList[getPacket.TransportId];
+
+                if (mapItem != null)
+                {
+                    bool canpick = false;
+                    switch (getPacket.PickerType)
                     {
-                        MonsterMapItem monsterMapItem = item;
-                        if (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.LodInstance && monsterMapItem.OwnerId.HasValue && monsterMapItem.OwnerId.Value != -1)
-                        {
-                            Group group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(monsterMapItem.OwnerId.Value) && g.IsMemberOfGroup(Session.Character.CharacterId));
-                            if (item.CreatedDate.AddSeconds(30) > DateTime.Now && !(monsterMapItem.OwnerId == Session.Character.CharacterId || group != null && group.SharingMode == (byte)GroupSharingType.Everyone))
+                        case 1:
+                            canpick = Session.Character.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
+                            break;
+
+                        case 2:
+                            Mate mate = Session.Character.Mates.FirstOrDefault(s => s.MateTransportId == getPacket.PickerId && s.CanPickUp);
+                            if (mate != null)
                             {
-                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"), 10));
-                                return;
+                                canpick = mate.IsInRange(mapItem.PositionX, mapItem.PositionY, 8);
                             }
+                            break;
+                    }
+                    if (canpick && Session.HasCurrentMapInstance)
+                    {
+                        MonsterMapItem item = mapItem as MonsterMapItem;
+                        if (item != null)
+                        {
+                            MonsterMapItem monsterMapItem = item;
+                            if (Session.CurrentMapInstance.MapInstanceType != MapInstanceType.LodInstance && monsterMapItem.OwnerId.HasValue && monsterMapItem.OwnerId.Value != -1)
+                            {
+                                Group group = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(monsterMapItem.OwnerId.Value) && g.IsMemberOfGroup(Session.Character.CharacterId));
+                                if (item.CreatedDate.AddSeconds(30) > DateTime.Now && !(monsterMapItem.OwnerId == Session.Character.CharacterId || group != null && group.SharingMode == (byte)GroupSharingType.Everyone))
+                                {
+                                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"), 10));
+                                    return;
+                                }
+                            }
+
+                            // initialize and rarify
+                            item.Rarify(null);
                         }
 
-                        // initialize and rarify
-                        item.Rarify(null);
-                    }
-
-                    if (mapItem.ItemVNum != 1046)
-                    {
-                        ItemInstance mapItemInstance = mapItem.GetItemInstance();
-                        if (mapItemInstance.Item.ItemType == ItemType.Map)
+                        if (mapItem.ItemVNum != 1046)
                         {
-                            if (mapItemInstance.Item.Effect == 71)
+                            ItemInstance mapItemInstance = mapItem.GetItemInstance();
+                            if (mapItemInstance.Item.ItemType == ItemType.Map)
                             {
-                                Session.Character.SpPoint += mapItem.GetItemInstance().Item.EffectValue;
-                                if (Session.Character.SpPoint > 10000)
+                                if (mapItemInstance.Item.Effect == 71)
                                 {
-                                    Session.Character.SpPoint = 10000;
+                                    Session.Character.SpPoint += mapItem.GetItemInstance().Item.EffectValue;
+                                    if (Session.Character.SpPoint > 10000)
+                                    {
+                                        Session.Character.SpPoint = 10000;
+                                    }
+                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
+                                    Session.SendPacket(Session.Character.GenerateSpPoint());
                                 }
-                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_POINTSADDED"), mapItem.GetItemInstance().Item.EffectValue), 0));
-                                Session.SendPacket(Session.Character.GenerateSpPoint());
+                                Session.CurrentMapInstance.DroppedList.Remove(getPacket.TransportId);
+                                Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                             }
+                            else
+                            {
+                                lock (Session.Character.Inventory)
+                                {
+                                    byte amount = mapItem.Amount;
+                                    List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(mapItemInstance);
+                                    if (newInv.Any(s => s != null))
+                                    {
+                                        Session.CurrentMapInstance.DroppedList.Remove(getPacket.TransportId);
+                                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
+                                        if (getPacket.PickerType == 2)
+                                        {
+                                            Session.SendPacket(Session.Character.GenerateIcon(1, 1, newInv.First().ItemVNum));
+                                        }
+                                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {amount}", 12));
+                                        if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
+                                        {
+                                            Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{string.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {newInv.First().Item.Name} x {mapItem.Amount}", 10));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // handle gold drop
+                            long maxGold = ServerManager.Instance.MaxGold;
+                            MonsterMapItem droppedGold = mapItem as MonsterMapItem;
+                            if (droppedGold != null && Session.Character.Gold + droppedGold.GoldAmount <= maxGold)
+                            {
+                                if (getPacket.PickerType == 2)
+                                {
+                                    Session.SendPacket(Session.Character.GenerateIcon(1, 1, 1046));
+                                }
+                                Session.Character.Gold += droppedGold.GoldAmount;
+                                Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapItem.GetItemInstance().Item.Name} x {droppedGold.GoldAmount}", 12));
+                            }
+                            else
+                            {
+                                Session.Character.Gold = maxGold;
+                                Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                            }
+                            Session.SendPacket(Session.Character.GenerateGold());
                             Session.CurrentMapInstance.DroppedList.Remove(getPacket.TransportId);
                             Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                         }
-                        else
-                        {
-                            lock (Session.Character.Inventory)
-                            {
-                                byte amount = mapItem.Amount;
-                                List<ItemInstance> newInv = Session.Character.Inventory.AddToInventory(mapItemInstance);
-                                if (newInv.Any(s => s != null))
-                                {
-                                    Session.CurrentMapInstance.DroppedList.Remove(getPacket.TransportId);
-                                    Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
-                                    if (getPacket.PickerType == 2)
-                                    {
-                                        Session.SendPacket(Session.Character.GenerateIcon(1, 1, newInv.First().ItemVNum));
-                                    }
-                                    Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newInv.First().Item.Name} x {amount}", 12));
-                                    if (Session.CurrentMapInstance.MapInstanceType == MapInstanceType.LodInstance)
-                                    {
-                                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateSay($"{string.Format(Language.Instance.GetMessageFromKey("ITEM_ACQUIRED_LOD"), Session.Character.Name)}: {newInv.First().Item.Name} x {mapItem.Amount}", 10));
-                                    }
-                                }
-                                else
-                                {
-                                    Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // handle gold drop
-                        long maxGold = ServerManager.Instance.MaxGold;
-                        MonsterMapItem droppedGold = mapItem as MonsterMapItem;
-                        if (droppedGold != null && Session.Character.Gold + droppedGold.GoldAmount <= maxGold)
-                        {
-                            if (getPacket.PickerType == 2)
-                            {
-                                Session.SendPacket(Session.Character.GenerateIcon(1, 1, 1046));
-                            }
-                            Session.Character.Gold += droppedGold.GoldAmount;
-                            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapItem.GetItemInstance().Item.Name} x {droppedGold.GoldAmount}", 12));
-                        }
-                        else
-                        {
-                            Session.Character.Gold = maxGold;
-                            Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
-                        }
-                        Session.SendPacket(Session.Character.GenerateGold());
-                        Session.CurrentMapInstance.DroppedList.Remove(getPacket.TransportId);
-                        Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGet(getPacket.TransportId));
                     }
                 }
             }

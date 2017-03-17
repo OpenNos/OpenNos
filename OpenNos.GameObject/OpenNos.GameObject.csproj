@@ -97,12 +97,14 @@
     <Compile Include="Event\LOD\LOD.cs" />
     <Compile Include="Event\MINILANDREFRESH\MinilandRefresh.cs" />
     <Compile Include="Helpers\UserInterfaceHelper.cs" />
+    <Compile Include="Map\MapButton.cs" />
     <Compile Include="Map\MapClock.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="Map\MonsterToSummon.cs" />
     <Compile Include="Map\ScriptedInstance.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />
+    <Compile Include="Packets\ClientPackets\GitPacket.cs" />
     <Compile Include="Packets\ClientPackets\EquipmentInfoPacket.cs" />
     <Compile Include="Packets\ClientPackets\FDepositPacket.cs" />
     <Compile Include="Packets\ClientPackets\DepositPacket.cs" />

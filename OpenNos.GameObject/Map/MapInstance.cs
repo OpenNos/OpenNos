@@ -52,9 +52,9 @@ namespace OpenNos.GameObject
 
         public MapInstance(Map map, Guid guid, bool shopAllowed, MapInstanceType type, InstanceBag Clock)
         {
+            Buttons = new List<MapButton>();
             XpRate = 1;
             DropRate = 1;
-            NpcEffectActivated = true;
             ShopAllowed = shopAllowed;
             MapInstanceType = type;
             _isSleeping = true;
@@ -119,17 +119,13 @@ namespace OpenNos.GameObject
 
         public long LastUserShopId { get; set; }
 
-        public bool Lock { get; set; }
-
         public Map Map { get; set; }
 
         public Guid MapInstanceId { get; set; }
 
         public MapInstanceType MapInstanceType { get; set; }
 
-        public List<MapMonster> Monsters => _monsters.GetAllItems();
-
-        public bool NpcEffectActivated { get; set; }
+        public List<MapMonster> Monsters => _monsters.GetAllItems();   
 
         public IEnumerable<MapNpc> Npcs => _npcs;
 
@@ -150,6 +146,7 @@ namespace OpenNos.GameObject
         public byte MapIndexX { get; set; }
 
         public byte MapIndexY { get; set; }
+        public List<MapButton> Buttons { get; set; }
 
         #endregion
 
@@ -220,6 +217,12 @@ namespace OpenNos.GameObject
             {
                 Logger.Error(e);
             }
+        }
+
+        public void SpawnButton(MapButton parameter)
+        {
+            Buttons.Add(parameter);
+            Broadcast(parameter.GenerateIn());
         }
 
         public void DropItems(List<Tuple<short, int, short, short>> list)

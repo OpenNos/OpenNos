@@ -59,6 +59,8 @@ namespace OpenNos.GameObject
 
         public List<TeleporterDTO> Teleporters { get; set; }
 
+        public bool EffectActivated { get; set; }
+
         #endregion
 
         #region Methods
@@ -137,7 +139,7 @@ namespace OpenNos.GameObject
         private void NpcLife()
         {
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
-            if (Effect > 0 && time > EffectDelay && MapInstance.NpcEffectActivated)
+            if (Effect > 0 && time > EffectDelay && EffectActivated)
             {
                 MapInstance.Broadcast(GenerateEff( Effect), MapX, MapY);
                 LastEffect = DateTime.Now;

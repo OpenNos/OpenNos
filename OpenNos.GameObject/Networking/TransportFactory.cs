@@ -31,7 +31,7 @@
 
             if (_lastTransportId >= long.MaxValue)
             {
-                _lastTransportId = 1;
+                _lastTransportId = 100000;
             }
 
             return _lastTransportId;

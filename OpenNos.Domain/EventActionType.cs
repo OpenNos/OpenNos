@@ -16,21 +16,22 @@ namespace OpenNos.Domain
 {
     public enum EventActionType
     {
-        XPRATE,
-        DROPRATE,
+        CHANGEXPRATE,
+        CHANGEDROPRATE,
         SENDPACKET,
-        DISPOSE,
-        LOCK,
-        UNSPAWN,
+        DISPOSEMAP,
+        UNSPAWNMONSTERS,
         SPAWNONLASTENTRY,
         CLOCK,
-        SPAWN,
+        SPAWNMONSTERS,
         DROPITEMS,
         NPCDIALOG,
         STARTCLOCK,
         SPAWNPORTAL,
         CHANGEPORTALTYPE,
         CLEANMAP,
-        SHOWPORTALS
+        SHOWPORTALS,
+        NPCSEFFECTCHANGESTATE,
+        SPAWNBUTTON
     }
 }

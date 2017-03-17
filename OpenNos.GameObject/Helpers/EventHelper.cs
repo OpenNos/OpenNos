@@ -89,7 +89,7 @@ namespace OpenNos.GameObject.Helpers
 
         public void RunEvent(EventContainer evt, ClientSession session = null)
         {
-            if (session !=null)
+            if (session != null)
             {
                 evt.MapInstance = session.CurrentMapInstance;
                 switch (evt.EventActionType)
@@ -116,7 +116,7 @@ namespace OpenNos.GameObject.Helpers
 
                             evt.MapInstance.Sessions.ToList().ForEach(e =>
                             {
-                                RunEvent(evt,e);
+                                RunEvent(evt, e);
                             });
                         }
                         break;
@@ -143,37 +143,41 @@ namespace OpenNos.GameObject.Helpers
                     case EventActionType.SHOWPORTALS:
                         evt.MapInstance.Portals.ForEach(s => evt.MapInstance.Broadcast(evt.MapInstance.GenerateGp(s)));
                         break;
-                        
-                    case EventActionType.CHANGEPORTALTYPE:
-                        Tuple<int, PortalType> param = (Tuple<int, PortalType>)evt.Parameter;
-                       Portal portal = evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == param.Item1);
-                        if(portal !=null)
-                        {
-                            portal.Type = (short)param.Item2;
-                        } 
+
+                    case EventActionType.NPCSEFFECTCHANGESTATE:
+                        evt.MapInstance.Npcs.ToList().ForEach(s => s.EffectActivated = (bool)evt.Parameter);
                         break;
 
-                    case EventActionType.DROPRATE:
+                    case EventActionType.CHANGEPORTALTYPE:
+                        Tuple<int, PortalType> param = (Tuple<int, PortalType>)evt.Parameter;
+                        Portal portal = evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == param.Item1);
+                        if (portal != null)
+                        {
+                            portal.Type = (short)param.Item2;
+                        }
+                        break;
+
+                    case EventActionType.CHANGEDROPRATE:
                         evt.MapInstance.DropRate = (int)evt.Parameter;
                         break;
 
-                    case EventActionType.XPRATE:
+                    case EventActionType.CHANGEXPRATE:
                         evt.MapInstance.XpRate = (int)evt.Parameter;
                         break;
 
-                    case EventActionType.DISPOSE:
+                    case EventActionType.DISPOSEMAP:
                         evt.MapInstance.Dispose();
                         break;
 
-                    case EventActionType.LOCK:
-                        evt.MapInstance.Lock = (bool)evt.Parameter;
+                    case EventActionType.SPAWNBUTTON:
+                        evt.MapInstance.SpawnButton((MapButton)evt.Parameter);
                         break;
 
-                    case EventActionType.UNSPAWN:
+                    case EventActionType.UNSPAWNMONSTERS:
                         evt.MapInstance.UnspawnMonsters((int)evt.Parameter);
                         break;
 
-                    case EventActionType.SPAWN:
+                    case EventActionType.SPAWNMONSTERS:
                         evt.MapInstance.SummonMonsters((List<MonsterToSummon>)evt.Parameter);
                         break;
 
@@ -208,7 +212,7 @@ namespace OpenNos.GameObject.Helpers
                 RunEvent(evt);
             });
         }
-        
+
 
         #endregion
     }

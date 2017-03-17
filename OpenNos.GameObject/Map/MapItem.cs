@@ -82,6 +82,10 @@ namespace OpenNos.GameObject
 
         public abstract ItemInstance GetItemInstance();
 
+        public string GenerateIn()
+        {
+            return $"in 9 {ItemVNum} {TransportId} {PositionX} {PositionY} {(this is MonsterMapItem && ((MonsterMapItem)this).GoldAmount > 1 ? ((MonsterMapItem)this).GoldAmount : Amount)} 0 0 -1";
+        }
         #endregion
     }
 }

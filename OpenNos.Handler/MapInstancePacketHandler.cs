@@ -43,6 +43,19 @@ namespace OpenNos.Handler
         }
 
         /// <summary>
+        /// GitPacket packet
+        /// </summary>
+        /// <param name="packet"></param>
+        public void Git(GitPacket packet)
+        {
+            MapButton button = Session.CurrentMapInstance.Buttons.FirstOrDefault(s => s.MapButtonId == packet.ButtonId);
+            if(button != null)
+            {
+                button.State = !button.State;
+                button.RunAction();
+            }
+        }
+        /// <summary>
         /// wreq packet
         /// </summary>
         /// <param name="packet"></param>

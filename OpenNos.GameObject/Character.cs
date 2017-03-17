@@ -1563,14 +1563,7 @@ namespace OpenNos.GameObject
         {
             return $"dir 1 {CharacterId} {Direction}";
         }
-
-        public IEnumerable<string> GenerateDroppedItem()
-        {
-            return MapInstance.DroppedList.GetAllItems().Select(item => $"in 9 {item.ItemVNum} {item.TransportId} {item.PositionX} {item.PositionY} {(item is MonsterMapItem && ((MonsterMapItem)item).GoldAmount > 1 ? ((MonsterMapItem)item).GoldAmount : item.Amount)} 0 0 -1").ToList();
-        }
-
-
-
+ 
 
         public string GenerateEq()
         {

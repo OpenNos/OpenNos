@@ -436,7 +436,10 @@ namespace OpenNos.GameObject
                     session.SendPackets(session.Character.MapInstance.Monsters.Select(monster => monster.GenerateIn()).ToList());
                     session.SendPackets(session.Character.MapInstance.Npcs.Select(npc => npc.GenerateIn()).ToList());
                     session.SendPackets(session.Character.GenerateNPCShopOnMap());
-                    session.SendPackets(session.Character.GenerateDroppedItem());
+
+                    session.CurrentMapInstance.DroppedList.GetAllItems().ForEach(item => session.SendPacket(item.GenerateIn()));
+                    session.CurrentMapInstance.Buttons.ForEach(item => session.SendPacket(item.GenerateIn()));
+                    
                     session.SendPackets(session.Character.MapInstance.GenerateUserShops());
                     session.SendPackets(session.CurrentMapInstance.GeneratePlayerShopOnMap());
                     if (session.CurrentMapInstance.InstanceBag.Enabled)
@@ -517,15 +520,6 @@ namespace OpenNos.GameObject
                 Dispose(true);
                 GC.SuppressFinalize(this);
                 _disposed = true;
-            }
-        }
-
-        public void EnableMapEffect(short mapId, bool iseffectactivated)
-        {
-            Guid guid = GetBaseMapInstanceIdByMapId(mapId);
-            if (guid != default(Guid))
-            {
-                GetMapInstance(guid).NpcEffectActivated = iseffectactivated;
             }
         }
 
@@ -1276,8 +1270,7 @@ namespace OpenNos.GameObject
                 BotProcess();
             });
 
-            Instance.EnableMapEffect(98, false);
-
+            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, true));
             foreach (Schedule schedul in Schedules)
             {
                 Observable.Timer(TimeSpan.FromSeconds(EventHelper.Instance.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))

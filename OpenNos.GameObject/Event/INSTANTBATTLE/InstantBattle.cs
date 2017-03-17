@@ -131,7 +131,7 @@ namespace OpenNos.GameObject.Event
                     }
                 });
 
-                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(15), new EventContainer(mapinstance.Item1, EventActionType.DISPOSE, null));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(15), new EventContainer(mapinstance.Item1, EventActionType.DISPOSEMAP, null));
                 EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(3), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 12), 0)));
                 EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(5), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 10), 0)));
                 EventHelper.Instance.ScheduleEvent(TimeSpan.FromMinutes(10), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MINUTES_REMAINING"), 5), 0)));
@@ -150,10 +150,10 @@ namespace OpenNos.GameObject.Event
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(130 + wave * 160), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_WAVE"), 0)));
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(160 + wave * 160), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_INCOMING"), 0)));
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(170 + wave * 160), new EventContainer(mapinstance.Item1, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("INSTANTBATTLE_MONSTERS_HERE"), 0)));
-                    EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10 + wave * 160), new EventContainer(mapinstance.Item1, EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, wave)));
+                    EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(10 + wave * 160), new EventContainer(mapinstance.Item1, EventActionType.SPAWNMONSTERS, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, wave)));
                     EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(140 + wave * 160), new EventContainer(mapinstance.Item1, EventActionType.DROPITEMS, GetInstantBattleDrop(mapinstance.Item1.Map, mapinstance.Item2, wave)));
                 }
-                EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(650), new EventContainer(mapinstance.Item1, EventActionType.SPAWN, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, 4)));
+                EventHelper.Instance.ScheduleEvent(TimeSpan.FromSeconds(650), new EventContainer(mapinstance.Item1, EventActionType.SPAWNMONSTERS, GetInstantBattleMonster(mapinstance.Item1.Map, mapinstance.Item2, 4)));
             }
         }
 

@@ -88,7 +88,41 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SummonMonsters":
-                        evts.Add(new EventContainer(null, EventActionType.SPAWN, _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), short.Parse(mapevent.Attributes["Amount"].Value), true, GenerateEvent(mapevent))));
+                        evts.Add(new EventContainer(null, EventActionType.SPAWNMONSTERS, _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), short.Parse(mapevent.Attributes["Amount"].Value), true, new List<EventContainer>())));
+                        break;
+
+                    case "SummonMonster":
+                        evts.Add(new EventContainer(_mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value, EventActionType.SPAWNMONSTERS, _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), 1, true, GenerateEvent(mapevent))));
+                        break;
+
+                    case "SpawnButton":
+                        MapButton button = new MapButton(
+                            _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value,
+                            int.Parse(mapevent.Attributes["Id"].Value),
+                            short.Parse(mapevent.Attributes["PositionX"].Value),
+                            short.Parse(mapevent.Attributes["PositionY"].Value),
+                             short.Parse(mapevent.Attributes["VNumEnabled"].Value),
+                              short.Parse(mapevent.Attributes["VNumDisabled"].Value),
+                              new List<EventContainer>(),
+                               new List<EventContainer>(),
+                                new List<EventContainer>()
+                            );
+                        foreach (XmlNode var in mapevent.ChildNodes)
+                        {
+                            switch (var.Name)
+                            {
+                                case "OnFirstEnable":
+                                    button.FirstEnableEvents.AddRange(GenerateEvent(var));
+                                    break;
+                                case "OnEnable":
+                                    button.EnableEvents.AddRange(GenerateEvent(var));
+                                    break;
+                                case "OnDisable":
+                                    button.DisableEvents.AddRange(GenerateEvent(var));
+                                    break;
+                            }
+                        }
+                        evts.Add(new EventContainer(_mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value, EventActionType.SPAWNBUTTON, button));
                         break;
 
                     case "CleanMap":

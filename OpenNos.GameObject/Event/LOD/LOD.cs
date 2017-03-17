@@ -30,10 +30,9 @@ namespace OpenNos.GameObject.Event
             const int HornTime = 30;
             const int HornRepawn = 4;
             const int HornStay = 1;
-            ServerManager.Instance.EnableMapEffect(98, true);
+            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)),EventActionType.NPCSEFFECTCHANGESTATE,true));
             LODThread lodThread = new LODThread();
-            Thread thread = new Thread(() => lodThread.Run(lodtime * 60, HornTime * 60, HornRepawn * 60, HornStay * 60));
-            thread.Start();
+            Observable.Timer(TimeSpan.FromMinutes(0)).Subscribe(X => lodThread.Run(lodtime * 60, HornTime * 60, HornRepawn * 60, HornStay * 60));
         }
         #endregion
     }
@@ -56,8 +55,8 @@ namespace OpenNos.GameObject.Event
                     {
                         if (fam.LandOfDeath != null)
                         {
-                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.XPRATE, 3));
-                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.DROPRATE, 3));
+                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CHANGEXPRATE, 3));
+                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CHANGEDROPRATE, 3));
                             SpawnDH(fam.LandOfDeath);
                         }
                     }
@@ -69,8 +68,8 @@ namespace OpenNos.GameObject.Event
                     {
                         if (fam.LandOfDeath != null)
                         {
-                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.XPRATE, 3));
-                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.DROPRATE, 3));
+                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CHANGEXPRATE, 3));
+                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CHANGEDROPRATE, 3));
                             SpawnDH(fam.LandOfDeath);
                         }
                     }
@@ -115,13 +114,12 @@ namespace OpenNos.GameObject.Event
             {
                 if (fam.LandOfDeath != null)
                 {
-                    EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.DISPOSE, null));
+                    EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.DISPOSEMAP, null));
                     fam.LandOfDeath = null;
                 }
             }
             ServerManager.Instance.StartedEvents.Remove(EventType.LOD);
             ServerManager.Instance.StartedEvents.Remove(EventType.LODDH);
-            ServerManager.Instance.EnableMapEffect(98, false);
         }
 
         private void SpawnDH(MapInstance LandOfDeath)
@@ -132,9 +130,9 @@ namespace OpenNos.GameObject.Event
         }
         private void DespawnDH(MapInstance LandOfDeath)
         {
+            EventHelper.Instance.RunEvent(new EventContainer(ServerManager.Instance.GetMapInstance(ServerManager.Instance.GetBaseMapInstanceIdByMapId(98)), EventActionType.NPCSEFFECTCHANGESTATE, false));
             EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0)));
-            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.LOCK, true));
-            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.UNSPAWN, 443));
+            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.UNSPAWNMONSTERS, 443));
         }
     }
 }
