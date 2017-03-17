@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using System;
+using OpenNos.Domain;
 
 namespace OpenNos.GameObject
 {
@@ -27,7 +28,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
-    
+
         public Guid DestinationMapInstanceId
         {
             get
@@ -53,6 +54,8 @@ namespace OpenNos.GameObject
             }
             set { sourceMapInstanceId = value; }
         }
+
+    
 
         #endregion
     }

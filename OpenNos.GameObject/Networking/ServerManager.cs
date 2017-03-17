@@ -430,7 +430,7 @@ namespace OpenNos.GameObject
                         s.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => session.SendPacket(m.GenerateIn()));
                     });
 
-                    session.SendPackets(session.Character.GenerateGp());
+                    session.CurrentMapInstance.Portals.ForEach(s => session.SendPacket(session.CurrentMapInstance.GenerateGp(s)));
                     session.SendPackets(session.Character.GenerateWp());
 
                     session.SendPackets(session.Character.MapInstance.Monsters.Select(monster => monster.GenerateIn()).ToList());

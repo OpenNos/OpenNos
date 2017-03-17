@@ -398,7 +398,7 @@ namespace OpenNos.GameObject
 
         public int WaterResistance { get; private set; }
         public int ScPage { get; set; }
-        public ScriptedInstance LastTimeSpace { get; set; }
+        public int LastTimeSpace { get; set; }
 
         #endregion
 
@@ -1887,19 +1887,6 @@ namespace OpenNos.GameObject
         public string GenerateGold()
         {
             return $"gold {Gold} 0";
-        }
-
-        public IEnumerable<string> GenerateGp()
-        {
-            List<string> gpList = new List<string>();
-            int i = 0;
-            foreach (Portal portal in MapInstance.Portals.Concat(GetExtraPortal()))
-            {
-                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {ServerManager.Instance.GetMapInstance(portal.DestinationMapInstanceId)?.Map.MapId} {portal.Type} {(portal.PortalId)} {(portal.IsDisabled ? 1 : 0)}");
-                i++;
-            }
-
-            return gpList;
         }
 
         public IEnumerable<WpPacket> GenerateWp()

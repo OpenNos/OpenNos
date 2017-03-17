@@ -29,6 +29,8 @@ namespace OpenNos.Domain
         NPCDIALOG,
         STARTCLOCK,
         SPAWNPORTAL,
-        CHANGEPORTALTYPE
+        CHANGEPORTALTYPE,
+        CLEANMAP,
+        SHOWPORTALS
     }
 }

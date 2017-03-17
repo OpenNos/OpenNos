@@ -136,6 +136,23 @@ namespace OpenNos.GameObject.Helpers
                         evt.MapInstance.CreatePortal((Portal)evt.Parameter);
                         break;
 
+                    case EventActionType.CLEANMAP:
+                        evt.MapInstance.Broadcast(evt.MapInstance.GenerateMapClear());
+                        break;
+
+                    case EventActionType.SHOWPORTALS:
+                        evt.MapInstance.Portals.ForEach(s => evt.MapInstance.Broadcast(evt.MapInstance.GenerateGp(s)));
+                        break;
+                        
+                    case EventActionType.CHANGEPORTALTYPE:
+                        Tuple<int, PortalType> param = (Tuple<int, PortalType>)evt.Parameter;
+                       Portal portal = evt.MapInstance.Portals.FirstOrDefault(s => s.PortalId == param.Item1);
+                        if(portal !=null)
+                        {
+                            portal.Type = (short)param.Item2;
+                        } 
+                        break;
+
                     case EventActionType.DROPRATE:
                         evt.MapInstance.DropRate = (int)evt.Parameter;
                         break;

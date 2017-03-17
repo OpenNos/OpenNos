@@ -179,6 +179,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string GenerateMapClear()
+        {
+            return "mapclear";
+        }
+
         public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY)
         {
             try
