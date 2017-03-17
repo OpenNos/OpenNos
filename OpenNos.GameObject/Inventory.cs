@@ -261,7 +261,7 @@ namespace OpenNos.GameObject
 
         public bool CanAddItem(short itemVnum)
         {
-            InventoryType type = ServerManager.GetItem(itemVnum).Type;
+            InventoryType type = ServerManager.Instance.GetItem(itemVnum).Type;
             return CanAddItem(type);
         }
 

@@ -113,7 +113,7 @@ namespace OpenNos.GameObject
             };
             DAOFactory.FamilyLogDAO.InsertOrUpdate(ref log);
             ServerManager.Instance.FamilyRefresh(FamilyId);
-            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
         }
 
         internal Family DeepCopy()

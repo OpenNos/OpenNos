@@ -204,7 +204,7 @@ namespace OpenNos.GameObject
                                 return specialist.HoldingVNum == 0 ?
     $"e_info 7 {ItemVNum} 0" : $"e_info 7 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} 100 {specialist.SpDamage} {specialist.SpDefence}";
                             case 2:
-                                Item spitem = ServerManager.GetItem(specialist.HoldingVNum);
+                                Item spitem = ServerManager.Instance.GetItem(specialist.HoldingVNum);
                                 return specialist.HoldingVNum == 0 ?
                                     $"e_info 7 {ItemVNum} 0" :
                                     $"e_info 7 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.SpLevel} {specialist.XP} {CharacterHelper.SPXPData[specialist.SpLevel - 1]} {Upgrade} {CharacterHelper.SlPoint(specialist.SlDamage, 0)} {CharacterHelper.SlPoint(specialist.SlDefence, 1)} {CharacterHelper.SlPoint(specialist.SlElement, 2)} {CharacterHelper.SlPoint(specialist.SlHP, 3)} {CharacterHelper.SPPoint(specialist.SpLevel, Upgrade) - specialist.SlDamage - specialist.SlHP - specialist.SlElement - specialist.SlDefence} {specialist.SpStoneUpgrade} {spitem.FireResistance} {spitem.WaterResistance} {spitem.LightResistance} {spitem.DarkResistance} {specialist.SpDamage} {specialist.SpDefence} {specialist.SpElement} {specialist.SpHP} {specialist.SpFire} {specialist.SpWater} {specialist.SpLight} {specialist.SpDark}";
@@ -215,7 +215,7 @@ namespace OpenNos.GameObject
                                     $"e_info 11 {ItemVNum} 1 {specialist.HoldingVNum}";
 
                             case 5:
-                                Item fairyitem = ServerManager.GetItem(specialist.HoldingVNum);
+                                Item fairyitem = ServerManager.Instance.GetItem(specialist.HoldingVNum);
                                 return specialist.HoldingVNum == 0 ?
                                     $"e_info 12 {ItemVNum} 0" :
                                     $"e_info 12 {ItemVNum} 1 {specialist.HoldingVNum} {specialist.ElementRate + fairyitem.ElementRate}";
@@ -263,11 +263,11 @@ namespace OpenNos.GameObject
                 raren2 = 0;
                 raren1 = 0;
                 rare0 = 0;
-                rnd = ServerManager.RandomNumber(0, 80);
+                rnd = ServerManager.Instance.RandomNumber(0, 80);
             }
             else
             {
-                rnd = ServerManager.RandomNumber(0, 1000) / 10D;
+                rnd = ServerManager.Instance.RandomNumber(0, 1000) / 10D;
             }
             if (protection == RarifyProtection.RedAmulet)
             {
@@ -492,7 +492,7 @@ namespace OpenNos.GameObject
                         {
                             for (int i = 0; i < point; i++)
                             {
-                                int rndn = ServerManager.RandomNumber(0, 3);
+                                int rndn = ServerManager.Instance.RandomNumber(0, 3);
                                 if (rndn == 0)
                                 {
                                     Concentrate++;
@@ -528,7 +528,7 @@ namespace OpenNos.GameObject
                         {
                             for (int i = 0; i < point; i++)
                             {
-                                int rndn = ServerManager.RandomNumber(0, 3);
+                                int rndn = ServerManager.Instance.RandomNumber(0, 3);
                                 if (rndn == 0)
                                 {
                                     DefenceDodge++;
@@ -583,7 +583,7 @@ namespace OpenNos.GameObject
                     session.Character.Inventory.RemoveItemAmount(sandVnum, (byte)sand[Upgrade]);
                     session.Character.Gold -= goldprice[Upgrade];
 
-                    int rnd = ServerManager.RandomNumber();
+                    int rnd = ServerManager.Instance.RandomNumber();
                     if (rnd < upsuccess[Upgrade + itemToSum.Upgrade])
                     {
                         Upgrade += (byte)(itemToSum.Upgrade + 1);
@@ -675,19 +675,19 @@ namespace OpenNos.GameObject
                         }
                         if (session.Character.Inventory.CountItem(cellaVnum) < cella[Upgrade] * reducedpricefactor)
                         {
-                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(cellaVnum).Name, cella[Upgrade] * reducedpricefactor), 10));
+                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(cellaVnum).Name, cella[Upgrade] * reducedpricefactor), 10));
                             return;
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand && session.Character.Inventory.CountItem(goldScrollVnum) < 1)
                         {
-                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(goldScrollVnum).Name, cella[Upgrade] * reducedpricefactor), 10));
+                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(goldScrollVnum).Name, cella[Upgrade] * reducedpricefactor), 10));
                             return;
                         }
                         if (Upgrade < 5)
                         {
                             if (session.Character.Inventory.CountItem(gemVnum) < gem[Upgrade])
                             {
-                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(gemVnum).Name, gem[Upgrade]), 10));
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(gemVnum).Name, gem[Upgrade]), 10));
                                 return;
                             }
                             session.Character.Inventory.RemoveItemAmount(gemVnum, gem[Upgrade]);
@@ -696,7 +696,7 @@ namespace OpenNos.GameObject
                         {
                             if (session.Character.Inventory.CountItem(gemFullVnum) < gem[Upgrade])
                             {
-                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(gemFullVnum).Name, gem[Upgrade]), 10));
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(gemFullVnum).Name, gem[Upgrade]), 10));
                                 return;
                             }
                             session.Character.Inventory.RemoveItemAmount(gemFullVnum, gem[Upgrade]);
@@ -725,14 +725,14 @@ namespace OpenNos.GameObject
                         }
                         if (protection == UpgradeProtection.Protected && !isCommand && session.Character.Inventory.CountItem(normalScrollVnum) < 1)
                         {
-                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(normalScrollVnum).Name, 1), 10));
+                            session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(normalScrollVnum).Name, 1), 10));
                             return;
                         }
                         if (Upgrade < 5)
                         {
                             if (session.Character.Inventory.CountItem(gemVnum) < gem[Upgrade])
                             {
-                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(gemVnum).Name, gem[Upgrade]), 10));
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(gemVnum).Name, gem[Upgrade]), 10));
                                 return;
                             }
                             session.Character.Inventory.RemoveItemAmount(gemVnum, gem[Upgrade]);
@@ -741,7 +741,7 @@ namespace OpenNos.GameObject
                         {
                             if (session.Character.Inventory.CountItem(gemFullVnum) < gem[Upgrade])
                             {
-                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.GetItem(gemFullVnum).Name, gem[Upgrade]), 10));
+                                session.SendPacket(session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEMS"), ServerManager.Instance.GetItem(gemFullVnum).Name, gem[Upgrade]), 10));
                                 return;
                             }
                             session.Character.Inventory.RemoveItemAmount(gemFullVnum, gem[Upgrade]);
@@ -759,7 +759,7 @@ namespace OpenNos.GameObject
                 WearableInstance wearable = session.Character.Inventory.LoadByItemInstance<WearableInstance>(Id);
                 ItemInstance inventory = session.Character.Inventory.GetItemInstanceById(Id);
 
-                int rnd = ServerManager.RandomNumber();
+                int rnd = ServerManager.Instance.RandomNumber();
                 if (Rare == 8)
                 {
                     if (rnd < upfail[Upgrade])

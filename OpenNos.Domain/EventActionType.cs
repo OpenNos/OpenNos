@@ -18,7 +18,7 @@ namespace OpenNos.Domain
     {
         XPRATE,
         DROPRATE,
-        MESSAGE,
+        SENDPACKET,
         DISPOSE,
         LOCK,
         UNSPAWN,
@@ -26,9 +26,9 @@ namespace OpenNos.Domain
         CLOCK,
         SPAWN,
         DROPITEMS,
-        SENDPACKET,
         NPCDIALOG,
         STARTCLOCK,
-        SPAWNPORTAL
+        SPAWNPORTAL,
+        CHANGEPORTALTYPE
     }
 }

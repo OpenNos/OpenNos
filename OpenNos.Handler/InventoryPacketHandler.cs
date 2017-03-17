@@ -123,7 +123,7 @@ namespace OpenNos.Handler
 
                 case 2:
                     isNPCShopItem = true;
-                    if (ServerManager.GetItem(equipmentInfoPacket.Slot) != null)
+                    if (ServerManager.Instance.GetItem(equipmentInfoPacket.Slot) != null)
                     {
                         inventory = new WearableInstance(equipmentInfoPacket.Slot, 1);
                         break;
@@ -372,7 +372,7 @@ namespace OpenNos.Handler
 
                                         long gold = targetSession.Character.Gold;
                                         int backpack = targetSession.Character.HaveBackpack() ? 1 : 0;
-                                        long maxGold = ServerManager.MaxGold;
+                                        long maxGold = ServerManager.Instance.MaxGold;
 
                                         if (targetExchange == null)
                                         {
@@ -601,7 +601,7 @@ namespace OpenNos.Handler
                     else
                     {
                         // handle gold drop
-                        long maxGold = ServerManager.MaxGold;
+                        long maxGold = ServerManager.Instance.MaxGold;
                         MonsterMapItem droppedGold = mapItem as MonsterMapItem;
                         if (droppedGold != null && Session.Character.Gold + droppedGold.GoldAmount <= maxGold)
                         {
@@ -1679,7 +1679,7 @@ namespace OpenNos.Handler
                 Session.SendPacket(Session.Character.GenerateStat());
                 Session.SendPacket(Session.Character.GenerateStatChar());
                 Session.Character.SkillsSp = new ThreadSafeSortedList<int, CharacterSkill>();
-                foreach (Skill ski in ServerManager.GetAllSkill())
+                foreach (Skill ski in ServerManager.Instance.GetAllSkill())
                 {
                     if (ski.Class == Session.Character.Morph + 31 && sp.SpLevel >= ski.LevelMinimum)
                     {

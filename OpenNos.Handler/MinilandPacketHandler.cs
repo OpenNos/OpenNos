@@ -236,7 +236,7 @@ namespace OpenNos.Handler
                                 List<ItemInstance> inv = Session.Character.Inventory.AddNewToInventory(objlst.ElementAt(i).VNum, objlst.ElementAt(i).Amount);
                                 if (inv.Any())
                                 {
-                                    Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(objlst.ElementAt(i).VNum).Name} x {objlst.ElementAt(i).Amount}", 12));
+                                    Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.Instance.GetItem(objlst.ElementAt(i).VNum).Name} x {objlst.ElementAt(i).Amount}", 12));
                                 }
                                 else
                                 {

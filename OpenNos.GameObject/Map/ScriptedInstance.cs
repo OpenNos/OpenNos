@@ -43,7 +43,7 @@ namespace OpenNos.GameObject
                 {
                     if (variable.Name == "CreateMap")
                     {
-                        MapInstance newmap = ServerManager.GenerateMapInstance(short.Parse(variable.Attributes["VNum"].Value), MapInstanceType.TimeSpaceInstance, _instancebag);
+                        MapInstance newmap = ServerManager.Instance.GenerateMapInstance(short.Parse(variable.Attributes["VNum"].Value), MapInstanceType.TimeSpaceInstance, _instancebag);
                         newmap.MapIndexX = byte.Parse(variable.Attributes["IndexX"].Value);
                         newmap.MapIndexY = byte.Parse(variable.Attributes["IndexY"].Value);
                         if (!_mapinstancedictionary.ContainsKey(int.Parse(variable.Attributes["Map"].Value)))
@@ -59,27 +59,28 @@ namespace OpenNos.GameObject
             }
         }
 
-        private List<Tuple<EventActionType, object>> GenerateEvent(XmlNode node)
+        private List<EventContainer> GenerateEvent(XmlNode node)
         {
-            List<Tuple<EventActionType, object>> evts = new List<Tuple<EventActionType, object>>();
+            List<EventContainer> evts = new List<EventContainer>();
+
             foreach (XmlNode mapevent in node.ChildNodes)
             {
                 switch (mapevent.Name)
                 {
                     case "InstanceEvents":
-                        GenerateEvent(mapevent).ForEach(s => FirstMap.RunMapEvent(s.Item1, s.Item2));
+                        GenerateEvent(mapevent).ForEach(e => EventHelper.Instance.RunEvent(e));
                         break;
                         
                     case "CreateMap":
-                        GenerateEvent(mapevent).ForEach(e => _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value.RunMapEvent(e.Item1, e.Item2));
+                        GenerateEvent(mapevent).ForEach(e => EventHelper.Instance.RunEvent(e));
                         break;
                         
                     case "OnMoveOnMap":
-                        _mapinstancedictionary.First(s => s.Key == int.Parse(node.Attributes["Map"].Value)).Value.MoveEvents.AddRange(GenerateEvent(mapevent));
+                        _mapinstancedictionary.First(s => s.Key == int.Parse(node.Attributes["Map"].Value)).Value.OnMoveOnMapEvents.AddRange(GenerateEvent(mapevent));
                         break;
                     
                     case "OnCharacterDiscoveringMap":
-                        GenerateEvent(mapevent).ForEach(evt => _mapinstancedictionary.First(s => s.Key == int.Parse(node.Attributes["Map"].Value)).Value.FirstEntryEvents.Add(new Tuple<Tuple<EventActionType, Object>, List<long>>(evt, new List<long>())));
+                        GenerateEvent(mapevent).ForEach(evt => _mapinstancedictionary.First(s => s.Key == int.Parse(node.Attributes["Map"].Value)).Value.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer, List<long>>(evt, new List<long>())));
                         break;
                         
                     case "OnDeath":
@@ -87,36 +88,39 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SummonMonsters":
-                        evts.Add(new Tuple<EventActionType, Object>(EventActionType.SPAWN, _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), short.Parse(mapevent.Attributes["Amount"].Value), true, GenerateEvent(mapevent))));
+                        evts.Add(new EventContainer(null, EventActionType.SPAWN, _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), short.Parse(mapevent.Attributes["Amount"].Value), true, GenerateEvent(mapevent))));
                         break;
 
                     case "SendPacket":
-                        evts.Add(new Tuple<EventActionType, Object>(EventActionType.SENDPACKET, mapevent.Attributes["Value"].Value));
+                        evts.Add(new EventContainer(null, EventActionType.SENDPACKET, mapevent.Attributes["Value"].Value));
                         break;
 
                     case "NpcDialog":
-                        evts.Add(new Tuple<EventActionType, Object>(EventActionType.NPCDIALOG, mapevent.Attributes["Value"].Value));
+                        evts.Add(new EventContainer(null, EventActionType.NPCDIALOG, int.Parse(mapevent.Attributes["Value"].Value)));
                         break;
 
                     case "SendMessage":
-                        evts.Add(new Tuple<EventActionType, Object>(EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(mapevent.Attributes["Value"].Value, byte.Parse(mapevent.Attributes["Type"].Value))));
+                        evts.Add(new EventContainer(null, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(mapevent.Attributes["Value"].Value, byte.Parse(mapevent.Attributes["Type"].Value))));
                         break;
 
                     case "GenerateClock":
-                        evts.Add(new Tuple<EventActionType, Object>(EventActionType.CLOCK, int.Parse(mapevent.Attributes["Value"].Value)));
+                        evts.Add(new EventContainer(null, EventActionType.CLOCK, int.Parse(mapevent.Attributes["Value"].Value)));
                         break;
 
                     case "StartClock":
-                        evts.Add(new Tuple<EventActionType, Object>(EventActionType.STARTCLOCK, null));
+                        evts.Add(new EventContainer(null, EventActionType.STARTCLOCK, null));
+                        break;
+
+                    case "ChangePortalType":
+                        evts.Add(new EventContainer(_mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value, EventActionType.CHANGEPORTALTYPE, mapevent.Attributes["Type"].Value));
                         break;
 
                     case "SpawnPortal":
                         MapInstance map = _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["Map"].Value)).Value;
                         MapInstance destmap = _mapinstancedictionary.First(s => s.Key == int.Parse(mapevent.Attributes["MapTo"].Value)).Value;
-
                         Portal portal = new Portal()
                         {
-                            Position = byte.Parse(mapevent.Attributes["Position"].Value),
+                            PortalId = byte.Parse(mapevent.Attributes["IdOnMap"].Value),
                             SourceX = short.Parse(mapevent.Attributes["X"].Value),
                             SourceY = short.Parse(mapevent.Attributes["Y"].Value),
                             Type = short.Parse(mapevent.Attributes["Type"].Value),
@@ -125,7 +129,7 @@ namespace OpenNos.GameObject
                             SourceMapInstanceId = map.MapInstanceId,
                             DestinationMapInstanceId = destmap.MapInstanceId,
                         };
-                        evts.Add(new Tuple<EventActionType, Object>(EventActionType.SPAWNPORTAL, portal));
+                        evts.Add(new EventContainer(map, EventActionType.SPAWNPORTAL, portal));
                         break;
                 }
 

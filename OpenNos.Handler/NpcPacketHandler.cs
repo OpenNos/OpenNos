@@ -82,7 +82,7 @@ namespace OpenNos.Handler
                         {
                             amount = item.SellAmount;
                         }
-                        if (item.Price * amount + ServerManager.Instance.GetProperty<long>(shop.Value.OwnerId, nameof(Character.Gold)) > ServerManager.MaxGold)
+                        if (item.Price * amount + ServerManager.Instance.GetProperty<long>(shop.Value.OwnerId, nameof(Character.Gold)) > ServerManager.Instance.MaxGold)
                         {
                             Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("MAX_GOLD")));
                             return;
@@ -139,7 +139,7 @@ namespace OpenNos.Handler
                                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_SP"), 0));
                                     return;
                                 }
-                                Skill skillinfo = ServerManager.GetSkill(buyPacket.Slot);
+                                Skill skillinfo = ServerManager.Instance.GetSkill(buyPacket.Slot);
                                 if (Session.Character.Skills.GetAllItems().Any(s => s.SkillVNum == buyPacket.Slot) || skillinfo == null)
                                 {
                                     return;
@@ -241,7 +241,7 @@ namespace OpenNos.Handler
                                 {
                                     return;
                                 }
-                                Item iteminfo = ServerManager.GetItem(item.ItemVNum);
+                                Item iteminfo = ServerManager.Instance.GetItem(item.ItemVNum);
                                 long price = iteminfo.Price * amount;
                                 long Reputprice = iteminfo.ReputPrice * amount;
                                 double percent;
@@ -284,7 +284,7 @@ namespace OpenNos.Handler
                                         Session.SendPacket(UserInterfaceHelper.Instance.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_REPUT")));
                                         return;
                                     }
-                                    byte ra = (byte)ServerManager.RandomNumber();
+                                    byte ra = (byte)ServerManager.Instance.RandomNumber();
 
                                     int[] rareprob = { 100, 100, 70, 50, 30, 15, 5, 1 };
                                     if (iteminfo.ReputPrice != 0)
@@ -660,7 +660,7 @@ namespace OpenNos.Handler
                 }
                 long price = inv.Item.ItemType == ItemType.Sell ? inv.Item.Price : inv.Item.Price / 20;
 
-                if (Session.Character.Gold + price * amount > ServerManager.MaxGold)
+                if (Session.Character.Gold + price * amount > ServerManager.Instance.MaxGold)
                 {
                     string message = UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
                     Session.SendPacket(message);
@@ -718,7 +718,7 @@ namespace OpenNos.Handler
             string shoplist = string.Empty;
             foreach (ShopItemDTO item in mapnpc.Shop.ShopItems.Where(s => s.Type.Equals(type)))
             {
-                Item iteminfo = ServerManager.GetItem(item.ItemVNum);
+                Item iteminfo = ServerManager.Instance.GetItem(item.ItemVNum);
                 typeshop = 100;
                 double percent = 1;
                 switch (Session.Character.GetDignityIco())
@@ -792,7 +792,7 @@ namespace OpenNos.Handler
 
             foreach (ShopSkillDTO skill in mapnpc.Shop.ShopSkills.Where(s => s.Type.Equals(type)))
             {
-                Skill skillinfo = ServerManager.GetSkill(skill.SkillVNum);
+                Skill skillinfo = ServerManager.Instance.GetSkill(skill.SkillVNum);
 
                 if (skill.Type != 0)
                 {

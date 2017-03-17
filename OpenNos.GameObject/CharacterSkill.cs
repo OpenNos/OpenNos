@@ -59,7 +59,7 @@ namespace OpenNos.GameObject
             {
                 if (skill == null)
                 {
-                    skill = ServerManager.GetSkill(SkillVNum);
+                    skill = ServerManager.Instance.GetSkill(SkillVNum);
                 }
 
                 return skill;

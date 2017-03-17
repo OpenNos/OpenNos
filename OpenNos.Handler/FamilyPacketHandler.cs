@@ -102,7 +102,7 @@ namespace OpenNos.Handler
             FamilyDTO fam = Session.Character.Family;
             DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
             ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
             Session.SendPacket(Session.Character.GenerateGInfo());
         }
 
@@ -158,7 +158,7 @@ namespace OpenNos.Handler
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref familyCharacter);
                 }
                 ServerManager.Instance.FamilyRefresh(family.FamilyId);
-                int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                 Session.Character.Group.Characters.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
             }
         }
@@ -182,7 +182,7 @@ namespace OpenNos.Handler
                         }
                         i++;
                     }
-                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, Session.Character.Family.FamilyId.ToString(), UserInterfaceHelper.Instance.GenerateMsg($"<{Language.Instance.GetMessageFromKey("FAMILYCALL")}> {msg}", 0), ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                    int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name, Session.Character.Family.FamilyId.ToString(), UserInterfaceHelper.Instance.GenerateMsg($"<{Language.Instance.GetMessageFromKey("FAMILYCALL")}> {msg}", 0), ServerManager.Instance.ChannelId, MessageType.Family).Result;
                 }
             }
         }
@@ -219,7 +219,7 @@ namespace OpenNos.Handler
                     ccmsg = $"[GM {Session.Character.Name}]:{msg}";
                 }
 
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, Session.Character.Family.FamilyId.ToString(), ccmsg, ServerManager.Instance.ChannelId, MessageType.FamilyChat).Result;
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name, Session.Character.Family.FamilyId.ToString(), ccmsg, ServerManager.Instance.ChannelId, MessageType.FamilyChat).Result;
                 List<ClientSession> tmp = ServerManager.Instance.Sessions.ToList();
                 foreach (ClientSession s in tmp)
                 {
@@ -298,7 +298,7 @@ namespace OpenNos.Handler
             fam.FamilyLogs.ForEach(s => { DAOFactory.FamilyLogDAO.Delete(s.FamilyLogId); });
             DAOFactory.FamilyDAO.Delete(fam.FamilyId);
             ServerManager.Instance.FamilyRefresh(fam.FamilyId);
-            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, fam.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+            int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, fam.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
 
             sessions.ForEach(s => s.CurrentMapInstance.Broadcast(s.Character.GenerateGidx()));
         }
@@ -379,7 +379,7 @@ namespace OpenNos.Handler
                 DAOFactory.FamilyCharacterDAO.Delete(Session.Character.Name);
 
                 ServerManager.Instance.FamilyRefresh(FamilyId);
-                int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                 Session.CurrentMapInstance?.Broadcast(Session.Character.GenerateGidx());
             }
         }
@@ -571,10 +571,10 @@ namespace OpenNos.Handler
                     FamilyDTO fam = Session.Character.Family;
                     DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                     ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-                    int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                    int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     if (!string.IsNullOrWhiteSpace(msg))
                     {
-                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Family.FamilyId.ToString(), Session.Character.Name, UserInterfaceHelper.Instance.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage), ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                        int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Family.FamilyId.ToString(), Session.Character.Name, UserInterfaceHelper.Instance.GenerateInfo("--- Family Message ---\n" + Session.Character.Family.FamilyMessage), ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     }
                 }
             }
@@ -819,7 +819,7 @@ namespace OpenNos.Handler
                     inviteSession.Character.Family.InsertFamilyLog(FamilyLogType.UserManage,
                         inviteSession.Character.Name, Session.Character.Name);
                     int? sentChannelId =
-                        ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name,
+                        ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name,
                             inviteSession.Character.Family.FamilyId.ToString(),
                             UserInterfaceHelper.Instance.GenerateMsg(
                                 string.Format(Language.Instance.GetMessageFromKey("FAMILY_JOINED"),
@@ -857,12 +857,12 @@ namespace OpenNos.Handler
                 fam.FamilyHeadGender = (GenderType)rank;
                 DAOFactory.FamilyDAO.InsertOrUpdate(ref fam);
                 ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-                int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                 Session.SendPacket(Session.Character.GenerateGInfo());
                 Session.SendPacket(Session.Character.GenerateFamilyMember());
                 Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
 
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, fam.FamilyId.ToString(), UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_HEAD_CHANGE_GENDER")), 0), ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name, fam.FamilyId.ToString(), UserInterfaceHelper.Instance.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAMILY_HEAD_CHANGE_GENDER")), 0), ServerManager.Instance.ChannelId, MessageType.Family).Result;
             }
         }
 
@@ -886,7 +886,7 @@ namespace OpenNos.Handler
                     fchar.Rank = (FamilyMemberRank)rank;
                     DAOFactory.FamilyCharacterDAO.InsertOrUpdate(ref fchar);
                     ServerManager.Instance.FamilyRefresh(Session.Character.Family.FamilyId);
-                    int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                    int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, Session.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     Session.SendPacket(Session.Character.GenerateFamilyMember());
                     Session.SendPacket(Session.Character.GenerateFamilyMemberMessage());
                 }

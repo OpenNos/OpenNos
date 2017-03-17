@@ -22,7 +22,7 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public MonsterToSummon(short vnum, MapCell spawnCell, long target, bool move, List<Tuple<EventActionType, object>> deathEvents)
+        public MonsterToSummon(short vnum, MapCell spawnCell, long target, bool move, List<EventContainer> deathEvents)
         {
             VNum = vnum;
             SpawnCell = spawnCell;
@@ -43,7 +43,7 @@ namespace OpenNos.GameObject
 
         public short VNum { get; set; }
 
-        public List<Tuple<EventActionType, object>> DeathEvents { get; set; }
+        public List<EventContainer> DeathEvents { get; set; }
         #endregion
     }
 }

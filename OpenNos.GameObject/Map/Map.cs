@@ -107,7 +107,7 @@ namespace OpenNos.GameObject
         {
             return Math.Max(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
-        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<Tuple<EventActionType, object>> deathEvents)
+        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents)
         {
             List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
             for (int i = 0; i < amount; i++)

@@ -27,10 +27,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
-        public Portal()
-        {
-            Position = -1;
-        }
+    
         public Guid DestinationMapInstanceId
         {
             get
@@ -43,8 +40,6 @@ namespace OpenNos.GameObject
             }
             set { destinationMapInstanceId = value; }
         }
-
-        public int Position { get; set; }
 
         public Guid SourceMapInstanceId
         {

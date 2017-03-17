@@ -56,8 +56,8 @@ namespace OpenNos.GameObject.Event
                     {
                         if (fam.LandOfDeath != null)
                         {
-                            fam.LandOfDeath.RunMapEvent(EventActionType.XPRATE, 3);
-                            fam.LandOfDeath.RunMapEvent(EventActionType.DROPRATE, 3);
+                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.XPRATE, 3));
+                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.DROPRATE, 3));
                             SpawnDH(fam.LandOfDeath);
                         }
                     }
@@ -69,8 +69,8 @@ namespace OpenNos.GameObject.Event
                     {
                         if (fam.LandOfDeath != null)
                         {
-                            fam.LandOfDeath.RunMapEvent(EventActionType.XPRATE, 3);
-                            fam.LandOfDeath.RunMapEvent(EventActionType.DROPRATE, 3);
+                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.XPRATE, 3));
+                            EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.DROPRATE, 3));
                             SpawnDH(fam.LandOfDeath);
                         }
                     }
@@ -101,10 +101,10 @@ namespace OpenNos.GameObject.Event
             {
                 if (fam.LandOfDeath == null)
                 {
-                    fam.LandOfDeath = ServerManager.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
+                    fam.LandOfDeath = ServerManager.Instance.GenerateMapInstance(150, MapInstanceType.LodInstance, new InstanceBag());
                 }
-                fam.LandOfDeath.RunMapEvent(EventActionType.CLOCK, remaining*10);
-                fam.LandOfDeath.RunMapEvent(EventActionType.STARTCLOCK, null);
+                EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.CLOCK, remaining * 10));
+                EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.STARTCLOCK, null));
             }
         }
 
@@ -115,7 +115,7 @@ namespace OpenNos.GameObject.Event
             {
                 if (fam.LandOfDeath != null)
                 {
-                    fam.LandOfDeath.RunMapEvent(EventActionType.DISPOSE, null);
+                    EventHelper.Instance.RunEvent(new EventContainer(fam.LandOfDeath, EventActionType.DISPOSE, null));
                     fam.LandOfDeath = null;
                 }
             }
@@ -126,15 +126,15 @@ namespace OpenNos.GameObject.Event
 
         private void SpawnDH(MapInstance LandOfDeath)
         {
-            LandOfDeath.RunMapEvent(EventActionType.SPAWNONLASTENTRY, 443);
-            LandOfDeath.RunMapEvent(EventActionType.MESSAGE, "df 2");
-            LandOfDeath.RunMapEvent(EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0));
+            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SPAWNONLASTENTRY, 443));
+            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SENDPACKET, "df 2"));
+            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_APPEAR"), 0)));
         }
         private void DespawnDH(MapInstance LandOfDeath)
         {
-            LandOfDeath.RunMapEvent(EventActionType.MESSAGE, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0));
-            LandOfDeath.RunMapEvent(EventActionType.LOCK, true);
-            LandOfDeath.RunMapEvent(EventActionType.UNSPAWN, 443);
+            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.SENDPACKET, UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HORN_DISAPEAR"), 0)));
+            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.LOCK, true));
+            EventHelper.Instance.RunEvent(new EventContainer(LandOfDeath, EventActionType.UNSPAWN, 443));
         }
     }
 }

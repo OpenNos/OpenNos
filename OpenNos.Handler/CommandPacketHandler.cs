@@ -62,7 +62,7 @@ namespace OpenNos.Handler
                 {
                     return;
                 }
-                NpcMonster npcmonster = ServerManager.GetNpc(addMonsterPacket.MonsterVNum);
+                NpcMonster npcmonster = ServerManager.Instance.GetNpc(addMonsterPacket.MonsterVNum);
                 if (npcmonster == null)
                 {
                     return;
@@ -135,7 +135,7 @@ namespace OpenNos.Handler
             if (addSkillPacket != null)
             {
                 short skillVNum = addSkillPacket.SkillVnum;
-                Skill skillinfo = ServerManager.GetSkill(skillVNum);
+                Skill skillinfo = ServerManager.Instance.GetSkill(skillVNum);
                 if (skillinfo == null)
                 {
                     Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_DOES_NOT_EXIST"), 11));
@@ -587,7 +587,7 @@ namespace OpenNos.Handler
                     if (player.Character.Family != null)
                     {
                         ServerManager.Instance.FamilyRefresh(player.Character.Family.FamilyId);
-                        int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, string.Empty, player.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
+                        int? sentChannelId2 = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, string.Empty, player.Character.Family.FamilyId.ToString(), "fhis_stc", ServerManager.Instance.ChannelId, MessageType.Family).Result;
                     }
                 }
                 else
@@ -831,7 +831,7 @@ namespace OpenNos.Handler
             Session.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SearchItem NAME(%)", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SearchMonster NAME(%)", 12));
-            Session.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 12));
+            Session.SendPacket(Session.Character.GenerateSay("$Shout SENDPACKET", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
             Session.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 12));
             Session.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
@@ -878,7 +878,7 @@ namespace OpenNos.Handler
                         return; // cannot create gold as item, use $Gold instead
                     }
 
-                    Item iteminfo = ServerManager.GetItem(vnum);
+                    Item iteminfo = ServerManager.Instance.GetItem(vnum);
                     if (iteminfo != null)
                     {
                         if (iteminfo.IsColored || iteminfo.VNum == 302)
@@ -1054,7 +1054,7 @@ namespace OpenNos.Handler
             {
                 if (dropRatePacket.Value <= 1000)
                 {
-                    ServerManager.DropRate = dropRatePacket.Value;
+                    ServerManager.Instance.DropRate = dropRatePacket.Value;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_RATE_CHANGED"), 0));
                 }
                 else
@@ -1096,7 +1096,7 @@ namespace OpenNos.Handler
             {
                 if (fairyXpRatePacket.Value <= 1000)
                 {
-                    ServerManager.FairyXpRate = fairyXpRatePacket.Value;
+                    ServerManager.Instance.FairyXpRate = fairyXpRatePacket.Value;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("FAIRYXP_RATE_CHANGED"), 0));
                 }
                 else
@@ -1121,7 +1121,7 @@ namespace OpenNos.Handler
             {
                 if (heroXpRatePacket.Value <= 1000)
                 {
-                    ServerManager.HeroXpRate = heroXpRatePacket.Value;
+                    ServerManager.Instance.HeroXpRate = heroXpRatePacket.Value;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("HEROXP_RATE_CHANGED"), 0));
                 }
                 else
@@ -1196,7 +1196,7 @@ namespace OpenNos.Handler
             if (goldPacket != null)
             {
                 long gold = goldPacket.Amount;
-                long maxGold = ServerManager.MaxGold;
+                long maxGold = ServerManager.Instance.MaxGold;
                 gold = gold > maxGold ? maxGold : gold;
                 if (gold >= 0)
                 {
@@ -1226,7 +1226,7 @@ namespace OpenNos.Handler
             {
                 if (goldDropRatePacket.Value <= 1000)
                 {
-                    ServerManager.GoldDropRate = goldDropRatePacket.Value;
+                    ServerManager.Instance.GoldDropRate = goldDropRatePacket.Value;
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_DROP_RATE_CHANGED"), 0));
                 }
                 else
@@ -1251,7 +1251,7 @@ namespace OpenNos.Handler
             {
                 if (goldRatePacket.Value <= 1000)
                 {
-                    ServerManager.GoldRate = goldRatePacket.Value;
+                    ServerManager.Instance.GoldRate = goldRatePacket.Value;
 
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_RATE_CHANGED"), 0));
                 }
@@ -1889,7 +1889,7 @@ namespace OpenNos.Handler
             Logger.Debug("Shout Command", Session.Character.GenerateIdentity());
             if (shoutPacket != null)
             {
-                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.ServerGroup, Session.Character.Name, string.Empty, shoutPacket.Message, ServerManager.Instance.ChannelId, MessageType.Shout).Result;
+                int? sentChannelId = ServerCommunicationClient.Instance.HubProxy.Invoke<int?>("SendMessageToCharacter", ServerManager.Instance.ServerGroup, Session.Character.Name, string.Empty, shoutPacket.Message, ServerManager.Instance.ChannelId, MessageType.Shout).Result;
             }
         }
 
@@ -1969,7 +1969,7 @@ namespace OpenNos.Handler
             Logger.Debug("Event Command", Session.Character.GenerateIdentity());
             if (eventPacket != null)
             {
-                EventHelper.GenerateEvent(eventPacket.EventType);
+                EventHelper.Instance.GenerateEvent(eventPacket.EventType);
             }
         }
 
@@ -1980,12 +1980,12 @@ namespace OpenNos.Handler
         public void Stat(StatCommandPacket statCommandPacket)
         {
             Logger.Debug("Stat Command", Session.Character.GenerateIdentity());
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("XP_RATE_NOW")}: {ServerManager.XPRate} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("DROP_RATE_NOW")}: {ServerManager.DropRate} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_RATE_NOW")}: {ServerManager.GoldRate} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_DROPRATE_NOW")}: {ServerManager.GoldDropRate} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("HERO_XPRATE_NOW")}: {ServerManager.HeroXpRate} ", 13));
-            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("FAIRYXP_RATE_NOW")}: {ServerManager.FairyXpRate} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("XP_RATE_NOW")}: {ServerManager.Instance.XPRate} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("DROP_RATE_NOW")}: {ServerManager.Instance.DropRate} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_RATE_NOW")}: {ServerManager.Instance.GoldRate} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_DROPRATE_NOW")}: {ServerManager.Instance.GoldDropRate} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("HERO_XPRATE_NOW")}: {ServerManager.Instance.HeroXpRate} ", 13));
+            Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("FAIRYXP_RATE_NOW")}: {ServerManager.Instance.FairyXpRate} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("SERVER_WORKING_TIME")}: {(Process.GetCurrentProcess().StartTime - DateTime.Now).ToString(@"d\ hh\:mm\:ss")} ", 13));
             Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("MEMORY")}: {GC.GetTotalMemory(true) / (1024 * 1024)}MB ", 13));
 
@@ -2012,7 +2012,7 @@ namespace OpenNos.Handler
                     byte amount = summonPacket.Amount;
                     bool isMoving = summonPacket.IsMoving;
 
-                    NpcMonster npcmonster = ServerManager.GetNpc(vnum);
+                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(vnum);
                     if (npcmonster == null)
                     {
                         return;
@@ -2071,7 +2071,7 @@ namespace OpenNos.Handler
                     byte amount = summonPacket.Amount;
                     bool isMoving = summonPacket.IsMoving;
 
-                    NpcMonster npcmonster = ServerManager.GetNpc(vnum);
+                    NpcMonster npcmonster = ServerManager.Instance.GetNpc(vnum);
                     if (npcmonster == null)
                     {
                         return;
@@ -2393,7 +2393,7 @@ namespace OpenNos.Handler
             {
                 if (xpRatePacket.Value <= 1000)
                 {
-                    ServerManager.XPRate = xpRatePacket.Value;
+                    ServerManager.Instance.XPRate = xpRatePacket.Value;
 
                     Session.SendPacket(UserInterfaceHelper.Instance.GenerateMsg(Language.Instance.GetMessageFromKey("XP_RATE_CHANGED"), 0));
                 }

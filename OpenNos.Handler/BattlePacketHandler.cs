@@ -300,8 +300,8 @@ namespace OpenNos.Handler
                                    ServerManager.Instance.LeaveMap(target.Character.CharacterId);
                                    target.Character.Hp = (int)target.Character.HPLoad();
                                    target.Character.Mp = (int)target.Character.MPLoad();
-                                   short x = (short)(39 + ServerManager.RandomNumber(-2, 3));
-                                   short y = (short)(42 + ServerManager.RandomNumber(-2, 3));
+                                   short x = (short)(39 + ServerManager.Instance.RandomNumber(-2, 3));
+                                   short y = (short)(42 + ServerManager.Instance.RandomNumber(-2, 3));
                                    ServerManager.Instance.ChangeMap(target.Character.CharacterId, 130, x, y);
                                    target.CurrentMapInstance?.Broadcast(target, target.Character.GenerateTp());
                                    target.CurrentMapInstance?.Broadcast(target.Character.GenerateRevive());
@@ -911,7 +911,7 @@ namespace OpenNos.Handler
                                             else if (Session.CurrentMapInstance != null && Session.CurrentMapInstance.IsPVP)
                                             {
                                                 if (Session.CurrentMapInstance.MapInstanceId !=
-                                                    ServerManager.FamilyArenaInstance.MapInstanceId)
+                                                    ServerManager.Instance.FamilyArenaInstance.MapInstanceId)
                                                 {
                                                     if (Session.Character.Group == null ||
                                                         !Session.Character.Group.IsMemberOfGroup(

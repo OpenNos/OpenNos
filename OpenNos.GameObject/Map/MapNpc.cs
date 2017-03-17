@@ -65,7 +65,7 @@ namespace OpenNos.GameObject
 
         public string GenerateIn()
         {
-            NpcMonster npcinfo = ServerManager.GetNpc(NpcVNum);
+            NpcMonster npcinfo = ServerManager.Instance.GetNpc(NpcVNum);
             if (npcinfo != null && !IsDisabled)
             {
                 return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
@@ -81,12 +81,12 @@ namespace OpenNos.GameObject
         public override void Initialize()
         {
             _random = new Random(MapNpcId);
-            Npc = ServerManager.GetNpc(NpcVNum);
+            Npc = ServerManager.Instance.GetNpc(NpcVNum);
             LastEffect = DateTime.Now;
             LastMove = DateTime.Now;
             FirstX = MapX;
             FirstY = MapY;
-            _movetime = ServerManager.RandomNumber(500, 3000);
+            _movetime = ServerManager.Instance.RandomNumber(500, 3000);
             Path = new List<GridPos>();
             Recipes = ServerManager.Instance.GetReceipesByMapNpcId(MapNpcId);
             Target = -1;
@@ -146,11 +146,11 @@ namespace OpenNos.GameObject
             time = (DateTime.Now - LastMove).TotalMilliseconds;
             if (IsMoving && Npc.Speed > 0 && time > _movetime)
             {
-                _movetime = ServerManager.RandomNumber(500, 3000);
-                byte point = (byte)ServerManager.RandomNumber(2, 4);
-                byte fpoint = (byte)ServerManager.RandomNumber(0, 2);
+                _movetime = ServerManager.Instance.RandomNumber(500, 3000);
+                byte point = (byte)ServerManager.Instance.RandomNumber(2, 4);
+                byte fpoint = (byte)ServerManager.Instance.RandomNumber(0, 2);
 
-                byte xpoint = (byte)ServerManager.RandomNumber(fpoint, point);
+                byte xpoint = (byte)ServerManager.Instance.RandomNumber(fpoint, point);
                 byte ypoint = (byte)(point - xpoint);
 
                 short mapX = FirstX;
@@ -193,7 +193,7 @@ namespace OpenNos.GameObject
                     return;
                 }
                 NpcMonsterSkill npcMonsterSkill = null;
-                if (ServerManager.RandomNumber(0, 10) > 8)
+                if (ServerManager.Instance.RandomNumber(0, 10) > 8)
                 {
                     npcMonsterSkill = Npc.Skills.Where(s => (DateTime.Now - s.LastSkillUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => _random.Next()).FirstOrDefault();
                 }
@@ -250,8 +250,8 @@ namespace OpenNos.GameObject
                         const short maxDistance = 5;
                         if (!Path.Any() && distance > 1 && distance < maxDistance)
                         {
-                            short xoffset = (short)ServerManager.RandomNumber(-1, 1);
-                            short yoffset = (short)ServerManager.RandomNumber(-1, 1);
+                            short xoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
+                            short yoffset = (short)ServerManager.Instance.RandomNumber(-1, 1);
 
                             Path = MapInstance.Map.StraightPath(new GridPos { x = MapX, y = MapY }, new GridPos { x = (short)(monster.MapX + xoffset), y = (short)(monster.MapY + yoffset) });
                             if (!Path.Any())

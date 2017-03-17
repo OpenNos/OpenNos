@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
         public Mate(Character owner, short VNum, byte level, MateType matetype)
         {
             NpcMonsterVNum = VNum;
-            Monster = ServerManager.GetNpc(VNum);
+            Monster = ServerManager.Instance.GetNpc(VNum);
             Hp = Monster.MaxHP;
             Mp = Monster.MaxMP;
             Name = Monster.Name;
@@ -64,7 +64,7 @@ namespace OpenNos.GameObject
             {
                 if (monster == null)
                 {
-                    monster = ServerManager.GetNpc(NpcMonsterVNum);
+                    monster = ServerManager.Instance.GetNpc(NpcMonsterVNum);
                 }
                 return monster;
             }

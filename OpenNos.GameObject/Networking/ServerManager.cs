@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using CloneExtensions;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -87,35 +88,35 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public static int DropRate { get; set; }
+        public int DropRate { get; set; }
 
-        public static int FairyXpRate { get; set; }
+        public int FairyXpRate { get; set; }
 
-        public static int GoldDropRate { get; set; }
+        public int GoldDropRate { get; set; }
 
-        public static int GoldRate { get; set; }
+        public int GoldRate { get; set; }
 
-        public static List<MailDTO> Mails { get; private set; }
+        public List<MailDTO> Mails { get; private set; }
 
-        public static long MaxGold { get; set; }
+        public long MaxGold { get; set; }
 
-        public static byte MaxHeroLevel { get; set; }
+        public byte MaxHeroLevel { get; set; }
 
-        public static byte MaxJobLevel { get; set; }
+        public byte MaxJobLevel { get; set; }
 
-        public static byte MaxLevel { get; set; }
+        public byte MaxLevel { get; set; }
 
-        public static byte MaxSPLevel { get; set; }
+        public byte MaxSPLevel { get; set; }
 
-        public static List<Schedule> Schedules { get; set; }
+        public List<Schedule> Schedules { get; set; }
 
-        public static string ServerGroup { get; set; }
+        public string ServerGroup { get; set; }
 
-        public static int XPRate { get; set; }
+        public int XPRate { get; set; }
 
-        public static int HeroXpRate { get; set; }
+        public int HeroXpRate { get; set; }
 
-        public static int HeroicStartLevel { get; set; }
+        public int HeroicStartLevel { get; set; }
 
         public List<BazaarItemLink> BazaarList { get; set; }
 
@@ -153,15 +154,15 @@ namespace OpenNos.GameObject
 
         public Guid WorldId { get; private set; }
 
-        public static MapInstance ArenaInstance { get; private set; }
+        public MapInstance ArenaInstance { get; private set; }
 
-        public static MapInstance FamilyArenaInstance { get; private set; }
+        public MapInstance FamilyArenaInstance { get; private set; }
 
         #endregion
 
         #region Methods
 
-        public static MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
+        public MapInstance GenerateMapInstance(short MapId, MapInstanceType type, InstanceBag mapclock)
         {
             Map map = _maps.FirstOrDefault(m => m.MapId.Equals(MapId));
             if (map != null)
@@ -185,32 +186,32 @@ namespace OpenNos.GameObject
             return null;
         }
 
-        public static IEnumerable<Skill> GetAllSkill()
+        public IEnumerable<Skill> GetAllSkill()
         {
             return _skills;
         }
 
-        public static Item GetItem(short vnum)
+        public Item GetItem(short vnum)
         {
             return _items.FirstOrDefault(m => m.VNum.Equals(vnum));
         }
 
-        public static MapInstance GetMapInstance(Guid id)
+        public MapInstance GetMapInstance(Guid id)
         {
             return _mapinstances[id];
         }
 
-        public static NpcMonster GetNpc(short npcVNum)
+        public NpcMonster GetNpc(short npcVNum)
         {
             return _npcs.FirstOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
         }
 
-        public static Skill GetSkill(short skillVNum)
+        public Skill GetSkill(short skillVNum)
         {
             return _skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
         }
 
-        public static int RandomNumber(int min = 0, int max = 100)
+        public int RandomNumber(int min = 0, int max = 100)
         {
             return random.Value.Next(min, max);
         }
@@ -438,9 +439,9 @@ namespace OpenNos.GameObject
                     session.SendPackets(session.Character.GenerateDroppedItem());
                     session.SendPackets(session.Character.MapInstance.GenerateUserShops());
                     session.SendPackets(session.CurrentMapInstance.GeneratePlayerShopOnMap());
-                    if (session.CurrentMapInstance.MapClock.Enabled)
+                    if (session.CurrentMapInstance.InstanceBag.Enabled)
                     {
-                        session.SendPacket(session.CurrentMapInstance.MapClock.GetClock());
+                        session.SendPacket(session.CurrentMapInstance.InstanceBag.GetClock());
                     }
 
                     // TODO: fix this
@@ -486,17 +487,20 @@ namespace OpenNos.GameObject
                     }
                     session.Character.IsChangingMapInstance = false;
                     session.SendPacket(session.Character.GenerateMinimapPosition());
-
-                    session.CurrentMapInstance.FirstEntryEvents.ForEach(
-                        e =>
-                        {
-                            if (!e.Item2.Contains(session.Character.CharacterId))
-                            {
-                                e.Item2.Add(session.Character.CharacterId);
-                                session.SendPacket(session.CurrentMapInstance.RunMapEvent(e.Item1.Item1, e.Item1.Item2, session.Character.CharacterId));
-                            }
-                        }
-                    );
+                    session.CurrentMapInstance.OnCharacterDiscoveringMapEvents.ForEach(
+                         e =>
+                         {
+                             if (!e.Item2.Contains(session.Character.CharacterId))
+                             {
+                                 if (e.Item1.MapInstance == null)
+                                 {
+                                     e.Item1.MapInstance = session.CurrentMapInstance;
+                                 }
+                                 e.Item2.Add(session.Character.CharacterId);
+                                 EventHelper.Instance.RunEvent(e.Item1, session);
+                             }
+                         }
+                     );
                 }
                 catch (Exception)
                 {
@@ -1139,7 +1143,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal static void StopServer()
+        internal void StopServer()
         {
             Instance.ShutdownStop = true;
             Instance.TaskShutdown = null;
@@ -1276,11 +1280,11 @@ namespace OpenNos.GameObject
 
             foreach (Schedule schedul in Schedules)
             {
-                Observable.Timer(TimeSpan.FromSeconds(EventHelper.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
+                Observable.Timer(TimeSpan.FromSeconds(EventHelper.Instance.GetMilisecondsBeforeTime(schedul.Time).TotalSeconds), TimeSpan.FromDays(1))
                 .Subscribe(
                 e =>
                 {
-                    EventHelper.GenerateEvent(schedul.Event);
+                    EventHelper.Instance.GenerateEvent(schedul.Event);
                 });
             }
 

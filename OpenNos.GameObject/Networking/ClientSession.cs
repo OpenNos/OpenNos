@@ -102,6 +102,7 @@ namespace OpenNos.GameObject
                 _character = value;
             }
         }
+        
 
         public long ClientId => _client.ClientId;
 
@@ -177,7 +178,7 @@ namespace OpenNos.GameObject
 
                 // TODO Check why ExchangeInfo.TargetCharacterId is null Character.CloseTrade();
                 // disconnect client
-                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectCharacter", ServerManager.ServerGroup, Character.Name, Character.CharacterId).Wait();
+                ServerCommunicationClient.Instance.HubProxy.Invoke("DisconnectCharacter", ServerManager.Instance.ServerGroup, Character.Name, Character.CharacterId).Wait();
 
                 // unregister from map if registered
                 if (CurrentMapInstance != null)
@@ -490,7 +491,7 @@ namespace OpenNos.GameObject
         private void OnOtherCharacterConnected(object sender, EventArgs e)
         {
             Tuple<string, string, long> loggedInCharacter = (Tuple<string, string, long>)sender;
-            if (ServerManager.ServerGroup != loggedInCharacter.Item1)
+            if (ServerManager.Instance.ServerGroup != loggedInCharacter.Item1)
             {
                 return;
             }
@@ -512,7 +513,7 @@ namespace OpenNos.GameObject
         private void OnOtherCharacterDisconnected(object sender, EventArgs e)
         {
             Tuple<string, string, long> loggedOutCharacter = (Tuple<string, string, long>)sender;
-            if (ServerManager.ServerGroup != loggedOutCharacter.Item1)
+            if (ServerManager.Instance.ServerGroup != loggedOutCharacter.Item1)
             {
                 return;
             }

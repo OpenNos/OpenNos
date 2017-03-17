@@ -90,7 +90,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Buff\Indicators\NoSP\Archer\RitualOfHawk.cs" />
-    <Compile Include="Event\EventHelper.cs" />
+    <Compile Include="Event\EventContainer.cs" />
+    <Compile Include="Helpers\EventHelper.cs" />
     <Compile Include="Event\EventSchedule.cs" />
     <Compile Include="Event\INSTANTBATTLE\InstantBattle.cs" />
     <Compile Include="Event\LOD\LOD.cs" />
@@ -99,7 +100,7 @@
     <Compile Include="Map\MapClock.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
     <Compile Include="Map\MonsterToSummon.cs" />
-    <Compile Include="Map\TimeSpace.cs" />
+    <Compile Include="Map\ScriptedInstance.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
     <Compile Include="Packets\ClientPackets\ComplimentPacket.cs" />
     <Compile Include="Packets\ClientPackets\EquipmentInfoPacket.cs" />
