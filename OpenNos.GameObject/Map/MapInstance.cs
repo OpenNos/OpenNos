@@ -77,10 +77,7 @@ namespace OpenNos.GameObject
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
             _portals = new List<Portal>();
             UserShops = new Dictionary<long, MapShop>();
-
             StartLife();
-            _npcs.GetAllItems().ForEach(s => s.Initialize(this));
-            _monsters.GetAllItems().ForEach(s => s.Initialize(this));
         }
 
         #endregion
@@ -134,7 +131,7 @@ namespace OpenNos.GameObject
 
         public List<MapMonster> Monsters => _monsters.GetAllItems();
 
-        public ThreadSafeSortedList<long, MapNpc> Npcs => _npcs;
+        public List<MapNpc> Npcs => _npcs.GetAllItems();
 
         public List<Portal> Portals => _portals;
 
@@ -260,7 +257,7 @@ namespace OpenNos.GameObject
             TimeSpaces.ForEach(s => packets.Add(s.GenerateWp()));
 
             Monsters.ForEach(s => packets.Add(s.GenerateIn()));
-            Npcs.GetAllItems().ForEach(s => packets.Add(s.GenerateIn()));
+            Npcs.ForEach(s => packets.Add(s.GenerateIn()));
             packets.AddRange(GenerateNPCShopOnMap());
             DroppedList.GetAllItems().ForEach(s => packets.Add(s.GenerateIn()));
        
@@ -272,7 +269,7 @@ namespace OpenNos.GameObject
 
         public IEnumerable<string> GenerateNPCShopOnMap()
         {
-            return (from npc in Npcs.GetAllItems() where npc.Shop != null select $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}").ToList();
+            return (from npc in Npcs where npc.Shop != null select $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}").ToList();
         }
 
         public IEnumerable<string> GenerateUserShops()

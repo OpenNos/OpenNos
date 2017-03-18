@@ -922,6 +922,12 @@ namespace OpenNos.GameObject
                         mapMonster.MapInstance = newMap;
                         newMap.AddMonster(mapMonster);
                     }
+
+                    foreach (MapNpc mapNpc in newMap.Npcs)
+                    {
+                        mapNpc.MapInstance = newMap;
+                        newMap.AddNPC(mapNpc);
+                    }
                     monstercount += newMap.Monsters.Count;
                 }
                 if (i != 0)
@@ -1267,10 +1273,10 @@ namespace OpenNos.GameObject
 
             foreach (var map in _mapinstances)
             {
-                foreach (MapNpc npc in map.Value.Npcs.GetAllItems())
+                Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
                 {
-                    npc.StartLife();
-                }
+                    Parallel.ForEach(map.Value.Npcs, npc => { npc.StartLife(); });
+                });
 
                 Observable.Interval(TimeSpan.FromMilliseconds(400)).Subscribe(x =>
                 {

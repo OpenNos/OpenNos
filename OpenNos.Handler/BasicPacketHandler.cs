@@ -299,7 +299,7 @@ namespace OpenNos.Handler
             }
             if (characterInformationPacket[2] == "2" && Session.HasCurrentMapInstance)
             {
-                foreach (MapNpc npc in Session.CurrentMapInstance.Npcs.GetAllItems())
+                foreach (MapNpc npc in Session.CurrentMapInstance.Npcs)
                 {
                     int mapMonsterId;
                     if (int.TryParse(characterInformationPacket[3], out mapMonsterId))
@@ -822,7 +822,7 @@ namespace OpenNos.Handler
                     {
                         return;
                     }
-                    MapNpc npc = Session.CurrentMapInstance.Npcs.GetAllItems().FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
+                    MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(MapNpcId));
                     if (npc != null)
                     {
                         NpcMonster mapobject = ServerManager.Instance.GetNpc(npc.NpcVNum);

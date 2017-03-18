@@ -115,22 +115,16 @@ namespace OpenNos.GameObject
 
         internal void StartLife()
         {
-            if (LifeEvent == default(IDisposable))
+            try
             {
-                LifeEvent = Observable.Interval(TimeSpan.FromMilliseconds(2000d / (Npc.Speed > 0 ? Npc.Speed : 4))).Subscribe(x =>
+                if (!MapInstance.IsSleeping)
                 {
-                    try
-                    {
-                        if (!MapInstance.IsSleeping)
-                        {
-                            NpcLife();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                });
+                    NpcLife();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
@@ -153,7 +147,7 @@ namespace OpenNos.GameObject
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay && EffectActivated)
             {
-                MapInstance.Broadcast(GenerateEff( Effect), MapX, MapY);
+                MapInstance.Broadcast(GenerateEff(Effect), MapX, MapY);
                 LastEffect = DateTime.Now;
             }
 
@@ -226,7 +220,7 @@ namespace OpenNos.GameObject
 
                         if (npcMonsterSkill != null && npcMonsterSkill.Skill.CastEffect != 0)
                         {
-                            MapInstance.Broadcast(GenerateEff( Effect));
+                            MapInstance.Broadcast(GenerateEff(Effect));
                         }
 
                         monster.CurrentHp -= damage;

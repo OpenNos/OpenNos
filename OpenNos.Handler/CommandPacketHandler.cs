@@ -994,7 +994,7 @@ namespace OpenNos.Handler
                     Type = portalToPacket.PortalType == null ? (short)-1 : (short)portalToPacket.PortalType
                 };
                 Session.CurrentMapInstance.Portals.Add(portal);
-                Session.CurrentMapInstance?.Broadcast(Session.CurrentMapInstance.GenerateGp(portal));
+                Session.CurrentMapInstance?.Broadcast(portal.GenerateGp());
             }
             else
             {
@@ -1794,7 +1794,7 @@ namespace OpenNos.Handler
                 {
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("NEAREST_PORTAL"), pt.SourceMapId, pt.SourceX, pt.SourceY), 12));
                     Session.CurrentMapInstance.Portals.Remove(pt);
-                    Session.CurrentMapInstance?.Broadcast(Session.CurrentMapInstance.GenerateGp(pt));
+                    Session.CurrentMapInstance?.Broadcast(pt.GenerateGp());
                 }
                 else
                 {

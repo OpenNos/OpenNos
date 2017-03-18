@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-            MapNpc npc = Session.CurrentMapInstance.Npcs.GetAllItems().FirstOrDefault(s => s.MapNpcId == packet.NpcId);
+            MapNpc npc = Session.CurrentMapInstance.Npcs.FirstOrDefault(s => s.MapNpcId == packet.NpcId);
             switch (packet.Runner)
             {
                 case 1:

@@ -183,7 +183,7 @@ namespace OpenNos.GameObject.Helpers
                         break;
 
                     case EventActionType.NPCSEFFECTCHANGESTATE:
-                        evt.MapInstance.Npcs.GetAllItems().ForEach(s => s.EffectActivated = (bool)evt.Parameter);
+                        evt.MapInstance.Npcs.ForEach(s => s.EffectActivated = (bool)evt.Parameter);
                         break;
 
                     case EventActionType.CHANGEPORTALTYPE:
