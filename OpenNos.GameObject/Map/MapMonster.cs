@@ -31,8 +31,7 @@ namespace OpenNos.GameObject
     public class MapMonster : MapMonsterDTO
     {
         #region Members
-
-        private IDisposable _lifeEvent;
+        
         private int _movetime;
         private Random _random;
 
@@ -42,14 +41,13 @@ namespace OpenNos.GameObject
 
         public MapMonster()
         {
-            LifeEvent = _lifeEvent;
             HitQueue = new ConcurrentQueue<HitRequest>();
         }
 
         #endregion
 
         #region Properties
-
+        public bool IsHostile { get; set; }
         public int CurrentHp { get; set; }
 
         public int CurrentMp { get; set; }
@@ -64,7 +62,7 @@ namespace OpenNos.GameObject
 
         public JumpPointParam JumpPointParameters { get; set; }
 
-        public DateTime LastEffect { get; set; }
+        public DateTime LastSkill { get; set; }
 
         public DateTime LastMove { get; set; }
 
@@ -86,6 +84,9 @@ namespace OpenNos.GameObject
 
         private short FirstY { get; set; }
         public List<EventContainer> OnDeathEvents { get; set; }
+        public bool IsTarget { get; set; }
+        public DateTime LastEffect { get; set; }
+        public bool  IsBonus { get; set; }
 
         #endregion
 
@@ -142,12 +143,13 @@ namespace OpenNos.GameObject
         {
             FirstX = MapX;
             FirstY = MapY;
-            LastEffect = LastMove = DateTime.Now;
+            LastSkill = LastMove = LastEffect = DateTime.Now;
             Target = -1;
             Path = new List<GridPos>();
             IsAlive = true;
             ShouldRespawn = ShouldRespawn ?? true;
             Monster = ServerManager.Instance.GetNpc(MonsterVNum);
+            IsHostile = Monster.IsHostile;
             CurrentHp = Monster.MaxHP;
             CurrentMp = Monster.MaxMP;
             Skills = Monster.Skills.ToList();
@@ -214,7 +216,7 @@ namespace OpenNos.GameObject
 
         internal void HostilityTarget()
         {
-            if (Monster.IsHostile && Target == -1)
+            if (IsHostile && Target == -1)
             {
                 Character character = ServerManager.Instance.Sessions.FirstOrDefault(s => s?.Character != null && s.Character.Hp > 0 && !s.Character.InvisibleGm && !s.Character.Invisible && s.Character.MapInstance == MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY }) < Monster.NoticeRange)?.Character;
                 if (character != null)
@@ -778,7 +780,18 @@ namespace OpenNos.GameObject
             {
                 return;
             }
-
+            if ((DateTime.Now - LastEffect).TotalSeconds >= 5)
+            {
+                LastEffect = DateTime.Now;
+                if(IsTarget)
+                {
+                    MapInstance.Broadcast(GenerateEff(824));
+                }
+                if (IsBonus)
+                {
+                    MapInstance.Broadcast(GenerateEff(826));
+                }
+            }
             // handle hit queue
             HitRequest hitRequest;
             while (HitQueue.TryDequeue(out hitRequest))
@@ -1005,7 +1018,7 @@ namespace OpenNos.GameObject
         /// <param name="npcMonsterSkill"></param>
         private void TargetHit(ClientSession targetSession, NpcMonsterSkill npcMonsterSkill)
         {
-            if (Monster != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 200 || npcMonsterSkill != null))
+            if (Monster != null && ((DateTime.Now - LastSkill).TotalMilliseconds >= 1000 + Monster.BasicCooldown * 200 || npcMonsterSkill != null))
             {
                 int hitmode = 0;
                 int damage = npcMonsterSkill != null ? GenerateDamage(targetSession.Character, npcMonsterSkill.Skill, ref hitmode) : GenerateDamage(targetSession.Character, null, ref hitmode);
@@ -1062,7 +1075,7 @@ namespace OpenNos.GameObject
                     ? $"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {npcMonsterSkill.Skill.Cooldown} {npcMonsterSkill.Skill.AttackAnimation} {npcMonsterSkill.Skill.Effect} {MapX} {MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0"
                     : $"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)(targetSession.Character.Hp / targetSession.Character.HPLoad() * 100)} {damage} {hitmode} 0");
 
-                LastEffect = DateTime.Now;
+                LastSkill = DateTime.Now;
                 if (targetSession.Character.Hp <= 0)
                 {
                     RemoveTarget();

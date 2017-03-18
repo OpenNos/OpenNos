@@ -1513,7 +1513,7 @@ namespace OpenNos.GameObject
             // only set the hit delay if we become the monsters target with this hit
             if (monsterToAttack.Target == -1)
             {
-                monsterToAttack.LastEffect = DateTime.Now;
+                monsterToAttack.LastSkill = DateTime.Now;
             }
             ushort damage = Convert.ToUInt16(totalDamage);
 

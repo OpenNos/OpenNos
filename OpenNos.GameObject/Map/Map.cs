@@ -107,13 +107,13 @@ namespace OpenNos.GameObject
         {
             return Math.Max(Math.Abs(p.X - q.X), Math.Abs(p.Y - q.Y));
         }
-        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents)
+        public IEnumerable<MonsterToSummon> GenerateMonsters(short vnum, short amount, bool move, List<EventContainer> deathEvents, bool isBonus = false, bool isHostile = true)
         {
             List<MonsterToSummon> SummonParameters = new List<MonsterToSummon>();
             for (int i = 0; i < amount; i++)
             {
                 MapCell cell = GetRandomPosition();
-                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, deathEvents));
+                SummonParameters.Add(new MonsterToSummon(vnum, cell, -1, move, deathEvents,isBonus: isBonus,isHostile:isHostile));
             }
             return SummonParameters;
         }

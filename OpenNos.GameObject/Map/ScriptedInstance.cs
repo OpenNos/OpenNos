@@ -67,14 +67,39 @@ namespace OpenNos.GameObject
             foreach (XmlNode mapevent in node.ChildNodes)
             {
                 int mapid;
-                if(mapevent.Attributes["Map"] == null || !int.TryParse(mapevent.Attributes["Map"].Value, out mapid))
+                short positionX;
+                short positionY;
+                bool isHostile;
+                bool isBonus;
+                bool isTarget;
+                if (!int.TryParse(mapevent.Attributes["Map"]?.Value, out mapid))
                 {
                     mapid = -1;
+                }
+                if (!short.TryParse(mapevent.Attributes["PositionX"]?.Value, out positionX))
+                {
+                    positionX = -1;
+                }
+                if (!short.TryParse(mapevent.Attributes["PositionY"]?.Value, out positionY))
+                {
+                    positionY = -1;
+                }
+                bool.TryParse(mapevent.Attributes["IsTarget"]?.Value, out isTarget);
+                bool.TryParse(mapevent.Attributes["IsBonus"]?.Value, out isBonus);
+                if (bool.TryParse(mapevent.Attributes["IsHostile"]?.Value, out isHostile))
+                {
+                    isHostile = true;
                 }
                 MapInstance mapinstance = _mapinstancedictionary.FirstOrDefault(s => s.Key == mapid).Value;
                 if (mapinstance == null)
                 {
                     mapinstance = parentmapinstance;
+                }
+                MapCell cell = mapinstance?.Map?.GetRandomPosition();
+                if (cell != null && positionX != -1 && positionY !=-1)
+                {
+                    positionX = cell.X;
+                    positionY = cell.Y;
                 }
                 switch (mapevent.Name)
                 {
@@ -96,19 +121,21 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SummonMonsters":
-                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), short.Parse(mapevent.Attributes["Amount"].Value), true, new List<EventContainer>())));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), short.Parse(mapevent.Attributes["Amount"].Value), true, new List<EventContainer>(), isBonus, isHostile)));
                         break;
 
                     case "SummonMonster":
-                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), 1, true, GenerateEvent(mapevent, mapinstance))));
+                        List<MonsterToSummon> lst = new List<MonsterToSummon>();
+                        lst.Add(new MonsterToSummon(short.Parse(mapevent.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, true, GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, lst.AsEnumerable()));
                         break;
 
                     case "SpawnButton":
                         MapButton button = new MapButton(
                             mapinstance,
                             int.Parse(mapevent.Attributes["Id"].Value),
-                            short.Parse(mapevent.Attributes["PositionX"].Value),
-                            short.Parse(mapevent.Attributes["PositionY"].Value),
+                            positionX,
+                           positionY,
                              short.Parse(mapevent.Attributes["VNumEnabled"].Value),
                               short.Parse(mapevent.Attributes["VNumDisabled"].Value),
                               new List<EventContainer>(),
@@ -170,8 +197,8 @@ namespace OpenNos.GameObject
                         Portal portal = new Portal()
                         {
                             PortalId = byte.Parse(mapevent.Attributes["IdOnMap"].Value),
-                            SourceX = short.Parse(mapevent.Attributes["X"].Value),
-                            SourceY = short.Parse(mapevent.Attributes["Y"].Value),
+                            SourceX = positionX,
+                            SourceY = positionY,
                             Type = short.Parse(mapevent.Attributes["Type"].Value),
                             DestinationX = short.Parse(mapevent.Attributes["ToX"].Value),
                             DestinationY = short.Parse(mapevent.Attributes["ToY"].Value),
