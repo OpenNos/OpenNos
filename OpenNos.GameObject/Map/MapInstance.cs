@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
             TimeSpaces = new List<ScriptedInstance>();
             OnCharacterDiscoveringMapEvents = new List<Tuple<EventContainer, List<long>>>();
             OnMoveOnMapEvents = new List<EventContainer>();
-            OnMapCleanEvents = new List<EventContainer>(); 
+            OnMapClean = new List<EventContainer>(); 
             _monsters = new ThreadSafeSortedList<long, MapMonster>();
             _mapMonsterIds = new List<int>();
             DroppedList = new ThreadSafeSortedList<long, MapItem>();
@@ -137,7 +137,7 @@ namespace OpenNos.GameObject
 
         public List<Tuple<EventContainer, List<long>>> OnCharacterDiscoveringMapEvents { get; set; }
 
-        public List<EventContainer> OnMapCleanEvents { get; set; }
+        public List<EventContainer> OnMapClean { get; set; }
 
         public List<EventContainer> OnMoveOnMapEvents { get; set; }
 
@@ -433,11 +433,11 @@ namespace OpenNos.GameObject
                 {
                     if(Monsters.Count(s=>s.IsAlive) == 0)
                     {
-                        OnMapCleanEvents.ForEach(e =>
+                        OnMapClean.ForEach(e =>
                         {
                             EventHelper.Instance.RunEvent(e);
                         });
-                        OnMapCleanEvents.RemoveAll(s => s != null);
+                        OnMapClean.RemoveAll(s => s != null);
                     }
                     if (!IsSleeping)
                     {

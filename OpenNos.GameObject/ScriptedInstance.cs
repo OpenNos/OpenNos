@@ -113,16 +113,11 @@ namespace OpenNos.GameObject
                         GenerateEvent(mapevent, mapinstance).ForEach(e => EventHelper.Instance.RunEvent(e));
                         break;
 
-                    case "OnMoveOnMap":
-                        mapinstance.OnMoveOnMapEvents.AddRange(GenerateEvent(mapevent, mapinstance));
-                        break;
-
-                    case "OnMapCleanEvents":
-                        mapinstance.OnMapCleanEvents.AddRange(GenerateEvent(mapevent, mapinstance));
-                        break;
 
                     case "OnCharacterDiscoveringMap":
-                        GenerateEvent(mapevent, mapinstance).ForEach(evt => mapinstance.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer, List<long>>(evt, new List<long>())));
+                    case "OnMoveOnMap":
+                    case "OnMapClean":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.REGISTEREVENT, new Tuple<string,List<EventContainer>>(mapevent.Name, GenerateEvent(mapevent, mapinstance))));
                         break;
 
                     case "OnDeath":

@@ -123,10 +123,26 @@ namespace OpenNos.GameObject.Helpers
                     #endregion
 
                     #region MapInstanceEvent
+                    case EventActionType.REGISTEREVENT:
+                        Tuple<string, List<EventContainer>> even = (Tuple<string, List<EventContainer>>)evt.Parameter;
+                        switch(even.Item1)
+                        {
+                            case "OnCharacterDiscoveringMap":
+                                even.Item2.ForEach(s => evt.MapInstance.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer,List<long>>(s,new List<long>())));
+                                break;
+                            case "OnMoveOnMap":
+                                evt.MapInstance.OnMoveOnMapEvents.AddRange(even.Item2);
+                                break;
+                            case "OnMapClean":
+                                evt.MapInstance.OnMapClean.AddRange(even.Item2);
+                                break;
+                        } 
+                        break;
                     case EventActionType.CLOCK:
                         evt.MapInstance.InstanceBag.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
                         evt.MapInstance.InstanceBag.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
                         break;
+
                     case EventActionType.MAPCLOCK:
                         evt.MapInstance.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
                         evt.MapInstance.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
