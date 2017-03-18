@@ -20,7 +20,7 @@ namespace OpenNos.GameObject
             StopEvents = new List<EventContainer>();
             TimeoutEvents = new List<EventContainer>();
             Type = type;
-            timer = new Timer(100);
+            timer = new Timer(1000);
             timer.Elapsed += this.OnTimerElapsed;
             timer.Start();
         }
@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
             {
                 if (DeciSecondRemaining > 0)
                 {
-                    DeciSecondRemaining--;
+                    DeciSecondRemaining-=10;
                 }
                 else
                 {
