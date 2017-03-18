@@ -65,9 +65,10 @@ namespace OpenNos.Handler
            ScriptedInstance timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s=>s.ScriptedInstanceId == Session.Character.LastTimeSpace)?.GetClone();
             if (timespace != null)
             {
-                    timespace.LoadScript();
-                    ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, timespace.FirstMap.MapInstanceId);
-                    Session.SendPackets(timespace.GenerateMinimap());
+                timespace.LoadScript();
+                if (timespace.FirstMap == null) return;
+                ServerManager.Instance.TeleportOnRandomPlaceInMap(Session, timespace.FirstMap.MapInstanceId);
+                Session.SendPackets(timespace.GenerateMinimap());
             }
 
         }
