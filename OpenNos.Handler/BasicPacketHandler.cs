@@ -1729,10 +1729,6 @@ namespace OpenNos.Handler
                     Session.Character.LastMove = DateTime.Now;
 
                     Session.CurrentMapInstance.OnMoveOnMapEvents.ForEach(e => {
-                        if (e.MapInstance == null)
-                        {
-                            e.MapInstance = Session.CurrentMapInstance;
-                        }
                         EventHelper.Instance.RunEvent(e);
                     });
                     Session.CurrentMapInstance.OnMoveOnMapEvents.RemoveAll(s => s != null);

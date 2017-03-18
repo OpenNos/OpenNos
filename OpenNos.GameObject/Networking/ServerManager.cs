@@ -442,11 +442,14 @@ namespace OpenNos.GameObject
                     
                     session.SendPackets(session.Character.MapInstance.GenerateUserShops());
                     session.SendPackets(session.CurrentMapInstance.GeneratePlayerShopOnMap());
-                    if (session.CurrentMapInstance.InstanceBag.Enabled)
+                    if (session.CurrentMapInstance.InstanceBag.Clock.Enabled)
                     {
-                        session.SendPacket(session.CurrentMapInstance.InstanceBag.GetClock());
+                        session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());
                     }
-
+                    if (session.CurrentMapInstance.Clock.Enabled)
+                    {
+                        session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());
+                    }
                     // TODO: fix this
                     if (session.Character.MapInstance.Map.MapTypes.Any(m => m.MapTypeId == (short)MapTypeEnum.CleftOfDarkness))
                     {
@@ -495,10 +498,6 @@ namespace OpenNos.GameObject
                          {
                              if (!e.Item2.Contains(session.Character.CharacterId))
                              {
-                                 if (e.Item1.MapInstance == null)
-                                 {
-                                     e.Item1.MapInstance = session.CurrentMapInstance;
-                                 }
                                  e.Item2.Add(session.Character.CharacterId);
                                  EventHelper.Instance.RunEvent(e.Item1, session);
                              }

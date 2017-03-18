@@ -124,13 +124,31 @@ namespace OpenNos.GameObject.Helpers
 
                     #region MapInstanceEvent
                     case EventActionType.CLOCK:
-                        evt.MapInstance.InstanceBag.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
+                        evt.MapInstance.InstanceBag.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
+                        evt.MapInstance.InstanceBag.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
                         break;
 
                     case EventActionType.STARTCLOCK:
-                        evt.MapInstance.InstanceBag.Enabled = true;
-                        evt.MapInstance.Broadcast(evt.MapInstance.InstanceBag.GetClock());
+                        evt.MapInstance.InstanceBag.Clock.StartClock();
+                        evt.MapInstance.Broadcast(evt.MapInstance.InstanceBag.Clock.GetClock());
                         break;
+
+                    case EventActionType.STOPCLOCK:
+                        evt.MapInstance.InstanceBag.Clock.StopClock();
+                        evt.MapInstance.Broadcast(evt.MapInstance.InstanceBag.Clock.GetClock());
+                        break;
+
+                    case EventActionType.STARTMAPCLOCK:
+                        evt.MapInstance.Clock.StartClock();
+                        evt.MapInstance.Broadcast(evt.MapInstance.Clock.GetClock());
+                        break;
+
+                    case EventActionType.STOPMAPCLOCK:
+                        evt.MapInstance.Clock.StopClock();
+                        evt.MapInstance.Broadcast(evt.MapInstance.Clock.GetClock());
+                        break;
+
+                  
 
                     case EventActionType.SPAWNPORTAL:
                         evt.MapInstance.CreatePortal((Portal)evt.Parameter);

@@ -137,7 +137,6 @@ namespace OpenNos.GameObject
 
                     case "SpawnButton":
                         MapButton button = new MapButton(
-                            mapinstance,
                             int.Parse(mapevent.Attributes["Id"].Value),
                             positionX,
                            positionY,
@@ -194,7 +193,37 @@ namespace OpenNos.GameObject
                         break;
 
                     case "StartClock":
-                        evts.Add(new EventContainer(mapinstance, EventActionType.STARTCLOCK, null));
+                        Tuple<List<EventContainer>, List<EventContainer>> eve = new Tuple<List<EventContainer>, List<EventContainer>>(new List<EventContainer>(), new List<EventContainer>());
+                        foreach (XmlNode var in mapevent.ChildNodes)
+                        {
+                            switch (var.Name)
+                            {
+                                case "OnTimeout":
+                                    eve.Item1.AddRange(GenerateEvent(var, mapinstance));
+                                    break;
+                                case "OnStop":
+                                    eve.Item2.AddRange(GenerateEvent(var, mapinstance));
+                                    break;
+                            }
+                        }
+                        evts.Add(new EventContainer(mapinstance, EventActionType.STARTCLOCK, eve));
+                        break;
+
+                    case "StartMapClock":
+                        eve = new Tuple<List<EventContainer>, List<EventContainer>>(new List<EventContainer>(), new List<EventContainer>());
+                        foreach (XmlNode var in mapevent.ChildNodes)
+                        {
+                            switch (var.Name)
+                            {
+                                case "OnTimeout":
+                                    eve.Item1.AddRange(GenerateEvent(var, mapinstance));
+                                    break;
+                                case "OnStop":
+                                    eve.Item2.AddRange(GenerateEvent(var, mapinstance));
+                                    break;
+                            }
+                        }
+                        evts.Add(new EventContainer(mapinstance, EventActionType.STARTMAPCLOCK, eve));
                         break;
 
                     case "SpawnPortal":

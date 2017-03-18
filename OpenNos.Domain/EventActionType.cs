@@ -32,6 +32,9 @@ namespace OpenNos.Domain
         CLEANMAP,
         SHOWPORTALS,
         NPCSEFFECTCHANGESTATE,
-        SPAWNBUTTON
+        SPAWNBUTTON,
+        STARTMAPCLOCK,
+        STOPMAPCLOCK,
+        STOPCLOCK
     }
 }

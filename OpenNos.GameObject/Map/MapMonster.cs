@@ -105,10 +105,6 @@ namespace OpenNos.GameObject
         {
             OnDeathEvents.ForEach(e =>
             {
-                if (e.MapInstance == null)
-                {
-                    e.MapInstance = MapInstance;
-                }
                 EventHelper.Instance.RunEvent(e);
             });
             OnDeathEvents.RemoveAll(s => s != null);

@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public MapInstance(Map map, Guid guid, bool shopAllowed, MapInstanceType type, InstanceBag Clock)
+        public MapInstance(Map map, Guid guid, bool shopAllowed, MapInstanceType type, InstanceBag instanceBag)
         {
             Buttons = new List<MapButton>();
             XpRate = 1;
@@ -59,7 +59,8 @@ namespace OpenNos.GameObject
             MapInstanceType = type;
             _isSleeping = true;
             LastUserShopId = 0;
-            InstanceBag = Clock;
+            InstanceBag = instanceBag;
+            Clock = new Clock(1);
             _random = new Random();
             Map = map;
             MapInstanceId = guid;
@@ -87,6 +88,7 @@ namespace OpenNos.GameObject
 
         public InstanceBag InstanceBag { get; set; }
 
+        public Clock Clock{get;set;}
         public bool IsDancing { get; set; }
 
         public bool IsPVP { get; set; }
@@ -174,6 +176,11 @@ namespace OpenNos.GameObject
                 GC.SuppressFinalize(this);
                 _disposed = true;
             }
+        }
+
+        internal void Broadcast(object p)
+        {
+            throw new NotImplementedException();
         }
 
         public string GenerateMapClear()

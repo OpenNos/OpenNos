@@ -10,7 +10,6 @@ namespace OpenNos.GameObject
     public class MapButton
     {
         public bool State { get; set; }
-        public MapInstance MapInstance { get; set; }
         public int MapButtonId { get; set; }
         public short PositionX { get; set; }
         public short PositionY { get; set; }
@@ -20,9 +19,8 @@ namespace OpenNos.GameObject
         public List<EventContainer> DisableEvents { get; set; }
         public List<EventContainer> EnableEvents { get; set; }
 
-        public MapButton(MapInstance mapInstance, int id, short positionX, short positionY, short enabledVNum, short disabledVNum, List<EventContainer> disableEvents, List<EventContainer> enableEvents, List<EventContainer> firstEnableEvents)
+        public MapButton(int id, short positionX, short positionY, short enabledVNum, short disabledVNum, List<EventContainer> disableEvents, List<EventContainer> enableEvents, List<EventContainer> firstEnableEvents)
         {
-            MapInstance = mapInstance;
             MapButtonId = id;
             PositionX = positionX;
             PositionY = positionY;
@@ -35,7 +33,6 @@ namespace OpenNos.GameObject
 
         public void RunAction()
         {
-            MapInstance.Broadcast(GenerateOut());
             State = !State;
             if (State)
             {
@@ -47,8 +44,7 @@ namespace OpenNos.GameObject
             {
                 DisableEvents.ForEach(e => EventHelper.Instance.RunEvent(e));
             }
-
-            MapInstance.Broadcast(GenerateIn());
+            
         }
         public string GenerateOut()
         {

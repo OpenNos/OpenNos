@@ -51,7 +51,9 @@ namespace OpenNos.Handler
             MapButton button = Session.CurrentMapInstance.Buttons.FirstOrDefault(s => s.MapButtonId == packet.ButtonId);
             if(button != null)
             {
+                Session.CurrentMapInstance.Broadcast(button.GenerateOut());
                 button.RunAction();
+                Session.CurrentMapInstance.Broadcast(button.GenerateIn());
             }
         }
         /// <summary>
