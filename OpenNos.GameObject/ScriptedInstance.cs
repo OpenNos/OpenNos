@@ -108,18 +108,20 @@ namespace OpenNos.GameObject
                 }
                 switch (mapevent.Name)
                 {
+                    //master events
                     case "CreateMap":
                     case "InstanceEvents":
                         GenerateEvent(mapevent, mapinstance).ForEach(e => EventHelper.Instance.RunEvent(e));
                         break;
 
-
+                    //register events
                     case "OnCharacterDiscoveringMap":
                     case "OnMoveOnMap":
                     case "OnMapClean":
                         evts.Add(new EventContainer(mapinstance, EventActionType.REGISTEREVENT, new Tuple<string,List<EventContainer>>(mapevent.Name, GenerateEvent(mapevent, mapinstance))));
                         break;
-
+                    
+                    //child events
                     case "OnDeath":
                         evts.AddRange(GenerateEvent(mapevent, mapinstance));
                         break;
@@ -165,6 +167,14 @@ namespace OpenNos.GameObject
 
                     case "CleanMap":
                         evts.Add(new EventContainer(mapinstance, EventActionType.CLEANMAP, null));
+                        break;
+
+                    case "StopClock":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.STOPCLOCK, null));
+                        break;
+
+                    case "StopMapClock":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.STOPMAPCLOCK, null));
                         break;
 
                     case "ShowPortals":
