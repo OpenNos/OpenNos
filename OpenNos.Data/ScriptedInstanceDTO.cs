@@ -18,7 +18,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public short TimespaceId { get; set; }
+        public short ScriptedInstanceId { get; set; }
 
         public short MapId { get; set; }
 

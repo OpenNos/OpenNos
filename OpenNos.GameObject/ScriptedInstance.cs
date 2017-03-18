@@ -275,7 +275,7 @@ namespace OpenNos.GameObject
 
         public string GenerateWp()
         {
-            return $"wp {PositionX} {PositionY} {TimespaceId} 0 {LevelMinimum} {LevelMaximum}"; 
+            return $"wp {PositionX} {PositionY} {ScriptedInstanceId} 0 {LevelMinimum} {LevelMaximum}"; 
         }
 
         public List<string> GenerateMinimap()

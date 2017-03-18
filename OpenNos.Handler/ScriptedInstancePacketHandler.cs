@@ -36,7 +36,7 @@ namespace OpenNos.Handler
 
             if (timespace != null)
             {
-                Session.Character.LastTimeSpace = timespace.TimespaceId;
+                Session.Character.LastTimeSpace = timespace.ScriptedInstanceId;
                 Session.SendPacket(timespace.GenerateRbr());
             }
 
@@ -62,7 +62,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         public void GetWreq(WreqPacket packet)
         {
-           ScriptedInstance timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s=>s.TimespaceId == Session.Character.LastTimeSpace)?.GetClone();
+           ScriptedInstance timespace = Session.CurrentMapInstance.TimeSpaces.FirstOrDefault(s=>s.ScriptedInstanceId == Session.Character.LastTimeSpace)?.GetClone();
             if (timespace != null)
             {
                     timespace.LoadScript();
