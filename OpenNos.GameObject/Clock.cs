@@ -17,20 +17,18 @@ namespace OpenNos.GameObject
 
         public Clock(byte type)
         {
+            StopEvents = new List<EventContainer>();
+            TimeoutEvents = new List<EventContainer>();
             Type = type;
+            timer = new Timer(100);
+            timer.Elapsed += this.OnTimerElapsed;
+            timer.Start();
         }
 
         public string GetClock()
         {
             return $"evnt {Type} {(Enabled ? 0 : -1)} {(int)(DeciSecondRemaining)} {(int)(BasesSecondRemaining)}";
         }
-        public Clock()
-        {
-            timer = new Timer(100);
-            timer.Elapsed += this.OnTimerElapsed;
-            timer.Start();
-        }
-
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
             if (Enabled)
