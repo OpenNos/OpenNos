@@ -66,10 +66,10 @@ namespace OpenNos.GameObject
 
             foreach (XmlNode mapevent in node.ChildNodes)
             {
-                int mapid;
-                short positionX;
-                short positionY;
-                bool isHostile;
+                int mapid = -1;
+                short positionX = -1;
+                short positionY = -1;
+                bool isHostile = true;
                 bool isBonus;
                 bool isTarget;
                 if (!int.TryParse(mapevent.Attributes["Map"]?.Value, out mapid))
@@ -96,7 +96,7 @@ namespace OpenNos.GameObject
                     mapinstance = parentmapinstance;
                 }
                 MapCell cell = mapinstance?.Map?.GetRandomPosition();
-                if (cell != null && positionX != -1 && positionY !=-1)
+                if (cell != null && (positionX == -1 || positionY == -1))
                 {
                     positionX = cell.X;
                     positionY = cell.Y;
