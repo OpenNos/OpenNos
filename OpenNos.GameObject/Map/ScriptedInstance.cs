@@ -86,7 +86,7 @@ namespace OpenNos.GameObject
                 }
                 bool.TryParse(mapevent.Attributes["IsTarget"]?.Value, out isTarget);
                 bool.TryParse(mapevent.Attributes["IsBonus"]?.Value, out isBonus);
-                if (bool.TryParse(mapevent.Attributes["IsHostile"]?.Value, out isHostile))
+                if (!bool.TryParse(mapevent.Attributes["IsHostile"]?.Value, out isHostile))
                 {
                     isHostile = true;
                 }
