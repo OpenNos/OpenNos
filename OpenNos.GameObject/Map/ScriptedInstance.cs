@@ -72,6 +72,7 @@ namespace OpenNos.GameObject
                 bool isHostile = true;
                 bool isBonus;
                 bool isTarget;
+                bool move;
                 if (!int.TryParse(mapevent.Attributes["Map"]?.Value, out mapid))
                 {
                     mapid = -1;
@@ -86,6 +87,10 @@ namespace OpenNos.GameObject
                 }
                 bool.TryParse(mapevent.Attributes["IsTarget"]?.Value, out isTarget);
                 bool.TryParse(mapevent.Attributes["IsBonus"]?.Value, out isBonus);
+                if (!bool.TryParse(mapevent.Attributes["Move"]?.Value, out move))
+                {
+                    move = true;
+                }
                 if (!bool.TryParse(mapevent.Attributes["IsHostile"]?.Value, out isHostile))
                 {
                     isHostile = true;
@@ -121,12 +126,12 @@ namespace OpenNos.GameObject
                         break;
 
                     case "SummonMonsters":
-                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), short.Parse(mapevent.Attributes["Amount"].Value), true, new List<EventContainer>(), isBonus, isHostile)));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, mapinstance.Map.GenerateMonsters(short.Parse(mapevent.Attributes["VNum"].Value), short.Parse(mapevent.Attributes["Amount"].Value), move, new List<EventContainer>(), isBonus, isHostile)));
                         break;
 
                     case "SummonMonster":
                         List<MonsterToSummon> lst = new List<MonsterToSummon>();
-                        lst.Add(new MonsterToSummon(short.Parse(mapevent.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, true, GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile));
+                        lst.Add(new MonsterToSummon(short.Parse(mapevent.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile));
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, lst.AsEnumerable()));
                         break;
 
