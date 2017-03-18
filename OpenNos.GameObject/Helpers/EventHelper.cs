@@ -127,8 +127,18 @@ namespace OpenNos.GameObject.Helpers
                         evt.MapInstance.InstanceBag.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
                         evt.MapInstance.InstanceBag.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
                         break;
+                    case EventActionType.MAPCLOCK:
+                        Tuple<List<EventContainer>, List<EventContainer>> eve = (Tuple<List<EventContainer>, List<EventContainer>>)evt.Parameter;
+                        evt.MapInstance.Clock.StopEvents = eve.Item2;
+                        evt.MapInstance.Clock.TimeoutEvents = eve.Item1;
+                        evt.MapInstance.Clock.BasesSecondRemaining = Convert.ToInt32(evt.Parameter);
+                        evt.MapInstance.Clock.DeciSecondRemaining = Convert.ToInt32(evt.Parameter);
+                        break;
 
                     case EventActionType.STARTCLOCK:
+                        eve =(Tuple<List<EventContainer>, List<EventContainer>>)evt.Parameter;
+                        evt.MapInstance.InstanceBag.Clock.StopEvents = eve.Item2;
+                        evt.MapInstance.InstanceBag.Clock.TimeoutEvents = eve.Item1;
                         evt.MapInstance.InstanceBag.Clock.StartClock();
                         evt.MapInstance.Broadcast(evt.MapInstance.InstanceBag.Clock.GetClock());
                         break;
@@ -147,9 +157,7 @@ namespace OpenNos.GameObject.Helpers
                         evt.MapInstance.Clock.StopClock();
                         evt.MapInstance.Broadcast(evt.MapInstance.Clock.GetClock());
                         break;
-
-                  
-
+           
                     case EventActionType.SPAWNPORTAL:
                         evt.MapInstance.CreatePortal((Portal)evt.Parameter);
                         break;

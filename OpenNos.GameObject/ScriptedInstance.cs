@@ -192,6 +192,10 @@ namespace OpenNos.GameObject
                         evts.Add(new EventContainer(mapinstance, EventActionType.CLOCK, int.Parse(mapevent.Attributes["Value"].Value)));
                         break;
 
+                    case "GenerateMapClock":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.MAPCLOCK, int.Parse(mapevent.Attributes["Value"].Value)));
+                        break;
+
                     case "StartClock":
                         Tuple<List<EventContainer>, List<EventContainer>> eve = new Tuple<List<EventContainer>, List<EventContainer>>(new List<EventContainer>(), new List<EventContainer>());
                         foreach (XmlNode var in mapevent.ChildNodes)

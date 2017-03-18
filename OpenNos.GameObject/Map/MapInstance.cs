@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
             _isSleeping = true;
             LastUserShopId = 0;
             InstanceBag = instanceBag;
-            Clock = new Clock(1);
+            Clock = new Clock(3);
             _random = new Random();
             Map = map;
             MapInstanceId = guid;
@@ -176,11 +176,6 @@ namespace OpenNos.GameObject
                 GC.SuppressFinalize(this);
                 _disposed = true;
             }
-        }
-
-        internal void Broadcast(object p)
-        {
-            throw new NotImplementedException();
         }
 
         public string GenerateMapClear()

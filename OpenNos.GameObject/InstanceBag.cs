@@ -7,7 +7,7 @@ namespace OpenNos.GameObject
         public Clock Clock { get; set; }
         public InstanceBag()
         {
-            Clock = new Clock(3);
+            Clock = new Clock(1);
         }
     }
 }

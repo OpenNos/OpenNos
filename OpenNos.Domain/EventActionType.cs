@@ -35,6 +35,7 @@ namespace OpenNos.Domain
         SPAWNBUTTON,
         STARTMAPCLOCK,
         STOPMAPCLOCK,
-        STOPCLOCK
+        STOPCLOCK,
+        MAPCLOCK
     }
 }
