@@ -183,7 +183,7 @@ namespace OpenNos.GameObject.Helpers
                         break;
 
                     case EventActionType.NPCSEFFECTCHANGESTATE:
-                        evt.MapInstance.Npcs.ToList().ForEach(s => s.EffectActivated = (bool)evt.Parameter);
+                        evt.MapInstance.Npcs.GetAllItems().ForEach(s => s.EffectActivated = (bool)evt.Parameter);
                         break;
 
                     case EventActionType.CHANGEPORTALTYPE:
@@ -217,6 +217,10 @@ namespace OpenNos.GameObject.Helpers
 
                     case EventActionType.SPAWNMONSTERS:
                         evt.MapInstance.SummonMonsters((List<MonsterToSummon>)evt.Parameter);
+                        break;
+
+                    case EventActionType.SPAWNNPCS:
+                        evt.MapInstance.SummonNpcs((List<NpcToSummon>)evt.Parameter);
                         break;
 
                     case EventActionType.DROPITEMS:

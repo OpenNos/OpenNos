@@ -74,6 +74,8 @@ namespace OpenNos.GameObject
                 bool isHostile = true;
                 bool isBonus;
                 bool isTarget;
+                bool isMate;
+                bool isProtected;
                 bool move;
                 if (!int.TryParse(mapevent.Attributes["Map"]?.Value, out mapid))
                 {
@@ -89,6 +91,8 @@ namespace OpenNos.GameObject
                 }
                 bool.TryParse(mapevent?.Attributes["IsTarget"]?.Value, out isTarget);
                 bool.TryParse(mapevent?.Attributes["IsBonus"]?.Value, out isBonus);
+                bool.TryParse(mapevent?.Attributes["IsProtected"]?.Value, out isProtected);
+                bool.TryParse(mapevent?.Attributes["IsMate"]?.Value, out isMate);
                 if (!bool.TryParse(mapevent?.Attributes["Move"]?.Value, out move))
                 {
                     move = true;
@@ -136,6 +140,16 @@ namespace OpenNos.GameObject
                         List<MonsterToSummon> lst = new List<MonsterToSummon>();
                         lst.Add(new MonsterToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, move, GenerateEvent(mapevent, mapinstance), isTarget, isBonus, isHostile));
                         evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNMONSTERS, lst.AsEnumerable()));
+                        break;
+
+                    case "SummonNps":
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, mapinstance.Map.GenerateNpcs(short.Parse(mapevent?.Attributes["VNum"].Value), short.Parse(mapevent?.Attributes["Amount"].Value), new List<EventContainer>(), isMate, isProtected)));
+                        break;
+
+                    case "SummonNpc":
+                        List<NpcToSummon> lstn = new List<NpcToSummon>();
+                        lstn.Add(new NpcToSummon(short.Parse(mapevent?.Attributes["VNum"].Value), new MapCell() { X = positionX, Y = positionY }, -1, GenerateEvent(mapevent, mapinstance), isMate, isProtected));
+                        evts.Add(new EventContainer(mapinstance, EventActionType.SPAWNNPCS, lstn.AsEnumerable()));
                         break;
 
                     case "SpawnButton":

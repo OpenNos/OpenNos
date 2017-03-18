@@ -170,6 +170,7 @@ namespace OpenNos.GameObject
                 Guid guid = Guid.NewGuid();
                 MapInstance mapInstance = new MapInstance(map, guid, false, type, mapclock);
                 mapInstance.LoadMonsters();
+                mapInstance.LoadNpcs();
                 mapInstance.LoadPortals();
                 foreach (MapMonster mapMonster in mapInstance.Monsters)
                 {
@@ -392,10 +393,7 @@ namespace OpenNos.GameObject
                         session.Character.PositionX = (short)mapX;
                         session.Character.PositionY = (short)mapY;
                     }
-
-
-                    // avoid cleaning new portals
-
+                    
                     session.CurrentMapInstance = session.Character.MapInstance;
                     session.CurrentMapInstance.RegisterSession(session);
 
@@ -410,14 +408,13 @@ namespace OpenNos.GameObject
                     session.SendPacket(session.Character.GenerateCMap());
                     session.SendPacket(session.Character.GenerateStatChar());
 
-
-                    // in 2 // send only when partner present cond 2 // send only when partner present
                     session.SendPacket(session.Character.GeneratePairy());
                     session.Character.Mates.Where(s => s.IsTeamMember).ToList().ForEach(s =>
                     {
                         s.PositionX = (short)(session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
                         s.PositionY = (short)(session.Character.PositionY + 1);
                     });
+
                     session.SendPacket(session.Character.GeneratePinit()); // clear party list
                     session.Character.SendPst();
                     session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
@@ -430,7 +427,6 @@ namespace OpenNos.GameObject
                     });
 
                     session.SendPackets(session.CurrentMapInstance.GetMapItems());
-
                   
                     if (session.CurrentMapInstance.InstanceBag.Clock.Enabled)
                     {
@@ -915,11 +911,10 @@ namespace OpenNos.GameObject
 
                     // register for broadcast
                     _mapinstances.TryAdd(guid, newMap);
-                    newMap.SetMapMapMonsterReference();
-                    newMap.SetMapMapNpcReference();
                     i++;
 
                     newMap.LoadMonsters();
+                    newMap.LoadNpcs();
                     newMap.LoadPortals();
 
                     foreach (MapMonster mapMonster in newMap.Monsters)
@@ -1132,16 +1127,6 @@ namespace OpenNos.GameObject
             Instance.TaskShutdown = null;
         }
 
-        internal IEnumerable<MapNpc> GetMapNpcsByMapId(short mapId)
-        {
-            if (_mapNpcs.ContainsKey(mapId))
-            {
-                return _mapNpcs[mapId];
-            }
-
-            return new List<MapNpc>();
-        }
-
         internal List<NpcMonsterSkill> GetNpcMonsterSkillsByMonsterVNum(short npcMonsterVNum)
         {
             return _monsterSkills.ContainsKey(npcMonsterVNum) ? _monsterSkills[npcMonsterVNum] : new List<NpcMonsterSkill>();
@@ -1282,7 +1267,7 @@ namespace OpenNos.GameObject
 
             foreach (var map in _mapinstances)
             {
-                foreach (MapNpc npc in map.Value.Npcs)
+                foreach (MapNpc npc in map.Value.Npcs.GetAllItems())
                 {
                     npc.StartLife();
                 }

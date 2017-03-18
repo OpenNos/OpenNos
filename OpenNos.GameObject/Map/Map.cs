@@ -239,6 +239,16 @@ namespace OpenNos.GameObject
             return Path;
         }
 
+        public List<NpcToSummon> GenerateNpcs(short vnum, short amount, List<EventContainer> deathEvents, bool isMate, bool isProtected)
+        {
+            List<NpcToSummon> SummonParameters = new List<NpcToSummon>();
+            for (int i = 0; i < amount; i++)
+            {
+                MapCell cell = GetRandomPosition();
+                SummonParameters.Add(new NpcToSummon(vnum, cell, -1, deathEvents, isMate: isMate, isProtected: isProtected));
+            }
+            return SummonParameters;
+        }
 
         private bool IsBlockedZone(int firstX, int firstY, int mapX, int mapY)
         {

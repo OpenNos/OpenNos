@@ -56,12 +56,15 @@ namespace OpenNos.GameObject
         public Shop Shop { get; set; }
 
         public bool IsHostile { get; set; }
-        public int Target { get; set; }
+        public long Target { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
 
         public bool EffectActivated { get; set; }
+        public List<EventContainer> OnDeathEvents { get; set; }
 
+        public bool IsMate { get; set; }
+        public bool IsProtected { get; set; }
         #endregion
 
         #region Methods
@@ -79,6 +82,13 @@ namespace OpenNos.GameObject
         public string GetNpcDialog()
         {
             return $"npc_req 2 {MapNpcId} {Dialog}";
+        }
+
+        public void Initialize(MapInstance currentMapInstance)
+        {
+            MapInstance = currentMapInstance;
+            Initialize();
+            JumpPointParameters = new JumpPointParam(MapInstance.Map.Grid, new GridPos(0, 0), new GridPos(0, 0), false, true, true, HeuristicMode.MANHATTAN);
         }
 
         public override void Initialize()

@@ -101,6 +101,7 @@
     <Compile Include="Map\MapButton.cs" />
     <Compile Include="InstanceBag.cs" />
     <Compile Include="Map\MapInstancePortalHandler.cs" />
+    <Compile Include="NpcToSummon.cs" />
     <Compile Include="MonsterToSummon.cs" />
     <Compile Include="ScriptedInstance.cs" />
     <Compile Include="Packets\ClientPackets\AddobjPacket.cs" />
