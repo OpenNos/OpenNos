@@ -117,6 +117,10 @@ namespace OpenNos.GameObject
                         mapinstance.OnMoveOnMapEvents.AddRange(GenerateEvent(mapevent, mapinstance));
                         break;
 
+                    case "OnMapCleanEvents":
+                        mapinstance.OnMapCleanEvents.AddRange(GenerateEvent(mapevent, mapinstance));
+                        break;
+
                     case "OnCharacterDiscoveringMap":
                         GenerateEvent(mapevent, mapinstance).ForEach(evt => mapinstance.OnCharacterDiscoveringMapEvents.Add(new Tuple<EventContainer, List<long>>(evt, new List<long>())));
                         break;
