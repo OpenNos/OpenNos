@@ -1400,7 +1400,7 @@ namespace OpenNos.Handler
                     if (Receiver != null)
                     {
                         WearableInstance headWearable = Session.Character.Inventory.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Wear);
-                        short color = headWearable != null && headWearable.Item.IsColored ? headWearable.Design : (byte)Session.Character.HairColor;
+                        byte color = headWearable != null && headWearable.Item.IsColored ? (byte)headWearable.Design : (byte)Session.Character.HairColor;
                         MailDTO mailcopy = new MailDTO
                         {
                             AttachmentAmount = 0,
