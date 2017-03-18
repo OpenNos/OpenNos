@@ -55,6 +55,7 @@ namespace OpenNos.GameObject
 
         public Shop Shop { get; set; }
 
+        public bool IsHostile { get; set; }
         public int Target { get; set; }
 
         public List<TeleporterDTO> Teleporters { get; set; }
@@ -86,6 +87,7 @@ namespace OpenNos.GameObject
             Npc = ServerManager.Instance.GetNpc(NpcVNum);
             LastEffect = DateTime.Now;
             LastMove = DateTime.Now;
+            IsHostile = Npc.IsHostile;
             FirstX = MapX;
             FirstY = MapY;
             _movetime = ServerManager.Instance.RandomNumber(500, 3000);
@@ -175,7 +177,7 @@ namespace OpenNos.GameObject
             }
             if (Target == -1)
             {
-                if (Npc.IsHostile && Shop == null)
+                if (IsHostile && Shop == null)
                 {
                     MapMonster monster = MapInstance.Monsters.FirstOrDefault(s => MapInstance == s.MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.MapX, Y = s.MapY }) < (Npc.NoticeRange > 5 ? Npc.NoticeRange / 2 : Npc.NoticeRange));
                     ClientSession session = MapInstance.Sessions.FirstOrDefault(s => MapInstance == s.Character.MapInstance && Map.GetDistance(new MapCell { X = MapX, Y = MapY }, new MapCell { X = s.Character.PositionX, Y = s.Character.PositionY }) < Npc.NoticeRange);
