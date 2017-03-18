@@ -1882,27 +1882,7 @@ namespace OpenNos.GameObject
             return $"gold {Gold} 0";
         }
 
-        public IEnumerable<WpPacket> GenerateWp()
-        {
-            List<WpPacket> wpList = new List<WpPacket>();
-            short i = 0;
-            foreach (ScriptedInstance mapinstancetree in MapInstance.TimeSpaces)
-            {
-                wpList.Add(new WpPacket()
-                {
-                    Id = i,
-                    LevelMaximum = mapinstancetree.LevelMaximum,
-                    LevelMinimum = mapinstancetree.LevelMinimum,
-                    X = mapinstancetree.PositionX,
-                    Y = mapinstancetree.PositionY,
-                });
-                i++;
-            }
-
-            return wpList;
-        }
-
-
+       
 
         public string GenerateIdentity()
         {
@@ -2211,11 +2191,6 @@ namespace OpenNos.GameObject
                 Speed = Speed,
                 MoveType = 1
             };
-        }
-
-        public IEnumerable<string> GenerateNPCShopOnMap()
-        {
-            return (from npc in MapInstance.Npcs where npc.Shop != null select $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}").ToList();
         }
 
         public string GenerateOut()

@@ -55,7 +55,12 @@ namespace OpenNos.GameObject
             set { sourceMapInstanceId = value; }
         }
 
-    
+        public string GenerateGp()
+        {
+            return $"gp {SourceX} {SourceY} {ServerManager.Instance.GetMapInstance(DestinationMapInstanceId)?.Map.MapId} {Type} {PortalId} {(IsDisabled ? 1 : 0) : 1)}";
+        }
+
+
 
         #endregion
     }

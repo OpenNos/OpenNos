@@ -417,31 +417,21 @@ namespace OpenNos.GameObject
                     {
                         s.PositionX = (short)(session.Character.PositionX + (s.MateType == MateType.Partner ? -1 : 1));
                         s.PositionY = (short)(session.Character.PositionY + 1);
-                        session.CurrentMapInstance.Broadcast(s.GenerateIn());
                     });
                     session.SendPacket(session.Character.GeneratePinit()); // clear party list
                     session.Character.SendPst();
                     session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
                     session.SendPacket(session.Character.GenerateScpStc());
-                    Sessions.Where(s => s.Character != null && s.Character.MapInstanceId.Equals(session.Character.MapInstanceId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s =>
+
+                    Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm).ToList().ForEach(s =>
                     {
                         session.SendPacket(s.Character.GenerateIn());
                         session.SendPacket(s.Character.GenerateGidx());
-                        s.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => session.SendPacket(m.GenerateIn()));
                     });
 
-                    session.CurrentMapInstance.Portals.ForEach(s => session.SendPacket(session.CurrentMapInstance.GenerateGp(s)));
-                    session.SendPackets(session.Character.GenerateWp());
+                    session.SendPackets(session.CurrentMapInstance.GetMapItems());
 
-                    session.SendPackets(session.Character.MapInstance.Monsters.Select(monster => monster.GenerateIn()).ToList());
-                    session.SendPackets(session.Character.MapInstance.Npcs.Select(npc => npc.GenerateIn()).ToList());
-                    session.SendPackets(session.Character.GenerateNPCShopOnMap());
-
-                    session.CurrentMapInstance.DroppedList.GetAllItems().ForEach(item => session.SendPacket(item.GenerateIn()));
-                    session.CurrentMapInstance.Buttons.ForEach(item => session.SendPacket(item.GenerateIn()));
-                    
-                    session.SendPackets(session.Character.MapInstance.GenerateUserShops());
-                    session.SendPackets(session.CurrentMapInstance.GeneratePlayerShopOnMap());
+                  
                     if (session.CurrentMapInstance.InstanceBag.Clock.Enabled)
                     {
                         session.SendPacket(session.CurrentMapInstance.InstanceBag.Clock.GetClock());

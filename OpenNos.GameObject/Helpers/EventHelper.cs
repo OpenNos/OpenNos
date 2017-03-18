@@ -177,13 +177,9 @@ namespace OpenNos.GameObject.Helpers
                     case EventActionType.SPAWNPORTAL:
                         evt.MapInstance.CreatePortal((Portal)evt.Parameter);
                         break;
-
-                    case EventActionType.CLEANMAP:
-                        evt.MapInstance.Broadcast(evt.MapInstance.GenerateMapClear());
-                        break;
-
-                    case EventActionType.SHOWPORTALS:
-                        evt.MapInstance.Portals.ForEach(s => evt.MapInstance.Broadcast(evt.MapInstance.GenerateGp(s)));
+                        
+                    case EventActionType.REFRESHMAPITEMS:
+                        evt.MapInstance.MapClear();
                         break;
 
                     case EventActionType.NPCSEFFECTCHANGESTATE:

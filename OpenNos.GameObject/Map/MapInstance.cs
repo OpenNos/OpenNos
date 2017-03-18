@@ -180,11 +180,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateMapClear()
-        {
-            return "mapclear";
-        }
-
         public void DropItemByMonster(long? owner, DropDTO drop, short mapX, short mapY)
         {
             try
@@ -239,6 +234,40 @@ namespace OpenNos.GameObject
 
                 Broadcast($"drop {droppedItem.ItemVNum} {droppedItem.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {(droppedItem.GoldAmount > 1 ? droppedItem.GoldAmount : droppedItem.Amount)} 0 0 -1");
             }
+        }
+
+        public void MapClear()
+        {
+            Broadcast("mapclear");
+            GetMapItems().ForEach(s=>Broadcast(s));
+          
+        }
+        
+        public List<string> GetMapItems()
+        {
+            List<string> packets = new List<string>();
+            Sessions.Where(s => s.Character != null && !s.Character.InvisibleGm).ToList().ForEach(s =>
+            {
+                s.Character.Mates.Where(m => m.IsTeamMember).ToList().ForEach(m => packets.Add(m.GenerateIn()));
+            });
+
+            Portals.ForEach(s => packets.Add(s.GenerateGp()));
+            TimeSpaces.ForEach(s => packets.Add(s.GenerateWp()));
+
+            Monsters.ForEach(s => packets.Add(s.GenerateIn()));
+            Npcs.ToList().ForEach(s => packets.Add(s.GenerateIn()));
+            packets.AddRange(GenerateNPCShopOnMap());
+            DroppedList.GetAllItems().ForEach(s => packets.Add(s.GenerateIn()));
+       
+            Buttons.ForEach(s => packets.Add(s.GenerateIn()));
+            packets.AddRange(GenerateUserShops());
+            packets.AddRange(GeneratePlayerShopOnMap());
+            return packets;
+        }
+
+        public IEnumerable<string> GenerateNPCShopOnMap()
+        {
+            return (from npc in Npcs where npc.Shop != null select $"shop 2 {npc.MapNpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}").ToList();
         }
 
         public IEnumerable<string> GenerateUserShops()
@@ -399,7 +428,7 @@ namespace OpenNos.GameObject
         {
             portal.SourceMapInstanceId = MapInstanceId;
             _portals.Add(portal);
-            Broadcast(GenerateGp(portal));
+            Broadcast(portal.GenerateGp());
         }
 
         internal IEnumerable<Character> GetCharactersInRange(short mapX, short mapY, byte distance)
@@ -480,10 +509,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateGp(Portal portal)
-        {
-            return $"gp {portal.SourceX} {portal.SourceY} {ServerManager.Instance.GetMapInstance(portal.DestinationMapInstanceId)?.Map.MapId} {portal.Type} {Portals.Count} {(Portals.Contains(portal) ? (portal.IsDisabled ? 1 : 0) : 1)}";
-        }
+ 
 
         #endregion
     }
