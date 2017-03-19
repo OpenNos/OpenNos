@@ -601,7 +601,7 @@ namespace OpenNos.Handler
                             {
                                 return;
                             }
-                            if (inv.GetType().Equals(typeof(WearableInstance)))
+                            if (inv.GetType() == typeof(WearableInstance))
                             {
                                 WearableInstance item = inv.First() as WearableInstance;
                                 if (item != null && (item.Item.EquipmentSlot == EquipmentType.Armor || item.Item.EquipmentSlot == EquipmentType.MainWeapon || item.Item.EquipmentSlot == EquipmentType.SecondaryWeapon))
